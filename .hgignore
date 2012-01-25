@@ -1,0 +1,10 @@
+syntax: glob
+*.log
+*.sqlite3
+*.tmp*~
+*.orig
+*.pid
+*.*~
+.DS_Store
+tmp/*
+public/assets

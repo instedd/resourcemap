@@ -1,0 +1,18 @@
+= render 'tabs'
+
+.tabsline
+  .tablewrapp
+    %table.GralTable.ButtonTable.w-pagination
+      %tr
+        %th Name
+        %th Phone number
+        %th Can admin?
+        %th Can update?
+        %th Can delete?
+      - collection_memberships.each do |membership|
+        %tr
+          %td= membership.user.display_name
+          %td= membership.user.phone_number
+          %td
+          %td
+          %td

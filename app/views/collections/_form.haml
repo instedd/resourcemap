@@ -1,0 +1,12 @@
+= form_for collection do |f|
+  %p
+    = f.label :name
+    %br/
+    = f.text_field :name, :class => 'w30'
+    = f.check_box :public
+    = f.label :public, "Public collection"
+  %p
+    = f.label :description
+    %br/
+    = f.text_area :description, :class => 'w30', :rows => 6
+  = f.submit

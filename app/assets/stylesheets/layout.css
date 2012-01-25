@@ -1,0 +1,21 @@
+.sitesBox {
+  height: 37px;
+  padding-top: 1px !important;
+  padding-right: 0px !important;
+  padding-bottom: 1px !important;
+  padding-left: 0px !important;
+  font-size: 12px;
+  margin-bottom: 13px !important;
+  margin-right: 13px !important;
+}
+
+.sitesDescription {
+  margin-left: 5px;
+}
+.sitesCount {
+  font-size: 23px;
+  height: 20px;
+}
+.csvDownload {
+  margin: 3px 5px !important;
+}

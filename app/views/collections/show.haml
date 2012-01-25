@@ -1,0 +1,21 @@
+= render 'tabs'
+
+.tabsline
+  %h2 status
+  %div
+    .sbox.grey.w30.sitesBox.left
+      .left.sitesDescription
+        .sitesCount 250 sites
+        updated today
+      %button.csvDownload.white.right{:type => "button"} download as csv
+    %div
+      = link_to 'upload a csv'
+      in order to update multiple sites.
+      %br/
+      use this #{link_to 'template file'}.
+  %hr.clear/
+  %h2 activity
+  = link_to 'add new chart'
+  %hr.clear/
+  %h2 properties
+  = link_to 'delete this collection', collection, :class => 'icon fdelete ux-collapse-trigger black', :method => :delete, :confirm => "are you sure you want to delete the collection #{collection.name}?"

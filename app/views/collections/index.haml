@@ -1,0 +1,25 @@
+- content_for :head do
+  = google_maps_javascript_include_tag
+  :javascript
+    $(function() {
+      var myOptions = {
+        center: new google.maps.LatLng(-34.397, 150.644),
+        zoom: 8,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      var map = new google.maps.Map(document.getElementById("map"), myOptions);
+    });
+
+%table
+  %tr{:valign => :top}
+    %td
+      %div Colletions
+      %ul
+        - collections.each do |collection|
+          %li
+            = check_box_tag collection.id
+            = collection.name
+            = link_to 'edit', collection
+      = link_to 'Create new collection', new_collection_path
+    %td
+      #map{:style => 'width: 600px; height: 300px'}

@@ -1,0 +1,21 @@
+- content_for :head do
+  = google_maps_javascript_include_tag
+  :javascript
+    $(function() {
+      var myOptions = {
+        center: new google.maps.LatLng(-34.397, 150.644),
+        zoom: 8,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      var map = new google.maps.Map(document.getElementById("map"), myOptions);
+    });
+
+= render 'tabs'
+
+.tabsline
+  %table
+    %tr{:valign => :top}
+      %td
+        South America
+      %td
+        #map{:style => 'width: 600px; height: 300px'}
