@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120125194100) do
+ActiveRecord::Schema.define(:version => 20120125204144) do
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -26,6 +26,17 @@ ActiveRecord::Schema.define(:version => 20120125194100) do
     t.integer  "collection_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+  end
+
+  create_table "sites", :force => true do |t|
+    t.integer  "collection_id"
+    t.string   "name"
+    t.decimal  "lat",           :precision => 10, :scale => 6
+    t.decimal  "lng",           :precision => 10, :scale => 6
+    t.integer  "parent_id"
+    t.string   "hierarchy"
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
   end
 
   create_table "users", :force => true do |t|
