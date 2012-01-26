@@ -2,24 +2,36 @@
   = google_maps_javascript_include_tag
   :javascript
     $(function() {
+      // Load map
       var myOptions = {
         center: new google.maps.LatLng(-34.397, 150.644),
         zoom: 8,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
       var map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+      // Collection model
+      function Collection(data) {
+        this.name = ko.observable(data.name);
+      }
+
+      function CollectionViewModel() {
+        var self = this;
+
+        self.collections = ko.observableArray($.map(#{collections.to_json}, function(data) { return new Collection(data) }));
+      }
+
+      ko.applyBindings(new CollectionViewModel());
     });
 
 %table
   %tr{:valign => :top}
     %td
       %div Colletions
-      %ul
-        - collections.each do |collection|
-          %li
-            = check_box_tag collection.id
-            = collection.name
-            = link_to 'edit', collection
+      %ul{'data-bind' => 'foreach: collections, visible: collections().length > 0'}
+        %li
+          = check_box_tag ''
+          %span{'data-bind' => 'text: name'}
       = link_to 'Create new collection', new_collection_path
     %td
       #map{:style => 'width: 600px; height: 300px'}
