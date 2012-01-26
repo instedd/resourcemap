@@ -1,21 +1,21 @@
 = render 'tabs'
 
 .tabsline
-  %h2 status
+  %h2 Status
   %div
-    .sbox.grey.w30.sitesBox.left
+    .sbox.grey.w30.sitesBox
       .left.sitesDescription
-        .sitesCount 250 sites
-        updated today
+        .sitesCount 250
+        sites updated today
       %button.csvDownload.white.right{:type => "button"} download as csv
     %div
-      = link_to 'upload a csv'
-      in order to update multiple sites.
+      = link_to 'Download a sample CSV file', collection, :class => 'icon fimport black'
+      and fill it with the status of multiple sites
       %br/
-      use this #{link_to 'template file'}.
+      = link_to 'Upload it for bulk sites update', collection, :class => 'icon fexport black'
   %hr.clear/
-  %h2 activity
+  %h2 Activity
   = link_to 'add new chart'
   %hr.clear/
-  %h2 properties
-  = link_to 'delete this collection', collection, :class => 'icon fdelete ux-collapse-trigger black', :method => :delete, :confirm => "are you sure you want to delete the collection #{collection.name}?"
+  %h2 Properties
+  = link_to 'delete this collection', collection, :class => 'icon fdelete black', :method => :delete, :confirm => "are you sure you want to delete the collection #{collection.name}?"
