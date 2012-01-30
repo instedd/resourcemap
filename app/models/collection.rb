@@ -3,4 +3,6 @@ class Collection < ActiveRecord::Base
 
   has_many :memberships
   has_many :users, :through => :memberships
+  has_many :sites
+  has_many :root_sites, :class_name => 'Site', :conditions => {:parent_id => nil}
 end

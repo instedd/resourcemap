@@ -2,10 +2,6 @@ class CollectionsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :breadcrumb
 
-  expose(:collections) { current_user.collections }
-  expose(:collection)
-  expose(:collection_memberships) { collection.memberships.includes(:user) }
-
   def new
     add_breadcrumb "Create new collection", nil
   end
@@ -28,11 +24,6 @@ class CollectionsController < ApplicationController
 
   def show
     add_breadcrumb collection.name, collection_path(collection)
-  end
-
-  def sites
-    add_breadcrumb collection.name, collection_path(collection)
-    add_breadcrumb "Sites", collection_sites_path(collection)
   end
 
   def members

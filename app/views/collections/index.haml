@@ -1,37 +1,62 @@
 - content_for :head do
-  = google_maps_javascript_include_tag
   :javascript
-    $(function() {
-      // Load map
-      var myOptions = {
-        center: new google.maps.LatLng(-34.397, 150.644),
-        zoom: 8,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
-      var map = new google.maps.Map(document.getElementById("map"), myOptions);
+    $(function() { initCollections(#{collections.to_json}); });
 
-      // Collection model
-      function Collection(data) {
-        this.name = ko.observable(data.name);
-      }
+.left
+  .tablewrapp.w33
 
-      function CollectionViewModel() {
-        var self = this;
+    -# Collections
+    %table.GralTable.CleanTable{ko(:visible => 'root')}
+      %tr
+        %th
+          My Collections
+          %select.w15.right{:name => "d"}
+            %option{:value => "1"} Show all
+      <!-- ko foreach: collections -->
+      %tr
+        %td
+          %button.faccept{ko(:text => :name), :type => "button"}
+          %button.farrow.right{ko(:click => '$root.enterCollection')}
+      <!-- /ko -->
+      %tr
+        %td.add{ko(:click => '$root.enterCreateCollection')}
+          Create Collection
+          %button.cadd.right{:type => "button"}
 
-        self.collections = ko.observableArray($.map(#{collections.to_json}, function(data) { return new Collection(data) }));
-      }
-
-      ko.applyBindings(new CollectionViewModel());
-    });
-
-%table
-  %tr{:valign => :top}
-    %td
-      %div Colletions
-      %ul{'data-bind' => 'foreach: collections, visible: collections().length > 0'}
+    -# Sites template
+    %script{:type => "text/html", :id => "sites-template"}
+      %ul{ko(:foreach => :sites)}
         %li
-          = check_box_tag ''
-          %span{'data-bind' => 'text: name'}
-      = link_to 'Create new collection', new_collection_path
-    %td
-      #map{:style => 'width: 600px; height: 300px'}
+          %span{ko(:visible => '!expanded()', :click => :expand)} [+]
+          %span{ko(:visible => :expanded, :click => :collapse)} [-]
+          %span{ko(:text => :name)}
+        %div{ko(:template => "{name: 'sites-template', with: sites}", :visible => :expanded)}
+        %ul{ko(:visible => 'expanded')}
+          %li= knockout_link 'Create new folder', 'enterCreateFolder'
+
+    -# Collection sites
+    %div{ko(:with => :selectedCollection)}
+      %span{ko(:text => :name)}
+      = knockout_link 'up', 'enterRoot'
+      %div{ko(:template => "{name: 'sites-template', with: $root.selectedCollection}")}
+      = knockout_link 'Create new folder', 'enterCreateFolder'
+
+    -# Create collection folder
+    %div{ko(:with => :creatingCollectionFolder)}
+      %div
+        Create new folder inside
+        %span{ko(:text => :name)}
+        = knockout_link 'back', 'exitCreateFolder'
+      %div{ko(:with => '$root.creatingCollectionFolderSite')}
+        Inside
+        %span{ko(:text => :name)}
+      %form{ko(:submit => '$root.createFolder'), :action => '#'}
+        %p
+          = label_tag :name
+          %br/
+          = text_field_tag :name, '', :placeholder => 'Enter new folder name', 'data-bind' => kov(:value => '$root.newFolderName')
+        %p
+          = submit_tag 'Create'
+
+.right
+  .tablewrapp.w60

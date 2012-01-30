@@ -19,3 +19,9 @@
 .csvDownload {
   margin: 3px 5px !important;
 }
+
+.GralTable td { padding:4px 6px }
+.GralTable td.add { color: #1e87c9; cursor: pointer; }
+.titletable { padding:4px 0 2px 2px; display:inline-block !important; margin-left:5px !important }
+.exp { background: url(../theme/images/icons/misc/black/arrowRight.png) no-repeat 2px 50%; padding-left:16px }
+.col { background: url(../theme/images/icons/misc/black/arrowDown.png) no-repeat 0px 50%; padding-left:16px }

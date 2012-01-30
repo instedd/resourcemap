@@ -2,12 +2,15 @@ ResourceMap::Application.routes.draw do
   devise_for :users
 
   resources :collections do
-    get 'sites'
+    resources :sites
     get 'members'
     get 'layers'
     get 'thresholds'
     get 'reminders'
     get 'settings'
+  end
+  resources :sites do
+    get 'root_sites'
   end
   resources :gateways
 
