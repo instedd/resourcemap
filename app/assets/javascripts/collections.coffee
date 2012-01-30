@@ -13,7 +13,7 @@
       else
         @sitesInitialized = true
         $.get @sitesUrl(), {}, (data) =>
-          @sites $.map(data, (x) -> new Site(x))
+          @sites $.map(data, (x) => new Site(x, this))
           callback() if callback
 
     findSiteById: (id) =>
@@ -26,7 +26,8 @@
       null
 
     addSite: (site) =>
-      @fetchSites => @sites().push(site)
+      @fetchSites =>
+        @sites().push(site)
 
     expand: =>
       @fetchSites()
@@ -42,12 +43,19 @@
 
     sitesUrl: -> "/collections/#{@id()}/sites"
 
+    level: -> 0
+
   class Site extends SitesContainer
-    constructor: (data) ->
+    constructor: (data, parent) ->
       super
       @class = 'Site'
+      @parent = parent
+      @selected = ko.observable()
 
     sitesUrl: -> "/sites/#{@id()}/root_sites"
+
+    level: =>
+      @parent.level() + 1
 
   class CollectionViewModel
     constructor: ->
@@ -55,31 +63,33 @@
 
       @collections = ko.observableArray $.map(initialCollections, (x) -> new Collection(x))
       @selectedCollection = ko.observable()
-      @creatingCollectionFolder = ko.observable()
-      @creatingCollectionFolderSite = ko.observable()
-      @newFolderName = ko.observable('')
+      @selectedSite = ko.observable()
+      @creatinGroupCollection = ko.observable()
+      @groupName = ko.observable('')
 
       @root = ko.computed ->
-        !self.selectedCollection() && !self.creatingCollectionFolder()
+        !self.selectedCollection() && !self.creatinGroupCollection()
 
       @selectedCollection.subscribe (newValue) ->
         newValue.fetchSites() if newValue
 
       Sammy( ->
         @get '#:collection', ->
-          self.creatingCollectionFolder null
+          self.creatinGroupCollection null
           self.selectedCollection self.findCollectionById(parseInt this.params.collection)
+          self.groupName ""
 
-        @get '#:collection/folder/new', ->
+        @get '#:collection/group/new', ->
           self.selectedCollection null
-          self.creatingCollectionFolder self.findCollectionById(parseInt this.params.collection)
-          self.newFolderName ""
+          self.creatinGroupCollection self.findCollectionById(parseInt this.params.collection)
+          self.groupName ""
 
-        @get '#:collection/:site/folder/new', ->
+        @get '#:collection/:site/group/new', ->
           self.selectedCollection null
-          self.creatingCollectionFolder self.findCollectionById(parseInt this.params.collection)
-          self.creatingCollectionFolderSite self.creatingCollectionFolder().findSiteById(parseInt this.params.site)
-          self.newFolderName ""
+          self.creatinGroupCollection self.findCollectionById(parseInt this.params.collection)
+          self.selectedSite self.creatinGroupCollection().findSiteById(parseInt this.params.site)
+          self.selectedSite().selected(true)
+          self.groupName ""
 
         @get '', ->
           self.selectedCollection(null)
@@ -100,24 +110,34 @@
     enterCreateCollection: ->
       window.location = "/collections/new"
 
-    enterCreateFolder: (parent) =>
-      if parent.class == 'Site'
-        location.hash = "#{@selectedCollection().id()}/#{parent.id()}/folder/new"
+    enterCreateGroup: =>
+      if @selectedSite()
+        location.hash = "#{@selectedCollection().id()}/#{@selectedSite().id()}/group/new"
       else
-        location.hash = "#{@selectedCollection().id()}/folder/new"
+        location.hash = "#{@selectedCollection().id()}/group/new"
 
-    exitCreateFolder: =>
-      location.hash = "#{@creatingCollectionFolder().id()}"
+    exitCreateGroup: =>
+      location.hash = "#{@creatinGroupCollection().id()}"
 
-    createFolder: =>
+    createGroup: =>
       self = this
-      site = {name: @newFolderName(), folder: true}
-      site.parent_id = @creatingCollectionFolderSite().id() if @creatingCollectionFolderSite()
-      $.post "/collections/#{@creatingCollectionFolder().id()}/sites", {site: site}, (data) ->
-        if self.creatingCollectionFolderSite()
-          self.creatingCollectionFolderSite().addSite(new Site data)
+      site = {name: @groupName(), folder: true}
+      site.parent_id = @selectedSite().id() if @selectedSite()
+      $.post "/collections/#{@creatinGroupCollection().id()}/sites", {site: site}, (data) =>
+        if @selectedSite()
+          if @selectedSite().sitesInitialized
+            @selectedSite().sites().push(new Site(data, @selectedSite()))
         else
-          self.creatingCollectionFolder().addSite(new Site data)
-        self.enterCollection self.creatingCollectionFolder()
+          @creatinGroupCollection().addSite(new Site(data, @creatinGroupCollection()))
+        @enterCollection @creatinGroupCollection()
+
+    selectSite: (site) =>
+      if @selectedSite() == site
+        @selectedSite().selected(false)
+        @selectedSite(null)
+      else
+        @selectedSite().selected(false) if @selectedSite()
+        @selectedSite(site)
+        @selectedSite().selected(true)
 
   ko.applyBindings new CollectionViewModel

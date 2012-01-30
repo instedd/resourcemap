@@ -25,11 +25,12 @@
     %script{:type => "text/html", :id => "sites-template"}
       <!-- ko foreach: sites -->
       %tr
-        %td
-          %button.ffolder{ko(:text => :name, :click => :expand), :type => 'button'}
-          -#%span{ko(:visible => '!expanded()', :click => :expand)} [+]
-          -#%span{ko(:visible => :expanded, :click => :collapse)} [-]
-          -#%span{ko(:text => :name)}
+        %td{ko(:style => "{backgroundColor: selected() ? '#DDDDDD' : 'white'}")}
+          %div{ko(:style => "{paddingLeft: '' + ((level() - 1) * 16) + 'px'}")}
+            %button.ffolder{ko(:click => :expand, :visible => '!expanded()'), :type => 'button'}
+            %button.ffolder{ko(:click => :collapse, :visible => :expanded), :type => 'button'}
+            %span{ko(:text => :name, :click => '$root.selectSite'), :style => 'cursor: pointer'}
+            %button.farrow.right
       <!-- ko if: expanded -->
       <!-- ko template: {name: 'sites-template', with: sites} -->
       <!-- /ko -->
@@ -48,20 +49,20 @@
       <!-- /ko -->
       %tr
         %td
-          %button.ffolder{ko(:click => '$root.enterCreateFolder'), :type => 'button'} Create Group
+          %button.ffolder{ko(:click => '$root.enterCreateGroup'), :type => 'button'} Create Group
 
-    -# Create collection folder
-    %form{ko(:with => :creatingCollectionFolder, :submit => '$root.createFolder'), :action => '#'}
+    -# Create collection group
+    %form{ko(:with => :creatinGroupCollection, :submit => '$root.createGroup'), :action => '#'}
       %table.GralTable.CleanTable
         %tr
           %th
-            %button.fleft{ko(:click => '$root.exitCreateFolder'), :type => 'button'}
+            %button.fleft{ko(:click => '$root.exitCreateGroup'), :type => 'button'}
             New Group
           %tr
             %td
               %br/
               = label_tag :name
-              = text_field_tag :name, '', :placeholder => 'Enter new folder name', 'data-bind' => kov(:value => '$root.newFolderName')
+              = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => '$root.groupName')
           %tr
             %td
               %button.ffolder{:type => 'submit'} Done
