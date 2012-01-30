@@ -10,8 +10,6 @@
       %tr
         %th
           My Collections
-          %select.w15.right{:name => "d"}
-            %option{:value => "1"} Show all
       <!-- ko foreach: collections -->
       %tr
         %td
@@ -25,38 +23,49 @@
 
     -# Sites template
     %script{:type => "text/html", :id => "sites-template"}
-      %ul{ko(:foreach => :sites)}
-        %li
-          %span{ko(:visible => '!expanded()', :click => :expand)} [+]
-          %span{ko(:visible => :expanded, :click => :collapse)} [-]
-          %span{ko(:text => :name)}
-        %div{ko(:template => "{name: 'sites-template', with: sites}", :visible => :expanded)}
-        %ul{ko(:visible => 'expanded')}
-          %li= knockout_link 'Create new folder', 'enterCreateFolder'
+      <!-- ko foreach: sites -->
+      %tr
+        %td
+          %button.ffolder{ko(:text => :name, :click => :expand), :type => 'button'}
+          -#%span{ko(:visible => '!expanded()', :click => :expand)} [+]
+          -#%span{ko(:visible => :expanded, :click => :collapse)} [-]
+          -#%span{ko(:text => :name)}
+      <!-- ko if: expanded -->
+      <!-- ko template: {name: 'sites-template', with: sites} -->
+      <!-- /ko -->
+      <!-- /ko -->
+      <!-- /ko -->
 
     -# Collection sites
-    %div{ko(:with => :selectedCollection)}
-      %span{ko(:text => :name)}
-      = knockout_link 'up', 'enterRoot'
-      %div{ko(:template => "{name: 'sites-template', with: $root.selectedCollection}")}
-      = knockout_link 'Create new folder', 'enterCreateFolder'
+    %table.GralTable.CleanTable{ko(:with => :selectedCollection)}
+      %tr
+        %th
+          %button.fleft{ko(:click => '$root.enterRoot'), :type => 'button'}
+          %span{ko(:text => :name)}
+          .right
+            %button.fconfiguration{ko(:click => '$root.editCollection'), :type => 'button'}
+      <!-- ko template: {name: 'sites-template', with: $root.selectedCollection} -->
+      <!-- /ko -->
+      %tr
+        %td
+          %button.ffolder{ko(:click => '$root.enterCreateFolder'), :type => 'button'} Create Group
 
     -# Create collection folder
-    %div{ko(:with => :creatingCollectionFolder)}
-      %div
-        Create new folder inside
-        %span{ko(:text => :name)}
-        = knockout_link 'back', 'exitCreateFolder'
-      %div{ko(:with => '$root.creatingCollectionFolderSite')}
-        Inside
-        %span{ko(:text => :name)}
-      %form{ko(:submit => '$root.createFolder'), :action => '#'}
-        %p
-          = label_tag :name
-          %br/
-          = text_field_tag :name, '', :placeholder => 'Enter new folder name', 'data-bind' => kov(:value => '$root.newFolderName')
-        %p
-          = submit_tag 'Create'
+    %form{ko(:with => :creatingCollectionFolder, :submit => '$root.createFolder'), :action => '#'}
+      %table.GralTable.CleanTable
+        %tr
+          %th
+            %button.fleft{ko(:click => '$root.exitCreateFolder'), :type => 'button'}
+            New Group
+          %tr
+            %td
+              %br/
+              = label_tag :name
+              = text_field_tag :name, '', :placeholder => 'Enter new folder name', 'data-bind' => kov(:value => '$root.newFolderName')
+          %tr
+            %td
+              %button.ffolder{:type => 'submit'} Done
+              Cancel
 
 .right
   .tablewrapp.w60
