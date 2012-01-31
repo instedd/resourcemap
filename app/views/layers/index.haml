@@ -1,0 +1,57 @@
+- content_for :head do
+  :javascript
+    var collectionId = #{collection.id};
+    $(function() { initLayers(#{layers.to_json}); });
+= render 'collections/tabs'
+
+.tabsline
+
+  -# New layer link
+  %div{ko(:visible => '!currentLayer()')}
+    = ko_link_to 'New layer', 'enterCreateLayer'
+
+  -# New layer
+  .tablewrapp.w90{ko(:with => :currentLayer, :visible => :currentLayer)}
+    %p
+      = label_tag :name
+      %br/
+      = ko_text_field_tag :name
+      = ko_check_box_tag :public
+      = label_tag :public, 'Public layer'
+    %h3 Fields
+
+    -# Fields
+    #form-editor
+      .left
+        <!-- ko foreach: fields -->
+        .feditor{ko(:css => '{first: $data == $parent.fields()[0], last: $data == $parent.fields()[$parent.fields().length - 1]}')}
+          .feditor-top
+          .feditor-container
+            .feditor-button
+              %button{ko(:attr => "{'class': buttonClass()}", :css => "{active: $data == $root.currentField()}", :click => '$root.selectField')}
+            Name:
+            %span{ko(:text => :name)}
+            Code:
+            %span{ko(:text => :code)}
+          .feditor-bottom
+        <!-- /ko -->
+
+      .feditor-sidebar.box.right.w30{ko(:with => '$root.currentField', :visible => '$root.currentField')}
+        %p
+          = label_tag :name
+          %br/
+          = ko_text_field_tag :name
+        %p
+          = label_tag :code
+          %br/
+          = ko_text_field_tag :code
+
+      .clear
+
+    -# New field link
+    %div
+      %ul
+        %li= ko_link_to 'New text field', 'enterCreateTextField'
+        %li= ko_link_to 'New number field', 'enterCreateNumberField'
+
+    %button.grey{ko(:click => '$root.saveLayer'), :type => 'submit'} Save layer

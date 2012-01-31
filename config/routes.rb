@@ -3,8 +3,8 @@ ResourceMap::Application.routes.draw do
 
   resources :collections do
     resources :sites
+    resources :layers
     get 'members'
-    get 'layers'
     get 'thresholds'
     get 'reminders'
     get 'settings'

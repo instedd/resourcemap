@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Layer do
+describe Field do
   it { should belong_to :collection }
-  it { should have_many :fields }
+  it { should belong_to :layer }
 end
