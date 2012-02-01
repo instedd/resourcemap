@@ -36,23 +36,42 @@
       @currentLayer = ko.observable()
       @currentField = ko.observable()
 
-    enterCreateLayer: =>
-      @currentLayer(new Layer)
+    newLayer: =>
+      layer = new Layer
+      @layers.push(layer)
+      @currentLayer(layer)
 
-    enterCreateTextField: =>
+    cancelLayer: =>
+      @layers.remove(@currentLayer()) unless @currentLayer().id()
+      @currentLayer(null)
+
+    editLayer: (layer) =>
+      @currentLayer(layer)
+
+    saveLayer: =>
+      $.post "/collections/#{collectionId}/layers.json", {layer: @currentLayer().toJSON()}, (data) =>
+        @currentLayer().id(data.id)
+        @layers.push(@currentLayer())
+        @currentLayer(null)
+
+    newTextField: =>
       @currentField(new Field(kind: 'text'))
       @currentLayer().fields.push(@currentField())
 
-    enterCreateNumberField: =>
+    newNumberField: =>
       @currentField(new Field(kind: 'number'))
       @currentLayer().fields.push(@currentField())
 
     selectField: (field) =>
       @currentField(field)
 
-    saveLayer: =>
-      $.post "/collections/#{collectionId}/layers.json", {layer: @currentLayer().toJSON()}, (data) =>
-        alert data
+    deleteField: (field) =>
+      @currentLayer().fields.remove(field)
+      if @currentField() == field
+        if @currentLayer().fields().length == 0
+          @currentField(null)
+        else
+          @currentField(@currentLayer().fields()[0])
 
 
   ko.applyBindings new LayersViewModel

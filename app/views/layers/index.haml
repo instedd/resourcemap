@@ -6,12 +6,9 @@
 
 .tabsline
 
-  -# New layer link
-  %div{ko(:visible => '!currentLayer()')}
-    = ko_link_to 'New layer', 'enterCreateLayer'
-
-  -# New layer
-  .tablewrapp.w90{ko(:with => :currentLayer, :visible => :currentLayer)}
+  -# Layers
+  <!-- ko foreach: layers -->
+  .tablewrapp.w90{ko(:visible => '$data == $root.currentLayer()')}
     %p
       = label_tag :name
       %br/
@@ -24,15 +21,16 @@
     #form-editor
       .left
         <!-- ko foreach: fields -->
-        .feditor{ko(:css => '{first: $data == $parent.fields()[0], last: $data == $parent.fields()[$parent.fields().length - 1]}')}
+        .feditor{ko(:css => '{first: $data == $parent.fields()[0], last: $data == $parent.fields()[$parent.fields().length - 1]}', :click => '$root.selectField')}
           .feditor-top
           .feditor-container
             .feditor-button
-              %button{ko(:attr => "{'class': buttonClass()}", :css => "{active: $data == $root.currentField()}", :click => '$root.selectField')}
+              %button{ko(:attr => "{'class': buttonClass()}", :css => "{active: $data == $root.currentField()}")}
             Name:
             %span{ko(:text => :name)}
             Code:
             %span{ko(:text => :code)}
+            %button.right.fdelete{ko(:click => "$root.deleteField")}
           .feditor-bottom
         <!-- /ko -->
 
@@ -51,7 +49,19 @@
     -# New field link
     %div
       %ul
-        %li= ko_link_to 'New text field', 'enterCreateTextField'
-        %li= ko_link_to 'New number field', 'enterCreateNumberField'
+        %li= ko_link_to 'New text field', :newTextField
+        %li= ko_link_to 'New number field', :newNumberField
 
     %button.grey{ko(:click => '$root.saveLayer'), :type => 'submit'} Save layer
+    %span{ko(:click => '$root.cancelLayer')}Cancel
+
+  %div{ko(:visible => '$data != $root.currentLayer()')}
+    %span{ko(:text => :name)}
+    = ko_link_to 'edit', :editLayer
+    = ko_link_to 'delete', :deleteLayer
+  <!-- /ko -->
+
+  -# New layer link
+  %div{ko(:visible => '!currentLayer()')}
+    = ko_link_to 'New layer', :newLayer
+
