@@ -13,4 +13,15 @@ class LayersController < ApplicationController
     layer.save
     render :json => layer
   end
+
+  def update
+    layer.fields.destroy_all
+    layer.update_attributes params[:layer]
+    render :json => layer
+  end
+
+  def destroy
+    layer.destroy
+    head :ok
+  end
 end

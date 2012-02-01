@@ -5,4 +5,5 @@ class ApplicationController < ActionController::Base
   expose(:collection)
   expose(:collection_memberships) { collection.memberships.includes(:user) }
   expose(:layers) { collection.layers.includes(:fields) }
+  expose(:layer)
 end

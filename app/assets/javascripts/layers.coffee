@@ -4,7 +4,10 @@
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @public = ko.observable data?.public
-      @fields = ko.observableArray([])
+      if data?.fields
+        @fields = ko.observableArray($.map(data.fields, (x) -> new Field(x)))
+      else
+        @fields = ko.observableArray([])
 
     toJSON: =>
       id: @id()
@@ -25,7 +28,6 @@
         when 'number' then 'lnumber'
 
     toJSON: =>
-      id: @id()
       name: @name()
       code: @code()
       kind: @kind()
@@ -44,15 +46,30 @@
     cancelLayer: =>
       @layers.remove(@currentLayer()) unless @currentLayer().id()
       @currentLayer(null)
+      @currentField(null)
 
     editLayer: (layer) =>
       @currentLayer(layer)
+      @currentField(layer.fields()[0]) if layer.fields().length > 0
 
     saveLayer: =>
-      $.post "/collections/#{collectionId}/layers.json", {layer: @currentLayer().toJSON()}, (data) =>
+      callback = (data) =>
         @currentLayer().id(data.id)
-        @layers.push(@currentLayer())
         @currentLayer(null)
+
+      json = {layer: @currentLayer().toJSON()}
+
+      if @currentLayer().id()
+        json._method = 'put'
+        $.post "/collections/#{collectionId}/layers/#{@currentLayer().id()}.json", json, callback
+      else
+        $.post "/collections/#{collectionId}/layers.json", json, callback
+
+    deleteLayer: (layer) =>
+      if confirm("Are you sure you want to delete layer #{layer.name()}?")
+        $.post "/collections/#{collectionId}/layers/#{layer.id()}", {_method: 'delete'}, =>
+          @layers.remove(layer)
+
 
     newTextField: =>
       @currentField(new Field(kind: 'text'))

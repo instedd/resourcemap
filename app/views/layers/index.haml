@@ -1,7 +1,7 @@
 - content_for :head do
   :javascript
     var collectionId = #{collection.id};
-    $(function() { initLayers(#{layers.to_json}); });
+    $(function() { initLayers(#{layers.to_json(:include => :fields)}); });
 = render 'collections/tabs'
 
 .tabsline
