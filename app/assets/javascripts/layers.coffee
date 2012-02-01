@@ -8,6 +8,7 @@
         @fields = ko.observableArray($.map(data.fields, (x) -> new Field(x)))
       else
         @fields = ko.observableArray([])
+      @hasFocus = ko.observable(false)
 
     toJSON: =>
       id: @id()
@@ -21,6 +22,7 @@
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
+      @hasFocus = ko.observable(false)
 
     buttonClass: =>
       switch @kind()
@@ -42,15 +44,22 @@
       layer = new Layer
       @layers.push(layer)
       @currentLayer(layer)
-
-    cancelLayer: =>
-      @layers.remove(@currentLayer()) unless @currentLayer().id()
-      @currentLayer(null)
-      @currentField(null)
+      layer.hasFocus(true)
 
     editLayer: (layer) =>
+      @originalFields = $.map(layer.fields(), (x) -> x)
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
+      layer.hasFocus(true)
+
+    cancelLayer: =>
+      if @currentLayer().id()
+        @currentLayer().fields.removeAll()
+        @currentLayer().fields.push(field) for field in @originalFields
+      else
+        @layers.remove(@currentLayer()) unless @currentLayer().id()
+      @currentLayer(null)
+      @currentField(null)
 
     saveLayer: =>
       callback = (data) =>
@@ -70,17 +79,19 @@
         $.post "/collections/#{collectionId}/layers/#{layer.id()}", {_method: 'delete'}, =>
           @layers.remove(layer)
 
-
     newTextField: =>
       @currentField(new Field(kind: 'text'))
       @currentLayer().fields.push(@currentField())
+      @currentField().hasFocus(true)
 
     newNumberField: =>
       @currentField(new Field(kind: 'number'))
       @currentLayer().fields.push(@currentField())
+      @currentField().hasFocus(true)
 
     selectField: (field) =>
       @currentField(field)
+      @currentField().hasFocus(true)
 
     deleteField: (field) =>
       @currentLayer().fields.remove(field)
@@ -89,6 +100,7 @@
           @currentField(null)
         else
           @currentField(@currentLayer().fields()[0])
+          @currentField().hasFocus(true)
 
 
   ko.applyBindings new LayersViewModel

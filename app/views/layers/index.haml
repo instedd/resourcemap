@@ -12,7 +12,7 @@
     %p
       = label_tag :name
       %br/
-      = ko_text_field_tag :name
+      = ko_text_field_tag :name, :hasfocus => :hasFocus
       = ko_check_box_tag :public
       = label_tag :public, 'Public layer'
     %h3 Fields
@@ -38,7 +38,7 @@
         %p
           = label_tag :name
           %br/
-          = ko_text_field_tag :name
+          = ko_text_field_tag :name, :hasfocus => :hasFocus
         %p
           = label_tag :code
           %br/

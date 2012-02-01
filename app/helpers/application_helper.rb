@@ -7,8 +7,8 @@ module ApplicationHelper
     link_to text, 'javascript:void()', 'data-bind' => "click: $root.#{click}"
   end
 
-  def ko_text_field_tag(name)
-    text_field_tag name, '', ko(:value => name, :valueUpdate => "'afterkeydown'")
+  def ko_text_field_tag(name, options = {})
+    text_field_tag name, '', ko(options.reverse_merge(:value => name, :valueUpdate => "'afterkeydown'"))
   end
 
   def ko_check_box_tag(name)
