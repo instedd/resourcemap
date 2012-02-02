@@ -7,7 +7,7 @@
   .left.w33.h50
 
     -# Collections
-    <!-- ko if: root -->
+    <!-- ko if: !currentCollection() && !currentSite() -->
     .tableheader.w33
       My Collections
     .tablescroll
@@ -20,7 +20,7 @@
                 %span{ko(:text => :name)}
               %button.farrow{ko(:click => '$root.enterCollection'), :type => :button}
           <!-- /ko -->
-    .tablebottom{ko(:click => '$root.enterCreateCollection'), :style => 'cursor: pointer'}
+    .tablebottom{ko(:click => '$root.createCollection'), :style => 'cursor: pointer'}
       %button.cadd{:type => "button"}
       Create Collection
     <!-- /ko -->
@@ -28,11 +28,19 @@
     -# Sites template
     %script{:type => "text/html", :id => "sites-template"}
       <!-- ko foreach: sites -->
-      %tr{ko(:css => "{closed: !expanded(), opened: expanded}", :click => '$root.selectSite')}
+      %tr{ko(:css => "{closed: folder() && !expanded(), opened: folder() && expanded}")}
         %td
           %div
-            %span{ko(:text => :name, :style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :css => "{selected: $data == $root.selectedSite()}")}
-          %button.farrow{:type => "button"}
+            <!-- ko if: folder() -->
+            %span{ko(:text => :name, :style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :css => "{selected: $data == $root.selectedSite()}", :click => '$root.selectSite')}
+            <!-- /ko -->
+
+            <!-- ko if: !folder() -->
+            %p{ko(:style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :css => "{selected: $data == $root.selectedSite()}", :click => '$root.selectSite'), :style => 'cursor: pointer'}
+              %span.statR
+              %span{ko(:text => :name)}
+            <!-- /ko -->
+          %button.farrow{ko(:click => '$root.editSite'), :type => "button"}
       <!-- ko if: expanded -->
       <!-- ko template: {name: 'sites-template', with: sites} -->
       <!-- /ko -->
@@ -40,44 +48,52 @@
       <!-- /ko -->
 
     -# Collection sites
-    <!-- ko with: selectedCollection -->
+    <!-- ko if: !currentSite() -->
+    <!-- ko with: currentCollection -->
     .tableheader.w33
-      %button.fleft{ko(:click => '$root.enterRoot'), :type => 'button'}
+      %button.fleft{ko(:click => '$root.goToRoot'), :type => 'button'}
       %span.i18b-groupChat
       %span{ko(:text => :name)}
       %button.fconfiguration.right{ko(:click => '$root.editCollection'), :type => 'button'}
     .tablescroll
       %table.GralTable.CleanTable
         %tbody
-          <!-- ko template: {name: 'sites-template', with: $root.selectedCollection} -->
+          <!-- ko template: {name: 'sites-template', with: $data} -->
           <!-- /ko -->
     .tablebottom
+      <!-- ko if: !$root.selectedSite() || $root.selectedSite().folder() -->
       Add
-      %button.ffolder{ko(:click => '$root.enterCreateGroup')} Group
+      %button.ffolder{ko(:click => '$root.createGroup')} Group
       or
-      %button.flocation Site
+      %button.flocation{ko(:click => '$root.createSite')} Site
       <!-- ko if: $root.selectedSite() -->
       at
       %span{ko(:text => '$root.selectedSite().name()')}
       <!-- /ko -->
+      <!-- /ko -->
+    <!-- /ko -->
     <!-- /ko -->
 
-    -# Create group
-    %form{ko(:with => :creatinGroupCollection, :submit => '$root.createGroup'), :action => '#', :style => 'display:inline'}
+    -# Group/Site form
+    %form{ko(:with => :currentSite, :submit => '$root.saveSite', :attr => "{'action': '#' + $root.currentCollection().id()}"), :style => 'display:inline'}
       .tableheader.w33
-        %button.fleft{ko(:click => '$root.exitCreateGroup'), :type => 'button'}
+        %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
         %span.i18b-groupChat
-        %span New Group
+        %span{ko(:visible => 'folder() && !id()')} New Group
+        %span{ko(:visible => 'folder() && id()')} Edit Group
+        %span{ko(:visible => '!folder() && !id()')} New Site
+        %span{ko(:visible => '!folder() && id()')} Edit Site
       .tablescroll
         %table.GralTable.CleanTable
           %tbody
             %tr
               %td
                 = label_tag :name
-                = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => '$root.groupName')
+                = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :visible => :folder)
+                = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :visible => '!folder()')
       .tablebottom
         %button.grey{:type => 'submit'} Done
-        Cancel
+        %span{ko(:click => '$root.exitSite')} Cancel
   .right
     Map
   .clear

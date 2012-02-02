@@ -46,10 +46,10 @@
 .tablescroll .GralTable td div span { margin-top:5px; white-space:nowrap }
 .tablescroll .GralTable td div p { display:inline-block; padding:0; margin:0; vertical-align:middle; white-space:nowrap }
 .tablescroll .GralTable td button.farrow { float:right  }
-tr.opened td span { background:url(http://theme.instedd.org/theme/images/icons/18/black/folder_open.png) no-repeat left; padding-left:20px }
-tr.closed td span { background:url(http://theme.instedd.org/theme/images/icons/18/black/folder.png) no-repeat left; padding-left:20px }
-.stat-r { background:#ff4800; background-image:none !important; border-top:1px solid #bf3602; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
-.stat-y { background:#fcbb00; background-image:none !important; border-top:1px solid #bc8b00; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
-.stat-g { background:#79e820; background-image:none !important; border-top:1px solid #5bae18; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
+tr.opened td span { background:url(http://theme.instedd.org/theme/images/icons/18/black/folder_open.png) no-repeat left; padding-left:20px; cursor: pointer }
+tr.closed td span { background:url(http://theme.instedd.org/theme/images/icons/18/black/folder.png) no-repeat left; padding-left:20px; cursor: pointer }
+.statR { background:#ff4800; background-image:none !important; border-top:1px solid #bf3602; display:inline-block; vertical-align:middle; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
+.statY { background:#fcbb00; background-image:none !important; border-top:1px solid #bc8b00; display:inline-block; vertical-align:middle; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
+.statG { background:#79e820; background-image:none !important; border-top:1px solid #5bae18; display:inline-block; vertical-align:middle; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
 .tablebottom { padding:15px 0 0 10px; color:#555555 }
 .GralTable .selected { background-color: #D0D0D0; border-radius: 4px; }
