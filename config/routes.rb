@@ -4,6 +4,7 @@ ResourceMap::Application.routes.draw do
   resources :collections do
     resources :sites
     resources :layers
+    resources :fields
     get 'members'
     get 'thresholds'
     get 'reminders'

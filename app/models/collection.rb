@@ -7,5 +7,4 @@ class Collection < ActiveRecord::Base
   has_many :root_sites, :class_name => 'Site', :conditions => {:parent_id => nil}
   has_many :layers
   has_many :fields
-
 end

@@ -4,6 +4,6 @@ class Field < ActiveRecord::Base
 
   before_save :set_collection_id_to_layer_id
   def set_collection_id_to_layer_id
-    self.collection_id = layer.id if layer
+    self.collection_id = layer.collection_id if layer
   end
 end

@@ -1,11 +1,18 @@
 @initCollections = (initialCollections) ->
+  class Field
+    constructor: (data) ->
+      @code = ko.observable data?.code
+      @name = ko.observable data?.name
+      @kind = ko.observable data?.kind
+      @value = ko.observable()
+
   class SitesContainer
     constructor: (data) ->
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @sites = ko.observableArray()
-      @sitesInitialized = false
       @expanded = ko.observable false
+      @sitesInitialized = false
 
     fetchSites: (callback) =>
       if @sitesInitialized
@@ -37,10 +44,17 @@
     constructor: (data) ->
       super
       @class = 'Collection'
+      @fields = ko.observableArray()
+      @fieldsInitialized = false
 
     sitesUrl: -> "/collections/#{@id()}/sites"
 
     level: -> 0
+
+    fetchFields: =>
+      unless @fieldsInitialized
+        $.get "/collections/#{@id()}/fields", {}, (data) =>
+          @fields $.map(data, (x) => new Field(x))
 
   class Site extends SitesContainer
     constructor: (parent, data) ->
@@ -52,6 +66,7 @@
       @parent_id = ko.observable data?.parent_id
       @folder = ko.observable data?.folder
       @name = ko.observable data?.name
+      @properties = ko.observable data?.properties
 
     sitesUrl: -> "/sites/#{@id()}/root_sites"
 
@@ -82,6 +97,7 @@
       Sammy( ->
         @get '#:collection', ->
           self.currentCollection self.findCollectionById(parseInt this.params.collection)
+          self.currentCollection().fetchFields()
 
         @get '', ->
           self.currentCollection(null)

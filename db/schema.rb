@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120131172939) do
+ActiveRecord::Schema.define(:version => 20120202195659) do
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(:version => 20120131172939) do
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
     t.boolean  "folder"
+    t.text     "properties"
   end
 
   create_table "users", :force => true do |t|
