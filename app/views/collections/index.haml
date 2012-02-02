@@ -75,7 +75,7 @@
     <!-- /ko -->
 
     -# Group/Site form
-    %form{ko(:with => :currentSite, :submit => '$root.saveSite', :attr => "{'action': '#' + $root.currentCollection().id()}"), :style => 'display:inline'}
+    %form{ko(:with => :currentSite, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
       .tableheader.w33
         %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
         %span.i18b-groupChat

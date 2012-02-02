@@ -59,10 +59,12 @@
       @parent.level() + 1
 
     toJSON: =>
-      id: @id()
-      parent_id: @parent_id()
-      folder: @folder()
-      name: @name()
+      json =
+        id: @id()
+        folder: @folder()
+        name: @name()
+      json.parent_id = @parent_id() if @parent_id()
+      json
 
   class CollectionViewModel
     constructor: ->
