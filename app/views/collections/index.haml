@@ -2,35 +2,37 @@
   :javascript
     $(function() { initCollections(#{collections.to_json}); });
 
-.left
-  .tablewrapp.w33
+%h1 Collections
+.box.nopadd.h50
+  .left.w33.h50
 
     -# Collections
-    %table.GralTable.CleanTable{ko(:visible => 'root')}
-      %tr
-        %th
-          My Collections
-      <!-- ko foreach: collections -->
-      %tr
-        %td
-          %button.faccept{ko(:text => :name), :type => "button"}
-          %button.farrow.right{ko(:click => '$root.enterCollection')}
-      <!-- /ko -->
-      %tr
-        %td.add{ko(:click => '$root.enterCreateCollection')}
-          Create Collection
-          %button.cadd.right{:type => "button"}
+    <!-- ko if: root -->
+    .tableheader.w33
+      My Collections
+    .tablescroll
+      %table.GralTable.CleanTable
+        %tbody
+          <!-- ko foreach: collections -->
+          %tr
+            %td
+              %div
+                %span{ko(:text => :name)}
+              %button.farrow{ko(:click => '$root.enterCollection'), :type => :button}
+          <!-- /ko -->
+    .tablebottom{ko(:click => '$root.enterCreateCollection'), :style => 'cursor: pointer'}
+      %button.cadd{:type => "button"}
+      Create Collection
+    <!-- /ko -->
 
     -# Sites template
     %script{:type => "text/html", :id => "sites-template"}
       <!-- ko foreach: sites -->
-      %tr
-        %td{ko(:style => "{backgroundColor: selected() ? '#DDDDDD' : 'white'}")}
-          %div{ko(:style => "{paddingLeft: '' + ((level() - 1) * 16) + 'px'}")}
-            %button.ffolder{ko(:click => :expand, :visible => '!expanded()'), :type => 'button'}
-            %button.ffolder{ko(:click => :collapse, :visible => :expanded), :type => 'button'}
-            %span{ko(:text => :name, :click => '$root.selectSite'), :style => 'cursor: pointer'}
-            %button.farrow.right
+      %tr{ko(:css => "{closed: !expanded(), opened: expanded}", :click => '$root.selectSite')}
+        %td
+          %div
+            %span{ko(:text => :name, :style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :css => "{selected: $data == $root.selectedSite()}")}
+          %button.farrow{:type => "button"}
       <!-- ko if: expanded -->
       <!-- ko template: {name: 'sites-template', with: sites} -->
       <!-- /ko -->
@@ -38,35 +40,114 @@
       <!-- /ko -->
 
     -# Collection sites
-    %table.GralTable.CleanTable{ko(:with => :selectedCollection)}
-      %tr
-        %th
-          %button.fleft{ko(:click => '$root.enterRoot'), :type => 'button'}
-          %span{ko(:text => :name)}
-          .right
-            %button.fconfiguration{ko(:click => '$root.editCollection'), :type => 'button'}
-      <!-- ko template: {name: 'sites-template', with: $root.selectedCollection} -->
-      <!-- /ko -->
-      %tr
-        %td
-          %button.ffolder{ko(:click => '$root.enterCreateGroup'), :type => 'button'} Create Group
-
-    -# Create collection group
-    %form{ko(:with => :creatinGroupCollection, :submit => '$root.createGroup'), :action => '#'}
+    <!-- ko with: selectedCollection -->
+    .tableheader.w33
+      %button.fleft{ko(:click => '$root.enterRoot'), :type => 'button'}
+      %span.i18b-groupChat
+      %span{ko(:text => :name)}
+      %button.fconfiguration.right{ko(:click => '$root.editCollection'), :type => 'button'}
+    .tablescroll
       %table.GralTable.CleanTable
+        %tbody
+          <!-- ko template: {name: 'sites-template', with: $root.selectedCollection} -->
+          <!-- /ko -->
+    .tablebottom
+      Add
+      %button.ffolder{ko(:click => '$root.enterCreateGroup')} Group
+      or
+      %button.flocation Site
+      <!-- ko if: $root.selectedSite() -->
+      at
+      %span{ko(:text => '$root.selectedSite().name()')}
+      <!-- /ko -->
+    <!-- /ko -->
+
+    -# Create group
+    %form{ko(:with => :creatinGroupCollection, :submit => '$root.createGroup'), :action => '#', :style => 'display:inline'}
+      .tableheader.w33
+        %button.fleft{ko(:click => '$root.exitCreateGroup'), :type => 'button'}
+        %span.i18b-groupChat
+        %span New Group
+      .tablescroll
+        %table.GralTable.CleanTable
+          %tbody
+            %tr
+              %td
+                = label_tag :name
+                = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => '$root.groupName')
+      .tablebottom
+        %button.grey{:type => 'submit'} Done
+        Cancel
+  .right
+    Map
+  .clear
+
+-#
+  .left
+    .tablewrapp.w33
+
+      -# Collections
+      %table.GralTable.CleanTable{ko(:visible => 'root')}
         %tr
           %th
-            %button.fleft{ko(:click => '$root.exitCreateGroup'), :type => 'button'}
-            New Group
-          %tr
-            %td
-              %br/
-              = label_tag :name
-              = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => '$root.groupName')
-          %tr
-            %td
-              %button.grey{:type => 'submit'} Done
-              Cancel
+            My Collections
+        <!-- ko foreach: collections -->
+        %tr
+          %td
+            %button.faccept{ko(:text => :name), :type => "button"}
+            %button.farrow.right{ko(:click => '$root.enterCollection')}
+        <!-- /ko -->
+        %tr
+          %td.add{ko(:click => '$root.enterCreateCollection')}
+            Create Collection
+            %button.cadd.right{:type => "button"}
 
-.right
-  .tablewrapp.w60
+      -# Sites template
+      %script{:type => "text/html", :id => "sites-template"}
+        <!-- ko foreach: sites -->
+        %tr
+          %td{ko(:style => "{backgroundColor: selected() ? '#DDDDDD' : 'white'}")}
+            %div{ko(:style => "{paddingLeft: '' + ((level() - 1) * 16) + 'px'}")}
+              %button.ffolder{ko(:click => :expand, :visible => '!expanded()'), :type => 'button'}
+              %button.ffolder{ko(:click => :collapse, :visible => :expanded), :type => 'button'}
+              %span{ko(:text => :name, :click => '$root.selectSite'), :style => 'cursor: pointer'}
+              %button.farrow.right
+        <!-- ko if: expanded -->
+        <!-- ko template: {name: 'sites-template', with: sites} -->
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+
+      -# Collection sites
+      %table.GralTable.CleanTable{ko(:with => :selectedCollection)}
+        %tr
+          %th
+            %button.fleft{ko(:click => '$root.enterRoot'), :type => 'button'}
+            %span{ko(:text => :name)}
+            .right
+              %button.fconfiguration{ko(:click => '$root.editCollection'), :type => 'button'}
+        <!-- ko template: {name: 'sites-template', with: $root.selectedCollection} -->
+        <!-- /ko -->
+        %tr
+          %td
+            %button.ffolder{ko(:click => '$root.enterCreateGroup'), :type => 'button'} Create Group
+
+      -# Create collection group
+      %form{ko(:with => :creatinGroupCollection, :submit => '$root.createGroup'), :action => '#'}
+        %table.GralTable.CleanTable
+          %tr
+            %th
+              %button.fleft{ko(:click => '$root.exitCreateGroup'), :type => 'button'}
+              New Group
+            %tr
+              %td
+                %br/
+                = label_tag :name
+                = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => '$root.groupName')
+            %tr
+              %td
+                %button.grey{:type => 'submit'} Done
+                Cancel
+
+  .right
+    .tablewrapp.w60

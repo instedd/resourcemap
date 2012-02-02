@@ -29,12 +29,9 @@
       @fetchSites =>
         @sites().push(site)
 
-    expand: =>
-      @fetchSites()
-      @expanded true
-
-    collapse: =>
-      @expanded false
+    toggle: =>
+      @fetchSites() unless @expanded()
+      @expanded(!@expanded())
 
   class Collection extends SitesContainer
     constructor: (data) ->
@@ -139,5 +136,6 @@
         @selectedSite().selected(false) if @selectedSite()
         @selectedSite(site)
         @selectedSite().selected(true)
+      site.toggle()
 
   ko.applyBindings new CollectionViewModel
