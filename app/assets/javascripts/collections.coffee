@@ -1,4 +1,30 @@
 @initCollections = (initialCollections) ->
+  reloadMapSites = (callback) ->
+    bounds = window.map.getBounds()
+    ne = bounds.getNorthEast()
+    sw = bounds.getSouthWest()
+    $.get "/sites.json", {n: ne.lat(), e: ne.lng(), s: sw.lat(), w: sw.lng()}, (data) ->
+      dataSiteIds = {}
+
+      for idx, site of data
+        dataSiteIds[site.id] = site.id
+        unless window.markers[site.id]
+          window.markers[site.id] = new google.maps.Marker
+            map: window.map
+            position: new google.maps.LatLng(site.lat, site.lng)
+
+      toRemove = []
+
+      for siteId, marker of window.markers
+        unless dataSiteIds[siteId]
+          toRemove.push siteId
+
+      for idx, siteId of toRemove
+        window.markers[siteId].setMap(null)
+        delete window.markers[siteId]
+
+      callback() if callback
+
   class Field
     constructor: (data) ->
       @code = ko.observable data?.code
@@ -69,6 +95,20 @@
       @parent_id = ko.observable data?.parent_id
       @folder = ko.observable data?.folder
       @name = ko.observable data?.name
+      @lat = ko.observable data?.lat
+      @lng = ko.observable data?.lng
+      @position = ko.computed
+        read: =>
+          if @lat() && @lng()
+            new google.maps.LatLng(@lat(), @lng())
+          else
+            null
+
+        write: (latLng) =>
+          @lat(latLng.lat())
+          @lng(latLng.lng())
+
+        owner: @
       @properties = ko.observable data?.properties
 
     sitesUrl: -> "/sites/#{@id()}/root_sites"
@@ -90,6 +130,8 @@
         id: @id()
         folder: @folder()
         name: @name()
+      json.lat = @lat() if @lat()
+      json.lng = @lng() if @lng()
       json.parent_id = @parent_id() if @parent_id()
       json.properties = @properties() if @properties()
       json
@@ -137,7 +179,8 @@
 
     createSite: =>
       parent = if @selectedSite() then @selectedSite() else @currentCollection()
-      @currentSite(new Site(parent, parent_id: @selectedSite()?.id()))
+      pos = window.map.getCenter()
+      @currentSite(new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng()))
 
     exitSite: =>
       @currentSite(null)
@@ -178,4 +221,22 @@
         @selectedSite().selected(true)
       site.toggle()
 
-  ko.applyBindings new CollectionViewModel
+  window.markers = {}
+
+  myOptions =
+    center: new google.maps.LatLng(-34.397, 150.644)
+    zoom: 8
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  window.map = new google.maps.Map document.getElementById("map"), myOptions
+
+  window.model = new CollectionViewModel
+
+  listener = google.maps.event.addListener window.map, 'bounds_changed', ->
+    google.maps.event.removeListener listener
+    reloadMapSites -> ko.applyBindings window.model
+
+  google.maps.event.addListener window.map, 'dragend', -> reloadMapSites()
+  google.maps.event.addListener window.map, 'zoom_changed', ->
+    listener2 = google.maps.event.addListener window.map, 'bounds_changed', ->
+      google.maps.event.removeListener listener2
+      reloadMapSites()

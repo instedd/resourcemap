@@ -1,4 +1,5 @@
 - content_for :head do
+  = google_maps_javascript_include_tag
   :javascript
     $(function() { initCollections(#{collections.to_json}); });
 
@@ -94,6 +95,8 @@
                   = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :visible => :folder)
                   = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :visible => '!folder()')
                 <!-- ko if: !folder() -->
+                %p
+                  %span{ko(:text => "'Position: ' + (Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
                 <!-- ko foreach: $root.currentCollection().fields() -->
                 %p
                   = label_tag '', '', ko(:attr => "{'for': code}", :text => :name)
@@ -105,5 +108,5 @@
         %button.grey{:type => 'submit'} Done
         %span{ko(:click => '$root.exitSite')} Cancel
   .right
-    Map
+    #map{:style => 'width: 628px; height: 500px'}
   .clear
