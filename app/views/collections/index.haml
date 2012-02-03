@@ -93,11 +93,13 @@
                   %br/
                   = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :visible => :folder)
                   = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :visible => '!folder()')
+                <!-- ko if: !folder() -->
                 <!-- ko foreach: $root.currentCollection().fields() -->
                 %p
                   = label_tag '', '', ko(:attr => "{'for': code}", :text => :name)
                   %br/
                   = ko_text_field_tag :value
+                <!-- /ko -->
                 <!-- /ko -->
       .tablebottom
         %button.grey{:type => 'submit'} Done
