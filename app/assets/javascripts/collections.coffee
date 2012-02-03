@@ -56,6 +56,9 @@
         $.get "/collections/#{@id()}/fields", {}, (data) =>
           @fields $.map(data, (x) => new Field(x))
 
+    findFieldByCode: (code) =>
+      (field for field in @fields() when field.code() == code)[0]
+
   class Site extends SitesContainer
     constructor: (parent, data) ->
       super
@@ -73,12 +76,22 @@
     level: =>
       @parent.level() + 1
 
+    copyPropertiesFromCollection: (collection) =>
+      @properties({})
+      @properties()[field.code()] = field.value() for field in collection.fields()
+
+    copyPropertiesToCollection: (collection) =>
+      if @properties()
+        for key, value of @properties()
+          collection.findFieldByCode(key).value(value)
+
     toJSON: =>
       json =
         id: @id()
         folder: @folder()
         name: @name()
       json.parent_id = @parent_id() if @parent_id()
+      json.properties = @properties() if @properties()
       json
 
   class CollectionViewModel
@@ -130,6 +143,7 @@
       @currentSite(null)
 
     editSite: (site) =>
+      site.copyPropertiesToCollection(@currentCollection())
       @currentSite(site)
 
     saveSite: =>
@@ -142,6 +156,9 @@
           else
             @currentCollection().addSite(@currentSite())
         @currentSite(null)
+
+      unless @currentSite().folder()
+        @currentSite().copyPropertiesFromCollection(@currentCollection())
 
       json = {site: @currentSite().toJSON()}
 
