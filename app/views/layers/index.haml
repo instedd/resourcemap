@@ -49,19 +49,19 @@
     -# New field link
     %div
       %ul
-        %li= ko_link_to 'New text field', :newTextField
-        %li= ko_link_to 'New number field', :newNumberField
+        %li= ko_link_to_root 'New text field', :newTextField
+        %li= ko_link_to_root 'New number field', :newNumberField
 
     %button.grey{ko(:click => '$root.saveLayer'), :type => 'submit'} Save layer
     %span{ko(:click => '$root.cancelLayer')}Cancel
 
   %div{ko(:visible => '$data != $root.currentLayer()')}
     %span{ko(:text => :name)}
-    = ko_link_to 'edit', :editLayer
-    = ko_link_to 'delete', :deleteLayer
+    = ko_link_to_root 'edit', :editLayer
+    = ko_link_to_root 'delete', :deleteLayer
   <!-- /ko -->
 
   -# New layer link
   %div{ko(:visible => '!currentLayer()')}
-    = ko_link_to 'New layer', :newLayer
+    = ko_link_to_root 'New layer', :newLayer
 

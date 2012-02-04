@@ -6,7 +6,7 @@ class SitesController < ApplicationController
 
   def index
     if params[:collection_id]
-      render :json => collection.root_sites
+      render :json => collection.root_sites.offset(params[:offset]).limit(params[:limit])
     else
       sites = collections.includes(:sites).
         where("? <= sites.lat && sites.lat <= ?", params[:s].to_f, params[:n].to_f).

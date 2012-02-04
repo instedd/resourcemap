@@ -1,29 +1,50 @@
 @initCollections = (initialCollections) ->
-  reloadMapSites = (callback) ->
+  SITES_PER_PAGE = 25
+
+  window.reloadMapSites = (callback) ->
     bounds = window.map.getBounds()
     ne = bounds.getNorthEast()
     sw = bounds.getSouthWest()
     $.get "/sites.json", {n: ne.lat(), e: ne.lng(), s: sw.lat(), w: sw.lng()}, (data) ->
       dataSiteIds = {}
 
+      # Add markers if they are not already on the map
       for idx, site of data
         dataSiteIds[site.id] = site.id
         unless window.markers[site.id]
           window.markers[site.id] = new google.maps.Marker
             map: window.map
             position: new google.maps.LatLng(site.lat, site.lng)
+          window.markers[site.id].siteId = site.id
 
+      # Determine which markers need to be removed from the map
       toRemove = []
-
       for siteId, marker of window.markers
         unless dataSiteIds[siteId]
           toRemove.push siteId
 
+      # And remove them
       for idx, siteId of toRemove
-        window.markers[siteId].setMap(null)
-        delete window.markers[siteId]
+        window.deleteMarker siteId
 
-      callback() if callback
+      callback() if callback && typeof(callback) == 'function'
+
+  window.setupMarkerListener = (site, marker) ->
+    window.markerListener = google.maps.event.addListener marker, 'position_changed', =>
+      site.position(marker.getPosition())
+
+  window.deleteMarker = (siteId) ->
+    if siteId
+      window.markers[siteId].setMap null
+      delete window.markers[siteId]
+    else if window.marker
+      window.marker.setMap null
+      delete window.marker
+
+  window.deleteMarkerListener = ->
+    if window.markerListener
+      google.maps.event.removeListener window.markerListener
+      delete window.markerListener
 
   class Field
     constructor: (data) ->
@@ -38,16 +59,28 @@
       @name = ko.observable data?.name
       @sites = ko.observableArray()
       @expanded = ko.observable false
-      @sitesInitialized = false
+      @sitesPage = 1
+      @hasMoreSites = ko.observable true
+      @loadingSites = ko.observable false
+      @siteIds = {}
 
-    fetchSites: (callback) =>
-      if @sitesInitialized
-        callback() if callback
+    loadMoreSites: (callback) =>
+      if @hasMoreSites()
+        @loadingSites true
+        # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
+        # extra element so the user always sees SITES_PER_PAGE elements.
+        $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1}, (data) =>
+          @sitesPage += 1
+          if data.length == SITES_PER_PAGE + 1
+            data.pop()
+          else
+            @hasMoreSites false
+          for idx, x of data
+            @addSite new Site(this, x)
+          @loadingSites false
+          callback() if callback && typeof(callback) == 'function'
       else
-        @sitesInitialized = true
-        $.get @sitesUrl(), {}, (data) =>
-          @sites $.map(data, (x) => new Site(this, x))
-          callback() if callback
+        callback() if callback && typeof(callback) == 'function'
 
     findSiteById: (id) =>
       for i, site of @sites()
@@ -59,11 +92,14 @@
       null
 
     addSite: (site) =>
-      @fetchSites =>
-        @sites().push(site)
+      unless @siteIds[site.id()]
+        @sites.push(site)
+        @siteIds[site.id()] = site
 
     toggle: =>
-      @fetchSites() unless @expanded()
+      # Load more sites when we expand, but only the first time
+      if @folder() && !@expanded() && @hasMoreSites() && @sitesPage == 1
+        @loadMoreSites()
       @expanded(!@expanded())
 
   class Collection extends SitesContainer
@@ -110,6 +146,7 @@
 
         owner: @
       @properties = ko.observable data?.properties
+      @hasFocus = ko.observable false
 
     sitesUrl: -> "/sites/#{@id()}/root_sites"
 
@@ -147,7 +184,7 @@
       @selectedSite = ko.observable()
 
       @currentCollection.subscribe (newValue) ->
-        newValue.fetchSites() if newValue
+        newValue.loadMoreSites() if newValue && newValue.sitesPage == 1
 
       Sammy( ->
         @get '#:collection', ->
@@ -180,24 +217,59 @@
     createSite: =>
       parent = if @selectedSite() then @selectedSite() else @currentCollection()
       pos = window.map.getCenter()
-      @currentSite(new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng()))
+      site = new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng())
+      site.hasFocus true
+      @currentSite site
+
+      # Add a marker to the map for setting the site's position
+      window.marker = new google.maps.Marker
+        position: site.position()
+        animation: google.maps.Animation.DROP
+        draggable: true
+        map: window.map
+      window.setupMarkerListener site, window.marker
 
     exitSite: =>
+      window.deleteMarker()
+      window.deleteMarkerListener()
       @currentSite(null)
 
     editSite: (site) =>
       site.copyPropertiesToCollection(@currentCollection())
+      site.hasFocus true
       @currentSite(site)
+      @selectedSite(site)
+
+      # Pan the map to it's location, reload the sites there and make the marker editable
+      unless site.folder()
+        window.map.panTo(site.position())
+        window.reloadMapSites =>
+          window.markers[site.id()].setDraggable true
+          window.setupMarkerListener site, window.markers[site.id()]
 
     saveSite: =>
       callback = (data) =>
-        if !@currentSite().id()
+        if @currentSite().id()
+          # Once the site is saved after edition, we make the marker not draggable and remove the listener
+          unless @currentSite().folder()
+            window.markers[@currentSite().id()].setDraggable false
+            window.deleteMarkerListener()
+        else
           @currentSite().id(data.id)
           if @selectedSite()
-            if @selectedSite().sitesInitialized
-              @selectedSite().sites.push(@currentSite())
+            @selectedSite().addSite(@currentSite())
           else
             @currentCollection().addSite(@currentSite())
+
+          # Once the site is saved after creation, we make the marker not draggable,
+          # we remove the listener  and move it to the current markers
+          unless @currentSite().folder()
+            window.marker.siteId = @currentSite().id()
+            window.marker.setDraggable false
+            window.markers[@currentSite().id()] = window.marker
+            delete window.marker
+
+            window.deleteMarkerListener()
         @currentSite(null)
 
       unless @currentSite().folder()
@@ -219,6 +291,9 @@
         @selectedSite().selected(false) if @selectedSite()
         @selectedSite(site)
         @selectedSite().selected(true)
+        if @selectedSite().id() && @selectedSite().position()
+          window.map.panTo(@selectedSite().position())
+          window.reloadMapSites()
       site.toggle()
 
   window.markers = {}
@@ -233,10 +308,10 @@
 
   listener = google.maps.event.addListener window.map, 'bounds_changed', ->
     google.maps.event.removeListener listener
-    reloadMapSites -> ko.applyBindings window.model
+    window.reloadMapSites -> ko.applyBindings window.model
 
-  google.maps.event.addListener window.map, 'dragend', -> reloadMapSites()
+  google.maps.event.addListener window.map, 'dragend', -> window.reloadMapSites()
   google.maps.event.addListener window.map, 'zoom_changed', ->
     listener2 = google.maps.event.addListener window.map, 'bounds_changed', ->
       google.maps.event.removeListener listener2
-      reloadMapSites()
+      window.reloadMapSites()

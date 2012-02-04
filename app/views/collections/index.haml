@@ -45,6 +45,16 @@
       <!-- ko if: expanded -->
       <!-- ko template: {name: 'sites-template', with: sites} -->
       <!-- /ko -->
+      <!-- ko if: folder() && hasMoreSites() && !loadingSites()-->
+      %tr
+        %td
+          = ko_link_to "Load more sites...", :loadMoreSites
+      <!-- /ko -->
+      <!-- ko if: folder() && hasMoreSites() && loadingSites()-->
+      %tr
+        %td
+          Loading...
+      <!-- /ko -->
       <!-- /ko -->
       <!-- /ko -->
 
@@ -60,6 +70,16 @@
       %table.GralTable.CleanTable
         %tbody
           <!-- ko template: {name: 'sites-template', with: $data} -->
+          <!-- /ko -->
+          <!-- ko if: hasMoreSites() && !loadingSites()-->
+          %tr
+            %td
+              = ko_link_to "Load more sites...", :loadMoreSites
+          <!-- /ko -->
+          <!-- ko if: hasMoreSites() && loadingSites()-->
+          %tr
+            %td
+              Loading...
           <!-- /ko -->
     .tablebottom
       <!-- ko if: !$root.selectedSite() || $root.selectedSite().folder() -->
@@ -92,8 +112,8 @@
                 %p
                   = label_tag :name
                   %br/
-                  = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :visible => :folder)
-                  = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :visible => '!folder()')
+                  = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :visible => :folder, :hasfocus => :hasFocus)
+                  = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :visible => '!folder()', :hasfocus => :hasFocus)
                 <!-- ko if: !folder() -->
                 %p
                   %span{ko(:text => "'Position: ' + (Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}

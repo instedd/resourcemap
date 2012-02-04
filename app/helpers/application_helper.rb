@@ -4,7 +4,11 @@ module ApplicationHelper
   end
 
   def ko_link_to(text, click)
-    link_to text, 'javascript:void()', 'data-bind' => "click: $root.#{click}"
+    link_to text, 'javascript:void()', 'data-bind' => "click: #{click}"
+  end
+
+  def ko_link_to_root(text, click)
+    ko_link_to text, "$root.#{click}"
   end
 
   def ko_text_field_tag(name, options = {})
