@@ -286,6 +286,8 @@
         position: site.position()
         animation: google.maps.Animation.DROP
         draggable: true
+        icon: window.markerImageTarget
+        shadow: window.markerImageTargetShadow
         map: window.map
       window.setupMarkerListener site, window.marker
       window.setAllMarkersInactive()
@@ -330,6 +332,7 @@
             window.marker.siteId = @currentSite().id()
             window.marker.setDraggable false
             window.markers[@currentSite().id()] = window.marker
+            window.setMarkerIcon window.marker, 'active'
             delete window.marker
 
             window.deleteMarkerListener()
