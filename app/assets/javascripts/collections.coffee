@@ -1,20 +1,55 @@
 @initCollections = (initialCollections) ->
   SITES_PER_PAGE = 25
 
+  window.markerImageInactive = new google.maps.MarkerImage(
+    "/assets/marker_sprite_inactive.png",
+    new google.maps.Size(20, 34),
+    new google.maps.Point(0, 0),
+    new google.maps.Point(10, 34),
+  )
+  window.markerImageInactiveShadow = new google.maps.MarkerImage(
+    "/assets/marker_sprite_inactive.png",
+    new google.maps.Size(37, 34),
+    new google.maps.Point(20, 0),
+    new google.maps.Point(10, 34),
+  )
+  window.markerImageTarget = new google.maps.MarkerImage(
+    "/assets/marker_sprite_target.png",
+    new google.maps.Size(20, 34),
+    new google.maps.Point(0, 0),
+    new google.maps.Point(10, 34),
+  )
+  window.markerImageTargetShadow = new google.maps.MarkerImage(
+    "/assets/marker_sprite_target.png",
+    new google.maps.Size(37, 34),
+    new google.maps.Point(20, 0),
+    new google.maps.Point(10, 34),
+  )
+
   window.reloadMapSites = (callback) ->
     bounds = window.map.getBounds()
     ne = bounds.getNorthEast()
     sw = bounds.getSouthWest()
     $.get "/sites.json", {n: ne.lat(), e: ne.lng(), s: sw.lat(), w: sw.lng()}, (data) ->
       dataSiteIds = {}
+      currentSiteId = window.model.currentSite()?.id()
+      selectedSiteId = window.model.selectedSite()?.id()
 
       # Add markers if they are not already on the map
       for idx, site of data
         dataSiteIds[site.id] = site.id
         unless window.markers[site.id]
-          window.markers[site.id] = new google.maps.Marker
+          markerOptions =
             map: window.map
             position: new google.maps.LatLng(site.lat, site.lng)
+          # Show site in grey if editing a site (but not if it's the one being edited)
+          if currentSiteId && currentSiteId != site.id
+            markerOptions.icon = window.markerImageInactive
+            markerOptions.shadow = window.markerImageInactiveShadow
+          if selectedSiteId && selectedSiteId == site.id
+            markerOptions.icon = window.markerImageTarget
+            markerOptions.shadow = window.markerImageTargetShadow
+          window.markers[site.id] = new google.maps.Marker markerOptions
           window.markers[site.id].siteId = site.id
 
       # Determine which markers need to be removed from the map
@@ -28,6 +63,31 @@
         window.deleteMarker siteId
 
       callback() if callback && typeof(callback) == 'function'
+
+  window.setAllMarkersInactive = ->
+    currentSiteId = window.model.currentSite()?.id()
+    currentSiteId = (currentSiteId).toString() if currentSiteId
+    for siteId, marker of window.markers
+      if currentSiteId == siteId
+        window.setMarkerIcon marker, 'target'
+      else
+        window.setMarkerIcon marker, 'inactive'
+
+  window.setAllMarkersActive = ->
+    for siteId, marker of window.markers
+      window.setMarkerIcon marker, 'active'
+
+  window.setMarkerIcon = (marker, icon) ->
+    switch icon
+      when 'active'
+        marker.setIcon null
+        marker.setShadow null
+      when 'inactive'
+        marker.setIcon window.markerImageInactive
+        marker.setShadow window.markerImageInactiveShadow
+      when 'target'
+        marker.setIcon window.markerImageTarget
+        marker.setShadow window.markerImageTargetShadow
 
   window.setupMarkerListener = (site, marker) ->
     window.markerListener = google.maps.event.addListener marker, 'position_changed', =>
@@ -228,11 +288,7 @@
         draggable: true
         map: window.map
       window.setupMarkerListener site, window.marker
-
-    exitSite: =>
-      window.deleteMarker()
-      window.deleteMarkerListener()
-      @currentSite(null)
+      window.setAllMarkersInactive()
 
     editSite: (site) =>
       site.copyPropertiesToCollection(@currentCollection())
@@ -246,6 +302,13 @@
         window.reloadMapSites =>
           window.markers[site.id()].setDraggable true
           window.setupMarkerListener site, window.markers[site.id()]
+          window.setAllMarkersInactive()
+
+    exitSite: =>
+      window.deleteMarker()
+      window.deleteMarkerListener()
+      window.setAllMarkersActive()
+      @currentSite(null)
 
     saveSite: =>
       callback = (data) =>
@@ -271,6 +334,7 @@
 
             window.deleteMarkerListener()
         @currentSite(null)
+        window.setAllMarkersActive()
 
       unless @currentSite().folder()
         @currentSite().copyPropertiesFromCollection(@currentCollection())
@@ -285,15 +349,19 @@
 
     selectSite: (site) =>
       if @selectedSite() == site
+        window.setMarkerIcon window.markers[site.id()], 'active'
         @selectedSite().selected(false)
         @selectedSite(null)
       else
+        oldSiteId = @selectedSite()?.id()
         @selectedSite().selected(false) if @selectedSite()
         @selectedSite(site)
         @selectedSite().selected(true)
         if @selectedSite().id() && @selectedSite().position()
           window.map.panTo(@selectedSite().position())
-          window.reloadMapSites()
+          window.reloadMapSites =>
+            window.setMarkerIcon window.markers[oldSiteId], 'active' if oldSiteId && window.markers[oldSiteId]
+            window.setMarkerIcon window.markers[@selectedSite().id()], 'target'
       site.toggle()
 
   window.markers = {}
