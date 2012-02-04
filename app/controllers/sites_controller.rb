@@ -8,11 +8,24 @@ class SitesController < ApplicationController
     if params[:collection_id]
       render :json => collection.root_sites.offset(params[:offset]).limit(params[:limit])
     else
-      sites = collections.includes(:sites).
-        where("? <= sites.lat && sites.lat <= ?", params[:s].to_f, params[:n].to_f).
-        where("? <= sites.lng && sites.lng <= ?", params[:w].to_f, params[:e].to_f).
-        where("sites.folder is NULL or sites.folder = 0", false).
-        map(&:sites).flatten
+      s = params[:s].to_f
+      n = params[:n].to_f
+      e = params[:e].to_f
+      w = params[:w].to_f
+
+      sites = collections.includes(:sites)
+      sites = sites.where "sites.folder is NULL or sites.folder = 0"
+      if s < n
+        sites = sites.where "? <= sites.lat AND sites.lat <= ?", s, n
+      else
+        sites = sites.where "sites.lat >= ? OR sites.lat <= ?", s, n
+      end
+      if w < e
+        sites = sites.where "? <= sites.lng AND sites.lng <= ?", w, e
+      else
+        sites = sites.where "sites.lng >= ? OR sites.lng <= ?", w, e
+      end
+      sites = sites.map(&:sites).flatten
       render :json => sites
     end
   end
