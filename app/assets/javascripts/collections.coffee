@@ -28,14 +28,24 @@
 
   window.reloadMapSites = (callback) ->
     bounds = window.map.getBounds()
+
+    # Wait until map is loaded
+    unless bounds
+      setTimeout(( -> window.reloadMapSites(callback)), 100)
+      return
+
     ne = bounds.getNorthEast()
     sw = bounds.getSouthWest()
+    collection_ids = if window.model.currentCollection()
+                       [window.model.currentCollection().id()]
+                     else
+                        c.id for c in window.model.collections() when c.checked()
     query =
       n: ne.lat()
       e: ne.lng()
       s: sw.lat()
       w: sw.lng()
-      collection_ids: $.map(window.model.collections(), (x) -> x.id())
+      collection_ids: collection_ids
 
     $.get "/sites/search.json", query, (data) ->
       dataSiteIds = {}
@@ -170,6 +180,7 @@
       super
       @class = 'Collection'
       @fields = ko.observableArray()
+      @checked = ko.observable true
       @fieldsInitialized = false
 
     sitesUrl: -> "/collections/#{@id()}/sites"
@@ -178,6 +189,7 @@
 
     fetchFields: =>
       unless @fieldsInitialized
+        @fieldsInitialized = true
         $.get "/collections/#{@id()}/fields", {}, (data) =>
           @fields $.map(data, (x) => new Field(x))
 
@@ -249,6 +261,11 @@
 
       @currentCollection.subscribe (newValue) ->
         newValue.loadMoreSites() if newValue && newValue.sitesPage == 1
+        window.reloadMapSites() if window.navigated
+
+      $.each @collections(), (idx) =>
+        @collections()[idx].checked.subscribe (newValue) =>
+          window.reloadMapSites()
 
       Sammy( ->
         @get '#:collection', ->
@@ -263,9 +280,11 @@
       (x for x in @collections() when x.id() == id)[0]
 
     goToRoot: ->
+      window.navigated = true
       location.hash = ''
 
     enterCollection: (collection) ->
+      window.navigated = true
       location.hash = "#{collection.id()}"
 
     editCollection: (collection) ->
@@ -383,7 +402,8 @@
 
   listener = google.maps.event.addListener window.map, 'bounds_changed', ->
     google.maps.event.removeListener listener
-    window.reloadMapSites -> ko.applyBindings window.model
+    window.reloadMapSites ->
+      ko.applyBindings window.model
 
   google.maps.event.addListener window.map, 'dragend', -> window.reloadMapSites()
   google.maps.event.addListener window.map, 'zoom_changed', ->

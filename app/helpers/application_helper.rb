@@ -16,7 +16,7 @@ module ApplicationHelper
   end
 
   def ko_check_box_tag(name)
-    check_box_tag name, '', ko(:value => name)
+    check_box_tag name, '1', false, ko(:checked => name)
   end
 
   def ko(hash = {})

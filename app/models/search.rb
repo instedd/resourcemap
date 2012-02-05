@@ -20,7 +20,13 @@ class Search
   end
 
   def sites
-    Site.find results.map{|x| x["_id"]}
+    results.map do |x|
+      {
+        :id => x["_id"],
+        :lat => x["_source"]["location"]["lat"],
+        :lng => x["_source"]["location"]["lon"],
+      }
+    end
   end
 
   def results

@@ -18,6 +18,7 @@
           %tr
             %td
               %div
+                = ko_check_box_tag :checked
                 %span{ko(:text => :name)}
               %button.farrow{ko(:click => '$root.enterCollection'), :type => :button}
           <!-- /ko -->
