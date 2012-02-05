@@ -21,7 +21,7 @@ end
 Site.blueprint do
   collection
   name
-  lat { rand * 90 - 180 }
-  lng { rand * 180 - 360 }
+  lat { rand * 180 - 90 }
+  lng { rand * 360 - 180 }
   folder { false }
 end

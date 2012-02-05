@@ -12,6 +12,7 @@ ResourceMap::Application.routes.draw do
   end
   resources :sites do
     get 'root_sites'
+    get 'search', :on => :collection
   end
   resources :gateways
 

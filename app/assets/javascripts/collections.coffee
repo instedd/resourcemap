@@ -30,8 +30,14 @@
     bounds = window.map.getBounds()
     ne = bounds.getNorthEast()
     sw = bounds.getSouthWest()
+    query =
+      n: ne.lat()
+      e: ne.lng()
+      s: sw.lat()
+      w: sw.lng()
+      collection_ids: $.map(window.model.collections(), (x) -> x.id())
 
-    $.get "/sites.json", {n: ne.lat(), e: ne.lng(), s: sw.lat(), w: sw.lng()}, (data) ->
+    $.get "/sites/search.json", query, (data) ->
       dataSiteIds = {}
       currentSiteId = window.model.currentSite()?.id()
       selectedSiteId = window.model.selectedSite()?.id()

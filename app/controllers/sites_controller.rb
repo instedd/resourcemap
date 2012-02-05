@@ -42,4 +42,10 @@ class SitesController < ApplicationController
   def root_sites
     render :json => site.sites.where(:parent_id => site.id)
   end
+
+  def search
+    search = Search.new params[:collection_ids]
+    search.bounds = params
+    render :json => search.sites
+  end
 end

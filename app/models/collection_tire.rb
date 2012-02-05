@@ -7,7 +7,18 @@ module CollectionTire
   end
 
   def create_index
-    index.create
+    index.create({
+      :refresh => true,
+      :mappings => {
+        :site => {
+          :properties => {
+            :location => {
+              :type => :geo_point
+            }
+          }
+        }
+      }
+    })
   end
 
   def destroy_index
