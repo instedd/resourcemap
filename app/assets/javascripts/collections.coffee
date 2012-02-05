@@ -30,13 +30,14 @@
     bounds = window.map.getBounds()
     ne = bounds.getNorthEast()
     sw = bounds.getSouthWest()
+
     $.get "/sites.json", {n: ne.lat(), e: ne.lng(), s: sw.lat(), w: sw.lng()}, (data) ->
       dataSiteIds = {}
       currentSiteId = window.model.currentSite()?.id()
       selectedSiteId = window.model.selectedSite()?.id()
 
       # Add markers if they are not already on the map
-      for idx, site of data
+      for site in data
         dataSiteIds[site.id] = site.id
         unless window.markers[site.id]
           markerOptions =
@@ -59,7 +60,7 @@
           toRemove.push siteId
 
       # And remove them
-      for idx, siteId of toRemove
+      for siteId in toRemove
         window.deleteMarker siteId
 
       callback() if callback && typeof(callback) == 'function'
@@ -74,8 +75,13 @@
         window.setMarkerIcon marker, 'inactive'
 
   window.setAllMarkersActive = ->
+    selectedSiteId = window.model.selectedSite()?.id()
+    selectedSiteId = (selectedSiteId).toString() if selectedSiteId
     for siteId, marker of window.markers
-      window.setMarkerIcon marker, 'active'
+      if selectedSiteId == siteId
+        window.setMarkerIcon marker, 'target'
+      else
+        window.setMarkerIcon marker, 'active'
 
   window.setMarkerIcon = (marker, icon) ->
     switch icon
@@ -135,21 +141,12 @@
             data.pop()
           else
             @hasMoreSites false
-          for idx, x of data
-            @addSite new Site(this, x)
+          for site in data
+            @addSite new Site(this, site)
           @loadingSites false
           callback() if callback && typeof(callback) == 'function'
       else
         callback() if callback && typeof(callback) == 'function'
-
-    findSiteById: (id) =>
-      for i, site of @sites()
-        return site if site.id() == id
-
-        subsite = site.findSiteById(id)
-        return subsite if subsite
-
-      null
 
     addSite: (site) =>
       unless @siteIds[site.id()]
@@ -215,7 +212,8 @@
 
     copyPropertiesFromCollection: (collection) =>
       @properties({})
-      @properties()[field.code()] = field.value() for field in collection.fields()
+      for field in collection.fields()
+        @properties()[field.code()] = field.value()
 
     copyPropertiesToCollection: (collection) =>
       if @properties()
