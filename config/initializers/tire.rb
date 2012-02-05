@@ -1,0 +1,1 @@
+Tire::Configuration.wrapper Hash

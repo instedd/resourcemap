@@ -17,3 +17,11 @@ end
 Collection.blueprint do
   name
 end
+
+Site.blueprint do
+  collection
+  name
+  lat { rand * 90 - 180 }
+  lng { rand * 180 - 360 }
+  folder { false }
+end
