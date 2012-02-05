@@ -9,9 +9,11 @@ module SiteTire
 
   def store_in_index
     index.store :id => id, :type => :site, :location => {:lat => lat, :lon => lng}
+    index.refresh
   end
 
   def remove_from_index
     index.remove :id => id, :type => :site
+    index.refresh
   end
 end

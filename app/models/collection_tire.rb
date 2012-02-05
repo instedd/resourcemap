@@ -26,7 +26,7 @@ module CollectionTire
   end
 
   def index
-    self.class.index(id)
+    @index ||= self.class.index(id)
   end
 
   def index_name

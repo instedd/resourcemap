@@ -8,8 +8,6 @@ describe Site do
     it "stores in index after create" do
       site = Site.make
 
-      sleep 2
-
       search = Tire::Search::Search.new site.index_name
       results = search.perform.results
       results.length.should eq(1)
@@ -21,8 +19,6 @@ describe Site do
     it "removes from index after destroy" do
       site = Site.make
       site.destroy
-
-      sleep 2
 
       search = Tire::Search::Search.new site.index_name
       results = search.perform.results
