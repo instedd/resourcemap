@@ -40,7 +40,7 @@ class SitesController < ApplicationController
   end
 
   def root_sites
-    render :json => site.sites.where(:parent_id => site.id)
+    render :json => site.sites.where(:parent_id => site.id).offset(params[:offset]).limit(params[:limit])
   end
 
   def search

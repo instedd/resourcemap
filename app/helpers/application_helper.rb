@@ -3,12 +3,12 @@ module ApplicationHelper
     javascript_include_tag(raw("http://maps.googleapis.com/maps/api/js?sensor=false&key=#{GoogleMapsKey}"))
   end
 
-  def ko_link_to(text, click)
-    link_to text, 'javascript:void()', 'data-bind' => "click: #{click}"
+  def ko_link_to(text, click, options = {})
+    link_to text, 'javascript:void()', options.merge(ko :click => click)
   end
 
-  def ko_link_to_root(text, click)
-    ko_link_to text, "$root.#{click}"
+  def ko_link_to_root(text, click, optinos = {})
+    ko_link_to text, "$root.#{click}", options
   end
 
   def ko_text_field_tag(name, options = {})

@@ -375,7 +375,7 @@
 
     selectSite: (site) =>
       if @selectedSite() == site
-        window.setMarkerIcon window.markers[site.id()], 'active'
+        window.setMarkerIcon window.markers[site.id()], 'active' unless site.folder()
         @selectedSite().selected(false)
         @selectedSite(null)
       else
@@ -387,7 +387,7 @@
           window.map.panTo(@selectedSite().position())
           window.reloadMapSites =>
             window.setMarkerIcon window.markers[oldSiteId], 'active' if oldSiteId && window.markers[oldSiteId]
-            window.setMarkerIcon window.markers[@selectedSite().id()], 'target'
+            window.setMarkerIcon window.markers[@selectedSite().id()], 'target' if @selectedSite().folder()
       site.toggle()
 
   window.markers = {}

@@ -49,7 +49,7 @@
       <!-- ko if: folder() && hasMoreSites() && !loadingSites()-->
       %tr
         %td
-          = ko_link_to "Load more sites...", :loadMoreSites
+          = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(:click => :loadMoreSites, :style => "{marginLeft: '' + (30 + (level() - 1) * 20) + 'px'}")
       <!-- /ko -->
       <!-- ko if: folder() && hasMoreSites() && loadingSites()-->
       %tr
@@ -75,7 +75,7 @@
           <!-- ko if: hasMoreSites() && !loadingSites()-->
           %tr
             %td
-              = ko_link_to "Load more sites...", :loadMoreSites
+              = ko_link_to "Load more sites...", :loadMoreSites, :style => 'margin-left: 10px'
           <!-- /ko -->
           <!-- ko if: hasMoreSites() && loadingSites()-->
           %tr
