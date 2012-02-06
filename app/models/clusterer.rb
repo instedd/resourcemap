@@ -1,17 +1,22 @@
 class Clusterer
   def initialize(zoom)
+    @zoom = zoom
+    @width, @height = self.class.cell_size_for zoom
+    @clusters = Hash.new { |h, k| h[k] = {:sites => [], :lat_sum => 0, :lng_sum => 0} }
+  end
+
+  def self.cell_size_for(zoom)
     zoom = zoom.to_i
     zoom = 1 if zoom == 0
     zoom = 2 ** zoom
-    @width = 360.0 / zoom
-    @height = 180.0 / zoom
-    @clusters = Hash.new { |h, k| h[k] = {:sites => [], :lat_sum => 0, :lng_sum => 0} }
+    [360.0 / zoom, 180.0 / zoom]
   end
 
   def add(site)
     @x = ((180 + site[:lat]) / @width).floor
     @y = ((90 + site[:lng]) / @height).floor
     cluster = @clusters["#{@x}:#{@y}"]
+    cluster[:id] = "#{@zoom}:#{@x}:#{@y}"
     cluster[:sites] << site
     cluster[:lat_sum] += site[:lat]
     cluster[:lng_sum] += site[:lng]
@@ -27,6 +32,7 @@ class Clusterer
         sites_to_return << cluster[:sites][0]
       else
         clusters_to_return.push({
+          :id => cluster[:id],
           :lat => cluster[:lat_sum] / sites_length,
           :lng => cluster[:lng_sum] / sites_length,
           :count => sites_length

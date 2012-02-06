@@ -40,46 +40,26 @@
                        [window.model.currentCollection().id()]
                      else
                         c.id for c in window.model.collections() when c.checked()
-    n = ne.lat()
-    e = ne.lng()
-    s = sw.lat()
-    w = sw.lng()
-    z = window.map.getZoom()
-
-    # Extend bounds one more cell, so that clusters don't change their numbers
-    zz = z
-    zz = 1 if zz = 0
-    zz = Math.pow 2, zz
-    width = 360.0 / zz
-    height = 180.0 / zz
-
-    n += height / 2
-    s -= height / 2
-    e += width / 2
-    w -= width / 2
-
-    console.log "North before: #{n - height / 2}, North after: #{n}"
-
     query =
-      n: n
-      e: e
-      s: s
-      w: w
-      z: z
+      n: ne.lat()
+      s: sw.lat()
+      e: ne.lng()
+      w: sw.lng()
+      z: window.map.getZoom()
       collection_ids: collection_ids
 
     $.get "/sites/search.json", query, (data) ->
-      dataSiteIds = {}
       currentSiteId = window.model.currentSite()?.id()
       selectedSiteId = window.model.selectedSite()?.id()
 
       sites = data.sites
       sites ||= []
+      dataSiteIds = {}
 
       # Add markers if they are not already on the map
       for site in sites
         dataSiteIds[site.id] = site.id
-        unless window.markers[site.id]
+        if !window.markers[site.id]
           markerOptions =
             map: window.map
             position: new google.maps.LatLng(site.lat, site.lng)
@@ -94,30 +74,41 @@
           window.markers[site.id].siteId = site.id
 
       # Determine which markers need to be removed from the map
+      # Don't remove the pin for the current site
+      currentSiteId = (currentSiteId).toString() if currentSiteId
       toRemove = []
       for siteId, marker of window.markers
-        unless dataSiteIds[siteId]
+        if !dataSiteIds[siteId] && siteId != currentSiteId
           toRemove.push siteId
 
       # And remove them
       for siteId in toRemove
         window.deleteMarker siteId
 
-      # Remove old clusters
-      for marker in window.clusters
-        marker.setMap null
+      clusters = data.clusters
+      clusters ||= []
+      dataClusterIds = {}
 
-      window.clusters.length = 0
-
-      # Now process clusters
-      if data.clusters
-        for cluster in data.clusters
+      # Add clusters if they are not already on the map
+      for cluster in clusters
+        dataClusterIds[cluster.id] = cluster.id
+        if !window.clusters[cluster.id]
           position = new google.maps.LatLng(cluster.lat, cluster.lng)
-          marker = new Cluster
-            map: map
-            position: position
-            count: cluster.count
-          window.clusters.push marker
+          window.clusters[cluster.id] = new Cluster
+                                          map: map
+                                          position: position
+                                          count: cluster.count
+
+      # Determine which clusters need to be removed from the map
+      toRemove = []
+      for clusterId, cluster of window.clusters
+        unless dataClusterIds[clusterId]
+          toRemove.push clusterId
+
+      # And remove them
+      for clusterId in toRemove
+        window.clusters[clusterId].setMap null
+        delete window.clusters[clusterId]
 
       callback() if callback && typeof(callback) == 'function'
 
@@ -420,6 +411,8 @@
       # Pan the map to it's location, reload the sites there and make the marker editable
       unless site.folder()
         window.map.panTo(site.position())
+        # Zoom if the pin is not visible, so the user can drag it
+        window.map.setZoom(16) unless window.markers[site.id()]
         window.reloadMapSites =>
           window.markers[site.id()].setDraggable true
           window.setupMarkerListener site, window.markers[site.id()]
@@ -471,7 +464,8 @@
 
     selectSite: (site) =>
       if @selectedSite() == site
-        window.setMarkerIcon window.markers[site.id()], 'active' unless site.folder()
+        if !site.folder() && window.markers[site.id()]
+          window.setMarkerIcon window.markers[site.id()], 'active'
         @selectedSite().selected(false)
         @selectedSite(null)
       else
@@ -482,12 +476,14 @@
         if @selectedSite().id() && @selectedSite().position()
           window.map.panTo(@selectedSite().position())
           window.reloadMapSites =>
-            window.setMarkerIcon window.markers[oldSiteId], 'active' if oldSiteId && window.markers[oldSiteId]
-            window.setMarkerIcon window.markers[@selectedSite().id()], 'target' unless @selectedSite().folder()
+            if oldSiteId && window.markers[oldSiteId]
+              window.setMarkerIcon window.markers[oldSiteId], 'active'
+            if !@selectedSite().folder() && window.markers[@selectedSite().id()]
+              window.setMarkerIcon window.markers[@selectedSite().id()], 'target'
       site.toggle()
 
   window.markers = {}
-  window.clusters = []
+  window.clusters = {}
 
   myOptions =
     center: new google.maps.LatLng(-34.397, 150.644)

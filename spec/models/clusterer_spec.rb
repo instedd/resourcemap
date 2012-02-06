@@ -17,7 +17,7 @@ describe Clusterer do
 
     clusters = clusterer.clusters
     clusters[:sites].should be_empty
-    clusters[:clusters].should eq([{:lat => 35, :lng => 25, :count => 2}])
+    clusters[:clusters].should eq([{:id => "2:2:2", :lat => 35, :lng => 25, :count => 2}])
   end
 
   it "puts four sites in two different clusters" do
@@ -28,6 +28,6 @@ describe Clusterer do
 
     clusters = clusterer.clusters
     clusters[:sites].should be_empty
-    clusters[:clusters].should =~ [{:lat => 35, :lng => 25, :count => 2}, {:lat => 125, :lng => 70, :count => 2}]
+    clusters[:clusters].should =~ [{:id => "2:2:2", :lat => 35, :lng => 25, :count => 2}, {:id => "2:3:3", :lat => 125, :lng => 70, :count => 2}]
   end
 end
