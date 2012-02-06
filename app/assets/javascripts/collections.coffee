@@ -40,11 +40,32 @@
                        [window.model.currentCollection().id()]
                      else
                         c.id for c in window.model.collections() when c.checked()
+    n = ne.lat()
+    e = ne.lng()
+    s = sw.lat()
+    w = sw.lng()
+    z = window.map.getZoom()
+
+    # Extend bounds one more cell, so that clusters don't change their numbers
+    zz = z
+    zz = 1 if zz = 0
+    zz = Math.pow 2, zz
+    width = 360.0 / zz
+    height = 180.0 / zz
+
+    n += height / 2
+    s -= height / 2
+    e += width / 2
+    w -= width / 2
+
+    console.log "North before: #{n - height / 2}, North after: #{n}"
+
     query =
-      n: ne.lat()
-      e: ne.lng()
-      s: sw.lat()
-      w: sw.lng()
+      n: n
+      e: e
+      s: s
+      w: w
+      z: z
       collection_ids: collection_ids
 
     $.get "/sites/search.json", query, (data) ->
@@ -52,8 +73,11 @@
       currentSiteId = window.model.currentSite()?.id()
       selectedSiteId = window.model.selectedSite()?.id()
 
+      sites = data.sites
+      sites ||= []
+
       # Add markers if they are not already on the map
-      for site in data
+      for site in sites
         dataSiteIds[site.id] = site.id
         unless window.markers[site.id]
           markerOptions =
@@ -78,6 +102,22 @@
       # And remove them
       for siteId in toRemove
         window.deleteMarker siteId
+
+      # Remove old clusters
+      for marker in window.clusters
+        marker.setMap null
+
+      window.clusters.length = 0
+
+      # Now process clusters
+      if data.clusters
+        for cluster in data.clusters
+          position = new google.maps.LatLng(cluster.lat, cluster.lng)
+          marker = new Cluster
+            map: map
+            position: position
+            count: cluster.count
+          window.clusters.push marker
 
       callback() if callback && typeof(callback) == 'function'
 
@@ -127,6 +167,62 @@
     if window.markerListener
       google.maps.event.removeListener window.markerListener
       delete window.markerListener
+
+  Cluster = (options) ->
+    @position = options.position
+    @count = options.count
+    @setMap options.map
+
+  Cluster.prototype = new google.maps.OverlayView
+
+  Cluster.prototype.onAdd = ->
+    @div = document.createElement 'DIV'
+    @div.style.border = "none"
+    @div.style.borderWidth = "0px"
+    @div.style.display = "table-cell"
+    @div.style.position = "absolute"
+    @div.style.textAlign = 'center'
+    @div.style.fontSize = '11px'
+    @div.innerText = (@count).toString()
+
+    if @count < 10
+      @image = 1
+      @width = 53
+      @height = 52
+    else if @count < 25
+      @image = 2
+      @width = 56
+      @height = 55
+    else if @count < 50
+      @image = 3
+      @width = 66
+      @height = 65
+    else if @count < 100
+      @image = 4
+      @width = 78
+      @height = 77
+    else
+      @image = 5
+      @width = 90
+      @height = 89
+
+    @div.style.backgroundImage = "url('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m#{@image}.png')"
+    @div.style.width = "#{@width}px"
+    @div.style.height = @div.style.lineHeight = "#{@height}px"
+
+    panes = this.getPanes()
+    panes.overlayLayer.appendChild @div
+
+  Cluster.prototype.draw = ->
+    overlayProjection = @getProjection()
+    pos = overlayProjection.fromLatLngToDivPixel @position
+    @div.style.left = "#{pos.x - @width / 2}px"
+    @div.style.top = "#{pos.y - @height / 2}px"
+
+  Cluster.prototype.onRemove = ->
+    @div.parentNode.removeChild @div
+    @div = null
+
 
   class Field
     constructor: (data) ->
@@ -391,6 +487,7 @@
       site.toggle()
 
   window.markers = {}
+  window.clusters = []
 
   myOptions =
     center: new google.maps.LatLng(-34.397, 150.644)

@@ -5,29 +5,7 @@ class SitesController < ApplicationController
   expose(:site)
 
   def index
-    if params[:collection_id]
-      render :json => collection.root_sites.offset(params[:offset]).limit(params[:limit])
-    else
-      s = params[:s].to_f
-      n = params[:n].to_f
-      e = params[:e].to_f
-      w = params[:w].to_f
-
-      sites = collections.includes(:sites)
-      sites = sites.where "sites.folder is NULL or sites.folder = 0"
-      if s < n
-        sites = sites.where "? <= sites.lat AND sites.lat <= ?", s, n
-      else
-        sites = sites.where "sites.lat >= ? OR sites.lat <= ?", s, n
-      end
-      if w < e
-        sites = sites.where "? <= sites.lng AND sites.lng <= ?", w, e
-      else
-        sites = sites.where "sites.lng >= ? OR sites.lng <= ?", w, e
-      end
-      sites = sites.map(&:sites).flatten
-      render :json => sites
-    end
+    render :json => collection.root_sites.offset(params[:offset]).limit(params[:limit])
   end
 
   def create
@@ -46,6 +24,19 @@ class SitesController < ApplicationController
   def search
     search = Search.new params[:collection_ids]
     search.bounds = params
-    render :json => search.sites
+    sites = search.sites
+    if sites.length > 50
+      render :json => cluster(sites)
+    else
+      render :json => {:sites => sites}
+    end
+  end
+
+  private
+
+  def cluster(sites)
+    clusterer = Clusterer.new params[:z]
+    sites.each { |site| clusterer.add site }
+    clusterer.clusters
   end
 end

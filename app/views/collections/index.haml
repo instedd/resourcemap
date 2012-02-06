@@ -1,5 +1,6 @@
 - content_for :head do
   = google_maps_javascript_include_tag
+  = javascript_include_tag "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"
   :javascript
     $(function() { initCollections(#{collections.to_json}); });
 
