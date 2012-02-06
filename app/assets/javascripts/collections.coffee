@@ -48,7 +48,7 @@
       z: window.map.getZoom()
       collection_ids: collection_ids
 
-    $.get "/sites/search.json", query, (data) ->
+    getCallback = (data = {}) ->
       currentSiteId = window.model.currentSite()?.id()
       selectedSiteId = window.model.selectedSite()?.id()
 
@@ -111,6 +111,12 @@
         delete window.clusters[clusterId]
 
       callback() if callback && typeof(callback) == 'function'
+
+    if query.collection_ids.length == 0
+      # Save a request to the server if there are no selected collections
+      getCallback()
+    else
+      $.get "/sites/search.json", query, getCallback
 
   window.setAllMarkersInactive = ->
     currentSiteId = window.model.currentSite()?.id()
