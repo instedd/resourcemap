@@ -6,7 +6,7 @@ describe Site do
 
   context "tire" do
     it "stores in index after create" do
-      site = Site.make
+      site = Site.make :properties => {:beds => 10}
 
       search = Tire::Search::Search.new site.index_name
       results = search.perform.results
@@ -14,6 +14,7 @@ describe Site do
       results[0]["_id"].to_i.should eq(site.id)
       results[0]["_source"]["location"]["lat"].to_f.should be_within(1e-06).of(site.lat.to_f)
       results[0]["_source"]["location"]["lon"].to_f.should be_within(1e-06).of(site.lng.to_f)
+      results[0]["_source"]["properties"]["beds"].to_i.should eq(site.properties[:beds])
     end
 
     it "removes from index after destroy" do

@@ -8,7 +8,7 @@ module SiteTire
   end
 
   def store_in_index
-    index.store :id => id, :type => :site, :location => {:lat => lat, :lon => lng}
+    index.store :id => id, :type => :site, :location => {:lat => lat, :lon => lng}, :properties => properties
     index.refresh
   end
 
