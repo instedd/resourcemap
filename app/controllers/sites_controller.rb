@@ -27,7 +27,7 @@ class SitesController < ApplicationController
     width, height = Clusterer.cell_size_for zoom
 
     search = Search.new params[:collection_ids]
-    search.bounds = {:n => n + height, :s => s - height, :e => e + width, :w => w - width} if zoom >= 2
+    search.bounds = {:n => n + height, :s => s - height, :e => e + width, :w => w - width} if zoom > 2
     render :json => cluster(search.sites)
   end
 
