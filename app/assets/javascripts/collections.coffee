@@ -180,6 +180,7 @@
     @div.style.position = "absolute"
     @div.style.textAlign = 'center'
     @div.style.fontSize = '11px'
+    @div.style.cursor = 'pointer'
     @div.innerText = (@count).toString()
 
     if @count < 10
@@ -208,7 +209,11 @@
     @div.style.height = @div.style.lineHeight = "#{@height}px"
 
     panes = this.getPanes()
-    panes.overlayLayer.appendChild @div
+    panes.overlayMouseTarget.appendChild @div
+
+    @listener = google.maps.event.addDomListener @div, 'click', =>
+      window.map.panTo(@position)
+      window.map.setZoom(window.map.getZoom() + 1)
 
   Cluster.prototype.draw = ->
     overlayProjection = @getProjection()
@@ -217,6 +222,7 @@
     @div.style.top = "#{pos.y - @height / 2}px"
 
   Cluster.prototype.onRemove = ->
+    google.maps.event.removeListener @listener
     @div.parentNode.removeChild @div
     @div = null
 

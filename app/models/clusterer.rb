@@ -13,8 +13,8 @@ class Clusterer
   end
 
   def add(site)
-    @x = ((180 + site[:lat]) / @width).floor
-    @y = ((90 + site[:lng]) / @height).floor
+    @x = ((90 + site[:lng]) / @width).floor
+    @y = ((180 + site[:lat]) / @height).floor
     cluster = @clusters["#{@x}:#{@y}"]
     cluster[:id] = "#{@zoom}:#{@x}:#{@y}"
     cluster[:sites] << site
