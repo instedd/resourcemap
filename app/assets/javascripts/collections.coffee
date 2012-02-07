@@ -422,13 +422,24 @@
 
       # Pan the map to it's location, reload the sites there and make the marker editable
       unless site.group()
+        window.reloadMapSitesAutomatically = false
         window.map.panTo(site.position())
+
         # Zoom if the pin is not visible, so the user can drag it
-        window.map.setZoom(16) unless window.markers[site.id()]
-        window.reloadMapSites =>
-          window.markers[site.id()].setDraggable true
-          window.setupMarkerListener site, window.markers[site.id()]
-          window.setAllMarkersInactive()
+        nextZoom = 16
+        action = =>
+          window.map.setZoom(nextZoom) unless window.markers[site.id()]
+          window.reloadMapSites =>
+            if window.markers[site.id()]
+              window.markers[site.id()].setDraggable true
+              window.setupMarkerListener site, window.markers[site.id()]
+              window.setAllMarkersInactive()
+              window.reloadMapSitesAutomatically = true
+            else
+              nextZoom += 1
+              action()
+
+        action()
 
     exitSite: =>
       window.deleteMarker()
@@ -496,6 +507,7 @@
 
   window.markers = {}
   window.clusters = {}
+  window.reloadMapSitesAutomatically = true
 
   myOptions =
     center: new google.maps.LatLng(-34.397, 150.644)
@@ -514,4 +526,4 @@
   google.maps.event.addListener window.map, 'zoom_changed', ->
     listener2 = google.maps.event.addListener window.map, 'bounds_changed', ->
       google.maps.event.removeListener listener2
-      window.reloadMapSites()
+      window.reloadMapSites() if window.reloadMapSitesAutomatically
