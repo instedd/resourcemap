@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120202195659) do
+ActiveRecord::Schema.define(:version => 20120207132119) do
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(:version => 20120202195659) do
     t.string   "hierarchy"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
-    t.boolean  "folder"
+    t.boolean  "group"
     t.text     "properties"
   end
 

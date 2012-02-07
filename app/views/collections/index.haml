@@ -31,14 +31,14 @@
     -# Sites template
     %script{:type => "text/html", :id => "sites-template"}
       <!-- ko foreach: sites -->
-      %tr{ko(:css => "{closed: folder() && !expanded(), opened: folder() && expanded}")}
+      %tr{ko(:css => "{closed: group() && !expanded(), opened: group() && expanded}")}
         %td
           %div
-            <!-- ko if: folder() -->
+            <!-- ko if: group() -->
             %span{ko(:text => :name, :style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :css => "{selected: $data == $root.selectedSite()}", :click => '$root.selectSite')}
             <!-- /ko -->
 
-            <!-- ko if: !folder() -->
+            <!-- ko if: !group() -->
             %p{ko(:style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :css => "{selected: $data == $root.selectedSite()}", :click => '$root.selectSite'), :style => 'cursor: pointer'}
               %span.statR
               %span{ko(:text => :name)}
@@ -47,12 +47,12 @@
       <!-- ko if: expanded -->
       <!-- ko template: {name: 'sites-template', with: sites} -->
       <!-- /ko -->
-      <!-- ko if: folder() && hasMoreSites() && !loadingSites()-->
+      <!-- ko if: group() && hasMoreSites() && !loadingSites()-->
       %tr
         %td
           = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(:click => :loadMoreSites, :style => "{marginLeft: '' + (30 + (level() - 1) * 20) + 'px'}")
       <!-- /ko -->
-      <!-- ko if: folder() && hasMoreSites() && loadingSites()-->
+      <!-- ko if: group() && hasMoreSites() && loadingSites()-->
       %tr
         %td
           Loading...
@@ -84,7 +84,7 @@
               Loading...
           <!-- /ko -->
     .tablebottom
-      <!-- ko if: !$root.selectedSite() || $root.selectedSite().folder() -->
+      <!-- ko if: !$root.selectedSite() || $root.selectedSite().group() -->
       Add
       %button.ffolder{ko(:click => '$root.createGroup')} Group
       or
@@ -102,10 +102,10 @@
       .tableheader.w33
         %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
         %span.i18b-groupChat
-        %span{ko(:visible => 'folder() && !id()')} New Group
-        %span{ko(:visible => 'folder() && id()')} Edit Group
-        %span{ko(:visible => '!folder() && !id()')} New Site
-        %span{ko(:visible => '!folder() && id()')} Edit Site
+        %span{ko(:visible => 'group() && !id()')} New Group
+        %span{ko(:visible => 'group() && id()')} Edit Group
+        %span{ko(:visible => '!group() && !id()')} New Site
+        %span{ko(:visible => '!group() && id()')} Edit Site
       .tablescroll
         %table.GralTable.CleanTable
           %tbody
@@ -114,9 +114,9 @@
                 %p
                   = label_tag :name
                   %br/
-                  = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :visible => :folder, :hasfocus => :hasFocus)
-                  = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :visible => '!folder()', :hasfocus => :hasFocus)
-                <!-- ko if: !folder() -->
+                  = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :visible => :group, :hasfocus => :hasFocus)
+                  = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :visible => '!group()', :hasfocus => :hasFocus)
+                <!-- ko if: !group() -->
                 %p
                   %span{ko(:text => "'Position: ' + (Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
                 <!-- ko foreach: $root.currentCollection().fields() -->

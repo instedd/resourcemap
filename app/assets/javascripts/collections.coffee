@@ -270,7 +270,7 @@
 
     toggle: =>
       # Load more sites when we expand, but only the first time
-      if @folder() && !@expanded() && @hasMoreSites() && @sitesPage == 1
+      if @group() && !@expanded() && @hasMoreSites() && @sitesPage == 1
         @loadMoreSites()
       @expanded(!@expanded())
 
@@ -303,7 +303,7 @@
       @selected = ko.observable()
       @id = ko.observable data?.id
       @parent_id = ko.observable data?.parent_id
-      @folder = ko.observable data?.folder
+      @group = ko.observable data?.group
       @name = ko.observable data?.name
       @lat = ko.observable data?.lat
       @lng = ko.observable data?.lng
@@ -340,7 +340,7 @@
     toJSON: =>
       json =
         id: @id()
-        folder: @folder()
+        group: @group()
         name: @name()
       json.lat = @lat() if @lat()
       json.lng = @lng() if @lng()
@@ -394,7 +394,7 @@
 
     createGroup: =>
       parent = if @selectedSite() then @selectedSite() else @currentCollection()
-      @currentSite(new Site(parent, folder: true, parent_id: @selectedSite()?.id()))
+      @currentSite(new Site(parent, group: true, parent_id: @selectedSite()?.id()))
 
     createSite: =>
       parent = if @selectedSite() then @selectedSite() else @currentCollection()
@@ -421,7 +421,7 @@
       @selectedSite(site)
 
       # Pan the map to it's location, reload the sites there and make the marker editable
-      unless site.folder()
+      unless site.group()
         window.map.panTo(site.position())
         # Zoom if the pin is not visible, so the user can drag it
         window.map.setZoom(16) unless window.markers[site.id()]
@@ -440,7 +440,7 @@
       callback = (data) =>
         if @currentSite().id()
           # Once the site is saved after edition, we make the marker not draggable and remove the listener
-          unless @currentSite().folder()
+          unless @currentSite().group()
             window.markers[@currentSite().id()].setDraggable false
             window.deleteMarkerListener()
         else
@@ -452,7 +452,7 @@
 
           # Once the site is saved after creation, we make the marker not draggable,
           # we remove the listener  and move it to the current markers
-          unless @currentSite().folder()
+          unless @currentSite().group()
             window.marker.siteId = @currentSite().id()
             window.marker.setDraggable false
             window.markers[@currentSite().id()] = window.marker
@@ -463,7 +463,7 @@
         @currentSite(null)
         window.setAllMarkersActive()
 
-      unless @currentSite().folder()
+      unless @currentSite().group()
         @currentSite().copyPropertiesFromCollection(@currentCollection())
 
       json = {site: @currentSite().toJSON()}
@@ -476,7 +476,7 @@
 
     selectSite: (site) =>
       if @selectedSite() == site
-        if !site.folder() && window.markers[site.id()]
+        if !site.group() && window.markers[site.id()]
           window.setMarkerIcon window.markers[site.id()], 'active'
         @selectedSite().selected(false)
         @selectedSite(null)
@@ -490,7 +490,7 @@
           window.reloadMapSites =>
             if oldSiteId && window.markers[oldSiteId]
               window.setMarkerIcon window.markers[oldSiteId], 'active'
-            if !@selectedSite().folder() && window.markers[@selectedSite().id()]
+            if !@selectedSite().group() && window.markers[@selectedSite().id()]
               window.setMarkerIcon window.markers[@selectedSite().id()], 'target'
       site.toggle()
 
