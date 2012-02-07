@@ -15,8 +15,8 @@ module ApplicationHelper
     text_field_tag name, '', ko(options.reverse_merge(:value => name, :valueUpdate => "'afterkeydown'"))
   end
 
-  def ko_check_box_tag(name)
-    check_box_tag name, '1', false, ko(:checked => name)
+  def ko_check_box_tag(name, options = {})
+    check_box_tag name, '1', false, options.reverse_merge(ko :checked => name)
   end
 
   def ko(hash = {})
