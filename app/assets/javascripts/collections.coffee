@@ -87,28 +87,33 @@
 
       clusters = data.clusters
       clusters ||= []
-      dataClusterIds = {}
 
-      # Add clusters if they are not already on the map
-      for cluster in clusters
-        dataClusterIds[cluster.id] = cluster.id
-        if !window.clusters[cluster.id]
-          position = new google.maps.LatLng(cluster.lat, cluster.lng)
-          window.clusters[cluster.id] = new Cluster
-                                          map: map
-                                          position: position
-                                          count: cluster.count
+      if window.reuseCurrentClusters
+        dataClusterIds = {}
 
-      # Determine which clusters need to be removed from the map
-      toRemove = []
-      for clusterId, cluster of window.clusters
-        unless dataClusterIds[clusterId]
+        # Add clusters if they are not already on the map
+        for cluster in clusters
+          dataClusterIds[cluster.id] = cluster.id
+          createCluster(cluster) unless window.clusters[cluster.id]
+
+        # Determine which clusters need to be removed from the map
+        toRemove = []
+        for clusterId, cluster of window.clusters
+          unless dataClusterIds[clusterId]
+            toRemove.push clusterId
+
+        # And remove them
+        window.deleteCluster clusterId for clusterId in toRemove
+      else
+        toRemove = []
+        for clusterId, cluster of window.clusters
           toRemove.push clusterId
 
-      # And remove them
-      for clusterId in toRemove
-        window.clusters[clusterId].setMap null
-        delete window.clusters[clusterId]
+        window.deleteCluster clusterId for clusterId in toRemove
+
+        window.createCluster(cluster) for cluster in clusters
+
+      window.reuseCurrentClusters = true
 
       callback() if callback && typeof(callback) == 'function'
 
@@ -164,6 +169,16 @@
     if window.markerListener
       google.maps.event.removeListener window.markerListener
       delete window.markerListener
+
+  window.createCluster = (cluster) ->
+    window.clusters[cluster.id] = new Cluster
+                                    map: window.map
+                                    position: new google.maps.LatLng(cluster.lat, cluster.lng)
+                                    count: cluster.count
+
+  window.deleteCluster = (id) ->
+    window.clusters[id].setMap null
+    delete window.clusters[id]
 
   Cluster = (options) ->
     @position = options.position
@@ -364,6 +379,7 @@
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
+          window.reuseCurrentClusters = false
           window.reloadMapSites()
 
       Sammy( ->
@@ -380,10 +396,12 @@
 
     goToRoot: ->
       window.navigated = true
+      window.reuseCurrentClusters = false
       location.hash = ''
 
     enterCollection: (collection) ->
       window.navigated = true
+      window.reuseCurrentClusters = false
       location.hash = "#{collection.id()}"
 
     editCollection: (collection) ->
@@ -508,6 +526,7 @@
   window.markers = {}
   window.clusters = {}
   window.reloadMapSitesAutomatically = true
+  window.reuseCurrentClusters = true
 
   myOptions =
     center: new google.maps.LatLng(-34.397, 150.644)

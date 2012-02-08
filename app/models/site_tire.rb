@@ -2,13 +2,14 @@ module SiteTire
   extend ActiveSupport::Concern
 
   included do
-    after_save :store_in_index
-    after_destroy :remove_from_index
+    after_save :store_in_index, :unless => :group?
+    after_destroy :remove_from_index, :unless => :group?
+
     delegate :index_name, :index, :to => :collection
   end
 
   def store_in_index
-    index.store :id => id, :type => :site, :location => {:lat => lat, :lon => lng}, :properties => properties
+    index.store :id => id, :type => :site, :location => {:lat => lat.to_f, :lon => lng.to_f}, :properties => properties
     index.refresh
   end
 

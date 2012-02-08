@@ -5,14 +5,16 @@ describe Search do
     site = Site.make
 
     search = Search.new []
-    search.sites.length.should eq(0)
+    search.zoom = 2
+    search.results.should eq({})
   end
 
   it "searches based on collection id found" do
     site = Site.make
 
     search = Search.new site.collection_id
-    search.sites.length.should eq(1)
+    search.zoom = 2
+    search.results[:sites].should eq([{:id => site.id, :lat => site.lat.to_f, :lng => site.lng.to_f}])
   end
 
   it "searches based on collection id not found" do
@@ -20,15 +22,16 @@ describe Search do
     other_collection = Collection.make
 
     search = Search.new other_collection.id
-    search.sites.length.should eq(0)
+    search.zoom = 2
+    search.results[:sites].should be_nil
   end
 
   it "searches based on many collection ids found" do
-    site1 = Site.make
-    site2 = Site.make
+    site1 = Site.make :lat => 45, :lng => 90
+    site2 = Site.make :lat => -45, :lng => -90
 
     search = Search.new [site1.collection_id, site2.collection_id]
-    search.sites.length.should eq(2)
+    search.results[:sites].length.should eq(2)
   end
 
   it "searches based on collection id and bounds found" do
@@ -36,7 +39,7 @@ describe Search do
 
     search = Search.new site.collection_id
     search.bounds = {:s => 9, :n => 11, :w => 19, :e => 21}
-    search.sites.length.should eq(1)
+    search.results[:sites].length.should eq(1)
   end
 
   it "searches based on collection id and bounds not found" do
@@ -44,6 +47,6 @@ describe Search do
 
     search = Search.new site.collection_id
     search.bounds = {:s => 11, :n => 12, :w => 21, :e => 22}
-    search.sites.length.should eq(0)
+    search.results[:sites].should be_nil
   end
 end

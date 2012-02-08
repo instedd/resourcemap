@@ -2,7 +2,7 @@ class Clusterer
   def initialize(zoom)
     @zoom = zoom
     @width, @height = self.class.cell_size_for zoom
-    @clusters = Hash.new { |h, k| h[k] = {:sites => [], :lat_sum => 0, :lng_sum => 0} }
+    @clusters = Hash.new { |h, k| h[k] = {:lat_sum => 0, :lng_sum => 0, :count => 0} }
   end
 
   def self.cell_size_for(zoom)
@@ -12,14 +12,15 @@ class Clusterer
     [360.0 / zoom, 180.0 / zoom]
   end
 
-  def add(site)
-    @x = ((90 + site[:lng]) / @width).floor
-    @y = ((180 + site[:lat]) / @height).floor
+  def add(id, lat, lng)
+    @x = ((90 + lng) / @width).floor
+    @y = ((180 + lat) / @height).floor
     cluster = @clusters["#{@x}:#{@y}"]
     cluster[:id] = "#{@zoom}:#{@x}:#{@y}"
-    cluster[:sites] << site
-    cluster[:lat_sum] += site[:lat]
-    cluster[:lng_sum] += site[:lng]
+    cluster[:site_id] = id
+    cluster[:count] += 1
+    cluster[:lat_sum] += lat
+    cluster[:lng_sum] += lng
   end
 
   def clusters
@@ -27,20 +28,23 @@ class Clusterer
     sites_to_return = []
 
     @clusters.each_value do |cluster|
-      sites_length = cluster[:sites].length
-      if sites_length == 1
-        sites_to_return << cluster[:sites][0]
+      count = cluster[:count]
+      if count == 1
+        sites_to_return << {:id => cluster[:site_id], :lat => cluster[:lat_sum], :lng => cluster[:lng_sum]}
       else
         clusters_to_return.push({
           :id => cluster[:id],
-          :lat => cluster[:lat_sum] / sites_length,
-          :lng => cluster[:lng_sum] / sites_length,
-          :count => sites_length
+          :lat => cluster[:lat_sum] / count,
+          :lng => cluster[:lng_sum] / count,
+          :count => count
         })
       end
     end
 
-    {:clusters => clusters_to_return, :sites => sites_to_return}
+    result = {}
+    result[:clusters] = clusters_to_return if clusters_to_return.present?
+    result[:sites] = sites_to_return if sites_to_return.present?
+    result
   end
 
   private

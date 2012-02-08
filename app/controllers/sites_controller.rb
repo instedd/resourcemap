@@ -25,10 +25,17 @@ class SitesController < ApplicationController
     n, s, e, w = params.fetch_many(:n, :s, :e, :w).map &:to_f
     zoom = params[:z].to_i
     width, height = Clusterer.cell_size_for zoom
+    bounds = {:n => n + height, :s => s - height, :e => e + width, :w => w - width}
+
+    bounds[:n] = 90 if bounds[:n] >= 90
+    bounds[:s] = -90 if bounds[:s] <= -90
+    bounds[:e] = 180 if bounds[:e] >= 180
+    bounds[:w] = -180 if bounds[:w] <= -180
 
     search = Search.new params[:collection_ids]
-    search.bounds = {:n => n + height, :s => s - height, :e => e + width, :w => w - width} if zoom > 2
-    render :json => cluster(search.sites)
+    search.zoom = params[:z]
+    search.bounds = bounds if zoom > 2
+    render :json => search.results
   end
 
   private

@@ -33,6 +33,10 @@ module CollectionTire
     self.class.index_name(id)
   end
 
+  def search
+    Search.new id
+  end
+
   module ClassMethods
     def index_name(id)
       "collection_#{id}"

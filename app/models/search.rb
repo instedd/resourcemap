@@ -6,6 +6,10 @@ class Search
     @search.size 100000
   end
 
+  def zoom=(zoom)
+    @zoom = zoom
+  end
+
   def bounds=(bounds)
     @search.filter :geo_bounding_box, :location => {
       :top_left => {
@@ -19,17 +23,16 @@ class Search
     }
   end
 
-  def sites
-    results.map do |x|
-      {
-        :id => x["_id"].to_i,
-        :lat => x["_source"]["location"]["lat"].to_f,
-        :lng => x["_source"]["location"]["lon"].to_f,
-      }
-    end
+  def results
+    return {} if @collection_ids.empty?
+
+    clusterer = Clusterer.new @zoom
+    adapter = ElasticSearchSitesAdapter.new clusterer
+    adapter.parse @search.stream
+    clusterer.clusters
   end
 
-  def results
-    @collection_ids.empty? ? [] : @search.perform.results
+  def to_curl
+    @search.to_curl
   end
 end

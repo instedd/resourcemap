@@ -12,8 +12,8 @@ describe Site do
       results = search.perform.results
       results.length.should eq(1)
       results[0]["_id"].to_i.should eq(site.id)
-      results[0]["_source"]["location"]["lat"].to_f.should be_within(1e-06).of(site.lat.to_f)
-      results[0]["_source"]["location"]["lon"].to_f.should be_within(1e-06).of(site.lng.to_f)
+      results[0]["_source"]["location"]["lat"].should be_within(1e-06).of(site.lat.to_f)
+      results[0]["_source"]["location"]["lon"].should be_within(1e-06).of(site.lng.to_f)
       results[0]["_source"]["properties"]["beds"].to_i.should eq(site.properties[:beds])
     end
 
@@ -22,8 +22,14 @@ describe Site do
       site.destroy
 
       search = Tire::Search::Search.new site.index_name
-      results = search.perform.results
-      results.length.should eq(0)
+      search.perform.results.length.should eq(0)
+    end
+
+    it "doesn't store groups in index" do
+      site = Site.make :group => true
+
+      search = Tire::Search::Search.new site.index_name
+      search.perform.results.length.should eq(0)
     end
   end
 end

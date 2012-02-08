@@ -7,7 +7,7 @@ module ApplicationHelper
     link_to text, 'javascript:void()', options.merge(ko :click => click)
   end
 
-  def ko_link_to_root(text, click, optinos = {})
+  def ko_link_to_root(text, click, options = {})
     ko_link_to text, "$root.#{click}", options
   end
 
