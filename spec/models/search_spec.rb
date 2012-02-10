@@ -46,4 +46,22 @@ describe Search do
     search.bounds = {:s => 11, :n => 12, :w => 21, :e => 22}
     search.results[:sites].should be_nil
   end
+
+  it "searches with group hierarchy" do
+    collection = Collection.make
+    site1 = collection.sites.make :group => true
+      site2 = collection.sites.make :group => true, :parent_id => site1.id
+        site21 = collection.sites.make :parent_id => site2.id, :lat => 30, :lng => 40
+        site21 = collection.sites.make :parent_id => site2.id, :lat => 40, :lng => 60
+      site3 = collection.sites.make :group => true, :parent_id => site1.id, :lat => 1, :lng => 2
+        site31 = collection.sites.make :parent_id => site3.id, :lat => 10, :lng => 20
+        site32 = collection.sites.make :parent_id => site3.id, :lat => 15, :lng => 20
+
+    search = Search.new collection.id
+    search.zoom = 4
+    search.bounds = {:s => 8, :n => 18, :e => 18, :w => 22}
+    results = search.results
+    results[:sites].should be_nil
+    results[:clusters].should eq([{:id => "g#{site3.id}", :lat => 1, :lng => 2, :count => 2}])
+  end
 end

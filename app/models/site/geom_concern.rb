@@ -2,8 +2,8 @@ module Site::GeomConcern
   extend ActiveSupport::Concern
 
   included do
-    before_save :compute_bounding_box_and_zoom, :unless => :group, :if => lambda { new_record? || lat_changed? || lng_changed? }
-    after_save  :compute_parent_bounding_box_and_zoom, :if => lambda { parent_id && (new_record? || lat_changed? || lng_changed? || min_lat_changed? || max_lat_changed? || min_lng_changed? || max_lng_changed?) }
+    before_save :compute_bounding_box_and_zoom, :unless => :group, :if => lambda { new_record? || lat_changed? || lng_changed? || min_zoom_changed? || max_zoom_changed? }
+    after_save  :compute_parent_bounding_box_and_zoom, :if => lambda { parent_id && (new_record? || lat_changed? || lng_changed? || min_lat_changed? || max_lat_changed? || min_lng_changed? || max_lng_changed? || min_zoom_changed? || max_zoom_changed? ) }
   end
 
   def compute_bounding_box_and_zoom

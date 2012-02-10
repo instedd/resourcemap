@@ -1,4 +1,6 @@
 class Clusterer
+  CellSize = 135.0
+
   def initialize(zoom)
     @zoom = zoom
     @width, @height = self.class.cell_size_for zoom
@@ -9,22 +11,38 @@ class Clusterer
     zoom = zoom.to_i
     zoom = 1 if zoom == 0
     zoom = 2 ** (zoom + 1)
-    [180.0 / zoom, 180.0 / zoom]
+    [CellSize / zoom, CellSize / zoom]
   end
 
   def self.zoom_for(size)
-    Math.log2(180.0 / size).floor
+    Math.log2(CellSize / size).floor
   end
 
-  def add(id, lat, lng)
-    @x = ((90 + lng) / @width).floor
-    @y = ((180 + lat) / @height).floor
-    cluster = @clusters["#{@x}:#{@y}"]
-    cluster[:id] = "#{@zoom}:#{@x}:#{@y}"
-    cluster[:site_id] = id
-    cluster[:count] += 1
-    cluster[:lat_sum] += lat
-    cluster[:lng_sum] += lng
+  def groups=(groups)
+    @groups = Hash[groups.map{|x| [x[:id], x]}]
+    @group_ids = groups.map{|x| x[:id]}
+  end
+
+  def add(id, lat, lng, parent_ids = [])
+    if @group_ids && (group_id = (parent_ids & @group_ids)).present?
+      group_id = group_id[0]
+      group = @groups[group_id]
+      cluster = @clusters["g#{group_id}"]
+      cluster[:id] ="g#{group_id}"
+      cluster[:site_id] = id
+      cluster[:count] += 1
+      cluster[:lat_sum] += group[:lat].to_f
+      cluster[:lng_sum] += group[:lng].to_f
+    else
+      @x = ((90 + lng) / @width).floor
+      @y = ((180 + lat) / @height).floor
+      cluster = @clusters["#{@x}:#{@y}"]
+      cluster[:id] = "#{@zoom}:#{@x}:#{@y}"
+      cluster[:site_id] = id
+      cluster[:count] += 1
+      cluster[:lat_sum] += lat.to_f
+      cluster[:lng_sum] += lng.to_f
+    end
   end
 
   def clusters

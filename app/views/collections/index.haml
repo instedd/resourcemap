@@ -116,9 +116,9 @@
                   %br/
                   = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :visible => :group, :hasfocus => :hasFocus)
                   = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :visible => '!group()', :hasfocus => :hasFocus)
-                <!-- ko if: !group() -->
                 %p
                   %span{ko(:text => "'Position: ' + (Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
+                <!-- ko if: !group() -->
                 <!-- ko foreach: $root.currentCollection().fields() -->
                 %p
                   = label_tag '', '', ko(:attr => "{'for': code}", :text => :name)

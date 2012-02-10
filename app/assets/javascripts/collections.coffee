@@ -416,13 +416,15 @@
       window.location = "/collections/new"
 
     createGroup: =>
-      parent = if @selectedSite() then @selectedSite() else @currentCollection()
-      @currentSite(new Site(parent, group: true, parent_id: @selectedSite()?.id()))
+      @createSiteOrGroup true
 
     createSite: =>
+      @createSiteOrGroup false
+
+    createSiteOrGroup: (group) =>
       parent = if @selectedSite() then @selectedSite() else @currentCollection()
       pos = window.map.getCenter()
-      site = new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng())
+      site = new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group)
       site.hasFocus true
       @currentSite site
 
@@ -486,14 +488,13 @@
 
           # Once the site is saved after creation, we make the marker not draggable,
           # we remove the listener  and move it to the current markers
-          unless @currentSite().group()
-            window.marker.siteId = @currentSite().id()
-            window.marker.setDraggable false
-            window.markers[@currentSite().id()] = window.marker
-            window.setMarkerIcon window.marker, 'active'
-            delete window.marker
+          window.marker.siteId = @currentSite().id()
+          window.marker.setDraggable false
+          window.markers[@currentSite().id()] = window.marker
+          window.setMarkerIcon window.marker, 'active'
+          delete window.marker
 
-            window.deleteMarkerListener()
+          window.deleteMarkerListener()
         @currentSite(null)
         window.setAllMarkersActive()
 
