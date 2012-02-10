@@ -9,7 +9,13 @@ module Site::TireConcern
   end
 
   def store_in_index
-    index.store :id => id, :type => :site, :location => {:lat => lat.to_f, :lon => lng.to_f}, :properties => properties
+    index.store({
+      :id => id,
+      :type => :site,
+      :location => {:lat => lat.to_f, :lon => lng.to_f},
+      :properties => properties,
+      :parents => hierarchy ? hierarchy.split(',').map(&:to_i) : nil
+    })
     index.refresh
   end
 

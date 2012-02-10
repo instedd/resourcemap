@@ -13,6 +13,18 @@ describe Site::TireConcern do
     results[0]["_source"]["properties"]["beds"].to_i.should eq(site.properties[:beds])
   end
 
+  it "stores hierarchy in index" do
+    collection = Collection.make
+    site1 = collection.sites.make
+    site2 = collection.sites.make :parent_id => site1.id
+    site3 = collection.sites.make :parent_id => site2.id
+
+    search = Tire::Search::Search.new collection.index_name
+    results = search.perform.results
+    result = results.select{|x| x["_id"].to_s == site3.id.to_s}.first
+    result["_source"]["parents"].should eq([site1.id, site2.id])
+  end
+
   it "removes from index after destroy" do
     site = Site.make
     site.destroy
