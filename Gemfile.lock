@@ -155,6 +155,8 @@ GEM
     uglifier (1.2.2)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
+    valium (0.5.0)
+      activerecord (>= 3.0.2)
     warden (1.1.0)
       rack (>= 1.0)
 
@@ -181,3 +183,4 @@ DEPENDENCIES
   shoulda-matchers
   tire
   uglifier (>= 1.0.3)
+  valium
