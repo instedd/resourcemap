@@ -28,6 +28,8 @@ group :test, :development do
   gem 'rspec-rails'
   gem 'faker'
   gem 'machinist', '1.0.6'
+  gem 'capistrano'
+  gem 'rvm'
 end
 
 group :test do
@@ -42,9 +44,6 @@ end
 
 # Use unicorn as the web server
 # gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
 
 # To use debugger
 # gem 'ruby-debug19', :require => 'ruby-debug'
