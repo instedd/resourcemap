@@ -72,10 +72,10 @@ class Search
     sites = sites.where('max_lat >= ? && ? >= min_lat', @bounds[:s], @bounds[:n])
     sites = sites.where('max_lng >= ? && ? >= min_lng', @bounds[:w], @bounds[:e])
     @groups = sites.values_of(:id, :lat, :lng, :min_lat, :max_lat, :min_lng, :max_lng).map do |id, lat, lng, min_lat, max_lat, min_lng, max_lng|
-      @bounds[:n] = max_lat if max_lat > @bounds[:n]
-      @bounds[:s] = min_lat if min_lat < @bounds[:s]
-      @bounds[:e] = max_lng if max_lng > @bounds[:e]
-      @bounds[:w] = min_lng if min_lng < @bounds[:w]
+      @bounds[:n] = max_lat + 0.001 if max_lat > @bounds[:n]
+      @bounds[:s] = min_lat - 0.001 if min_lat < @bounds[:s]
+      @bounds[:e] = max_lng + 0.001 if max_lng > @bounds[:e]
+      @bounds[:w] = min_lng - 0.001 if min_lng < @bounds[:w]
 
       {:id => id, :lat => lat, :lng => lng}
     end

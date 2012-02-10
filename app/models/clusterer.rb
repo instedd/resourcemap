@@ -1,5 +1,5 @@
 class Clusterer
-  CellSize = 135.0
+  CellSize = 115.0
 
   def initialize(zoom)
     @zoom = zoom
