@@ -17,7 +17,7 @@ module Site::GeomConcern
           max_size = [self.max_lat - self.min_lat, self.max_lng - self.min_lng].max.to_f
           if max_size && max_size > 0
             self.min_zoom = 0
-            self.max_zoom = Math.log2(180.0 / max_size).floor
+            self.max_zoom = Clusterer.zoom_for(max_size)
             self.sites.update_all "min_zoom = #{self.max_zoom + 1}"
           else
             self.min_zoom = 22

@@ -12,6 +12,10 @@ class Clusterer
     [180.0 / zoom, 180.0 / zoom]
   end
 
+  def self.zoom_for(size)
+    Math.log2(180.0 / size).floor
+  end
+
   def add(id, lat, lng)
     @x = ((90 + lng) / @width).floor
     @y = ((180 + lat) / @height).floor
