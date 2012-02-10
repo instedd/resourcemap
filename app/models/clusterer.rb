@@ -8,8 +8,8 @@ class Clusterer
   def self.cell_size_for(zoom)
     zoom = zoom.to_i
     zoom = 1 if zoom == 0
-    zoom = 2 ** zoom
-    [360.0 / zoom, 180.0 / zoom]
+    zoom = 2 ** (zoom + 1)
+    [180.0 / zoom, 180.0 / zoom]
   end
 
   def add(id, lat, lng)

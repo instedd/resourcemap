@@ -5,7 +5,6 @@ describe Search do
     site = Site.make
 
     search = Search.new []
-    search.zoom = 2
     search.results.should eq({})
   end
 
@@ -13,7 +12,6 @@ describe Search do
     site = Site.make
 
     search = Search.new site.collection_id
-    search.zoom = 2
     search.results[:sites].should eq([{:id => site.id, :lat => site.lat.to_f, :lng => site.lng.to_f}])
   end
 
@@ -22,7 +20,6 @@ describe Search do
     other_collection = Collection.make
 
     search = Search.new other_collection.id
-    search.zoom = 2
     search.results[:sites].should be_nil
   end
 

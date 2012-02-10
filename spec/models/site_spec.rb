@@ -28,6 +28,8 @@ describe Site do
     it "doesn't store groups in index" do
       site = Site.make :group => true
 
+      sleep 0.2 # TODO: shouldn't be necessary... :-(
+
       search = Tire::Search::Search.new site.index_name
       search.perform.results.length.should eq(0)
     end

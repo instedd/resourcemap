@@ -48,7 +48,12 @@
       z: window.map.getZoom()
       collection_ids: collection_ids
 
+    window.requestNumber += 1
+    currentRequestNumber = window.requestNumber
+
     getCallback = (data = {}) ->
+      return unless currentRequestNumber == window.requestNumber
+
       currentSiteId = window.model.currentSite()?.id()
       selectedSiteId = window.model.selectedSite()?.id()
 
@@ -527,6 +532,7 @@
   window.clusters = {}
   window.reloadMapSitesAutomatically = true
   window.reuseCurrentClusters = true
+  window.requestNumber = 0
 
   myOptions =
     center: new google.maps.LatLng(-34.397, 150.644)
