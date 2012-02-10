@@ -1,4 +1,4 @@
-module SiteTire
+module Site::TireConcern
   extend ActiveSupport::Concern
 
   included do

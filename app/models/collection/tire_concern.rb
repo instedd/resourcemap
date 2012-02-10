@@ -1,4 +1,4 @@
-module CollectionTire
+module Collection::TireConcern
   extend ActiveSupport::Concern
 
   included do
@@ -43,7 +43,7 @@ module CollectionTire
     end
 
     def index(id)
-      Tire::Index.new index_name(id)
+      ::Tire::Index.new index_name(id)
     end
   end
 end

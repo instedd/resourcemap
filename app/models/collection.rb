@@ -1,5 +1,5 @@
 class Collection < ActiveRecord::Base
-  include CollectionTire
+  include Collection::TireConcern
 
   validates_presence_of :name
 
