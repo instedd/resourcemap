@@ -4,6 +4,7 @@ class Search
     @search = Tire::Search::Search.new @collection_ids.map{|id| Collection.index_name id}
     @search.filter :type, {:value => :site}
     @search.size 100000
+    @bounds = {:s => -90, :n => 90, :w => -180, :e => 180}
   end
 
   def zoom=(zoom)
@@ -12,10 +13,7 @@ class Search
 
   def bounds=(bounds)
     @bounds = bounds
-    @bounds[:n] = 90 if @bounds[:n].to_f >= 90
-    @bounds[:s] = -90 if @bounds[:s].to_f <= -90
-    @bounds[:e] = 180 if @bounds[:e].to_f >= 180
-    @bounds[:w] = -180 if @bounds[:w].to_f <= -180
+    adjust_bounds_to_world_limits
   end
 
   def exclude_id(id)
@@ -28,10 +26,8 @@ class Search
     clusterer = Clusterer.new @zoom
     clusterer.exclude_id @exclude_id if @exclude_id
 
-    if @bounds
-      set_bounds_filter
-      clusterer.groups = @groups if @zoom
-    end
+    set_bounds_filter
+    clusterer.groups = @groups if @zoom
 
     adapter = ElasticSearchSitesAdapter.new clusterer
     adapter.parse @search.stream
@@ -45,7 +41,9 @@ class Search
       width, height = Clusterer.cell_size_for @zoom
       extend_to_cell_limits width, height
       extend_to_groups_limits
+      adjust_bounds_to_world_limits
     end
+
     @search.filter :geo_bounding_box, :location => {
       :top_left => {
         :lat => @bounds[:n],
@@ -88,5 +86,12 @@ class Search
 
       {:id => id, :lat => lat, :lng => lng}
     end
+  end
+
+  def adjust_bounds_to_world_limits
+    @bounds[:n] = 90 if @bounds[:n].to_f >= 90
+    @bounds[:s] = -90 if @bounds[:s].to_f <= -90
+    @bounds[:e] = 180 if @bounds[:e].to_f >= 180
+    @bounds[:w] = -180 if @bounds[:w].to_f <= -180
   end
 end
