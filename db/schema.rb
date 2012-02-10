@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120210144152) do
+ActiveRecord::Schema.define(:version => 20120210174258) do
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -67,6 +67,8 @@ ActiveRecord::Schema.define(:version => 20120210144152) do
     t.decimal  "max_lat",       :precision => 10, :scale => 6
     t.decimal  "min_lng",       :precision => 10, :scale => 6
     t.decimal  "max_lng",       :precision => 10, :scale => 6
+    t.integer  "min_zoom"
+    t.integer  "max_zoom"
   end
 
   create_table "users", :force => true do |t|
