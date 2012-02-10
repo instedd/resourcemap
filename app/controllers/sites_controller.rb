@@ -26,7 +26,7 @@ class SitesController < ApplicationController
 
     search = Search.new params[:collection_ids]
     search.zoom = zoom
-    search.bounds = params if zoom > 2
+    search.bounds = params
     search.exclude_id params[:exclude_id].to_i if params[:exclude_id].present?
     render :json => search.results
   end
