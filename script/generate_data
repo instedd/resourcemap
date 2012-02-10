@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+APP_PATH = File.expand_path('../../config/application',  __FILE__)
+require File.expand_path('../../config/boot',  __FILE__)
+require File.expand_path('../../config/environment',  __FILE__)
+
+fields_attributes = [
+  {:name => 'Beds', :code => 'beds', :kind => 'number'},
+  {:name => 'Vaccines', :code => 'vaccines', :kind => 'number'},
+  {:name => 'Patients', :code => 'patients', :kind => 'number'},
+]
+
+SitesPerCollection = 10000
+user = User.first
+
+100.times do |collection_index|
+  puts "Creating collection #{collection_index + 1}"
+
+  collection = Collection.new :name => "Collection #{collection_index + 1}"
+  user.create_collection collection
+  collection.layers.create! :name => "Data", :fields_attributes => fields_attributes
+
+  SitesPerCollection.times do |site_index|
+    puts " - Creating site ##{site_index + 1} of #{SitesPerCollection}" if (site_index + 1) % 1000 == 0
+
+    collection.sites.create!({
+      :name => "Site #{collection_index + 1} - #{site_index + 1}",
+      :lat => ((rand * 180) - 90),
+      :lng => ((rand * 360) - 180),
+      :properties => {
+        :beds => rand(100),
+        :vaccines => rand(100),
+        :patients => rand(100),
+      }
+    })
+  end
+end
