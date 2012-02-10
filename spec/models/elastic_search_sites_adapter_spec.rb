@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe ElasticSearchSitesAdapter do
-  it "adapts one site" do
+  it "adapts one site", :focus => true do
     listener = mock('listener')
-    listener.should_receive(:add).with(181984, -37.55442222700955, 136.5797882218185)
+    listener.should_receive(:add).with(181984, -37.55442222700955, 136.5797882218185, [10, 20, 30])
 
     adapter = ElasticSearchSitesAdapter.new listener
     adapter.parse %(
@@ -22,7 +22,7 @@ describe ElasticSearchSitesAdapter do
             "_index" : "collection_63",
             "_type" : "site",
             "_id" : "181984",
-            "_score" : 1.0, "_source" : {"id":181984,"type":"site","location":{"lat":-37.55442222700955,"lon":136.5797882218185},"properties":{"beds":84,"vaccines":75,"patients":61}}
+            "_score" : 1.0, "_source" : {"id":181984,"type":"site","location":{"lat":-37.55442222700955,"lon":136.5797882218185},"properties":{"beds":84,"vaccines":75,"patients":61},"parent_ids":[10,20,30]}
           } ]
         }
       }
@@ -31,7 +31,7 @@ describe ElasticSearchSitesAdapter do
 
   it "adapts one site without conflicting on properties" do
     listener = mock('listener')
-    listener.should_receive(:add).with(181984, -37.55442222700955, 136.5797882218185)
+    listener.should_receive(:add).with(181984, -37.55442222700955, 136.5797882218185, [])
 
     adapter = ElasticSearchSitesAdapter.new listener
     adapter.parse %(
@@ -59,8 +59,8 @@ describe ElasticSearchSitesAdapter do
 
   it "adapts two sites" do
     listener = mock('listener')
-    listener.should_receive(:add).with(181984, -37.55442222700955, 136.5797882218185)
-    listener.should_receive(:add).with(181985, -47.55442222700955, 137.5797882218185)
+    listener.should_receive(:add).with(181984, -37.55442222700955, 136.5797882218185, [])
+    listener.should_receive(:add).with(181985, -47.55442222700955, 137.5797882218185, [])
 
     adapter = ElasticSearchSitesAdapter.new listener
     adapter.parse %(

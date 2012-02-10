@@ -22,7 +22,7 @@ describe Site::TireConcern do
     search = Tire::Search::Search.new collection.index_name
     results = search.perform.results
     result = results.select{|x| x["_id"].to_s == site3.id.to_s}.first
-    result["_source"]["parents"].should eq([site1.id, site2.id])
+    result["_source"]["parent_ids"].should eq([site1.id, site2.id])
   end
 
   it "removes from index after destroy" do

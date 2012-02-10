@@ -14,7 +14,7 @@ module Site::TireConcern
       :type => :site,
       :location => {:lat => lat.to_f, :lon => lng.to_f},
       :properties => properties,
-      :parents => hierarchy ? hierarchy.split(',').map(&:to_i) : nil
+      :parent_ids => hierarchy ? hierarchy.split(',').map(&:to_i) : nil
     })
     index.refresh
   end
