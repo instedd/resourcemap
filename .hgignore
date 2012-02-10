@@ -9,3 +9,4 @@ syntax: glob
 tmp/*
 public/assets
 .bundle
+spec/reports
