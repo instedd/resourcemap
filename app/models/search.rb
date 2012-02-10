@@ -18,10 +18,15 @@ class Search
     @bounds[:w] = -180 if @bounds[:w].to_f <= -180
   end
 
+  def exclude_id(id)
+    @exclude_id = id
+  end
+
   def results
     return {} if @collection_ids.empty?
 
     clusterer = Clusterer.new @zoom
+    clusterer.exclude_id @exclude_id if @exclude_id
 
     if @bounds
       set_bounds_filter

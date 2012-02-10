@@ -15,6 +15,14 @@ describe Search do
     search.results[:sites].should eq([{:id => site.id, :lat => site.lat.to_f, :lng => site.lng.to_f}])
   end
 
+  it "searches with excluded id" do
+    site = Site.make
+
+    search = Search.new site.collection_id
+    search.exclude_id site.id
+    search.results[:sites].should be_nil
+  end
+
   it "searches based on collection id not found" do
     site = Site.make
     other_collection = Collection.make
@@ -58,7 +66,7 @@ describe Search do
         site32 = collection.sites.make :parent_id => site3.id, :lat => 15, :lng => 20
 
     search = Search.new collection.id
-    search.zoom = 4
+    search.zoom = 3
     search.bounds = {:s => 8, :n => 18, :e => 18, :w => 22}
     results = search.results
     results[:sites].should be_nil

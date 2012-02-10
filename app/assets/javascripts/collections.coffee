@@ -40,6 +40,7 @@
                        [window.model.currentCollection().id()]
                      else
                         c.id for c in window.model.collections() when c.checked()
+    currentSiteId = window.model.currentSite()?.id()
     query =
       n: ne.lat()
       s: sw.lat()
@@ -47,6 +48,7 @@
       w: sw.lng()
       z: window.map.getZoom()
       collection_ids: collection_ids
+      exclude_id: currentSiteId
 
     window.requestNumber += 1
     currentRequestNumber = window.requestNumber
@@ -445,58 +447,49 @@
       @currentSite(site)
       @selectedSite(site)
 
-      # Pan the map to it's location, reload the sites there and make the marker editable
-      unless site.group()
-        window.reloadMapSitesAutomatically = false
-        window.map.panTo(site.position())
+      # Pan the map to it's location
+      window.reloadMapSitesAutomatically = false
+      window.reuseCurrentClusters = false
+      window.map.panTo(site.position())
+      window.reloadMapSites =>
+        window.reloadMapSitesAutomatically = true
 
-        # Zoom if the pin is not visible, so the user can drag it
-        nextZoom = 16
-        action = =>
-          window.map.setZoom(nextZoom) unless window.markers[site.id()]
-          window.reloadMapSites =>
-            if window.markers[site.id()]
-              window.markers[site.id()].setDraggable true
-              window.setupMarkerListener site, window.markers[site.id()]
-              window.setAllMarkersInactive()
-              window.reloadMapSitesAutomatically = true
-            else
-              nextZoom += 1
-              action()
+        # Add a marker to the map for setting the site's position
+        window.marker = new google.maps.Marker
+          position: site.position()
+          draggable: true
+          icon: window.markerImageTarget
+          shadow: window.markerImageTargetShadow
+          map: window.map
+        window.setupMarkerListener site, window.marker
+        window.setAllMarkersInactive()
 
-        action()
+        # Remove the current site's marker
+        window.deleteMarker(site.id()) unless site.group()
 
     exitSite: =>
       window.deleteMarker()
       window.deleteMarkerListener()
       window.setAllMarkersActive()
       @currentSite(null)
+      window.reuseCurrentClusters = false
+      window.reloadMapSites()
 
     saveSite: =>
       callback = (data) =>
-        if @currentSite().id()
-          # Once the site is saved after edition, we make the marker not draggable and remove the listener
-          unless @currentSite().group()
-            window.markers[@currentSite().id()].setDraggable false
-            window.deleteMarkerListener()
-        else
+        unless @currentSite().id()
           @currentSite().id(data.id)
           if @selectedSite()
             @selectedSite().addSite(@currentSite())
           else
             @currentCollection().addSite(@currentSite())
 
-          # Once the site is saved after creation, we make the marker not draggable,
-          # we remove the listener  and move it to the current markers
-          window.marker.siteId = @currentSite().id()
-          window.marker.setDraggable false
-          window.markers[@currentSite().id()] = window.marker
-          window.setMarkerIcon window.marker, 'active'
-          delete window.marker
-
-          window.deleteMarkerListener()
         @currentSite(null)
-        window.setAllMarkersActive()
+
+        window.reuseCurrentClusters = false
+        window.deleteMarker()
+        window.deleteMarkerListener()
+        window.reloadMapSites()
 
       unless @currentSite().group()
         @currentSite().copyPropertiesFromCollection(@currentCollection())

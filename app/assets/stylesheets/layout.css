@@ -30,12 +30,6 @@
 .titletable { padding:4px 0 2px 2px; display:inline-block !important; margin-left:5px !important }
 .exp { background: url(http://theme.instedd.org/theme/images/icons/misc/black/arrowRight.png) no-repeat 2px 50%; padding-left:16px }
 .col { background: url(http://theme.instedd.org/theme/images/icons/misc/black/arrowDown.png) no-repeat 0px 50%; padding-left:16px }
-/*
-.lev1 { padding-left: 18px !important }
-.lev2 { padding-left: 32px !important }
-.lev3 { padding-left: 50px !important }
-.lev1 span.col, .lev1 span.exp, .lev2 span.col, .lev2 span.exp, .lev3 span.col, .lev3 span.exp { margin-left:-16px !important }
-*/
 
 .box.nopadd { padding:0 }
 .box.nopadd .left { border-right:1px solid #eeeeee}

@@ -85,7 +85,7 @@ describe Site::GeomConcern do
       site2 = collection.sites.make :parent_id => site1.id, :lat => 30, :lng => 40
       site3 = collection.sites.make :parent_id => site1.id, :lat => 40, :lng => 60
 
-      assert_in_zoom site1, 0, 3
+      assert_in_zoom site1, 0, 2
     end
 
     it "stores bounding box for group with subgroups sites" do
@@ -94,8 +94,8 @@ describe Site::GeomConcern do
           site21 = collection.sites.make :parent_id => site2.id, :lat => 30, :lng => 40
           site22 = collection.sites.make :parent_id => site2.id, :lat => 40, :lng => 60
 
-      assert_in_zoom site1, 0, 3
-      assert_in_zoom site2, 4, 3
+      assert_in_zoom site1, 0, 2
+      assert_in_zoom site2, 3, 2
     end
 
     it "stores bounding box for group with many subgroups sites" do
@@ -107,9 +107,9 @@ describe Site::GeomConcern do
           site31 = collection.sites.make :parent_id => site3.id, :lat => 10, :lng => 20
           site32 = collection.sites.make :parent_id => site3.id, :lat => 15, :lng => 20
 
-      assert_in_zoom site1, 0, 2
-      assert_in_zoom site2, 3, 3
-      assert_in_zoom site3, 3, 5
+      assert_in_zoom site1, 0, 1
+      assert_in_zoom site2, 2, 2
+      assert_in_zoom site3, 2, 4
     end
 
     def assert_in_zoom(site, min_zoom, max_zoom)
