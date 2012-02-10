@@ -35,12 +35,19 @@
         %td
           %div
             <!-- ko if: group() -->
-            %span{ko(:text => :name, :style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :css => "{selected: $data == $root.selectedSite()}", :click => '$root.selectSite')}
+            %a{ko(:click => '$root.toggleSite', :style => "{marginLeft: '' + ((level() - 1) * 20) + 'px'}"), :href => 'javascript:void(0)', }
+              <!-- ko if: expanded() -->
+              = image_tag "http://theme.instedd.org/theme/images/icons/18/black/folder_open.png"
+              <!-- /ko -->
+              <!-- ko if: !expanded() -->
+              = image_tag "http://theme.instedd.org/theme/images/icons/18/black/folder.png"
+              <!-- /ko -->
+            %span{ko(:text => :name, :css => "{selected: $data == $root.selectedSite()}", :click => '$root.selectSite'), :style => 'cursor: pointer'}
             <!-- /ko -->
 
             <!-- ko if: !group() -->
             %p{ko(:style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :css => "{selected: $data == $root.selectedSite()}", :click => '$root.selectSite'), :style => 'cursor: pointer'}
-              %span.statR
+              %span.stat-r
               %span{ko(:text => :name)}
             <!-- /ko -->
           %button.farrow{ko(:click => '$root.editSite'), :type => "button"}

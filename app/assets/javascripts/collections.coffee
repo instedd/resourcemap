@@ -527,6 +527,8 @@
               window.setMarkerIcon window.markers[oldSiteId], 'active'
             if !@selectedSite().group() && window.markers[@selectedSite().id()]
               window.setMarkerIcon window.markers[@selectedSite().id()], 'target'
+
+    toggleSite: (site) =>
       site.toggle()
 
   window.markers = {}
