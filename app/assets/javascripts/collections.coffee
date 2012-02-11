@@ -497,10 +497,10 @@
 
     exitSite: =>
       @unsubscribeToLocationModeChange()
+      @currentSite(null)
       window.deleteMarker()
       window.deleteMarkerListener()
       window.setAllMarkersActive()
-      @currentSite(null)
       window.reuseCurrentClusters = false
       window.reloadMapSites()
 
@@ -519,14 +519,8 @@
 
         @currentSite().lat(data.lat)
         @currentSite().lng(data.lng)
-        @currentSite(null)
 
-        window.reuseCurrentClusters = false
-        window.deleteMarker()
-        window.deleteMarkerListener()
-        window.setAllMarkersActive()
-        window.reloadMapSites()
-        @unsubscribeToLocationModeChange()
+        @exitSite()
 
       unless @currentSite().group()
         @currentSite().copyPropertiesFromCollection(@currentCollection())
