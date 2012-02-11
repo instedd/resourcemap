@@ -568,8 +568,8 @@
   window.requestNumber = 0
 
   myOptions =
-    center: new google.maps.LatLng(-34.397, 150.644)
-    zoom: 8
+    center: new google.maps.LatLng(10, 90)
+    zoom: 4
     mapTypeId: google.maps.MapTypeId.ROADMAP
   window.map = new google.maps.Map document.getElementById("map"), myOptions
 
