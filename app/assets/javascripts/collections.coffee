@@ -166,8 +166,9 @@
 
   window.deleteMarker = (siteId) ->
     if siteId
-      window.markers[siteId].setMap null
-      delete window.markers[siteId]
+      if window.markers[siteId]
+        window.markers[siteId].setMap null
+        delete window.markers[siteId]
     else if window.marker
       window.marker.setMap null
       delete window.marker
@@ -308,6 +309,8 @@
 
     level: -> 0
 
+    fetchLocation: =>
+
     fetchFields: =>
       unless @fieldsInitialized
         @fieldsInitialized = true
@@ -352,6 +355,10 @@
 
     hasLocation: =>
       @position() && !(@group() && @locationMode() == 'none')
+
+    fetchLocation: =>
+      $.get "/sites/#{@id()}.json", {}, (data) => @lat(data.lat); @lng(data.lng)
+      @parent.fetchLocation()
 
     copyPropertiesFromCollection: (collection) =>
       @properties({})
@@ -447,7 +454,7 @@
     createMarkerForSite: (site) =>
       window.marker = new google.maps.Marker
         position: site.position()
-        animation: google.maps.Animation.DROP
+        animation: if site.id() then null else google.maps.Animation.DROP
         draggable: true
         icon: window.markerImageTarget
         shadow: window.markerImageTargetShadow
@@ -477,20 +484,14 @@
       # Pan the map to it's location
       window.reloadMapSitesAutomatically = false
       window.reuseCurrentClusters = false
-      window.map.panTo(site.position())
+      window.deleteMarker site.id()
+      window.map.panTo(site.position()) if site.hasLocation()
       window.reloadMapSites =>
         window.reloadMapSitesAutomatically = true
 
         # Add a marker to the map for setting the site's position
         if !site.group() || (site.group() && site.locationMode() == 'manual')
-          window.marker = new google.maps.Marker
-            position: site.position()
-            draggable: true
-            icon: window.markerImageTarget
-            shadow: window.markerImageTargetShadow
-            map: window.map
-          window.setupMarkerListener site, window.marker
-          window.setAllMarkersInactive()
+          @createMarkerForSite site
         if site.group()
           @subscribeToLocationModeChange site
 
@@ -511,6 +512,10 @@
             @selectedSite().addSite(@currentSite())
           else
             @currentCollection().addSite(@currentSite())
+
+        # If lat/lng/locationMode changed, update parent locations from server
+        if @currentSite().lat() != data.lat || @currentSite().lng() != data.lng || (@currentSite().group() && @currentSite().locationMode() != data.location_mode)
+          @currentSite().parent.fetchLocation()
 
         @currentSite().lat(data.lat)
         @currentSite().lng(data.lng)

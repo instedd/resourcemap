@@ -8,6 +8,10 @@ class SitesController < ApplicationController
     render :json => collection.root_sites.offset(params[:offset]).limit(params[:limit])
   end
 
+  def show
+    render :json => site
+  end
+
   def create
     site = collection.sites.create(params[:site])
     render :json => site
