@@ -8,7 +8,9 @@ module Site::GeomConcern
 
   def compute_bounding_box_and_zoom
     if group
-      self.sites.select('min(min_lat) as v1, min(max_lat) as v2, max(min_lat) as v3, max(max_lat) as v4, min(min_lng) as v5, min(max_lng) as v6, max(min_lng) as v7, max(max_lng) as v8').each do |v|
+      query = 'min(min_lat) as v1, min(max_lat) as v2, max(min_lat) as v3, max(max_lat) as v4, min(min_lng) as v5, min(max_lng) as v6, max(min_lng) as v7, max(max_lng) as v8'
+      query += ', sum(lat) as v9, sum(lng) as v10, count(*) as v11' if automatic_location_mode?
+      self.sites.select(query).each do |v|
         if v.v1 && v.v2 && v.v3 && v.v4 && v.v5 && v.v6 && v.v7 && v.v8
           self.min_lat = [v.v1, v.v2].min
           self.max_lat = [v.v3, v.v4].max
@@ -27,6 +29,14 @@ module Site::GeomConcern
           self.min_zoom = 22
           self.max_zoom = 22
         end
+        if automatic_location_mode?
+          self.lat = v.v9 / v.v11
+          self.lng = v.v10 / v.v11
+        end
+      end
+      if none_location_mode?
+        self.lat = nil
+        self.lng = nil
       end
     else
       self.min_lat = self.max_lat = lat
@@ -41,5 +51,13 @@ module Site::GeomConcern
 
   def compute_parent_bounding_box_and_zoom
     parent.compute_bounding_box_and_zoom!
+  end
+
+  def automatic_location_mode?
+    location_mode.to_s == 'auto'
+  end
+
+  def none_location_mode?
+    location_mode.to_s == 'none'
   end
 end
