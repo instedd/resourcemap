@@ -451,10 +451,10 @@
       else
         @createMarkerForSite site
 
-    createMarkerForSite: (site) =>
+    createMarkerForSite: (site, drop = false) =>
       window.marker = new google.maps.Marker
         position: site.position()
-        animation: if site.id() then null else google.maps.Animation.DROP
+        animation: if drop || !site.id() then google.maps.Animation.DROP else null
         draggable: true
         icon: window.markerImageTarget
         shadow: window.markerImageTargetShadow
@@ -465,7 +465,7 @@
     subscribeToLocationModeChange: (site) =>
       window.subscription = site.locationMode.subscribe (newLocationMode) =>
         if newLocationMode == 'manual'
-          @createMarkerForSite site
+          @createMarkerForSite site, true
         else
           window.deleteMarker()
           window.deleteMarkerListener()
