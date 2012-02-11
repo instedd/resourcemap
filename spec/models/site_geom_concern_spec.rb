@@ -119,7 +119,7 @@ describe Site::GeomConcern do
     end
   end
 
-  context "location mode", :focus => true do
+  context "location mode" do
     it "stores location automatically" do
       site1 = collection.sites.make :group => true, :location_mode => :auto, :lat => 1, :lng => 2
         site11 = collection.sites.make :parent_id => site1.id, :lat => 30, :lng => 40
