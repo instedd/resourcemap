@@ -30,7 +30,7 @@ module Site::GeomConcern
           self.min_zoom = 22
           self.max_zoom = 22
         end
-        if automatic_location_mode?
+        if automatic_location_mode? && v.v9 && v.v10 && v.v11
           self.lat = v.v9 / v.v11
           self.lng = v.v10 / v.v11
         end
