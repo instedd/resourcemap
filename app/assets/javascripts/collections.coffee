@@ -329,6 +329,7 @@
       @name = ko.observable data?.name
       @lat = ko.observable data?.lat
       @lng = ko.observable data?.lng
+      @locationMode = ko.observable data?.location_mode
       @position = ko.computed
         read: =>
           if @lat() && @lng()
@@ -349,6 +350,9 @@
     level: =>
       @parent.level() + 1
 
+    hasLocation: =>
+      @position() && !(@group() && @locationMode() == 'none')
+
     copyPropertiesFromCollection: (collection) =>
       @properties({})
       for field in collection.fields()
@@ -368,6 +372,7 @@
       json.lng = @lng() if @lng()
       json.parent_id = @parent_id() if @parent_id()
       json.properties = @properties() if @properties()
+      json.location_mode = @locationMode() if @locationMode()
       json
 
   class CollectionViewModel
@@ -426,11 +431,20 @@
     createSiteOrGroup: (group) =>
       parent = if @selectedSite() then @selectedSite() else @currentCollection()
       pos = window.map.getCenter()
-      site = new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group)
+      site = if group
+               new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
+             else
+               new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group)
       site.hasFocus true
       @currentSite site
 
       # Add a marker to the map for setting the site's position
+      if group
+        @subscribeToLocationModeChange site
+      else
+        @createMarkerForSite site
+
+    createMarkerForSite: (site) =>
       window.marker = new google.maps.Marker
         position: site.position()
         animation: google.maps.Animation.DROP
@@ -440,6 +454,19 @@
         map: window.map
       window.setupMarkerListener site, window.marker
       window.setAllMarkersInactive()
+
+    subscribeToLocationModeChange: (site) =>
+      window.subscription = site.locationMode.subscribe (newLocationMode) =>
+        if newLocationMode == 'manual'
+          @createMarkerForSite site
+        else
+          window.deleteMarker()
+          window.deleteMarkerListener()
+
+    unsubscribeToLocationModeChange: =>
+      if window.subscription
+        window.subscription.dispose()
+        delete window.subscription
 
     editSite: (site) =>
       site.copyPropertiesToCollection(@currentCollection())
@@ -455,19 +482,20 @@
         window.reloadMapSitesAutomatically = true
 
         # Add a marker to the map for setting the site's position
-        window.marker = new google.maps.Marker
-          position: site.position()
-          draggable: true
-          icon: window.markerImageTarget
-          shadow: window.markerImageTargetShadow
-          map: window.map
-        window.setupMarkerListener site, window.marker
-        window.setAllMarkersInactive()
-
-        # Remove the current site's marker
-        window.deleteMarker(site.id()) unless site.group()
+        if !site.group() || (site.group() && site.locationMode() == 'manual')
+          window.marker = new google.maps.Marker
+            position: site.position()
+            draggable: true
+            icon: window.markerImageTarget
+            shadow: window.markerImageTargetShadow
+            map: window.map
+          window.setupMarkerListener site, window.marker
+          window.setAllMarkersInactive()
+        if site.group()
+          @subscribeToLocationModeChange site
 
     exitSite: =>
+      @unsubscribeToLocationModeChange()
       window.deleteMarker()
       window.deleteMarkerListener()
       window.setAllMarkersActive()
@@ -484,12 +512,16 @@
           else
             @currentCollection().addSite(@currentSite())
 
+        @currentSite().lat(data.lat)
+        @currentSite().lng(data.lng)
         @currentSite(null)
 
         window.reuseCurrentClusters = false
         window.deleteMarker()
         window.deleteMarkerListener()
+        window.setAllMarkersActive()
         window.reloadMapSites()
+        @unsubscribeToLocationModeChange()
 
       unless @currentSite().group()
         @currentSite().copyPropertiesFromCollection(@currentCollection())
@@ -513,7 +545,7 @@
         @selectedSite().selected(false) if @selectedSite()
         @selectedSite(site)
         @selectedSite().selected(true)
-        if @selectedSite().id() && @selectedSite().position()
+        if @selectedSite().id() && @selectedSite().hasLocation()
           window.map.panTo(@selectedSite().position())
           window.reloadMapSites =>
             if oldSiteId && window.markers[oldSiteId]

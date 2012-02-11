@@ -123,8 +123,17 @@
                   %br/
                   = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :visible => :group, :hasfocus => :hasFocus)
                   = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :visible => '!group()', :hasfocus => :hasFocus)
+                <!-- ko if: group() -->
                 %p
-                  %span{ko(:text => "'Position: ' + (Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
+                  Location:
+                  = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
+                  %span{ko(:if => "locationMode() == 'manual'")}
+                    %span{ko(:text => "(Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
+                <!-- /ko -->
+                <!-- ko if: !group() -->
+                %p
+                  %span{ko(:text => "'Location: ' + (Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
+                <!-- /ko -->
                 <!-- ko if: !group() -->
                 <!-- ko foreach: $root.currentCollection().fields() -->
                 %p

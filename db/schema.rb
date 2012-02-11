@@ -59,8 +59,8 @@ ActiveRecord::Schema.define(:version => 20120211171748) do
     t.decimal  "lng",                         :precision => 10, :scale => 6
     t.integer  "parent_id"
     t.string   "hierarchy"
-    t.datetime "created_at",                                                                     :null => false
-    t.datetime "updated_at",                                                                     :null => false
+    t.datetime "created_at",                                                                          :null => false
+    t.datetime "updated_at",                                                                          :null => false
     t.boolean  "group"
     t.text     "properties"
     t.decimal  "min_lat",                     :precision => 10, :scale => 6
@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(:version => 20120211171748) do
     t.decimal  "max_lng",                     :precision => 10, :scale => 6
     t.integer  "min_zoom"
     t.integer  "max_zoom"
-    t.string   "location_mode", :limit => 10,                                :default => "auto"
+    t.string   "location_mode", :limit => 10,                                :default => "automatic"
   end
 
   create_table "users", :force => true do |t|

@@ -121,7 +121,7 @@ describe Site::GeomConcern do
 
   context "location mode" do
     it "stores location automatically" do
-      site1 = collection.sites.make :group => true, :location_mode => :auto, :lat => 1, :lng => 2
+      site1 = collection.sites.make :group => true, :location_mode => :automatic, :lat => 1, :lng => 2
         site11 = collection.sites.make :parent_id => site1.id, :lat => 30, :lng => 40
         site12 = collection.sites.make :parent_id => site1.id, :lat => 40, :lng => 50
 
@@ -142,6 +142,18 @@ describe Site::GeomConcern do
         site12 = collection.sites.make :parent_id => site1.id, :lat => 40, :lng => 50
 
       assert_location site1, nil, nil
+    end
+
+    it "recomputes location after location mode change", :focus => true do
+      site1 = collection.sites.make :group => true, :location_mode => :manual, :lat => 1, :lng => 2
+        site11 = collection.sites.make :parent_id => site1.id, :lat => 30, :lng => 40
+        site12 = collection.sites.make :parent_id => site1.id, :lat => 40, :lng => 50
+
+      site1.reload
+      site1.location_mode = :automatic
+      site1.save!
+
+      assert_location site1, 35, 45
     end
 
     def assert_location(site, lat, lng)

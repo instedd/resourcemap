@@ -9,7 +9,8 @@ class SitesController < ApplicationController
   end
 
   def create
-    render :json => collection.sites.create(params[:site])
+    site = collection.sites.create(params[:site])
+    render :json => site
   end
 
   def update
