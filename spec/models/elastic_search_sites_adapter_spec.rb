@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ElasticSearchSitesAdapter do
   it "adapts one site", :focus => true do
     listener = mock('listener')
-    listener.should_receive(:add).with(181984, -37.55442222700955, 136.5797882218185, [10, 20, 30])
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :parent_ids => [10, 20, 30]
 
     adapter = ElasticSearchSitesAdapter.new listener
     adapter.parse %(
@@ -31,7 +31,7 @@ describe ElasticSearchSitesAdapter do
 
   it "adapts one site without conflicting on properties" do
     listener = mock('listener')
-    listener.should_receive(:add).with(181984, -37.55442222700955, 136.5797882218185, [])
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :parent_ids => []
 
     adapter = ElasticSearchSitesAdapter.new listener
     adapter.parse %(
@@ -59,8 +59,8 @@ describe ElasticSearchSitesAdapter do
 
   it "adapts two sites" do
     listener = mock('listener')
-    listener.should_receive(:add).with(181984, -37.55442222700955, 136.5797882218185, [])
-    listener.should_receive(:add).with(181985, -47.55442222700955, 137.5797882218185, [])
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :parent_ids => []
+    listener.should_receive(:add).with :id => 181985, :lat => -47.55442222700955, :lng => 137.5797882218185, :parent_ids => []
 
     adapter = ElasticSearchSitesAdapter.new listener
     adapter.parse %(

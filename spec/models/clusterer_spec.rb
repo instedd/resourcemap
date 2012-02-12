@@ -5,15 +5,15 @@ describe Clusterer do
 
   context "no groups" do
     it "leaves single site alone" do
-      clusterer.add 1, 30, 40
+      clusterer.add :id => 1, :lat => 30, :lng => 40
       clusters = clusterer.clusters
       clusters[:sites].should eq([{:id => 1, :lat => 30, :lng => 40}])
       clusters[:clusters].should be_nil
     end
 
     it "puts two sites in a cluster" do
-      clusterer.add 1, 20, 30
-      clusterer.add 2, 21, 31
+      clusterer.add :id => 1, :lat => 20, :lng => 30
+      clusterer.add :id => 2, :lat => 21, :lng => 31
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
@@ -21,10 +21,10 @@ describe Clusterer do
     end
 
     it "puts four sites in two different clusters" do
-      clusterer.add 1, 20, 30
-      clusterer.add 2, 21, 31
-      clusterer.add 3, 65, 120
-      clusterer.add 4, 66, 121
+      clusterer.add :id => 1, :lat => 20, :lng => 30
+      clusterer.add :id => 2, :lat => 21, :lng => 31
+      clusterer.add :id => 3, :lat => 65, :lng => 120
+      clusterer.add :id => 4, :lat => 66, :lng => 121
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
@@ -36,8 +36,8 @@ describe Clusterer do
     before(:each) { clusterer.groups = [{:id => 1, :lat => 2, :lng => 3}, {:id => 2, :lat => 4, :lng => 5}] }
 
     it "clusters inside group" do
-      clusterer.add 1, 20, 30, [4, 5, 1]
-      clusterer.add 2, 20, 30, [6, 1, 7]
+      clusterer.add :id => 1, :lat => 20, :lng => 30, :parent_ids => [4, 5, 1]
+      clusterer.add :id => 2, :lat => 20, :lng => 30, :parent_ids => [6, 1, 7]
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil

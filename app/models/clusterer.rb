@@ -27,28 +27,28 @@ class Clusterer
     @exclude_id = id
   end
 
-  def add(id, lat, lng, parent_ids = [])
-    return if id == @exclude_id
+  def add(site)
+    return if site[:id] == @exclude_id
 
-    if @group_ids && (group_id = (parent_ids & @group_ids)).present?
+    if @group_ids && site[:parent_ids] && (group_id = (site[:parent_ids] & @group_ids)).present?
       group_id = group_id[0]
       group = @groups[group_id]
       cluster = @clusters["g#{group_id}"]
       cluster[:id] ="g#{group_id}"
-      cluster[:site_id] = id
+      cluster[:site_id] = site[:id]
       cluster[:count] += 1
       cluster[:lat_sum] += group[:lat].to_f
       cluster[:lng_sum] += group[:lng].to_f
       cluster[:max_zoom] = group[:max_zoom]
     else
-      @x = ((90 + lng) / @width).floor
-      @y = ((180 + lat) / @height).floor
+      @x = ((90 + site[:lng]) / @width).floor
+      @y = ((180 + site[:lat]) / @height).floor
       cluster = @clusters["#{@x}:#{@y}"]
       cluster[:id] = "#{@zoom}:#{@x}:#{@y}"
-      cluster[:site_id] = id
+      cluster[:site_id] = site[:id]
       cluster[:count] += 1
-      cluster[:lat_sum] += lat.to_f
-      cluster[:lng_sum] += lng.to_f
+      cluster[:lat_sum] += site[:lat].to_f
+      cluster[:lng_sum] += site[:lng].to_f
     end
   end
 
