@@ -23,13 +23,13 @@ class Search
   def results
     return {} if @collection_ids.empty?
 
-    clusterer = Clusterer.new @zoom
-    clusterer.exclude_id @exclude_id if @exclude_id
+    listener = clusterer = Clusterer.new(@zoom)
+    listener = ElasticSearchSitesAdapter::SkipIdListener.new(listener, @exclude_id) if @exclude_id
 
     set_bounds_filter
     clusterer.groups = @groups if @zoom
 
-    adapter = ElasticSearchSitesAdapter.new clusterer
+    adapter = ElasticSearchSitesAdapter.new listener
     adapter.parse @search.stream
     clusterer.clusters
   end

@@ -90,4 +90,20 @@ describe ElasticSearchSitesAdapter do
       }
     )
   end
+
+  context ElasticSearchSitesAdapter::SkipIdListener do
+    it "skips id" do
+      listener = mock('listener')
+      listener.should_not_receive(:add)
+      skip = ElasticSearchSitesAdapter::SkipIdListener.new listener, 1
+      skip.add :id => 1
+    end
+
+    it "doesn't skip id" do
+      listener = mock('listener')
+      listener.should_receive(:add).with :id => 2
+      skip = ElasticSearchSitesAdapter::SkipIdListener.new listener, 1
+      skip.add :id => 2
+    end
+  end
 end

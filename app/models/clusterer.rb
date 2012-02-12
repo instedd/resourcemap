@@ -23,13 +23,7 @@ class Clusterer
     @group_ids = groups.map{|x| x[:id]}
   end
 
-  def exclude_id(id)
-    @exclude_id = id
-  end
-
   def add(site)
-    return if site[:id] == @exclude_id
-
     if @group_ids && site[:parent_ids] && (group_id = (site[:parent_ids] & @group_ids)).present?
       group_id = group_id[0]
       group = @groups[group_id]

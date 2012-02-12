@@ -66,4 +66,15 @@ class ElasticSearchSitesAdapter < Psych::Handler
       end
     end
   end
+
+  class SkipIdListener
+    def initialize(listener, id)
+      @listener = listener
+      @excluded_id = id
+    end
+
+    def add(site)
+      @listener.add site if @excluded_id != site[:id]
+    end
+  end
 end
