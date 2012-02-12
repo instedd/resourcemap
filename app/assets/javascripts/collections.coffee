@@ -26,6 +26,35 @@
     new google.maps.Point(10, 34),
   )
 
+  window.initMapRan = false
+  window.initMap = (collection) ->
+    return false if window.initMapRan
+    window.initMapRan = true
+
+    map_lat = window.collections_lat
+    map_lng = window.collections_lng
+    if collection && collection.position()
+      map_lat = collection.lat()
+      map_lng = collection.lng()
+
+    mapOptions =
+      center: new google.maps.LatLng(map_lat, map_lng)
+      zoom: 4
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    window.map = new google.maps.Map document.getElementById("map"), mapOptions
+
+    listener = google.maps.event.addListener window.map, 'bounds_changed', ->
+      google.maps.event.removeListener listener
+      window.reloadMapSites()
+
+    google.maps.event.addListener window.map, 'dragend', -> window.reloadMapSites()
+    google.maps.event.addListener window.map, 'zoom_changed', ->
+      listener2 = google.maps.event.addListener window.map, 'bounds_changed', ->
+        google.maps.event.removeListener listener2
+        window.reloadMapSites() if window.reloadMapSitesAutomatically
+
+    true
+
   window.reloadMapSites = (callback) ->
     bounds = window.map.getBounds()
 
@@ -121,6 +150,7 @@
         window.createCluster(cluster) for cluster in clusters
 
       window.reuseCurrentClusters = true
+      window.reloadMapSitesAutomatically = true
 
       callback() if callback && typeof(callback) == 'function'
 
@@ -261,6 +291,20 @@
     constructor: (data) ->
       @id = ko.observable data?.id
       @name = ko.observable data?.name
+      @lat = ko.observable data?.lat
+      @lng = ko.observable data?.lng
+      @position = ko.computed
+        read: =>
+          if @lat() && @lng()
+            new google.maps.LatLng(@lat(), @lng())
+          else
+            null
+
+        write: (latLng) =>
+          @lat(latLng.lat())
+          @lng(latLng.lng())
+
+        owner: @
       @sites = ko.observableArray()
       @expanded = ko.observable false
       @sitesPage = 1
@@ -299,7 +343,7 @@
 
   class Collection extends SitesContainer
     constructor: (data) ->
-      super
+      super(data)
       @class = 'Collection'
       @fields = ko.observableArray()
       @checked = ko.observable true
@@ -310,6 +354,8 @@
     level: -> 0
 
     fetchLocation: =>
+      $.get "/collections/#{@id()}.json", {}, (data) =>
+        @lat(data.lat); @lng(data.lng)
 
     fetchFields: =>
       unless @fieldsInitialized
@@ -322,7 +368,7 @@
 
   class Site extends SitesContainer
     constructor: (parent, data) ->
-      super
+      super(data)
       @class = 'Site'
       @parent = parent
       @selected = ko.observable()
@@ -330,21 +376,7 @@
       @parent_id = ko.observable data?.parent_id
       @group = ko.observable data?.group
       @name = ko.observable data?.name
-      @lat = ko.observable data?.lat
-      @lng = ko.observable data?.lng
       @locationMode = ko.observable data?.location_mode
-      @position = ko.computed
-        read: =>
-          if @lat() && @lng()
-            new google.maps.LatLng(@lat(), @lng())
-          else
-            null
-
-        write: (latLng) =>
-          @lat(latLng.lat())
-          @lng(latLng.lng())
-
-        owner: @
       @properties = ko.observable data?.properties
       @hasFocus = ko.observable false
 
@@ -392,35 +424,43 @@
       @currentSite = ko.observable()
       @selectedSite = ko.observable()
 
-      @currentCollection.subscribe (newValue) ->
-        newValue.loadMoreSites() if newValue && newValue.sitesPage == 1
-        window.reloadMapSites() if window.navigated
+      Sammy( ->
+        @get '#:collection', ->
+          collection = self.findCollectionById(parseInt this.params.collection)
+          initialized = window.initMap(collection)
+
+          collection.loadMoreSites() if collection.sitesPage == 1
+          collection.fetchFields()
+
+          self.currentCollection collection
+
+          unless initialized
+            if collection.position()
+              window.reloadMapSitesAutomatically = false
+              window.reuseCurrentClusters = false
+              window.map.panTo(collection.position())
+              window.reloadMapSites()
+
+        @get '', ->
+          initialized = window.initMap()
+          self.currentCollection(null)
+
+          window.reloadMapSites() unless initialized
+
+      ).run()
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
           window.reuseCurrentClusters = false
           window.reloadMapSites()
 
-      Sammy( ->
-        @get '#:collection', ->
-          self.currentCollection self.findCollectionById(parseInt this.params.collection)
-          self.currentCollection().fetchFields()
-
-        @get '', ->
-          self.currentCollection(null)
-      ).run()
-
     findCollectionById: (id) =>
       (x for x in @collections() when x.id() == id)[0]
 
     goToRoot: ->
-      window.navigated = true
-      window.reuseCurrentClusters = false
       location.hash = ''
 
     enterCollection: (collection) ->
-      window.navigated = true
-      window.reuseCurrentClusters = false
       location.hash = "#{collection.id()}"
 
     editCollection: (collection) ->
@@ -487,8 +527,6 @@
       window.deleteMarker site.id()
       window.map.panTo(site.position()) if site.hasLocation()
       window.reloadMapSites =>
-        window.reloadMapSitesAutomatically = true
-
         # Add a marker to the map for setting the site's position
         if !site.group() || (site.group() && site.locationMode() == 'manual')
           @createMarkerForSite site
@@ -561,21 +599,21 @@
   window.reuseCurrentClusters = true
   window.requestNumber = 0
 
-  myOptions =
-    center: new google.maps.LatLng(10, 90)
-    zoom: 4
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  window.map = new google.maps.Map document.getElementById("map"), myOptions
+  # Compute all collections lat/lng: the center of all collections
+  collections_sum_lat = 0
+  collections_sum_lng = 0
+  collections_count = 0
+  for collection in initialCollections when collection.lat && collection.lng
+    collections_sum_lat += parseFloat(collection.lat)
+    collections_sum_lng += parseFloat(collection.lng)
+    collections_count += 1
+
+  if collections_count == 0
+    window.collections_lat = 10
+    window.collections_lng = 90
+  else
+    window.collections_lat = collections_sum_lat / collections_count
+    window.collections_lng = collections_sum_lng / collections_count
 
   window.model = new CollectionViewModel
-
-  listener = google.maps.event.addListener window.map, 'bounds_changed', ->
-    google.maps.event.removeListener listener
-    window.reloadMapSites ->
-      ko.applyBindings window.model
-
-  google.maps.event.addListener window.map, 'dragend', -> window.reloadMapSites()
-  google.maps.event.addListener window.map, 'zoom_changed', ->
-    listener2 = google.maps.event.addListener window.map, 'bounds_changed', ->
-      google.maps.event.removeListener listener2
-      window.reloadMapSites() if window.reloadMapSitesAutomatically
+  ko.applyBindings window.model

@@ -23,7 +23,10 @@ class CollectionsController < ApplicationController
   end
 
   def show
-    add_breadcrumb collection.name, collection_path(collection)
+    respond_to do |format|
+      format.html { add_breadcrumb collection.name, collection_path(collection) }
+      format.json { render :json => collection }
+    end
   end
 
   def members
