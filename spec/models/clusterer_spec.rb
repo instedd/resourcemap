@@ -13,22 +13,22 @@ describe Clusterer do
 
     it "puts two sites in a cluster" do
       clusterer.add 1, 20, 30
-      clusterer.add 2, 30, 40
+      clusterer.add 2, 21, 31
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
-      clusters[:clusters].should eq([{:id => "1:2:4", :lng => 35, :lat => 25, :count => 2}])
+      clusters[:clusters].should eq([{:id => "1:4:6", :lat => 20.5, :lng => 30.5, :count => 2}])
     end
 
     it "puts four sites in two different clusters" do
       clusterer.add 1, 20, 30
-      clusterer.add 2, 30, 40
+      clusterer.add 2, 21, 31
       clusterer.add 3, 65, 120
-      clusterer.add 4, 75, 130
+      clusterer.add 4, 66, 121
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
-      clusters[:clusters].should =~ [{:id => "1:2:4", :lng => 35, :lat => 25, :count => 2}, {:id => "1:4:5", :lng => 125, :lat => 70, :count => 2}]
+      clusters[:clusters].should =~ [{:id => "1:4:6", :lat => 20.5, :lng => 30.5, :count => 2}, {:id => "1:7:8", :lat => 65.5, :lng => 120.5, :count => 2}]
     end
   end
 

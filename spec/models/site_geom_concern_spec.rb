@@ -128,6 +128,14 @@ describe Site::GeomConcern do
       assert_location site1, 35, 45
     end
 
+    it "stores location automatically ignoring nulls" do
+      site1 = collection.sites.make :group => true, :location_mode => :automatic, :lat => 1, :lng => 2
+        site11 = collection.sites.make :parent_id => site1.id, :lat => nil, :lng => nil, :group => true
+        site12 = collection.sites.make :parent_id => site1.id, :lat => 40, :lng => 50
+
+      assert_location site1, 40, 50
+    end
+
     it "doesn't store location automatically" do
       site1 = collection.sites.make :group => true, :location_mode => :manual, :lat => 1, :lng => 2
         site11 = collection.sites.make :parent_id => site1.id, :lat => 30, :lng => 40

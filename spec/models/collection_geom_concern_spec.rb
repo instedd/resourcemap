@@ -11,4 +11,13 @@ describe Collection::GeomConcern do
     collection.lat.to_f.should eq(35.0)
     collection.lng.to_f.should eq(25.0)
   end
+
+  it "ignores sites without lat/lng", :focus => true do
+    site1 = collection.sites.make :lat => nil, :lng => nil, :group => true
+    site2 = collection.sites.make :lat => 30, :lng => 20
+
+    collection.reload
+    collection.lat.to_f.should eq(30.0)
+    collection.lng.to_f.should eq(20.0)
+  end
 end

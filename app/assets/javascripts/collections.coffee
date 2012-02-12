@@ -213,6 +213,7 @@
                                     map: window.map
                                     position: new google.maps.LatLng(cluster.lat, cluster.lng)
                                     count: cluster.count
+                                    maxZoom: cluster.max_zoom
 
   window.deleteCluster = (id) ->
     window.clusters[id].setMap null
@@ -222,6 +223,7 @@
     @position = options.position
     @count = options.count
     @setMap options.map
+    @maxZoom = options.maxZoom
 
   Cluster.prototype = new google.maps.OverlayView
 
@@ -266,7 +268,9 @@
 
     @listener = google.maps.event.addDomListener @div, 'click', =>
       window.map.panTo(@position)
-      window.map.setZoom(window.map.getZoom() + 1)
+      nextZoom = (if @maxZoom then @maxZoom else window.map.getZoom()) + 1
+      while window.map.getZoom() != nextZoom
+        window.map.setZoom nextZoom
 
   Cluster.prototype.draw = ->
     overlayProjection = @getProjection()

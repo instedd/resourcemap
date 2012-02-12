@@ -12,7 +12,7 @@ module Site::GeomConcern
     if group
       query = 'min(min_lat) as v1, min(max_lat) as v2, max(min_lat) as v3, max(max_lat) as v4, min(min_lng) as v5, min(max_lng) as v6, max(min_lng) as v7, max(max_lng) as v8'
       query += ', sum(lat) as v9, sum(lng) as v10, count(*) as v11' if automatic_location_mode?
-      self.sites.select(query).each do |v|
+      self.sites.where('lat is not null and lng is not null').select(query).each do |v|
         if v.v1 && v.v2 && v.v3 && v.v4 && v.v5 && v.v6 && v.v7 && v.v8
           self.min_lat = [v.v1, v.v2].min
           self.max_lat = [v.v3, v.v4].max

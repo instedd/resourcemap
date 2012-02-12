@@ -78,13 +78,13 @@ class Search
     else
       sites = sites.where('(max_lng >= ? AND ? >= min_lng) OR (max_lng >= ? AND ? >= min_lng)', @bounds[:w], 180, -180, @bounds[:e])
     end
-    @groups = sites.values_of(:id, :lat, :lng, :min_lat, :max_lat, :min_lng, :max_lng).map do |id, lat, lng, min_lat, max_lat, min_lng, max_lng|
+    @groups = sites.values_of(:id, :lat, :lng, :min_lat, :max_lat, :min_lng, :max_lng, :max_zoom).map do |id, lat, lng, min_lat, max_lat, min_lng, max_lng, max_zoom|
       @bounds[:n] = max_lat + 0.001 if max_lat > @bounds[:n]
       @bounds[:s] = min_lat - 0.001 if min_lat < @bounds[:s]
       @bounds[:e] = max_lng + 0.001 if max_lng > @bounds[:e]
       @bounds[:w] = min_lng - 0.001 if min_lng < @bounds[:w]
 
-      {:id => id, :lat => lat, :lng => lng}
+      {:id => id, :lat => lat, :lng => lng, :max_zoom => max_zoom}
     end
   end
 

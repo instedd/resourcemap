@@ -39,6 +39,7 @@ class Clusterer
       cluster[:count] += 1
       cluster[:lat_sum] += group[:lat].to_f
       cluster[:lng_sum] += group[:lng].to_f
+      cluster[:max_zoom] = group[:max_zoom]
     else
       @x = ((90 + lng) / @width).floor
       @y = ((180 + lat) / @height).floor
@@ -60,12 +61,14 @@ class Clusterer
       if count == 1
         sites_to_return << {:id => cluster[:site_id], :lat => cluster[:lat_sum], :lng => cluster[:lng_sum]}
       else
-        clusters_to_return.push({
+        hash = {
           :id => cluster[:id],
           :lat => cluster[:lat_sum] / count,
           :lng => cluster[:lng_sum] / count,
           :count => count
-        })
+        }
+        hash[:max_zoom] = cluster[:max_zoom] if cluster[:max_zoom]
+        clusters_to_return.push hash
       end
     end
 
