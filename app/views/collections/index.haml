@@ -113,6 +113,10 @@
         %span{ko(:visible => 'group() && id()')} Edit Group
         %span{ko(:visible => '!group() && !id()')} New Site
         %span{ko(:visible => '!group() && id()')} Edit Site
+        <!-- ko if: $root.selectedSite() && !id() -->
+        %span at
+        %span{ko(:text => '$root.selectedSite().name()')}
+        <!-- /ko -->
       .tablescroll
         %table.GralTable.CleanTable
           %tbody
