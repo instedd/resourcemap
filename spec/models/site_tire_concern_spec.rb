@@ -34,9 +34,11 @@ describe Site::TireConcern do
   end
 
   it "doesn't store groups in index" do
-    site = Site.make :group => true
+    collection = Collection.make
+    group = collection.sites.make :group => true
+    site = collection.sites.make
 
-    search = Tire::Search::Search.new site.index_name
-    search.perform.results.length.should eq(0)
+    search = Tire::Search::Search.new collection.index_name
+    search.perform.results.length.should eq(1)
   end
 end

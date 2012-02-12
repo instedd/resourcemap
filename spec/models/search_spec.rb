@@ -57,13 +57,13 @@ describe Search do
 
   context "hierarchy" do
     let(:collection) { Collection.make }
-    before(:each) do
 
+    before(:each) do
       @site1 = collection.sites.make :group => true
       @site2 = collection.sites.make :group => true, :parent_id => @site1.id
       @site21 = collection.sites.make :parent_id => @site2.id, :lat => 30, :lng => 40
       @site21 = collection.sites.make :parent_id => @site2.id, :lat => 40, :lng => 60
-      @site3 = collection.sites.make :group => true, :parent_id => @site1.id, :lat => 1, :lng => 2
+      @site3 = collection.sites.make :group => true, :parent_id => @site1.id, :lat => 1, :lng => 2, :location_mode => :manual
       @site31 = collection.sites.make :parent_id => @site3.id, :lat => 10, :lng => 20
       @site32 = collection.sites.make :parent_id => @site3.id, :lat => 15, :lng => 20
     end
@@ -74,7 +74,7 @@ describe Search do
       search.bounds = {:s => 8, :n => 18, :e => 22, :w => 18}
       results = search.results
       results[:sites].should be_nil
-      results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1, :lng => 2, :count => 2}])
+      results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1.0, :lng => 2.0, :count => 2, :max_zoom => 4}])
     end
 
     it "searches with group hierarchy with bounds crossing the anti-meridian" do
@@ -83,7 +83,7 @@ describe Search do
       search.bounds = {:s => 8, :n => 18, :e => 25, :w => 120}
       results = search.results
       results[:sites].should be_nil
-      results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1, :lng => 2, :count => 2}])
+      results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1.0, :lng => 2.0, :count => 2, :max_zoom => 4}])
     end
   end
 end
