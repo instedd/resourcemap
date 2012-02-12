@@ -1,288 +1,51 @@
 @initCollections = (initialCollections) ->
   SITES_PER_PAGE = 25
 
-  window.markerImageInactive = new google.maps.MarkerImage(
-    "/assets/marker_sprite_inactive.png",
-    new google.maps.Size(20, 34),
-    new google.maps.Point(0, 0),
-    new google.maps.Point(10, 34),
-  )
-  window.markerImageInactiveShadow = new google.maps.MarkerImage(
-    "/assets/marker_sprite_inactive.png",
-    new google.maps.Size(37, 34),
-    new google.maps.Point(20, 0),
-    new google.maps.Point(10, 34),
-  )
-  window.markerImageTarget = new google.maps.MarkerImage(
-    "/assets/marker_sprite_target.png",
-    new google.maps.Size(20, 34),
-    new google.maps.Point(0, 0),
-    new google.maps.Point(10, 34),
-  )
-  window.markerImageTargetShadow = new google.maps.MarkerImage(
-    "/assets/marker_sprite_target.png",
-    new google.maps.Size(37, 34),
-    new google.maps.Point(20, 0),
-    new google.maps.Point(10, 34),
-  )
-
-  window.initMapRan = false
-  window.initMap = (collection) ->
-    return false if window.initMapRan
-    window.initMapRan = true
-
-    map_lat = window.collections_lat
-    map_lng = window.collections_lng
-    if collection && collection.position()
-      map_lat = collection.lat()
-      map_lng = collection.lng()
-
-    mapOptions =
-      center: new google.maps.LatLng(map_lat, map_lng)
-      zoom: 4
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    window.map = new google.maps.Map document.getElementById("map"), mapOptions
-
-    listener = google.maps.event.addListener window.map, 'bounds_changed', ->
-      google.maps.event.removeListener listener
-      window.reloadMapSites()
-
-    google.maps.event.addListener window.map, 'dragend', -> window.reloadMapSites()
-    google.maps.event.addListener window.map, 'zoom_changed', ->
-      listener2 = google.maps.event.addListener window.map, 'bounds_changed', ->
-        google.maps.event.removeListener listener2
-        window.reloadMapSites() if window.reloadMapSitesAutomatically
-
-    true
-
-  window.reloadMapSites = (callback) ->
-    bounds = window.map.getBounds()
-
-    # Wait until map is loaded
-    unless bounds
-      setTimeout(( -> window.reloadMapSites(callback)), 100)
-      return
-
-    ne = bounds.getNorthEast()
-    sw = bounds.getSouthWest()
-    collection_ids = if window.model.currentCollection()
-                       [window.model.currentCollection().id()]
-                     else
-                        c.id for c in window.model.collections() when c.checked()
-    currentSiteId = window.model.currentSite()?.id()
-    query =
-      n: ne.lat()
-      s: sw.lat()
-      e: ne.lng()
-      w: sw.lng()
-      z: window.map.getZoom()
-      collection_ids: collection_ids
-      exclude_id: currentSiteId
-
-    window.requestNumber += 1
-    currentRequestNumber = window.requestNumber
-
-    getCallback = (data = {}) ->
-      return unless currentRequestNumber == window.requestNumber
-
-      currentSiteId = window.model.currentSite()?.id()
-      selectedSiteId = window.model.selectedSite()?.id()
-
-      sites = data.sites
-      sites ||= []
-      dataSiteIds = {}
-
-      # Add markers if they are not already on the map
-      for site in sites
-        dataSiteIds[site.id] = site.id
-        if !window.markers[site.id]
-          markerOptions =
-            map: window.map
-            position: new google.maps.LatLng(site.lat, site.lng)
-          # Show site in grey if editing a site (but not if it's the one being edited)
-          if currentSiteId && currentSiteId != site.id
-            markerOptions.icon = window.markerImageInactive
-            markerOptions.shadow = window.markerImageInactiveShadow
-          if selectedSiteId && selectedSiteId == site.id
-            markerOptions.icon = window.markerImageTarget
-            markerOptions.shadow = window.markerImageTargetShadow
-          window.markers[site.id] = new google.maps.Marker markerOptions
-          window.markers[site.id].siteId = site.id
-
-      # Determine which markers need to be removed from the map
-      # Don't remove the pin for the current site
-      currentSiteId = (currentSiteId).toString() if currentSiteId
-      toRemove = []
-      for siteId, marker of window.markers
-        if !dataSiteIds[siteId] && siteId != currentSiteId
-          toRemove.push siteId
-
-      # And remove them
-      for siteId in toRemove
-        window.deleteMarker siteId
-
-      clusters = data.clusters
-      clusters ||= []
-
-      if window.reuseCurrentClusters
-        dataClusterIds = {}
-
-        # Add clusters if they are not already on the map
-        for cluster in clusters
-          dataClusterIds[cluster.id] = cluster.id
-          createCluster(cluster) unless window.clusters[cluster.id]
-
-        # Determine which clusters need to be removed from the map
-        toRemove = []
-        for clusterId, cluster of window.clusters
-          unless dataClusterIds[clusterId]
-            toRemove.push clusterId
-
-        # And remove them
-        window.deleteCluster clusterId for clusterId in toRemove
-      else
-        toRemove = []
-        for clusterId, cluster of window.clusters
-          toRemove.push clusterId
-
-        window.deleteCluster clusterId for clusterId in toRemove
-
-        window.createCluster(cluster) for cluster in clusters
-
-      window.reuseCurrentClusters = true
-      window.reloadMapSitesAutomatically = true
-
-      callback() if callback && typeof(callback) == 'function'
-
-    if query.collection_ids.length == 0
-      # Save a request to the server if there are no selected collections
-      getCallback()
-    else
-      $.get "/sites/search.json", query, getCallback
-
-  window.setAllMarkersInactive = ->
-    currentSiteId = window.model.currentSite()?.id()
-    currentSiteId = (currentSiteId).toString() if currentSiteId
-    for siteId, marker of window.markers
-      if currentSiteId == siteId
-        window.setMarkerIcon marker, 'target'
-      else
-        window.setMarkerIcon marker, 'inactive'
-
-  window.setAllMarkersActive = ->
-    selectedSiteId = window.model.selectedSite()?.id()
-    selectedSiteId = (selectedSiteId).toString() if selectedSiteId
-    for siteId, marker of window.markers
-      if selectedSiteId == siteId
-        window.setMarkerIcon marker, 'target'
-      else
-        window.setMarkerIcon marker, 'active'
-
-  window.setMarkerIcon = (marker, icon) ->
-    switch icon
-      when 'active'
-        marker.setIcon null
-        marker.setShadow null
-      when 'inactive'
-        marker.setIcon window.markerImageInactive
-        marker.setShadow window.markerImageInactiveShadow
-      when 'target'
-        marker.setIcon window.markerImageTarget
-        marker.setShadow window.markerImageTargetShadow
-
-  window.setupMarkerListener = (site, marker) ->
-    window.markerListener = google.maps.event.addListener marker, 'position_changed', =>
-      site.position(marker.getPosition())
-
-  window.deleteMarker = (siteId) ->
-    if siteId
-      if window.markers[siteId]
-        window.markers[siteId].setMap null
-        delete window.markers[siteId]
-    else if window.marker
-      window.marker.setMap null
-      delete window.marker
-
-  window.deleteMarkerListener = ->
-    if window.markerListener
-      google.maps.event.removeListener window.markerListener
-      delete window.markerListener
-
-  window.createCluster = (cluster) ->
-    window.clusters[cluster.id] = new Cluster
-                                    map: window.map
-                                    position: new google.maps.LatLng(cluster.lat, cluster.lng)
-                                    count: cluster.count
-                                    maxZoom: cluster.max_zoom
-
-  window.deleteCluster = (id) ->
-    window.clusters[id].setMap null
-    delete window.clusters[id]
-
-  Cluster = (options) ->
-    @position = options.position
-    @count = options.count
-    @setMap options.map
-    @maxZoom = options.maxZoom
+  Cluster = (map, cluster) ->
+    @position = new google.maps.LatLng(cluster.lat, cluster.lng)
+    @count = cluster.count
+    @map = map
+    @setMap map
+    @maxZoom = cluster.max_zoom
 
   Cluster.prototype = new google.maps.OverlayView
 
   Cluster.prototype.onAdd = ->
     @div = document.createElement 'DIV'
-    @div.style.border = "none"
-    @div.style.borderWidth = "0px"
-    @div.style.display = "table-cell"
-    @div.style.position = "absolute"
-    @div.style.textAlign = 'center'
-    @div.style.fontSize = '11px'
-    @div.style.cursor = 'pointer'
+    @div.className = 'cluster'
     @div.innerText = (@count).toString()
 
-    if @count < 10
-      @image = 1
-      @width = 53
-      @height = 52
-    else if @count < 25
-      @image = 2
-      @width = 56
-      @height = 55
-    else if @count < 50
-      @image = 3
-      @width = 66
-      @height = 65
-    else if @count < 100
-      @image = 4
-      @width = 78
-      @height = 77
-    else
-      @image = 5
-      @width = 90
-      @height = 89
+    [@image, @width, @height] = if @count < 10
+                                  [1, 53, 52]
+                                else if @count < 25
+                                  [2, 56, 55]
+                                else if @count < 50
+                                  [3, 66, 65]
+                                else if @count < 100
+                                  [4, 78, 77]
+                                else
+                                  [5, 90, 89]
 
     @div.style.backgroundImage = "url('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m#{@image}.png')"
     @div.style.width = "#{@width}px"
     @div.style.height = @div.style.lineHeight = "#{@height}px"
 
-    panes = this.getPanes()
-    panes.overlayMouseTarget.appendChild @div
+    @getPanes().overlayMouseTarget.appendChild @div
 
     @listener = google.maps.event.addDomListener @div, 'click', =>
-      window.map.panTo(@position)
-      nextZoom = (if @maxZoom then @maxZoom else window.map.getZoom()) + 1
-      while window.map.getZoom() != nextZoom
-        window.map.setZoom nextZoom
+      @map.panTo(@position)
+      nextZoom = (if @maxZoom then @maxZoom else @map.getZoom()) + 1
+      @map.setZoom nextZoom
 
   Cluster.prototype.draw = ->
-    overlayProjection = @getProjection()
-    pos = overlayProjection.fromLatLngToDivPixel @position
+    pos = @getProjection().fromLatLngToDivPixel @position
     @div.style.left = "#{pos.x - @width / 2}px"
     @div.style.top = "#{pos.y - @height / 2}px"
 
   Cluster.prototype.onRemove = ->
     google.maps.event.removeListener @listener
     @div.parentNode.removeChild @div
-    @div = null
-
+    delete @div
 
   class Field
     constructor: (data) ->
@@ -298,16 +61,8 @@
       @lat = ko.observable data?.lat
       @lng = ko.observable data?.lng
       @position = ko.computed
-        read: =>
-          if @lat() && @lng()
-            new google.maps.LatLng(@lat(), @lng())
-          else
-            null
-
-        write: (latLng) =>
-          @lat(latLng.lat())
-          @lng(latLng.lng())
-
+        read: => if @lat() && @lng() then new google.maps.LatLng(@lat(), @lng()) else null
+        write: (latLng) => @lat(latLng.lat()); @lng(latLng.lng())
         owner: @
       @sites = ko.observableArray()
       @expanded = ko.observable false
@@ -393,7 +148,8 @@
       @position() && !(@group() && @locationMode() == 'none')
 
     fetchLocation: =>
-      $.get "/sites/#{@id()}.json", {}, (data) => @lat(data.lat); @lng(data.lng)
+      $.get "/sites/#{@id()}.json", {}, (data) =>
+        @lat(data.lat); @lng(data.lng)
       @parent.fetchLocation()
 
     copyPropertiesFromCollection: (collection) =>
@@ -419,7 +175,7 @@
       json
 
   class CollectionViewModel
-    constructor: ->
+    constructor: (lat, lng) ->
       self = this
 
       @collections = ko.observableArray $.map(initialCollections, (x) -> new Collection(x))
@@ -427,11 +183,30 @@
       @currentParent = ko.observable()
       @currentSite = ko.observable()
       @selectedSite = ko.observable()
+      @collections_center = new google.maps.LatLng(lat, lng)
+      @markers = {}
+      @clusters = {}
+      @reloadMapSitesAutomatically = true
+      @reuseCurrentClusters = true
+      @requestNumber = 0
+
+      @markerImageInactive = new google.maps.MarkerImage(
+        "/assets/marker_sprite_inactive.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
+      )
+      @markerImageInactiveShadow = new google.maps.MarkerImage(
+        "/assets/marker_sprite_inactive.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
+      )
+      @markerImageTarget = new google.maps.MarkerImage(
+        "/assets/marker_sprite_target.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
+      )
+      @markerImageTargetShadow = new google.maps.MarkerImage(
+        "/assets/marker_sprite_target.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
+      )
 
       Sammy( ->
         @get '#:collection', ->
           collection = self.findCollectionById(parseInt this.params.collection)
-          initialized = window.initMap(collection)
+          initialized = self.initMap(collection)
 
           collection.loadMoreSites() if collection.sitesPage == 1
           collection.fetchFields()
@@ -439,24 +214,21 @@
           self.currentCollection collection
 
           unless initialized
-            if collection.position()
-              window.reloadMapSitesAutomatically = false
-              window.reuseCurrentClusters = false
-              window.map.panTo(collection.position())
-              window.reloadMapSites()
+            self.reloadMapSitesAutomatically = false
+            self.reuseCurrentClusters = false
+            self.map.panTo(collection.position()) if collection.position()
+            self.reloadMapSites()
 
         @get '', ->
-          initialized = window.initMap()
+          initialized = self.initMap()
           self.currentCollection(null)
-
-          window.reloadMapSites() unless initialized
-
+          self.reloadMapSites() unless initialized
       ).run()
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
-          window.reuseCurrentClusters = false
-          window.reloadMapSites()
+          @reuseCurrentClusters = false
+          @reloadMapSites()
 
     findCollectionById: (id) =>
       (x for x in @collections() when x.id() == id)[0]
@@ -481,7 +253,7 @@
 
     createSiteOrGroup: (group) =>
       parent = if @selectedSite() then @selectedSite() else @currentCollection()
-      pos = window.map.getCenter()
+      pos = @map.getCenter()
       site = if group
                new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
              else
@@ -496,28 +268,27 @@
         @createMarkerForSite site
 
     createMarkerForSite: (site, drop = false) =>
-      window.marker = new google.maps.Marker
+      @marker = new google.maps.Marker
+        map: @map
         position: site.position()
         animation: if drop || !site.id() then google.maps.Animation.DROP else null
         draggable: true
-        icon: window.markerImageTarget
-        shadow: window.markerImageTargetShadow
-        map: window.map
-      window.setupMarkerListener site, window.marker
-      window.setAllMarkersInactive()
+        icon: @markerImageTarget
+        shadow: @markerImageTargetShadow
+      @setupMarkerListener site, @marker
+      @setAllMarkersInactive()
 
     subscribeToLocationModeChange: (site) =>
-      window.subscription = site.locationMode.subscribe (newLocationMode) =>
+      @subscription = site.locationMode.subscribe (newLocationMode) =>
         if newLocationMode == 'manual'
           @createMarkerForSite site, true
         else
-          window.deleteMarker()
-          window.deleteMarkerListener()
+          @deleteMarker()
 
     unsubscribeToLocationModeChange: =>
-      if window.subscription
-        window.subscription.dispose()
-        delete window.subscription
+      if @subscription
+        @subscription.dispose()
+        delete @subscription
 
     editSite: (site) =>
       site.copyPropertiesToCollection(@currentCollection())
@@ -525,12 +296,11 @@
       @currentSite(site)
       @selectedSite(site)
 
-      # Pan the map to it's location
-      window.reloadMapSitesAutomatically = false
-      window.reuseCurrentClusters = false
-      window.deleteMarker site.id()
-      window.map.panTo(site.position()) if site.hasLocation()
-      window.reloadMapSites =>
+      @deleteMarker site.id()
+      @reloadMapSitesAutomatically = false
+      @reuseCurrentClusters = false
+      @map.panTo(site.position()) if site.hasLocation()
+      @reloadMapSites =>
         # Add a marker to the map for setting the site's position
         if !site.group() || (site.group() && site.locationMode() == 'manual')
           @createMarkerForSite site
@@ -540,11 +310,10 @@
     exitSite: =>
       @unsubscribeToLocationModeChange()
       @currentSite(null)
-      window.deleteMarker()
-      window.deleteMarkerListener()
-      window.setAllMarkersActive()
-      window.reuseCurrentClusters = false
-      window.reloadMapSites()
+      @deleteMarker()
+      @setAllMarkersActive()
+      @reuseCurrentClusters = false
+      @reloadMapSites()
 
     saveSite: =>
       callback = (data) =>
@@ -577,8 +346,8 @@
 
     selectSite: (site) =>
       if @selectedSite() == site
-        if !site.group() && window.markers[site.id()]
-          window.setMarkerIcon window.markers[site.id()], 'active'
+        if !site.group() && @markers[site.id()]
+          @setMarkerIcon @markers[site.id()], 'active'
         @selectedSite().selected(false)
         @selectedSite(null)
       else
@@ -587,37 +356,197 @@
         @selectedSite(site)
         @selectedSite().selected(true)
         if @selectedSite().id() && @selectedSite().hasLocation()
-          window.map.panTo(@selectedSite().position())
-          window.reloadMapSites =>
-            if oldSiteId && window.markers[oldSiteId]
-              window.setMarkerIcon window.markers[oldSiteId], 'active'
-            if !@selectedSite().group() && window.markers[@selectedSite().id()]
-              window.setMarkerIcon window.markers[@selectedSite().id()], 'target'
+          @map.panTo(@selectedSite().position())
+          @reloadMapSites =>
+            if oldSiteId && @markers[oldSiteId]
+              @setMarkerIcon @markers[oldSiteId], 'active'
+            if !@selectedSite().group() && @markers[@selectedSite().id()]
+              @setMarkerIcon @markers[@selectedSite().id()], 'target'
 
     toggleSite: (site) =>
       site.toggle()
 
-  window.markers = {}
-  window.clusters = {}
-  window.reloadMapSitesAutomatically = true
-  window.reuseCurrentClusters = true
-  window.requestNumber = 0
+    initMap: (collection) =>
+      return false if @map
+
+      mapOptions =
+        center: if collection?.position() then collection.position() else @collections_center
+        zoom: 4
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      @map = new google.maps.Map document.getElementById("map"), mapOptions
+
+      listener = google.maps.event.addListener @map, 'bounds_changed', =>
+        google.maps.event.removeListener listener
+        @reloadMapSites()
+
+      google.maps.event.addListener @map, 'dragend', => @reloadMapSites()
+      google.maps.event.addListener @map, 'zoom_changed', =>
+        listener2 = google.maps.event.addListener @map, 'bounds_changed', =>
+          google.maps.event.removeListener listener2
+          @reloadMapSites() if @reloadMapSitesAutomatically
+
+      true
+
+    reloadMapSites: (callback) =>
+      bounds = @map.getBounds()
+
+      # Wait until map is loaded
+      unless bounds
+        setTimeout(( => @reloadMapSites(callback)), 100)
+        return
+
+      ne = bounds.getNorthEast()
+      sw = bounds.getSouthWest()
+      collection_ids = if @currentCollection()
+                         [@currentCollection().id()]
+                       else
+                          c.id for c in @collections() when c.checked()
+      query =
+        n: ne.lat()
+        s: sw.lat()
+        e: ne.lng()
+        w: sw.lng()
+        z: @map.getZoom()
+        collection_ids: collection_ids
+        exclude_id: @currentSite()?.id()
+
+      @requestNumber += 1
+      currentRequestNumber = @requestNumber
+
+      getCallback = (data = {}) =>
+        return unless currentRequestNumber == @requestNumber
+
+        @drawSitesInMap data.sites
+        @drawClustersInMap data.clusters
+        @reloadMapSitesAutomatically = true
+
+        callback() if callback && typeof(callback) == 'function'
+
+      if query.collection_ids.length == 0
+        # Save a request to the server if there are no selected collections
+        getCallback()
+      else
+        $.get "/sites/search.json", query, getCallback
+
+    drawSitesInMap: (sites = []) =>
+      dataSiteIds = {}
+      currentSiteId = @currentSite()?.id()
+      selectedSiteId = @selectedSite()?.id()
+
+      # Add markers if they are not already on the map
+      for site in sites
+        dataSiteIds[site.id] = site.id
+        unless @markers[site.id]
+          markerOptions =
+            map: @map
+            position: new google.maps.LatLng(site.lat, site.lng)
+          # Show site in grey if editing a site (but not if it's the one being edited)
+          if currentSiteId && currentSiteId != site.id
+            markerOptions.icon = @markerImageInactive
+            markerOptions.shadow = @markerImageInactiveShadow
+          if selectedSiteId && selectedSiteId == site.id
+            markerOptions.icon = @markerImageTarget
+            markerOptions.shadow = @markerImageTargetShadow
+          @markers[site.id] = new google.maps.Marker markerOptions
+          @markers[site.id].siteId = site.id
+
+      # Determine which markers need to be removed from the map
+      toRemove = []
+      for siteId, marker of @markers
+        toRemove.push siteId unless dataSiteIds[siteId]
+
+      # And remove them
+      for siteId in toRemove
+        @deleteMarker siteId
+
+    drawClustersInMap: (clusters = []) =>
+      if @reuseCurrentClusters
+        dataClusterIds = {}
+
+        # Add clusters if they are not already on the map
+        for cluster in clusters
+          dataClusterIds[cluster.id] = cluster.id
+          @createCluster(cluster) unless @clusters[cluster.id]
+
+        # Determine which clusters need to be removed from the map
+        toRemove = []
+        for clusterId, cluster of @clusters
+          toRemove.push clusterId unless dataClusterIds[clusterId]
+
+        # And remove them
+        @deleteCluster clusterId for clusterId in toRemove
+      else
+        toRemove = []
+        for clusterId, cluster of @clusters
+          toRemove.push clusterId
+
+        @deleteCluster clusterId for clusterId in toRemove
+        @createCluster(cluster) for cluster in clusters
+
+      @reuseCurrentClusters = true
+
+    setAllMarkersInactive: =>
+      currentSiteId = @currentSite()?.id()?.toString()
+      for siteId, marker of @markers
+        @setMarkerIcon marker, (if currentSiteId == siteId then 'target' else 'inactive')
+
+    setAllMarkersActive: =>
+      selectedSiteId = @selectedSite()?.id()?.toString()
+      for siteId, marker of @markers
+        @setMarkerIcon marker, (if selectedSiteId == siteId then 'target' else 'active')
+
+    setMarkerIcon: (marker, icon) =>
+      switch icon
+        when 'active'
+          marker.setIcon null
+          marker.setShadow null
+        when 'inactive'
+          marker.setIcon @markerImageInactive
+          marker.setShadow @markerImageInactiveShadow
+        when 'target'
+          marker.setIcon @markerImageTarget
+          marker.setShadow @markerImageTargetShadow
+
+    setupMarkerListener: (site, marker) =>
+      @markerListener = google.maps.event.addListener marker, 'position_changed', =>
+        site.position(marker.getPosition())
+
+    deleteMarker: (siteId) =>
+      if siteId
+        if @markers[siteId]
+          @markers[siteId].setMap null
+          delete @markers[siteId]
+      else if @marker
+        @marker.setMap null
+        delete @marker
+        @deleteMarkerListener
+
+    deleteMarkerListener: =>
+      if @markerListener
+        google.maps.event.removeListener @markerListener
+        delete @markerListener
+
+    createCluster: (cluster) =>
+      @clusters[cluster.id] = new Cluster @map, cluster
+
+    deleteCluster: (id) =>
+      @clusters[id].setMap null
+      delete @clusters[id]
 
   # Compute all collections lat/lng: the center of all collections
-  collections_sum_lat = 0
-  collections_sum_lng = 0
-  collections_count = 0
+  sum_lat = 0
+  sum_lng = 0
+  count = 0
   for collection in initialCollections when collection.lat && collection.lng
-    collections_sum_lat += parseFloat(collection.lat)
-    collections_sum_lng += parseFloat(collection.lng)
-    collections_count += 1
+    sum_lat += parseFloat(collection.lat)
+    sum_lng += parseFloat(collection.lng)
+    count += 1
 
-  if collections_count == 0
-    window.collections_lat = 10
-    window.collections_lng = 90
+  if count == 0
+    sum_lat = 10
+    sum_lng = 90
   else
-    window.collections_lat = collections_sum_lat / collections_count
-    window.collections_lng = collections_sum_lng / collections_count
+    sum_lat /= count
+    sum_lng /= count
 
-  window.model = new CollectionViewModel
-  ko.applyBindings window.model
+  ko.applyBindings new CollectionViewModel(sum_lat, sum_lng)
