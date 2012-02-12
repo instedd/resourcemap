@@ -1,4 +1,5 @@
 class Collection < ActiveRecord::Base
+  include Collection::GeomConcern
   include Collection::TireConcern
 
   validates_presence_of :name

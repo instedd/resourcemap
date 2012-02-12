@@ -4,7 +4,8 @@ module Site::GeomConcern
   included do
     before_save :compute_bounding_box_and_zoom, :unless => :group, :if => lambda { new_record? || lat_changed? || lng_changed? || min_zoom_changed? || max_zoom_changed? }
     before_save :compute_bounding_box_and_zoom!, :if => lambda { !@computed_location && group? && !new_record? && location_mode_changed? }
-    after_save  :compute_parent_bounding_box_and_zoom, :if => lambda { parent_id && (new_record? || lat_changed? || lng_changed? || min_lat_changed? || max_lat_changed? || min_lng_changed? || max_lng_changed? || min_zoom_changed? || max_zoom_changed? ) }
+    after_save  :compute_parent_bounding_box_and_zoom!, :if => lambda { parent_id && (new_record? || lat_changed? || lng_changed? || min_lat_changed? || max_lat_changed? || min_lng_changed? || max_lng_changed? || min_zoom_changed? || max_zoom_changed? ) }
+    after_save  :compute_collection_center!, :if => lambda { !parent_id && (new_record? || lat_changed? || lng_changed?) }
   end
 
   def compute_bounding_box_and_zoom
@@ -51,8 +52,12 @@ module Site::GeomConcern
     self.save!
   end
 
-  def compute_parent_bounding_box_and_zoom
+  def compute_parent_bounding_box_and_zoom!
     parent.compute_bounding_box_and_zoom!
+  end
+
+  def compute_collection_center!
+    collection.compute_center!
   end
 
   def automatic_location_mode?
