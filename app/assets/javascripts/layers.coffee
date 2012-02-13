@@ -1,4 +1,4 @@
-@initLayers = (initialLayers) ->
+@initLayers = ->
   class Layer
     constructor: (data) ->
       @id = ko.observable data?.id
@@ -35,8 +35,9 @@
       kind: @kind()
 
   class LayersViewModel
-    constructor: ->
-      @layers = ko.observableArray $.map(initialLayers, (x) -> new Layer(x))
+    constructor: (collectionId, layers) ->
+      @collectionId = collectionId
+      @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @currentLayer = ko.observable()
       @currentField = ko.observable()
 
@@ -70,13 +71,13 @@
 
       if @currentLayer().id()
         json._method = 'put'
-        $.post "/collections/#{collectionId}/layers/#{@currentLayer().id()}.json", json, callback
+        $.post "/collections/#{@collectionId}/layers/#{@currentLayer().id()}.json", json, callback
       else
-        $.post "/collections/#{collectionId}/layers.json", json, callback
+        $.post "/collections/#{@collectionId}/layers.json", json, callback
 
     deleteLayer: (layer) =>
       if confirm("Are you sure you want to delete layer #{layer.name()}?")
-        $.post "/collections/#{collectionId}/layers/#{layer.id()}", {_method: 'delete'}, =>
+        $.post "/collections/#{@collectionId}/layers/#{layer.id()}", {_method: 'delete'}, =>
           @layers.remove(layer)
 
     newTextField: =>
@@ -102,5 +103,8 @@
           @currentField(@currentLayer().fields()[0])
           @currentField().hasFocus(true)
 
+  match = window.location.toString().match(/\/collections\/(\d+)\/layers/)
+  collectionId = parseInt(match[1])
 
-  ko.applyBindings new LayersViewModel
+  $.get "/collections/#{collectionId}/layers.json", {}, (layers) =>
+    ko.applyBindings new LayersViewModel(collectionId, layers)

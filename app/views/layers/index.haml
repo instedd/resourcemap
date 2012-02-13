@@ -1,7 +1,6 @@
 - content_for :head do
   :javascript
-    var collectionId = #{collection.id};
-    $(function() { initLayers(#{layers.to_json(:include => :fields)}); });
+    $(function() { initLayers(); });
 = render 'collections/tabs'
 
 .tabsline
@@ -64,4 +63,3 @@
   -# New layer link
   %div{ko(:visible => '!currentLayer()')}
     = ko_link_to_root 'New layer', :newLayer
-
