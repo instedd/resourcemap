@@ -37,7 +37,7 @@
         %td
           %div
             <!-- ko if: group() -->
-            %a{ko(:click => '$root.toggleSite', :style => "{marginLeft: '' + ((level() - 1) * 20) + 'px'}"), :href => 'javascript:void(0)', }
+            %a{ko(:click => '$root.toggleSite', :style => "{marginLeft: '' + ((level() - 1) * 20) + 'px'}"), :href => 'javascript:void(0)'}
               <!-- ko if: expanded() -->
               = image_tag "http://theme.instedd.org/theme/images/icons/18/black/folder_open.png"
               <!-- /ko -->
@@ -64,7 +64,7 @@
       <!-- ko if: group() && hasMoreSites() && loadingSites()-->
       %tr
         %td
-          Loading...
+          %span{ko(:style => "{marginLeft: '' + (20 + (level() - 1) * 20) + 'px'}")} Loading...
       <!-- /ko -->
       <!-- /ko -->
       <!-- /ko -->
