@@ -551,3 +551,6 @@
       sum_lng /= count
 
     ko.applyBindings new CollectionViewModel(collections, sum_lat, sum_lng)
+
+    $('#collections-dummy').hide()
+    $('#collections-main').show()
