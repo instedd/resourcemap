@@ -1,4 +1,4 @@
-@initCollections = (initialCollections) ->
+@initCollections = ->
   SITES_PER_PAGE = 25
 
   Cluster = (map, cluster) ->
@@ -175,10 +175,10 @@
       json
 
   class CollectionViewModel
-    constructor: (lat, lng) ->
+    constructor: (collections, lat, lng) ->
       self = this
 
-      @collections = ko.observableArray $.map(initialCollections, (x) -> new Collection(x))
+      @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
       @currentParent = ko.observable()
       @currentSite = ko.observable()
@@ -533,20 +533,21 @@
       @clusters[id].setMap null
       delete @clusters[id]
 
-  # Compute all collections lat/lng: the center of all collections
-  sum_lat = 0
-  sum_lng = 0
-  count = 0
-  for collection in initialCollections when collection.lat && collection.lng
-    sum_lat += parseFloat(collection.lat)
-    sum_lng += parseFloat(collection.lng)
-    count += 1
+  $.get "/collections.json", {}, (collections) =>
+    # Compute all collections lat/lng: the center of all collections
+    sum_lat = 0
+    sum_lng = 0
+    count = 0
+    for collection in collections when collection.lat && collection.lng
+      sum_lat += parseFloat(collection.lat)
+      sum_lng += parseFloat(collection.lng)
+      count += 1
 
-  if count == 0
-    sum_lat = 10
-    sum_lng = 90
-  else
-    sum_lat /= count
-    sum_lng /= count
+    if count == 0
+      sum_lat = 10
+      sum_lng = 90
+    else
+      sum_lat /= count
+      sum_lng /= count
 
-  ko.applyBindings new CollectionViewModel(sum_lat, sum_lng)
+    ko.applyBindings new CollectionViewModel(collections, sum_lat, sum_lng)

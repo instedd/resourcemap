@@ -2,6 +2,13 @@ class CollectionsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :breadcrumb
 
+  def index
+    respond_to do |format|
+      format.html
+      format.json { render :json => collections }
+    end
+  end
+
   def new
     add_breadcrumb "Create new collection", nil
   end
