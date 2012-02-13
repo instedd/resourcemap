@@ -11,7 +11,7 @@
   .left.w33.h50
 
     -# Collections
-    <!-- ko if: !currentCollection() && !currentSite() -->
+    <!-- ko if: !currentCollection() && !editingSite() -->
     .tableheader.w33
       My Collections
     .tablescroll
@@ -70,7 +70,7 @@
       <!-- /ko -->
 
     -# Collection sites
-    <!-- ko if: !currentSite() -->
+    <!-- ko if: !editingSite() -->
     <!-- ko with: currentCollection -->
     .tableheader.w33
       %button.fleft{ko(:click => '$root.goToRoot'), :type => 'button'}
@@ -106,15 +106,12 @@
     <!-- /ko -->
     <!-- /ko -->
 
-    -# Group/Site form
-    %form{ko(:with => :currentSite, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
+    -# New Group form
+    %form{ko(:with => :newGroup, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
       .tableheader.w33
         %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
         %span.i18b-groupChat
-        %span{ko(:visible => 'group() && !id()')} New Group
-        %span{ko(:visible => 'group() && id()')} Edit Group
-        %span{ko(:visible => '!group() && !id()')} New Site
-        %span{ko(:visible => '!group() && id()')} Edit Site
+        %span New Group
         <!-- ko if: $root.selectedSite() && !id() -->
         %span at
         %span{ko(:text => '$root.selectedSite().name()')}
@@ -127,30 +124,104 @@
                 %p
                   = label_tag :name
                   %br/
-                  = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :visible => :group, :hasfocus => :hasFocus)
-                  = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :visible => '!group()', :hasfocus => :hasFocus)
-                <!-- ko if: group() -->
+                  = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :hasfocus => :hasFocus)
                 %p
                   Location:
                   = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
                   %span{ko(:if => "locationMode() == 'manual'")}
                     %span{ko(:text => "(Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
-                <!-- /ko -->
-                <!-- ko if: !group() -->
+      .tablebottom
+        %button.grey{:type => 'submit'} Done
+        %span{ko(:click => '$root.exitSite')} Cancel
+
+    -# New Site form
+    %form{ko(:with => :newSite, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
+      .tableheader.w33
+        %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
+        %span.i18b-groupChat
+        %span New Site
+        <!-- ko if: $root.selectedSite() && !id() -->
+        %span at
+        %span{ko(:text => '$root.selectedSite().name()')}
+        <!-- /ko -->
+      .tablescroll
+        %table.GralTable.CleanTable
+          %tbody
+            %tr
+              %td
+                %p
+                  = label_tag :name
+                  %br/
+                  = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :hasfocus => :hasFocus)
                 %p
                   %span{ko(:text => "'Location: ' + (Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
-                <!-- /ko -->
-                <!-- ko if: !group() -->
                 <!-- ko foreach: $root.currentCollection().fields() -->
                 %p
                   = label_tag '', '', ko(:attr => "{'for': code}", :text => :name)
                   %br/
                   = ko_text_field_tag :value
                 <!-- /ko -->
-                <!-- /ko -->
       .tablebottom
         %button.grey{:type => 'submit'} Done
         %span{ko(:click => '$root.exitSite')} Cancel
+
+    -# Show Group form
+    %form{ko(:with => :showGroup, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
+      .tableheader.w33
+        %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
+        %span.i18b-groupChat
+        %span{ko(:text => :name)}
+      .tablescroll
+        %table.GralTable.CleanTable
+          %tbody
+            %tr
+              %td
+                %p
+                  %span Name:
+                  %span{ko(:text => :name, :visible => '!editingName()', :click => '$root.editSiteName'), :style => 'cursor: pointer'}
+                  <!-- ko if: editingName() -->
+                  = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: $root.siteNameKeyPress, blur: $root.exitSiteName}'
+                  <!-- /ko -->
+                %p
+                  Location:
+                  = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
+                  %span{ko(:if => "locationMode() == 'manual'")}
+                    %span{ko(:text => "(Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
+      .tablebottom
+        %button.grey{:type => 'submit'} Save
+        %span{ko(:click => '$root.exitSite')} Cancel
+
+    -# Show Site form
+    %form{ko(:with => :showSite, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
+      .tableheader.w33
+        %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
+        %span.i18b-groupChat
+        %span{ko(:text => :name)}
+      .tablescroll
+        %table.GralTable.CleanTable
+          %tbody
+            %tr
+              %td
+                %p
+                  %span Name:
+                  %span{ko(:text => :name, :visible => '!editingName()', :click => '$root.editSiteName'), :style => 'cursor: pointer'}
+                  <!-- ko if: editingName() -->
+                  = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: $root.siteNameKeyPress, blur: $root.exitSiteName}'
+                  <!-- /ko -->
+                %p
+                  %span Location:
+                  %span{ko(:text => "(Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)", :visible => '!editingLocation()', :click => '$root.editSiteLocation'), :style => 'cursor: pointer'}
+                  <!-- ko if: editingLocation() -->
+                  %span{ko(:text => "(Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)", :visible => 'editingLocation()')}
+                  %button{ko(:click => '$root.saveSiteLocation')} Save
+                  <!-- /ko -->
+                %hr
+                <!-- ko foreach: $root.currentCollection().fields() -->
+                %p
+                  %span{ko(:text => "name() + ':'")}
+                  %span{ko(:text => :valueUI, :visible => '!editing()', :click => '$root.editFieldValue'), :style => 'cursor:pointer'}
+                  = ko_text_field_tag :value, :visible => 'editing()', :hasfocus => true, :event => '{keydown: $root.fieldKeyPress, blur: $root.exitField}'
+                <!-- /ko -->
   .right
     #map{:style => 'width: 628px; height: 500px'}
   .clear

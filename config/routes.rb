@@ -13,6 +13,7 @@ ResourceMap::Application.routes.draw do
   resources :sites do
     get 'root_sites'
     get 'search', :on => :collection
+    post 'update_property'
   end
   resources :gateways
 

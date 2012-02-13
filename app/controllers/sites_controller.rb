@@ -22,6 +22,12 @@ class SitesController < ApplicationController
     render :json => site
   end
 
+  def update_property
+    site.properties[params[:code]] = params[:value]
+    site.save!
+    render :json => site
+  end
+
   def root_sites
     render :json => site.sites.where(:parent_id => site.id).offset(params[:offset]).limit(params[:limit])
   end
