@@ -276,7 +276,7 @@
 
     createSiteOrGroup: (group) =>
       parent = if @selectedSite() then @selectedSite() else @currentCollection()
-      pos = @map.getCenter()
+      pos = @originalSiteLocation = @map.getCenter()
       site = if group
                new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
              else
@@ -382,8 +382,29 @@
             @editingSite().position(results[0].geometry.location)
             save()
           else
-            @editingSite.position(@originalSiteLocation)
+            @editingSite().position(@originalSiteLocation)
 
+    newSiteLocationKeyPress: (site, event) =>
+      switch event.keyCode
+        when 13
+          @moveSiteLocation()
+          false
+        else true
+
+    moveSiteLocation: =>
+      if match = @editingSite().locationTextTemp.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
+        @editingSite().lat(parseFloat(match[1]))
+        @editingSite().lng(parseFloat(match[2]))
+        @marker.setPosition(@editingSite().position())
+        @map.panTo(@editingSite().position())
+      else
+        @geocoder.geocode { 'address': @editingSite().locationTextTemp}, (results, status) =>
+          if results.length > 0
+            @editingSite().position(results[0].geometry.location)
+          else
+            @editingSite().position(@originalSiteLocation)
+          @marker.setPosition(@editingSite().position())
+          @map.panTo(@editingSite().position())
 
     exitSiteLocation: =>
       @marker.setPosition(@originalSiteLocation)

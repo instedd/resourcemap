@@ -123,13 +123,14 @@
               %td
                 %p
                   = label_tag :name
-                  %br/
+                  \:
                   = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :hasfocus => true)
                 %p
                   Location:
                   = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
-                  %span{ko(:if => "locationMode() == 'manual'")}
-                    %span{ko(:text => :locationText)}
+                %p{ko(:if => "locationMode() == 'manual'")}
+                  %span Location:
+                  = ko_text_field_tag :locationText, :event => '{keydown: $root.newSiteLocationKeyPress, blur: $root.moveSiteLocation}'
       .tablebottom
         %button.grey{:type => 'submit'} Done
         %span{ko(:click => '$root.exitSite')} Cancel
@@ -151,14 +152,16 @@
               %td
                 %p
                   = label_tag :name
-                  %br/
+                  \:
                   = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :hasfocus => true)
                 %p
-                  %span{ko(:text => "'Location: ' + locationText()")}
+                  %span Location:
+                  = ko_text_field_tag :locationText, :event => '{keydown: $root.newSiteLocationKeyPress, blur: $root.moveSiteLocation}'
+                %hr
                 <!-- ko foreach: $root.currentCollection().fields() -->
                 %p
                   = label_tag '', '', ko(:attr => "{'for': code}", :text => :name)
-                  %br/
+                  \:
                   = ko_text_field_tag :value
                 <!-- /ko -->
       .tablebottom
@@ -182,14 +185,19 @@
                   <!-- ko if: editingName() -->
                   = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: $root.siteNameKeyPress, blur: $root.exitSiteName}'
                   <!-- /ko -->
+                <!-- ko if: !editingLocation() -->
+                %p
+                  %span Location:
+                  %span{ko(:text => :locationText, :click => '$root.editSiteLocation'), :style => 'cursor: pointer'}
+                <!-- /ko -->
+                <!-- ko if: editingLocation() -->
                 %p
                   Location:
                   = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
-                  %span{ko(:if => "locationMode() == 'manual'")}
-                    %span{ko(:text => :locationText)}
-      .tablebottom
-        %button.grey{:type => 'submit'} Save
-        %span{ko(:click => '$root.exitSite')} Cancel
+                %p{ko(:if => "locationMode() == 'manual'")}
+                  %span Location:
+                  = ko_text_field_tag :locationText, :hasfocus => true, :event => '{keydown: $root.siteLocationKeyPress, blur: $root.exitSiteLocation}'
+                <!-- /ko -->
 
     -# Show Site form
     %form{ko(:with => :showSite, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
