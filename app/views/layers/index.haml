@@ -7,7 +7,7 @@
 
   -# Layers
   <!-- ko foreach: layers -->
-  .tablewrapp.w90{ko(:visible => '$data == $root.currentLayer()')}
+  .tablewrapp.w90{ko(:visible => '$data == $root.currentLayer()'), :style => 'display:none'}
     %p
       = label_tag :name
       %br/
@@ -54,12 +54,12 @@
     %button.grey{ko(:click => '$root.saveLayer'), :type => 'submit'} Save layer
     %span{ko(:click => '$root.cancelLayer')}Cancel
 
-  %div{ko(:visible => '$data != $root.currentLayer()')}
+  %div{ko(:visible => '$data != $root.currentLayer()'), :style => 'display:none'}
     %span{ko(:text => :name)}
     = ko_link_to_root 'edit', :editLayer
     = ko_link_to_root 'delete', :deleteLayer
   <!-- /ko -->
 
   -# New layer link
-  %div{ko(:visible => '!currentLayer()')}
+  %div{ko(:visible => '!currentLayer()'), :style => 'display:none'}
     = ko_link_to_root 'New layer', :newLayer
