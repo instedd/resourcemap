@@ -144,7 +144,13 @@
       @properties = ko.observable data?.properties
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
-      @hasFocus = ko.observable false
+      @locationText = ko.computed
+        read: =>
+          (Math.round(@lat() * 100000) / 100000) + ', ' + (Math.round(@lng() * 100000) / 100000)
+        write: (value) =>
+          @locationTextTemp = value
+        owner: @
+      @locationTextTemp = @locationText()
 
     sitesUrl: -> "/sites/#{@id()}/root_sites"
 
@@ -205,6 +211,7 @@
       @reloadMapSitesAutomatically = true
       @reuseCurrentClusters = true
       @requestNumber = 0
+      @geocoder = new google.maps.Geocoder();
 
       @markerImageInactive = new google.maps.MarkerImage(
         "/assets/marker_sprite_inactive.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
@@ -274,7 +281,6 @@
                new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
              else
                new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group)
-      site.hasFocus true
       @editingSite site
       @editingSite().copyPropertiesToCollection(@currentCollection()) unless @editingSite().group()
 
@@ -336,6 +342,7 @@
       delete @originalSiteName
 
     editSiteLocation: =>
+      @originalSiteLocation = @editingSite().position()
       @editingSite().editingLocation(true)
       @marker.setDraggable(true)
       @setAllMarkersInactive()
@@ -344,14 +351,45 @@
       @map.panTo(@editingSite().position())
       @reloadMapSites()
 
+    siteLocationKeyPress: (site, event) =>
+      switch event.keyCode
+        when 13 then @saveSiteLocation()
+        when 27 then @exitSiteLocation()
+        else true
+
     saveSiteLocation: =>
       @editingSite().editingLocation(false)
+      @setAllMarkersActive()
 
-      json = {site: {lat: @editingSite().lat(), lng: @editingSite().lng()}, _method: 'put'}
-      $.post "/collections/#{@currentCollection().id()}/sites/#{@editingSite().id()}.json", json, (data) =>
-        @editingSite().lat(data.lat)
-        @editingSite().lng(data.lng)
-        @editingSite().parent.fetchLocation()
+      save = =>
+        json = {site: {lat: @editingSite().lat(), lng: @editingSite().lng()}, _method: 'put'}
+        $.post "/collections/#{@currentCollection().id()}/sites/#{@editingSite().id()}.json", json, (data) =>
+          @editingSite().lat(data.lat)
+          @editingSite().lng(data.lng)
+          @editingSite().parent.fetchLocation()
+          @marker.setPosition(@editingSite().position())
+          @reuseCurrentClusters = false
+          @map.panTo(@editingSite().position())
+          @reloadMapSites()
+
+      if match = @editingSite().locationTextTemp.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
+        @editingSite().lat(parseFloat(match[1]))
+        @editingSite().lng(parseFloat(match[2]))
+        save()
+      else
+        @geocoder.geocode { 'address': @editingSite().locationTextTemp}, (results, status) =>
+          if results.length > 0
+            @editingSite().position(results[0].geometry.location)
+            save()
+          else
+            @editingSite.position(@originalSiteLocation)
+
+
+    exitSiteLocation: =>
+      @marker.setPosition(@originalSiteLocation)
+      @editingSite().editingLocation(false)
+      @setAllMarkersActive()
+      delete @originalSiteLocation
 
     saveSite: =>
       callback = (data) =>

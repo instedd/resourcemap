@@ -124,12 +124,12 @@
                 %p
                   = label_tag :name
                   %br/
-                  = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :hasfocus => :hasFocus)
+                  = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :hasfocus => true)
                 %p
                   Location:
                   = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
                   %span{ko(:if => "locationMode() == 'manual'")}
-                    %span{ko(:text => "(Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
+                    %span{ko(:text => :locationText)}
       .tablebottom
         %button.grey{:type => 'submit'} Done
         %span{ko(:click => '$root.exitSite')} Cancel
@@ -152,9 +152,9 @@
                 %p
                   = label_tag :name
                   %br/
-                  = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :hasfocus => :hasFocus)
+                  = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :hasfocus => true)
                 %p
-                  %span{ko(:text => "'Location: ' + (Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
+                  %span{ko(:text => "'Location: ' + locationText()")}
                 <!-- ko foreach: $root.currentCollection().fields() -->
                 %p
                   = label_tag '', '', ko(:attr => "{'for': code}", :text => :name)
@@ -186,7 +186,7 @@
                   Location:
                   = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
                   %span{ko(:if => "locationMode() == 'manual'")}
-                    %span{ko(:text => "(Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)")}
+                    %span{ko(:text => :locationText)}
       .tablebottom
         %button.grey{:type => 'submit'} Save
         %span{ko(:click => '$root.exitSite')} Cancel
@@ -210,10 +210,9 @@
                   <!-- /ko -->
                 %p
                   %span Location:
-                  %span{ko(:text => "(Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)", :visible => '!editingLocation()', :click => '$root.editSiteLocation'), :style => 'cursor: pointer'}
+                  %span{ko(:text => :locationText, :visible => '!editingLocation()', :click => '$root.editSiteLocation'), :style => 'cursor: pointer'}
                   <!-- ko if: editingLocation() -->
-                  %span{ko(:text => "(Math.round(lat() * 100000) / 100000) + ', ' + (Math.round(lng() * 100000) / 100000)", :visible => 'editingLocation()')}
-                  %button{ko(:click => '$root.saveSiteLocation')} Save
+                  = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: $root.siteLocationKeyPress, blur: $root.exitSiteLocation}'
                   <!-- /ko -->
                 %hr
                 <!-- ko foreach: $root.currentCollection().fields() -->
