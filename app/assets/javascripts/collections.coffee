@@ -77,10 +77,8 @@
       @lng = ko.observable data?.lng
       @position = ko.computed
         read: => if @lat() && @lng() then new google.maps.LatLng(@lat(), @lng()) else null
-        write: (latLng, lng) =>
-          if lng
-            @lat(latLng); @lng(lng)
-          else if typeof(latLng.lat) == 'function'
+        write: (latLng) =>
+          if typeof(latLng.lat) == 'function'
             @lat(latLng.lat()); @lng(latLng.lng())
           else
             @lat(latLng.lat); @lng(latLng.lng)
