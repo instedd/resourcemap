@@ -6,6 +6,8 @@ module Site::GeomConcern
     before_save :compute_bounding_box_and_zoom!, :if => lambda { !@computed_location && group? && !new_record? && location_mode_changed? }
     after_save  :compute_parent_bounding_box_and_zoom!, :if => lambda { parent_id && (new_record? || lat_changed? || lng_changed? || min_lat_changed? || max_lat_changed? || min_lng_changed? || max_lng_changed? || min_zoom_changed? || max_zoom_changed? ) }
     after_save  :compute_collection_center!, :if => lambda { !parent_id && (new_record? || lat_changed? || lng_changed?) }
+    after_destroy :compute_parent_bounding_box_and_zoom!, :if => :parent
+    after_destroy :compute_collection_center!
   end
 
   def compute_bounding_box_and_zoom

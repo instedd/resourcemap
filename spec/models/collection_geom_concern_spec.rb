@@ -20,4 +20,14 @@ describe Collection::GeomConcern do
     collection.lat.to_f.should eq(30.0)
     collection.lng.to_f.should eq(20.0)
   end
+
+  it "calculates center from children sites after destroy" do
+    site1 = collection.sites.make :lat => 30, :lng => 20
+    site2 = collection.sites.make :lat => 40, :lng => 30
+    site2.destroy
+
+    collection.reload
+    collection.lat.to_f.should eq(30.0)
+    collection.lng.to_f.should eq(20.0)
+  end
 end

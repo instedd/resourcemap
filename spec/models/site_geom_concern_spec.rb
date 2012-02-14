@@ -174,6 +174,16 @@ describe Site::GeomConcern do
       assert_location site1, 1, 2
     end
 
+    it "recomputes location after destroying site" do
+      site1 = collection.sites.make :group => true, :location_mode => :automatic
+        site11 = collection.sites.make :parent_id => site1.id, :lat => 30, :lng => 40
+        site12 = collection.sites.make :parent_id => site1.id, :lat => 40, :lng => 50
+
+      site12.destroy
+
+      assert_location site1, 30, 40
+    end
+
     def assert_location(site, lat, lng)
       site.reload
       site.lat.to_f.should eq(lat.to_f)
