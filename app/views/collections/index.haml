@@ -220,10 +220,10 @@
                   = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: locationKeyPress, blur: exitLocation}'
                   <!-- /ko -->
                 %hr
-                <!-- ko foreach: $root.currentCollection().fields() -->
+                <!-- ko foreach: parentCollection().fields() -->
                 %p
                   %span{ko(:text => "name() + ':'")}
-                  %span{ko(:text => :valueUI, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
+                  %span{ko(:text => :valueText, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
                   = ko_text_field_tag :value, :visible => 'editing()', :hasfocus => true, :event => '{keydown: keyPress, blur: exit}'
                 <!-- /ko -->
   .right

@@ -48,7 +48,7 @@
       @name = ko.observable data?.name
       @kind = ko.observable data?.kind
       @value = ko.observable()
-      @valueUI = ko.computed => if @value() then @value() else '(no value)'
+      @valueText = ko.computed => if @value() then @value() else '(no value)'
       @editing = ko.observable false
 
     edit: =>
@@ -140,14 +140,20 @@
 
     fetchLocation: => $.get "/collections/#{@id()}.json", {}, @position
 
-    fetchFields: =>
-      return if @fieldsInitialized
+    fetchFields: (callback) =>
+      if @fieldsInitialized
+        callback() if callback && typeof(callback) == 'function'
+        return
+
       @fieldsInitialized = true
-      $.get "/collections/#{@id()}/fields", {}, (data) => @fields($.map(data, (x) => new Field(x)))
+      $.get "/collections/#{@id()}/fields", {}, (data) =>
+        @fields($.map(data, (x) => new Field(x)))
+        callback() if callback && typeof(callback) == 'function'
 
     findFieldByCode: (code) => (field for field in @fields() when field.code() == code)[0]
 
-    clearFieldValues: => field.value(null) for field in @fields()
+    clearFieldValues: =>
+      field.value(null) for field in @fields()
 
     parentCollection: => @
 
@@ -190,13 +196,17 @@
     copyPropertiesFromCollection: (collection) =>
       @properties({})
       for field in collection.fields()
-        @properties()[field.code()] = field.value()
+        if field.value()
+          @properties()[field.code()] = field.value()
+        else
+          delete @properties()[field.code()]
 
     copyPropertiesToCollection: (collection) =>
-      collection.clearFieldValues()
-      if @properties()
-        for key, value of @properties()
-          collection.findFieldByCode(key).value(value)
+      collection.fetchFields =>
+        collection.clearFieldValues()
+        if @properties()
+          for key, value of @properties()
+            collection.findFieldByCode(key).value(value)
 
     post: (json, callback) =>
       data = {site: json}
@@ -410,14 +420,19 @@
           initialized = self.initMap collection
 
           self.currentCollection collection
+          self.selectSite(self.selectedSite()) if self.selectedSite()
 
           collection.loadMoreSites() if collection.sitesPage == 1
+          self.selectSite(self.selectedSite()) if self.selectedSite()
+
           collection.fetchFields()
           collection.panToPosition() unless initialized
 
         @get '', ->
           initialized = self.initMap()
           self.currentCollection(null)
+          self.selectSite(self.selectedSite()) if self.selectedSite()
+
           self.reloadMapSites() unless initialized
       ).run()
 
@@ -451,7 +466,7 @@
       @editingSite().startEditLocationInMap()
 
     editSite: (site) =>
-      site.copyPropertiesToCollection(@currentCollection())
+      site.copyPropertiesToCollection(site.parentCollection())
       @selectSite(site) unless @selectedSite() && @selectedSite().id() == site.id()
       @editingSite(site)
 
