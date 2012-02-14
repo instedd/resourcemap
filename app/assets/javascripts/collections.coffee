@@ -167,7 +167,7 @@
       @parent = parent
       @selected = ko.observable()
       @id = ko.observable data?.id
-      @parent_id = ko.observable data?.parent_id
+      @parentId = ko.observable data?.parent_id
       @group = ko.observable data?.group
       @name = ko.observable data?.name
       @locationMode = ko.observable data?.location_mode
@@ -385,7 +385,7 @@
         name: @name()
       json.lat = @lat() if @lat()
       json.lng = @lng() if @lng()
-      json.parent_id = @parent_id() if @parent_id()
+      json.parent_id = @parentId() if @parentId()
       json.properties = @properties() if @properties()
       json.location_mode = @locationMode() if @locationMode()
       json
@@ -496,10 +496,7 @@
       callback = (data) =>
         unless @editingSite().id()
           @editingSite().id(data.id)
-          if @selectedSite()
-            @selectedSite().addSite(@editingSite())
-          else
-            @currentCollection().addSite(@editingSite())
+          @editingSite().parent.addSite(@editingSite())
 
         @editingSite().position(data)
 
