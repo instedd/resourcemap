@@ -41,4 +41,9 @@ class SitesController < ApplicationController
     search.exclude_id params[:exclude_id].to_i if params[:exclude_id].present?
     render :json => search.results
   end
+
+  def destroy
+    site.destroy
+    render :json => site
+  end
 end

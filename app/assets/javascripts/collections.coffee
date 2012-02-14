@@ -121,6 +121,10 @@
         @sites.push(site)
         window.model.siteIds[site.id()] = site
 
+    removeSite: (site) =>
+      @sites.remove site
+      delete window.model.siteIds[site.id()]
+
     toggle: =>
       # Load more sites when we expand, but only the first time
       if @group() && !@expanded() && @hasMoreSites() && @sitesPage == 1
@@ -510,6 +514,15 @@
       @editingSite().deleteMarker() unless @editingSite().id()
       @editingSite(null)
       window.model.setAllMarkersActive()
+
+    deleteSite: =>
+      if confirm("Are you sure you want to delete #{@editingSite().name()}?")
+        @editingSite().parent.removeSite(@editingSite())
+        $.post "/sites/#{@editingSite().id()}", {_method: 'delete'}, =>
+          @editingSite().parent.fetchLocation()
+          @editingSite().deleteMarker()
+          @exitSite()
+          @reloadMapSites reuseCurrentClusters: false
 
     selectSite: (site) =>
       if @selectedSite()

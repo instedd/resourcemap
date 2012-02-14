@@ -195,6 +195,8 @@
                   <!-- ko if: editingLocation() -->
                   = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: locationKeyPress, blur: exitLocation}'
                   <!-- /ko -->
+      .tablebottom
+        = link_to 'Delete Group', 'javascript:void()', :class => 'icon fdelete black', 'data-bind' => kov(:click => '$root.deleteSite')
 
     -# Show Site form
     %form{ko(:with => :showSite, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
@@ -226,6 +228,8 @@
                   %span{ko(:text => :valueText, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
                   = ko_text_field_tag :value, :visible => 'editing()', :hasfocus => true, :event => '{keydown: keyPress, blur: exit}'
                 <!-- /ko -->
+      .tablebottom
+        = link_to 'Delete Site', 'javascript:void()', :class => 'icon fdelete black', 'data-bind' => kov(:click => '$root.deleteSite')
   .right
     #map{:style => 'width: 628px; height: 500px'}
   .clear
