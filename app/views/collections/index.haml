@@ -188,7 +188,7 @@
                 %p
                   %span Mode:
                   %span{ko(:text => :locationMode, :click => '$root.editSiteLocationMode', :visible => '!editingLocationMode()'), :style => 'cursor: pointer'}
-                  = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode, :visible => :editingLocationMode, :event => '{change: $root.saveSiteLocationMode}')
+                  = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode, :visible => :editingLocationMode, :hasfocus => true, :event => '{change: $root.saveSiteLocationMode, blur: $root.exitSiteLocationMode}')
                 %p{ko(:visible => "locationMode() == 'manual'")}
                   %span Location:
                   %span{ko(:text => :locationText, :visible => '!editingLocation()', :click => '$root.editSiteLocation'), :style => 'cursor: pointer'}

@@ -432,8 +432,12 @@
     editSiteLocationMode: =>
       @editingSite().editingLocationMode(true)
 
+    exitSiteLocationMode: =>
+      @editingSite().editingLocationMode(false)
+
     saveSiteLocationMode: =>
       @editingSite().editingLocationMode(false)
+      @editSiteLocation() if @editingSite().locationMode() == 'manual'
 
       json = {site: {location_mode: @editingSite().locationMode(), lat: @editingSite().lat, lng: @editingSite().lng}, _method: 'put'}
       $.post "/collections/#{@currentCollection().id()}/sites/#{@editingSite().id()}.json", json, (data) =>
