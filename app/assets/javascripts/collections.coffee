@@ -485,8 +485,6 @@
 
     selectSite: (site) =>
       if @selectedSite() == site
-        if !site.group() && @markers[site.id()]
-          @setMarkerIcon @markers[site.id()], 'active'
         @selectedSite().selected(false)
         @selectedSite().deleteMarker()
         @selectedSite(null)
