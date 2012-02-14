@@ -441,7 +441,9 @@
         @editingSite().lng(data.lng)
         @editingSite().parent.fetchLocation()
         @reuseCurrentClusters = false
+        @reloadMapSitesAutomatically = false
         @map.panTo(@editingSite().position())
+        @reloadMapSites()
 
     saveSite: =>
       callback = (data) =>
