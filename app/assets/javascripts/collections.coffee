@@ -15,16 +15,11 @@
     @div.className = 'cluster'
     @div.innerText = (@count).toString()
 
-    [@image, @width, @height] = if @count < 10
-                                  [1, 53, 52]
-                                else if @count < 25
-                                  [2, 56, 55]
-                                else if @count < 50
-                                  [3, 66, 65]
-                                else if @count < 100
-                                  [4, 78, 77]
-                                else
-                                  [5, 90, 89]
+    [@image, @width, @height] = if @count < 10 then [1, 53, 52] else
+                                if @count < 25 then [2, 56, 55] else
+                                if @count < 50 then [3, 66, 65] else
+                                if @count < 100 then [4, 78, 77]
+                                else [5, 90, 89]
 
     @div.style.backgroundImage = "url('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m#{@image}.png')"
     @div.style.width = "#{@width}px"
@@ -33,7 +28,7 @@
     @getPanes().overlayMouseTarget.appendChild @div
 
     @listener = google.maps.event.addDomListener @div, 'click', =>
-      @map.panTo(@position)
+      @map.panTo @position
       nextZoom = (if @maxZoom then @maxZoom else @map.getZoom()) + 1
       @map.setZoom nextZoom
 
@@ -56,16 +51,51 @@
       @valueUI = ko.computed => if @value() then @value() else '(no value)'
       @editing = ko.observable false
 
-  class SitesContainer
+    edit: =>
+      @originalValue = @value()
+      @editing(true)
+
+    keyPress: (field, event) =>
+      switch event.keyCode
+        when 13 then @save()
+        when 27 then @exit()
+        else true
+
+    exit: =>
+      @value(@originalValue) if @originalValue?
+      @editing(false)
+      delete @originalValue
+
+    save: =>
+      @editing(false)
+      window.model.editingSite().updateProperty(@code(), @value())
+      delete @originalValue
+
+  class Locatable
     constructor: (data) ->
-      @id = ko.observable data?.id
-      @name = ko.observable data?.name
       @lat = ko.observable data?.lat
       @lng = ko.observable data?.lng
       @position = ko.computed
         read: => if @lat() && @lng() then new google.maps.LatLng(@lat(), @lng()) else null
-        write: (latLng) => @lat(latLng.lat()); @lng(latLng.lng())
+        write: (latLng, lng) =>
+          if lng
+            @lat(latLng); @lng(lng)
+          else if typeof(latLng.lat) == 'function'
+            @lat(latLng.lat()); @lng(latLng.lng())
+          else
+            @lat(latLng.lat); @lng(latLng.lng)
         owner: @
+
+    panToPosition: (callback) =>
+      window.model.reloadMapSitesAutomatically = false
+      window.model.map.panTo @position() if @position()
+      window.model.reloadMapSites callback: callback, reuseCurrentClusters: false
+
+  class SitesContainer extends Locatable
+    constructor: (data) ->
+      super(data)
+      @id = ko.observable data?.id
+      @name = ko.observable data?.name
       @sites = ko.observableArray()
       @expanded = ko.observable false
       @sitesPage = 1
@@ -73,23 +103,21 @@
       @loadingSites = ko.observable false
       @siteIds = {}
 
-    loadMoreSites: (callback) =>
-      if @hasMoreSites()
-        @loadingSites true
-        # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
-        # extra element so the user always sees SITES_PER_PAGE elements.
-        $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1}, (data) =>
-          @sitesPage += 1
-          if data.length == SITES_PER_PAGE + 1
-            data.pop()
-          else
-            @hasMoreSites false
-          for site in data
-            @addSite new Site(this, site)
-          @loadingSites false
-          callback() if callback && typeof(callback) == 'function'
-      else
-        callback() if callback && typeof(callback) == 'function'
+    loadMoreSites: =>
+      return unless @hasMoreSites()
+
+      @loadingSites true
+      # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
+      # extra element so the user always sees SITES_PER_PAGE elements.
+      $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1}, (data) =>
+        @sitesPage += 1
+        if data.length == SITES_PER_PAGE + 1
+          data.pop()
+        else
+          @hasMoreSites false
+        for site in data
+          @addSite new Site(this, site)
+        @loadingSites false
 
     addSite: (site) =>
       unless @siteIds[site.id()]
@@ -105,7 +133,6 @@
   class Collection extends SitesContainer
     constructor: (data) ->
       super(data)
-      @class = 'Collection'
       @fields = ko.observableArray()
       @checked = ko.observable true
       @fieldsInitialized = false
@@ -114,26 +141,20 @@
 
     level: -> 0
 
-    fetchLocation: =>
-      $.get "/collections/#{@id()}.json", {}, (data) =>
-        @lat(data.lat); @lng(data.lng)
+    fetchLocation: => $.get "/collections/#{@id()}.json", {}, @position
 
     fetchFields: =>
-      unless @fieldsInitialized
-        @fieldsInitialized = true
-        $.get "/collections/#{@id()}/fields", {}, (data) =>
-          @fields $.map(data, (x) => new Field(x))
+      return if @fieldsInitialized
+      @fieldsInitialized = true
+      $.get "/collections/#{@id()}/fields", {}, (data) => @fields($.map(data, (x) => new Field(x)))
 
-    findFieldByCode: (code) =>
-      (field for field in @fields() when field.code() == code)[0]
+    findFieldByCode: (code) => (field for field in @fields() when field.code() == code)[0]
 
-    clearFieldValues: =>
-      field.value(null) for field in @fields()
+    clearFieldValues: => field.value(null) for field in @fields()
 
   class Site extends SitesContainer
     constructor: (parent, data) ->
       super(data)
-      @class = 'Site'
       @parent = parent
       @selected = ko.observable()
       @id = ko.observable data?.id
@@ -146,29 +167,24 @@
       @editingLocation = ko.observable(false)
       @editingLocationMode = ko.observable(false)
       @locationText = ko.computed
-        read: =>
-          (Math.round(@lat() * 100000) / 100000) + ', ' + (Math.round(@lng() * 100000) / 100000)
-        write: (value) =>
-          @locationTextTemp = value
+        read: => (Math.round(@lat() * 100000) / 100000) + ', ' + (Math.round(@lng() * 100000) / 100000)
+        write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
 
     sitesUrl: -> "/sites/#{@id()}/root_sites"
 
-    level: =>
-      @parent.level() + 1
+    level: => @parent.level() + 1
 
-    hasLocation: =>
-      @position() && !(@group() && @locationMode() == 'none')
+    hasLocation: => @position() && !(@group() && @locationMode() == 'none')
 
     fetchLocation: =>
-      $.get "/sites/#{@id()}.json", {}, (data) =>
-        @lat(data.lat); @lng(data.lng)
+      $.get "/sites/#{@id()}.json", {}, @position
       @parent.fetchLocation()
 
     updateProperty: (code, value) =>
       @properties()[code] = value
-      $.post "/sites/#{@id()}/update_property", {code: code, value: value}, =>
+      $.post "/sites/#{@id()}/update_property", {code: code, value: value}
 
     copyPropertiesFromCollection: (collection) =>
       @properties({})
@@ -180,6 +196,161 @@
       if @properties()
         for key, value of @properties()
           collection.findFieldByCode(key).value(value)
+
+    editName: =>
+      @originalName = @name()
+      @editingName(true)
+
+    nameKeyPress: (site, event) =>
+      switch event.keyCode
+        when 13 then @saveName()
+        when 27 then @exitName()
+        else true
+
+    saveName: =>
+      @editingName(false)
+      json = {site: {name: @name()}, _method: 'put'}
+      $.post "/collections/#{window.model.currentCollection().id()}/sites/#{@id()}.json", json
+
+    exitName: =>
+      @name(@originalName)
+      @editingName(false)
+      delete @originalName
+
+    editLocation: =>
+      @editingLocation(true)
+      @startEditLocationInMap()
+
+    startEditLocationInMap: =>
+      @originalLocation = @position()
+      if @group()
+        if @locationMode() == 'manual'
+          @createMarker()
+        else
+          @subscribeToLocationModeChange()
+      else
+        @createMarker() unless @marker
+        @marker.setDraggable(true)
+      window.model.setAllMarkersInactive()
+      @panToPosition()
+
+    endEditLocationInMap: (position) =>
+      @editingLocation(false)
+      @position(position)
+      if @group()
+        @deleteMarker()
+        @unsubscribeToLocationModeChange()
+      else
+        @marker.setPosition(@position())
+        @marker.setDraggable false
+      window.model.setAllMarkersActive()
+      @panToPosition()
+
+    locationKeyPress: (site, event) =>
+      switch event.keyCode
+        when 13 then @saveLocation()
+        when 27 then @exitLocation()
+        else true
+
+    saveLocation: =>
+      window.model.setAllMarkersActive()
+
+      save = =>
+        json = {site: {lat: @lat(), lng: @lng()}, _method: 'put'}
+        $.post "/collections/#{window.model.currentCollection().id()}/sites/#{@id()}.json", json, (data) =>
+          @parent.fetchLocation()
+          @endEditLocationInMap(data)
+
+      @parseLocation
+        success: (position) => @position(position); save()
+        failure: (position) => @position(position)
+
+    newLocationKeyPress: (site, event) =>
+      switch event.keyCode
+        when 13
+          @moveLocation()
+          false
+        else true
+
+    moveLocation: =>
+      callback = (position) =>
+        @position(position)
+        @marker.setPosition(position)
+        @panToPosition()
+
+      @parseLocation success: callback, failure: callback
+
+    parseLocation: (options) =>
+      if match = @locationTextTemp.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
+        options.success(new google.maps.LatLng(parseFloat(match[1]), parseFloat(match[2])))
+      else
+        window.model.geocoder.geocode { 'address': @locationTextTemp}, (results, status) =>
+          if results.length > 0
+            options.success(results[0].geometry.location)
+          else
+            options.failure(@originalLocation)
+
+    exitLocation: =>
+      @endEditLocationInMap(@originalLocation)
+      delete @originalLocation
+
+    editLocationMode: =>
+      @editingLocationMode(true)
+
+    exitLocationMode: =>
+      @editingLocationMode(false)
+
+    saveLocationMode: =>
+      @editingLocationMode(false)
+      @editLocation() if @locationMode() == 'manual'
+
+      json = {site: {location_mode: @locationMode(), lat: @lat(), lng: @lng()}, _method: 'put'}
+      $.post "/collections/#{window.model.currentCollection().id()}/sites/#{@id()}.json", json, (data) =>
+        @position(data)
+        @parent.fetchLocation()
+        @panToPosition()
+
+    createMarker: (drop = false) =>
+      @deleteMarker()
+
+      draggable = @group() || @editingLocation() || !@id()
+      @marker = new google.maps.Marker
+        map: window.model.map
+        position: @position()
+        animation: if drop || !@id() then google.maps.Animation.DROP else null
+        draggable: draggable
+        icon: window.model.markerImageTarget
+        shadow: window.model.markerImageTargetShadow
+      @setupMarkerListener()
+      window.model.setAllMarkersInactive() if draggable
+
+    deleteMarker: =>
+      return unless @marker
+      @marker.setMap null
+      delete @marker
+      @deleteMarkerListener()
+
+    deleteMarkerListener: =>
+      return unless @markerListener
+      google.maps.event.removeListener @markerListener
+      delete @markerListener
+
+    setupMarkerListener: =>
+      @markerListener = google.maps.event.addListener @marker, 'position_changed', =>
+        @position(@marker.getPosition())
+        @locationText("#{@marker.getPosition().lat()}, #{@marker.getPosition().lng()}")
+
+    subscribeToLocationModeChange: =>
+      @subscription = @locationMode.subscribe (newLocationMode) =>
+        if newLocationMode == 'manual'
+          @createMarker true
+        else
+          @deleteMarker()
+
+    unsubscribeToLocationModeChange: =>
+      return unless @subscription
+      @subscription.dispose()
+      delete @subscription
 
     toJSON: =>
       json =
@@ -210,7 +381,6 @@
       @markers = {}
       @clusters = {}
       @reloadMapSitesAutomatically = true
-      @reuseCurrentClusters = true
       @requestNumber = 0
       @geocoder = new google.maps.Geocoder();
 
@@ -229,19 +399,14 @@
 
       Sammy( ->
         @get '#:collection', ->
-          collection = self.findCollectionById(parseInt this.params.collection)
-          initialized = self.initMap(collection)
-
-          collection.loadMoreSites() if collection.sitesPage == 1
-          collection.fetchFields()
+          collection = self.findCollectionById parseInt(this.params.collection)
+          initialized = self.initMap collection
 
           self.currentCollection collection
 
-          unless initialized
-            self.reloadMapSitesAutomatically = false
-            self.reuseCurrentClusters = false
-            self.map.panTo(collection.position()) if collection.position()
-            self.reloadMapSites()
+          collection.loadMoreSites() if collection.sitesPage == 1
+          collection.fetchFields()
+          collection.panToPosition() unless initialized
 
         @get '', ->
           initialized = self.initMap()
@@ -251,29 +416,21 @@
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
-          @reuseCurrentClusters = false
-          @reloadMapSites()
+          @reloadMapSites reuseCurrentClusters: false
 
-    findCollectionById: (id) =>
-      (x for x in @collections() when x.id() == id)[0]
+    findCollectionById: (id) => (x for x in @collections() when x.id() == id)[0]
 
-    goToRoot: ->
-      location.hash = ''
+    goToRoot: -> location.hash = ''
 
-    enterCollection: (collection) ->
-      location.hash = "#{collection.id()}"
+    enterCollection: (collection) -> location.hash = "#{collection.id()}"
 
-    editCollection: (collection) ->
-      window.location = "/collections/#{collection.id()}"
+    editCollection: (collection) -> window.location = "/collections/#{collection.id()}"
 
-    createCollection: ->
-      window.location = "/collections/new"
+    createCollection: -> window.location = "/collections/new"
 
-    createGroup: =>
-      @createSiteOrGroup true
+    createGroup: => @createSiteOrGroup true
 
-    createSite: =>
-      @createSiteOrGroup false
+    createSite: => @createSiteOrGroup false
 
     createSiteOrGroup: (group) =>
       parent = if @selectedSite() then @selectedSite() else @currentCollection()
@@ -284,170 +441,12 @@
                new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group)
       @editingSite site
       @editingSite().copyPropertiesToCollection(@currentCollection()) unless @editingSite().group()
-
-      # Add a marker to the map for setting the site's position
-      if group
-        @subscribeToLocationModeChange site
-      else
-        @createMarkerForSite site
-
-    createMarkerForSite: (site, drop = false) =>
-      @deleteMarker()
-
-      draggable = site.group() || site.editingLocation()
-      @marker = new google.maps.Marker
-        map: @map
-        position: site.position()
-        animation: if drop || !site.id() then google.maps.Animation.DROP else null
-        draggable: draggable
-        icon: @markerImageTarget
-        shadow: @markerImageTargetShadow
-      @setupMarkerListener site, @marker
-      @setAllMarkersInactive() if draggable
-
-    subscribeToLocationModeChange: (site) =>
-      @subscription = site.locationMode.subscribe (newLocationMode) =>
-        if newLocationMode == 'manual'
-          @createMarkerForSite site, true
-        else
-          @deleteMarker()
-
-    unsubscribeToLocationModeChange: =>
-      if @subscription
-        @subscription.dispose()
-        delete @subscription
+      @editingSite().startEditLocationInMap()
 
     editSite: (site) =>
       site.copyPropertiesToCollection(@currentCollection())
       @selectSite(site) unless @selectedSite() && @selectedSite().id() == site.id()
       @editingSite(site)
-
-    editSiteName: =>
-      @editingSite().editingName(true)
-      @originalSiteName = @editingSite().name()
-
-    siteNameKeyPress: (site, event) =>
-      switch event.keyCode
-        when 13 then @saveSiteName()
-        when 27 then @exitSiteName()
-        else true
-
-    saveSiteName: =>
-      @editingSite().editingName(false)
-      json = {site: {name: @editingSite().name()}, _method: 'put'}
-      $.post "/collections/#{@currentCollection().id()}/sites/#{@editingSite().id()}.json", json, (data) =>
-
-    exitSiteName: =>
-      @editingSite().name(@originalSiteName)
-      @editingSite().editingName(false)
-      delete @originalSiteName
-
-    editSiteLocation: =>
-      @originalSiteLocation = @editingSite().position()
-      @editingSite().editingLocation(true)
-      if @editingSite().group()
-        if @editingSite().locationMode() == 'manual'
-          @createMarkerForSite @editingSite()
-        else
-          @subscribeToLocationModeChange()
-      else
-        @marker.setDraggable(true)
-      @setAllMarkersInactive()
-      @reloadMapSitesAutomatically = false
-      @reuseCurrentClusters = false
-      @map.panTo(@editingSite().position())
-      @reloadMapSites()
-
-    siteLocationKeyPress: (site, event) =>
-      switch event.keyCode
-        when 13 then @saveSiteLocation()
-        when 27 then @exitSiteLocation()
-        else true
-
-    saveSiteLocation: =>
-      @editingSite().editingLocation(false)
-
-      @setAllMarkersActive()
-
-      save = =>
-        json = {site: {lat: @editingSite().lat(), lng: @editingSite().lng()}, _method: 'put'}
-        $.post "/collections/#{@currentCollection().id()}/sites/#{@editingSite().id()}.json", json, (data) =>
-          @editingSite().lat(data.lat)
-          @editingSite().lng(data.lng)
-          @editingSite().parent.fetchLocation()
-          if @editingSite().group()
-            @deleteMarker()
-            @unsubscribeToLocationModeChange()
-          else
-            @marker.setPosition(@editingSite().position())
-          @reuseCurrentClusters = false
-          @map.panTo(@editingSite().position())
-          @reloadMapSites()
-
-      if match = @editingSite().locationTextTemp.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
-        @editingSite().lat(parseFloat(match[1]))
-        @editingSite().lng(parseFloat(match[2]))
-        save()
-      else
-        @geocoder.geocode { 'address': @editingSite().locationTextTemp}, (results, status) =>
-          if results.length > 0
-            @editingSite().position(results[0].geometry.location)
-            save()
-          else
-            @editingSite().position(@originalSiteLocation)
-
-    newSiteLocationKeyPress: (site, event) =>
-      switch event.keyCode
-        when 13
-          @moveSiteLocation()
-          false
-        else true
-
-    moveSiteLocation: =>
-      if match = @editingSite().locationTextTemp.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
-        @editingSite().lat(parseFloat(match[1]))
-        @editingSite().lng(parseFloat(match[2]))
-        @marker.setPosition(@editingSite().position())
-        @map.panTo(@editingSite().position())
-      else
-        @geocoder.geocode { 'address': @editingSite().locationTextTemp}, (results, status) =>
-          if results.length > 0
-            @editingSite().position(results[0].geometry.location)
-          else
-            @editingSite().position(@originalSiteLocation)
-          @marker.setPosition(@editingSite().position())
-          @map.panTo(@editingSite().position())
-
-    exitSiteLocation: =>
-      if @editingSite().group()
-        @deleteMarker()
-        @unsubscribeToLocationModeChange()
-      else
-        @marker.setPosition(@originalSiteLocation)
-      @editingSite().position(@originalSiteLocation)
-      @editingSite().editingLocation(false)
-      @setAllMarkersActive()
-      delete @originalSiteLocation
-
-    editSiteLocationMode: =>
-      @editingSite().editingLocationMode(true)
-
-    exitSiteLocationMode: =>
-      @editingSite().editingLocationMode(false)
-
-    saveSiteLocationMode: =>
-      @editingSite().editingLocationMode(false)
-      @editSiteLocation() if @editingSite().locationMode() == 'manual'
-
-      json = {site: {location_mode: @editingSite().locationMode(), lat: @editingSite().lat, lng: @editingSite().lng}, _method: 'put'}
-      $.post "/collections/#{@currentCollection().id()}/sites/#{@editingSite().id()}.json", json, (data) =>
-        @editingSite().lat(data.lat)
-        @editingSite().lng(data.lng)
-        @editingSite().parent.fetchLocation()
-        @reuseCurrentClusters = false
-        @reloadMapSitesAutomatically = false
-        @map.panTo(@editingSite().position())
-        @reloadMapSites()
 
     saveSite: =>
       callback = (data) =>
@@ -458,13 +457,14 @@
           else
             @currentCollection().addSite(@editingSite())
 
-        @editingSite().lat(data.lat)
-        @editingSite().lng(data.lng)
+        @editingSite().position(data)
 
         # If lat/lng/locationMode changed, update parent locations from server
         if @editingSite().lat() != data.lat || @editingSite().lng() != data.lng || (@editingSite().group() && @editingSite().locationMode() != data.location_mode)
           @editingSite().parent.fetchLocation()
 
+        @selectedSite(@editingSite())
+        @selectedSite().deleteMarker()
         @exitSite()
 
       unless @editingSite().group()
@@ -479,61 +479,32 @@
         $.post "/collections/#{@currentCollection().id()}/sites", json, callback
 
     exitSite: =>
-      @unsubscribeToLocationModeChange()
+      @editingSite().unsubscribeToLocationModeChange()
       @editingSite().editingLocation(false)
-      @deleteMarker() unless @editingSite().id()
+      @editingSite().deleteMarker() unless @editingSite().id()
       @editingSite(null)
+      window.model.setAllMarkersActive()
 
     selectSite: (site) =>
       if @selectedSite() == site
         if !site.group() && @markers[site.id()]
           @setMarkerIcon @markers[site.id()], 'active'
         @selectedSite().selected(false)
+        @selectedSite().deleteMarker()
         @selectedSite(null)
-        @deleteMarker()
-        @reuseCurrentClusters = false
-        @reloadMapSites()
+        @reloadMapSites reuseCurrentClusters: false
       else
-        oldSiteId = @selectedSite()?.id()
-        @selectedSite().selected(false) if @selectedSite()
+        if @selectedSite()
+          @selectedSite().selected(false)
+          @selectedSite().deleteMarker()
         @selectedSite(site)
         @selectedSite().selected(true)
         if @selectedSite().id() && @selectedSite().hasLocation()
-          @reloadMapSitesAutomatically = false
-          @reuseCurrentClusters = false
-          if @selectedSite().group()
-            @deleteMarker()
-          else
-            @createMarkerForSite @selectedSite()
-          @map.panTo(@selectedSite().position())
-          @reloadMapSites =>
-            if oldSiteId && @markers[oldSiteId]
-              @setMarkerIcon @markers[oldSiteId], 'active'
-            if !@selectedSite().group() && @markers[@selectedSite().id()]
-              @setMarkerIcon @markers[@selectedSite().id()], 'target'
+          @selectedSite().createMarker() unless @selectedSite().group()
+          @selectedSite().panToPosition()
 
     toggleSite: (site) =>
       site.toggle()
-
-    editFieldValue: (field) =>
-      @currentField = field
-      @originalFieldValue = field.value()
-      @currentField.editing(true)
-
-    fieldKeyPress: (field, event) =>
-      switch event.keyCode
-        when 13 then @saveFieldValue()
-        when 27 then @exitField()
-        else true
-
-    exitField: =>
-      @currentField.value(@originalFieldValue)
-      @currentField.editing(false)
-
-    saveFieldValue: =>
-      @currentField.editing(false)
-      @editingSite().updateProperty(@currentField.code(), @currentField.value())
-      delete @currentField
 
     initMap: (collection) =>
       return false if @map
@@ -556,12 +527,12 @@
 
       true
 
-    reloadMapSites: (callback) =>
+    reloadMapSites: (options = {}) =>
       bounds = @map.getBounds()
 
       # Wait until map is loaded
       unless bounds
-        setTimeout(( => @reloadMapSites(callback)), 100)
+        setTimeout(( => @reloadMapSites(options)), 100)
         return
 
       ne = bounds.getNorthEast()
@@ -586,10 +557,10 @@
         return unless currentRequestNumber == @requestNumber
 
         @drawSitesInMap data.sites
-        @drawClustersInMap data.clusters
+        @drawClustersInMap data.clusters, options.reuseCurrentClusters
         @reloadMapSitesAutomatically = true
 
-        callback() if callback && typeof(callback) == 'function'
+        options.callback() if options.callback && typeof(options.callback) == 'function'
 
       if query.collection_ids.length == 0
         # Save a request to the server if there are no selected collections
@@ -628,8 +599,8 @@
       for siteId in toRemove
         @deleteMarker siteId
 
-    drawClustersInMap: (clusters = []) =>
-      if @reuseCurrentClusters
+    drawClustersInMap: (clusters = [], reuseCurrentClusters = true) =>
+      if reuseCurrentClusters
         dataClusterIds = {}
 
         # Add clusters if they are not already on the map
@@ -651,8 +622,6 @@
 
         @deleteCluster clusterId for clusterId in toRemove
         @createCluster(cluster) for cluster in clusters
-
-      @reuseCurrentClusters = true
 
     setAllMarkersInactive: =>
       editingSiteId = @editingSite()?.id()?.toString()
@@ -676,25 +645,10 @@
           marker.setIcon @markerImageTarget
           marker.setShadow @markerImageTargetShadow
 
-    setupMarkerListener: (site, marker) =>
-      @markerListener = google.maps.event.addListener marker, 'position_changed', =>
-        site.position(marker.getPosition())
-        site.locationText("#{marker.getPosition().lat()}, #{marker.getPosition().lng()}")
-
     deleteMarker: (siteId) =>
-      if siteId
-        if @markers[siteId]
-          @markers[siteId].setMap null
-          delete @markers[siteId]
-      else if @marker
-        @marker.setMap null
-        delete @marker
-        @deleteMarkerListener
-
-    deleteMarkerListener: =>
-      if @markerListener
-        google.maps.event.removeListener @markerListener
-        delete @markerListener
+      return unless @markers[siteId]
+      @markers[siteId].setMap null
+      delete @markers[siteId]
 
     createCluster: (cluster) =>
       @clusters[cluster.id] = new Cluster @map, cluster
@@ -720,7 +674,8 @@
       sum_lat /= count
       sum_lng /= count
 
-    ko.applyBindings new CollectionViewModel(collections, sum_lat, sum_lng)
+    window.model = new CollectionViewModel(collections, sum_lat, sum_lng)
+    ko.applyBindings window.model
 
     $('#collections-dummy').hide()
     $('#collections-main').show()
