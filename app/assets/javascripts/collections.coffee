@@ -144,6 +144,7 @@
       @properties = ko.observable data?.properties
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
+      @editingLocationMode = ko.observable(false)
       @locationText = ko.computed
         read: =>
           (Math.round(@lat() * 100000) / 100000) + ', ' + (Math.round(@lng() * 100000) / 100000)
@@ -344,7 +345,13 @@
     editSiteLocation: =>
       @originalSiteLocation = @editingSite().position()
       @editingSite().editingLocation(true)
-      @marker.setDraggable(true)
+      if @editingSite().group()
+        if @editingSite().locationMode() == 'manual'
+          @createMarkerForSite @editingSite()
+        else
+          @subscribeToLocationModeChange()
+      else
+        @marker.setDraggable(true)
       @setAllMarkersInactive()
       @reloadMapSitesAutomatically = false
       @reuseCurrentClusters = false
@@ -359,6 +366,7 @@
 
     saveSiteLocation: =>
       @editingSite().editingLocation(false)
+
       @setAllMarkersActive()
 
       save = =>
@@ -367,7 +375,11 @@
           @editingSite().lat(data.lat)
           @editingSite().lng(data.lng)
           @editingSite().parent.fetchLocation()
-          @marker.setPosition(@editingSite().position())
+          if @editingSite().group()
+            @deleteMarker()
+            @unsubscribeToLocationModeChange()
+          else
+            @marker.setPosition(@editingSite().position())
           @reuseCurrentClusters = false
           @map.panTo(@editingSite().position())
           @reloadMapSites()
@@ -407,10 +419,29 @@
           @map.panTo(@editingSite().position())
 
     exitSiteLocation: =>
-      @marker.setPosition(@originalSiteLocation)
+      if @editingSite().group()
+        @deleteMarker()
+        @unsubscribeToLocationModeChange()
+      else
+        @marker.setPosition(@originalSiteLocation)
+      @editingSite().position(@originalSiteLocation)
       @editingSite().editingLocation(false)
       @setAllMarkersActive()
       delete @originalSiteLocation
+
+    editSiteLocationMode: =>
+      @editingSite().editingLocationMode(true)
+
+    saveSiteLocationMode: =>
+      @editingSite().editingLocationMode(false)
+
+      json = {site: {location_mode: @editingSite().locationMode(), lat: @editingSite().lat, lng: @editingSite().lng}, _method: 'put'}
+      $.post "/collections/#{@currentCollection().id()}/sites/#{@editingSite().id()}.json", json, (data) =>
+        @editingSite().lat(data.lat)
+        @editingSite().lng(data.lng)
+        @editingSite().parent.fetchLocation()
+        @reuseCurrentClusters = false
+        @map.panTo(@editingSite().position())
 
     saveSite: =>
       callback = (data) =>
@@ -421,12 +452,12 @@
           else
             @currentCollection().addSite(@editingSite())
 
+        @editingSite().lat(data.lat)
+        @editingSite().lng(data.lng)
+
         # If lat/lng/locationMode changed, update parent locations from server
         if @editingSite().lat() != data.lat || @editingSite().lng() != data.lng || (@editingSite().group() && @editingSite().locationMode() != data.location_mode)
           @editingSite().parent.fetchLocation()
-
-        @editingSite().lat(data.lat)
-        @editingSite().lng(data.lng)
 
         @exitSite()
 
@@ -642,6 +673,7 @@
     setupMarkerListener: (site, marker) =>
       @markerListener = google.maps.event.addListener marker, 'position_changed', =>
         site.position(marker.getPosition())
+        site.locationText("#{marker.getPosition().lat()}, #{marker.getPosition().lng()}")
 
     deleteMarker: (siteId) =>
       if siteId

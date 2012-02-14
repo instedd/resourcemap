@@ -126,7 +126,7 @@
                   \:
                   = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :hasfocus => true)
                 %p
-                  Location:
+                  Mode:
                   = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
                 %p{ko(:if => "locationMode() == 'manual'")}
                   %span Location:
@@ -185,19 +185,16 @@
                   <!-- ko if: editingName() -->
                   = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: $root.siteNameKeyPress, blur: $root.exitSiteName}'
                   <!-- /ko -->
-                <!-- ko if: !editingLocation() -->
                 %p
+                  %span Mode:
+                  %span{ko(:text => :locationMode, :click => '$root.editSiteLocationMode', :visible => '!editingLocationMode()'), :style => 'cursor: pointer'}
+                  = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode, :visible => :editingLocationMode, :event => '{change: $root.saveSiteLocationMode}')
+                %p{ko(:visible => "locationMode() == 'manual'")}
                   %span Location:
-                  %span{ko(:text => :locationText, :click => '$root.editSiteLocation'), :style => 'cursor: pointer'}
-                <!-- /ko -->
-                <!-- ko if: editingLocation() -->
-                %p
-                  Location:
-                  = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
-                %p{ko(:if => "locationMode() == 'manual'")}
-                  %span Location:
-                  = ko_text_field_tag :locationText, :hasfocus => true, :event => '{keydown: $root.siteLocationKeyPress, blur: $root.exitSiteLocation}'
-                <!-- /ko -->
+                  %span{ko(:text => :locationText, :visible => '!editingLocation()', :click => '$root.editSiteLocation'), :style => 'cursor: pointer'}
+                  <!-- ko if: editingLocation() -->
+                  = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: $root.siteLocationKeyPress, blur: $root.exitSiteLocation}'
+                  <!-- /ko -->
 
     -# Show Site form
     %form{ko(:with => :showSite, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
