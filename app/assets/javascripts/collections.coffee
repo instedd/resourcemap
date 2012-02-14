@@ -180,6 +180,7 @@
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
+      @valid = ko.computed => @hasName()
 
     sitesUrl: -> "/sites/#{@id()}/root_sites"
 
@@ -188,6 +189,8 @@
     parentCollection: => @parent.parentCollection()
 
     hasLocation: => @position() && !(@group() && @locationMode() == 'none')
+
+    hasName: => $.trim(@name()).length > 0
 
     fetchLocation: =>
       $.get "/sites/#{@id()}.json", {}, @position
@@ -231,8 +234,11 @@
         else true
 
     saveName: =>
-      @editingName(false)
-      @post name: @name()
+      if @hasName()
+        @post name: @name()
+        @editingName(false)
+      else
+        @exitName()
 
     exitName: =>
       @name(@originalName)
@@ -284,7 +290,7 @@
 
       @parseLocation
         success: (position) => @position(position); save()
-        failure: (position) => @position(position)
+        failure: (position) => @position(position); @endEditLocationInMap(position)
 
     newLocationKeyPress: (site, event) =>
       switch event.keyCode
@@ -485,6 +491,8 @@
           @editSite site
 
     saveSite: =>
+      return unless @editingSite().valid()
+
       callback = (data) =>
         unless @editingSite().id()
           @editingSite().id(data.id)
@@ -517,6 +525,7 @@
 
     deleteSite: =>
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
+        @selectSite(@editingSite())
         @editingSite().parent.removeSite(@editingSite())
         $.post "/sites/#{@editingSite().id()}", {_method: 'delete'}, =>
           @editingSite().parent.fetchLocation()
