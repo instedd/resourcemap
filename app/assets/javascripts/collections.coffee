@@ -484,15 +484,13 @@
       window.model.setAllMarkersActive()
 
     selectSite: (site) =>
-      if @selectedSite() == site
+      if @selectedSite()
         @selectedSite().selected(false)
         @selectedSite().deleteMarker()
+      if @selectedSite() == site
         @selectedSite(null)
         @reloadMapSites reuseCurrentClusters: false
       else
-        if @selectedSite()
-          @selectedSite().selected(false)
-          @selectedSite().deleteMarker()
         @selectedSite(site)
         @selectedSite().selected(true)
         if @selectedSite().id() && @selectedSite().hasLocation()
