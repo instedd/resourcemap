@@ -99,7 +99,6 @@
       @sitesPage = 1
       @hasMoreSites = ko.observable true
       @loadingSites = ko.observable false
-      @siteIds = {}
 
     loadMoreSites: =>
       return unless @hasMoreSites()
@@ -118,9 +117,9 @@
         @loadingSites false
 
     addSite: (site) =>
-      unless @siteIds[site.id()]
+      unless window.model.siteIds[site.id()]
         @sites.push(site)
-        @siteIds[site.id()] = site
+        window.model.siteIds[site.id()] = site
 
     toggle: =>
       # Load more sites when we expand, but only the first time
@@ -150,6 +149,8 @@
 
     clearFieldValues: => field.value(null) for field in @fields()
 
+    parentCollection: => @
+
   class Site extends SitesContainer
     constructor: (parent, data) ->
       super(data)
@@ -174,6 +175,8 @@
 
     level: => @parent.level() + 1
 
+    parentCollection: => @parent.parentCollection()
+
     hasLocation: => @position() && !(@group() && @locationMode() == 'none')
 
     fetchLocation: =>
@@ -195,6 +198,14 @@
         for key, value of @properties()
           collection.findFieldByCode(key).value(value)
 
+    post: (json, callback) =>
+      data = {site: json}
+      if @id()
+        data._method = 'put'
+        $.post "/collections/#{@parentCollection().id()}/sites/#{@id()}.json", data, callback
+      else
+        $.post "/collections/#{@parentCollection().id()}/sites", data, callback
+
     editName: =>
       @originalName = @name()
       @editingName(true)
@@ -207,8 +218,7 @@
 
     saveName: =>
       @editingName(false)
-      json = {site: {name: @name()}, _method: 'put'}
-      $.post "/collections/#{window.model.currentCollection().id()}/sites/#{@id()}.json", json
+      @post name: @name()
 
     exitName: =>
       @name(@originalName)
@@ -254,8 +264,7 @@
       window.model.setAllMarkersActive()
 
       save = =>
-        json = {site: {lat: @lat(), lng: @lng()}, _method: 'put'}
-        $.post "/collections/#{window.model.currentCollection().id()}/sites/#{@id()}.json", json, (data) =>
+        @post lat: @lat(), lng: @lng(), (data) =>
           @parent.fetchLocation()
           @endEditLocationInMap(data)
 
@@ -302,8 +311,7 @@
       @editingLocationMode(false)
       @editLocation() if @locationMode() == 'manual'
 
-      json = {site: {location_mode: @locationMode(), lat: @lat(), lng: @lng()}, _method: 'put'}
-      $.post "/collections/#{window.model.currentCollection().id()}/sites/#{@id()}.json", json, (data) =>
+      @post location_mode: @locationMode(), lat: @lat(), lng: @lng(), (data) =>
         @position(data)
         @parent.fetchLocation()
         @panToPosition()
@@ -378,6 +386,7 @@
       @collectionsCenter = new google.maps.LatLng(lat, lng)
       @markers = {}
       @clusters = {}
+      @siteIds = {}
       @reloadMapSitesAutomatically = true
       @requestNumber = 0
       @geocoder = new google.maps.Geocoder();
@@ -446,6 +455,16 @@
       @selectSite(site) unless @selectedSite() && @selectedSite().id() == site.id()
       @editingSite(site)
 
+    editSiteFromMarker: (siteId) =>
+      site = @siteIds[siteId]
+      if site
+        @editSite site
+      else
+        $.get "/sites/#{siteId}.json", {}, (data) =>
+          parent = window.model.findCollectionById(data.collection_id)
+          site = new Site(parent, data)
+          @editSite site
+
     saveSite: =>
       callback = (data) =>
         unless @editingSite().id()
@@ -468,13 +487,7 @@
       unless @editingSite().group()
         @editingSite().copyPropertiesFromCollection(@currentCollection())
 
-      json = {site: @editingSite().toJSON()}
-
-      if @editingSite().id()
-        json._method = 'put'
-        $.post "/collections/#{@currentCollection().id()}/sites/#{@editingSite().id()}.json", json, callback
-      else
-        $.post "/collections/#{@currentCollection().id()}/sites", json, callback
+      @editingSite().post @editingSite().toJSON(), callback
 
     exitSite: =>
       @editingSite().unsubscribeToLocationModeChange()
@@ -582,7 +595,10 @@
             markerOptions.icon = @markerImageTarget
             markerOptions.shadow = @markerImageTargetShadow
           @markers[site.id] = new google.maps.Marker markerOptions
-          @markers[site.id].siteId = site.id
+          localId = @markers[site.id].siteId = site.id
+          do (localId) =>
+            @markers[localId].listener = google.maps.event.addListener @markers[localId], 'click', (event) =>
+              @editSiteFromMarker localId
 
       # Determine which markers need to be removed from the map
       toRemove = []
@@ -642,6 +658,7 @@
     deleteMarker: (siteId) =>
       return unless @markers[siteId]
       @markers[siteId].setMap null
+      google.maps.event.removeListener @markers[siteId].listener
       delete @markers[siteId]
 
     createCluster: (cluster) =>
