@@ -48,8 +48,13 @@
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
+      @options = if data.config?
+                   ko.observableArray($.map(data.config, (x) -> new Option(x)))
+                 else
+                   ko.observableArray()
       @hasFocus = ko.observable(false)
-      @valid = ko.computed => @hasName() && @hasCode()
+      @isOptionsKind = ko.computed => @kind() == 'selectOne' || @kind() == 'selectMany'
+      @valid = ko.computed => @hasName() && @hasCode() && (!@isOptionsKind() || @options().length > 1)
 
     hasName: => $.trim(@name()).length > 0
 
@@ -58,12 +63,21 @@
     buttonClass: =>
       switch @kind()
         when 'text' then 'ltext'
-        when 'number' then 'lnumber'
+        when 'numeric' then 'lnumber'
+        when 'selectOne' then 'lsingleoption'
+        when 'selectMany' then 'lmultipleoptions'
 
     toJSON: =>
-      name: @name()
-      code: @code()
-      kind: @kind()
+      json =
+        name: @name()
+        code: @code()
+        kind: @kind()
+      json.config = $.map(@options(), (x) -> x.name()) if @isOptionsKind()
+      json
+
+  class Option
+    constructor: (name) ->
+      @name = ko.observable(name)
 
   class LayersViewModel
     constructor: (collectionId, layers) ->
@@ -71,6 +85,8 @@
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @currentLayer = ko.observable()
       @currentField = ko.observable()
+      @newOption = ko.observable('')
+      @optionValid = ko.computed => $.trim(@newOption()).length > 0
 
     newLayer: =>
       layer = new Layer
@@ -111,13 +127,13 @@
         $.post "/collections/#{@collectionId}/layers/#{layer.id()}", {_method: 'delete'}, =>
           @layers.remove(layer)
 
-    newTextField: =>
-      @currentField(new Field(kind: 'text'))
-      @currentLayer().fields.push(@currentField())
-      @currentField().hasFocus(true)
+    newTextField: => @newField 'text'
+    newNumericField: => @newField 'numeric'
+    newSelectOneField: => @newField 'selectOne'
+    newSelectManyField: => @newField 'selectMany'
 
-    newNumberField: =>
-      @currentField(new Field(kind: 'number'))
+    newField: (kind) =>
+      @currentField(new Field(kind: kind))
       @currentLayer().fields.push(@currentField())
       @currentField().hasFocus(true)
 
@@ -133,6 +149,23 @@
         else
           @currentField(@currentLayer().fields()[0])
           @currentField().hasFocus(true)
+
+    newOptionKeyPress: (field, event) =>
+      switch event.keyCode
+        when 13 then @addOption()
+        else true
+
+    optionBlur: (option) =>
+      if $.trim(option.name()).length == 0
+        @removeOption(option)
+
+    addOption: =>
+      return unless @optionValid()
+      @currentField().options.push(new Option(@newOption()))
+      @newOption('')
+
+    removeOption: (option) =>
+      @currentField().options.remove(option)
 
   match = window.location.toString().match(/\/collections\/(\d+)\/layers/)
   collectionId = parseInt(match[1])

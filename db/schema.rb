@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120212033347) do
+ActiveRecord::Schema.define(:version => 20120215190023) do
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(:version => 20120212033347) do
     t.string   "kind"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.text     "config"
   end
 
   create_table "forms", :force => true do |t|

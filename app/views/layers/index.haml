@@ -45,15 +45,23 @@
                 %button.ltext
                 %br/
                 Text
-              %span{ko(:click => '$root.newNumberField')}
+              %span{ko(:click => '$root.newNumericField')}
                 %button.lnumber
                 %br/
                 Numeric
+              %span{ko(:click => '$root.newSelectOneField')}
+                %button.lsingleoption
+                %br/
+                Select one
+              %span{ko(:click => '$root.newSelectManyField')}
+                %button.lmultipleoptions
+                %br/
+                Select many
 
       .box.right.w30.feditor-sidebar{ko(:with => '$root.currentField', :visible => '$root.currentField')}
         %p.title Type
         %p.smalltext The data type to fill in this field.
-        = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'number']]), 'data-bind' => kov(:value => :kind)
+        = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'selectOne'], ['Select many', 'selectMany']]), 'data-bind' => kov(:value => :kind)
         %hr/
         %p.title Name
         %p.smalltext The name of this field as it is presented.
@@ -62,6 +70,20 @@
         %p.title Code
         %p.smalltext The abbreviation used to report via SMS.
         = ko_text_field_tag :code
+        <!-- ko if: isOptionsKind -->
+        %hr/
+        %p.title Options
+        %p.smalltext Possible values for this field.
+        %ul.clist.w30
+          <!-- ko foreach: options -->
+          %li
+            %input.ux-clist{ko(:value => :name, :valueUpdate => "'afterkeydown'", :event => '{blur: $root.optionBlur}'), :type => :text}
+            %button.clist-remove{ko(:click => '$root.removeOption')}
+          <!-- /ko -->
+          %li
+            %input.ux-text{ko(:value => '$root.newOption', :valueUpdate => "'afterkeydown'", :event => '{keypress: $root.newOptionKeyPress}'), :placeholder => "New option"}
+            %button.clist-add{ko(:click => '$root.addOption', :enable => '$root.optionValid')}
+        <!-- /ko -->
         %br/
         %br/
 
