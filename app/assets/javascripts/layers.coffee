@@ -16,8 +16,15 @@
     fieldsAreValid: =>
       return false if @fields().length == 0
 
+      codes = []
+      names = []
+
       for field in @fields()
         return false unless field.valid()
+        return false if names.indexOf(field.name()) >= 0
+        return false if codes.indexOf(field.code()) >= 0
+        names.push field.name()
+        codes.push field.code()
 
       true
 
