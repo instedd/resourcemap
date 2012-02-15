@@ -42,6 +42,10 @@
     @div.parentNode.removeChild @div
     delete @div
 
+  Cluster.prototype.setCount = (count) ->
+    @count = count
+    @div.innerText = (@count).toString()
+
   class Field
     constructor: (data) ->
       @code = ko.observable data?.code
@@ -87,7 +91,7 @@
     panToPosition: (callback) =>
       window.model.reloadMapSitesAutomatically = false
       window.model.map.panTo @position() if @position()
-      window.model.reloadMapSites callback: callback, reuseCurrentClusters: false
+      window.model.reloadMapSites(callback)
 
   class SitesContainer extends Locatable
     constructor: (data) ->
@@ -448,7 +452,7 @@
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
-          @reloadMapSites reuseCurrentClusters: false
+          @reloadMapSites()
 
     findCollectionById: (id) => (x for x in @collections() when x.id() == id)[0]
 
@@ -525,7 +529,7 @@
           @editingSite().parent.fetchLocation()
           @editingSite().deleteMarker()
           @exitSite()
-          @reloadMapSites reuseCurrentClusters: false
+          @reloadMapSites()
 
     selectSite: (site) =>
       if @selectedSite()
@@ -533,7 +537,7 @@
         @selectedSite().deleteMarker()
       if @selectedSite() == site
         @selectedSite(null)
-        @reloadMapSites reuseCurrentClusters: false
+        @reloadMapSites()
       else
         @selectedSite(site)
         @selectedSite().selected(true)
@@ -565,12 +569,12 @@
 
       true
 
-    reloadMapSites: (options = {}) =>
+    reloadMapSites: (callback) =>
       bounds = @map.getBounds()
 
       # Wait until map is loaded
       unless bounds
-        setTimeout(( => @reloadMapSites(options)), 100)
+        setTimeout(( => @reloadMapSites(callback)), 100)
         return
 
       ne = bounds.getNorthEast()
@@ -595,10 +599,10 @@
         return unless currentRequestNumber == @requestNumber
 
         @drawSitesInMap data.sites
-        @drawClustersInMap data.clusters, options.reuseCurrentClusters
+        @drawClustersInMap data.clusters
         @reloadMapSitesAutomatically = true
 
-        options.callback() if options.callback && typeof(options.callback) == 'function'
+        callback() if callback && typeof(callback) == 'function'
 
       if query.collection_ids.length == 0
         # Save a request to the server if there are no selected collections
@@ -640,29 +644,25 @@
       for siteId in toRemove
         @deleteMarker siteId
 
-    drawClustersInMap: (clusters = [], reuseCurrentClusters = true) =>
-      if reuseCurrentClusters
-        dataClusterIds = {}
+    drawClustersInMap: (clusters = []) =>
+      dataClusterIds = {}
 
-        # Add clusters if they are not already on the map
-        for cluster in clusters
-          dataClusterIds[cluster.id] = cluster.id
-          @createCluster(cluster) unless @clusters[cluster.id]
+      # Add clusters if they are not already on the map
+      for cluster in clusters
+        dataClusterIds[cluster.id] = cluster.id
+        currentCluster = @clusters[cluster.id]
+        if currentCluster
+          currentCluster.setCount(cluster.count)
+        else
+          @createCluster(cluster)
 
-        # Determine which clusters need to be removed from the map
-        toRemove = []
-        for clusterId, cluster of @clusters
-          toRemove.push clusterId unless dataClusterIds[clusterId]
+      # Determine which clusters need to be removed from the map
+      toRemove = []
+      for clusterId, cluster of @clusters
+        toRemove.push clusterId unless dataClusterIds[clusterId]
 
-        # And remove them
-        @deleteCluster clusterId for clusterId in toRemove
-      else
-        toRemove = []
-        for clusterId, cluster of @clusters
-          toRemove.push clusterId
-
-        @deleteCluster clusterId for clusterId in toRemove
-        @createCluster(cluster) for cluster in clusters
+      # And remove them
+      @deleteCluster clusterId for clusterId in toRemove
 
     setAllMarkersInactive: =>
       editingSiteId = @editingSite()?.id()?.toString()
