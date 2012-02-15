@@ -499,10 +499,7 @@
           @editingSite().parent.addSite(@editingSite())
 
         @editingSite().position(data)
-
-        # If lat/lng/locationMode changed, update parent locations from server
-        if @editingSite().lat() != data.lat || @editingSite().lng() != data.lng || (@editingSite().group() && @editingSite().locationMode() != data.location_mode)
-          @editingSite().parent.fetchLocation()
+        @editingSite().parent.fetchLocation()
 
         @selectedSite(@editingSite())
         @selectedSite().deleteMarker()
