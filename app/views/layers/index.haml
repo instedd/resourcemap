@@ -7,59 +7,94 @@
 
   -# Layers
   <!-- ko foreach: layers -->
-  .tablewrapp.w90{ko(:visible => '$data == $root.currentLayer()'), :style => 'display:none'}
+  .box.w80{ko(:visible => '$data == $root.currentLayer()'), :style => 'display:none'}
     %p
       = label_tag :name
       %br/
       = ko_text_field_tag :name, :hasfocus => :hasFocus
       = ko_check_box_tag :public
       = label_tag :public, 'Public layer'
-    %h3 Fields
+
+    %label Fields
+    %br/
+    %br/
 
     -# Fields
     #form-editor
       .left
         <!-- ko foreach: fields -->
-        .feditor{ko(:css => '{first: $data == $parent.fields()[0], last: $data == $parent.fields()[$parent.fields().length - 1]}', :click => '$root.selectField')}
+        .feditor{ko(:css => '{first: $data == $parent.fields()[0]}', :click => '$root.selectField')}
           .feditor-top
           .feditor-container
+            .rightbuttons
+              %button.fdelete{ko(:click => "$root.deleteField")}
             .feditor-button
               %button{ko(:attr => "{'class': buttonClass()}", :css => "{active: $data == $root.currentField()}")}
-            Name:
-            %span{ko(:text => :name)}
-            Code:
-            %span{ko(:text => :code)}
-            %button.right.fdelete{ko(:click => "$root.deleteField")}
+            .feditor-content
+              %h1{ko(:text => :name)}
+              %span.hint{ko(:text => "'Code: ' + (code() ? code() : '(none)')")}
           .feditor-bottom
         <!-- /ko -->
 
-      .feditor-sidebar.box.right.w30{ko(:with => '$root.currentField', :visible => '$root.currentField')}
-        %p
-          = label_tag :name
-          %br/
-          = ko_text_field_tag :name, :hasfocus => :hasFocus
-        %p
-          = label_tag :code
-          %br/
-          = ko_text_field_tag :code
+        .feditor-add
+          .feditor-add-top
+          .feditor-add-container
+            .feditor-add-content
+              %h1 Add form field
+              %span{ko(:click => '$root.newTextField')}
+                %button.ltext
+                %br/
+                Text
+              %span{ko(:click => '$root.newNumberField')}
+                %button.lnumber
+                %br/
+                Numeric
+
+      .box.right.w30.feditor-sidebar{ko(:with => '$root.currentField', :visible => '$root.currentField')}
+        %p.title Type
+        %p.smalltext The data type to fill in this field.
+        = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'number']]), 'data-bind' => kov(:value => :kind)
+        %hr/
+        %p.title Name
+        %p.smalltext The name of this field as it is presented.
+        = ko_text_field_tag :name, :hasfocus => :hasFocus
+        %hr/
+        %p.title Code
+        %p.smalltext The abbreviation used to report via SMS.
+        = ko_text_field_tag :code
+        %br/
+        %br/
 
       .clear
 
-    -# New field link
-    %div
-      %ul
-        %li= ko_link_to_root 'New text field', :newTextField
-        %li= ko_link_to_root 'New number field', :newNumberField
+    %hr/
+    .bottom-actions
+      %button.white{ko(:click => '$root.saveLayer'), :type => :button} Save
+      %a.tgrey{ko(:click => '$root.cancelLayer'), :href => 'javascript:void(0)'} Cancel
 
-    %button.grey{ko(:click => '$root.saveLayer'), :type => 'submit'} Save layer
-    %span{ko(:click => '$root.cancelLayer')}Cancel
+  .box.grey.w60{ko(:visible => '$data != $root.currentLayer()'), :style => 'display:none'}
+    .toptitle
+      %span{ko(:text => :name)}
+      &rarr;
+      %em{ko(:visible => :public)} Public layer
+      %em{ko(:visible => '!public()')} Private layer
 
-  %div{ko(:visible => '$data != $root.currentLayer()'), :style => 'display:none'}
-    %span{ko(:text => :name)}
-    = ko_link_to_root 'edit', :editLayer
-    = ko_link_to_root 'delete', :deleteLayer
+    .rightbuttons
+      %button.fbranch
+      %button.fdelete{ko(:click => '$root.deleteLayer')}
+
+    .middlebuttons
+      <!-- ko foreach: fields -->
+      %button.faccept{ko(:text => :name)}
+      <!-- /ko -->
+
+    %button.farrow{ko(:click => '$root.editLayer')} Edit
+
+  %br/
   <!-- /ko -->
 
   -# New layer link
-  %div{ko(:visible => '!currentLayer()'), :style => 'display:none'}
-    = ko_link_to_root 'New layer', :newLayer
+  .box.grey.addlayer{ko(:visible => '!currentLayer()', :click => '$root.newLayer'), :style => 'display:none'}
+    %span Add layer
+    %button.cadd.right{:type => :button}
+    %br{:clear => :all}
