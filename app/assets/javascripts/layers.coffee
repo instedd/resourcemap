@@ -19,12 +19,20 @@
       codes = []
       names = []
 
+      # Check that the name and code are not duplicated
       for field in @fields()
         return false unless field.valid()
         return false if names.indexOf(field.name()) >= 0
         return false if codes.indexOf(field.code()) >= 0
         names.push field.name()
         codes.push field.code()
+
+      # Now check that the names and codes don't apper in other layers
+      if window.model
+        for layer in window.model.layers() when layer != @
+          for field in layer.fields()
+            return false if names.indexOf(field.name()) >= 0
+            return false if codes.indexOf(field.code()) >= 0
 
       true
 
@@ -130,4 +138,5 @@
   collectionId = parseInt(match[1])
 
   $.get "/collections/#{collectionId}/layers.json", {}, (layers) =>
-    ko.applyBindings new LayersViewModel(collectionId, layers)
+    window.model = new LayersViewModel(collectionId, layers)
+    ko.applyBindings window.model
