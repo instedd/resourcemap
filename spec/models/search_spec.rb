@@ -23,6 +23,14 @@ describe Search do
     search.results[:sites].should be_nil
   end
 
+  it "searches based on collection id not found" do
+    site = Site.make
+    other_collection = Collection.make
+
+    search = Search.new other_collection.id
+    search.results[:sites].should be_nil
+  end
+
   it "searches based on many collection ids found" do
     site1 = Site.make :lat => 45, :lng => 90
     site2 = Site.make :lat => -45, :lng => -90
