@@ -51,6 +51,10 @@
       @code = ko.observable data?.code
       @name = ko.observable data?.name
       @kind = ko.observable data?.kind
+      @options = if data.config?
+                   ko.observableArray(data.config)
+                 else
+                   ko.observableArray()
       @value = ko.observable()
       @valueText = ko.computed => if @value() then @value() else '(no value)'
       @editing = ko.observable false

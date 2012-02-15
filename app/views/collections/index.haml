@@ -183,17 +183,17 @@
                   %span Name:
                   %span{ko(:text => :name, :visible => '!editingName()', :click => 'editName'), :style => 'cursor: pointer'}
                   <!-- ko if: editingName() -->
-                  = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: nameKeyPress, blur: exitName}'
+                  = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: nameKeyPress, blur: saveName}'
                   <!-- /ko -->
                 %p
                   %span Mode:
                   %span{ko(:text => :locationMode, :click => 'editLocationMode', :visible => '!editingLocationMode()'), :style => 'cursor: pointer'}
-                  = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode, :visible => :editingLocationMode, :hasfocus => true, :event => '{change: saveLocationMode, blur: exitLocationMode}')
+                  = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode, :visible => :editingLocationMode, :hasfocus => true, :event => '{change: saveLocationMode, blur: saveLocationMode}')
                 %p{ko(:visible => "locationMode() == 'manual'")}
                   %span Location:
                   %span{ko(:text => :locationText, :visible => '!editingLocation()', :click => 'editLocation'), :style => 'cursor: pointer'}
                   <!-- ko if: editingLocation() -->
-                  = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: locationKeyPress, blur: exitLocation}'
+                  = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: locationKeyPress, blur: saveLocation}'
                   <!-- /ko -->
       .tablebottom
         = link_to 'Delete Group', 'javascript:void()', :class => 'icon fdelete black', 'data-bind' => kov(:click => '$root.deleteSite')
@@ -213,20 +213,25 @@
                   %span Name:
                   %span{ko(:text => :name, :visible => '!editingName()', :click => 'editName'), :style => 'cursor: pointer'}
                   <!-- ko if: editingName() -->
-                  = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: nameKeyPress, blur: exitName}'
+                  = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: nameKeyPress, blur: saveName}'
                   <!-- /ko -->
                 %p
                   %span Location:
                   %span{ko(:text => :locationText, :visible => '!editingLocation()', :click => 'editLocation'), :style => 'cursor: pointer'}
                   <!-- ko if: editingLocation() -->
-                  = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: locationKeyPress, blur: exitLocation}'
+                  = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: locationKeyPress, blur: saveLocation}'
                   <!-- /ko -->
                 %hr
                 <!-- ko foreach: parentCollection().fields() -->
                 %p
                   %span{ko(:text => "name() + ':'")}
                   %span{ko(:text => :valueText, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
-                  = ko_text_field_tag :value, :visible => 'editing()', :hasfocus => true, :event => '{keydown: keyPress, blur: exit}'
+                  <!-- ko if: editing() && (kind() == 'text' || kind() == 'numeric') -->
+                  = ko_text_field_tag :value, :hasfocus => true, :event => '{keydown: keyPress, blur: save}'
+                  <!-- /ko -->
+                  <!-- ko if: editing() && kind() == 'selectOne' -->
+                  %select{ko(:value => :value, :options => :options, :event => '{change: save, blur: save}')}
+                  <!-- /ko -->
                 <!-- /ko -->
       .tablebottom
         = link_to 'Delete Site', 'javascript:void()', :class => 'icon fdelete black', 'data-bind' => kov(:click => '$root.deleteSite')

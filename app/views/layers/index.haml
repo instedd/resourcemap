@@ -81,7 +81,7 @@
             %button.clist-remove{ko(:click => '$root.removeOption')}
           <!-- /ko -->
           %li
-            %input.ux-text{ko(:value => '$root.newOption', :valueUpdate => "'afterkeydown'", :event => '{keypress: $root.newOptionKeyPress}'), :placeholder => "New option"}
+            %input.ux-text{ko(:value => '$root.newOption', :valueUpdate => "'afterkeydown'", :event => '{keypress: $root.newOptionKeyPress, blur: $root.addOption}'), :placeholder => "New option"}
             %button.clist-add{ko(:click => '$root.addOption', :enable => '$root.optionValid')}
         <!-- /ko -->
         %br/
