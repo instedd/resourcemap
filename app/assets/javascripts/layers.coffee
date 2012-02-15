@@ -9,6 +9,17 @@
       else
         @fields = ko.observableArray([])
       @hasFocus = ko.observable(false)
+      @valid = ko.computed => @hasName() && @fieldsAreValid()
+
+    hasName: => $.trim(@name()).length > 0
+
+    fieldsAreValid: =>
+      return false if @fields().length == 0
+
+      for field in @fields()
+        return false unless field.valid()
+
+      true
 
     toJSON: =>
       id: @id()
@@ -23,6 +34,11 @@
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
       @hasFocus = ko.observable(false)
+      @valid = ko.computed => @hasName() && @hasCode()
+
+    hasName: => $.trim(@name()).length > 0
+
+    hasCode: => $.trim(@code()).length > 0
 
     buttonClass: =>
       switch @kind()

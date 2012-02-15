@@ -69,7 +69,7 @@
 
     %hr/
     .bottom-actions
-      %button.white{ko(:click => '$root.saveLayer'), :type => :button} Save
+      %button.white{ko(:click => '$root.saveLayer', :enable => :valid), :type => :button} Save
       %a.tgrey{ko(:click => '$root.cancelLayer'), :href => 'javascript:void(0)'} Cancel
 
   .box.grey.w60{ko(:visible => '$data != $root.currentLayer()'), :style => 'display:none'}
