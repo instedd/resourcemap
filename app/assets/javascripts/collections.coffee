@@ -92,10 +92,14 @@
             @lat(latLng.lat); @lng(latLng.lng)
         owner: @
 
-    panToPosition: (callback) =>
-      window.model.reloadMapSitesAutomatically = false
-      window.model.map.panTo @position() if @position()
-      window.model.reloadMapSites(callback)
+    panToPosition: (forceReload = false) =>
+      currentPosition = window.model.map.getCenter()
+      positionChanged = @position() && (Math.abs(@position().lat() - currentPosition.lat()) > 1e-6 || Math.abs(@position().lng() - currentPosition.lng()) > 1e-6)
+
+      if positionChanged || forceReload
+        window.model.reloadMapSitesAutomatically = false
+        window.model.map.panTo @position() if positionChanged
+        window.model.reloadMapSites()
 
   class SitesContainer extends Locatable
     constructor: (data) ->
@@ -358,11 +362,11 @@
       @setupMarkerListener()
       window.model.setAllMarkersInactive() if draggable
 
-    deleteMarker: =>
+    deleteMarker: (removeFromMap = true) =>
       return unless @marker
-      @marker.setMap null
+      @marker.setMap null if removeFromMap
       delete @marker
-      @deleteMarkerListener()
+      @deleteMarkerListener() if removeFromMap
 
     deleteMarkerListener: =>
       return unless @markerListener
@@ -443,7 +447,7 @@
           self.selectSite(self.selectedSite()) if self.selectedSite()
 
           collection.fetchFields()
-          collection.panToPosition() unless initialized
+          collection.panToPosition(true) unless initialized
 
         @get '', ->
           initialized = self.initMap()
@@ -536,8 +540,8 @@
 
     selectSite: (site) =>
       if @selectedSite()
+        @oldSelectedSite = @selectedSite() if @selectedSite().marker
         @selectedSite().selected(false)
-        @selectedSite().deleteMarker()
       if @selectedSite() == site
         @selectedSite(null)
         @reloadMapSites()
@@ -545,8 +549,15 @@
         @selectedSite(site)
         @selectedSite().selected(true)
         if @selectedSite().id() && @selectedSite().hasLocation()
-          @selectedSite().createMarker() unless @selectedSite().group()
-          @selectedSite().panToPosition()
+          forceReload = false
+          if @markers[@selectedSite().id()]
+            @selectedSite().marker = @markers[@selectedSite().id()]
+            @setMarkerIcon @selectedSite().marker, 'target'
+            @deleteMarker @selectedSite().id(), false
+          else
+            @selectedSite().createMarker() unless @selectedSite().group()
+            forceReload = true
+          @selectedSite().panToPosition forceReload
 
     toggleSite: (site) =>
       site.toggle()
@@ -624,22 +635,30 @@
       dataSiteIds = {}
       editingSiteId = if @editingSite()?.id() && @editingSite().editingLocation() then @editingSite().id() else null
       selectedSiteId = @selectedSite()?.id()
+      oldSelectedSiteId = @oldSelectedSite?.id()
 
       # Add markers if they are not already on the map
       for site in sites
         dataSiteIds[site.id] = site.id
         unless @markers[site.id]
-          markerOptions =
-            map: @map
-            position: new google.maps.LatLng(site.lat, site.lng)
-          # Show site in grey if editing a site (but not if it's the one being edited)
-          if editingSiteId && editingSiteId != site.id
-            markerOptions.icon = @markerImageInactive
-            markerOptions.shadow = @markerImageInactiveShadow
-          if selectedSiteId && selectedSiteId == site.id
-            markerOptions.icon = @markerImageTarget
-            markerOptions.shadow = @markerImageTargetShadow
-          @markers[site.id] = new google.maps.Marker markerOptions
+          if site.id == oldSelectedSiteId
+            @markers[site.id] = @oldSelectedSite.marker
+            @deleteMarkerListener site.id
+            @setMarkerIcon @markers[site.id], 'active'
+            @oldSelectedSite.deleteMarker false
+            delete @oldSelectedSite
+          else
+            markerOptions =
+              map: @map
+              position: new google.maps.LatLng(site.lat, site.lng)
+            # Show site in grey if editing a site (but not if it's the one being edited)
+            if editingSiteId && editingSiteId != site.id
+              markerOptions.icon = @markerImageInactive
+              markerOptions.shadow = @markerImageInactiveShadow
+            if selectedSiteId && selectedSiteId == site.id
+              markerOptions.icon = @markerImageTarget
+              markerOptions.shadow = @markerImageTargetShadow
+            @markers[site.id] = new google.maps.Marker markerOptions
           localId = @markers[site.id].siteId = site.id
           do (localId) =>
             @markers[localId].listener = google.maps.event.addListener @markers[localId], 'click', (event) =>
@@ -653,6 +672,10 @@
       # And remove them
       for siteId in toRemove
         @deleteMarker siteId
+
+      if @oldSelectedSite
+        @oldSelectedSite.deleteMarker()
+        delete @oldSelectedSite
 
     drawClustersInMap: (clusters = []) =>
       dataClusterIds = {}
@@ -696,11 +719,16 @@
           marker.setIcon @markerImageTarget
           marker.setShadow @markerImageTargetShadow
 
-    deleteMarker: (siteId) =>
+    deleteMarker: (siteId, removeFromMap = true) =>
       return unless @markers[siteId]
-      @markers[siteId].setMap null
-      google.maps.event.removeListener @markers[siteId].listener
+      @markers[siteId].setMap null if removeFromMap
+      @deleteMarkerListener siteId
       delete @markers[siteId]
+
+    deleteMarkerListener: (siteId) =>
+      if @markers[siteId].listener
+        google.maps.event.removeListener @markers[siteId].listener
+        delete @markers[siteId].listener
 
     createCluster: (cluster) =>
       @clusters[cluster.id] = new Cluster @map, cluster
