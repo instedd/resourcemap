@@ -44,7 +44,7 @@
 
   Cluster.prototype.setCount = (count) ->
     @count = count
-    @div.innerText = (@count).toString()
+    @div.innerText = (@count).toString() if @div
 
   class Field
     constructor: (data) ->

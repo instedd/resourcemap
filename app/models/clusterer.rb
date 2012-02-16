@@ -9,7 +9,7 @@ class Clusterer
 
   def self.cell_size_for(zoom)
     zoom = zoom.to_i
-    zoom = 1 if zoom == 0
+    zoom = 1 if zoom <= 0
     zoom = 2 ** (zoom + 1)
     [CellSize / zoom, CellSize / zoom]
   end
@@ -25,28 +25,69 @@ class Clusterer
 
   def add(site)
     if @group_ids && site[:parent_ids] && (group_id = (site[:parent_ids] & @group_ids)).present?
-      group_id = group_id[0]
-      group = @groups[group_id]
-      cluster = @clusters["g#{group_id}"]
-      cluster[:id] ="g#{group_id}"
-      cluster[:site_id] = site[:id]
-      cluster[:count] += 1
-      cluster[:lat_sum] += group[:lat].to_f
-      cluster[:lng_sum] += group[:lng].to_f
-      cluster[:max_zoom] = group[:max_zoom]
+      add_group site, @groups[group_id[0]]
     else
-      @x = ((90 + site[:lng]) / @width).floor
-      @y = ((180 + site[:lat]) / @height).floor
-      cluster = @clusters["#{@x}:#{@y}"]
-      cluster[:id] = "#{@zoom}:#{@x}:#{@y}"
-      cluster[:site_id] = site[:id]
-      cluster[:count] += 1
-      cluster[:lat_sum] += site[:lat].to_f
-      cluster[:lng_sum] += site[:lng].to_f
+      add_non_group site
     end
   end
 
   def clusters
+    first_pass = first_pass_clusters
+    if first_pass[:clusters]
+      clusterer = Clusterer.new(@zoom - 2)
+      first_pass[:clusters].each do |cluster|
+        new_cluster = clusterer.add_non_group cluster, cluster[:count]
+        new_cluster[:max_zoom] = cluster[:max_zoom]
+        new_cluster[:group_ids] ||= []
+        new_cluster[:group_ids] << cluster[:id]
+      end
+      grouped_clusters = clusterer.first_pass_clusters
+      if grouped_clusters[:clusters]
+        grouped_clusters[:clusters].each do |cluster|
+          if cluster[:group_ids].length == 1
+            cluster[:id] = cluster[:group_ids][0]
+          else
+            cluster.delete :max_zoom
+          end
+          cluster.delete :group_ids
+        end
+        first_pass[:clusters] = grouped_clusters[:clusters]
+      end
+    end
+    first_pass
+  end
+
+  protected
+
+  def add_group(site, group)
+    cluster = @clusters["g#{group[:id]}"]
+    cluster[:id] ="g#{group[:id]}"
+    cluster[:site_id] = site[:id]
+    cluster[:count] += 1
+    cluster[:lat_sum] += group[:lat].to_f
+    cluster[:lng_sum] += group[:lng].to_f
+    cluster[:max_zoom] = group[:max_zoom]
+    cluster
+  end
+
+  def add_non_group(site, weight = 1)
+    x, y = cell_for site
+    cluster = @clusters["#{x}:#{y}"]
+    cluster[:id] = "#{@zoom}:#{x}:#{y}"
+    cluster[:site_id] = site[:id]
+    cluster[:count] += weight
+    cluster[:lat_sum] += weight * site[:lat].to_f
+    cluster[:lng_sum] += weight * site[:lng].to_f
+    cluster
+  end
+
+  def cell_for(site)
+    x = ((90 + site[:lng]) / @width).floor
+    y = ((180 + site[:lat]) / @height).floor
+    [x, y]
+  end
+
+  def first_pass_clusters
     clusters_to_return = []
     sites_to_return = []
 
@@ -62,6 +103,7 @@ class Clusterer
           :count => count
         }
         hash[:max_zoom] = cluster[:max_zoom] if cluster[:max_zoom]
+        hash[:group_ids] = cluster[:group_ids] if cluster[:group_ids]
         clusters_to_return.push hash
       end
     end
@@ -72,7 +114,9 @@ class Clusterer
     result
   end
 
-  private
+  def internal_clusters
+    @clusters
+  end
 
   def is_close?(p1, p2)
     (p1[:lat] - p2[:lat]).abs <= @width_distance && (p1[:lng] - p2[:lng]).abs <= @height_distance

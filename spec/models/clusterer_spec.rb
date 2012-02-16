@@ -28,7 +28,7 @@ describe Clusterer do
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
-      clusters[:clusters].should =~ [{:id => "1:4:6", :lat => 20.5, :lng => 30.5, :count => 2}, {:id => "1:7:8", :lat => 65.5, :lng => 120.5, :count => 2}]
+      clusters[:clusters].should eq([{:id => "1:4:6", :lat => 20.5, :lng => 30.5, :count => 2}, {:id => "1:7:8", :lat => 65.5, :lng => 120.5, :count => 2}])
     end
   end
 
@@ -41,7 +41,31 @@ describe Clusterer do
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
-      clusters[:clusters].should =~ [{:id => "g1", :lat => 2, :lng => 3, :count => 2}]
+      clusters[:clusters].should eq([{:id => "g1", :lat => 2, :lng => 3, :count => 2}])
+    end
+
+    it "clusters groups if they are too near" do
+      clusterer.add :id => 1, :lat => 20, :lng => 30, :parent_ids => [4, 5, 1]
+      clusterer.add :id => 2, :lat => 20, :lng => 30, :parent_ids => [6, 1, 7]
+
+      clusterer.add :id => 3, :lat => 20, :lng => 30, :parent_ids => [2]
+      clusterer.add :id => 4, :lat => 20, :lng => 30, :parent_ids => [2]
+
+      clusters = clusterer.clusters
+      clusters[:sites].should be_nil
+      clusters[:clusters].should eq([{:id => "-1:3:6", :lat => 3.0, :lng => 4.0, :count => 4}])
+    end
+
+    it "clusters groups and non-groups" do
+      clusterer.add :id => 1, :lat => 20, :lng => 30, :parent_ids => [4, 5, 1]
+      clusterer.add :id => 2, :lat => 20, :lng => 30, :parent_ids => [6, 1, 7]
+
+      clusterer.add :id => 3, :lat => 4, :lng => 5, :parent_ids => []
+      clusterer.add :id => 4, :lat => 4, :lng => 5, :parent_ids => []
+
+      clusters = clusterer.clusters
+      clusters[:sites].should be_nil
+      clusters[:clusters].should eq([{:id => "-1:3:6", :lat => 3.0, :lng => 4.0, :count => 4}])
     end
   end
 end
