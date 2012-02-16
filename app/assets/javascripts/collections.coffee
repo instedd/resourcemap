@@ -548,7 +548,9 @@
     selectSite: (site) =>
       if @selectedSite()
         # This is to prevent flicker: when the map reloads, we try to reuse the old site marker
-        @oldSelectedSite = @selectedSite() if @selectedSite().marker
+        if @selectedSite().marker
+          @oldSelectedSite = @selectedSite()
+          @setMarkerIcon @selectedSite().marker, 'active'
         @selectedSite().selected(false)
       if @selectedSite() == site
         @selectedSite(null)
