@@ -523,9 +523,10 @@
 
         @editingSite().position(data)
         @editingSite().parent.fetchLocation()
+        @editingSite().deleteMarker()
 
-        @selectedSite(@editingSite())
-        @selectedSite().deleteMarker()
+        @selectedSite(@editingSite().parent) if @editingSite().parentId()
+
         @exitSite()
 
       unless @editingSite().group()

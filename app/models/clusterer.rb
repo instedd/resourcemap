@@ -34,7 +34,7 @@ class Clusterer
   def clusters
     first_pass = first_pass_clusters
     if first_pass[:clusters]
-      clusterer = Clusterer.new(@zoom - 2)
+      clusterer = Clusterer.new(@zoom - 1)
       first_pass[:clusters].each do |cluster|
         new_cluster = clusterer.add_non_group cluster, cluster[:count]
         new_cluster[:max_zoom] = cluster[:max_zoom]
