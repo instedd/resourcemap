@@ -130,7 +130,14 @@
 
     addSite: (site) =>
       unless window.model.siteIds[site.id()]
-        @sites.push(site)
+        # This check is because the selected site might be selected on the map,
+        # but not in the tree. So we use that one instead of the one from the server,
+        # and set it's parent to this site.
+        if window.model.selectedSite()?.id() == site.id()
+          window.model.selectedSite().parent = @
+          @sites.push(window.model.selectedSite())
+        else
+          @sites.push(site)
         window.model.siteIds[site.id()] = site
 
     removeSite: (site) =>
@@ -540,6 +547,7 @@
 
     selectSite: (site) =>
       if @selectedSite()
+        # This is to prevent flicker: when the map reloads, we try to reuse the old site marker
         @oldSelectedSite = @selectedSite() if @selectedSite().marker
         @selectedSite().selected(false)
       if @selectedSite() == site
@@ -549,6 +557,7 @@
         @selectedSite(site)
         @selectedSite().selected(true)
         if @selectedSite().id() && @selectedSite().hasLocation()
+          # Again, all these checks are to prevent flickering
           forceReload = false
           if @markers[@selectedSite().id()]
             @selectedSite().marker = @markers[@selectedSite().id()]
@@ -635,7 +644,7 @@
       dataSiteIds = {}
       editingSiteId = if @editingSite()?.id() && @editingSite().editingLocation() then @editingSite().id() else null
       selectedSiteId = @selectedSite()?.id()
-      oldSelectedSiteId = @oldSelectedSite?.id()
+      oldSelectedSiteId = @oldSelectedSite?.id() # Optimization to prevent flickering
 
       # Add markers if they are not already on the map
       for site in sites
