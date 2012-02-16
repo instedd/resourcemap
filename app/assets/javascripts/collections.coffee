@@ -418,6 +418,7 @@
       @currentParent = ko.observable()
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
+      @loadingSite = ko.observable(false)
       @newSite = ko.computed => if @editingSite() && !@editingSite().id() && !@editingSite().group() then @editingSite() else null
       @newGroup = ko.computed => if @editingSite() && !@editingSite().id() && @editingSite().group() then @editingSite() else null
       @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().group() then @editingSite() else null
@@ -503,7 +504,11 @@
       if site
         @editSite site
       else
+        @loadingSite(true)
+        if @selectedSite() && @selectedSite().marker
+          @setMarkerIcon @selectedSite().marker, 'active'
         $.get "/sites/#{siteId}.json", {}, (data) =>
+          @loadingSite(false)
           parent = window.model.findCollectionById(data.collection_id)
           site = new Site(parent, data)
           @editSite site
@@ -673,6 +678,7 @@
           localId = @markers[site.id].siteId = site.id
           do (localId) =>
             @markers[localId].listener = google.maps.event.addListener @markers[localId], 'click', (event) =>
+              @setMarkerIcon @markers[localId], 'target'
               @editSiteFromMarker localId
 
       # Determine which markers need to be removed from the map

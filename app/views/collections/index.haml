@@ -10,6 +10,8 @@
 #collections-main.box.nopadd.h50{:style => 'display:none'}
   .left.w33.h50
 
+    <!-- ko if: !loadingSite() -->
+
     -# Collections
     <!-- ko if: !currentCollection() && !editingSite() -->
     .tableheader.w33
@@ -235,6 +237,15 @@
                 <!-- /ko -->
       .tablebottom
         = link_to 'Delete Site', 'javascript:void()', :class => 'icon fdelete black', 'data-bind' => kov(:click => '$root.deleteSite')
+
+    <!-- /ko -->
+
+    -# Loading Site...
+    %form{ko(:visible => :loadingSite)}
+      .tableheader.w33
+        %button.fleft
+        %span.i18b-groupChat
+        %span Loading...
   .right
     #map{:style => 'width: 628px; height: 500px'}
   .clear
