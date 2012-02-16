@@ -37,7 +37,7 @@
         <!-- /ko -->
 
         .feditor-add
-          .feditor-add-top
+          .feditor-add-top{ko(:css => '{empty: fields().length == 0}')}
           .feditor-add-container
             .feditor-add-content
               %h1 Add form field
