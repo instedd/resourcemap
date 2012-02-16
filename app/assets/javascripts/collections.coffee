@@ -399,7 +399,7 @@
       json
 
   class CollectionViewModel
-    constructor: (collections, lat, lng) ->
+    constructor: (collections) ->
       self = this
 
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
@@ -411,7 +411,6 @@
       @newGroup = ko.computed => if @editingSite() && !@editingSite().id() && @editingSite().group() then @editingSite() else null
       @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().group() then @editingSite() else null
       @showGroup = ko.computed => if @editingSite()?.id() && @editingSite().group() then @editingSite() else null
-      @collectionsCenter = new google.maps.LatLng(lat, lng)
       @markers = {}
       @clusters = {}
       @siteIds = {}
@@ -555,8 +554,15 @@
     initMap: (collection) =>
       return false if @map
 
+      center = if collection?.position()
+                 collection.position()
+               else if @collections().length > 0 && @collections()[0].position()
+                 @collections()[0].position()
+               else
+                 new google.maps.LatLng(10, 90)
+
       mapOptions =
-        center: if collection?.position() then collection.position() else @collectionsCenter
+        center: center
         zoom: 4
         mapTypeId: google.maps.MapTypeId.ROADMAP
       @map = new google.maps.Map document.getElementById("map"), mapOptions
@@ -704,23 +710,7 @@
       delete @clusters[id]
 
   $.get "/collections.json", {}, (collections) =>
-    # Compute all collections lat/lng: the center of all collections
-    sum_lat = 0
-    sum_lng = 0
-    count = 0
-    for collection in collections when collection.lat && collection.lng
-      sum_lat += parseFloat(collection.lat)
-      sum_lng += parseFloat(collection.lng)
-      count += 1
-
-    if count == 0
-      sum_lat = 10
-      sum_lng = 90
-    else
-      sum_lat /= count
-      sum_lng /= count
-
-    window.model = new CollectionViewModel(collections, sum_lat, sum_lng)
+    window.model = new CollectionViewModel(collections)
     ko.applyBindings window.model
 
     $('#collections-dummy').hide()
