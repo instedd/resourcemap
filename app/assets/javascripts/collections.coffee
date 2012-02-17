@@ -276,7 +276,10 @@
         else
           @subscribeToLocationModeChange()
       else
-        @createMarker() unless @marker
+        if @marker
+          @setupMarkerListener()
+        else
+          @createMarker()
         @marker.setDraggable(true)
       window.model.setAllMarkersInactive()
       @panToPosition()
