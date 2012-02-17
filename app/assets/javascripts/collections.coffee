@@ -537,6 +537,8 @@
       @editingSite().post @editingSite().toJSON(), callback
 
     exitSite: =>
+      # Unselect site if it's not on the tree
+      @selectSite(@editingSite()) unless @siteIds[@editingSite().id()]
       @editingSite().unsubscribeToLocationModeChange()
       @editingSite().editingLocation(false)
       @editingSite().deleteMarker() unless @editingSite().id()
