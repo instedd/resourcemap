@@ -443,6 +443,8 @@
         "/assets/marker_sprite_target.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
       )
 
+      location.hash = '#/' unless location.hash
+
       Sammy( ->
         @get '#:collection', ->
           collection = self.findCollectionById parseInt(this.params.collection)
@@ -457,7 +459,7 @@
           collection.fetchFields()
           collection.panToPosition(true) unless initialized
 
-        @get '', ->
+        @get '#/', ->
           initialized = self.initMap()
           self.currentCollection(null)
           self.selectSite(self.selectedSite()) if self.selectedSite()
@@ -471,7 +473,7 @@
 
     findCollectionById: (id) => (x for x in @collections() when x.id() == id)[0]
 
-    goToRoot: -> location.hash = ''
+    goToRoot: -> location.hash = '/'
 
     enterCollection: (collection) -> location.hash = "#{collection.id()}"
 
