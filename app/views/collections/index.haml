@@ -50,9 +50,9 @@
             <!-- /ko -->
 
             <!-- ko if: !group() -->
-            %p{ko(:style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :css => "{selected: $data == $root.selectedSite()}", :click => '$root.selectSite'), :style => 'cursor: pointer'}
+            %p{ko(:style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :click => '$root.selectSite'), :style => 'cursor: pointer'}
               %span.stat-r
-              %span{ko(:text => :name)}
+              %span{ko(:text => :name, :css => "{selected: $data == $root.selectedSite()}")}
             <!-- /ko -->
           %button.farrow{ko(:click => '$root.editSite'), :type => "button"}
       <!-- ko if: expanded -->
@@ -227,7 +227,12 @@
                 <!-- ko foreach: parentCollection().fields() -->
                 %p
                   %span{ko(:text => "name() + ':'")}
-                  %span{ko(:text => :valueText, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
+                  <!-- ko if: value() -->
+                  %span{ko(:text => :value, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
+                  <!-- /ko -->
+                  <!-- ko if: !value() -->
+                  %span{ko(:visible => '!editing()', :click => 'edit'), :style => 'color:grey;cursor:pointer'} (no value)
+                  <!-- /ko -->
                   <!-- ko if: editing() && (kind() == 'text' || kind() == 'numeric') -->
                   = ko_text_field_tag :value, :hasfocus => true, :event => '{keydown: keyPress, blur: save}'
                   <!-- /ko -->

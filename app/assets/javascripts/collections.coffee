@@ -1,6 +1,10 @@
 @initCollections = ->
   SITES_PER_PAGE = 25
 
+  # The custom over for a marker.
+  # Params:
+  #   - map: the google.maps.Map instance
+  #   - cluster: an object with the cluster properties: lat, lng, count and max_zoom (optional)
   Cluster = (map, cluster) ->
     @position = new google.maps.LatLng(cluster.lat, cluster.lng)
     @count = cluster.count
@@ -46,6 +50,7 @@
     @count = count
     @div.innerText = (@count).toString() if @div
 
+  # A Layer field
   class Field
     constructor: (data) ->
       @code = ko.observable data?.code
@@ -56,7 +61,6 @@
                  else
                    ko.observableArray()
       @value = ko.observable()
-      @valueText = ko.computed => if @value() then @value() else '(no value)'
       @editing = ko.observable false
 
     edit: =>
