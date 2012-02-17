@@ -9,6 +9,9 @@ ResourceMap::Application.routes.draw do
     get 'thresholds'
     get 'reminders'
     get 'settings'
+    get 'download_as_csv'
+    get 'csv_template'
+    post 'upload_csv'
   end
   resources :sites do
     get 'root_sites'

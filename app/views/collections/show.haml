@@ -1,18 +1,25 @@
 = render 'tabs'
 
+:javascript
+  $(function() { $('#upload').change(function() { $('#upload_form').submit() }); });
+
 .tabsline
   %h2 Status
   %div
     .sbox.grey.w30.sitesBox
       .left.sitesDescription
-        .sitesCount 250
-        sites updated today
-      %button.csvDownload.white.right{:type => "button"} download as csv
+        .sitesCount= collection.sites.count
+        groups and sites
+      %button.csvDownload.white.right{:type => "button"}
+        = link_to 'download as csv', collection_download_as_csv_path(collection)
     %div
-      = link_to 'Download a sample CSV file', collection, :class => 'icon fimport black'
+      = link_to 'Download a sample CSV file', collection_csv_template_path(collection), :class => 'icon fimport black'
       and fill it with the status of multiple sites
       %br/
-      = link_to 'Upload it for bulk sites update', collection, :class => 'icon fexport black'
+      = link_to_function 'Upload it for bulk sites updates', "$('#upload').click()", :class => 'icon fexport black'
+      %form#upload_form{:action => collection_upload_csv_path(collection), :method => :post, :enctype => 'multipart/form-data'}
+        %input#upload{:type => :file, :name => :file, :style => 'visibility:hidden'}
+        %input{:type => :hidden, :name => 'authenticity_token', :value => form_authenticity_token}
   %hr.clear/
   %h2 Activity
   = link_to 'add new chart'

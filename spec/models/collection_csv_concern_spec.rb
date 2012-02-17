@@ -5,9 +5,9 @@ describe Collection::CsvConcern do
 
   it "imports csv" do
     collection.import_csv! %(
-      id, name, lat, lng, parent, mode
-      1, Group 1, 10, 20, , manual
-      2, Site 1, 30, 40, 1,
+      id, type, name, lat, lng, parent, mode
+      1, group, Group 1, 10, 20, , manual
+      2, site, Site 1, 30, 40, 1,
     )
 
     collection.reload
@@ -32,9 +32,20 @@ describe Collection::CsvConcern do
     collection.reload
     csv = collection.export_csv
     csv.strip.should eq(%(
-ID,Name,Lat,Lng,Parent ID,Mode
-#{root.id},#{root.name},#{root.lat},#{root.lng},,#{root.location_mode}
-#{site.id},#{site.name},#{site.lat},#{site.lng},#{root.id},
+ID,Type,Name,Lat,Lng,Parent ID,Mode
+#{root.id},Group,#{root.name},#{root.lat},#{root.lng},,#{root.location_mode}
+#{site.id},Site,#{site.name},#{site.lat},#{site.lng},#{root.id},
 ).strip)
+  end
+
+
+  it "exports csv template" do
+    collection.csv_template.strip.should eq(%(
+ID,Type,Name,Lat,Lng,Parent ID,Mode
+1,Group,Group A,1.234,5.678,,none/manual/automatic
+2,Site,Site A.1,2.345,6.789,1,
+3,Group,Group B,3.456,4.567,,none/manual/automatic
+4,Site,Site B.1,4.567,5.678,2,
+    ).strip)
   end
 end

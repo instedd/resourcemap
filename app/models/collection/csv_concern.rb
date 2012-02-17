@@ -3,11 +3,21 @@ require 'csv'
 module Collection::CsvConcern
   extend ActiveSupport::Concern
 
+  def csv_template
+    CSV.generate do |csv|
+      csv << csv_header
+      csv << [1, "Group", "Group A", 1.234, 5.678, nil, "none/manual/automatic"]
+      csv << [2, "Site", "Site A.1", 2.345, 6.789, 1, nil]
+      csv << [3, "Group", "Group B", 3.456, 4.567, nil, "none/manual/automatic"]
+      csv << [4, "Site", "Site B.1", 4.567, 5.678, 2, nil]
+    end
+  end
+
   def export_csv
     CSV.generate do |csv|
-      csv << ["ID", "Name", "Lat", "Lng", "Parent ID", "Mode"]
+      csv << csv_header
       sites.each do |site|
-        csv << [site.id, site.name, site.lat, site.lng, site.parent_id, site.group ? site.location_mode : nil]
+        csv << [site.id, site.group ? "Group" : "Site", site.name, site.lat, site.lng, site.parent_id, site.group ? site.location_mode : nil]
       end
     end
   end
@@ -21,11 +31,12 @@ module Collection::CsvConcern
       csv.each do |row|
         next unless row[0].present?
 
-        site = sites.new :name => row[1].strip
-        site.lat = row[2].strip if row[2].present?
-        site.lng = row[3].strip if row[3].present?
-        site.location_mode = row[5].strip if row[5].present?
-        hash[row[0].strip] = [site, row[4]]
+        site = sites.new :name => row[2].strip
+        site.group = row[1].try(:strip).try(:downcase) == 'group'
+        site.lat = row[3].strip if row[3].present?
+        site.lng = row[4].strip if row[4].present?
+        site.location_mode = row[6].strip if row[6].present?
+        hash[row[0].strip] = [site, row[5]]
       end
 
       # Assign parents
@@ -43,5 +54,11 @@ module Collection::CsvConcern
         site.save! if parent_id.blank?
       end
     end
+  end
+
+  private
+
+  def csv_header
+    ["ID", "Type", "Name", "Lat", "Lng", "Parent ID", "Mode"]
   end
 end
