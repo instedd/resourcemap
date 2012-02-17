@@ -1,4 +1,5 @@
 class Collection < ActiveRecord::Base
+  include Collection::CsvConcern
   include Collection::GeomConcern
   include Collection::TireConcern
 
