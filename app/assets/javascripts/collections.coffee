@@ -465,6 +465,8 @@
       @newGroup = ko.computed => if @editingSite() && !@editingSite().id() && @editingSite().group() then @editingSite() else null
       @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().group() then @editingSite() else null
       @showGroup = ko.computed => if @editingSite()?.id() && @editingSite().group() then @editingSite() else null
+      @showingMap = ko.observable(true)
+      @sitesCount = ko.observable(0)
       @markers = {}
       @clusters = {}
       @siteIds = {}
@@ -512,6 +514,10 @@
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
           @reloadMapSites()
+
+    showMap: => @showingMap(true)
+
+    showTable: => @showingMap(false)
 
     findCollectionById: (id) => (x for x in @collections() when x.id() == id)[0]
 
@@ -686,6 +692,7 @@
         @drawClustersInMap data.clusters
         @reloadMapSitesAutomatically = true
         @adjustZIndexes()
+        @updateSitesCount()
 
         callback() if callback && typeof(callback) == 'function'
 
@@ -823,10 +830,19 @@
       for clusterId, cluster of @clusters
         cluster.adjustZIndex()
 
+    updateSitesCount: =>
+      count = 0
+      bounds = @map.getBounds()
+      for siteId, marker of @markers
+        count += 1 if bounds.contains marker.getPosition()
+      for clusterId, cluster of @clusters
+        count += cluster.count if bounds.contains cluster.position
+      count += 1 if @selectedSite()
+      @sitesCount count
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)
     ko.applyBindings window.model
 
-    $('#collections-dummy').hide()
+    $('#collections-dummy').remove()
     $('#collections-main').show()
