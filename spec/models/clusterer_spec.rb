@@ -17,7 +17,7 @@ describe Clusterer do
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
-      clusters[:clusters].should eq([{:id => "1:4:6", :lat => 20.5, :lng => 30.5, :count => 2}])
+      clusters[:clusters].should eq([{:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2}])
     end
 
     it "puts four sites in two different clusters" do
@@ -28,7 +28,7 @@ describe Clusterer do
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
-      clusters[:clusters].should eq([{:id => "1:4:6", :lat => 20.5, :lng => 30.5, :count => 2}, {:id => "1:7:8", :lat => 65.5, :lng => 120.5, :count => 2}])
+      clusters[:clusters].should eq([{:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2}, {:id => "1:3:4", :lat => 65.5, :lng => 120.5, :count => 2}])
     end
   end
 
@@ -53,7 +53,7 @@ describe Clusterer do
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
-      clusters[:clusters].should eq([{:id => "0:3:6", :lat => 3.0, :lng => 4.0, :count => 4}])
+      clusters[:clusters].should eq([{:id => "1:1:3", :lat => 3.0, :lng => 4.0, :count => 4}])
     end
 
     it "clusters groups and non-groups" do
@@ -65,7 +65,7 @@ describe Clusterer do
 
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
-      clusters[:clusters].should eq([{:id => "0:3:6", :lat => 3.0, :lng => 4.0, :count => 4}])
+      clusters[:clusters].should eq([{:id => "1:1:3", :lat => 3.0, :lng => 4.0, :count => 4}])
     end
   end
 end

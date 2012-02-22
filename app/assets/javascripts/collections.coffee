@@ -1,54 +1,88 @@
 @initCollections = ->
   SITES_PER_PAGE = 25
 
-  # The custom over for a marker.
-  # Params:
-  #   - map: the google.maps.Map instance
-  #   - cluster: an object with the cluster properties: lat, lng, count and max_zoom (optional)
   Cluster = (map, cluster) ->
-    @position = new google.maps.LatLng(cluster.lat, cluster.lng)
-    @count = cluster.count
     @map = map
     @setMap map
     @maxZoom = cluster.max_zoom
+    @setData(cluster, false)
 
   Cluster.prototype = new google.maps.OverlayView
 
   Cluster.prototype.onAdd = ->
     @div = document.createElement 'DIV'
     @div.className = 'cluster'
-    @div.innerText = (@count).toString()
+    @shadow = document.createElement 'DIV'
+    @shadow.className = 'cluster-shadow'
+    @countDiv = document.createElement 'DIV'
+    @countDiv.className = 'cluster-count'
+    @setCount @count
 
-    [@image, @width, @height] = if @count < 10 then [1, 53, 52] else
-                                if @count < 25 then [2, 56, 55] else
-                                if @count < 50 then [3, 66, 65] else
-                                if @count < 100 then [4, 78, 77]
-                                else [5, 90, 89]
+    @divClick = document.createElement 'DIV'
+    @divClick.className = 'cluster-click'
 
-    @div.style.backgroundImage = "url('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m#{@image}.png')"
-    @div.style.width = "#{@width}px"
-    @div.style.height = @div.style.lineHeight = "#{@height}px"
+    @countClick = document.createElement 'DIV'
+    @countClick.className = 'cluster-count-click'
 
-    @getPanes().overlayMouseTarget.appendChild @div
+    @adjustZIndex()
+    @setActive(false)
 
-    @listener = google.maps.event.addDomListener @div, 'click', =>
+    @getPanes().overlayImage.appendChild @div
+    @getPanes().overlayImage.appendChild @countDiv
+    @getPanes().overlayShadow.appendChild @shadow
+    @getPanes().overlayMouseTarget.appendChild @divClick
+    @getPanes().overlayMouseTarget.appendChild @countClick
+
+    listenerCallback = =>
       @map.panTo @position
       nextZoom = (if @maxZoom then @maxZoom else @map.getZoom()) + 1
       @map.setZoom nextZoom
 
+    @divListener = google.maps.event.addDomListener @divClick, 'click', listenerCallback
+    @countListener = google.maps.event.addDomListener @countClick, 'click', listenerCallback
+
   Cluster.prototype.draw = ->
     pos = @getProjection().fromLatLngToDivPixel @position
-    @div.style.left = "#{pos.x - @width / 2}px"
-    @div.style.top = "#{pos.y - @height / 2}px"
+    @div.style.left = @divClick.style.left = "#{pos.x - 13}px"
+    @div.style.top = @divClick.style.top = "#{pos.y - 36}px"
+    @shadow.style.left = "#{pos.x - 7}px"
+    @shadow.style.top = "#{pos.y - 36}px"
+    @digits = Math.floor(2 * Math.log(@count / 10) / Math.log(10));
+    @digits = 0 if @digits < 0
+    @countDiv.style.left = @countClick.style.left = "#{pos.x - 12 - @digits}px"
+    @countDiv.style.top = @countClick.style.top = "#{pos.y + 2}px"
 
   Cluster.prototype.onRemove = ->
-    google.maps.event.removeListener @listener
+    google.maps.event.removeListener @divListener
+    google.maps.event.removeListener @countListener
     @div.parentNode.removeChild @div
-    delete @div
+    @shadow.parentNode.removeChild @shadow
+    @countDiv.parentNode.removeChild @countDiv
+    @divClick.parentNode.removeChild @divClick
+    @countClick.parentNode.removeChild @countClick
+
+  Cluster.prototype.setData = (cluster, draw = true) ->
+    @position = new google.maps.LatLng(cluster.lat, cluster.lng)
+    @setCount cluster.count
+    @draw() if draw
 
   Cluster.prototype.setCount = (count) ->
     @count = count
-    @div.innerText = (@count).toString() if @div
+    @countDiv.innerText = (@count).toString() if @countDiv
+
+  Cluster.prototype.setActive = (draw = true) ->
+    $(@div).removeClass('inactive')
+    $(@shadow).removeClass('inactive')
+    @draw() if draw
+
+  Cluster.prototype.setInactive = (draw = true) ->
+    $(@div).addClass('inactive')
+    @draw() if draw
+
+  Cluster.prototype.adjustZIndex = ->
+    zIndex = window.model.zIndex(@position.lat())
+    @div.style.zIndex = zIndex if @div
+    @countDiv.style.zIndex = zIndex - 10 if @countDiv
 
   # A Layer field
   class Field
@@ -373,6 +407,7 @@
         draggable: draggable
         icon: window.model.markerImageTarget
         shadow: window.model.markerImageTargetShadow
+        zIndex: 200000
       @setupMarkerListener()
       window.model.setAllMarkersInactive() if draggable
 
@@ -438,16 +473,16 @@
       @geocoder = new google.maps.Geocoder();
 
       @markerImageInactive = new google.maps.MarkerImage(
-        "/assets/marker_sprite_inactive.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
+        "/assets/marker_inactive.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
       )
       @markerImageInactiveShadow = new google.maps.MarkerImage(
-        "/assets/marker_sprite_inactive.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
+        "/assets/marker_inactive.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
       )
       @markerImageTarget = new google.maps.MarkerImage(
-        "/assets/marker_sprite_target.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
+        "/assets/marker_target.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
       )
       @markerImageTargetShadow = new google.maps.MarkerImage(
-        "/assets/marker_sprite_target.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
+        "/assets/marker_target.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
       )
 
       location.hash = '#/' unless location.hash
@@ -650,6 +685,7 @@
         @drawSitesInMap data.sites
         @drawClustersInMap data.clusters
         @reloadMapSitesAutomatically = true
+        @adjustZIndexes()
 
         callback() if callback && typeof(callback) == 'function'
 
@@ -679,6 +715,9 @@
             markerOptions =
               map: @map
               position: new google.maps.LatLng(site.lat, site.lng)
+              zIndex: @zIndex(site.lat)
+              optimized: false
+
             # Show site in grey if editing a site (but not if it's the one being edited)
             if editingSiteId && editingSiteId != site.id
               markerOptions.icon = @markerImageInactive
@@ -714,7 +753,7 @@
         dataClusterIds[cluster.id] = cluster.id
         currentCluster = @clusters[cluster.id]
         if currentCluster
-          currentCluster.setCount(cluster.count)
+          currentCluster.setData(cluster)
         else
           @createCluster(cluster)
 
@@ -730,11 +769,15 @@
       editingSiteId = @editingSite()?.id()?.toString()
       for siteId, marker of @markers
         @setMarkerIcon marker, (if editingSiteId == siteId then 'target' else 'inactive')
+      for clusterId, cluster of @clusters
+        cluster.setInactive()
 
     setAllMarkersActive: =>
       selectedSiteId = @selectedSite()?.id()?.toString()
       for siteId, marker of @markers
         @setMarkerIcon marker, (if selectedSiteId == siteId then 'target' else 'active')
+      for clusterId, cluster of @clusters
+        cluster.setActive()
 
     setMarkerIcon: (marker, icon) =>
       switch icon
@@ -765,6 +808,21 @@
     deleteCluster: (id) =>
       @clusters[id].setMap null
       delete @clusters[id]
+
+    zIndex: (lat) =>
+      bounds = @map.getBounds()
+      north = bounds.getNorthEast().lat()
+      south = bounds.getSouthWest().lat()
+      total = north - south
+      current = lat - south
+      -Math.round(current * 100000 / total)
+
+    adjustZIndexes: =>
+      for siteId, marker of @markers
+        marker.setZIndex(@zIndex(marker.getPosition().lat()))
+      for clusterId, cluster of @clusters
+        cluster.adjustZIndex()
+
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)

@@ -41,6 +41,7 @@ class Search
       width, height = Clusterer.cell_size_for @zoom
       extend_to_cell_limits width, height
       extend_to_groups_limits
+      extend_to_cell_limits width, height
       adjust_bounds_to_world_limits
     end
 

@@ -9,8 +9,7 @@ class Clusterer
 
   def self.cell_size_for(zoom)
     zoom = zoom.to_i
-    zoom = 1 if zoom <= 0
-    zoom = 2 ** (zoom + 1)
+    zoom = 2 ** (zoom)
     [CellSize / zoom, CellSize / zoom]
   end
 
@@ -34,7 +33,7 @@ class Clusterer
   def clusters
     first_pass = first_pass_clusters
     if first_pass[:clusters]
-      clusterer = Clusterer.new(@zoom - 1)
+      clusterer = Clusterer.new(@zoom)
       first_pass[:clusters].each do |cluster|
         new_cluster = clusterer.add_non_group cluster, cluster[:count]
         new_cluster[:max_zoom] = cluster[:max_zoom]
