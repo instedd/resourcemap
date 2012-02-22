@@ -123,14 +123,13 @@
             %tr
               %td
                 %p
-                  = label_tag :name
-                  \:
+                  = label_tag :name, "Name:"
                   = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :hasfocus => true)
                 %p
-                  Mode:
+                  %label Mode:
                   = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
                 %p{ko(:if => "locationMode() == 'manual'")}
-                  %span Location:
+                  %label Location:
                   = ko_text_field_tag :locationText, :event => '{keydown: newLocationKeyPress, blur: moveLocation}'
       .tablebottom
         %button.grey{ko(:enable => :valid), :type => 'submit'} Done
@@ -152,17 +151,15 @@
             %tr
               %td
                 %p
-                  = label_tag :name
-                  \:
+                  = label_tag :name, "Name:"
                   = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :hasfocus => true)
                 %p
-                  %span Location:
+                  %label Location:
                   = ko_text_field_tag :locationText, :event => '{keydown: newLocationKeyPress, blur: moveLocation}'
                 %hr
                 <!-- ko foreach: $root.currentCollection().fields() -->
                 %p
-                  = label_tag '', '', ko(:attr => "{'for': code}", :text => :name)
-                  \:
+                  = label_tag '', '', ko(:attr => "{'for': code}", :text => "name() + ':'")
                   = ko_text_field_tag :value
                 <!-- /ko -->
       .tablebottom
@@ -181,17 +178,17 @@
             %tr
               %td
                 %p
-                  %span Name:
+                  %label Name:
                   %span{ko(:text => :name, :visible => '!editingName()', :click => 'editName'), :style => 'cursor: pointer'}
                   <!-- ko if: editingName() -->
                   = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: nameKeyPress, blur: saveName}'
                   <!-- /ko -->
                 %p
-                  %span Mode:
+                  %label Mode:
                   %span{ko(:text => :locationMode, :click => 'editLocationMode', :visible => '!editingLocationMode()'), :style => 'cursor: pointer'}
                   = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode, :visible => :editingLocationMode, :hasfocus => true, :event => '{change: saveLocationMode, blur: saveLocationMode}')
                 %p{ko(:visible => "locationMode() == 'manual'")}
-                  %span Location:
+                  %label Location:
                   %span{ko(:text => :locationText, :visible => '!editingLocation()', :click => 'editLocation'), :style => 'cursor: pointer'}
                   <!-- ko if: editingLocation() -->
                   = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: locationKeyPress, blur: saveLocation}'
@@ -211,13 +208,13 @@
             %tr
               %td
                 %p
-                  %span Name:
+                  %label Name:
                   %span{ko(:text => :name, :visible => '!editingName()', :click => 'editName'), :style => 'cursor: pointer'}
                   <!-- ko if: editingName() -->
                   = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: nameKeyPress, blur: saveName}'
                   <!-- /ko -->
                 %p
-                  %span Location:
+                  %label Location:
                   %span{ko(:text => :locationText, :visible => '!editingLocation()', :click => 'editLocation'), :style => 'cursor: pointer'}
                   <!-- ko if: editingLocation() -->
                   = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: locationKeyPress, blur: saveLocation}'
@@ -225,7 +222,7 @@
                 %hr
                 <!-- ko foreach: parentCollection().fields() -->
                 %p
-                  %span{ko(:text => "name() + ':'")}
+                  %label{ko(:text => "name() + ':'")}
                   <!-- ko if: value() -->
                   %span{ko(:text => :value, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
                   <!-- /ko -->

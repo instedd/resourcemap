@@ -24,7 +24,7 @@
 .GralTable td { padding:2px 6px }
 .GralTable td.add { color:#1e87c9 }
 .GralTable button { vertical-align:middle }
-.GralTable span { vertical-align:middle; display:inline-block }
+.GralTable span { vertical-align:top; display:inline-block }
 .GralTable tr { clear:both }
 .GralTable .selected { background-color: #D0D0D0; border-radius: 4px; }
 .titletable { padding:4px 0 2px 2px; display:inline-block !important; margin-left:5px !important }
