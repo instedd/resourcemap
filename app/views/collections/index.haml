@@ -254,4 +254,12 @@
       %button.icon_button.fmap.right{ko(:click => '$root.showMap', :css => "{active: $root.showingMap()}")}
       %br{:clear => :all}
     #map
+
+  .left.w33.h50{ko(:visible => '!showingMap()')}
+  .right{ko(:visible => '!showingMap()')}
+    .mapheader
+      %button.icon_button.ftable.right{ko(:click => '$root.showTable', :css => "{active: !$root.showingMap()}")}
+      %button.icon_button.fmap.right{ko(:click => '$root.showMap', :css => "{active: $root.showingMap()}")}
+      %br{:clear => :all}
+
   .clear
