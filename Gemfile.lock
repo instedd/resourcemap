@@ -1,3 +1,10 @@
+PATH
+  remote: ../platform-common-rails
+  specs:
+    instedd-rails (0.0.14)
+      breadcrumbs_on_rails
+      rails (>= 3.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -67,9 +74,6 @@ GEM
     highline (1.6.11)
     hike (1.2.1)
     i18n (0.6.0)
-    instedd-rails (0.0.13)
-      breadcrumbs_on_rails
-      rails (>= 3.0)
     journey (1.0.1)
     jquery-rails (2.0.0)
       railties (>= 3.2.0.beta, < 5.0)
@@ -174,7 +178,7 @@ DEPENDENCIES
   devise
   faker
   haml-rails
-  instedd-rails (= 0.0.13)
+  instedd-rails (= 0.0.14)!
   jquery-rails
   machinist (= 1.0.6)
   mysql2

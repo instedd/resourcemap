@@ -64,3 +64,5 @@
 .w30.feditor-sidebar { width:280px !important }
 .w30.feditor-sidebar > input[type="text"] { width:275px !important }
 .w30.feditor-sidebar > select { width:280px !important }
+
+.w80 .w30 > .ux-clist, .w80 .w30.clist > li input.ux-text, .w80 .w30.clist > li input[type="text"], .w80 .w30.clist > li input[type="password"], .w80 .w30.clist > li input[type="email"] { width: 246px !important; }
