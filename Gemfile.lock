@@ -67,7 +67,7 @@ GEM
     highline (1.6.11)
     hike (1.2.1)
     i18n (0.6.0)
-    instedd-rails (0.0.14)
+    instedd-rails (0.0.15)
       breadcrumbs_on_rails
       rails (>= 3.0)
     journey (1.0.1)
@@ -174,7 +174,7 @@ DEPENDENCIES
   devise
   faker
   haml-rails
-  instedd-rails (= 0.0.14)
+  instedd-rails (= 0.0.15)
   jquery-rails
   machinist (= 1.0.6)
   mysql2
