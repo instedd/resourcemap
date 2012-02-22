@@ -248,7 +248,8 @@
         %span Loading...
   .right{ko(:visible => :showingMap)}
     .mapheader
-      %span{ko(:text => "'' + sitesCount() + ' sites on map'")}
+      %span{ko(:visible => 'sitesCount() == 1')} 1 site on map
+      %span{ko(:text => "'' + sitesCount() + ' sites on map'", :visible => 'sitesCount() != 1')}
       -#%span.alert 5 alerts
       %button.icon_button.ftable.right{ko(:click => '$root.showTable', :css => "{active: !$root.showingMap()}")}
       %button.icon_button.fmap.right{ko(:click => '$root.showMap', :css => "{active: $root.showingMap()}")}
