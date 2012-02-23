@@ -149,7 +149,12 @@
               <!-- ko foreach: $root.currentCollection().fields() -->
               %p
                 = label_tag '', '', ko(:attr => "{'for': code}", :text => "name() + ':'")
-                = ko_text_field_tag :value
+                <!-- ko if: kind() == 'text' || kind() == 'numeric' -->
+                = ko_text_field_tag :value, :hasfocus => true
+                <!-- /ko -->
+                <!-- ko if: kind() == 'selectOne' -->
+                %select{ko(:value => :value, :options => :options)}
+                <!-- /ko -->
               <!-- /ko -->
     .tablebottom
       %button.grey{ko(:enable => :valid), :type => 'submit'} Done

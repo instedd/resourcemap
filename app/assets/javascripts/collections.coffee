@@ -156,7 +156,7 @@
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @updatedAt = ko.observable(data.updated_at)
-      @updatedAtTimeago = ko.computed => $.timeago(@updatedAt())
+      @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @sites = ko.observableArray()
       @expanded = ko.observable false
       @sitesPage = 1
@@ -537,7 +537,6 @@
     showMap: (callback) =>
       if @showingMap()
         if callback && typeof(callback) == 'function'
-          @goBackToTable = true
           callback()
         return
 
@@ -550,7 +549,6 @@
         else
           @initMap()
           if callback && typeof(callback) == 'function'
-            @goBackToTable = true
             callback()
       setTimeout(showMap, 10)
 
@@ -577,6 +575,7 @@
     createSite: => @createSiteOrGroup false
 
     createSiteOrGroup: (group) =>
+      @goBackToTable = true unless @showingMap()
       @showMap =>
         parent = if @selectedSite() then @selectedSite() else @currentCollection()
         pos = @originalSiteLocation = @map.getCenter()
@@ -589,6 +588,7 @@
         @editingSite().startEditLocationInMap()
 
     editSite: (site) =>
+      @goBackToTable = true unless @showingMap()
       @showMap =>
         site.copyPropertiesToCollection(site.parentCollection())
         @selectSite(site) unless @selectedSite() && @selectedSite().id() == site.id()
