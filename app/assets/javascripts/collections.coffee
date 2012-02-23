@@ -33,13 +33,23 @@
     @getPanes().overlayMouseTarget.appendChild @divClick
     @getPanes().overlayMouseTarget.appendChild @countClick
 
-    listenerCallback = =>
-      @map.panTo @position
-      nextZoom = (if @maxZoom then @maxZoom else @map.getZoom()) + 1
-      @map.setZoom nextZoom
+    # Instead of a listener for click we create two listeners for mousedown and mouseup:
+    # If the user clicks a cluster and drags it, we want to drag the map but not zoom in
+    listenerDownCallback = =>
+      @originalLatLng = window.model.map.getCenter()
 
-    @divListener = google.maps.event.addDomListener @divClick, 'click', listenerCallback
-    @countListener = google.maps.event.addDomListener @countClick, 'click', listenerCallback
+    listenerUpCallback = =>
+      center = window.model.map.getCenter()
+      if !@originalLatLng || (@originalLatLng.lat() == center.lat() && @originalLatLng.lng() == center.lng())
+        @map.panTo @position
+        nextZoom = (if @maxZoom then @maxZoom else @map.getZoom()) + 1
+        @map.setZoom nextZoom
+
+    @divDownListener = google.maps.event.addDomListener @divClick, 'mousedown', listenerDownCallback
+    @divUpListener = google.maps.event.addDomListener @divClick, 'mouseup', listenerUpCallback
+
+    @countDownListener = google.maps.event.addDomListener @countClick, 'mousedown', listenerDownCallback
+    @countUpListener = google.maps.event.addDomListener @countClick, 'mouseup', listenerUpCallback
 
   Cluster.prototype.draw = ->
     pos = @getProjection().fromLatLngToDivPixel @position
@@ -53,8 +63,10 @@
     @countDiv.style.top = @countClick.style.top = "#{pos.y + 2}px"
 
   Cluster.prototype.onRemove = ->
-    google.maps.event.removeListener @divListener
-    google.maps.event.removeListener @countListener
+    google.maps.event.removeListener @divDownListener
+    google.maps.event.removeListener @divUpListener
+    google.maps.event.removeListener @countDownListener
+    google.maps.event.removeListener @countUpListener
     @div.parentNode.removeChild @div
     @shadow.parentNode.removeChild @shadow
     @countDiv.parentNode.removeChild @countDiv
