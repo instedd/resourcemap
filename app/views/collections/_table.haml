@@ -10,14 +10,14 @@
   %table.GralTable
     %thead
       %tr
-        %th.w33 Collection
+        %th.w32 Collection
         %th Last update
     %tbody
       <!-- ko foreach: collections -->
       %tr
         %td{ko(:text => :name)}
         %td.l
-          %span{ko(:text => :updatedAt)}
+          %span.timeago{ko(:attr => "{title: updatedAt}", :text => :updatedAtTimeago)}
           %button.farrow{ko(:click => '$root.enterCollection'), :type => :button}
       <!-- /ko -->
 .tablebottom{ko(:click => '$root.createCollection'), :style => 'cursor: pointer'}
@@ -56,7 +56,7 @@
     <!-- /ko -->
     <!-- /ko -->
     %td.l
-      %span{ko(:text => :updatedAt)}
+      %span.timeago{ko(:attr => "{title: updatedAt}", :text => :updatedAtTimeago)}
       %button.farrow{ko(:click => '$root.editSite'), :type => :button}
   <!-- ko if: expanded -->
   <!-- ko template: {name: 'table-sites-template', with: sites} -->
@@ -92,7 +92,7 @@
   %table.GralTable
     %thead
       %tr
-        %th.w33 Site
+        %th.w32 Site
         <!-- ko foreach: $root.currentCollection().fields() -->
         %th{ko(:text => :name)}
         <!-- /ko -->

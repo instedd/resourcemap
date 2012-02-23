@@ -156,6 +156,7 @@
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @updatedAt = ko.observable(data.updated_at)
+      @updatedAtTimeago = ko.computed => $.timeago(@updatedAt())
       @sites = ko.observableArray()
       @expanded = ko.observable false
       @sitesPage = 1
@@ -177,6 +178,7 @@
         for site in data
           @addSite new Site(this, site)
         @loadingSites false
+        window.model.refreshTimeago()
 
     addSite: (site) =>
       unless window.model.siteIds[site.id()]
@@ -516,6 +518,7 @@
 
           initialized = self.initMap()
           collection.panToPosition(true) unless initialized
+          self.refreshTimeago()
 
         @get '#/', ->
           self.currentCollection(null)
@@ -523,6 +526,7 @@
 
           initialized = self.initMap()
           self.reloadMapSites() unless initialized
+          self.refreshTimeago()
       ).run()
 
     showMap: (callback) =>
@@ -549,7 +553,9 @@
       delete @markers
       delete @clusters
       delete @map
+      @exitSite() if @editingSite()
       @showingMap(false)
+      @refreshTimeago()
 
     findCollectionById: (id) => (x for x in @collections() when x.id() == id)[0]
 
@@ -680,6 +686,7 @@
       site.toggle()
 
     initMap: =>
+      return true unless @showingMap()
       return false if @map
 
       center = if @currentCollection()?.position()
@@ -888,6 +895,8 @@
         count += cluster.count if bounds.contains cluster.position
       count += 1 if @selectedSite()
       @sitesCount count
+
+    refreshTimeago: -> $('.timeago').timeago()
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)
