@@ -269,7 +269,8 @@
 
     updateProperty: (code, value) =>
       @properties()[code] = value
-      $.post "/sites/#{@id()}/update_property", {code: code, value: value}
+      $.post "/sites/#{@id()}/update_property", {code: code, value: value}, (data) =>
+        @updatedAt(data.updated_at)
 
     copyPropertiesFromCollection: (collection) =>
       @properties({})
@@ -287,12 +288,16 @@
             collection.findFieldByCode(key).value(value)
 
     post: (json, callback) =>
+      callback_with_updated_at = (data) =>
+        @updatedAt(data.updated_at)
+        callback(data) if callback && typeof(callback) == 'function'
+
       data = {site: json}
       if @id()
         data._method = 'put'
-        $.post "/collections/#{@parentCollection().id()}/sites/#{@id()}.json", data, callback
+        $.post "/collections/#{@parentCollection().id()}/sites/#{@id()}.json", data, callback_with_updated_at
       else
-        $.post "/collections/#{@parentCollection().id()}/sites", data, callback
+        $.post "/collections/#{@parentCollection().id()}/sites", data, callback_with_updated_at
 
     editName: =>
       @originalName = @name()
@@ -609,6 +614,7 @@
       callback = (data) =>
         unless @editingSite().id()
           @editingSite().id(data.id)
+          @editingSite().updatedAt(data.updated_at)
           @editingSite().parent.addSite(@editingSite())
 
         @editingSite().position(data)
