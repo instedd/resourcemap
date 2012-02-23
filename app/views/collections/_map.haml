@@ -1,4 +1,4 @@
-.left.w33.h50{ko(:visible => :showingMap)}
+.left.w33.h50
   <!-- ko if: !loadingSite() -->
 
   -# Collections
@@ -22,9 +22,9 @@
   <!-- /ko -->
 
   -# Sites template
-  %script{:type => "text/html", :id => "sites-template"}
+  %script{:type => "text/html", :id => "map-sites-template"}
     <!-- ko foreach: sites -->
-    %tr{ko(:css => "{closed: group() && !expanded(), opened: group() && expanded}")}
+    %tr{ko(:css => "{closed: group() && !expanded(), opened: group() && expanded, active: $data == $root.selectedSite()}")}
       %td
         %div
           <!-- ko if: group() -->
@@ -35,26 +35,26 @@
             <!-- ko if: !expanded() -->
             = image_tag "http://theme.instedd.org/theme/images/icons/18/black/folder.png"
             <!-- /ko -->
-          %span{ko(:text => :name, :css => "{selected: $data == $root.selectedSite()}", :click => '$root.selectSite'), :style => 'cursor: pointer'}
+          %span{ko(:text => :name, :click => '$root.selectSite'), :style => 'cursor: pointer'}
           <!-- /ko -->
 
           <!-- ko if: !group() -->
           %p{ko(:style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :click => '$root.selectSite'), :style => 'cursor: pointer'}
             %span.stat-r
-            %span{ko(:text => :name, :css => "{selected: $data == $root.selectedSite()}")}
+            %span{ko(:text => :name)}
           <!-- /ko -->
         %button.farrow{ko(:click => '$root.editSite'), :type => "button"}
     <!-- ko if: expanded -->
-    <!-- ko template: {name: 'sites-template', with: sites} -->
+    <!-- ko template: {name: 'map-sites-template', with: sites} -->
     <!-- /ko -->
     <!-- ko if: group() && hasMoreSites() && !loadingSites()-->
     %tr
-      %td
+      %td.loadmore
         = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(:click => :loadMoreSites, :style => "{marginLeft: '' + (30 + (level() - 1) * 20) + 'px'}")
     <!-- /ko -->
     <!-- ko if: group() && hasMoreSites() && loadingSites()-->
     %tr
-      %td
+      %td.loadmore
         %span{ko(:style => "{marginLeft: '' + (20 + (level() - 1) * 20) + 'px'}")} Loading...
     <!-- /ko -->
     <!-- /ko -->
@@ -71,17 +71,16 @@
   .tablescroll
     %table.GralTable.CleanTable
       %tbody
-        <!-- ko template: {name: 'sites-template', with: $data} -->
+        <!-- ko template: {name: 'map-sites-template', with: $data} -->
         <!-- /ko -->
         <!-- ko if: hasMoreSites() && !loadingSites()-->
         %tr
-          %td
-            = ko_link_to "Load more sites...", :loadMoreSites, :style => 'margin-left: 10px'
+          %td.loadmore
+            = ko_link_to "Load more sites...", :loadMoreSites, :style => 'margin-left: 23px'
         <!-- /ko -->
         <!-- ko if: hasMoreSites() && loadingSites()-->
         %tr
-          %td
-            Loading...
+          %td.loadmore Loading...
         <!-- /ko -->
   .tablebottom
     <!-- ko if: !$root.selectedSite() || $root.selectedSite().group() -->
@@ -118,7 +117,7 @@
               %p
                 %label Mode:
                 = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
-              %p{ko(:if => "locationMode() == 'manual'")}
+              %p{ko(:visible => "locationMode() == 'manual'")}
                 %label Location:
                 = ko_text_field_tag :locationText, :event => '{keydown: newLocationKeyPress, blur: moveLocation}'
     .tablebottom
@@ -228,7 +227,6 @@
               <!-- /ko -->
     .tablebottom
       = link_to 'Delete Site', 'javascript:void()', :class => 'icon fdelete black', 'data-bind' => kov(:click => '$root.deleteSite')
-
   <!-- /ko -->
 
   -# Loading Site...
@@ -237,7 +235,7 @@
       %button.fleft
       %span.i18b-groupChat
       %span Loading...
-.right{ko(:visible => :showingMap)}
+.right
   .mapheader
     %span{ko(:visible => 'sitesCount() == 1')} 1 site on map
     %span{ko(:text => "'' + sitesCount() + ' sites on map'", :visible => 'sitesCount() != 1')}

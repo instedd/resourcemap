@@ -1,6 +1,122 @@
-.left.w33.h50{ko(:visible => '!showingMap()')}
-.right{ko(:visible => '!showingMap()')}
-  .mapheader
+<!-- ko if: !currentCollection() && !editingSite() -->
+-# Collections
+.tableheader.expanded
+  %span My Collections
+  .mapheader.w60.right
     %button.icon_button.ftable.right{ko(:click => '$root.showTable', :css => "{active: !$root.showingMap()}")}
     %button.icon_button.fmap.right{ko(:click => '$root.showMap', :css => "{active: $root.showingMap()}")}
-    %br{:clear => :all}
+    %br{:clear => "all"}
+.tablescroll
+  %table.GralTable
+    %thead
+      %tr
+        %th.w33 Collection
+        %th Last update
+    %tbody
+      <!-- ko foreach: collections -->
+      %tr
+        %td{ko(:text => :name)}
+        %td.l
+          %span{ko(:text => :updatedAt)}
+          %button.farrow{ko(:click => '$root.enterCollection'), :type => :button}
+      <!-- /ko -->
+.tablebottom{ko(:click => '$root.createCollection'), :style => 'cursor: pointer'}
+  %button.cadd{:type => "button"}
+  Create Collection
+<!-- /ko -->
+
+-# Sites template
+%script{:type => "text/html", :id => "table-sites-template"}
+  <!-- ko foreach: sites -->
+  %tr{ko(:css => "{closed: group() && !expanded(), opened: group() && expanded, active: $data == $root.selectedSite()}")}
+    %td
+      %div
+        <!-- ko if: group() -->
+        %a{ko(:click => '$root.toggleSite', :style => "{marginLeft: '' + ((level() - 1) * 20) + 'px'}"), :href => 'javascript:void(0)'}
+          <!-- ko if: expanded() -->
+          = image_tag "http://theme.instedd.org/theme/images/icons/18/black/folder_open.png"
+          <!-- /ko -->
+          <!-- ko if: !expanded() -->
+          = image_tag "http://theme.instedd.org/theme/images/icons/18/black/folder.png"
+          <!-- /ko -->
+        %span{ko(:text => :name, :click => '$root.selectSite'), :style => 'cursor: pointer'}
+        <!-- /ko -->
+
+        <!-- ko if: !group() -->
+        %p{ko(:style => "{marginLeft: '' + (10 + (level() - 1) * 20) + 'px'}", :click => '$root.selectSite'), :style => 'cursor: pointer'}
+          %span.stat-r
+          %span{ko(:text => :name)}
+        <!-- /ko -->
+    <!-- ko foreach: $root.currentCollection().fields() -->
+    <!-- ko if: $parent.properties()[$data.code()] -->
+    %td.l{ko(:text => "$parent.properties()[$data.code()]")}
+    <!-- /ko -->
+    <!-- ko if: !$parent.properties()[$data.code()] -->
+    %td.l
+    <!-- /ko -->
+    <!-- /ko -->
+    %td.l
+      %span{ko(:text => :updatedAt)}
+      %button.farrow{ko(:click => '$root.editSite'), :type => :button}
+  <!-- ko if: expanded -->
+  <!-- ko template: {name: 'table-sites-template', with: sites} -->
+  <!-- /ko -->
+  <!-- ko if: group() && hasMoreSites() && !loadingSites()-->
+  %tr
+    %td.loadmore
+      = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(:click => :loadMoreSites, :style => "{marginLeft: '' + (30 + (level() - 1) * 20) + 'px'}")
+    %td
+  <!-- /ko -->
+  <!-- ko if: group() && hasMoreSites() && loadingSites()-->
+  %tr
+    %td.loadmore
+      %span{ko(:style => "{marginLeft: '' + (20 + (level() - 1) * 20) + 'px'}")} Loading...
+  <!-- /ko -->
+  <!-- /ko -->
+  <!-- /ko -->
+
+-# Collection sites
+<!-- ko if: !editingSite() -->
+<!-- ko with: currentCollection -->
+.tableheader.expanded
+  %div
+    %button.fleft{ko(:click => '$root.goToRoot'), :type => 'button'}
+    %span.i18b-groupChat
+    %span{ko(:text => :name)}
+    %button.fconfiguration.right{ko(:click => '$root.editCollection'), :type => 'button'}
+  .mapheader.w60.right
+    %button.icon_button.ftable.right{ko(:click => '$root.showTable', :css => "{active: !$root.showingMap()}")}
+    %button.icon_button.fmap.right{ko(:click => '$root.showMap', :css => "{active: $root.showingMap()}")}
+    %br{:clear => "all"}
+.tablescroll
+  %table.GralTable
+    %thead
+      %tr
+        %th.w33 Site
+        <!-- ko foreach: $root.currentCollection().fields() -->
+        %th{ko(:text => :name)}
+        <!-- /ko -->
+        %th Last update
+    %tbody
+      <!-- ko template: {name: 'table-sites-template', with: $data} -->
+      <!-- /ko -->
+.tablebottom
+  <!-- ko if: !$root.selectedSite() || $root.selectedSite().group() -->
+  Add
+  %button.ffolder{ko(:click => '$root.createGroup')} Group
+  or
+  %button.flocation{ko(:click => '$root.createSite')} Site
+  <!-- ko if: $root.selectedSite() -->
+  at
+  %span{ko(:text => '$root.selectedSite().name()')}
+  <!-- /ko -->
+  <!-- /ko -->
+  <!-- ko if: hasMoreSites() && !loadingSites()-->
+  %span.loadmore
+    = ko_link_to "Load more sites...", :loadMoreSites
+  <!-- /ko -->
+  <!-- ko if: hasMoreSites() && loadingSites()-->
+  %span.loadmore Loading...
+  <!-- /ko -->
+<!-- /ko -->
+<!-- /ko -->

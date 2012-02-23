@@ -7,6 +7,12 @@
 
 #collections-dummy{:style => 'height:600px'}
 #collections-main.box.nopadd.h50{:style => 'display:none'}
+  <!-- ko if: showingMap() -->
   = render 'map'
+  <!-- /ko -->
+
+  <!-- ko if: !showingMap() -->
   = render 'table'
+  <!-- /ko -->
+
   .clear

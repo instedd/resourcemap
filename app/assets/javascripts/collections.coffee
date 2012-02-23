@@ -155,6 +155,7 @@
       super(data)
       @id = ko.observable data?.id
       @name = ko.observable data?.name
+      @updatedAt = ko.observable(data.updated_at)
       @sites = ko.observableArray()
       @expanded = ko.observable false
       @sitesPage = 1
@@ -464,8 +465,6 @@
 
   class CollectionViewModel
     constructor: (collections) ->
-      self = this
-
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
       @currentParent = ko.observable()
@@ -500,34 +499,57 @@
 
       location.hash = '#/' unless location.hash
 
-      Sammy( ->
-        @get '#:collection', ->
-          collection = self.findCollectionById parseInt(this.params.collection)
-          initialized = self.initMap collection
-
-          self.currentCollection collection
-          self.unselectSite() if self.selectedSite()
-
-          collection.loadMoreSites() if collection.sitesPage == 1
-
-          collection.fetchFields()
-          collection.panToPosition(true) unless initialized
-
-        @get '#/', ->
-          initialized = self.initMap()
-          self.currentCollection(null)
-          self.unselectSite() if self.selectedSite()
-
-          self.reloadMapSites() unless initialized
-      ).run()
-
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
           @reloadMapSites()
 
-    showMap: => @showingMap(true)
+    initSammy: =>
+      self = this
 
-    showTable: => @showingMap(false)
+      Sammy( ->
+        @get '#:collection', ->
+          collection = self.findCollectionById parseInt(this.params.collection)
+          self.currentCollection collection
+          self.unselectSite() if self.selectedSite()
+          collection.loadMoreSites() if collection.sitesPage == 1
+          collection.fetchFields()
+
+          initialized = self.initMap()
+          collection.panToPosition(true) unless initialized
+
+        @get '#/', ->
+          self.currentCollection(null)
+          self.unselectSite() if self.selectedSite()
+
+          initialized = self.initMap()
+          self.reloadMapSites() unless initialized
+      ).run()
+
+    showMap: (callback) =>
+      if @showingMap()
+        if callback && typeof(callback) == 'function'
+          @goBackToTable = true
+          callback()
+        return
+
+      @markers = {}
+      @clusters = {}
+      @showingMap(true)
+      showMap = =>
+        if $('#map').length == 0
+          setTimeout(showMap, 10)
+        else
+          @initMap()
+          if callback && typeof(callback) == 'function'
+            @goBackToTable = true
+            callback()
+      setTimeout(showMap, 10)
+
+    showTable: =>
+      delete @markers
+      delete @clusters
+      delete @map
+      @showingMap(false)
 
     findCollectionById: (id) => (x for x in @collections() when x.id() == id)[0]
 
@@ -544,20 +566,22 @@
     createSite: => @createSiteOrGroup false
 
     createSiteOrGroup: (group) =>
-      parent = if @selectedSite() then @selectedSite() else @currentCollection()
-      pos = @originalSiteLocation = @map.getCenter()
-      site = if group
-               new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
-             else
-               new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group)
-      @editingSite site
-      @editingSite().copyPropertiesToCollection(@currentCollection()) unless @editingSite().group()
-      @editingSite().startEditLocationInMap()
+      @showMap =>
+        parent = if @selectedSite() then @selectedSite() else @currentCollection()
+        pos = @originalSiteLocation = @map.getCenter()
+        site = if group
+                 new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
+               else
+                 new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group)
+        @editingSite site
+        @editingSite().copyPropertiesToCollection(@currentCollection()) unless @editingSite().group()
+        @editingSite().startEditLocationInMap()
 
     editSite: (site) =>
-      site.copyPropertiesToCollection(site.parentCollection())
-      @selectSite(site) unless @selectedSite() && @selectedSite().id() == site.id()
-      @editingSite(site)
+      @showMap =>
+        site.copyPropertiesToCollection(site.parentCollection())
+        @selectSite(site) unless @selectedSite() && @selectedSite().id() == site.id()
+        @editingSite(site)
 
     editSiteFromMarker: (siteId) =>
       site = @siteIds[siteId]
@@ -602,6 +626,9 @@
       @editingSite().deleteMarker() unless @editingSite().id()
       @editingSite(null)
       window.model.setAllMarkersActive()
+      if @goBackToTable
+        @showTable()
+        delete @goBackToTable
 
     deleteSite: =>
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
@@ -611,32 +638,40 @@
           @editingSite().parent.fetchLocation()
           @editingSite().deleteMarker()
           @exitSite()
-          @reloadMapSites()
+          @reloadMapSites() if @showingMap()
 
     selectSite: (site) =>
-      if @selectedSite()
-        # This is to prevent flicker: when the map reloads, we try to reuse the old site marker
-        if @selectedSite().marker
-          @oldSelectedSite = @selectedSite()
-          @setMarkerIcon @selectedSite().marker, 'active'
-          @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
-        @selectedSite().selected(false)
-      if @selectedSite() == site
-        @selectedSite(null)
-        @reloadMapSites()
+      if @showingMap()
+        if @selectedSite()
+          # This is to prevent flicker: when the map reloads, we try to reuse the old site marker
+          if @selectedSite().marker
+            @oldSelectedSite = @selectedSite()
+            @setMarkerIcon @selectedSite().marker, 'active'
+            @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
+          @selectedSite().selected(false)
+        if @selectedSite() == site
+          @selectedSite(null)
+          @reloadMapSites()
+        else
+          @selectedSite(site)
+          @selectedSite().selected(true)
+          if @selectedSite().id() && @selectedSite().hasLocation()
+            # Again, all these checks are to prevent flickering
+            if @markers[@selectedSite().id()]
+              @selectedSite().marker = @markers[@selectedSite().id()]
+              @selectedSite().marker.setZIndex(200000)
+              @setMarkerIcon @selectedSite().marker, 'target'
+              @deleteMarker @selectedSite().id(), false
+            else
+              @selectedSite().createMarker() unless @selectedSite().group()
+            @selectedSite().panToPosition()
       else
-        @selectedSite(site)
-        @selectedSite().selected(true)
-        if @selectedSite().id() && @selectedSite().hasLocation()
-          # Again, all these checks are to prevent flickering
-          if @markers[@selectedSite().id()]
-            @selectedSite().marker = @markers[@selectedSite().id()]
-            @selectedSite().marker.setZIndex(200000)
-            @setMarkerIcon @selectedSite().marker, 'target'
-            @deleteMarker @selectedSite().id(), false
-          else
-            @selectedSite().createMarker() unless @selectedSite().group()
-          @selectedSite().panToPosition()
+        @selectedSite().selected(false) if @selectedSite()
+        if @selectedSite() == site
+          @selectedSite(null)
+        else
+          @selectedSite(site)
+
 
     unselectSite: =>
       @selectSite(@selectedSite()) if @selectedSite()
@@ -644,11 +679,11 @@
     toggleSite: (site) =>
       site.toggle()
 
-    initMap: (collection) =>
+    initMap: =>
       return false if @map
 
-      center = if collection?.position()
-                 collection.position()
+      center = if @currentCollection()?.position()
+                 @currentCollection().position()
                else if @collections().length > 0 && @collections()[0].position()
                  @collections()[0].position()
                else
@@ -701,11 +736,12 @@
       getCallback = (data = {}) =>
         return unless currentRequestNumber == @requestNumber
 
-        @drawSitesInMap data.sites
-        @drawClustersInMap data.clusters
-        @reloadMapSitesAutomatically = true
-        @adjustZIndexes()
-        @updateSitesCount()
+        if @showingMap()
+          @drawSitesInMap data.sites
+          @drawClustersInMap data.clusters
+          @reloadMapSitesAutomatically = true
+          @adjustZIndexes()
+          @updateSitesCount()
 
         callback() if callback && typeof(callback) == 'function'
 
@@ -856,6 +892,7 @@
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)
     ko.applyBindings window.model
+    window.model.initSammy()
 
     $('#collections-dummy').remove()
     $('#collections-main').show()
