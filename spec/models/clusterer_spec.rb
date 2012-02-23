@@ -67,5 +67,19 @@ describe Clusterer do
       clusters[:sites].should be_nil
       clusters[:clusters].should eq([{:id => "1:1:3", :lat => 3.0, :lng => 4.0, :count => 4}])
     end
+
+    it "clusters groups if they are too near, and a site" do
+      clusterer.add :id => 1, :lat => 20, :lng => 30, :parent_ids => [4, 5, 1]
+      clusterer.add :id => 2, :lat => 20, :lng => 30, :parent_ids => [6, 1, 7]
+
+      clusterer.add :id => 3, :lat => 20, :lng => 30, :parent_ids => [2]
+      clusterer.add :id => 4, :lat => 20, :lng => 30, :parent_ids => [2]
+
+      clusterer.add :id => 5, :lat => 3.0, :lng => 4.0, :parent_ids => []
+
+      clusters = clusterer.clusters
+      clusters[:sites].should be_nil
+      clusters[:clusters].should eq([{:id => "1:1:3", :lat => 3.0, :lng => 4.0, :count => 5}])
+    end
   end
 end

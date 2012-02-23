@@ -40,6 +40,15 @@ class Clusterer
         new_cluster[:group_ids] ||= []
         new_cluster[:group_ids] << cluster[:id]
       end
+      if first_pass[:sites]
+        first_pass[:sites].each do |site|
+          new_cluster = clusterer.add_non_group site
+          new_cluster[:group_ids] ||= []
+          new_cluster[:group_ids] << site[:id]
+          new_cluster[:site_ids] ||= []
+          new_cluster[:site_ids] << site[:id]
+        end
+      end
       grouped_clusters = clusterer.first_pass_clusters
       if grouped_clusters[:clusters]
         grouped_clusters[:clusters].each do |cluster|
@@ -47,12 +56,15 @@ class Clusterer
             cluster[:id] = cluster[:group_ids][0]
           else
             cluster.delete :max_zoom
+            first_pass[:sites].delete_if {|s| cluster[:site_ids].include?(s[:id])} if cluster[:site_ids]
           end
           cluster.delete :group_ids
+          cluster.delete :site_ids
         end
         first_pass[:clusters] = grouped_clusters[:clusters]
       end
     end
+    first_pass.delete(:sites) if first_pass[:sites].blank?
     first_pass
   end
 
@@ -103,6 +115,7 @@ class Clusterer
         }
         hash[:max_zoom] = cluster[:max_zoom] if cluster[:max_zoom]
         hash[:group_ids] = cluster[:group_ids] if cluster[:group_ids]
+        hash[:site_ids] = cluster[:site_ids] if cluster[:site_ids]
         clusters_to_return.push hash
       end
     end
