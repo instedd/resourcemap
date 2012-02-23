@@ -123,7 +123,7 @@
               %td
                 %p
                   = label_tag :name, "Name:"
-                  = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :hasfocus => true)
+                  = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :valueUpdate => "'afterkeydown'", :hasfocus => true)
                 %p
                   %label Mode:
                   = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
@@ -151,7 +151,7 @@
               %td
                 %p
                   = label_tag :name, "Name:"
-                  = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :hasfocus => true)
+                  = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :valueUpdate => "'afterkeydown'", :hasfocus => true)
                 %p
                   %label Location:
                   = ko_text_field_tag :locationText, :event => '{keydown: newLocationKeyPress, blur: moveLocation}'
