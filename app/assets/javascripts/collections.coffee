@@ -130,14 +130,13 @@
             @lat(latLng.lat); @lng(latLng.lng)
         owner: @
 
-    panToPosition: (forceReload = false) =>
+    panToPosition: =>
       currentPosition = window.model.map.getCenter()
       positionChanged = @position() && (Math.abs(@position().lat() - currentPosition.lat()) > 1e-6 || Math.abs(@position().lng() - currentPosition.lng()) > 1e-6)
 
-      if positionChanged || forceReload
-        window.model.reloadMapSitesAutomatically = false
-        window.model.map.panTo @position() if positionChanged
-        window.model.reloadMapSites()
+      window.model.reloadMapSitesAutomatically = false
+      window.model.map.panTo @position() if positionChanged
+      window.model.reloadMapSites()
 
   class SitesContainer extends Locatable
     constructor: (data) ->
@@ -495,10 +494,9 @@
           initialized = self.initMap collection
 
           self.currentCollection collection
-          self.selectSite(self.selectedSite()) if self.selectedSite()
+          self.unselectSite() if self.selectedSite()
 
           collection.loadMoreSites() if collection.sitesPage == 1
-          self.selectSite(self.selectedSite()) if self.selectedSite()
 
           collection.fetchFields()
           collection.panToPosition(true) unless initialized
@@ -506,7 +504,7 @@
         @get '#/', ->
           initialized = self.initMap()
           self.currentCollection(null)
-          self.selectSite(self.selectedSite()) if self.selectedSite()
+          self.unselectSite() if self.selectedSite()
 
           self.reloadMapSites() unless initialized
       ).run()
@@ -586,7 +584,7 @@
 
     exitSite: =>
       # Unselect site if it's not on the tree
-      @selectSite(@editingSite()) unless @siteIds[@editingSite().id()]
+      @unselectSite() unless @siteIds[@editingSite().id()]
       @editingSite().unsubscribeToLocationModeChange()
       @editingSite().editingLocation(false)
       @editingSite().deleteMarker() unless @editingSite().id()
@@ -595,7 +593,7 @@
 
     deleteSite: =>
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
-        @selectSite(@editingSite())
+        @unselectSite()
         @editingSite().parent.removeSite(@editingSite())
         $.post "/sites/#{@editingSite().id()}", {_method: 'delete'}, =>
           @editingSite().parent.fetchLocation()
@@ -609,6 +607,7 @@
         if @selectedSite().marker
           @oldSelectedSite = @selectedSite()
           @setMarkerIcon @selectedSite().marker, 'active'
+          @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
         @selectedSite().selected(false)
       if @selectedSite() == site
         @selectedSite(null)
@@ -618,15 +617,17 @@
         @selectedSite().selected(true)
         if @selectedSite().id() && @selectedSite().hasLocation()
           # Again, all these checks are to prevent flickering
-          forceReload = false
           if @markers[@selectedSite().id()]
             @selectedSite().marker = @markers[@selectedSite().id()]
+            @selectedSite().marker.setZIndex(200000)
             @setMarkerIcon @selectedSite().marker, 'target'
             @deleteMarker @selectedSite().id(), false
           else
             @selectedSite().createMarker() unless @selectedSite().group()
-            forceReload = true
-          @selectedSite().panToPosition forceReload
+          @selectedSite().panToPosition()
+
+    unselectSite: =>
+      @selectSite(@selectedSite()) if @selectedSite()
 
     toggleSite: (site) =>
       site.toggle()
