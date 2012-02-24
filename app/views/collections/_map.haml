@@ -197,37 +197,37 @@
       %span.i18b-groupChat
       %span{ko(:text => :name)}
     .tablescroll
-      %table.GralTable.CleanTable
+      %table
         %tbody
           %tr
             %td
-              %p
+              %div
                 %label Name:
-                %span{ko(:text => :name, :visible => '!editingName()', :click => 'editName'), :style => 'cursor: pointer'}
+                %span.value{ko(:text => :name, :visible => '!editingName()', :click => 'editName'), :style => 'cursor: pointer'}
                 <!-- ko if: editingName() -->
                 = ko_text_field_tag :name, :visible => 'editingName()', :hasfocus => true, :event => '{keydown: nameKeyPress, blur: saveName}'
                 <!-- /ko -->
-              %p
+              %div
                 %label Location:
-                %span{ko(:text => :locationText, :visible => '!editingLocation()', :click => 'editLocation'), :style => 'cursor: pointer'}
+                %span.value{ko(:text => :locationText, :visible => '!editingLocation()', :click => 'editLocation'), :style => 'cursor: pointer'}
                 <!-- ko if: editingLocation() -->
                 = ko_text_field_tag :locationText, :visible => :editingLocation, :hasfocus => true, :event => '{keydown: locationKeyPress, blur: saveLocation}'
                 <!-- /ko -->
               %hr
               <!-- ko foreach: parentCollection().fields() -->
-              %p
+              %div
                 %label{ko(:text => "name() + ':'")}
                 <!-- ko if: value() -->
-                %span{ko(:text => :value, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
+                %span.value{ko(:text => :value, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
                 <!-- /ko -->
                 <!-- ko if: !value() -->
-                %span{ko(:visible => '!editing()', :click => 'edit'), :style => 'color:grey;cursor:pointer'} (no value)
+                %span.value{ko(:visible => '!editing()', :click => 'edit'), :style => 'color:grey;cursor:pointer'} (no value)
                 <!-- /ko -->
                 <!-- ko if: editing() && (kind() == 'text' || kind() == 'numeric') -->
                 = ko_text_field_tag :value, :hasfocus => true, :event => '{keydown: keyPress, blur: save}'
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'selectOne' -->
-                %select{ko(:value => :value, :options => :options, :event => '{change: save, blur: save}')}
+                %select{ko(:value => :value, :options => :options, :hasfocus => true, :event => '{change: save, blur: save}')}
                 <!-- /ko -->
               <!-- /ko -->
     .tablebottom
