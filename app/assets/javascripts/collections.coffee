@@ -281,6 +281,10 @@
 
     hasName: => $.trim(@name()).length > 0
 
+    propertyValue: (code) =>
+      value = @properties()[code]
+      value = value.join(', ') if value instanceof Array
+
     fetchLocation: =>
       $.get "/sites/#{@id()}.json", {}, @position
       @parent.fetchLocation()
