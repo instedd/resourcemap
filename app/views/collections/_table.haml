@@ -101,14 +101,14 @@
       <!-- ko template: {name: 'table-sites-template', with: $data} -->
       <!-- /ko -->
 .tablebottom
-  <!-- ko if: !$root.selectedSite() || $root.selectedSite().group() -->
+  <!-- ko if: $root.parentSite() -->
   Add
   %button.ffolder{ko(:click => '$root.createGroup')} Group
   or
   %button.flocation{ko(:click => '$root.createSite')} Site
-  <!-- ko if: $root.selectedSite() -->
+  <!-- ko if: $root.parentSite().level() != 0 -->
   at
-  %span{ko(:text => '$root.selectedSite().name()')}
+  %span{ko(:text => '$root.parentSite().name()')}
   <!-- /ko -->
   <!-- /ko -->
   <!-- ko if: hasMoreSites() && !loadingSites()-->

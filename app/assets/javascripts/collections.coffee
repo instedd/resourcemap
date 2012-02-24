@@ -499,6 +499,11 @@
       @currentParent = ko.observable()
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
+      @parentSite = ko.computed =>
+        if @selectedSite()
+          if @selectedSite().group() then @selectedSite() else @selectedSite().parent
+        else
+          null
       @loadingSite = ko.observable(false)
       @newSite = ko.computed => if @editingSite() && !@editingSite().id() && !@editingSite().group() then @editingSite() else null
       @newGroup = ko.computed => if @editingSite() && !@editingSite().id() && @editingSite().group() then @editingSite() else null
@@ -599,12 +604,13 @@
     createSiteOrGroup: (group) =>
       @goBackToTable = true unless @showingMap()
       @showMap =>
-        parent = if @selectedSite() then @selectedSite() else @currentCollection()
+        parent = @parentSite()
+        parentId = if @parentSite().level() == 0 then null else @parentSite().id()
         pos = @originalSiteLocation = @map.getCenter()
         site = if group
-                 new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
+                 new Site(parent, parent_id: parentId, lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
                else
-                 new Site(parent, parent_id: @selectedSite()?.id(), lat: pos.lat(), lng: pos.lng(), group: group)
+                 new Site(parent, parent_id: parentId, lat: pos.lat(), lng: pos.lng(), group: group)
         @editingSite site
         @editingSite().copyPropertiesToCollection(@currentCollection()) unless @editingSite().group()
         @editingSite().startEditLocationInMap()
@@ -654,7 +660,9 @@
 
     exitSite: =>
       # Unselect site if it's not on the tree
+      oldParentSite = @parentSite()
       @unselectSite() unless @siteIds[@editingSite().id()]
+      @selectedSite(oldParentSite) if !@selectedSite() && oldParentSite && oldParentSite.level() != 0
       @editingSite().unsubscribeToLocationModeChange()
       @editingSite().editingLocation(false)
       @editingSite().deleteMarker() unless @editingSite().id()

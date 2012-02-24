@@ -83,14 +83,14 @@
           %td.loadmore Loading...
         <!-- /ko -->
   .tablebottom
-    <!-- ko if: !$root.selectedSite() || $root.selectedSite().group() -->
+    <!-- ko if: $root.parentSite() -->
     Add
     %button.ffolder{ko(:click => '$root.createGroup')} Group
     or
     %button.flocation{ko(:click => '$root.createSite')} Site
-    <!-- ko if: $root.selectedSite() -->
+    <!-- ko if: $root.parentSite().level() != 0 -->
     at
-    %span{ko(:text => '$root.selectedSite().name()')}
+    %span{ko(:text => '$root.parentSite().name()')}
     <!-- /ko -->
     <!-- /ko -->
   <!-- /ko -->
@@ -102,9 +102,9 @@
       %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
       %span.i18b-groupChat
       %span New Group
-      <!-- ko if: $root.selectedSite() && !id() -->
+      <!-- ko if: $root.parentSite() && $root.parentSite().level() != 0  -->
       %span at
-      %span{ko(:text => '$root.selectedSite().name()')}
+      %span{ko(:text => '$root.parentSite().name()')}
       <!-- /ko -->
     .tablescroll
       %table
@@ -130,9 +130,9 @@
       %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
       %span.i18b-groupChat
       %span New Site
-      <!-- ko if: $root.selectedSite() && !id() -->
+      <!-- ko if: $root.parentSite() && $root.parentSite().level() != 0  -->
       %span at
-      %span{ko(:text => '$root.selectedSite().name()')}
+      %span{ko(:text => '$root.parentSite().name()')}
       <!-- /ko -->
     .tablescroll
       %table
