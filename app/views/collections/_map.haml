@@ -107,17 +107,17 @@
       %span{ko(:text => '$root.selectedSite().name()')}
       <!-- /ko -->
     .tablescroll
-      %table.GralTable.CleanTable
+      %table
         %tbody
           %tr
             %td
-              %p
+              %div
                 = label_tag :name, "Name:"
                 = text_field_tag :name, '', :placeholder => 'Enter new group name', 'data-bind' => kov(:value => :name, :valueUpdate => "'afterkeydown'", :hasfocus => true)
-              %p
+              %div
                 %label Mode:
                 = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(:value => :locationMode)
-              %p{ko(:visible => "locationMode() == 'manual'")}
+              %div{ko(:visible => "locationMode() == 'manual'")}
                 %label Location:
                 = ko_text_field_tag :locationText, :event => '{keydown: newLocationKeyPress, blur: moveLocation}'
     .tablebottom
@@ -135,25 +135,35 @@
       %span{ko(:text => '$root.selectedSite().name()')}
       <!-- /ko -->
     .tablescroll
-      %table.GralTable.CleanTable
+      %table
         %tbody
           %tr
             %td
-              %p
+              %div
                 = label_tag :name, "Name:"
                 = text_field_tag :name, '', :placeholder => 'Enter new site name', 'data-bind' => kov(:value => :name, :valueUpdate => "'afterkeydown'", :hasfocus => true)
-              %p
+              %div
                 %label Location:
                 = ko_text_field_tag :locationText, :event => '{keydown: newLocationKeyPress, blur: moveLocation}'
               %hr
               <!-- ko foreach: $root.currentCollection().fields() -->
-              %p
+              %div
                 = label_tag '', '', ko(:attr => "{'for': code}", :text => "name() + ':'")
                 <!-- ko if: kind() == 'text' || kind() == 'numeric' -->
-                = ko_text_field_tag :value, :hasfocus => true
+                = ko_text_field_tag :value
                 <!-- /ko -->
                 <!-- ko if: kind() == 'selectOne' -->
                 %select{ko(:value => :value, :options => :options)}
+                <!-- /ko -->
+                <!-- ko if: kind() == 'selectMany' -->
+                %ul.superblyTagItems{ko(:foreach => :value)}
+                  %li.superblyTagItem{ko(:click => '$parent.removeOption')}
+                    %span{ko(:text => '$data')}
+                    %a x
+                .superblyTagfieldClearer
+                %ul.taglist{ko(:foreach => :remainingOptions)}
+                  %li
+                    %a{ko(:text => '$data', :click => '$parent.selectOption')}
                 <!-- /ko -->
               <!-- /ko -->
     .tablebottom
@@ -218,7 +228,7 @@
               %div
                 %label{ko(:text => "name() + ':'")}
                 <!-- ko if: value() -->
-                %span.value{ko(:text => :value, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
+                %span.value{ko(:text => :valueUI, :visible => '!editing()', :click => 'edit'), :style => 'cursor:pointer'}
                 <!-- /ko -->
                 <!-- ko if: !value() -->
                 %span.value{ko(:visible => '!editing()', :click => 'edit'), :style => 'color:grey;cursor:pointer'} (no value)
@@ -228,6 +238,17 @@
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'selectOne' -->
                 %select{ko(:value => :value, :options => :options, :hasfocus => true, :event => '{change: save, blur: save}')}
+                <!-- /ko -->
+                <!-- ko if: editing() && kind() == 'selectMany' -->
+                %ul.superblyTagItems{ko(:foreach => :value)}
+                  %li.superblyTagItem{ko(:click => '$parent.removeOption')}
+                    %span{ko(:text => '$data')}
+                    %a x
+                .superblyTagfieldClearer
+                %ul.taglist{ko(:foreach => :remainingOptions)}
+                  %li
+                    %a{ko(:text => '$data', :click => '$parent.selectOption')}
+                %button{ko(:click => :save), :style => 'float:right'} Update options
                 <!-- /ko -->
               <!-- /ko -->
     .tablebottom

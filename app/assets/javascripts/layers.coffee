@@ -48,8 +48,8 @@
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
-      @options = if data.config?
-                   ko.observableArray($.map(data.config, (x) -> new Option(x)))
+      @options = if data.config?.options?
+                   ko.observableArray($.map(data.config.options, (x) -> new Option(x)))
                  else
                    ko.observableArray()
       @hasFocus = ko.observable(false)
@@ -72,7 +72,7 @@
         name: @name()
         code: @code()
         kind: @kind()
-      json.config = $.map(@options(), (x) -> x.name()) if @isOptionsKind()
+      json.config = {options: $.map(@options(), (x) -> x.name())} if @isOptionsKind()
       json
 
   class Option

@@ -102,11 +102,19 @@
       @code = ko.observable data?.code
       @name = ko.observable data?.name
       @kind = ko.observable data?.kind
-      @options = if data.config?
-                   ko.observableArray(data.config)
+      @options = if data.config?.options?
+                   ko.observableArray(data.config.options)
                  else
                    ko.observableArray()
       @value = ko.observable()
+      @hasValue = ko.computed => @value() && (if @kind() == 'selectMany' then @value().length > 0 else false)
+      @valueUI = ko.computed =>
+        if @kind() == 'selectMany'
+          if @value() then @value().join(', ') else ''
+        else
+          @value()
+      @remainingOptions = ko.computed => @options().diff(if @value() then @value() else [])
+
       @editing = ko.observable false
 
     edit: =>
@@ -128,6 +136,16 @@
       @editing(false)
       window.model.editingSite().updateProperty(@code(), @value())
       delete @originalValue
+
+    selectOption: (option) =>
+      @value([]) unless @value()
+      @value().push(option)
+      @value.valueHasMutated()
+
+    removeOption: (option) =>
+      @value([]) unless @value()
+      @value(@value().diff([option]))
+      @value.valueHasMutated()
 
   class Locatable
     constructor: (data) ->
