@@ -107,7 +107,7 @@
                  else
                    ko.observableArray()
       @value = ko.observable()
-      @hasValue = ko.computed => @value() && (if @kind() == 'selectMany' then @value().length > 0 else false)
+      @hasValue = ko.computed => @value() && (if @kind() == 'selectMany' then @value().length > 0 else @value())
       @valueUI = ko.computed =>
         if @kind() == 'selectMany'
           if @value() then @value().join(', ') else ''
