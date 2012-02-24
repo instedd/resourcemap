@@ -231,7 +231,9 @@
 
     level: -> 0
 
-    fetchLocation: => $.get "/collections/#{@id()}.json", {}, @position
+    fetchLocation: => $.get "/collections/#{@id()}.json", {}, (data) =>
+      @position(data)
+      @updatedAt(data.updated_at)
 
     fetchFields: (callback) =>
       if @fieldsInitialized
@@ -249,6 +251,9 @@
       field.value(null) for field in @fields()
 
     parentCollection: => @
+
+    propagateUpdatedAt: (value) =>
+      @updatedAt(value)
 
   class Site extends SitesContainer
     constructor: (parent, data) ->
@@ -286,13 +291,15 @@
       value = value.join(', ') if value instanceof Array
 
     fetchLocation: =>
-      $.get "/sites/#{@id()}.json", {}, @position
+      $.get "/sites/#{@id()}.json", {}, (data) =>
+        @position(data)
+        @updatedAt(data.updated_at)
       @parent.fetchLocation()
 
     updateProperty: (code, value) =>
       @properties()[code] = value
       $.post "/sites/#{@id()}/update_property", {code: code, value: value}, (data) =>
-        @updatedAt(data.updated_at)
+        @propagateUpdatedAt(data.updated_at)
 
     copyPropertiesFromCollection: (collection) =>
       @properties({})
@@ -311,7 +318,7 @@
 
     post: (json, callback) =>
       callback_with_updated_at = (data) =>
-        @updatedAt(data.updated_at)
+        @propagateUpdatedAt(data.updated_at)
         callback(data) if callback && typeof(callback) == 'function'
 
       data = {site: json}
@@ -320,6 +327,10 @@
         $.post "/collections/#{@parentCollection().id()}/sites/#{@id()}.json", data, callback_with_updated_at
       else
         $.post "/collections/#{@parentCollection().id()}/sites", data, callback_with_updated_at
+
+    propagateUpdatedAt: (value) =>
+      @updatedAt(value)
+      @parent.propagateUpdatedAt(value)
 
     editName: =>
       @originalName = @name()
