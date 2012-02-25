@@ -562,6 +562,7 @@
           initialized = self.initMap()
           collection.panToPosition(true) unless initialized
           self.refreshTimeago()
+          self.makeFixedHeaderTable()
 
         @get '#/', ->
           self.currentCollection(null)
@@ -570,6 +571,7 @@
           initialized = self.initMap()
           self.reloadMapSites() unless initialized
           self.refreshTimeago()
+          self.makeFixedHeaderTable()
       ).run()
 
     showMap: (callback) =>
@@ -597,6 +599,7 @@
       @exitSite() if @editingSite()
       @showingMap(false)
       @refreshTimeago()
+      @makeFixedHeaderTable()
 
     findCollectionById: (id) => (x for x in @collections() when x.id() == id)[0]
 
@@ -615,8 +618,8 @@
     createSiteOrGroup: (group) =>
       @goBackToTable = true unless @showingMap()
       @showMap =>
-        parent = @parentSite()
-        parentId = if @parentSite().level() == 0 then null else @parentSite().id()
+        parent = @parentSite() || @currentCollection()
+        parentId = if !@parentSite() || @parentSite().level() == 0 then null else @parentSite().id()
         pos = @originalSiteLocation = @map.getCenter()
         site = if group
                  new Site(parent, parent_id: parentId, lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
@@ -944,6 +947,10 @@
       @sitesCount count
 
     refreshTimeago: -> $('.timeago').timeago()
+
+    makeFixedHeaderTable: ->
+      unless @showingMap()
+        $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable', width: '960px'
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)

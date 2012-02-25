@@ -83,15 +83,13 @@
           %td.loadmore Loading...
         <!-- /ko -->
   .tablebottom
-    <!-- ko if: $root.parentSite() -->
     Add
     %button.ffolder{ko(:click => '$root.createGroup')} Group
     or
     %button.flocation{ko(:click => '$root.createSite')} Site
-    <!-- ko if: $root.parentSite().level() != 0 -->
+    <!-- ko if: $root.parentSite() && $root.parentSite().level() != 0 -->
     at
     %span{ko(:text => '$root.parentSite().name()')}
-    <!-- /ko -->
     <!-- /ko -->
   <!-- /ko -->
   <!-- /ko -->
