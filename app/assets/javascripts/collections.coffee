@@ -289,6 +289,7 @@
     propertyValue: (code) =>
       value = @properties()[code]
       value = value.join(', ') if value instanceof Array
+      value
 
     fetchLocation: =>
       $.get "/sites/#{@id()}.json", {}, (data) =>
@@ -313,8 +314,9 @@
       collection.fetchFields =>
         collection.clearFieldValues()
         if @properties()
-          for key, value of @properties()
-            collection.findFieldByCode(key).value(value)
+          for field in collection.fields()
+            value = @properties()[field.code()]
+            field.value(value)
 
     post: (json, callback) =>
       callback_with_updated_at = (data) =>
