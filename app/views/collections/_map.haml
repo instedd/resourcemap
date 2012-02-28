@@ -95,7 +95,8 @@
   <!-- /ko -->
 
   -# New Group form
-  %form{ko(:with => :newGroup, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
+  <!-- ko if: newGroup -->
+  %form{ko(:with => :newGroup, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline-block'}
     .tableheader.w33
       %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
       %span.i18b-groupChat
@@ -121,9 +122,11 @@
     .tablebottom
       %button.grey{ko(:enable => :valid), :type => 'submit'} Done
       %span{ko(:click => '$root.exitSite')} Cancel
+  <!-- /ko -->
 
   -# New Site form
-  %form{ko(:with => :newSite, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
+  <!-- ko if: newSite -->
+  %form{ko(:with => :newSite, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline-block'}
     .tableheader.w33
       %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
       %span.i18b-groupChat
@@ -167,8 +170,10 @@
     .tablebottom
       %button.grey{ko(:enable => :valid), :type => 'submit'} Done
       %span{ko(:click => '$root.exitSite')} Cancel
+  <!-- /ko -->
 
   -# Show Group form
+  <!-- ko if: showGroup -->
   %form{ko(:with => :showGroup, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
     .tableheader.w33
       %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
@@ -197,8 +202,10 @@
                 <!-- /ko -->
     .tablebottom
       = link_to 'Delete Group', 'javascript:void()', :class => 'icon fdelete black', 'data-bind' => kov(:click => '$root.deleteSite')
+  <!-- /ko -->
 
   -# Show Site form
+  <!-- ko if: showSite -->
   %form{ko(:with => :showSite, :submit => '$root.saveSite', :attr => "{'action': '#' + ($root.currentCollection() ? $root.currentCollection().id() : '')}"), :style => 'display:inline'}
     .tableheader.w33
       %button.fleft{ko(:click => '$root.exitSite'), :type => 'button'}
@@ -252,6 +259,7 @@
               <!-- /ko -->
     .tablebottom
       = link_to 'Delete Site', 'javascript:void()', :class => 'icon fdelete black', 'data-bind' => kov(:click => '$root.deleteSite')
+  <!-- /ko -->
   <!-- /ko -->
 
   -# Loading Site...
