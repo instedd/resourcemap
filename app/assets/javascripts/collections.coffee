@@ -952,7 +952,8 @@
 
     makeFixedHeaderTable: ->
       unless @showingMap()
-        $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable', width: '960px'
+        unless $('table.GralTable').hasClass("fht-table")
+          $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable', width: '960px'
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)
