@@ -559,13 +559,13 @@
           self.currentCollection collection
           self.unselectSite() if self.selectedSite()
           collection.loadMoreSites() if collection.sitesPage == 1
-          collection.fetchFields()
 
           initialized = self.initMap()
           collection.panToPosition(true) unless initialized
-          self.refreshTimeago()
-          self.makeFixedHeaderTable()
 
+          collection.fetchFields =>
+            self.refreshTimeago()
+            self.makeFixedHeaderTable()
         @get '#/', ->
           self.currentCollection(null)
           self.unselectSite() if self.selectedSite()
