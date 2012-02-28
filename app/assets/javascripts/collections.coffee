@@ -598,6 +598,7 @@
       delete @markers
       delete @clusters
       delete @map
+      @selectedSite().deleteMarker() if @selectedSite()
       @exitSite() if @editingSite()
       @showingMap(false)
       @refreshTimeago()
@@ -635,7 +636,11 @@
       @goBackToTable = true unless @showingMap()
       @showMap =>
         site.copyPropertiesToCollection(site.parentCollection())
-        @selectSite(site) unless @selectedSite() && @selectedSite().id() == site.id()
+        if @selectedSite() && @selectedSite().id() == site.id()
+          @unselectSite()
+          @selectSite(site)
+        else
+          @selectSite(site)
         @editingSite(site)
 
     editSiteFromMarker: (siteId) =>
