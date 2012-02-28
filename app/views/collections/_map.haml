@@ -150,8 +150,11 @@
               <!-- ko foreach: $root.currentCollection().fields() -->
               %div
                 = label_tag '', '', ko(:attr => "{'for': code}", :text => "name() + ':'")
-                <!-- ko if: kind() == 'text' || kind() == 'numeric' -->
+                <!-- ko if: kind() == 'text' -->
                 = ko_text_field_tag :value
+                <!-- /ko -->
+                <!-- ko if: kind() == 'numeric' -->
+                = ko_number_field_tag :value
                 <!-- /ko -->
                 <!-- ko if: kind() == 'selectOne' -->
                 %select{ko(:value => :value, :options => :options)}
@@ -238,8 +241,11 @@
                 <!-- ko if: !hasValue() -->
                 %span.value{ko(:visible => '!editing()', :click => 'edit'), :style => 'color:grey;cursor:pointer'} (no value)
                 <!-- /ko -->
-                <!-- ko if: editing() && (kind() == 'text' || kind() == 'numeric') -->
+                <!-- ko if: editing() && kind() == 'text' -->
                 = ko_text_field_tag :value, :hasfocus => true, :event => '{keydown: keyPress, blur: save}'
+                <!-- /ko -->
+                <!-- ko if: editing() && kind() == 'numeric' -->
+                = ko_number_field_tag :value, :hasfocus => true, :event => '{keydown: keyPress, blur: save}'
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'selectOne' -->
                 %select{ko(:value => :value, :options => :options, :hasfocus => true, :event => '{change: save, blur: save}')}
