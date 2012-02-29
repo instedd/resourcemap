@@ -49,7 +49,7 @@
         <!-- /ko -->
     <!-- ko foreach: $root.currentCollection().fields() -->
     <!-- ko if: $parent.properties()[$data.code()] -->
-    %td.l{ko(:text => "$parent.propertyValue($data.code())")}
+    %td.l{ko(:text => "$parent.propertyValue($data)")}
     <!-- /ko -->
     <!-- ko if: !$parent.properties()[$data.code()] -->
     %td.l

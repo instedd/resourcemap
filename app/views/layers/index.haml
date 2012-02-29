@@ -74,7 +74,7 @@
         %hr/
         %p.title Options
         %p.smalltext Possible values for this field.
-        %ul.clist.w30
+        %ul.mclist.w40
           <!-- ko foreach: options -->
           %li
             %input.ux-clist{ko(:value => :code, :valueUpdate => "'afterkeydown'", :event => '{blur: $root.optionBlur}'), :type => :text}

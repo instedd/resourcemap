@@ -109,13 +109,7 @@
       @optionsCodes = ko.computed => $.map(@options(), (x) => x.code())
       @value = ko.observable()
       @hasValue = ko.computed => @value() && (if @kind() == 'selectMany' then @value().length > 0 else @value())
-      @valueUI = ko.computed =>
-        if @kind() == 'selectOne'
-          if @value() then @labelFor(@value()) else ''
-        else if @kind() == 'selectMany'
-          if @value() then $.map(@value(), (x) => @labelFor(x)).join(', ') else ''
-        else
-          @value()
+      @valueUI = ko.computed => @valueUIFor(@value())
       @remainingOptions = ko.computed =>
         if @value()
           @options().filter((x) => @value().indexOf(x.code()) == -1)
@@ -123,6 +117,14 @@
           @options()
 
       @editing = ko.observable false
+
+    valueUIFor: (value) =>
+      if @kind() == 'selectOne'
+        if value then @labelFor(value) else ''
+      else if @kind() == 'selectMany'
+        if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
+      else
+        value
 
     edit: =>
       @originalValue = @value()
@@ -304,10 +306,9 @@
 
     hasName: => $.trim(@name()).length > 0
 
-    propertyValue: (code) =>
-      value = @properties()[code]
-      value = value.join(', ') if value instanceof Array
-      value
+    propertyValue: (field) =>
+      value = @properties()[field.code()]
+      field.valueUIFor(value)
 
     fetchLocation: =>
       $.get "/sites/#{@id()}.json", {}, (data) =>
