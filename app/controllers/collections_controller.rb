@@ -79,9 +79,7 @@ class CollectionsController < ApplicationController
     @sites = collection.sites.order("updated_at desc")
     @updated = @sites.first.updated_at unless @sites.empty?
     
-    respond_to do |format|
-      format.rss { render :layout => false }
-    end
+    render :layout => false
   end
 
   private

@@ -48,12 +48,6 @@ class SitesController < ApplicationController
   end
 
   def feed
-    # this will be our Feed's update timestamp
-    @updated = site.updated_at
-    @items = [site]
-    respond_to do |format|
-      format.rss { render 'collections/site_feed', :layout => false }
-    end
-
+    render 'collections/site_feed', :layout => false
   end
 end
