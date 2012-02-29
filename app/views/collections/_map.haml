@@ -157,17 +157,17 @@
                 = ko_number_field_tag :value
                 <!-- /ko -->
                 <!-- ko if: kind() == 'selectOne' -->
-                %select{ko(:value => :value, :options => :options)}
+                %select{ko(:value => :value, :options => :optionsCodes, :optionsText => 'function(o){return $data.labelFor(o)}')}
                 <!-- /ko -->
                 <!-- ko if: kind() == 'selectMany' -->
                 %ul.superblyTagItems{ko(:foreach => :value)}
                   %li.superblyTagItem{ko(:click => '$parent.removeOption')}
-                    %span{ko(:text => '$data')}
+                    %span{ko(:text => '$parent.labelFor($data)')}
                     %a x
                 .superblyTagfieldClearer
                 %ul.taglist{ko(:foreach => :remainingOptions)}
                   %li
-                    %a{ko(:text => '$data', :click => '$parent.selectOption')}
+                    %a{ko(:text => :label, :click => '$parent.selectOption')}
                 <!-- /ko -->
               <!-- /ko -->
     .tablebottom
@@ -248,17 +248,17 @@
                 = ko_number_field_tag :value, :hasfocus => true, :event => '{keydown: keyPress, blur: save}'
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'selectOne' -->
-                %select{ko(:value => :value, :options => :options, :hasfocus => true, :event => '{change: save, blur: save}')}
+                %select{ko(:value => :value, :options => :optionsCodes, :optionsText => 'function(o){return $data.labelFor(o)}', :hasfocus => true, :event => '{change: save, blur: save}')}
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'selectMany' -->
                 %ul.superblyTagItems{ko(:foreach => :value)}
                   %li.superblyTagItem{ko(:click => '$parent.removeOption')}
-                    %span{ko(:text => '$data')}
+                    %span{ko(:text => '$parent.labelFor($data)')}
                     %a x
                 .superblyTagfieldClearer
                 %ul.taglist{ko(:foreach => :remainingOptions)}
                   %li
-                    %a{ko(:text => '$data', :click => '$parent.selectOption')}
+                    %a{ko(:text => :label, :click => '$parent.selectOption')}
                 %button{ko(:click => :save), :style => 'float:right'} Update options
                 %button{ko(:click => :exit), :style => 'float:right'} Cancel
                 <!-- /ko -->

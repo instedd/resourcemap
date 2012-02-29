@@ -103,17 +103,24 @@
       @name = ko.observable data?.name
       @kind = ko.observable data?.kind
       @options = if data.config?.options?
-                   ko.observableArray(data.config.options)
+                   ko.observableArray($.map(data.config.options, (x) => new Option(x)))
                  else
                    ko.observableArray()
+      @optionsCodes = ko.computed => $.map(@options(), (x) => x.code())
       @value = ko.observable()
       @hasValue = ko.computed => @value() && (if @kind() == 'selectMany' then @value().length > 0 else @value())
       @valueUI = ko.computed =>
-        if @kind() == 'selectMany'
-          if @value() then @value().join(', ') else ''
+        if @kind() == 'selectOne'
+          if @value() then @labelFor(@value()) else ''
+        else if @kind() == 'selectMany'
+          if @value() then $.map(@value(), (x) => @labelFor(x)).join(', ') else ''
         else
           @value()
-      @remainingOptions = ko.computed => @options().diff(if @value() then @value() else [])
+      @remainingOptions = ko.computed =>
+        if @value()
+          @options().filter((x) => @value().indexOf(x.code()) == -1)
+        else
+          @options()
 
       @editing = ko.observable false
 
@@ -139,13 +146,24 @@
 
     selectOption: (option) =>
       @value([]) unless @value()
-      @value().push(option)
+      @value().push(option.code())
       @value.valueHasMutated()
 
-    removeOption: (option) =>
+    removeOption: (optionCode) =>
       @value([]) unless @value()
-      @value(@value().diff([option]))
+      @value(@value().diff([optionCode]))
       @value.valueHasMutated()
+
+    labelFor: (code) =>
+      for option in @options()
+        if option.code() == code
+          return option.label()
+      null
+
+  class Option
+    constructor: (data) ->
+      @code = ko.observable(data?.code)
+      @label = ko.observable(data?.label)
 
   class Locatable
     constructor: (data) ->
@@ -299,7 +317,7 @@
 
     updateProperty: (code, value) =>
       @properties()[code] = value
-      $.post "/sites/#{@id()}/update_property", {code: code, value: value}, (data) =>
+      $.post "/sites/#{@id()}/update_property.json", {code: code, value: value}, (data) =>
         @propagateUpdatedAt(data.updated_at)
 
     copyPropertiesFromCollection: (collection) =>
@@ -628,8 +646,8 @@
                  new Site(parent, parent_id: parentId, lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
                else
                  new Site(parent, parent_id: parentId, lat: pos.lat(), lng: pos.lng(), group: group)
+        site.copyPropertiesToCollection(@currentCollection()) unless site.group()
         @editingSite site
-        @editingSite().copyPropertiesToCollection(@currentCollection()) unless @editingSite().group()
         @editingSite().startEditLocationInMap()
 
     editSite: (site) =>

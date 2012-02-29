@@ -83,8 +83,6 @@ ul.taglist li a { display:block }
 .w30.feditor-sidebar > input[type="text"] { width:275px !important }
 .w30.feditor-sidebar > select { width:280px !important }
 
-.w80 .w30 > .ux-clist, .w80 .w30.clist > li input.ux-text, .w80 .w30.clist > li input[type="text"], .w80 .w30.clist > li input[type="password"], .w80 .w30.clist > li input[type="email"] { width: 246px !important; }
-
 .fmap { background-image: url(/assets/map.png); position: relative; left: 6px; }
 .fmap.active { background-position: 0px -60px; }
 .ftable { background-image: url(/assets/table.png); }

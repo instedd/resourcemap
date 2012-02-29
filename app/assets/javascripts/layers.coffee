@@ -72,12 +72,17 @@
         name: @name()
         code: @code()
         kind: @kind()
-      json.config = {options: $.map(@options(), (x) -> x.name())} if @isOptionsKind()
+      json.config = {options: $.map(@options(), (x) -> x.toJSON())} if @isOptionsKind()
       json
 
   class Option
-    constructor: (name) ->
-      @name = ko.observable(name)
+    constructor: (data) ->
+      @code = ko.observable(data?.code)
+      @label = ko.observable(data?.label)
+
+    toJSON: =>
+      code: @code()
+      label: @label()
 
   class LayersViewModel
     constructor: (collectionId, layers) ->
@@ -85,8 +90,8 @@
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @currentLayer = ko.observable()
       @currentField = ko.observable()
-      @newOption = ko.observable('')
-      @optionValid = ko.computed => $.trim(@newOption()).length > 0
+      @newOption = ko.observable(new Option)
+      @optionValid = ko.computed => $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
     newLayer: =>
       layer = new Layer
@@ -156,13 +161,13 @@
         else true
 
     optionBlur: (option) =>
-      if $.trim(option.name()).length == 0
+      if $.trim(option.code()).length == 0 && $.trim(option.length()).length == 0
         @removeOption(option)
 
     addOption: =>
       return unless @optionValid()
-      @currentField().options.push(new Option(@newOption()))
-      @newOption('')
+      @currentField().options.push(@newOption())
+      @newOption(new Option)
 
     removeOption: (option) =>
       @currentField().options.remove(option)
