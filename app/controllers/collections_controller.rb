@@ -31,6 +31,7 @@ class CollectionsController < ApplicationController
 
   def show
     respond_to do |format|
+      format.rss { render :layout => false}
       format.html { add_breadcrumb collection.name, collection_path(collection) }
       format.json { render :json => collection }
     end
@@ -73,13 +74,6 @@ class CollectionsController < ApplicationController
   def upload_csv
     collection.import_csv!(params[:file].read)
     redirect_to collections_path
-  end
-
-  def feed
-    @sites = collection.sites.order("updated_at desc")
-    @updated = @sites.first.updated_at unless @sites.empty?
-    
-    render :layout => false
   end
 
   private

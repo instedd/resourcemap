@@ -11,14 +11,13 @@ ResourceMap::Application.routes.draw do
     get 'settings'
     get 'download_as_csv'
     get 'csv_template'
-    post 'upload_csv'
-    get 'feed', :defaults => { :format => 'rss' }
 
+    post 'upload_csv'
   end
+
   resources :sites do
     get 'root_sites'
     get 'search', :on => :collection
-    get 'feed', :defaults => { :format => 'rss' }
 
     post 'update_property'
   end
