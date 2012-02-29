@@ -75,6 +75,15 @@ class CollectionsController < ApplicationController
     redirect_to collections_path
   end
 
+  def feed
+    @sites = collection.sites.order("updated_at desc")
+    @updated = @sites.first.updated_at unless @sites.empty?
+    
+    respond_to do |format|
+      format.rss { render :layout => false }
+    end
+  end
+
   private
 
   def breadcrumb
