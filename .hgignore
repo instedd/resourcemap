@@ -10,3 +10,4 @@ tmp/*
 public/assets
 .bundle
 spec/reports
+*.swp
