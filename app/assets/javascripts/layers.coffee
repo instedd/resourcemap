@@ -54,11 +54,24 @@
                    ko.observableArray()
       @hasFocus = ko.observable(false)
       @isOptionsKind = ko.computed => @kind() == 'selectOne' || @kind() == 'selectMany'
-      @valid = ko.computed => @hasName() && @hasCode() && (!@isOptionsKind() || @options().length > 1)
+      @valid = ko.computed => @hasName() && @hasCode() && (!@isOptionsKind() || @optionsValid())
 
     hasName: => $.trim(@name()).length > 0
 
     hasCode: => $.trim(@code()).length > 0
+
+    optionsValid: =>
+      if @options().length > 1
+        codes = []
+        labels = []
+        for option in @options()
+          return false if codes.indexOf(option.code()) >= 0
+          return false if labels.indexOf(option.label()) >= 0
+          codes.push option.code()
+          labels.push option.label()
+        true
+      else
+        false
 
     buttonClass: =>
       switch @kind()
@@ -80,6 +93,7 @@
       @code = ko.observable(data?.code)
       @label = ko.observable(data?.label)
       @editing = ko.observable(false)
+      @hasFocus = ko.observable(false)
 
     edit: => @editing(true)
 
@@ -175,11 +189,15 @@
 
     addOption: =>
       return unless @optionValid()
+      @newOption().hasFocus = false
       @currentField().options.push(@newOption())
-      @newOption(new Option)
+      option = new Option
+      option.hasFocus(true)
+      @newOption(option)
 
     removeOption: (option) =>
       @currentField().options.remove(option)
+      @newOption().hasFocus(true)
 
   match = window.location.toString().match(/\/collections\/(\d+)\/layers/)
   collectionId = parseInt(match[1])
