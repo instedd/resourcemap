@@ -122,7 +122,7 @@
       layer.hasFocus(true)
 
     editLayer: (layer) =>
-      @originalFields = $.map(layer.fields(), (x) -> x)
+      @originalFields = $.map(layer.fields(), (x) -> new Field(x.toJSON()))
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
       layer.hasFocus(true)
