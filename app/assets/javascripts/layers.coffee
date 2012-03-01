@@ -79,6 +79,14 @@
     constructor: (data) ->
       @code = ko.observable(data?.code)
       @label = ko.observable(data?.label)
+      @editing = ko.observable(false)
+
+    edit: => @editing(true)
+
+    keyPress: (field, event) =>
+      switch event.keyCode
+        when 13 then @editing(false)
+        else true
 
     toJSON: =>
       code: @code()
@@ -161,6 +169,7 @@
         else true
 
     optionBlur: (option) =>
+      option.editing(false)
       if $.trim(option.code()).length == 0 && $.trim(option.length()).length == 0
         @removeOption(option)
 
