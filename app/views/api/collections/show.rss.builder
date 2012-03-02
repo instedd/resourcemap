@@ -8,7 +8,7 @@ xml.rss :version => "2.0" do
       xml.item do
         xml.title site.name
         xml.pubDate site.updated_at
-        xml.link site_url(site, format: :rss)
+        xml.link api_site_url(site, format: :rss)
       end
     end
   end
