@@ -6,7 +6,8 @@ describe "routes for Api Collections" do
       should route_to(
         controller: 'api/collections', 
         action: 'show', 
-        id: '1' 
+        id: '1',
+        format: 'rss'
       )
   end
 end

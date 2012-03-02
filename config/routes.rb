@@ -26,7 +26,7 @@ ResourceMap::Application.routes.draw do
   get 'terms_and_conditions', :to => redirect('/')
 
   namespace :api do
-    get 'collections/:id' => 'collections#show', format: false, as: :collection
+    get 'collections/:id' => 'collections#show', defaults: { format: 'rss' }, as: :collection
   end
 
   root :to => 'home#index'
