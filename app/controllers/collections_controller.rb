@@ -31,7 +31,6 @@ class CollectionsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.rss { render :layout => false}
       format.html { add_breadcrumb collection.name, collection_path(collection) }
       format.json { render :json => collection }
     end

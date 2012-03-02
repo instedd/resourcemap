@@ -9,10 +9,7 @@ class SitesController < ApplicationController
   end
 
   def show
-    respond_to do |format|
-      format.rss {render 'collections/site', :layout => false}
-      format.json {render :json => site}
-    end
+    render :json => site
   end
 
   def create
