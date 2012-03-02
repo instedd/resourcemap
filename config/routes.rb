@@ -27,6 +27,7 @@ ResourceMap::Application.routes.draw do
 
   namespace :api do
     get 'collections/:id' => 'collections#show', defaults: { format: 'rss' }, as: :collection
+    get 'sites/:id' => 'sites#show', defaults: { format: 'rss' }, as: :site
   end
 
   root :to => 'home#index'
