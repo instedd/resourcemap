@@ -39,7 +39,7 @@
 .tableheader.expanded div { display:inline-block }
 .tableheader.expanded div:first-child { border-right:1px solid #eeeeee; width:330px }
 .tableheader span, .tableheader button { vertical-align:middle }
-.tablescroll { overflow:auto; overflow-x:hidden; height:410px; margin-top:40px }
+.tablescroll { overflow:auto; height:410px; margin-top:40px }
 .tablescroll .GralTable tr:nth-child(2) { background:none !important }
 .tablescroll .GralTable tr.active td { background:#d0d0d0 }
 .tablescroll .GralTable tr td:first-child { border-right:1px solid #eeeeee }

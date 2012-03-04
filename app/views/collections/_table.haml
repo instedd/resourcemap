@@ -10,14 +10,15 @@
   %table.GralTable
     %thead
       %tr
-        %th.w32 Collection
-        %th Last update
+        %th.w32{:style => 'min-width:318px;max-width:318px;overflow:auto'} Collection
+        %th{:style => 'width:100%'} Last update
+        %th
     %tbody
       <!-- ko foreach: collections -->
       %tr
         %td{ko(:text => :name)}
+        %td.l.timeago{ko(:attr => "{title: updatedAt}", :text => :updatedAtTimeago)}
         %td.l
-          %span.timeago{ko(:attr => "{title: updatedAt}", :text => :updatedAtTimeago)}
           %button.farrow{ko(:click => '$root.enterCollection'), :type => :button}
       <!-- /ko -->
 .tablebottom{ko(:click => '$root.createCollection'), :style => 'cursor: pointer'}
@@ -55,8 +56,8 @@
     %td.l
     <!-- /ko -->
     <!-- /ko -->
+    %td.l.timeago{ko(:attr => "{title: updatedAt}", :text => :updatedAtTimeago)}
     %td.l
-      %span.timeago{ko(:attr => "{title: updatedAt}", :text => :updatedAtTimeago)}
       %button.farrow{ko(:click => '$root.editSite'), :type => :button}
   <!-- ko if: expanded -->
   <!-- ko template: {name: 'table-sites-template', with: sites} -->
@@ -92,11 +93,12 @@
   %table.GralTable
     %thead
       %tr
-        %th.w32 Site
+        %th.w32{:style => 'min-width:318px;max-width:318px;overflow:auto'} Site
         <!-- ko foreach: $root.currentCollection().fields() -->
-        %th{ko(:text => :name)}
+        %th{ko(:text => :name, :style => '{maxWidth: suggestedWidth(), minWidth: suggestedWidth()}'), :style => 'overflow:hidden'}
         <!-- /ko -->
-        %th Last update
+        %th{:style => 'width:100%;min-width:100px'} Last update
+        %th
     %tbody
       <!-- ko template: {name: 'table-sites-template', with: $data} -->
       <!-- /ko -->
