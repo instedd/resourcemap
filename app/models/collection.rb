@@ -7,7 +7,7 @@ class Collection < ActiveRecord::Base
 
   has_many :memberships
   has_many :users, :through => :memberships
-  has_many :sites, :dependent => :destroy
+  has_many :sites, :dependent => :delete_all
   has_many :root_sites, :class_name => 'Site', :conditions => {:parent_id => nil}
   has_many :layers, :dependent => :destroy
   has_many :fields
