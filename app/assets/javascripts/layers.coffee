@@ -53,7 +53,7 @@
                  else
                    ko.observableArray()
       @hasFocus = ko.observable(false)
-      @isOptionsKind = ko.computed => @kind() == 'selectOne' || @kind() == 'selectMany'
+      @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
       @valid = ko.computed => @hasName() && @hasCode() && (!@isOptionsKind() || @optionsValid())
 
     hasName: => $.trim(@name()).length > 0
@@ -77,8 +77,8 @@
       switch @kind()
         when 'text' then 'ltext'
         when 'numeric' then 'lnumber'
-        when 'selectOne' then 'lsingleoption'
-        when 'selectMany' then 'lmultipleoptions'
+        when 'select_one' then 'lsingleoption'
+        when 'select_many' then 'lmultipleoptions'
 
     toJSON: =>
       json =
@@ -156,8 +156,8 @@
 
     newTextField: => @newField 'text'
     newNumericField: => @newField 'numeric'
-    newSelectOneField: => @newField 'selectOne'
-    newSelectManyField: => @newField 'selectMany'
+    newSelectOneField: => @newField 'select_one'
+    newSelectManyField: => @newField 'select_many'
 
     newField: (kind) =>
       @currentField(new Field(kind: kind))

@@ -108,7 +108,7 @@
                    ko.observableArray()
       @optionsCodes = ko.computed => $.map(@options(), (x) => x.code())
       @value = ko.observable()
-      @hasValue = ko.computed => @value() && (if @kind() == 'selectMany' then @value().length > 0 else @value())
+      @hasValue = ko.computed => @value() && (if @kind() == 'select_many' then @value().length > 0 else @value())
       @valueUI = ko.computed => @valueUIFor(@value())
       @remainingOptions = ko.computed =>
         if @value()
@@ -119,9 +119,9 @@
       @editing = ko.observable false
 
     valueUIFor: (value) =>
-      if @kind() == 'selectOne'
+      if @kind() == 'select_one'
         if value then @labelFor(value) else ''
-      else if @kind() == 'selectMany'
+      else if @kind() == 'select_many'
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
       else
         value
