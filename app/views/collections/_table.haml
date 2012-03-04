@@ -29,7 +29,7 @@
 %script{:type => "text/html", :id => "table-sites-template"}
   <!-- ko foreach: sites -->
   %tr{ko(:css => "{closed: group() && !expanded(), opened: group() && expanded, active: $data == $root.selectedSite()}")}
-    %td
+    %td{:style => 'min-width:318px;max-width:318px;overflow:auto'}
       %div
         <!-- ko if: group() -->
         %a{ko(:click => '$root.toggleSite', :style => "{marginLeft: '' + ((level() - 1) * 20) + 'px'}"), :href => 'javascript:void(0)'}
