@@ -41,4 +41,13 @@ describe Site::TireConcern do
     search = Tire::Search::Search.new collection.index_name
     search.perform.results.length.should eq(1)
   end
+
+  it "doesn't store site with lat and lng in index" do
+    collection = Collection.make
+    group = collection.sites.make :lat => nil, :lng => nil
+    site = collection.sites.make
+
+    search = Tire::Search::Search.new collection.index_name
+    search.perform.results.length.should eq(1)
+  end
 end

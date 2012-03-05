@@ -753,13 +753,16 @@
             else
               @selectedSite().createMarker() unless @selectedSite().group()
             @selectedSite().panToPosition()
+          else if @oldSelectedSite
+            @oldSelectedSite.deleteMarker()
+            @reloadMapSites()
+
       else
         @selectedSite().selected(false) if @selectedSite()
         if @selectedSite() == site
           @selectedSite(null)
         else
           @selectedSite(site)
-
 
     unselectSite: =>
       @selectSite(@selectedSite()) if @selectedSite()

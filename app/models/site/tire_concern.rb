@@ -2,8 +2,8 @@ module Site::TireConcern
   extend ActiveSupport::Concern
 
   included do
-    after_save :store_in_index, :unless => :group?
-    after_destroy :remove_from_index, :unless => :group?
+    after_save :store_in_index, :unless => :group?, :if => lambda { lat? && lng? }
+    after_destroy :remove_from_index, :unless => :group?, :if => lambda { lat? && lng? }
 
     delegate :index_name, :index, :to => :collection
   end
