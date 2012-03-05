@@ -981,6 +981,10 @@
       count += 1 if @selectedSite()
       @sitesCount count
 
+    showPopupWithMaxValueOfProperty: (field) =>
+      $.get "/collections/#{@currentCollection().id()}/max_value_of_property.json", {property: field.code()}, (data) =>
+        alert "Maximum #{field.name()}: #{data}"
+
     refreshTimeago: -> $('.timeago').timeago()
 
     makeFixedHeaderTable: ->

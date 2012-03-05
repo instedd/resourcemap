@@ -11,6 +11,7 @@ ResourceMap::Application.routes.draw do
     get 'settings'
     get 'download_as_csv'
     get 'csv_template'
+    get 'max_value_of_property'
 
     post 'upload_csv'
   end

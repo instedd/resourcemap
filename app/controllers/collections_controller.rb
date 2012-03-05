@@ -75,6 +75,10 @@ class CollectionsController < ApplicationController
     redirect_to collections_path
   end
 
+  def max_value_of_property
+    render :json => collection.max_value_of_property(params[:property])
+  end
+
   private
 
   def breadcrumb

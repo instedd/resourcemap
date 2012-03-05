@@ -50,7 +50,11 @@
         <!-- /ko -->
     <!-- ko foreach: $root.currentCollection().fields() -->
     <!-- ko if: $parent.properties()[$data.code()] -->
-    %td.l{ko(:text => "$parent.propertyValue($data)")}
+    %td.l
+      %span{ko(:text => "$parent.propertyValue($data)"), :style => 'vertical-align:top'}
+      <!-- ko if: kind() == 'numeric' -->
+      = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, :style => 'text-decoration:underline'
+      <!-- /ko -->
     <!-- /ko -->
     <!-- ko if: !$parent.properties()[$data.code()] -->
     %td.l
