@@ -12,4 +12,9 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.fixedheadertable.min
+//= require jquery.tablescroll
+//= require jquery.timeago
+//= require knockout-2.0.0
+//= require sammy
 //= require_tree .
