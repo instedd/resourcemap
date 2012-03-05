@@ -37,6 +37,12 @@ module Collection::TireConcern
     Search.new id
   end
 
+  def new_tire_search
+    search = Tire::Search::Search.new index_name
+    search.filter :type, {:value => :site}
+    search
+  end
+
   module ClassMethods
     def index_name(id)
       "collection_#{id}"

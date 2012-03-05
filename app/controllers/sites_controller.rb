@@ -46,5 +46,4 @@ class SitesController < ApplicationController
     site.destroy
     render :json => site
   end
-
 end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ElasticSearchSitesAdapter do
-  it "adapts one site", :focus => true do
+  it "adapts one site" do
     listener = mock('listener')
     listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :parent_ids => [10, 20, 30]
 
