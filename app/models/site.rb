@@ -18,4 +18,8 @@ class Site < ActiveRecord::Base
                        "#{self.parent_id}"
                      end
   end
+
+  def level
+    hierarchy.blank? ? 1 : hierarchy.count(',') + 2
+  end
 end
