@@ -1,6 +1,18 @@
 class Search
+  class << self
+    attr_accessor :page_size
+  end
+  Search.page_size = 50
+
   def initialize(collection_id)
     @search = Collection.new_tire_search(collection_id)
+    @search.size self.class.page_size
+    @from = 0
+  end
+
+  def page(page)
+    @search.from((page - 1) * self.class.page_size)
+    self
   end
 
   def eq(property, value)
@@ -12,6 +24,7 @@ class Search
     class_eval %Q(
       def #{op}(property, value)
         @search.filter :range, property => {#{op}: value}
+        self
       end
     )
   end
@@ -25,6 +38,7 @@ class Search
     when '=', '==', 'eq' then eq(property, value)
     else raise "Invalid operation: #{op}"
     end
+    self
   end
 
   def where(properties = {})

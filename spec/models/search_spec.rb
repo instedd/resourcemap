@@ -65,6 +65,24 @@ describe Search do
     end
   end
 
+  context "pagination" do
+    it "paginates by 50 results by default" do
+      Search.page_size.should eq(50)
+    end
+
+    it "gets first page" do
+      Search.page_size = 2
+      3.times { collection.sites.make }
+      collection.new_search.results.length.should eq(2)
+    end
+
+    it "gets second page" do
+      Search.page_size = 2
+      3.times { collection.sites.make }
+      collection.new_search.page(2).results.length.should eq(1)
+    end
+  end
+
   def assert_results(search, *sites)
     search.results.map{|r| r['_id'].to_i}.sort.should =~ sites.map(&:id)
   end
