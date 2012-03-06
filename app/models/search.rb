@@ -46,6 +46,15 @@ class Search
     self
   end
 
+  def in_group(site)
+    parent_ids = (site.hierarchy || '').split(',').map(&:to_i)
+    parent_ids << site.id
+    parent_ids.each do |parent_id|
+      @search.filter :term, parent_ids: parent_id
+    end
+    self
+  end
+
   def results
     @search.sort { by 'updated_at', 'desc' }
     @search.perform.results
