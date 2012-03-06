@@ -55,6 +55,14 @@ describe MapSearch do
     search.results[:sites].should be_nil
   end
 
+  it "searches but doesn't return sites without location" do
+    site = Site.make :lat => nil, :lng => nil
+
+    search = MapSearch.new site.collection_id
+    search.bounds = {:s => 11, :n => 12, :w => 21, :e => 22}
+    search.results[:sites].should be_nil
+  end
+
   context "hierarchy" do
     let(:collection) { Collection.make }
 

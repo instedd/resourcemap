@@ -4,22 +4,23 @@ module Site::TireConcern
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
 
   included do
-    after_save :store_in_index, :unless => :group?, :if => lambda { lat? && lng? }
-    after_destroy :remove_from_index, :unless => :group?, :if => lambda { lat? && lng? }
+    after_save :store_in_index, :unless => :group?
+    after_destroy :remove_from_index, :unless => :group?
 
     delegate :index_name, :index, to: :collection
   end
 
   def store_in_index
-    index.store({
+    hash = {
       id: id,
       type: :site,
-      location: {lat: lat.to_f, lon: lng.to_f},
       properties: properties,
       created_at: created_at.strftime(DateFormat),
       updated_at: updated_at.strftime(DateFormat),
-      parent_ids: hierarchy ? hierarchy.split(',').map(&:to_i) : nil
-    })
+    }
+    hash[:location] = {lat: lat.to_f, lon: lng.to_f} if lat? && lng?
+    hash[:parent_ids] = hierarchy.split(',').map(&:to_i) if hierarchy?
+    index.store hash
     index.refresh
   end
 

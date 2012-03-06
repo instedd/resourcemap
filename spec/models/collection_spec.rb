@@ -12,7 +12,7 @@ describe Collection do
   context "max value" do
     it "gets max value for property that exists" do
       collection.sites.make :properties => {'beds' => 10}
-      collection.sites.make :properties => {'beds' => 20}
+      collection.sites.make :properties => {'beds' => 20}, :lat => nil, :lng => nil
       collection.sites.make :properties => {'beds' => 5}
 
       collection.max_value_of_property('beds').should eq(20)

@@ -70,16 +70,25 @@ describe Search do
       Search.page_size.should eq(50)
     end
 
-    it "gets first page" do
-      Search.page_size = 2
-      sites = 3.times.map { collection.sites.make }
-      assert_results collection.new_search, sites[2], sites[1]
-    end
+    context "with another page size" do
+      before(:each) do
+        @original_page_size = Search.page_size
+        Search.page_size = 2
+      end
 
-    it "gets second page" do
-      Search.page_size = 2
-      sites = 3.times.map { collection.sites.make }
-      assert_results collection.new_search.page(2), sites[0]
+      after(:each) do
+        Search.page_size = @original_page_size
+      end
+
+      it "gets first page" do
+        sites = 3.times.map { collection.sites.make }
+        assert_results collection.new_search, sites[2], sites[1]
+      end
+
+      it "gets second page" do
+        sites = 3.times.map { collection.sites.make }
+        assert_results collection.new_search.page(2), sites[0]
+      end
     end
   end
 
