@@ -72,14 +72,14 @@ describe Search do
 
     it "gets first page" do
       Search.page_size = 2
-      3.times { collection.sites.make }
-      collection.new_search.results.length.should eq(2)
+      sites = 3.times.map { collection.sites.make }
+      assert_results collection.new_search, sites[2], sites[1]
     end
 
     it "gets second page" do
       Search.page_size = 2
-      3.times { collection.sites.make }
-      collection.new_search.page(2).results.length.should eq(1)
+      sites = 3.times.map { collection.sites.make }
+      assert_results collection.new_search.page(2), sites[0]
     end
   end
 

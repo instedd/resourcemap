@@ -12,9 +12,9 @@ module Collection::TireConcern
       mappings: {
         site: {
           properties: {
-            location: {
-              type: :geo_point
-            }
+            location: { type: :geo_point },
+            created_at: { type: :date, format: :basic_date_time },
+            updated_at: { type: :date, format: :basic_date_time }
           }
         }
       }

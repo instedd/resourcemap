@@ -47,6 +47,7 @@ class Search
   end
 
   def results
+    @search.sort { by 'updated_at', 'desc' }
     @search.perform.results
   end
 end
