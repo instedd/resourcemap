@@ -105,6 +105,22 @@ describe Search do
     end
   end
 
+  context "after" do
+    before(:each) do
+      @site1 = collection.sites.make :updated_at => (Time.now - 3.days)
+      @site2 = collection.sites.make :updated_at => (Time.now - 2.days)
+      @site3 = collection.sites.make :updated_at => (Time.now - 1.days)
+    end
+
+    it "gets results before a date" do
+      assert_results collection.new_search.before(@site2.updated_at + 1.second), @site1, @site2
+    end
+
+    it "gets results after a date" do
+      assert_results collection.new_search.after(@site2.updated_at - 1.second), @site2, @site3
+    end
+  end
+
   def assert_results(search, *sites)
     search.results.map{|r| r['_id'].to_i}.sort.should =~ sites.map(&:id)
   end

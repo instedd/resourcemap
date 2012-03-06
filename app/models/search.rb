@@ -46,6 +46,16 @@ class Search
     self
   end
 
+  def before(time)
+    @search.filter :range, updated_at: {lte: Site.format_date(time)}
+    self
+  end
+
+  def after(time)
+    @search.filter :range, updated_at: {gte: Site.format_date(time)}
+    self
+  end
+
   def in_group(site)
     parent_ids = (site.hierarchy || '').split(',').map(&:to_i)
     parent_ids << site.id

@@ -30,7 +30,11 @@ module Site::TireConcern
 
   module ClassMethods
     def parse_date(date)
-      DateTime.strptime(date, DateFormat)
+      DateTime.strptime date, DateFormat
+    end
+
+    def format_date(date)
+      date.strftime DateFormat
     end
   end
 end
