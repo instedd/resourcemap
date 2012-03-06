@@ -33,8 +33,8 @@ module Collection::TireConcern
     self.class.index_name(id)
   end
 
-  def search
-    Search.new id
+  def new_map_search
+    MapSearch.new id
   end
 
   def new_tire_search

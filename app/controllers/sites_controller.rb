@@ -35,7 +35,7 @@ class SitesController < ApplicationController
   def search
     zoom = params[:z].to_i
 
-    search = Search.new params[:collection_ids]
+    search = MapSearch.new params[:collection_ids]
     search.zoom = zoom
     search.bounds = params if zoom >= 2
     search.exclude_id params[:exclude_id].to_i if params[:exclude_id].present?

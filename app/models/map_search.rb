@@ -1,4 +1,4 @@
-class Search
+class MapSearch
   def initialize(collection_ids)
     @collection_ids = Array(collection_ids)
     @search = Tire::Search::Search.new @collection_ids.map{|id| Collection.index_name id}
