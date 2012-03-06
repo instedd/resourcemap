@@ -981,9 +981,18 @@
       count += 1 if @selectedSite()
       @sitesCount count
 
-    showPopupWithMaxValueOfProperty: (field) =>
+    showPopupWithMaxValueOfProperty: (field, event) =>
+      # Create a popup that first says "Loading...", then loads the content via ajax.
+      # The popup is removed when on mouse out.
+      offset = $(event.target).offset()
+      element = $("<div id=\"thepopup\" style=\"position:absolute;top:#{offset.top - 30}px;left:#{offset.left}px;padding:4px;background-color:black;color:white;border:1px solid grey\">Loading maximum value...</div>")
+      $(document.body).append(element)
+      mouseoutHandler = ->
+        element.remove()
+        $(event.target).unbind 'mouseout', mouseoutHandler
+      event = $(event.target).bind 'mouseout', mouseoutHandler
       $.get "/collections/#{@currentCollection().id()}/max_value_of_property.json", {property: field.code()}, (data) =>
-        alert "Maximum #{field.name()}: #{data}"
+        element.text "Maximum #{field.name()}: #{data}"
 
     refreshTimeago: -> $('.timeago').timeago()
 
