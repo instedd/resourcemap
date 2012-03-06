@@ -4,7 +4,7 @@ class Clusterer
   def initialize(zoom)
     @zoom = zoom
     @width, @height = self.class.cell_size_for zoom
-    @clusters = Hash.new { |h, k| h[k] = {:lat_sum => 0, :lng_sum => 0, :count => 0} }
+    @clusters = Hash.new { |h, k| h[k] = {lat_sum: 0, lng_sum: 0, count: 0} }
   end
 
   def self.cell_size_for(zoom)
@@ -105,13 +105,13 @@ class Clusterer
     @clusters.each_value do |cluster|
       count = cluster[:count]
       if count == 1
-        sites_to_return << {:id => cluster[:site_id], :lat => cluster[:lat_sum], :lng => cluster[:lng_sum]}
+        sites_to_return << {id: cluster[:site_id], lat: cluster[:lat_sum], lng: cluster[:lng_sum]}
       else
         hash = {
-          :id => cluster[:id],
-          :lat => cluster[:lat_sum] / count,
-          :lng => cluster[:lng_sum] / count,
-          :count => count
+          id: cluster[:id],
+          lat: cluster[:lat_sum] / count,
+          lng: cluster[:lng_sum] / count,
+          count: count
         }
         hash[:max_zoom] = cluster[:max_zoom] if cluster[:max_zoom]
         hash[:group_ids] = cluster[:group_ids] if cluster[:group_ids]

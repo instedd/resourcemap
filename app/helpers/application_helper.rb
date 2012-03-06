@@ -4,7 +4,7 @@ module ApplicationHelper
   end
 
   def ko_link_to(text, click, options = {})
-    link_to text, 'javascript:void()', options.merge(ko :click => click)
+    link_to text, 'javascript:void()', options.merge(ko click: click)
   end
 
   def ko_link_to_root(text, click, options = {})
@@ -12,15 +12,15 @@ module ApplicationHelper
   end
 
   def ko_text_field_tag(name, options = {})
-    text_field_tag name, '', ko(options.reverse_merge(:value => name, :valueUpdate => "'afterkeydown'"))
+    text_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: "'afterkeydown'"))
   end
 
   def ko_number_field_tag(name, options = {})
-    number_field_tag name, '', ko(options.reverse_merge(:value => name, :valueUpdate => "'afterkeydown'"))
+    number_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: "'afterkeydown'"))
   end
 
   def ko_check_box_tag(name, options = {})
-    check_box_tag name, '1', false, options.reverse_merge(ko :checked => name)
+    check_box_tag name, '1', false, options.reverse_merge(ko checked: name)
   end
 
   def ko(hash = {})

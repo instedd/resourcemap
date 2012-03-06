@@ -6,5 +6,5 @@
       %label.error= "Name #{f.object.errors[:name].join(', ')}"
   .field.w60
     = f.label :description
-    = f.text_area :description, :rows => 3
+    = f.text_area :description, rows: 3
   = f.button 'Save', :class => 'white'

@@ -3,7 +3,7 @@ class ElasticSearchSitesAdapter < Psych::Handler
     @listener = listener
     @source_mappings = 0
     @properties_mappings = 0
-    @site = {:parent_ids => []}
+    @site = {parent_ids: []}
   end
 
   def parse(reader)

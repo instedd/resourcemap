@@ -1,6 +1,6 @@
 class LayersController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :fix_field_options, :only => [:create, :update]
+  before_filter :fix_field_options, only: [:create, :update]
 
   def index
     respond_to do |format|
@@ -10,20 +10,20 @@ class LayersController < ApplicationController
         add_breadcrumb collection.name, collection_path(collection)
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
-      format.json { render :json => layers.as_json(:include => :fields) }
+      format.json { render json: layers.as_json(include: :fields) }
     end
   end
 
   def create
     layer = layers.new params[:layer]
     layer.save
-    render :json => layer
+    render json: layer
   end
 
   def update
     layer.fields.destroy_all
     layer.update_attributes params[:layer]
-    render :json => layer
+    render json: layer
   end
 
   def destroy

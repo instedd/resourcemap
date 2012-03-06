@@ -8,12 +8,12 @@ module Collection::TireConcern
 
   def create_index
     index.create({
-      :refresh => true,
-      :mappings => {
-        :site => {
-          :properties => {
-            :location => {
-              :type => :geo_point
+      refresh: true,
+      mappings: {
+        site: {
+          properties: {
+            location: {
+              type: :geo_point
             }
           }
         }
@@ -33,14 +33,16 @@ module Collection::TireConcern
     self.class.index_name(id)
   end
 
+  def new_search
+    Search.new id
+  end
+
   def new_map_search
     MapSearch.new id
   end
 
   def new_tire_search
-    search = Tire::Search::Search.new index_name
-    search.filter :type, {:value => :site}
-    search
+    self.class.new_tire_search(id)
   end
 
   module ClassMethods
@@ -50,6 +52,12 @@ module Collection::TireConcern
 
     def index(id)
       ::Tire::Index.new index_name(id)
+    end
+
+    def new_tire_search(*ids)
+      search = Tire::Search::Search.new ids.map{|id| index_name(id)}
+      search.filter :type, value: :site
+      search
     end
   end
 end

@@ -24,14 +24,14 @@ module Collection::CsvConcern
 
   def import_csv!(string_or_io)
     Collection.transaction do
-      csv = CSV.new string_or_io, :return_headers => false
+      csv = CSV.new string_or_io, return_headers: false
 
       # Create a hash of id => [site, parent]
       hash = Hash.new
       csv.each do |row|
         next unless row[0].present?
 
-        site = sites.new :name => row[2].strip
+        site = sites.new name: row[2].strip
         site.group = row[1].try(:strip).try(:downcase) == 'group'
         site.lat = row[3].strip if row[3].present?
         site.lng = row[4].strip if row[4].present?

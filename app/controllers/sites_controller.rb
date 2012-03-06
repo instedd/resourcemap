@@ -5,31 +5,31 @@ class SitesController < ApplicationController
   expose(:site)
 
   def index
-    render :json => collection.root_sites.offset(params[:offset]).limit(params[:limit])
+    render json: collection.root_sites.offset(params[:offset]).limit(params[:limit])
   end
 
   def show
-    render :json => site
+    render json: site
   end
 
   def create
     site = collection.sites.create(params[:site])
-    render :json => site
+    render json: site
   end
 
   def update
     site.update_attributes params[:site]
-    render :json => site
+    render json: site
   end
 
   def update_property
     site.properties[params[:code]] = params[:value]
     site.save!
-    render :json => site
+    render json: site
   end
 
   def root_sites
-    render :json => site.sites.where(:parent_id => site.id).offset(params[:offset]).limit(params[:limit])
+    render json: site.sites.where(parent_id: site.id).offset(params[:offset]).limit(params[:limit])
   end
 
   def search
@@ -39,11 +39,11 @@ class SitesController < ApplicationController
     search.zoom = zoom
     search.bounds = params if zoom >= 2
     search.exclude_id params[:exclude_id].to_i if params[:exclude_id].present?
-    render :json => search.results
+    render json: search.results
   end
 
   def destroy
     site.destroy
-    render :json => site
+    render json: site
   end
 end

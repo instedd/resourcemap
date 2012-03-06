@@ -8,12 +8,12 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me
 
   has_many :memberships
-  has_many :collections, :through => :memberships
+  has_many :collections, through: :memberships
 
   def create_collection(collection)
     return false unless collection.save
 
-    memberships.create! :collection_id => collection.id
+    memberships.create! collection_id: collection.id
     collection
   end
 

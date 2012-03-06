@@ -1,10 +1,9 @@
 class MapSearch
   def initialize(collection_ids)
     @collection_ids = Array(collection_ids)
-    @search = Tire::Search::Search.new @collection_ids.map{|id| Collection.index_name id}
-    @search.filter :type, {:value => :site}
+    @search = Collection.new_tire_search(*@collection_ids)
     @search.size 100000
-    @bounds = {:s => -90, :n => 90, :w => -180, :e => 180}
+    @bounds = {s: -90, n: 90, w: -180, e: 180}
   end
 
   def zoom=(zoom)
@@ -45,14 +44,14 @@ class MapSearch
       adjust_bounds_to_world_limits
     end
 
-    @search.filter :geo_bounding_box, :location => {
-      :top_left => {
-        :lat => @bounds[:n],
-        :lon => @bounds[:w]
+    @search.filter :geo_bounding_box, location: {
+      top_left: {
+        lat: @bounds[:n],
+        lon: @bounds[:w]
       },
-      :bottom_right => {
-        :lat => @bounds[:s],
-        :lon => @bounds[:e]
+      bottom_right: {
+        lat: @bounds[:s],
+        lon: @bounds[:e]
       },
     }
   end
@@ -70,8 +69,8 @@ class MapSearch
   end
 
   def extend_to_groups_limits
-    sites = Site.where(:collection_id => @collection_ids)
-    sites = sites.where(:group => true)
+    sites = Site.where collection_id: @collection_ids
+    sites = sites.where group: true
     sites = sites.where('min_zoom <= ? AND ? <= max_zoom', @zoom, @zoom)
     sites = sites.where('max_lat >= ? AND ? >= min_lat', @bounds[:s], @bounds[:n])
     if @bounds[:w] <= @bounds[:e]
@@ -85,7 +84,7 @@ class MapSearch
       @bounds[:e] = max_lng + 0.001 if max_lng > @bounds[:e]
       @bounds[:w] = min_lng - 0.001 if min_lng < @bounds[:w]
 
-      {:id => id, :lat => lat, :lng => lng, :max_zoom => max_zoom}
+      {id: id, lat: lat, lng: lng, max_zoom: max_zoom}
     end
   end
 

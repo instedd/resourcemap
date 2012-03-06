@@ -5,7 +5,7 @@ class CollectionsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render :json => collections }
+      format.json { render json: collections }
     end
   end
 
@@ -15,7 +15,7 @@ class CollectionsController < ApplicationController
 
   def create
     if current_user.create_collection collection
-      redirect_to collections_path, :notice => "Collection #{collection.name} created"
+      redirect_to collections_path, notice: "Collection #{collection.name} created"
     else
       render :new
     end
@@ -23,7 +23,7 @@ class CollectionsController < ApplicationController
 
   def update
     if collection.update_attributes params[:collection]
-      redirect_to collection_settings_path(collection), :notice => "Collection #{collection.name} updated"
+      redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
     else
       render :settings
     end
@@ -32,7 +32,7 @@ class CollectionsController < ApplicationController
   def show
     respond_to do |format|
       format.html { add_breadcrumb collection.name, collection_path(collection) }
-      format.json { render :json => collection }
+      format.json { render json: collection }
     end
   end
 
@@ -59,15 +59,15 @@ class CollectionsController < ApplicationController
   def destroy
     collection.destroy
 
-    redirect_to collections_path, :notice => "Collection #{collection.name} deleted"
+    redirect_to collections_path, notice: "Collection #{collection.name} deleted"
   end
 
   def download_as_csv
-    send_data collection.export_csv, :type => 'text/csv', :filename => "#{collection.name}_sites.csv"
+    send_data collection.export_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
 
   def csv_template
-    send_data collection.csv_template, :type => 'text/csv', :filename => "collection_sites_template.csv"
+    send_data collection.csv_template, type: 'text/csv', filename: "collection_sites_template.csv"
   end
 
   def upload_csv
@@ -76,7 +76,7 @@ class CollectionsController < ApplicationController
   end
 
   def max_value_of_property
-    render :json => collection.max_value_of_property(params[:property])
+    render json: collection.max_value_of_property(params[:property])
   end
 
   private
