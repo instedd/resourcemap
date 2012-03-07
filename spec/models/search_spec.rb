@@ -135,6 +135,18 @@ describe Search do
     end
   end
 
+  context "reserved keywords" do
+    let!(:site1) { collection.sites.make :properties => {'type' => 'foo'} }
+    let!(:site2) { collection.sites.make :properties => {'type' => 'bar'} }
+
+    it "searches by type" do
+      results = collection.new_search.where(type: 'foo').results
+      results.length.should eq(1)
+      results[0]['_id'].to_i.should eq(site1.id)
+      results[0]['_source']['properties']['type'].should eq(site1.properties['type'])
+    end
+  end
+
   def assert_results(search, *sites)
     search.results.map{|r| r['_id'].to_i}.sort.should =~ sites.map(&:id)
   end

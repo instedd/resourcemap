@@ -16,14 +16,14 @@ class Search
   end
 
   def eq(property, value)
-    @search.filter :term, property => value
+    @search.filter :term, Site.encode_elastic_search_keyword(property) => value
     self
   end
 
   ['lt', 'lte', 'gt', 'gte'].each do |op|
     class_eval %Q(
       def #{op}(property, value)
-        @search.filter :range, property => {#{op}: value}
+        @search.filter :range, Site.encode_elastic_search_keyword(property) => {#{op}: value}
         self
       end
     )
@@ -68,6 +68,10 @@ class Search
 
   def results
     @search.sort { by '_uid' }
-    @search.perform.results
+    results = @search.perform.results
+    results.each do |result|
+      result['_source']['properties'] = Site.decode_elastic_search_keywords(result['_source']['properties'])
+    end
+    results
   end
 end

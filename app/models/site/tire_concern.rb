@@ -2,10 +2,12 @@ module Site::TireConcern
   extend ActiveSupport::Concern
 
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
+  ReservedElasticSearchKeywords = %w(id name type location lat lng properties created_at updated_at parent_ids)
 
   included do
     after_save :store_in_index, :unless => :group?
     after_destroy :remove_from_index, :unless => :group?
+    after_find :decode_elastic_search_keywords, :unless => :group?, :if => :properties?
 
     delegate :index_name, :index, to: :collection
   end
@@ -15,7 +17,7 @@ module Site::TireConcern
       id: id,
       name: name,
       type: :site,
-      properties: properties,
+      properties: self.class.encode_elastic_search_keywords(properties),
       created_at: created_at.strftime(DateFormat),
       updated_at: updated_at.strftime(DateFormat),
     }
@@ -38,5 +40,37 @@ module Site::TireConcern
     def format_date(date)
       date.strftime DateFormat
     end
+
+    def encode_elastic_search_keywords(hash)
+      Hash[
+        hash.map do |key, value|
+          [encode_elastic_search_keyword(key), value]
+        end
+      ]
+    end
+
+    def decode_elastic_search_keywords(hash)
+      Hash[
+        hash.map do |key, value|
+          [decode_elastic_search_keyword(key), value]
+        end
+      ]
+    end
+
+    def encode_elastic_search_keyword(key)
+      key = "@#{key}" if ReservedElasticSearchKeywords.include? key.to_s
+      key
+    end
+
+    def decode_elastic_search_keyword(key)
+      key = key.to_s[1 .. -1] if key.to_s.start_with? '@'
+      key
+    end
+  end
+
+  private
+
+  def decode_elastic_search_keywords
+    self.properties = self.class.decode_elastic_search_keywords(properties)
   end
 end
