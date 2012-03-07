@@ -14,8 +14,8 @@ class Collection < ActiveRecord::Base
 
   def max_value_of_property(property)
     search = new_tire_search
-    search.sort { by property, 'desc' }
+    search.sort { by Site.encode_elastic_search_keyword(property), 'desc' }
     search.size 1
-    search.perform.results.first['_source']['properties'][property] rescue 0
+    search.perform.results.first['_source']['properties'][Site.encode_elastic_search_keyword(property)] rescue 0
   end
 end

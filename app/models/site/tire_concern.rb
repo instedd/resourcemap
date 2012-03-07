@@ -2,7 +2,6 @@ module Site::TireConcern
   extend ActiveSupport::Concern
 
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
-  ReservedElasticSearchKeywords = %w(id name type location lat lng properties created_at updated_at parent_ids)
 
   included do
     after_save :store_in_index, :unless => :group?
@@ -58,7 +57,7 @@ module Site::TireConcern
     end
 
     def encode_elastic_search_keyword(key)
-      key = "@#{key}" if ReservedElasticSearchKeywords.include? key.to_s
+      key = "@#{key}" unless key.to_s.start_with? '@'
       key
     end
 

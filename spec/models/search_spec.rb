@@ -14,6 +14,12 @@ describe Search do
       assert_results search, site2
     end
 
+    it "searches by equality with at" do
+      search = collection.new_search
+      search.where '@beds' => 10
+      assert_results search, site2
+    end
+
     it "searches by equality of two properties" do
       search = collection.new_search
       search.where beds: 10, tables: 2
