@@ -5,8 +5,8 @@ module Api::RssHelper
     xml.rss specification do
       xml.channel do
         xml.title collection.name
-        xml.atom :link, rel: :previous, href: api_collection_url(collection, page: results.previous_page, format: :rss) if results.previous_page
-        xml.atom :link, rel: :next, href: api_collection_url(collection, page: results.next_page, format: :rss) if results.next_page
+        xml.atom :link, rel: :previous, href: url_for(params.merge page: results.previous_page, only_path: false) if results.previous_page
+        xml.atom :link, rel: :next, href: url_for(params.merge page: results.next_page, only_path: false) if results.next_page
 
         results.each do |result|
           site_item_rss xml, result, parents

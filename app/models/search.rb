@@ -29,7 +29,7 @@ class Search
     )
   end
 
-  def op(op, property, value)
+  def op(property, op, value)
     case op.to_s.downcase
     when '<', 'l' then lt(property, value)
     when '<=', 'lte' then lte(property, value)
@@ -57,6 +57,7 @@ class Search
   end
 
   def in_group(site)
+    site = Site.find(site) unless site.is_a? Site
     parent_ids = (site.hierarchy || '').split(',').map(&:to_i)
     parent_ids << site.id
     parent_ids.each do |parent_id|

@@ -59,8 +59,8 @@ describe Search do
 
     it "searches with ops" do
       search = collection.new_search
-      search.op '<', :beds, 8
-      search.op '>=', :tables, 1
+      search.op :beds, '<', 8
+      search.op :tables, '>=', 1
       assert_results search, site1
     end
   end
@@ -110,6 +110,11 @@ describe Search do
 
     it "gets sites in nested group" do
       search = collection.new_search.in_group(@parent11)
+      assert_results search, @site111, @site112
+    end
+
+    it "gets sites in nested group with id" do
+      search = collection.new_search.in_group(@parent11.id)
       assert_results search, @site111, @site112
     end
   end
