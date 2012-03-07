@@ -8,6 +8,7 @@ describe Site::TireConcern do
     results = search.perform.results
     results.length.should eq(1)
     results[0]["_id"].to_i.should eq(site.id)
+    results[0]["_source"]["name"].should eq(site.name)
     results[0]["_source"]["location"]["lat"].should be_within(1e-06).of(site.lat.to_f)
     results[0]["_source"]["location"]["lon"].should be_within(1e-06).of(site.lng.to_f)
     results[0]["_source"]["properties"]["beds"].to_i.should eq(site.properties[:beds])

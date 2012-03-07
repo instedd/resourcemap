@@ -13,6 +13,7 @@ module Site::TireConcern
   def store_in_index
     hash = {
       id: id,
+      name: name,
       type: :site,
       properties: properties,
       created_at: created_at.strftime(DateFormat),
