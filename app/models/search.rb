@@ -42,7 +42,20 @@ class Search
   end
 
   def where(properties = {})
-    properties.each { |property, value| eq(property, value) }
+    properties.each do |property, value|
+      if value.is_a? String
+        case
+        when value[0 .. 1] == '<=' then lte(property, value[2 .. -1].strip)
+        when value[0] == '<' then lt(property, value[1 .. -1].strip)
+        when value[0 .. 1] == '>=' then gte(property, value[2 .. -1].strip)
+        when value[0] == '>' then gt(property, value[1 .. -1].strip)
+        when value[0] == '=' then eq(property, value[1 .. -1].strip)
+        else eq(property, value)
+        end
+      else
+        eq(property, value)
+      end
+    end
     self
   end
 

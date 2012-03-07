@@ -57,12 +57,12 @@ module Site::TireConcern
     end
 
     def encode_elastic_search_keyword(key)
-      key = "@#{key}" unless key.to_s.start_with? '@'
+      key = "@#{key}" unless key.to_s[0] == '@'
       key
     end
 
     def decode_elastic_search_keyword(key)
-      key = key.to_s[1 .. -1] if key.to_s.start_with? '@'
+      key = key.to_s[1 .. -1] if key.to_s[0] == '@'
       key
     end
   end

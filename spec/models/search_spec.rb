@@ -69,6 +69,38 @@ describe Search do
       search.op :tables, '>=', 1
       assert_results search, site1
     end
+
+    context "where with op" do
+      it "searches where with lt" do
+        search = collection.new_search
+        search.where beds: '< 8'
+        assert_results search, site1
+      end
+
+      it "searches where with lte" do
+        search = collection.new_search
+        search.where beds: '<= 5'
+        assert_results search, site1
+      end
+
+      it "searches where with gt" do
+        search = collection.new_search
+        search.where beds: '> 19'
+        assert_results search, site3
+      end
+
+      it "searches where with gte" do
+        search = collection.new_search
+        search.where beds: '>= 20'
+        assert_results search, site3
+      end
+
+      it "searches where with eq" do
+        search = collection.new_search
+        search.where beds: '= 10'
+        assert_results search, site2
+      end
+    end
   end
 
   context "pagination" do
