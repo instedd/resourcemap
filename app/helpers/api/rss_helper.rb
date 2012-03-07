@@ -2,7 +2,7 @@ module Api::RssHelper
   def collection_rss(xml, collection, results)
     parents = parents_as_hash results
 
-    xml.rss specification do
+    xml.rss rss_specification do
       xml.channel do
         xml.title collection.name
         xml.atom :link, rel: :previous, href: url_for(params.merge page: results.previous_page, only_path: false) if results.previous_page
@@ -15,12 +15,15 @@ module Api::RssHelper
     end
   end
 
-  def site_item_rss(xml, result, parents)
+  def site_item_rss(xml, result, parents = nil)
     source = result['_source']
+    parents ||= parents_as_hash([result])
+
     xml.item do
       xml.title source['name']
       xml.pubDate Site.parse_date(source['updated_at'])
       xml.link api_site_url(source['id'], format: :rss)
+      xml.guid api_site_url(source['id'], format: :rss)
 
       if source['location']
         xml.geo :lat, source['location']['lat']
@@ -35,6 +38,15 @@ module Api::RssHelper
         group_rss xml, parents[parent_id]
       end
     end
+  end
+
+  def rss_specification
+    {
+      'version'    => "2.0",
+      'xmlns:geo'  => "http://www.w3.org/2003/01/geo/wgs84_pos#",
+      'xmlns:rm'   => "http://resourcemap.instedd.org/api/1.0",
+      'xmlns:atom' => "http://www.w3.org/2005/Atom"
+    }
   end
 
   private
@@ -56,14 +68,5 @@ module Api::RssHelper
       xml.rm :id, group.id
       xml.rm :name, group.name
     end
-  end
-
-  def specification
-    {
-      'version'    => "2.0",
-      'xmlns:geo'  => "http://www.w3.org/2003/01/geo/wgs84_pos#",
-      'xmlns:rm'   => "http://resourcemap.instedd.org/api/1.0",
-      'xmlns:atom' => "http://www.w3.org/2005/Atom"
-    }
   end
 end

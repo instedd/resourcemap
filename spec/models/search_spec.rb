@@ -103,6 +103,15 @@ describe Search do
     end
   end
 
+  context "find by id" do
+    let!(:site1) { collection.sites.make }
+    let!(:site2) { collection.sites.make }
+
+    it "finds by id" do
+      assert_results collection.new_search.id(site1.id), site1
+    end
+  end
+
   context "pagination" do
     it "paginates by 50 results by default" do
       Search.page_size.should eq(50)

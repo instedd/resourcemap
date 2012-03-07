@@ -15,6 +15,11 @@ class Search
     self
   end
 
+  def id(id)
+    @search.filter :term, id: id
+    self
+  end
+
   def eq(property, value)
     @search.filter :term, Site.encode_elastic_search_keyword(property) => value
     self
@@ -83,7 +88,12 @@ class Search
 
   def results
     @search.sort { by '_uid' }
-    results = @search.perform.results
+    decode_elastic_search_results @search.perform.results
+  end
+
+  private
+
+  def decode_elastic_search_results(results)
     results.each do |result|
       result['_source']['properties'] = Site.decode_elastic_search_keywords(result['_source']['properties'])
     end
