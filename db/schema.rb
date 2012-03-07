@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120215190023) do
+ActiveRecord::Schema.define(:version => 20120307160128) do
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(:version => 20120215190023) do
     t.string   "hierarchy"
     t.datetime "created_at",                                                                          :null => false
     t.datetime "updated_at",                                                                          :null => false
-    t.boolean  "group"
+    t.boolean  "group",                                                      :default => false
     t.text     "properties"
     t.decimal  "min_lat",                     :precision => 10, :scale => 6
     t.decimal  "max_lat",                     :precision => 10, :scale => 6
