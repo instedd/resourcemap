@@ -66,7 +66,7 @@ class Search
   end
 
   def results
-    @search.sort { by 'updated_at', 'desc' }
+    @search.sort { by '_uid' }
     @search.perform.results
   end
 end

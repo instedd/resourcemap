@@ -82,12 +82,12 @@ describe Search do
 
       it "gets first page" do
         sites = 3.times.map { collection.sites.make }
-        assert_results collection.new_search, sites[2], sites[1]
+        assert_results collection.new_search, sites[0], sites[1]
       end
 
       it "gets second page" do
         sites = 3.times.map { collection.sites.make }
-        assert_results collection.new_search.page(2), sites[0]
+        assert_results collection.new_search.page(2), sites[2]
       end
     end
   end
