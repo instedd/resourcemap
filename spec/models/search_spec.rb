@@ -136,8 +136,16 @@ describe Search do
       assert_results collection.new_search.before(@site2.updated_at + 1.second), @site1, @site2
     end
 
+    it "gets results before a date as string" do
+      assert_results collection.new_search.before((@site2.updated_at + 1.second).to_s), @site1, @site2
+    end
+
     it "gets results after a date" do
       assert_results collection.new_search.after(@site2.updated_at - 1.second), @site2, @site3
+    end
+
+    it "gets results after a date as string" do
+      assert_results collection.new_search.after((@site2.updated_at - 1.second).to_s), @site2, @site3
     end
   end
 

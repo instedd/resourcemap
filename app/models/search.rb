@@ -47,11 +47,13 @@ class Search
   end
 
   def before(time)
+    time = Time.parse time if time.is_a? String
     @search.filter :range, updated_at: {lte: Site.format_date(time)}
     self
   end
 
   def after(time)
+    time = Time.parse time if time.is_a? String
     @search.filter :range, updated_at: {gte: Site.format_date(time)}
     self
   end
