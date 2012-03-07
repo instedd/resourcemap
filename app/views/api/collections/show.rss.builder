@@ -1,2 +1,2 @@
 xml.instruct! :xml
-collection_rss xml, collection
+collection_rss xml, collection, @results
