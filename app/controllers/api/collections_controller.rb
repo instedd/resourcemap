@@ -1,4 +1,6 @@
 class Api::CollectionsController < ApplicationController
+  include Api::JsonHelper
+
   before_filter :authenticate_user!
 
   def show
@@ -8,5 +10,10 @@ class Api::CollectionsController < ApplicationController
     search.after params[:updated_since] if params[:updated_since]
     search.where params.except(:action, :controller, :format, :id, :group, :page, :updated_since)
     @results = search.results
+
+    respond_to do |format|
+      format.rss
+      format.json { render json: collection_json(collection, @results) }
+    end
   end
 end

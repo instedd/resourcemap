@@ -1,4 +1,6 @@
 module Api::RssHelper
+  include Api::TireHelper
+
   def collection_rss(xml, collection, results)
     parents = parents_as_hash results
 
@@ -50,11 +52,6 @@ module Api::RssHelper
   end
 
   private
-
-  def parents_as_hash(results)
-    parent_ids = results.map{|x| x['_source']['parent_ids']}.flatten.uniq.compact
-    Hash[Site.find(parent_ids).map{|x| [x.id, x]}]
-  end
 
   def property_rss(xml, code, value)
     xml.rm :property do
