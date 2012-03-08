@@ -12,11 +12,11 @@ module ApplicationHelper
   end
 
   def ko_text_field_tag(name, options = {})
-    text_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: "'afterkeydown'"))
+    text_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: :afterkeydown))
   end
 
   def ko_number_field_tag(name, options = {})
-    number_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: "'afterkeydown'"))
+    number_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: :afterkeydown))
   end
 
   def ko_check_box_tag(name, options = {})
@@ -28,6 +28,14 @@ module ApplicationHelper
   end
 
   def kov(hash = {})
-    hash.map{|k, v| "#{k}:#{v}"}.join(',')
+    hash.map do |k, v|
+      if v.respond_to? :to_hash
+        "#{k}:{#{kov(v)}}"
+      elsif v.to_s == 'valueUpdate'
+        "#{k}:'#{v}'"
+      else
+        "#{k}:#{v}"
+      end
+    end.join(',')
   end
 end

@@ -7,11 +7,11 @@
 
   -# Layers
   <!-- ko foreach: layers -->
-  .box.w80{ko(:visible => '$data == $root.currentLayer()'), :style => 'display:none'}
+  .box.w80{ko(visible: '$data == $root.currentLayer()'), style: 'display:none'}
     %p
       = label_tag :name
       %br/
-      = ko_text_field_tag :name, :hasfocus => :hasFocus
+      = ko_text_field_tag :name, hasfocus: :hasFocus
       = ko_check_box_tag :public
       = label_tag :public, 'Public layer'
 
@@ -23,49 +23,49 @@
     #form-editor
       .left
         <!-- ko foreach: fields -->
-        .feditor{ko(:css => '{first: $data == $parent.fields()[0]}', :click => '$root.selectField')}
+        .feditor{ko(css: {first: '$data == $parent.fields()[0]'}, click: '$root.selectField')}
           .feditor-top
           .feditor-container
             .rightbuttons
-              %button.fdelete{ko(:click => "$root.deleteField")}
+              %button.fdelete{ko(click: "$root.deleteField")}
             .feditor-button
-              %button{ko(:attr => "{'class': buttonClass()}", :css => "{active: $data == $root.currentField()}")}
+              %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
             .feditor-content
-              %h1{ko(:text => :name)}
-              %span.hint{ko(:text => "'Code: ' + (code() ? code() : '(none)')")}
+              %h1{ko(text: :name)}
+              %span.hint{ko(text: "'Code: ' + (code() ? code() : '(none)')")}
           .feditor-bottom
         <!-- /ko -->
 
         .feditor-add
-          .feditor-add-top{ko(:css => '{empty: fields().length == 0}')}
+          .feditor-add-top{ko(css: {empty: 'fields().length == 0'})}
           .feditor-add-container
             .feditor-add-content
               %h1 Add form field
-              %span{ko(:click => '$root.newTextField')}
+              %span{ko(click: '$root.newTextField')}
                 %button.ltext
                 %br/
                 Text
-              %span{ko(:click => '$root.newNumericField')}
+              %span{ko(click: '$root.newNumericField')}
                 %button.lnumber
                 %br/
                 Numeric
-              %span{ko(:click => '$root.newSelectOneField')}
+              %span{ko(click: '$root.newSelectOneField')}
                 %button.lsingleoption
                 %br/
                 Select one
-              %span{ko(:click => '$root.newSelectManyField')}
+              %span{ko(click: '$root.newSelectManyField')}
                 %button.lmultipleoptions
                 %br/
                 Select many
 
-      .box.right.w30.feditor-sidebar{ko(:with => '$root.currentField', :visible => '$root.currentField')}
+      .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField')}
         %p.title Type
         %p.smalltext The data type to fill in this field.
-        = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'select_one'], ['Select many', 'select_many']]), 'data-bind' => kov(:value => :kind)
+        = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'select_one'], ['Select many', 'select_many']]), 'data-bind' => kov(value: :kind)
         %hr/
         %p.title Name
         %p.smalltext The name of this field as it is presented.
-        = ko_text_field_tag :name, :hasfocus => :hasFocus
+        = ko_text_field_tag :name, hasfocus: :hasFocus
         %hr/
         %p.title Code
         %p.smalltext The abbreviation used to report via SMS.
@@ -74,18 +74,18 @@
         %hr/
         %p.title Options
         %p.smalltext Possible values for this field.
-        %ul.mclist.w40{:style => 'width: 282px !important'}
+        %ul.mclist.w40{style: 'width: 282px !important'}
           <!-- ko foreach: options -->
           %li
-            %input.arrowinput{ko(:visible => :editing, :hasfocus => true, :value => :code, :valueUpdate => "'afterkeydown'", :event => '{keypress: keyPress, blur: $root.optionBlur}'), :type => :text, :style => 'position:relative;top:1px'}
-            %span.arrowgrey{ko(:visible => '!editing()', :click => :edit, :text => :code), :style => 'cursor:pointer;position:relative;top:-1px'}
-            %input.ux-clist{ko(:value => :label, :valueUpdate => "'afterkeydown'", :event => '{blur: $root.optionBlur}'), :type => :text, :style => 'width: 150px !important'}
-            %button.clist-remove{ko(:click => '$root.removeOption')}
+            %input.arrowinput{ko(visible: :editing, hasfocus: true, value: :code, valueUpdate: :afterkeydown, event: {keypress: :keyPress, blur: '$root.optionBlur'}), type: :text, style: 'position:relative;top:1px'}
+            %span.arrowgrey{ko(visible: '!editing()', click: :edit, text: :code), style: 'cursor:pointer;position:relative;top:-1px'}
+            %input.ux-clist{ko(value: :label, valueUpdate: :afterkeydown, event: {blur: '$root.optionBlur'}), type: :text, style: 'width: 150px !important'}
+            %button.clist-remove{ko(click: '$root.removeOption')}
           <!-- /ko -->
-          %li{ko(:with => '$root.newOption()')}
-            %input.arrowinput{ko(:value => :code, :hasfocus => :hasFocus, :valueUpdate => "'afterkeydown'", :event => '{keypress: $root.newOptionKeyPress, blur: $root.addOption}'), :placeholder => "Code", :style => 'position:relative;top:2px'}
-            %input.ux-text{ko(:value => :label, :valueUpdate => "'afterkeydown'", :event => '{keypress: $root.newOptionKeyPress, blur: $root.addOption}'), :placeholder => "Label", :style => 'width: 150px !important'}
-            %button.clist-add{ko(:click => '$root.addOption', :enable => '$root.optionValid')}
+          %li{ko(with: '$root.newOption()')}
+            %input.arrowinput{ko(value: :code, hasfocus: :hasFocus, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Code", style: 'position:relative;top:2px'}
+            %input.ux-text{ko(value: :label, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Label", style: 'width: 150px !important'}
+            %button.clist-add{ko(click: '$root.addOption', enable: '$root.optionValid')}
         <!-- /ko -->
         %br/
         %br/
@@ -94,32 +94,32 @@
 
     %hr/
     .bottom-actions
-      %button.white{ko(:click => '$root.saveLayer', :enable => :valid), :type => :button} Save
-      %a.tgrey{ko(:click => '$root.cancelLayer'), :href => 'javascript:void(0)'} Cancel
+      %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button} Save
+      %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'} Cancel
 
-  .box.grey.w60{ko(:visible => '$data != $root.currentLayer()'), :style => 'display:none'}
+  .box.grey.w60{ko(visible: '$data != $root.currentLayer()'), style: 'display:none'}
     .toptitle
-      %span{ko(:text => :name)}
+      %span{ko(text: :name)}
       &rarr;
-      %em{ko(:visible => :public)} Public layer
-      %em{ko(:visible => '!public()')} Private layer
+      %em{ko(visible: :public)} Public layer
+      %em{ko(visible: '!public()')} Private layer
 
     .rightbuttons
       %button.fbranch
-      %button.fdelete{ko(:click => '$root.deleteLayer')}
+      %button.fdelete{ko(click: '$root.deleteLayer')}
 
     .middlebuttons
       <!-- ko foreach: fields -->
-      %button.faccept{ko(:text => :name)}
+      %button.faccept{ko(text: :name)}
       <!-- /ko -->
 
-    %button.farrow{ko(:click => '$root.editLayer')} Edit
+    %button.farrow{ko(click: '$root.editLayer')} Edit
 
   %br/
   <!-- /ko -->
 
   -# New layer link
-  .box.grey.addlayer{ko(:visible => '!currentLayer()', :click => '$root.newLayer'), :style => 'display:none'}
+  .box.grey.addlayer{ko(visible: '!currentLayer()', click: '$root.newLayer'), style: 'display:none'}
     %span Add layer
-    %button.cadd.right{:type => :button}
-    %br{:clear => :all}
+    %button.cadd.right{type: :button}
+    %br{clear: :all}

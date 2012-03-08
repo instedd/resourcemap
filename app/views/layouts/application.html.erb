@@ -1,5 +1,5 @@
 <% content_for :navigation do %>
-  <%= section "Home", root_path(:explicit => true), :home %>
+  <%= section "Home", root_path(explicit: true), :home %>
   <% if user_signed_in? %>
     <%= section "Collections", collections_path, :collections %>
     <%= section "Gateways", gateways_path, :gateways %>
@@ -21,20 +21,20 @@
           <hr/>
           <ul>
             <li><a href="mailto:support@instedd.org?subject=[<%= application_name.underscore %>-bug]">Report a bug</a></li>
-            <li><%= link_to "Sign Out", destroy_user_session_path, :method => :delete %></li>
+            <li><%= link_to "Sign Out", destroy_user_session_path, method: :delete %></li>
           </ul>
         </div>
       </div>
       </li>
       <li>
-        <%= link_to '', edit_user_registration_path, :class => 'fsettings' %>
+        <%= link_to '', edit_user_registration_path, class: 'fsettings' %>
       </li>
       <% else %>
       <li>
-        <%= link_to "Create account", new_user_registration_path, :class => 'fedit' %>
+        <%= link_to "Create account", new_user_registration_path, class: 'fedit' %>
       </li>
       <li>
-        <%= link_to "Log in", new_user_session_path, :class => 'fuser' %>
+        <%= link_to "Log in", new_user_session_path, class: 'fuser' %>
       </li>
     <% end %>
   </ul>
@@ -42,4 +42,4 @@
 <% content_for :footer_links do %>
   <a href="<%= root_path %>">Home</a>
 <% end %>
-<%= render :file => 'layouts/instedd_application' %>
+<%= render file: 'layouts/instedd_application' %>

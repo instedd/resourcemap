@@ -10,19 +10,19 @@
       .left.sitesDescription
         .sitesCount= collection.sites.count
         groups and sites
-      %button.csvDownload.white.right{:type => "button"}
+      %button.csvDownload.white.right{type: "button"}
         = link_to 'download as csv', collection_download_as_csv_path(collection)
     %div
-      = link_to 'Download a sample CSV file', collection_csv_template_path(collection), :class => 'icon fimport black'
+      = link_to 'Download a sample CSV file', collection_csv_template_path(collection), class: 'icon fimport black'
       and fill it with the status of multiple sites
       %br/
-      = link_to_function 'Upload it for bulk sites updates', "$('#upload').click()", :class => 'icon fexport black'
-      %form#upload_form{:action => collection_upload_csv_path(collection), :method => :post, :enctype => 'multipart/form-data'}
-        %input#upload{:type => :file, :name => :file, :style => 'visibility:hidden'}
-        %input{:type => :hidden, :name => 'authenticity_token', :value => form_authenticity_token}
+      = link_to_function 'Upload it for bulk sites updates', "$('#upload').click()", class: 'icon fexport black'
+      %form#upload_form{action: collection_upload_csv_path(collection), method: :post, enctype: 'multipart/form-data'}
+        %input#upload{type: :file, name: :file, style: 'visibility:hidden'}
+        %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
   %hr.clear/
   %h2 Activity
   = link_to 'add new chart'
   %hr.clear/
   %h2 Properties
-  = link_to 'delete this collection', collection, :class => 'icon fdelete black', :method => :delete, :confirm => "are you sure you want to delete the collection #{collection.name}?"
+  = link_to 'delete this collection', collection, class: 'icon fdelete black', method: :delete, confirm: "are you sure you want to delete the collection #{collection.name}?"
