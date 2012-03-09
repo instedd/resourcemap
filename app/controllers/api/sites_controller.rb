@@ -2,6 +2,7 @@ class Api::SitesController < ApplicationController
   include Api::JsonHelper
 
   before_filter :authenticate_user!
+  before_filter :authenticate_site_user!
 
   expose(:site)
 

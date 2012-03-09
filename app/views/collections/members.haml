@@ -8,16 +8,24 @@
   .tablewrapp
     %table.GralTable
       %tr
-        %th{:style => 'width:140px'}
+        - if collection_admin?
+          %th{:style => 'width:140px'}
         %th Name
+        %th Admin?
         %th
       - collection_memberships.each do |membership|
         %tr{:style => 'height:32px'}
-          %td
+          - if collection_admin?
+            %td
           %td= membership.user.display_name
+          %td= membership.admin? ? raw('<b>Yes</b>') : 'No'
           %td
-      %tr{:style => 'height:32px'}
-        %td
-          %button.cadd#add_member Add member
-        %td= text_field_tag :member_email, '', :size => 60, :placeholder => 'Search by email...'
-        %td
+            - if collection_admin? && membership.user_id != current_user.id
+              = link_to 'delete', [collection, membership], class: 'icon fdelete black', method: :delete, confirm: "Are you sure you want to remove #{membership.user.email} from the collection?"
+      - if collection_admin?
+        %tr{:style => 'height:32px'}
+          %td
+            %button.cadd#add_member Add member
+          %td= text_field_tag :member_email, '', :size => 60, :placeholder => 'Search by email...'
+          %td
+          %td

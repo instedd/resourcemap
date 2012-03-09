@@ -1,5 +1,6 @@
 class CollectionsController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :authenticate_collection_admin!, :only => [:update, :destroy]
   before_filter :breadcrumb
 
   def index

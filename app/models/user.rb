@@ -13,8 +13,16 @@ class User < ActiveRecord::Base
   def create_collection(collection)
     return false unless collection.save
 
-    memberships.create! collection_id: collection.id
+    memberships.create! collection_id: collection.id, admin: true
     collection
+  end
+
+  def admins?(collection)
+    memberships.where(:collection_id => collection.id).first.try(:admin?)
+  end
+
+  def belongs_to?(collection)
+    memberships.where(:collection_id => collection.id).exists?
   end
 
   def display_name

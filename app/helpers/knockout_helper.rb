@@ -27,7 +27,7 @@ module KnockoutHelper
     hash.map do |k, v|
       if v.respond_to? :to_hash
         "#{k}:{#{kov(v)}}"
-      elsif v.to_s == 'valueUpdate'
+      elsif k.to_s == 'valueUpdate'
         "#{k}:'#{v}'"
       else
         "#{k}:#{v}"

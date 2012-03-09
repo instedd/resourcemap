@@ -23,6 +23,7 @@
   %hr.clear/
   %h2 Activity
   = link_to 'add new chart'
-  %hr.clear/
-  %h2 Properties
-  = link_to 'delete this collection', collection, class: 'icon fdelete black', method: :delete, confirm: "are you sure you want to delete the collection #{collection.name}?"
+  - if collection_admin?
+    %hr.clear/
+    %h2 Properties
+    = link_to 'delete this collection', collection, class: 'icon fdelete black', method: :delete, confirm: "Are you sure you want to delete the collection #{collection.name}?"
