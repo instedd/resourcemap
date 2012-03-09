@@ -21,8 +21,12 @@
         %input#upload{type: :file, name: :file, style: 'visibility:hidden'}
         %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
   %hr.clear/
-  %h2 Activity
-  = link_to 'add new chart'
+  %h2 API access
+  %p{style: 'margin:-8px 0 8px 0'}
+    Access the API in
+    #{link_to 'RSS', api_collection_path(collection, format: :rss), target: :_blank}
+    or
+    #{link_to 'JSON', api_collection_path(collection, format: :json), target: :_blank}.
   - if collection_admin?
     %hr.clear/
     %h2 Properties
