@@ -1,18 +1,23 @@
 = render 'tabs'
 
+- content_for :head do
+  :javascript
+    $(function() { initMemberships(#{collection.id}); });
+
 .tabsline
   .tablewrapp
-    %table.GralTable.ButtonTable.w-pagination
+    %table.GralTable
       %tr
+        %th{:style => 'width:140px'}
         %th Name
-        %th Phone number
-        %th Can admin?
-        %th Can update?
-        %th Can delete?
+        %th
       - collection_memberships.each do |membership|
-        %tr
+        %tr{:style => 'height:32px'}
+          %td
           %td= membership.user.display_name
-          %td= membership.user.phone_number
           %td
-          %td
-          %td
+      %tr{:style => 'height:32px'}
+        %td
+          %button.cadd#add_member Add member
+        %td= text_field_tag :member_email, '', :size => 60, :placeholder => 'Search by email...'
+        %td
