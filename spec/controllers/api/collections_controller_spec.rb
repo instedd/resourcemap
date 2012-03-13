@@ -6,6 +6,10 @@ describe Api::CollectionsController do
   let!(:user) { User.make }
   let!(:collection) { user.create_collection(Collection.make_unsaved) }
 
+  # This is really not necessary, but on jenkins it fails without this,
+  # maybe because the ES version is different.
+  let!(:site) { collection.sites.make }
+
   before(:each) { sign_in user }
 
   describe "GET collection" do
