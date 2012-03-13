@@ -1,6 +1,8 @@
 @initCollections = ->
   SITES_PER_PAGE = 25
 
+  # Repesents a cluster on the map.
+  # It consists of a location and a count.
   Cluster = (map, cluster) ->
     @map = map
     @setMap map
@@ -57,6 +59,9 @@
     @div.style.top = @divClick.style.top = "#{pos.y - 36}px"
     @shadow.style.left = "#{pos.x - 7}px"
     @shadow.style.top = "#{pos.y - 36}px"
+
+    # If the count on the cluster is too big (more than 3 digits)
+    # we move the div containing the count to the left
     @digits = Math.floor(2 * Math.log(@count / 10) / Math.log(10));
     @digits = 0 if @digits < 0
     @countDiv.style.left = @countClick.style.left = "#{pos.x - 12 - @digits}px"
@@ -118,6 +123,8 @@
 
       @editing = ko.observable false
 
+    # The value of the UI.
+    # If it's a select one or many, we need to get the label from the option code.
     valueUIFor: (value) =>
       if @kind() == 'select_one'
         if value then @labelFor(value) else ''
@@ -162,6 +169,8 @@
           return option.label()
       null
 
+    # In the table view, use a fixed size width for each property column,
+    # which depends on the length of the name.
     suggestedWidth: =>
       if @name().length < 10
         '100px'
@@ -173,6 +182,7 @@
       @code = ko.observable(data?.code)
       @label = ko.observable(data?.label)
 
+  # An object with a position on the map.
   class Locatable
     constructor: (data) ->
       @lat = ko.observable data?.lat
@@ -186,14 +196,28 @@
             @lat(latLng.lat); @lng(latLng.lng)
         owner: @
 
+    # Pans the map to this object's location, and the reload the map's sites and clusters.
     panToPosition: =>
       currentPosition = window.model.map.getCenter()
       positionChanged = @position() && (Math.abs(@position().lat() - currentPosition.lat()) > 1e-6 || Math.abs(@position().lng() - currentPosition.lng()) > 1e-6)
 
       window.model.reloadMapSitesAutomatically = false
       window.model.map.panTo @position() if positionChanged
+
+      # We also zoom the map to the minZoom given of this site/group.
+      if @minZoom?
+        # But in the case of a site (no max zoom), we don't want to zoom
+        # out if the user already zoomed beyong the minZoom (annoying)
+        unless !@maxZoom && @minZoom < window.model.map.getZoom()
+          zoom = if @minZoom == 0 then @maxZoom else @minZoom
+          window.model.map.setZoom zoom
+      else if !@maxZoom?
+        # This is the case of a collection, which doesn't have minZoom nor maxZoom
+        window.model.map.setZoom @defaultZoom() if @defaultZoom()?
       window.model.reloadMapSites()
 
+  # An object that contains sites. This is a base class for Site and Collection.
+  # Initially, the contained sites are empty. To load more, invoke 'loadMoreSites'.
   class SitesContainer extends Locatable
     constructor: (data) ->
       super(data)
@@ -207,6 +231,7 @@
       @hasMoreSites = ko.observable true
       @loadingSites = ko.observable false
 
+    # Loads SITES_PER_PAGE sites more from the server, it there are more sites.
     loadMoreSites: =>
       return unless @hasMoreSites()
 
@@ -257,6 +282,8 @@
 
     level: -> 0
 
+    defaultZoom: -> 4
+
     fetchLocation: => $.get "/collections/#{@id()}.json", {}, (data) =>
       @position(data)
       @updatedAt(data.updated_at)
@@ -290,6 +317,8 @@
       @parentId = ko.observable data?.parent_id
       @group = ko.observable data?.group
       @name = ko.observable data?.name
+      @minZoom = data?.min_zoom
+      @maxZoom = data?.max_zoom
       @locationMode = ko.observable data?.location_mode
       @properties = ko.observable data?.properties
       @editingName = ko.observable(false)
@@ -305,6 +334,8 @@
     sitesUrl: -> "/sites/#{@id()}/root_sites"
 
     level: => @parent.level() + 1
+
+    defaultZoom: -> @parent.minZoom
 
     parentCollection: => @parent.parentCollection()
 
@@ -755,6 +786,7 @@
             @selectedSite().panToPosition()
           else if @oldSelectedSite
             @oldSelectedSite.deleteMarker()
+            delete @oldSelectedSite
             @reloadMapSites()
 
       else
