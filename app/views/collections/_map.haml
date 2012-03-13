@@ -155,6 +155,7 @@
                 <!-- /ko -->
                 <!-- ko if: kind() == 'numeric' -->
                 = ko_number_field_tag :value
+                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline'
                 <!-- /ko -->
                 <!-- ko if: kind() == 'select_one' -->
                 %select{ko(value: :value, options: :optionsCodes, optionsText: 'function(o){return $data.labelFor(o)}')}
@@ -242,7 +243,11 @@
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: !hasValue() -->
-                %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no value)
+                %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no 
+                value)
+                <!-- ko if: !editing() && kind() == 'numeric' -->
+                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline'
+                <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'text' -->
                 = ko_text_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
