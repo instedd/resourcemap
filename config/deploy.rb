@@ -3,7 +3,7 @@ require 'rvm/capistrano'
 
 set :rvm_ruby_string, '1.9.3'
 set :application, "resource_map"
-set :repository,  "ssh://hg@bitbucket.org/asterite/resource_map"
+set :repository,  "ssh://hg@bitbucket.org/instedd/resource_map"
 set :scm, :mercurial
 set :user, 'ubuntu'
 set :deploy_via, :remote_cache
