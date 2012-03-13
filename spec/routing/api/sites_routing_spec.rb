@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "routes for Sites Api" do
   it "should route to show site" do
-    get("/api/sites/1").
+    get("/api/sites/1.rss").
       should route_to(
         controller: 'api/sites', 
         action: 'show', 
