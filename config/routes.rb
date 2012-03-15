@@ -23,6 +23,7 @@ ResourceMap::Application.routes.draw do
     get 'import_wizard'
     post 'import_wizard_upload_csv'
     get 'import_wizard_adjustments'
+    post 'import_wizard_execute'
   end
 
   resources :sites do

@@ -15,6 +15,21 @@
       @lng = ko.observable data.lng
       @properties = ko.observable data.properties
       @parents = ko.observable data.parents
+      @hasMoreThanOneName = ko.observable data.hasMoreThanOneName
+      @hasMoreThanOneGroupWithTheSameLevel = ko.observable data.hasMoreThanOneGroupWithTheSameLevel
+
+      @error = ko.computed =>
+        return "you must choose a column to be the Name of the site" unless @name()
+        return "you chose more than one column to be the Name of the site" if @hasMoreThanOneName()
+        return "you chose more than one column for the same Level for a Group" if @hasMoreThanOneGroupWithTheSameLevel()
+
+        for property in @properties()
+          if property.kind() == 'select_one' || property.kind() == 'select_many'
+            return "you must choose a column to be the Code of property #{property.code()}" unless property.valueCode()
+            return "you must choose a column to be the Label of property #{property.code()}" unless property.valueLabel()
+        null
+
+      @valid = ko.computed => !@error()
 
   class Column
     constructor: (data) ->
@@ -33,63 +48,75 @@
   class ImportWizardViewModel
     constructor: (columns) ->
       @columns = ko.observableArray $.map(columns, (x) -> new Column(x))
-      @site = ko.computed =>
-        data = {name: null, properties: [], parents: []}
-        propertiesByCode = {}
+      @site = ko.computed => @computeSite()
+      @error = ko.computed => @site().error()
+      @valid = ko.computed => @site().valid()
 
-        for column in @columns()
-          if column.kind() == 'name'
-            data.name = column.value()
-            continue
+    computeSite: =>
+      data = {name: null, properties: [], parents: []}
+      propertiesByCode = {}
+      levels = {}
 
-          if column.kind() == 'lat'
-            data.lat = column.value()
-            continue
+      for column in @columns()
+        if column.kind() == 'name'
+          if data.name
+            data.hasMoreThanOneName = true
+          data.name = column.value()
+          continue
 
-          if column.kind() == 'lng'
-            data.lng = column.value()
-            continue
+        if column.kind() == 'lat'
+          data.lat = column.value()
+          continue
 
-          if column.kind() == 'group'
-            data.parents.push {name: column.value(), level: column.level()}
-            continue
+        if column.kind() == 'lng'
+          data.lng = column.value()
+          continue
 
-          continue unless column.mapsToField()
+        if column.kind() == 'group'
+          data.hasMoreThanOneGroupWithTheSameLevel = true if levels["#{column.level()}"]
+          levels["#{column.level()}"] = true
+          data.parents.push {name: column.value(), level: column.level()}
+          continue
 
-          existing = null
-          propertyData = code: column.code(), name: column.label(), kind: column.kind(), value: column.value()
+        continue unless column.mapsToField()
 
-          if column.kind() == 'select_one' || column.kind() == 'select_many'
-            existing = propertiesByCode[column.code()]
-            if existing
-              switch column.selectKind()
-                when 'code'
-                  existing.valueCode column.value()
-                when 'label'
-                  existing.valueLabel column.value()
-                when 'both'
-                  existing.valueCode column.value()
-                  existing.valueLabel column.value()
-            else
-              switch column.selectKind()
-                when 'code'
-                  propertyData.valueCode = column.value()
-                when 'label'
-                  propertyData.valueLabel = column.value()
-                when 'both'
-                  propertyData.valueCode = column.value()
-                  propertyData.valueLabel = column.value()
+        existing = null
+        propertyData = code: column.code(), name: column.label(), kind: column.kind(), value: column.value()
 
-          unless existing
-            property = new Property(propertyData)
-            data.properties.push property
+        if column.kind() == 'select_one' || column.kind() == 'select_many'
+          existing = propertiesByCode[column.code()]
+          if existing
+            switch column.selectKind()
+              when 'code'
+                existing.valueCode column.value()
+              when 'label'
+                existing.valueLabel column.value()
+              when 'both'
+                existing.valueCode column.value()
+                existing.valueLabel column.value()
+          else
+            switch column.selectKind()
+              when 'code'
+                propertyData.valueCode = column.value()
+              when 'label'
+                propertyData.valueLabel = column.value()
+              when 'both'
+                propertyData.valueCode = column.value()
+                propertyData.valueLabel = column.value()
 
-          if !existing && (column.kind() == 'select_one' || column.kind() == 'select_many')
-            propertiesByCode[column.code()] = property
+        unless existing
+          property = new Property(propertyData)
+          data.properties.push property
 
-        data.parents.sort (x, y) -> if x.level < y.level then -1 else (if x.level > y.level then 1 else 0)
-        data.parents = $.map(data.parents, (x) -> x.name)
+        if !existing && (column.kind() == 'select_one' || column.kind() == 'select_many')
+          propertiesByCode[column.code()] = property
 
-        new Site data
+      data.parents.sort (x, y) -> if x.level < y.level then -1 else (if x.level > y.level then 1 else 0)
+      data.parents = $.map(data.parents, (x) -> x.name)
+
+      new Site data
+
+    startImport: =>
+      alert "!"
 
   ko.applyBindings new ImportWizardViewModel(columns)
