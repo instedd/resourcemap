@@ -243,8 +243,7 @@
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: !hasValue() -->
-                %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no 
-                value)
+                %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no value)
                 <!-- ko if: !editing() && kind() == 'numeric' -->
                 = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline'
                 <!-- /ko -->
