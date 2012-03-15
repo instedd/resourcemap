@@ -19,6 +19,10 @@ ResourceMap::Application.routes.draw do
     get 'max_value_of_property'
 
     post 'upload_csv'
+
+    get 'import_wizard'
+    post 'import_wizard_upload_csv'
+    get 'import_wizard_adjustments'
   end
 
   resources :sites do
