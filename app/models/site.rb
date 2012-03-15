@@ -2,7 +2,7 @@ class Site < ActiveRecord::Base
   include Site::GeomConcern
   include Site::TireConcern
 
-  belongs_to :collection, touch: true
+  belongs_to :collection
   belongs_to :parent, foreign_key: 'parent_id', class_name: name, touch: true
   has_many :sites, foreign_key: 'parent_id', class_name: name, dependent: :destroy
 
