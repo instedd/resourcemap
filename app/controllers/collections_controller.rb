@@ -81,7 +81,7 @@ class CollectionsController < ApplicationController
   end
 
   def import_wizard_upload_csv
-    ImportWizard.import current_user, collection, params[:file]
+    ImportWizard.import current_user, collection, params[:file].read
     redirect_to collection_import_wizard_adjustments_path(collection)
   rescue => ex
     redirect_to collection_import_wizard_path(collection), :notice => "The file was not a valid CSV file"
@@ -89,6 +89,10 @@ class CollectionsController < ApplicationController
 
   def import_wizard_adjustments
     @sample = ImportWizard.sample(current_user, collection)
+  end
+
+  def import_wizard_execute
+    ImportWizard.execute(current_user, collection, params[:columns].values)
   end
 
   private

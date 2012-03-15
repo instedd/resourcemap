@@ -1,4 +1,4 @@
-@initImportWizard = (columns) ->
+@initImportWizard = (collectionId, columns) ->
   class Property
     constructor: (data) ->
       @code = ko.observable data.code
@@ -45,12 +45,25 @@
       @mapsToField = ko.computed =>
         @kind() == 'text' || @kind() == 'numeric' || @kind() == 'select_one' || @kind() == 'select_many'
 
+    toJSON: =>
+      json =
+        name: @name()
+        kind: @kind()
+      if @mapsToField()
+        json.code = @code()
+        json.label = @label()
+      json.level = @level() if @kind() == 'group'
+      json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
+      json
+
   class ImportWizardViewModel
-    constructor: (columns) ->
+    constructor: (collectionId, columns) ->
+      @collectionId = collectionId
       @columns = ko.observableArray $.map(columns, (x) -> new Column(x))
       @site = ko.computed => @computeSite()
       @error = ko.computed => @site().error()
       @valid = ko.computed => @site().valid()
+      @importing = ko.observable false
 
     computeSite: =>
       data = {name: null, properties: [], parents: []}
@@ -117,6 +130,9 @@
       new Site data
 
     startImport: =>
-      alert "!"
+      @importing(true)
+      columns = $.map(@columns(), (x) -> x.toJSON())
+      $.post "/collections/#{@collectionId}/import_wizard_execute.json", {columns: columns}, =>
+        window.location = '/collections'
 
-  ko.applyBindings new ImportWizardViewModel(columns)
+  ko.applyBindings new ImportWizardViewModel(collectionId, columns)
