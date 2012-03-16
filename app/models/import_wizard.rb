@@ -58,6 +58,7 @@ class ImportWizard
 
       # Prepare the new layer
       layer = collection.layers.new name: collection.name
+      layer.collection = collection
 
       # Prepare the fields: we index by code, so later we can reference them faster
       fields = {}
@@ -68,6 +69,7 @@ class ImportWizard
       columns_spec.each do |spec|
         if (spec[:kind] == 'text' || spec[:kind] == 'numeric' || spec[:kind] == 'select_one' || spec[:kind] == 'select_many') && spec[:selectKind] != 'label'
           fields[spec[:code]] = layer.fields.new code: spec[:code], name: spec[:label], kind: spec[:kind]
+          fields[spec[:code]].layer = layer
         end
         if spec[:selectKind] == 'code'
           spec[:related] = columns_spec.find{|x| x[:code] == spec[:code] && x[:selectKind] == 'label'}
@@ -87,7 +89,13 @@ class ImportWizard
           if existing
             parent_group = existing
           else
-            parent_group = parent_group.sites.new name: value, group: true, collection_id: collection.id
+            sub_group = parent_group.sites.new name: value, group: true, collection_id: collection.id
+
+            # Optimization: setting the parent here avoids querying it when storing the hierarchy
+            sub_group.collection = collection
+            sub_group.parent = parent_group if parent_group.is_a? Site
+
+            parent_group = sub_group
           end
         end
 
@@ -95,6 +103,10 @@ class ImportWizard
         next unless row[name_spec[:index]].present?
 
         site = parent_group.sites.new properties: {}, collection_id: collection.id
+
+        # Optimization: setting the parent here avoids querying it when storing the hierarchy
+        site.collection = collection
+        site.parent = parent_group if parent_group.is_a? Site
 
         # According to the spec
         columns_spec.each do |spec|
@@ -149,6 +161,12 @@ class ImportWizard
 
       Collection.transaction do
         layer.save!
+
+        # Force computing bounds and such in memory, so a thousand callbacks
+        # are not called
+        collection.compute_geometry_in_memory
+
+        Rails.logger.info "======================== ABOUT TO SAVE"
         collection.save!
       end
     end

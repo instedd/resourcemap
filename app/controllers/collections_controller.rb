@@ -93,6 +93,7 @@ class CollectionsController < ApplicationController
 
   def import_wizard_execute
     ImportWizard.execute(current_user, collection, params[:columns].values)
+    render :json => :ok
   end
 
   private
