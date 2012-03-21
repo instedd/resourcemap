@@ -32,6 +32,7 @@ ResourceMap::Application.routes.draw do
 
     post 'update_property'
   end
+
   resources :gateways
 
   get 'terms_and_conditions', :to => redirect('/')

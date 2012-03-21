@@ -1,0 +1,2 @@
+class GatewaysController < ApplicationController
+end
