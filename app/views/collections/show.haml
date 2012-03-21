@@ -3,14 +3,16 @@
 :javascript
   $(function() { $('#upload').change(function() { $('#upload_form').submit() }); });
 
+- sites_count = collection.sites.count
+
 .tabsline
   %h2 Status
   %div
     .sbox.grey.w30.sitesBox
       .left.sitesDescription
-        .sitesCount= collection.sites.count
+        .sitesCount= sites_count
         groups and sites
-      %button.csvDownload.white.right{type: "button"}
+      %button.csvDownload.white.right{type: "button", class: sites_count == 0 ? "disabled" : nil}
         = link_to 'download as csv', collection_download_as_csv_path(collection)
     %div
       = link_to 'Download a sample CSV file', collection_csv_template_path(collection), class: 'icon fimport black'
