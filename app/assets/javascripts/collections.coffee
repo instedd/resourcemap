@@ -670,6 +670,7 @@
           if callback && typeof(callback) == 'function'
             callback()
       setTimeout(showMap, 10)
+      setTimeout(window.adjustContainerSize 10)
 
     showTable: =>
       delete @markers
@@ -680,6 +681,7 @@
       @showingMap(false)
       @refreshTimeago()
       @makeFixedHeaderTable()
+      setTimeout(window.adjustContainerSize 10)
 
     findCollectionById: (id) => (x for x in @collections() when x.id() == id)[0]
 
@@ -1061,3 +1063,21 @@
 
     $('#collections-dummy').remove()
     $('#collections-main').show()
+
+  # Adjust width to window
+  window.adjustContainerSize = ->
+    width = $(window).width()
+    containerWidth = width - 80
+    containerWidth = 960 if containerWidth < 960
+
+    # Using $(...).width(...) breaks the layout, don't know why
+    $('#container').get(0).style.width = "#{containerWidth}px"
+    $('#header').get(0).style.width = "#{containerWidth}px"
+    $('.BreadCrumb').get(0).style.width = "#{containerWidth - 340}px"
+    $('#container .right').get(0).style.width = "#{containerWidth - 334}px"
+    $('.tableheader.expanded').get(0).style.width = "#{containerWidth}px" if ($('.tableheader.expanded').length > 0)
+    $('#map').get(0).style.width = "#{containerWidth - 350}px" if $('#map').length > 0
+    false
+
+  $(window).resize adjustContainerSize
+  setTimeout(adjustContainerSize, 100)
