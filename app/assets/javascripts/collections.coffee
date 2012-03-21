@@ -477,11 +477,32 @@
 
       @parseLocation success: callback, failure: callback
 
+    tryGeolocateName: =>
+      return if @nameBeforeGeolocateName == @name()
+
+      @nameBeforeGeolocateName = @name()
+      @parseLocation text: @fullName(), success: (position) =>
+        @position(position)
+        @marker.setPosition(position)
+        @panToPosition()
+
+    fullName: =>
+      name = @name()
+
+      nextParent = @parent
+      while nextParent
+        name += ", "
+        name += nextParent.name()
+        nextParent = nextParent.parent
+
+      name
+
     parseLocation: (options) =>
-      if match = @locationTextTemp.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
+      text = options.text || @locationTextTemp
+      if match = text.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
         options.success(new google.maps.LatLng(parseFloat(match[1]), parseFloat(match[2])))
       else
-        window.model.geocoder.geocode { 'address': @locationTextTemp}, (results, status) =>
+        window.model.geocoder.geocode { 'address': text}, (results, status) =>
           if results.length > 0
             options.success(results[0].geometry.location)
           else
