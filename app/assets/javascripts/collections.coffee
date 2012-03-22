@@ -1070,13 +1070,12 @@
     containerWidth = width - 80
     containerWidth = 960 if containerWidth < 960
 
-    # Using $(...).width(...) breaks the layout, don't know why
-    $('#container').get(0).style.width = "#{containerWidth}px"
-    $('#header').get(0).style.width = "#{containerWidth}px"
-    $('.BreadCrumb').get(0).style.width = "#{containerWidth - 340}px"
-    $('#container .right').get(0).style.width = "#{containerWidth - 334}px"
-    $('.tableheader.expanded').get(0).style.width = "#{containerWidth}px" if ($('.tableheader.expanded').length > 0)
-    $('#map').get(0).style.width = "#{containerWidth - 350}px" if $('#map').length > 0
+    $('#container').width(containerWidth)
+    $('#header').width(containerWidth)
+    $('.BreadCrumb').width(containerWidth - 340)
+    $('#right-panel').width(containerWidth - 334)
+    $('.tableheader.expanded').width(containerWidth)
+    $('#map').width(containerWidth - 350)
     false
 
   $(window).resize adjustContainerSize
