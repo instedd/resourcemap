@@ -59,6 +59,6 @@ module Collection::CsvConcern
   private
 
   def csv_header
-    ["ID", "Type", "Name", "Lat", "Lng", "Parent ID", "Mode"]
+    ["Site ID", "Type", "Name", "Lat", "Lng", "Parent ID", "Mode"]
   end
 end

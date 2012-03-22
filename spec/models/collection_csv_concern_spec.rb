@@ -32,7 +32,7 @@ describe Collection::CsvConcern do
     collection.reload
     csv = collection.export_csv
     csv.strip.should eq(%(
-ID,Type,Name,Lat,Lng,Parent ID,Mode
+Site ID,Type,Name,Lat,Lng,Parent ID,Mode
 #{root.id},Group,#{root.name},#{root.lat},#{root.lng},,#{root.location_mode}
 #{site.id},Site,#{site.name},#{site.lat},#{site.lng},#{root.id},
 ).strip)
@@ -41,7 +41,7 @@ ID,Type,Name,Lat,Lng,Parent ID,Mode
 
   it "exports csv template" do
     collection.csv_template.strip.should eq(%(
-ID,Type,Name,Lat,Lng,Parent ID,Mode
+Site ID,Type,Name,Lat,Lng,Parent ID,Mode
 1,Group,Group A,1.234,5.678,,none/manual/automatic
 2,Site,Site A.1,2.345,6.789,1,
 3,Group,Group B,3.456,4.567,,none/manual/automatic
