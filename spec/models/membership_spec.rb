@@ -14,13 +14,25 @@ describe Membership do
     let(:membership2) { collection.memberships.create! :user_id => user2.id }
 
     context "when no access already exists" do
-      it "grants read access" do
+      it "grants read access to layer" do
         membership2.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
 
         lms = LayerMembership.all
         lms.length.should eq(1)
         lms[0].collection_id.should eq(collection.id)
         lms[0].layer_id.should eq(layer.id)
+        lms[0].user_id.should eq(user2.id)
+        lms[0].read.should be_true
+        lms[0].write.should be_false
+      end
+
+      it "grants read access to all layers" do
+        membership2.set_layer_access :verb => :read, :access => true
+
+        lms = LayerMembership.all
+        lms.length.should eq(1)
+        lms[0].collection_id.should eq(collection.id)
+        lms[0].layer_id.should be_nil
         lms[0].user_id.should eq(user2.id)
         lms[0].read.should be_true
         lms[0].write.should be_false

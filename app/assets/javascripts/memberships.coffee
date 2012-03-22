@@ -23,8 +23,8 @@
       @isCurrentUser = ko.computed => window.userId == @userId()
 
       @layer = ko.computed =>
-        selectedLayer = window.model.selectedLayer()
-        layer = @layers().filter((x) -> x.layerId() == selectedLayer?.id)
+        selectedLayerId = window.model.selectedLayer()?.id ? null
+        layer = @layers().filter((x) -> x.layerId() == selectedLayerId)
         if layer.length > 0 then layer[0] else null
 
       @canRead = ko.computed
