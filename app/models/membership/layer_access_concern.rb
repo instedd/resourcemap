@@ -1,12 +1,8 @@
-class Membership < ActiveRecord::Base
-  include Membership::LayerAccessConcern
+module Membership::LayerAccessConcern
+  extend ActiveSupport::Concern
 
-  belongs_to :user
-  belongs_to :collection
-
-  before_destroy :destroy_collection_memberships
-  def destroy_collection_memberships
-    collection.layer_memberships.where(:user_id => user_id).destroy_all
+  included do
+    before_destroy :destroy_collection_memberships
   end
 
   def set_layer_access(options = {})
@@ -25,5 +21,9 @@ class Membership < ActiveRecord::Base
     else
       collection.layer_memberships.create! :layer_id => options[:layer_id], :user_id => user_id, :read => read, :write => write
     end
+  end
+
+  def destroy_collection_memberships
+    collection.layer_memberships.where(:user_id => user_id).destroy_all
   end
 end
