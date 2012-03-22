@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120309192406) do
+ActiveRecord::Schema.define(:version => 20120322043253) do
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -38,6 +38,16 @@ ActiveRecord::Schema.define(:version => 20120309192406) do
     t.string   "name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "layer_memberships", :force => true do |t|
+    t.integer  "collection_id"
+    t.integer  "user_id"
+    t.integer  "layer_id"
+    t.boolean  "read",          :default => false
+    t.boolean  "write",         :default => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   create_table "layers", :force => true do |t|

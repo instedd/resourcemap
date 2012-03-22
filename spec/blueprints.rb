@@ -25,3 +25,8 @@ Site.blueprint do
   lng { rand(360) - 180 }
   group { false }
 end
+
+Layer.blueprint do
+  collection
+  name
+end

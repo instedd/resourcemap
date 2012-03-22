@@ -9,6 +9,9 @@ ResourceMap::Application.routes.draw do
       collection do
         get 'invitable'
       end
+      member do
+        post 'set_layer_access'
+      end
     end
     get 'members'
     get 'thresholds'
