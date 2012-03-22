@@ -59,16 +59,6 @@ describe Membership::LayerAccessConcern do
         LayerMembership.exists?.should be_false
       end
     end
-
-    context "when access to all layers already exists" do
-      it "revokes read access" do
-        LayerMembership.create! :collection_id => collection.id, :user_id => user2.id, :read => true, :write => true
-
-        membership2.set_layer_access :verb => :read, :access => false, :layer_id => layer.id
-
-        LayerMembership.exists?.should be_false
-      end
-    end
   end
 
   context "on destroy" do
