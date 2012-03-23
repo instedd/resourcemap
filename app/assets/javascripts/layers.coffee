@@ -180,13 +180,14 @@
       @currentField().hasFocus(true)
 
     deleteField: (field) =>
+      idx = @currentLayer().fields().indexOf(field)
       @currentLayer().fields.remove(field)
-      if @currentField() == field
-        if @currentLayer().fields().length == 0
-          @currentField(null)
-        else
-          @currentField(@currentLayer().fields()[0])
-          @currentField().hasFocus(true)
+      if @currentLayer().fields().length == 0
+        @currentField(null)
+      else
+        idx -= 1 if idx >= @currentLayer().fields().length
+        @currentField(@currentLayer().fields()[idx])
+        @currentField().hasFocus(true)
 
     newOptionKeyPress: (field, event) =>
       switch event.keyCode
