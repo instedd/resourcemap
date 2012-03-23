@@ -23,6 +23,8 @@ class SitesController < ApplicationController
   end
 
   def update_property
+    return head :forbidden unless current_user.can_write_field? site.collection, params[:code]
+
     site.properties[params[:code]] = params[:value]
     site.save!
     render json: site

@@ -107,6 +107,7 @@
       @code = ko.observable data?.code
       @name = ko.observable data?.name
       @kind = ko.observable data?.kind
+      @writeable = ko.observable data?.writeable
       @options = if data.config?.options?
                    ko.observableArray($.map(data.config.options, (x) => new Option(x)))
                  else

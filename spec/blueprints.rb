@@ -30,3 +30,11 @@ Layer.blueprint do
   collection
   name
 end
+
+Field.blueprint do
+  collection
+  layer
+  name
+  code { Sham.name }
+  kind {'text' }
+end

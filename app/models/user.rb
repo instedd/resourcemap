@@ -25,7 +25,22 @@ class User < ActiveRecord::Base
     memberships.where(:collection_id => collection.id).exists?
   end
 
+  def membership_in(collection)
+    memberships.where(:collection_id => collection.id).first
+  end
+
   def display_name
     email
+  end
+
+  def can_write_field?(collection, field_code)
+    field = collection.fields.where(:code => field_code).first
+    return false unless field
+
+    membership = membership_in(collection)
+    return true if membership.admin?
+
+    lm = LayerMembership.where(user_id: self.id, collection_id: collection.id, layer_id: field.layer_id).first
+    lm && lm.write
   end
 end

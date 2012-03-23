@@ -19,4 +19,31 @@ class Collection < ActiveRecord::Base
     search.size 1
     search.perform.results.first['_source']['properties'][Site.encode_elastic_search_keyword(property)] rescue 0
   end
+
+  def visible_fields_for(user)
+    membership = user.membership_in self
+    return [] unless membership
+
+    target_fields = fields
+
+    unless membership.admin?
+      lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
+        hash[lm.layer_id] = lm
+        hash
+      end
+
+      target_fields = fields.select { |f| lms[f.layer_id] && lms[f.layer_id].read }
+    end
+
+    target_fields.map do |f|
+      {
+        id: f.id,
+        name: f.name,
+        code: f.code,
+        kind: f.kind,
+        config: f.config,
+        writeable: !lms || lms[f.layer_id].write,
+      }
+    end
+  end
 end
