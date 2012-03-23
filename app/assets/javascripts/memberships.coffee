@@ -108,7 +108,9 @@
       if $.trim(email).length > 0
         $.post "/collections/#{collectionId}/memberships.json", {email: email}, (data) ->
           if data.status == 'added'
-            window.model.memberships.push new Membership(user_id: data.user_id, user_display_name: data.user_display_name)
+            new_member = new Membership(user_id: data.user_id, user_display_name: data.user_display_name)
+            new_member.initializeLinks()
+            window.model.memberships.push new_member
             $member_email.val('')
 
     $member_email.autocomplete
