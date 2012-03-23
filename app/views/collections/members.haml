@@ -2,7 +2,7 @@
 
 - content_for :head do
   :javascript
-    $(function() { initMemberships(#{current_user.id}, #{collection.id}, #{collection.layers.map{|x| {id: x.id, name: x.name}}.to_json}); });
+    $(function() { initMemberships(#{current_user.id}, #{collection.id}, #{collection_admin?}, #{collection.layers.map{|x| {id: x.id, name: x.name}}.to_json}); });
 
 .tabsline
   Show memberships grouped by:
@@ -49,11 +49,11 @@
         %td
           %span{ko(text: 'layer.name()'), style: 'margin-left:20px'}
         %td
-        <!-- ko if: membership.isCurrentUser() -->
+        <!-- ko if: !$root.admin() || membership.isCurrentUser() -->
         %td{ko(text: :canReadUI)}
         %td{ko(text: :canWriteUI)}
         <!-- /ko -->
-        <!-- ko if: !membership.isCurrentUser() -->
+        <!-- ko if: $root.admin() && !membership.isCurrentUser() -->
         %td
           %input{ko(checked: :canRead), type: :checkbox}
         %td
@@ -96,11 +96,11 @@
       %tr{:style => 'height:32px'}
         %td
           %span{ko(text: 'membership.userDisplayName()'), style: 'margin-left:20px'}
-        <!-- ko if: membership.isCurrentUser() -->
+        <!-- ko if: !$root.admin() || membership.isCurrentUser() -->
         %td{ko(text: :canReadUI)}
         %td{ko(text: :canWriteUI)}
         <!-- /ko -->
-        <!-- ko if: !membership.isCurrentUser() -->
+        <!-- ko if: $root.admin() && !membership.isCurrentUser() -->
         %td
           %input{ko(checked: :canRead), type: :checkbox}
         %td

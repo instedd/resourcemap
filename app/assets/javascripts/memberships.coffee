@@ -1,4 +1,4 @@
-@initMemberships = (userId, collectionId, layers) ->
+@initMemberships = (userId, collectionId, admin, layers) ->
   window.userId = userId
 
   class Expandable
@@ -81,10 +81,11 @@
       if lm.length > 0 then lm[0] else null
 
   class MembershipsViewModel
-    initialize: (memberships, layers) ->
+    initialize: (admin, memberships, layers) ->
       @selectedLayer = ko.observable()
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @memberships = ko.observableArray $.map(memberships, (x) -> new Membership(x))
+      @admin = ko.observable admin
 
       layer.initializeLinks() for layer in @layers()
       membership.initializeLinks() for membership in @memberships()
@@ -99,7 +100,7 @@
 
   $.get "/collections/#{collectionId}/memberships.json", (memberships) ->
     window.model = new MembershipsViewModel
-    window.model.initialize memberships, layers
+    window.model.initialize admin, memberships, layers
     ko.applyBindings window.model
 
     $member_email = $('#member_email')
