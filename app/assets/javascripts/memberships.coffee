@@ -1,16 +1,26 @@
 @initMemberships = (userId, collectionId, layers) ->
   window.userId = userId
 
-  class Layer
-    constructor: (data) ->
-      @id = ko.observable data?.id
-      @name = ko.observable data?.name
+  class Expandable
+    constructor: ->
+      @expanded = ko.observable false
+
+    toggleExpanded: => @expanded(!@expanded())
 
   class LayerMembership
     constructor: (data) ->
       @layerId = ko.observable data.layer_id
       @read = ko.observable data.read
       @write = ko.observable data.write
+
+  class Layer extends Expandable
+    constructor: (data) ->
+      super
+      @id = ko.observable data?.id
+      @name = ko.observable data?.name
+
+    initializeLinks: =>
+      @membershipLayerLinks = ko.observableArray $.map(window.model.memberships(), (x) => new MembershipLayerLink(x, @))
 
   class MembershipLayerLink
     constructor: (membership, layer) ->
@@ -19,7 +29,10 @@
 
       @canRead = ko.computed
         read: =>
-          @membership.findLayerMembership(@layer)?.read()
+          if @membership.admin()
+            true
+          else
+            @membership.findLayerMembership(@layer)?.read()
         write: (value) =>
           $.post "/collections/#{collectionId}/memberships/#{@membership.userId()}/set_layer_access.json", {layer_id: @layer.id(), verb: 'read', access: value}, =>
             lm = @membership.findLayerMembership(@layer)
@@ -32,7 +45,10 @@
 
       @canWrite = ko.computed
         read: =>
-          @membership.findLayerMembership(@layer)?.write()
+          if @membership.admin()
+            true
+          else
+            @membership.findLayerMembership(@layer)?.write()
         write: (value) =>
           $.post "/collections/#{collectionId}/memberships/#{@membership.userId()}/set_layer_access.json", {layer_id: @layer.id(), verb: 'write', access: value}, =>
             lm = @membership.findLayerMembership(@layer)
@@ -43,20 +59,22 @@
               @membership.layers.valueHasMutated()
         owner: @
 
-  class Membership
+      @canReadUI = ko.computed => if @canRead() then "Yes" else "No"
+      @canWriteUI = ko.computed => if @canWrite() then "Yes" else "No"
+
+  class Membership extends Expandable
     constructor: (data) ->
+      super
       @userId = ko.observable data?.user_id
       @userDisplayName = ko.observable data?.user_display_name
       @admin = ko.observable data?.admin
       @layers = ko.observableArray $.map(data?.layers ? [], (x) => new LayerMembership(x))
-      @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
 
       @adminUI = ko.computed => if @admin() then "<b>Yes</b>" else "No"
       @isCurrentUser = ko.computed => window.userId == @userId()
 
-      @expanded = ko.observable false
-
-    toggleExpanded: => @expanded(!@expanded())
+    initializeLinks: =>
+      @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
 
     findLayerMembership: (layer) =>
       lm = @layers().filter((x) -> x.layerId() == layer.id())
@@ -67,6 +85,10 @@
       @selectedLayer = ko.observable()
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @memberships = ko.observableArray $.map(memberships, (x) -> new Membership(x))
+
+      layer.initializeLinks() for layer in @layers()
+      membership.initializeLinks() for membership in @memberships()
+
       @groupBy = ko.observable("Users")
       @groupByOptions = ["Users", "Layers"]
 

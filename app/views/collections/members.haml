@@ -49,10 +49,16 @@
         %td
           %span{ko(text: 'layer.name()'), style: 'margin-left:20px'}
         %td
+        <!-- ko if: membership.isCurrentUser() -->
+        %td{ko(text: :canReadUI)}
+        %td{ko(text: :canWriteUI)}
+        <!-- /ko -->
+        <!-- ko if: !membership.isCurrentUser() -->
         %td
           %input{ko(checked: :canRead), type: :checkbox}
         %td
           %input{ko(checked: :canWrite), type: :checkbox}
+        <!-- /ko -->
         %td
       <!-- /ko -->
       <!-- /ko -->
@@ -67,5 +73,41 @@
   <!-- /ko -->
 
   <!-- ko if: groupBy() == 'Layers' -->
-  Group by layers
+  .tablewrapp
+    %table.GralTable
+      %tr
+        %th Name
+        %th Can Read?
+        %th Can Update?
+      <!-- ko foreach: layers -->
+      %tr{:style => 'height:32px'}
+        %td{ko(click: :toggleExpanded), style: 'cursor:pointer'}
+          <!-- ko if: expanded() -->
+          %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowDown.png", style: "position:relative;top:3px"}
+          <!-- /ko -->
+          <!-- ko if: !expanded() -->
+          %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowRight.png", style: "position:relative;top:3px"}
+          <!-- /ko -->
+          %span{ko(text: :name)}
+        %td
+        %td
+      <!-- ko if: expanded -->
+      <!-- ko foreach: membershipLayerLinks -->
+      %tr{:style => 'height:32px'}
+        %td
+          %span{ko(text: 'membership.userDisplayName()'), style: 'margin-left:20px'}
+        <!-- ko if: membership.isCurrentUser() -->
+        %td{ko(text: :canReadUI)}
+        %td{ko(text: :canWriteUI)}
+        <!-- /ko -->
+        <!-- ko if: !membership.isCurrentUser() -->
+        %td
+          %input{ko(checked: :canRead), type: :checkbox}
+        %td
+          %input{ko(checked: :canWrite), type: :checkbox}
+        <!-- /ko -->
+        %td
+      <!-- /ko -->
+      <!-- /ko -->
+      <!-- /ko -->
   <!-- /ko -->
