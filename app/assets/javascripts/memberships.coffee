@@ -3,8 +3,8 @@
 
   class Layer
     constructor: (data) ->
-      @id = data?.id
-      @name = data?.name
+      @id = ko.observable data?.id
+      @name = ko.observable data?.name
 
   class LayerMembership
     constructor: (data) ->
@@ -12,48 +12,63 @@
       @read = ko.observable data.read
       @write = ko.observable data.write
 
+  class MembershipLayerLink
+    constructor: (membership, layer) ->
+      @membership = membership
+      @layer = layer
+
+      @canRead = ko.computed
+        read: =>
+          @membership.findLayerMembership(@layer)?.read()
+        write: (value) =>
+          $.post "/collections/#{collectionId}/memberships/#{@membership.userId()}/set_layer_access.json", {layer_id: @layer.id(), verb: 'read', access: value}, =>
+            lm = @membership.findLayerMembership(@layer)
+            if lm
+              lm.read value
+            else
+              @membership.layers().push new LayerMembership(layer_id: @layer.id(), read: value, write: false)
+              @membership.layers.valueHasMutated()
+        owner: @
+
+      @canWrite = ko.computed
+        read: =>
+          @membership.findLayerMembership(@layer)?.write()
+        write: (value) =>
+          $.post "/collections/#{collectionId}/memberships/#{@membership.userId()}/set_layer_access.json", {layer_id: @layer.id(), verb: 'write', access: value}, =>
+            lm = @membership.findLayerMembership(@layer)
+            if lm
+              lm.write value
+            else
+              @membership.layers().push new LayerMembership(layer_id: @layer.id(), read: false, write: value)
+              @membership.layers.valueHasMutated()
+        owner: @
+
   class Membership
     constructor: (data) ->
       @userId = ko.observable data?.user_id
       @userDisplayName = ko.observable data?.user_display_name
       @admin = ko.observable data?.admin
-      @layers = ko.observableArray $.map(data?.layers ? [], (x) -> new LayerMembership(x))
+      @layers = ko.observableArray $.map(data?.layers ? [], (x) => new LayerMembership(x))
+      @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
 
       @adminUI = ko.computed => if @admin() then "<b>Yes</b>" else "No"
       @isCurrentUser = ko.computed => window.userId == @userId()
 
-      @layer = ko.computed =>
-        selectedLayerId = window.model.selectedLayer()?.id ? null
-        layer = @layers().filter((x) -> x.layerId() == selectedLayerId)
-        if layer.length > 0 then layer[0] else null
+      @expanded = ko.observable false
 
-      @canRead = ko.computed
-        read: => if @admin() then true else @layer()?.read()
-        write: (value) =>
-          layer_id = window.model.selectedLayer()?.id
-          $.post "/collections/#{collectionId}/memberships/#{@userId()}/set_layer_access.json", {layer_id: layer_id, verb: 'read', access: value}, =>
-            if @layer()
-              @layer().read value
-            else
-              @layers().push new LayerMembership(layer_id: layer_id, read: value, write: false)
-        owner: @
+    toggleExpanded: => @expanded(!@expanded())
 
-      @canWrite = ko.computed
-        read: => if @admin() then true else @layer()?.write()
-        write: (value) =>
-          layer_id = window.model.selectedLayer()?.id
-          $.post "/collections/#{collectionId}/memberships/#{@userId()}/set_layer_access.json", {layer_id: layer_id, verb: 'write', access: value}, =>
-            if @layer()
-              @layer().write value
-            else
-              @layers().push new LayerMembership(layer_id: layer_id, read: false, write: value)
-        owner: @
+    findLayerMembership: (layer) =>
+      lm = @layers().filter((x) -> x.layerId() == layer.id())
+      if lm.length > 0 then lm[0] else null
 
   class MembershipsViewModel
     initialize: (memberships, layers) ->
       @selectedLayer = ko.observable()
-      @memberships = ko.observableArray $.map(memberships, (x) -> new Membership(x))
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
+      @memberships = ko.observableArray $.map(memberships, (x) -> new Membership(x))
+      @groupBy = ko.observable("Users")
+      @groupByOptions = ["Users", "Layers"]
 
     destroyMembership: (membership) =>
       if confirm("Are you sure you want to remove #{membership.userDisplayName()} from the collection?")
