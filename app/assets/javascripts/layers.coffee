@@ -113,7 +113,18 @@
       @currentLayer = ko.observable()
       @currentField = ko.observable()
       @newOption = ko.observable(new Option)
-      @optionValid = ko.computed => $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
+      @optionValid = ko.computed =>
+        $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
+
+      @currentFieldMarginTop = ko.computed =>
+        if @currentLayer()
+          idx = @currentLayer().fields().indexOf(@currentField())
+          margin = idx * 79
+          margin += 3 if idx > 0
+          "#{margin}px"
+        else
+          0
+
 
     newLayer: =>
       layer = new Layer
