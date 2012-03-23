@@ -94,3 +94,5 @@ td.loadmore { height: 36px }
 
 .tablescroll .superblyTagItems { display:inline-block;padding:0;margin:0 }
 .tablescroll .superblyTagItem { top:4px;cursor:pointer }
+
+.hidden-until-loaded { display: none }

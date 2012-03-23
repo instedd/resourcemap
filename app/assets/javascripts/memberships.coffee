@@ -123,3 +123,5 @@
         createMembership()
 
     $('#add_member').click -> createMembership()
+
+    $('.hidden-until-loaded').show()

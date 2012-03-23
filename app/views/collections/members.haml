@@ -5,13 +5,14 @@
     $(function() { initMemberships(#{current_user.id}, #{collection.id}, #{collection_admin?}, #{collection.layers.map{|x| {id: x.id, name: x.name}}.to_json}); });
 
 .tabsline
-  Show memberships grouped by:
-  %select{ko(options: :groupByOptions, value: :groupBy)}
-  %br/
-  %br/
+  .hidden-until-loaded
+    Show memberships grouped by:
+    %select{ko(options: :groupByOptions, value: :groupBy)}
+    %br/
+    %br/
 
   <!-- ko if: groupBy() == 'Users' -->
-  .tablewrapp
+  .tablewrapp.hidden-until-loaded
     %table.GralTable
       %tr
         - if collection_admin?
@@ -73,7 +74,7 @@
   <!-- /ko -->
 
   <!-- ko if: groupBy() == 'Layers' -->
-  .tablewrapp
+  .tablewrapp.hidden-until-loaded
     %table.GralTable
       %tr
         %th Name
