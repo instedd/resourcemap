@@ -5,36 +5,38 @@
       @name = ko.observable data?.name
       @public = ko.observable data?.public
       if data?.fields
-        @fields = ko.observableArray($.map(data.fields, (x) -> new Field(x)))
+        @fields = ko.observableArray($.map(data.fields, (x) -> new Field(@, x)))
       else
         @fields = ko.observableArray([])
       @hasFocus = ko.observable(false)
-      @valid = ko.computed => @hasName() && @fieldsAreValid()
+      @nameError = ko.computed => if @hasName() then null else "the layer's Name is missing"
+      @fieldsError = ko.computed =>
+        return "the layer must have at least one field" if @fields().length == 0
+
+        codes = []
+        names = []
+
+        # Check that the name and code are not duplicated
+        for field in @fields()
+          field_error = field.error()
+          return field_error if field_error
+          return "duplicated field name '#{field.name()}'" if names.indexOf(field.name()) >= 0
+          return "duplicated field code '#{field.code()}'" false if codes.indexOf(field.code()) >= 0
+          names.push field.name()
+          codes.push field.code()
+
+        # Now check that the names and codes don't apper in other layers
+        if window.model
+          for layer in window.model.layers() when layer != @
+            for field in layer.fields()
+              return "a field with name '#{field.name()}' already exists in the layer named #{layer.name()}" if names.indexOf(field.name()) >= 0
+              return "a field with code '#{field.code()}' already exists in the layer named #{layer.name()}"  if codes.indexOf(field.code()) >= 0
+
+        null
+      @error = ko.computed => @nameError() || @fieldsError()
+      @valid = ko.computed => !@error()
 
     hasName: => $.trim(@name()).length > 0
-
-    fieldsAreValid: =>
-      return false if @fields().length == 0
-
-      codes = []
-      names = []
-
-      # Check that the name and code are not duplicated
-      for field in @fields()
-        return false unless field.valid()
-        return false if names.indexOf(field.name()) >= 0
-        return false if codes.indexOf(field.code()) >= 0
-        names.push field.name()
-        codes.push field.code()
-
-      # Now check that the names and codes don't apper in other layers
-      if window.model
-        for layer in window.model.layers() when layer != @
-          for field in layer.fields()
-            return false if names.indexOf(field.name()) >= 0
-            return false if codes.indexOf(field.code()) >= 0
-
-      true
 
     toJSON: =>
       id: @id()
@@ -43,7 +45,8 @@
       fields_attributes: $.map(@fields(), (x) -> x.toJSON())
 
   class Field
-    constructor: (data) ->
+    constructor: (layer, data) ->
+      @layer = layer
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @code = ko.observable data?.code
@@ -54,24 +57,29 @@
                    ko.observableArray()
       @hasFocus = ko.observable(false)
       @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
-      @valid = ko.computed => @hasName() && @hasCode() && (!@isOptionsKind() || @optionsValid())
+      @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer.fields().indexOf(@) + 1}"
+      @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
+      @codeError = ko.computed => if @hasCode() then null else "the field #{@fieldErrorDescription()} is missing a Code"
+      @optionsError = ko.computed =>
+        return null unless @isOptionsKind()
+
+        if @options().length > 1
+          codes = []
+          labels = []
+          for option in @options()
+            return "duplicated option code '#{option.code()}' for field #{@name()}" if codes.indexOf(option.code()) >= 0
+            return "duplicated option label '#{option.label()}' for field #{@name()}" if labels.indexOf(option.label()) >= 0
+            codes.push option.code()
+            labels.push option.label()
+          null
+        else
+          "the field '#{@name()}' must have at least two options"
+      @error = ko.computed => @nameError() || @codeError() || @optionsError()
+      @valid = ko.computed => !@error()
 
     hasName: => $.trim(@name()).length > 0
 
     hasCode: => $.trim(@code()).length > 0
-
-    optionsValid: =>
-      if @options().length > 1
-        codes = []
-        labels = []
-        for option in @options()
-          return false if codes.indexOf(option.code()) >= 0
-          return false if labels.indexOf(option.label()) >= 0
-          codes.push option.code()
-          labels.push option.label()
-        true
-      else
-        false
 
     buttonClass: =>
       switch @kind()
@@ -125,7 +133,6 @@
         else
           0
 
-
     newLayer: =>
       layer = new Layer
       @layers.push(layer)
@@ -133,7 +140,7 @@
       layer.hasFocus(true)
 
     editLayer: (layer) =>
-      @originalFields = $.map(layer.fields(), (x) -> new Field(x.toJSON()))
+      @originalFields = $.map(layer.fields(), (x) -> new Field(layer, x.toJSON()))
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
       layer.hasFocus(true)
@@ -171,7 +178,7 @@
     newSelectManyField: => @newField 'select_many'
 
     newField: (kind) =>
-      @currentField(new Field(kind: kind))
+      @currentField(new Field(@currentLayer(), kind: kind))
       @currentLayer().fields.push(@currentField())
       @currentField().hasFocus(true)
 
