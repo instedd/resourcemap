@@ -4,8 +4,9 @@ class Search
   end
   Search.page_size = 50
 
-  def initialize(collection_id)
-    @search = Collection.new_tire_search(collection_id)
+  def initialize(collection)
+    @collection = collection
+    @search = collection.new_tire_search
     @search.size self.class.page_size
     @from = 0
   end
@@ -86,6 +87,13 @@ class Search
     self
   end
 
+  def full_text_search(text)
+    codes = search_value_codes text
+    codes << text
+    @search.query { string "#{codes.join ' '}*" }
+    self
+  end
+
   def results
     @search.sort { by '_uid' }
     decode_elastic_search_results @search.perform.results
@@ -98,5 +106,20 @@ class Search
       result['_source']['properties'] = Site.decode_elastic_search_keywords(result['_source']['properties'])
     end
     results
+  end
+
+  def search_value_codes(text)
+    @fields ||= @collection.fields.all.select{|x| x.kind == 'select_one' || x.kind == 'select_many'}
+
+    codes = []
+    regex = /#{text}/i
+    @fields.each do |field|
+      field.config['options'].each do |option|
+        if option['label'] =~ regex
+          codes << option['code']
+        end
+      end
+    end
+    codes
   end
 end

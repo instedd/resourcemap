@@ -202,6 +202,30 @@ describe Search do
     end
   end
 
+  context "full text search" do
+    let!(:layer) { collection.layers.make }
+    let!(:field) { layer.fields.make :kind => 'select_one', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+    let!(:site1) { collection.sites.make :name => "Argentina", :properties => {'beds' => 8, 'prop' => 'foo'} }
+    let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {'beds' => 10, 'prop' => 'bar'} }
+    let!(:site3) { collection.sites.make :name => "Cordoba", :properties => {'beds' => 20, 'prop' => 'baz'} }
+
+    it "finds by name" do
+      assert_results collection.new_search.full_text_search("Argent"), site1
+    end
+
+    it "finds by number property" do
+      assert_results collection.new_search.full_text_search(8), site1
+    end
+
+    it "finds by text property" do
+      assert_results collection.new_search.full_text_search("foo"), site1
+    end
+
+    it "finds by value of select one property" do
+      assert_results collection.new_search.full_text_search("water"), site1
+    end
+  end
+
   def assert_results(search, *sites)
     search.results.map{|r| r['_id'].to_i}.sort.should =~ sites.map(&:id)
   end

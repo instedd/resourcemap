@@ -35,7 +35,7 @@ module Collection::TireConcern
   end
 
   def new_search
-    Search.new id
+    Search.new self
   end
 
   def new_map_search
