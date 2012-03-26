@@ -22,7 +22,9 @@ class Search
   end
 
   def eq(property, value)
-    @search.filter :term, Site.encode_elastic_search_keyword(property) => value
+    query_key = Site.encode_elastic_search_keyword(property)
+    query_value = property_value(property.to_s, value)
+    add_query query_key, query_value
     self
   end
 
@@ -90,11 +92,16 @@ class Search
   def full_text_search(text)
     codes = search_value_codes text
     codes << text
-    @search.query { string "#{codes.join ' '}*" }
+    add_query nil, "#{codes.join ' '}*"
     self
   end
 
   def results
+    if @queries
+      query = @queries.map { |x| x[:key] ? %Q(#{x[:key]}:"#{x[:value]}") : "#{x[:value]}*"}.join " AND "
+      @search.query { string query }
+    end
+
     @search.sort { by '_uid' }
     decode_elastic_search_results @search.perform.results
   end
@@ -109,11 +116,9 @@ class Search
   end
 
   def search_value_codes(text)
-    @fields ||= @collection.fields.all.select{|x| x.kind == 'select_one' || x.kind == 'select_many'}
-
     codes = []
     regex = /#{text}/i
-    @fields.each do |field|
+    fields.each do |field|
       field.config['options'].each do |option|
         if option['label'] =~ regex
           codes << option['code']
@@ -121,5 +126,24 @@ class Search
       end
     end
     codes
+  end
+
+  def property_value(property, value)
+    field = fields.find { |x| x.code == property }
+    if field
+      field.config['options'].each do |option|
+        return option['code'] if option['label'] == value
+      end
+    end
+    value
+  end
+
+  def fields
+    @fields ||= @collection.fields.all.select{|x| x.kind == 'select_one' || x.kind == 'select_many'}
+  end
+
+  def add_query(key, value)
+    @queries ||= []
+    @queries.push key: key, value: value
   end
 end

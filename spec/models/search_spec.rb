@@ -32,6 +32,20 @@ describe Search do
       search.results.length.should eq(0)
     end
 
+    it "searches by equality with text" do
+      site4 = collection.sites.make :properties => {'population_source' => "National Census"}
+      search = collection.new_search
+      search.where population_source: "National Census"
+      assert_results search, site4
+    end
+
+    it "searches by equality with text doesn't confuse name" do
+      site4 = collection.sites.make :name => "Census", :properties => {'population_source' => "National"}
+      search = collection.new_search
+      search.where population_source: "National Census"
+      search.results.length.should eq(0)
+    end
+
     it "searches with lt" do
       search = collection.new_search
       search.lt :beds, 8
@@ -204,13 +218,14 @@ describe Search do
 
   context "full text search" do
     let!(:layer) { collection.layers.make }
-    let!(:field) { layer.fields.make :kind => 'select_one', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+    let!(:field) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
     let!(:site1) { collection.sites.make :name => "Argentina", :properties => {'beds' => 8, 'prop' => 'foo'} }
     let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {'beds' => 10, 'prop' => 'bar'} }
     let!(:site3) { collection.sites.make :name => "Cordoba", :properties => {'beds' => 20, 'prop' => 'baz'} }
 
     it "finds by name" do
       assert_results collection.new_search.full_text_search("Argent"), site1
+      assert_results collection.new_search.full_text_search("Buenos"), site2
     end
 
     it "finds by number property" do
@@ -223,6 +238,10 @@ describe Search do
 
     it "finds by value of select one property" do
       assert_results collection.new_search.full_text_search("water"), site1
+    end
+
+    it "finds by value of select one property using where" do
+      assert_results collection.new_search.where(prop: "A glass of water"), site1
     end
   end
 
