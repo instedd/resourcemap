@@ -16,5 +16,7 @@ class Api::CollectionsController < ApplicationController
       format.rss
       format.json { render json: collection_json(collection, @results) }
     end
+  rescue => ex
+    render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
   end
 end

@@ -31,6 +31,8 @@ class Search
   end
 
   def eq(property, value)
+    check_field_exists property
+
     query_key = Site.encode_elastic_search_keyword(property)
     query_value = property_value(property.to_s, value)
     add_query query_key, query_value
@@ -40,6 +42,8 @@ class Search
   ['lt', 'lte', 'gt', 'gte'].each do |op|
     class_eval %Q(
       def #{op}(property, value)
+        check_field_exists property
+
         @search.filter :range, Site.encode_elastic_search_keyword(property) => {#{op}: value}
         self
       end
@@ -99,7 +103,7 @@ class Search
   end
 
   def full_text_search(text)
-    codes = @collection.search_value_codes text, fields
+    codes = @collection.search_value_codes text, fields.select(&:select_kind?)
     codes << text
     add_query nil, "#{codes.join ' '}"
     self
@@ -134,7 +138,7 @@ class Search
 
   def property_value(property, value)
     field = fields.find { |x| x.code == property }
-    if field
+    if field && field.config && field.config['options']
       field.config['options'].each do |option|
         return option['code'] if option['label'] == value
       end
@@ -143,11 +147,16 @@ class Search
   end
 
   def fields
-    @fields ||= @collection.fields.all.select &:select_kind?
+    @fields ||= @collection.fields.all
   end
 
   def add_query(key, value)
     @queries ||= []
     @queries.push key: key, value: value
+  end
+
+  def check_field_exists(name)
+    name = Site.decode_elastic_search_keyword name.to_s
+    raise "Unknown field: #{name}" unless fields.any?{|f| f.code == name}
   end
 end

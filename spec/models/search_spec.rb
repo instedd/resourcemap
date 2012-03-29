@@ -2,8 +2,12 @@ require 'spec_helper'
 
 describe Search do
   let!(:collection) { Collection.make }
+  let!(:layer) { collection.layers.make }
 
   context "search by property" do
+    let!(:beds) { layer.fields.make :code => 'beds' }
+    let!(:tables) { layer.fields.make :code => 'tables' }
+
     let!(:site1) { collection.sites.make :properties => {'beds' => 5, 'tables' => 1} }
     let!(:site2) { collection.sites.make :properties => {'beds' => 10, 'tables' => 2} }
     let!(:site3) { collection.sites.make :properties => {'beds' => 20, 'tables' => 3} }
@@ -32,18 +36,22 @@ describe Search do
       search.results.length.should eq(0)
     end
 
-    it "searches by equality with text" do
-      site4 = collection.sites.make :properties => {'population_source' => "National Census"}
-      search = collection.new_search
-      search.where population_source: "National Census"
-      assert_results search, site4
-    end
+    context "full text search" do
+      let!(:population_source) { layer.fields.make :code => 'population_source', :kind => 'text' }
 
-    it "searches by equality with text doesn't confuse name" do
-      site4 = collection.sites.make :name => "Census", :properties => {'population_source' => "National"}
-      search = collection.new_search
-      search.where population_source: "National Census"
-      search.results.length.should eq(0)
+      it "searches by equality with text" do
+        site4 = collection.sites.make :properties => {'population_source' => "National Census"}
+        search = collection.new_search
+        search.where population_source: "National Census"
+        assert_results search, site4
+      end
+
+      it "searches by equality with text doesn't confuse name" do
+        site4 = collection.sites.make :name => "Census", :properties => {'population_source' => "National"}
+        search = collection.new_search
+        search.where population_source: "National Census"
+        search.results.length.should eq(0)
+      end
     end
 
     it "searches with lt" do
@@ -113,6 +121,13 @@ describe Search do
         search = collection.new_search
         search.where beds: '= 10'
         assert_results search, site2
+      end
+    end
+
+    context "unknow field" do
+      it "raises on unknown field" do
+        search = collection.new_search
+        lambda { search.where unknown: 10 }.should raise_error(RuntimeError, "Unknown field: unknown")
       end
     end
   end
@@ -205,6 +220,8 @@ describe Search do
   end
 
   context "reserved keywords" do
+    let!(:type) { layer.fields.make :code => 'type' }
+
     let!(:site1) { collection.sites.make :properties => {'type' => 'foo'} }
     let!(:site2) { collection.sites.make :properties => {'type' => 'bar'} }
 
