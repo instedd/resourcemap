@@ -96,6 +96,34 @@ class CollectionsController < ApplicationController
     render :json => :ok
   end
 
+  def search
+    search = collection.new_search
+    search.full_text_search params[:search]
+    search.offset params[:offset]
+    search.limit params[:limit]
+    results = search.results.map do |result|
+      source = result['_source']
+
+      obj = {}
+      obj[:id] = source['id']
+      obj[:name] = source['name']
+      obj[:created_at] = Site.parse_date(source['created_at'])
+      obj[:updated_at] = Site.parse_date(source['updated_at'])
+
+      if source['location']
+        obj[:lat] = source['location']['lat']
+        obj[:lng] = source['location']['lon']
+      end
+
+      if source['properties']
+        obj[:properties] = source['properties']
+      end
+
+      obj
+    end
+    render json: results
+  end
+
   private
 
   def breadcrumb

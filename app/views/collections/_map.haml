@@ -96,7 +96,7 @@
 
   -# New Group form
   <!-- ko if: newGroup -->
-  %form{ko(with: :newGroup, submit: '$root.saveSite', attr: {action: "'#' + ($root.currentCollection() ? $root.currentCollection().id() : '')"}), style: 'display:inline-block'}
+  %form{ko(with: :newGroup, submit: '$root.saveSite', attr: {action: '$root.formAction()'}), style: 'display:inline-block'}
     .tableheader.w33
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
@@ -126,7 +126,7 @@
 
   -# New Site form
   <!-- ko if: newSite -->
-  %form{ko(with: :newSite, submit: '$root.saveSite', attr: {action: "'#' + ($root.currentCollection() ? $root.currentCollection().id() : '')"}), style: 'display:inline-block'}
+  %form{ko(with: :newSite, submit: '$root.saveSite', attr: {action: '$root.formAction()'}), style: 'display:inline-block'}
     .tableheader.w33
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
@@ -178,7 +178,7 @@
 
   -# Show Group form
   <!-- ko if: showGroup -->
-  %form{ko(with: :showGroup, submit: '$root.saveSite', attr: {action: "'#' + ($root.currentCollection() ? $root.currentCollection().id() : '')"}), style: 'display:inline'}
+  %form{ko(with: :showGroup, submit: '$root.saveSite', attr: {action: '$root.formAction()'}), style: 'display:inline'}
     .tableheader.w33
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
@@ -210,7 +210,7 @@
 
   -# Show Site form
   <!-- ko if: showSite -->
-  %form{ko(with: :showSite, submit: '$root.saveSite', attr: {action: "'#' + ($root.currentCollection() ? $root.currentCollection().id() : '')"}), style: 'display:inline'}
+  %form{ko(with: :showSite, submit: '$root.saveSite', attr: {action: '$root.formAction()'}), style: 'display:inline'}
     .tableheader.w33
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat

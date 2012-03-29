@@ -8,4 +8,8 @@ class Field < ActiveRecord::Base
   def set_collection_id_to_layer_id
     self.collection_id = layer.collection_id if layer
   end
+
+  def select_kind?
+    kind == 'select_one' || kind == 'select_many'
+  end
 end

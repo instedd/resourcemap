@@ -7,12 +7,21 @@ class Search
   def initialize(collection)
     @collection = collection
     @search = collection.new_tire_search
-    @search.size self.class.page_size
     @from = 0
   end
 
   def page(page)
     @search.from((page - 1) * self.class.page_size)
+    self
+  end
+
+  def offset(offset)
+    @offset = offset
+    self
+  end
+
+  def limit(limit)
+    @limit = limit
     self
   end
 
@@ -90,9 +99,9 @@ class Search
   end
 
   def full_text_search(text)
-    codes = search_value_codes text
+    codes = @collection.search_value_codes text, fields
     codes << text
-    add_query nil, "#{codes.join ' '}*"
+    add_query nil, "#{codes.join ' '}"
     self
   end
 
@@ -103,6 +112,14 @@ class Search
     end
 
     @search.sort { by '_uid' }
+
+    if @offset && @limit
+      @search.from @offset
+      @search.size @limit
+    else
+      @search.size self.class.page_size
+    end
+
     decode_elastic_search_results @search.perform.results
   end
 
@@ -113,19 +130,6 @@ class Search
       result['_source']['properties'] = Site.decode_elastic_search_keywords(result['_source']['properties'])
     end
     results
-  end
-
-  def search_value_codes(text)
-    codes = []
-    regex = /#{text}/i
-    fields.each do |field|
-      field.config['options'].each do |option|
-        if option['label'] =~ regex
-          codes << option['code']
-        end
-      end
-    end
-    codes
   end
 
   def property_value(property, value)
@@ -139,7 +143,7 @@ class Search
   end
 
   def fields
-    @fields ||= @collection.fields.all.select{|x| x.kind == 'select_one' || x.kind == 'select_many'}
+    @fields ||= @collection.fields.all.select &:select_kind?
   end
 
   def add_query(key, value)

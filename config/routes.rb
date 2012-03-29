@@ -27,6 +27,10 @@ ResourceMap::Application.routes.draw do
     post 'import_wizard_upload_csv'
     get 'import_wizard_adjustments'
     post 'import_wizard_execute'
+
+    member do
+      get 'search'
+    end
   end
 
   resources :sites do

@@ -41,6 +41,7 @@ class SitesController < ApplicationController
     search.zoom = zoom
     search.bounds = params if zoom >= 2
     search.exclude_id params[:exclude_id].to_i if params[:exclude_id].present?
+    search.full_text_search params[:search] if params[:search].present?
     render json: search.results
   end
 

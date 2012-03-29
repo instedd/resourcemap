@@ -186,6 +186,9 @@
   # An object with a position on the map.
   class Locatable
     constructor: (data) ->
+      @constructorLocation(data)
+
+    constructorLocation: (data) ->
       @lat = ko.observable data?.lat
       @lng = ko.observable data?.lng
       @position = ko.computed
@@ -251,16 +254,15 @@
         window.model.refreshTimeago()
 
     addSite: (site) =>
-      unless window.model.siteIds[site.id()]
-        # This check is because the selected site might be selected on the map,
-        # but not in the tree. So we use that one instead of the one from the server,
-        # and set it's parent to this site.
-        if window.model.selectedSite()?.id() == site.id()
-          window.model.selectedSite().parent = @
-          @sites.push(window.model.selectedSite())
-        else
-          @sites.push(site)
-        window.model.siteIds[site.id()] = site
+      # This check is because the selected site might be selected on the map,
+      # but not in the tree. So we use that one instead of the one from the server,
+      # and set it's parent to this site.
+      if window.model.selectedSite()?.id() == site.id()
+        window.model.selectedSite().parent = @
+        @sites.push(window.model.selectedSite())
+      else
+        @sites.push(site)
+      window.model.siteIds[site.id()] = site
 
     removeSite: (site) =>
       @sites.remove site
@@ -272,22 +274,10 @@
         @loadMoreSites()
       @expanded(!@expanded())
 
-  class Collection extends SitesContainer
-    constructor: (data) ->
-      super(data)
-      @fields = ko.observableArray()
-      @checked = ko.observable true
-      @fieldsInitialized = false
-
-    sitesUrl: -> "/collections/#{@id()}/sites"
-
+  class CollectionBase extends SitesContainer
     level: -> 0
 
     defaultZoom: -> 4
-
-    fetchLocation: => $.get "/collections/#{@id()}.json", {}, (data) =>
-      @position(data)
-      @updatedAt(data.updated_at)
 
     fetchFields: (callback) =>
       if @fieldsInitialized
@@ -308,6 +298,38 @@
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
+
+  class Collection extends CollectionBase
+    constructor: (data) ->
+      super(data)
+      @fields = ko.observableArray()
+      @checked = ko.observable true
+      @fieldsInitialized = false
+
+    sitesUrl: -> "/collections/#{@id()}/sites.json"
+
+    fetchLocation: => $.get "/collections/#{@id()}.json", {}, (data) =>
+      @position(data)
+      @updatedAt(data.updated_at)
+
+  # A collection that is filtered by a search result
+  class CollectionSearch extends CollectionBase
+    constructor: (collection, search) ->
+      @collection = collection
+      @search = search
+      @fields = collection.fields
+      @fieldsInitialized = collection.fieldsInitialized
+
+      @id = ko.observable collection.id()
+      @name = ko.observable collection.name()
+      @sites = ko.observableArray()
+      @sitesPage = 1
+      @hasMoreSites = ko.observable true
+      @loadingSites = ko.observable false
+
+      @constructorLocation(lat: collection.lat(), lng: collection.lng())
+
+    sitesUrl: -> "/collections/#{@id()}/search.json?search=" + escape(@search)
 
   class Site extends SitesContainer
     constructor: (parent, data) ->
@@ -332,7 +354,7 @@
       @locationTextTemp = @locationText()
       @valid = ko.computed => @hasName()
 
-    sitesUrl: -> "/sites/#{@id()}/root_sites"
+    sitesUrl: -> "/sites/#{@id()}/root_sites.json"
 
     level: => @parent.level() + 1
 
@@ -608,6 +630,10 @@
       @reloadMapSitesAutomatically = true
       @requestNumber = 0
       @geocoder = new google.maps.Geocoder();
+      @search = ko.observable('')
+
+      # To be used for form actions, so the url doesn't change
+      @formAction = ko.computed => "##{if @currentCollection() then @currentCollection().id() else ''}"
 
       @markerImageInactive = new google.maps.MarkerImage(
         "/assets/marker_inactive.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
@@ -633,6 +659,9 @@
 
       Sammy( ->
         @get '#:collection', ->
+          # We don't want to fetch the collection if there's a search
+          return if $.trim(self.search()).length > 0
+
           collection = self.findCollectionById parseInt(this.params.collection)
           self.currentCollection collection
           self.unselectSite() if self.selectedSite()
@@ -647,6 +676,7 @@
         @get '#/', ->
           self.currentCollection(null)
           self.unselectSite() if self.selectedSite()
+          self.search('')
 
           initialized = self.initMap()
           self.reloadMapSites() unless initialized
@@ -876,7 +906,8 @@
         w: sw.lng()
         z: @map.getZoom()
         collection_ids: collection_ids
-        exclude_id: if @selectedSite()?.id() && !@selectedSite().group() then @selectedSite().id() else null
+      query.exclude_id = @selectedSite().id() if @selectedSite()?.id() && !@selectedSite().group()
+      query.search = @mapSearch if @mapSearch
 
       @requestNumber += 1
       currentRequestNumber = @requestNumber
@@ -1056,6 +1087,22 @@
       unless @showingMap()
         unless $('table.GralTable').hasClass("fht-table")
           $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable'
+
+    performSearch: =>
+      @unselectSite()
+      if $.trim(@search()).length == 0
+        # Fix the search text so that when panning the map we always use the original one
+        delete @mapSearch
+
+        @currentCollection(@currentCollection().collection)
+      else
+        # Fix the search text so that when panning the map we always use the original one
+        @mapSearch = @search()
+
+        @currentCollection(new CollectionSearch(@currentCollection(), @search()))
+        @currentCollection().loadMoreSites()
+      @reloadMapSites()
+      false
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)
