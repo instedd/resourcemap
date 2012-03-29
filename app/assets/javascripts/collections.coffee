@@ -1101,7 +1101,7 @@
 
         @currentCollection(new CollectionSearch(@currentCollection(), @search()))
         @currentCollection().loadMoreSites()
-      @reloadMapSites()
+      @reloadMapSites() if @showingMap()
       false
 
   $.get "/collections.json", {}, (collections) =>
