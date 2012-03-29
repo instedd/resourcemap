@@ -94,4 +94,18 @@ describe MapSearch do
       results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1.0, :lng => 2.0, :count => 2, :max_zoom => 4}])
     end
   end
+
+  context "full text search" do
+    let!(:collection) { Collection.make }
+    let!(:site1) { collection.sites.make :name => 'Foo' }
+    let!(:site2) { collection.sites.make :name => 'Bar' }
+
+    it "searches by name" do
+      search = MapSearch.new collection.id
+      search.full_text_search 'Foo'
+      results = search.results
+      results[:sites].length.should eq(1)
+      results[:sites][0][:id].should eq(site1.id)
+    end
+  end
 end
