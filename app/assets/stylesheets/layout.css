@@ -96,3 +96,5 @@ td.loadmore { height: 36px }
 .tablescroll .superblyTagItem { top:4px;cursor:pointer }
 
 .hidden-until-loaded { display: none }
+
+.highlight { background-color: yellow; }

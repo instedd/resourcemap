@@ -353,6 +353,7 @@
         owner: @
       @locationTextTemp = @locationText()
       @valid = ko.computed => @hasName()
+      @highlightedName = ko.computed => window.model.highlightSearch(@name())
 
     sitesUrl: -> "/sites/#{@id()}/root_sites.json"
 
@@ -369,6 +370,9 @@
     propertyValue: (field) =>
       value = @properties()[field.code()]
       field.valueUIFor(value)
+
+    highlightedPropertyValue: (field) =>
+      window.model.highlightSearch(@propertyValue(field))
 
     fetchLocation: =>
       $.get "/sites/#{@id()}.json", {}, (data) =>
@@ -1092,18 +1096,30 @@
     performSearch: =>
       @unselectSite()
       if $.trim(@search()).length == 0
-        @lastSearch(null)
         @currentCollection(@currentCollection().collection)
+        @lastSearch(null)
       else
-        @lastSearch(@search())
-        @currentCollection(new CollectionSearch(@currentCollection(), @search()))
+        originalCollection = if @lastSearch() then @currentCollection().collection else @currentCollection()
+        @currentCollection(new CollectionSearch(originalCollection, @search()))
         @currentCollection().loadMoreSites()
+        @lastSearch(@search())
       @reloadMapSites() if @showingMap()
       false
 
     clearSearch: =>
       @search('')
       @performSearch()
+
+    highlightSearch: (text) =>
+      if @lastSearch()
+        text = "#{text}"
+        idx = text.toLowerCase().indexOf(@lastSearch().toLowerCase())
+        if idx >= 0
+          "#{text.substring(0, idx)}<b class=\"highlight\">#{text.substring(idx, idx + @lastSearch().length)}</b>#{text.substring(idx + @lastSearch().length)}"
+        else
+          text
+      else
+        text
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)
