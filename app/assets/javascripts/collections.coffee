@@ -631,6 +631,7 @@
       @requestNumber = 0
       @geocoder = new google.maps.Geocoder();
       @search = ko.observable('')
+      @lastSearch = ko.observable(null)
 
       # To be used for form actions, so the url doesn't change
       @formAction = ko.computed => "##{if @currentCollection() then @currentCollection().id() else ''}"
@@ -907,7 +908,7 @@
         z: @map.getZoom()
         collection_ids: collection_ids
       query.exclude_id = @selectedSite().id() if @selectedSite()?.id() && !@selectedSite().group()
-      query.search = @mapSearch if @mapSearch
+      query.search = @lastSearch() if @lastSearch()
 
       @requestNumber += 1
       currentRequestNumber = @requestNumber
@@ -1091,18 +1092,18 @@
     performSearch: =>
       @unselectSite()
       if $.trim(@search()).length == 0
-        # Fix the search text so that when panning the map we always use the original one
-        delete @mapSearch
-
+        @lastSearch(null)
         @currentCollection(@currentCollection().collection)
       else
-        # Fix the search text so that when panning the map we always use the original one
-        @mapSearch = @search()
-
+        @lastSearch(@search())
         @currentCollection(new CollectionSearch(@currentCollection(), @search()))
         @currentCollection().loadMoreSites()
       @reloadMapSites() if @showingMap()
       false
+
+    clearSearch: =>
+      @search('')
+      @performSearch()
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)
