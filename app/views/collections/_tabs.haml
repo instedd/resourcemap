@@ -1,3 +1,7 @@
+%h1= collection.name
+- if collection.description.present?
+  %p{style: 'font-size:12px'}= collection.description
+
 %ul.tabs.top
   = tab "Overview", collection_path(collection)
   = tab "Members", collection_members_path(collection)

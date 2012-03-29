@@ -1,9 +1,6 @@
 :javascript
   $(function() { $('#upload').change(function() { $('#upload_form').submit() }); });
 
-%h1= collection.name
-%p Hello
-
 = render 'tabs'
 
 - sites_count = collection.sites.count
