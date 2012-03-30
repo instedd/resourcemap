@@ -103,7 +103,8 @@ class Search
   end
 
   def full_text_search(text)
-    add_query ElasticSearch::QueryHelper.full_text_search(text, @collection, fields.select(&:select_kind?))
+    query = ElasticSearch::QueryHelper.full_text_search(text, @search, @collection, fields)
+    add_query query if query
     self
   end
 

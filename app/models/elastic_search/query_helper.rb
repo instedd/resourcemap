@@ -13,19 +13,91 @@ module ElasticSearch::QueryHelper
     # baz might appear somewhere else.
     #
     # If no field label would have matched, baz* would be the returned string.
-    def full_text_search(text, collection, fields = nil)
-      codes = collection.search_value_codes text, fields
+    #
+    # Addionally, range queries (as "greater than") are apprended to the given tire_search.
+    #
+    # Can return nil if no condition was generated except comparison of field values.
+    def full_text_search(text, tire_search, collection, fields = nil)
+      search_hash = SearchParser.new text
 
-      if codes.present?
-        codes = codes.map { |k, v| %Q(#{Site.encode_elastic_search_keyword(k)}:"#{v}") }
-        codes.push append_star_unless_numeric(text)
-        "(#{codes.join " OR "})"
-      else
-        append_star_unless_numeric(text)
+      conditions = []
+
+      if text = search_hash.search
+        codes = search_value_codes search_hash.search, collection, fields
+
+        if codes.present?
+          codes = codes.map { |k, v| %Q(#{Site.encode_elastic_search_keyword(k)}:"#{v}") }
+          codes.push append_star_unless_numeric(search_hash.search)
+          conditions.push "(#{codes.join " OR "})"
+        else
+          conditions.push append_star_unless_numeric(search_hash.search)
+        end
       end
+
+      search_hash.each do |key, value|
+
+        # Check that the field exists indeed in the collection,
+        # but only when not searching for name and id
+        if key.downcase == 'id' || key.downcase == 'name'
+          op = '='
+        else
+          field =  collection.fields.find { |x| x.code == key || x.name == key}
+          next unless field
+
+          key = Site.encode_elastic_search_keyword field.code
+          op, value = SearchParser.get_op_and_val value
+
+          # Check if the user is searching a label instead of the code
+          code = search_value_code field, /#{value}/i
+          value = code if code
+        end
+
+        case op
+        when '='
+          conditions.push "#{key}:#{append_star_unless_numeric(value)}"
+        when '<'
+          tire_search.filter :range, key => {lt: value}
+        when '<='
+          tire_search.filter :range, key => {lte: value}
+        when '>'
+          tire_search.filter :range, key => {gt: value}
+        when '>='
+          tire_search.filter :range, key => {gte: value}
+        end
+      end
+
+      conditions.length > 0 ? (conditions.join " AND ") : nil
     end
 
     private
+
+    # Searches value codes from their labels on this collections' fields,
+    # or in the given fields.
+    # Returns a hash of matching field codes and the codes. For example:
+    # {:field_code => :option_code}
+    def search_value_codes(text, collection, fields_to_search = nil)
+      fields_to_search ||= collection.fields.all
+      fields_to_search = fields_to_search.select &:select_kind?
+
+      codes = {}
+      regex = /#{text}/i
+      fields_to_search.each do |field|
+        option_code = search_value_code field, regex
+        codes[field.code] = option_code if option_code
+      end
+      codes
+    end
+
+    def search_value_code(field, regex)
+      return nil unless field.config && field.config['options']
+
+      field.config['options'].each do |option|
+        if option['label'] =~ regex
+          return option['code']
+        end
+      end
+      nil
+    end
 
     # When searching for a number, like 8, we don't want to search 8*:
     # that is, we don't want to search prefixes, we want to search an exact number.

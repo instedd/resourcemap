@@ -103,8 +103,10 @@ class MapSearch
   def set_full_text_search
     # Assume we only have one collection id
     @collection = Collection.find @collection_ids[0]
-    query_text = ElasticSearch::QueryHelper.full_text_search @full_text_search, @collection
-    @search.query { string query_text }
+    query = ElasticSearch::QueryHelper.full_text_search @full_text_search, @search, @collection
+    if query
+      @search.query { string query }
+    end
     self
   end
 end

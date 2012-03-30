@@ -97,7 +97,8 @@ describe MapSearch do
 
   context "full text search" do
     let!(:layer) { collection.layers.make }
-    let!(:field) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+    let!(:field_prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+    let!(:field_beds) { layer.fields.make :kind => 'numeric', :code => 'beds' }
     let!(:site1) { collection.sites.make :name => "Argentina", :properties => {'beds' => 8, 'prop' => 'foo'} }
     let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {'beds' => 10, 'prop' => 'bar'} }
     let!(:site3) { collection.sites.make :name => "Cordoba bar", :properties => {'beds' => 20, 'prop' => 'baz'} }
@@ -126,6 +127,21 @@ describe MapSearch do
     it "doesn't give false positives" do
       search.full_text_search 'wine'
       assert_result search, site2
+    end
+
+    it "searches by name property" do
+      search.full_text_search('name:"Buenos Aires"')
+      assert_result search, site2
+    end
+
+    it "searches by numeric property" do
+      search.full_text_search('beds:8')
+      assert_result search, site1
+    end
+
+    it "searches by numeric property with comparison" do
+      search.full_text_search('beds:>10')
+      assert_result search, site3
     end
 
     def assert_result(search, site)

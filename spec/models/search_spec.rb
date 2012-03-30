@@ -235,7 +235,8 @@ describe Search do
 
   context "full text search" do
     let!(:layer) { collection.layers.make }
-    let!(:field) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+    let!(:field_prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+    let!(:field_beds) { layer.fields.make :kind => 'numeric', :code => 'beds' }
     let!(:site1) { collection.sites.make :name => "Argentina", :properties => {'beds' => 8, 'prop' => 'foo'} }
     let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {'beds' => 10, 'prop' => 'bar'} }
     let!(:site3) { collection.sites.make :name => "Cordoba bar Buenos", :properties => {'beds' => 20, 'prop' => 'baz'} }
@@ -267,6 +268,26 @@ describe Search do
 
     it "searches whole phrase, not part of it" do
       assert_results collection.new_search.full_text_search("Buenos Aires"), site2
+    end
+
+    it "searches by name property" do
+      assert_results collection.new_search.full_text_search('name:"Buenos Aires"'), site2
+    end
+
+    it "searches by name property with one word" do
+      assert_results collection.new_search.full_text_search('name:Buenos'), site2, site3
+    end
+
+    it "searches by numeric property" do
+      assert_results collection.new_search.full_text_search('beds:8'), site1
+    end
+
+    it "searches by numeric property with comparison" do
+      assert_results collection.new_search.full_text_search('beds:>=10'), site2, site3
+    end
+
+    it "searches by label value" do
+      assert_results collection.new_search.full_text_search("prop:water"), site1
     end
   end
 

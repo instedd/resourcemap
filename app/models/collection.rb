@@ -46,23 +46,4 @@ class Collection < ActiveRecord::Base
       }
     end
   end
-
-  # Searches value codes from their labels on this collections' fields,
-  # or in the given fields.
-  # Returns a hash of matching field codes and the codes. For example:
-  # {:field_code => :option_code}
-  def search_value_codes(text, fields_to_search = nil)
-    fields_to_search ||= fields.all.select &:select_kind?
-
-    codes = {}
-    regex = /#{text}/i
-    fields_to_search.each do |field|
-      field.config['options'].each do |option|
-        if option['label'] =~ regex
-          codes[field.code] = option['code']
-        end
-      end
-    end
-    codes
-  end
 end
