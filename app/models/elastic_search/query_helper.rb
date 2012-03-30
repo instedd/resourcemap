@@ -18,10 +18,32 @@ module ElasticSearch::QueryHelper
 
       if codes.present?
         codes = codes.map { |k, v| %Q(#{Site.encode_elastic_search_keyword(k)}:"#{v}") }
-        codes.push "#{text}*"
+        codes.push append_star_unless_numeric(text)
         "(#{codes.join " OR "})"
       else
-        "#{text}*"
+        append_star_unless_numeric(text)
+      end
+    end
+
+    private
+
+    # When searching for a number, like 8, we don't want to search 8*:
+    # that is, we don't want to search prefixes, we want to search an exact number.
+    # That's why we don't append a start.
+    def append_star_unless_numeric(text)
+      if text.integer?
+        text
+      else
+        # Lucene doesn't support searching for "foo ba*":
+        # http://wiki.apache.org/lucene-java/LuceneFAQ#Can_I_combine_wildcard_and_phrase_search.2C_e.g._.22foo_ba.2A.22.3F
+        #
+        # So our approach here is: if just one word is looked for, we use a star, no quotes.
+        # Otherwise, we use quotes and no star.
+        if text =~ /\s/
+          %Q("#{text}")
+        else
+          "#{text}*"
+        end
       end
     end
   end

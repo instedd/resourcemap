@@ -238,11 +238,11 @@ describe Search do
     let!(:field) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
     let!(:site1) { collection.sites.make :name => "Argentina", :properties => {'beds' => 8, 'prop' => 'foo'} }
     let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {'beds' => 10, 'prop' => 'bar'} }
-    let!(:site3) { collection.sites.make :name => "Cordoba bar", :properties => {'beds' => 20, 'prop' => 'baz'} }
+    let!(:site3) { collection.sites.make :name => "Cordoba bar Buenos", :properties => {'beds' => 20, 'prop' => 'baz'} }
 
     it "finds by name" do
       assert_results collection.new_search.full_text_search("Argent"), site1
-      assert_results collection.new_search.full_text_search("Buenos"), site2
+      assert_results collection.new_search.full_text_search("Buenos"), site2, site3
     end
 
     it "finds by number property" do
@@ -263,6 +263,10 @@ describe Search do
 
     it "doesn't give false positives" do
       assert_results collection.new_search.full_text_search("wine"), site2
+    end
+
+    it "searches whole phrase, not part of it" do
+      assert_results collection.new_search.full_text_search("Buenos Aires"), site2
     end
   end
 
