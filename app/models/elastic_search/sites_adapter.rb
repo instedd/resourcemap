@@ -1,4 +1,4 @@
-class ElasticSearchSitesAdapter < Psych::Handler
+class ElasticSearch::SitesAdapter < Psych::Handler
   def initialize(listener)
     @listener = listener
     @source_mappings = 0

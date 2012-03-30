@@ -35,7 +35,7 @@ class Search
 
     query_key = Site.encode_elastic_search_keyword(property)
     query_value = property_value(property.to_s, value)
-    add_query query_key, query_value
+    add_query [%Q(#{query_key}:"#{query_value}")]
     self
   end
 
@@ -103,15 +103,13 @@ class Search
   end
 
   def full_text_search(text)
-    codes = @collection.search_value_codes text, fields.select(&:select_kind?)
-    codes << text
-    add_query nil, "#{codes.join ' '}"
+    add_query ElasticSearch::QueryHelper.full_text_search text, @collection, fields.select(&:select_kind?)
     self
   end
 
   def results
     if @queries
-      query = @queries.map { |x| x[:key] ? %Q(#{x[:key]}:"#{x[:value]}") : "#{x[:value]}*"}.join " AND "
+      query = @queries.join " AND "
       @search.query { string query }
     end
 
@@ -150,9 +148,9 @@ class Search
     @fields ||= @collection.fields.all
   end
 
-  def add_query(key, value)
+  def add_query(query)
     @queries ||= []
-    @queries.push key: key, value: value
+    @queries.push query
   end
 
   def check_field_exists(name)

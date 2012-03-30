@@ -27,13 +27,13 @@ class MapSearch
     return {} if @collection_ids.empty?
 
     listener = clusterer = Clusterer.new(@zoom)
-    listener = ElasticSearchSitesAdapter::SkipIdListener.new(listener, @exclude_id) if @exclude_id
+    listener = ElasticSearch::SitesAdapter::SkipIdListener.new(listener, @exclude_id) if @exclude_id
 
     set_bounds_filter
     set_full_text_search if @full_text_search
     clusterer.groups = @groups if @zoom
 
-    adapter = ElasticSearchSitesAdapter.new listener
+    adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse @search.stream
     clusterer.clusters
   end
@@ -103,12 +103,8 @@ class MapSearch
   def set_full_text_search
     # Assume we only have one collection id
     @collection = Collection.find @collection_ids[0]
-
-    codes = @collection.search_value_codes @full_text_search
-    codes << @full_text_search
-
-    @search.query { string "#{codes.join ' '}*" }
-
+    query_text = ElasticSearch::QueryHelper.full_text_search @full_text_search, @collection
+    @search.query { string query_text }
     self
   end
 end
