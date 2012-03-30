@@ -35,7 +35,7 @@ class Search
 
     query_key = Site.encode_elastic_search_keyword(property)
     query_value = property_value(property.to_s, value)
-    add_query [%Q(#{query_key}:"#{query_value}")]
+    add_query %Q(#{query_key}:"#{query_value}")
     self
   end
 
@@ -103,7 +103,7 @@ class Search
   end
 
   def full_text_search(text)
-    add_query ElasticSearch::QueryHelper.full_text_search text, @collection, fields.select(&:select_kind?)
+    add_query ElasticSearch::QueryHelper.full_text_search(text, @collection, fields.select(&:select_kind?))
     self
   end
 
