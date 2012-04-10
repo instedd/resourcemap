@@ -1,8 +1,23 @@
 = render 'tabs'
 
+- content_for :head do
+  = javascript_include_tag 'view_models/thresholds_view_model'
+  = javascript_include_tag 'maps/thresholds_map'
+
+  :javascript
+    $(function() { 
+      rm.set({ collection_id: #{collection.id} });
+      rm.bootstrap();
+    });
+
 .tabsline
   %h2 Thresholds
   %p detail of threshold
+  %ul{ ko(foreach: :thresholds) }
+    %li
+      %span{ ko(text: :priority) }
+      %span{ ko(text: :color) }
+
   .box.grey.w60
     .toptitle 
       .ux-nstep.w06

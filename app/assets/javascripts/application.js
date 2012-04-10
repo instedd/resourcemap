@@ -18,4 +18,7 @@
 //= require jquery.timeago
 //= require knockout-2.0.0
 //= require sammy
-//= require_tree .
+//= require module
+//= require event_dispatcher
+//= require bootstrap
+//= require events/system_event
