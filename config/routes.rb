@@ -5,6 +5,7 @@ ResourceMap::Application.routes.draw do
     resources :sites
     resources :layers
     resources :fields
+    resources :thresholds
     resources :memberships do
       collection do
         get 'invitable'
@@ -14,7 +15,7 @@ ResourceMap::Application.routes.draw do
       end
     end
     get 'members'
-    get 'thresholds'
+    get 'thresholds_setting'
     get 'reminders'
     get 'settings'
     get 'download_as_csv'
