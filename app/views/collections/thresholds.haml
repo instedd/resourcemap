@@ -1,3 +1,69 @@
 = render 'tabs'
-
 .tabsline
+  %h2 Thresholds
+  %p detail of threshold
+  .box.grey.w60
+    .toptitle 
+      .ux-nstep.w06
+        %input{:disabled => "disabled", :type => "text", :STYLE => "width:12px"}
+        %button.kdown{:type => "button"}
+        %button.kup{:type => "button"}
+      %span if asprin less than 50, se color
+      %span.stat-y
+    .rightbuttons 
+      %button.fdelete
+    .middlebuttons
+    %button.farrow Edit
+  %br
+  .box.grey.w60
+    .toptitle 
+      .ux-nstep.w06
+        %input{:disabled => "disabled", :type => "text", :STYLE => "width:12px"}
+        %button.kdown{:type => "button"}
+        %button.kup{:type => "button"}
+      %span if asprin less than 50, se color
+      %span.stat-r
+    .rightbuttons 
+      %button.fdelete
+    .middlebuttons
+    %button.farrow Edit
+  %br
+  .box.w60
+    .rightbuttons
+      %button.fdelete
+    %label Conditions
+    .middlebuttons
+      when 
+      %select  
+        %option beds
+      %select
+        %option is less than
+      %select
+        %option a value of
+      %span.ux-nstep.w06 
+        %input{:size => "2", :type => "text", :value => "10:00"}
+        %button.kdown{:type => "button"}
+        %button.kup{:type => "button"}
+      %button.premove 
+    .middlebuttons
+      %select
+        %option Or
+      %select  
+        %option Ocupation
+      %select
+        %option is more than
+      %select
+        %option a percent of
+      %span.ux-nstep.w06 
+        %input{:size => "2", :type => "text", :value => "15:00"}
+        %button.kdown{:type => "button"}
+        %button.kup{:type => "button"}
+      %span.stat-r
+      %button.fremove 
+    %button.fadd
+      Add new condition
+  .box.grey.addlayer
+    %span 
+      Add threshold
+    %button.cadd.right
+    %br.clear.all
