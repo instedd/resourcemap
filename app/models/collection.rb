@@ -12,6 +12,7 @@ class Collection < ActiveRecord::Base
   has_many :root_sites, class_name: 'Site', conditions: {parent_id: nil}
   has_many :layers, dependent: :destroy
   has_many :fields
+  has_many :thresholds
 
   def max_value_of_property(property)
     search = new_tire_search

@@ -6,6 +6,7 @@ describe Collection do
   it { should have_many :users }
   it { should have_many :layers }
   it { should have_many :fields }
+  it { should have_many :thresholds }
 
   let(:collection) { Collection.make }
 
