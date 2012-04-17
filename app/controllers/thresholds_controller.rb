@@ -1,6 +1,6 @@
 class ThresholdsController < ApplicationController
 
   def index
-    render json: collection.thresholds 
+    render json: thresholds
   end
 end
