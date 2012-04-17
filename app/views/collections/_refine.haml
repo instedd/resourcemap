@@ -5,7 +5,12 @@
     %a x
   <!-- /ko -->
   #refine.box{ko(click: 'toggleRefinePopup'), style: 'float:left;padding:3px;cursor:pointer;position:relative;top:1px'}
+    <!-- ko if: filters().length == 0 -->
     Refine results
+    <!-- /ko -->
+    <!-- ko if: filters().length > 0 -->
+    Refine further
+    <!-- /ko -->
     <!-- ko if: showingRefinePopup() -->
     %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowDown.png", style: "position:relative;top:1px"}
     <!-- /ko -->
