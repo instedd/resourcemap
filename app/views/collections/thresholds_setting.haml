@@ -50,16 +50,14 @@
     %label Conditions
     .middlebuttons
       when 
-      %select  
-        %option beds
-      %select
-        %option is less than
-      %select
-        %option a value of
+      %select{"data-bind" => "options: $root.fieldsOption, value: fields, optionsText: 'field'"} 
+      %select{"data-bind" => "options: $root.conditionsOption, value: conditions, optionsText: 'condition'"}
+      %select{"data-bind" => "options: $root.comparesOption, value: compares, optionsText: 'compare'"}
       %span.ux-nstep.w06 
-        %input{:size => "2", :type => "text", :value => "10:00"}
+        %input{"data-bind" => "value: values", :size => "2", :type => "text"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
+      %span.stat-r{"data-bind" => "value: colors"}
       %button.premove 
     .middlebuttons
       %select
@@ -71,15 +69,16 @@
       %select
         %option a percent of
       %span.ux-nstep.w06 
-        %input{:size => "2", :type => "text", :value => "15:00"}
+        %input{:size => "2", :type => "text", :value => "15"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
       %span.stat-r
       %button.fremove 
     %button.fadd
       Add new condition
-  .box.grey.addlayer
-    %span 
+  .box.grey.addlayer{ko(click: "addThreshold")}
+
+    %span
       Add threshold
     %button.cadd.right
     %br.clear.all

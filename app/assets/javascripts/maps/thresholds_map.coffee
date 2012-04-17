@@ -9,4 +9,5 @@ $ ->
 
     $.getJSON "/collections/#{rm.get 'collection_id'}/thresholds.json", (data) ->
       thresholds = $.map data, (threshold) -> new rm.Threshold threshold
+      console.log thresholds 
       rm.thresholdsViewModel.thresholds thresholds
