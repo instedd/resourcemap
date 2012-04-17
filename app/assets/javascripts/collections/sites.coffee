@@ -154,7 +154,6 @@ $(-> if $('#collections-main').length > 0
       options.search = @search if @search
 
       filter.setOptions(options) for filter in @filters
-      $.each @filters, (filter) ->
 
       "/collections/#{@id()}/search.json?#{$.param options}"
 

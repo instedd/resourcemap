@@ -12,19 +12,19 @@
     Refine further
     <!-- /ko -->
     <!-- ko if: showingRefinePopup() -->
-    %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowDown.png", style: "position:relative;top:1px"}
+    %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowDown.png", style: "position:relative;top:1px", width: 11, height: 11}
     <!-- /ko -->
     <!-- ko if: !showingRefinePopup() -->
-    %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowRight.png", style: "position:relative;top:1px"}
+    %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowRight.png", style: "position:relative;top:1px", width: 11, height: 11}
     <!-- /ko -->
   <!-- ko if: showingRefinePopup() -->
   #refine-popup.box{style: 'position:absolute;padding:3px;z-index:10000;width:440px;-webkit-box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2)'}
     #div{ko(click: 'function(data, event) { toggleRefineProperty("update") }'), style: 'cursor:pointer'}
       <!-- ko if: expandedRefineProperty() == 'update' -->
-      %img{src: "http://theme.instedd.org/theme/images/icons/misc/grey/arrowDown.png", style: "position:relative;top:1px"}
+      %img{src: "http://theme.instedd.org/theme/images/icons/misc/grey/arrowDown.png", style: "position:relative;top:1px", width: 11, height: 11}
       <!-- /ko -->
       <!-- ko if: expandedRefineProperty() != 'update' -->
-      %img{src: "http://theme.instedd.org/theme/images/icons/misc/grey/arrowRight.png", style: "position:relative;top:1px"}
+      %img{src: "http://theme.instedd.org/theme/images/icons/misc/grey/arrowRight.png", style: "position:relative;top:1px", width: 11, height: 11}
       <!-- /ko -->
       %span Updated within
     <!-- ko if: expandedRefineProperty() == 'update' -->
@@ -44,7 +44,12 @@
     <!-- /ko -->
     <!-- ko foreach: currentCollection().fields() -->
     #div{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.code()) }'), style: 'cursor:pointer;padding-top:6px'}
-      %img{src: "http://theme.instedd.org/theme/images/icons/misc/grey/arrowRight.png", style: "position:relative;top:1px"}
+      <!-- ko if: $root.expandedRefineProperty() == code() -->
+      %img{src: "http://theme.instedd.org/theme/images/icons/misc/grey/arrowDown.png", style: "position:relative;top:1px", width: 11, height: 11}
+      <!-- /ko -->
+      <!-- ko if: $root.expandedRefineProperty() != code() -->
+      %img{src: "http://theme.instedd.org/theme/images/icons/misc/grey/arrowRight.png", style: "position:relative;top:1px", width: 11, height: 11}
+      <!-- /ko -->
       %span{ko(text: :name)}
     <!-- ko if: $root.expandedRefineProperty() == code() -->
     #div{style: 'padding:10px;margin-left:10px'}

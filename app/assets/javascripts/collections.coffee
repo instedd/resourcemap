@@ -312,6 +312,8 @@
       query.exclude_id = @selectedSite().id() if @selectedSite()?.id() && !@selectedSite().group()
       query.search = @lastSearch() if @lastSearch()
 
+      filter.setOptions(query) for filter in @filters()
+
       @requestNumber += 1
       currentRequestNumber = @requestNumber
 
@@ -537,6 +539,7 @@
       if @expandedRefineProperty() == property
         @expandedRefineProperty(null)
       else
+        @expandedRefineProperty(null) # Needed because sometimes we get a stack overflow (can't find the reason to it)
         @expandedRefineProperty(property)
 
     filterDescription: (filter) =>
@@ -590,6 +593,7 @@
 
     $('#collections-dummy').remove()
     $('#collections-main').show()
+    $('#refine-container').show()
 
   # Adjust width to window
   window.adjustContainerSize = ->

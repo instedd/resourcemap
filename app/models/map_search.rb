@@ -1,4 +1,6 @@
 class MapSearch
+  include SearchBase
+
   def initialize(collection_ids)
     @collection_ids = Array(collection_ids)
     @search = Collection.new_tire_search(*@collection_ids)
@@ -19,10 +21,6 @@ class MapSearch
     @exclude_id = id
   end
 
-  def full_text_search(text)
-    @full_text_search = text
-  end
-
   def results
     return {} if @collection_ids.empty?
 
@@ -30,7 +28,7 @@ class MapSearch
     listener = ElasticSearch::SitesAdapter::SkipIdListener.new(listener, @exclude_id) if @exclude_id
 
     set_bounds_filter
-    set_full_text_search if @full_text_search
+    apply_queries
     clusterer.groups = @groups if @zoom
 
     adapter = ElasticSearch::SitesAdapter.new listener
@@ -100,13 +98,7 @@ class MapSearch
     @bounds[:w] = -180 if @bounds[:w].to_f <= -180
   end
 
-  def set_full_text_search
-    # Assume we only have one collection id
-    @collection = Collection.find @collection_ids[0]
-    query = ElasticSearch::QueryHelper.full_text_search @full_text_search, @search, @collection
-    if query
-      @search.query { string query }
-    end
-    self
+  def collection
+    @collection ||= Collection.find @collection_ids[0]
   end
 end

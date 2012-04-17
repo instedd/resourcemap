@@ -5,9 +5,10 @@
 
 %h1 Collections
 
-<!-- ko if: currentCollection() -->
-= render 'refine'
-<!-- /ko -->
+#refine-container{style: 'display:none'}
+  <!-- ko if: currentCollection() -->
+  = render 'refine'
+  <!-- /ko -->
 
 #collections-dummy{style: 'height:600px'}
 #collections-main.box.nopadd.h50{style: 'display:none'}
