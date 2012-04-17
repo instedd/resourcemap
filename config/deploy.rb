@@ -7,6 +7,7 @@ set :repository,  "ssh://hg@bitbucket.org/instedd/resource_map"
 set :scm, :mercurial
 set :user, 'ubuntu'
 set :deploy_via, :remote_cache
+set :branch, 'plain_coffee'
 default_environment['TERM'] = ENV['TERM']
 
 namespace :deploy do
