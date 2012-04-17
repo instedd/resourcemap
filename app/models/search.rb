@@ -81,13 +81,13 @@ class Search
   end
 
   def before(time)
-    time = Time.parse time if time.is_a? String
+    time = parse_time(time)
     @search.filter :range, updated_at: {lte: Site.format_date(time)}
     self
   end
 
   def after(time)
-    time = Time.parse time if time.is_a? String
+    time = parse_time(time)
     @search.filter :range, updated_at: {gte: Site.format_date(time)}
     self
   end
@@ -157,5 +157,18 @@ class Search
   def check_field_exists(name)
     name = Site.decode_elastic_search_keyword name.to_s
     raise "Unknown field: #{name}" unless fields.any?{|f| f.code == name}
+  end
+
+  def parse_time(time)
+    if time.is_a? String
+      time = case time
+      when /last(_|\s*)hour/i then Time.now - 1.hour
+      when /last(_|\s*)day/i then Time.now - 1.day
+      when /last(_|\s*)week/i then Time.now - 1.week
+      when /last(_|\s*)month/i then Time.now - 1.month
+      else Time.parse(time)
+      end
+    end
+    time
   end
 end

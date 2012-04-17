@@ -98,9 +98,11 @@ class CollectionsController < ApplicationController
 
   def search
     search = collection.new_search
+    search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search]
     search.offset params[:offset]
     search.limit params[:limit]
+    search.where params.except(:action, :controller, :format, :id, :updated_since, :search, :limit, :offset)
     results = search.results.map do |result|
       source = result['_source']
 

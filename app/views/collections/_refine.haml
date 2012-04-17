@@ -1,0 +1,78 @@
+.left.superblyTagItems
+  <!-- ko foreach: filters() -->
+  %li.superblyTagItem{ko(click: '$root.removeFilter'), style: 'float:left;padding:3px;margin-right:4px;cursor:pointer'}
+    %span{ko(text: '$root.filterDescription($data)')}
+    %a x
+  <!-- /ko -->
+  #refine.box{ko(click: 'toggleRefinePopup'), style: 'float:left;padding:3px;cursor:pointer;position:relative;top:1px'}
+    Refine results
+    <!-- ko if: showingRefinePopup() -->
+    %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowDown.png", style: "position:relative;top:1px"}
+    <!-- /ko -->
+    <!-- ko if: !showingRefinePopup() -->
+    %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowRight.png", style: "position:relative;top:1px"}
+    <!-- /ko -->
+  <!-- ko if: showingRefinePopup() -->
+  #refine-popup.box{style: 'position:absolute;padding:3px;z-index:10000;width:440px;-webkit-box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2)'}
+    #div{ko(click: 'function(data, event) { toggleRefineProperty("update") }'), style: 'cursor:pointer'}
+      <!-- ko if: expandedRefineProperty() == 'update' -->
+      %img{src: "http://theme.instedd.org/theme/images/icons/misc/grey/arrowDown.png", style: "position:relative;top:1px"}
+      <!-- /ko -->
+      <!-- ko if: expandedRefineProperty() != 'update' -->
+      %img{src: "http://theme.instedd.org/theme/images/icons/misc/grey/arrowRight.png", style: "position:relative;top:1px"}
+      <!-- /ko -->
+      %span Updated within
+    <!-- ko if: expandedRefineProperty() == 'update' -->
+    #div{style: 'padding:10px;margin-left:10px'}
+      %input#refine-last-hour{ko(click: '$root.filterByLastHour'), type: :radio, name: 'refine-update'}
+      %label{:for => 'refine-last-hour'} the last hour
+      %br/
+      %input#refine-last-day{ko(click: '$root.filterByLastDay'), type: :radio, name: 'refine-update'}
+      %label{:for => 'refine-last-day'} the last day
+      %br/
+      %input#refine-last-week{ko(click: '$root.filterByLastWeek'), type: :radio, name: 'refine-update'}
+      %label{:for => 'refine-last-week'} the last week
+      %br/
+      %input#refine-last-month{ko(click: '$root.filterByLastMonth'), type: :radio, name: 'refine-update'}
+      %label{:for => 'refine-last-month'} the last month
+      %br/
+    <!-- /ko -->
+    <!-- ko foreach: currentCollection().fields() -->
+    #div{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.code()) }'), style: 'cursor:pointer;padding-top:6px'}
+      %img{src: "http://theme.instedd.org/theme/images/icons/misc/grey/arrowRight.png", style: "position:relative;top:1px"}
+      %span{ko(text: :name)}
+    <!-- ko if: $root.expandedRefineProperty() == code() -->
+    #div{style: 'padding:10px;margin-left:10px'}
+      <!-- ko if: kind() == 'text' -->
+      contains:
+      %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
+      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      <!-- /ko -->
+      <!-- ko if: kind() == 'numeric' -->
+      %select{ko(value: '$root.expandedRefinePropertyOperator')}
+        %option{value: '='} equals
+        %option{value: '<'} is less than
+        %option{value: '<='} is less than or equal to
+        %option{value: '>'} is greater than
+        %option{value: '>='} is greater than or equal to
+      %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true), type: :number}
+      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      <!-- /ko -->
+      <!-- ko if: kind() == 'select_one' || kind() == 'select_many' -->
+      is:
+      %select{ko(value: '$root.expandedRefinePropertyValue', options: :optionsCodes, optionsText: 'function(o){return $data.labelFor(o)}')}
+      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
+  <!-- /ko -->
+.right
+  %form{ko(submit: 'performSearch', attr: {action: 'formAction()'})}
+    <!-- ko if: lastSearch() -->
+    %p{style: 'display:inline'}
+      = ko_link_to 'clear search', :clearSearch
+    <!-- /ko -->
+    = ko_text_field_tag :search
+    %input{type: :submit, value: 'Search'}
+.clear
+%br/
