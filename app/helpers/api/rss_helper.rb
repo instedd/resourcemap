@@ -32,8 +32,10 @@ module Api::RssHelper
         xml.geo :long, source['location']['lon']
       end
 
-      source['properties'].each do |code, value|
-        property_rss xml, code, value
+      xml.rm :properties do
+        source['properties'].each do |code, value|
+          property_rss xml, code, value
+        end
       end
 
       Array(source['parent_ids']).each do |parent_id|
@@ -54,10 +56,7 @@ module Api::RssHelper
   private
 
   def property_rss(xml, code, value)
-    xml.rm :property do
-      xml.rm :code, code
-      xml.rm :value, value
-    end
+    xml.__send__ "rm:#{code}", value
   end
 
   def group_rss(xml, group)

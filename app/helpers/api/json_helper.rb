@@ -28,9 +28,7 @@ module Api::JsonHelper
       obj[:long] = source['location']['lon']
     end
 
-    obj[:properties] = source['properties'].map do |code, value|
-      {code: code, value: value}
-    end
+    obj[:properties] = source['properties']
 
     obj[:groups] = Array(source['parent_ids']).map do |parent_id|
       parent = parents[parent_id]
