@@ -494,6 +494,8 @@
           $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable'
 
     performSearch: =>
+      return false unless @currentCollection()
+
       rootCollection = @currentCollection().collection ? @currentCollection()
 
       @unselectSite()
