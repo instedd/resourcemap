@@ -28,3 +28,9 @@ describe 'Threshold', ->
 
     it 'should display value', ->
       expect(@threshold.value()).toEqual '75% of doctors'
+
+  describe '#destroy', ->
+    it 'should dispatch ThresholdEvent:DESTROY event', ->
+      spyOn rm.EventDispatcher, 'trigger'
+      @threshold.destroy()
+      expect(rm.EventDispatcher.trigger).toHaveBeenCalledWith rm.ThresholdEvent.DESTROY, new rm.ThresholdEvent @threshold

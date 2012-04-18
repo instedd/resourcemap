@@ -20,3 +20,7 @@ $ ->
         else
           percent = (@condition().value[0] * 100).toFixed 0
           "#{percent}% of #{@condition().value[1]}"
+
+    destroy: ->
+      event = new rm.ThresholdEvent @
+      rm.EventDispatcher.trigger rm.ThresholdEvent.DESTROY, event
