@@ -8,7 +8,7 @@ $ ->
     @Messages =
       DELETE_THRESHOLD: 'Are you sure to delete threshold?'
 
-    constructor: ->
+    constructor: (@collectionId) ->
       @thresholds = ko.observableArray()
 
     deleteThreshold: (threshold) =>

@@ -2,7 +2,8 @@
 
 describe 'ThresholdsViewModel', ->
   beforeEach ->
-    @subject = new rm.ThresholdsViewModel
+    @collectionId = 123
+    @subject = new rm.ThresholdsViewModel @collectionId
 
   describe 'delete threshold', ->
     beforeEach ->
