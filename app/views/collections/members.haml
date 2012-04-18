@@ -31,8 +31,16 @@
             %img{ko(attr: {src: '"http://theme.instedd.org/theme/images/icons/misc/black/arrow" + (expanded() ? "Down" : "Right") + ".png"'}), style: "position:relative;top:1px", width: 11, height: 11}
             %span{ko(text: :userDisplayName)}
           %td{ko(html: :adminUI)}
+          <!-- ko if: !$root.admin() || isCurrentUser() -->
+          %td{ko(text: :allReadUI)}
+          %td{ko(text: :allWriteUI)}
+          <!-- /ko -->
+          <!-- ko if: $root.admin() && !isCurrentUser() -->
           %td
+            %div{ko(attr: {:class => :allRead}, click: :toggleAllRead)}
           %td
+            %div{ko(attr: {:class => :allWrite}, click: :toggleAllWrite)}
+          <!-- /ko -->
           %td
             - if collection_admin?
               <!-- ko if: !isCurrentUser() -->
@@ -81,8 +89,16 @@
           %td{ko(click: :toggleExpanded), style: 'cursor:pointer'}
             %img{ko(attr: {src: '"http://theme.instedd.org/theme/images/icons/misc/black/arrow" + (expanded() ? "Down" : "Right") + ".png"'}), style: "position:relative;top:1px", width: 11, height: 11}
             %span{ko(text: :name)}
+          <!-- ko if: !$root.admin() -->
+          %td{ko(text: :allReadUI)}
+          %td{ko(text: :allWriteUI)}
+          <!-- /ko -->
+          <!-- ko if: $root.admin() -->
           %td
+            %div{ko(attr: {:class => :allRead}, click: :toggleAllRead)}
           %td
+            %div{ko(attr: {:class => :allWrite}, click: :toggleAllWrite)}
+          <!-- /ko -->
         <!-- ko if: expanded -->
         <!-- ko foreach: membershipLayerLinks -->
         %tr{:style => 'height:32px'}

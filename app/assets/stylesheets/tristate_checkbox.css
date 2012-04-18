@@ -1,0 +1,23 @@
+.tristate-unchecked {
+  background-image: url(/assets/tristate_checkbox.png);
+  background-repeat: no-repeat;
+  background-position: 0px 2px;
+  width: 20px;
+  height: 20px;
+}
+
+.tristate-checked {
+  background-image: url(/assets/tristate_checkbox.png);
+  background-repeat: no-repeat;
+  background-position: -20px 2px;
+  width: 20px;
+  height: 20px;
+}
+
+.tristate-partial {
+  background-image: url(/assets/tristate_checkbox.png);
+  background-repeat: no-repeat;
+  background-position: -40px 2px;
+  width: 20px;
+  height: 20px;
+}
