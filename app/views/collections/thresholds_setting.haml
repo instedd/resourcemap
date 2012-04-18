@@ -33,7 +33,7 @@
     %button.farrow Edit
   %br
   <!-- /ko -->
-  .box.w60
+  .box.w60{ ko({visible: :stat}) }
     .rightbuttons
       %button.fdelete
     %label Conditions
@@ -43,7 +43,7 @@
       %select{"data-bind" => "options: $root.conditionsOption, value: conditions, optionsText: 'condition'"}
       %select{"data-bind" => "options: $root.comparesOption, value: compares, optionsText: 'compare'"}
       %span.ux-nstep.w06 
-        %input{"data-bind" => "value: values", :size => "2", :type => "text"}
+        %input{"data-bind" => "value: values, valueUpdate: 'keydown'", :size => "2", :type => "text"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
       %span.stat-r{"data-bind" => "value: colors"}
@@ -65,8 +65,14 @@
       %button.fremove 
     %button.fadd
       Add new condition
-  .box.grey.addlayer{ko(click: "addThreshold")}
 
+    %hr
+    .bottom-actions
+      %button.white{ko(click: "addThreshold")}
+        Save
+      %a.tgrey
+        Cancel
+  .box.grey.addlayer{ko(click: "showAddThreshold")}
     %span
       Add threshold
     %button.cadd.right

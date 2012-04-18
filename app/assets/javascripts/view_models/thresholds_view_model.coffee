@@ -33,14 +33,26 @@ $ ->
       @conditions = ko.observable(@conditionsOption[0])
       @colors = ko.observable("orange") 
       @values = ko.observable(10)
+      @stat = ko.observable(false)
 
     addThreshold: () ->
       threshold  = 
         priority: @thresholds().length + 1
         condition: {
           field: @fields().field
-          is: @conditions().condition
+          is: 
+            if @conditions().condition == "is less than"
+              "lt"
+            else
+              "mt"
           value: @values()
         }
         color: @colors()
       @thresholds.push new rm.Threshold threshold
+      @stat(false)
+
+    hideAddThreshold: () ->
+      @stat(false)
+
+    showAddThreshold: () ->
+      @stat(true)

@@ -5,7 +5,7 @@ $ ->
 
     @ComparisonOperators =
       lt: 'less than'
-
+      mt: 'more than'
     constructor: (data) ->
       @id = ko.observable data?.id
       @priority = ko.observable data?.priority
