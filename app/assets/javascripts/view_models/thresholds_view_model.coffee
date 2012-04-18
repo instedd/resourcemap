@@ -4,7 +4,11 @@ $ ->
   module 'rm'
 
   rm.ThresholdsViewModel = class ThresholdsViewModel
-    constructor: () ->
+
+    @Messages =
+      DELETE_THRESHOLD: 'Are you sure to delete threshold?'
+
+    constructor: (@collectionId) ->
       @thresholds = ko.observableArray()
       @fieldsOption = [
         field: "bed"
@@ -34,6 +38,9 @@ $ ->
       @colors = ko.observable("orange") 
       @values = ko.observable(10)
       @stat = ko.observable(false)
+
+    deleteThreshold: (threshold) =>
+      threshold.destroy() if confirm ThresholdsViewModel.Messages.DELETE_THRESHOLD
 
     addThreshold: () ->
       threshold  = 

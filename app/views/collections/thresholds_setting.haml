@@ -28,7 +28,7 @@
         , set color
         %span.stat{ ko(style: {backgroundColor: :color, borderTop: :borderTopStyle}) }
     .rightbuttons 
-      %button.fdelete
+      %button.fdelete{ ko(click: '$root.deleteThreshold') }
     .middlebuttons
     %button.farrow Edit
   %br

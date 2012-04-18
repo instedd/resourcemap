@@ -22,3 +22,4 @@
 //= require event_dispatcher
 //= require bootstrap
 //= require events/system_event
+//= require events/threshold_event
