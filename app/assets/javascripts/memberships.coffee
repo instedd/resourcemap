@@ -31,17 +31,17 @@
 
     toggleAllRead: =>
       switch @allRead()
-        when 'tristate-partial', 'tristate-checked'
-          link.canRead(false) for link in @membershipLayerLinks()
-        else
+        when 'tristate-partial', 'tristate-unchecked'
           link.canRead(true) for link in @membershipLayerLinks()
+        else
+          link.canRead(false) for link in @membershipLayerLinks()
 
     toggleAllWrite: =>
       switch @allWrite()
-        when 'tristate-partial', 'tristate-checked'
-          link.canWrite(false) for link in @membershipLayerLinks()
-        else
+        when 'tristate-partial', 'tristate-unchecked'
           link.canWrite(true) for link in @membershipLayerLinks()
+        else
+          link.canWrite(false) for link in @membershipLayerLinks()
 
   class LayerMembership
     constructor: (data) ->
@@ -71,7 +71,7 @@
           else
             @membership.findLayerMembership(@layer)?.read()
         write: (value) =>
-          return if @membership.admin()
+          return if @membership.admin() || value == @canRead()
 
           $.post "/collections/#{collectionId}/memberships/#{@membership.userId()}/set_layer_access.json", {layer_id: @layer.id(), verb: 'read', access: value}, =>
             lm = @membership.findLayerMembership(@layer)
@@ -89,7 +89,7 @@
           else
             @membership.findLayerMembership(@layer)?.write()
         write: (value) =>
-          return if @membership.admin()
+          return if @membership.admin() || value == @canWrite()
 
           $.post "/collections/#{collectionId}/memberships/#{@membership.userId()}/set_layer_access.json", {layer_id: @layer.id(), verb: 'write', access: value}, =>
             lm = @membership.findLayerMembership(@layer)
