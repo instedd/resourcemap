@@ -11,104 +11,95 @@
     %br/
     %br/
 
-  <!-- ko if: groupBy() == 'Users' -->
-  .tablewrapp.hidden-until-loaded
-    %table.GralTable
-      %tr
-        - if collection_admin?
-          %th{:style => 'min-width:120px'}
-        %th Name
-        %th Admin?
-        %th Can Read?
-        %th Can Update?
-        %th
-      <!-- ko foreach: memberships -->
-      %tr{:style => 'height:32px'}
-        - if collection_admin?
-          %td
-        %td{ko(click: :toggleExpanded), style: 'cursor:pointer'}
-          <!-- ko if: expanded() -->
-          %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowDown.png", style: "position:relative;top:3px", width: 11, height: 11}
-          <!-- /ko -->
-          <!-- ko if: !expanded() -->
-          %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowRight.png", style: "position:relative;top:3px", width: 11, height: 11}
-          <!-- /ko -->
-          %span{ko(text: :userDisplayName)}
-        %td{ko(html: :adminUI)}
-        %td
-        %td
-        %td
+  .hidden-until-loaded
+    <!-- ko if: groupBy() == 'Users' -->
+    .tablewrapp
+      %table.GralTable
+        %tr
           - if collection_admin?
-            <!-- ko if: !isCurrentUser() -->
-            = ko_link_to 'delete', '$root.destroyMembership', class: 'icon fdelete black'
-            <!-- /ko -->
-      <!-- ko if: expanded -->
-      <!-- ko foreach: membershipLayerLinks -->
-      %tr{:style => 'height:32px'}
-        - if collection_admin?
+            %th{:style => 'min-width:120px'}
+          %th Name
+          %th Admin?
+          %th Can Read?
+          %th Can Update?
+          %th
+        <!-- ko foreach: memberships -->
+        %tr{:style => 'height:32px'}
+          - if collection_admin?
+            %td
+          %td{ko(click: :toggleExpanded), style: 'cursor:pointer'}
+            %img{ko(attr: {src: '"http://theme.instedd.org/theme/images/icons/misc/black/arrow" + (expanded() ? "Down" : "Right") + ".png"'}), style: "position:relative;top:1px", width: 11, height: 11}
+            %span{ko(text: :userDisplayName)}
+          %td{ko(html: :adminUI)}
           %td
-        %td
-          %span{ko(text: 'layer.name()'), style: 'margin-left:20px'}
-        %td
-        <!-- ko if: !$root.admin() || membership.isCurrentUser() -->
-        %td{ko(text: :canReadUI)}
-        %td{ko(text: :canWriteUI)}
+          %td
+          %td
+            - if collection_admin?
+              <!-- ko if: !isCurrentUser() -->
+              = ko_link_to 'delete', '$root.destroyMembership', class: 'icon fdelete black'
+              <!-- /ko -->
+        <!-- ko if: expanded -->
+        <!-- ko foreach: membershipLayerLinks -->
+        %tr{:style => 'height:32px'}
+          - if collection_admin?
+            %td
+          %td
+            %span{ko(text: 'layer.name()'), style: 'margin-left:20px'}
+          %td
+          <!-- ko if: !$root.admin() || membership.isCurrentUser() -->
+          %td{ko(text: :canReadUI)}
+          %td{ko(text: :canWriteUI)}
+          <!-- /ko -->
+          <!-- ko if: $root.admin() && !membership.isCurrentUser() -->
+          %td
+            %input{ko(checked: :canRead), type: :checkbox}
+          %td
+            %input{ko(checked: :canWrite), type: :checkbox}
+          <!-- /ko -->
+          %td
         <!-- /ko -->
-        <!-- ko if: $root.admin() && !membership.isCurrentUser() -->
-        %td
-          %input{ko(checked: :canRead), type: :checkbox}
-        %td
-          %input{ko(checked: :canWrite), type: :checkbox}
         <!-- /ko -->
-        %td
-      <!-- /ko -->
-      <!-- /ko -->
-      <!-- /ko -->
-      - if collection_admin?
+        <!-- /ko -->
+        - if collection_admin?
+          %tr{:style => 'height:32px'}
+            %td
+              %button.cadd#add_member Add member
+            %td= text_field_tag :member_email, '', :size => 60, :placeholder => 'Search by email...'
+            %td
+            %td
+    <!-- /ko -->
+
+    <!-- ko if: groupBy() == 'Layers' -->
+    .tablewrapp
+      %table.GralTable
+        %tr
+          %th Name
+          %th Can Read?
+          %th Can Update?
+        <!-- ko foreach: layers -->
+        %tr{:style => 'height:32px'}
+          %td{ko(click: :toggleExpanded), style: 'cursor:pointer'}
+            %img{ko(attr: {src: '"http://theme.instedd.org/theme/images/icons/misc/black/arrow" + (expanded() ? "Down" : "Right") + ".png"'}), style: "position:relative;top:1px", width: 11, height: 11}
+            %span{ko(text: :name)}
+          %td
+          %td
+        <!-- ko if: expanded -->
+        <!-- ko foreach: membershipLayerLinks -->
         %tr{:style => 'height:32px'}
           %td
-            %button.cadd#add_member Add member
-          %td= text_field_tag :member_email, '', :size => 60, :placeholder => 'Search by email...'
-          %td
-          %td
-  <!-- /ko -->
-
-  <!-- ko if: groupBy() == 'Layers' -->
-  .tablewrapp.hidden-until-loaded
-    %table.GralTable
-      %tr
-        %th Name
-        %th Can Read?
-        %th Can Update?
-      <!-- ko foreach: layers -->
-      %tr{:style => 'height:32px'}
-        %td{ko(click: :toggleExpanded), style: 'cursor:pointer'}
-          <!-- ko if: expanded() -->
-          %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowDown.png", style: "position:relative;top:3px", width: 11, height: 11}
+            %span{ko(text: 'membership.userDisplayName()'), style: 'margin-left:20px'}
+          <!-- ko if: !$root.admin() || membership.isCurrentUser() -->
+          %td{ko(text: :canReadUI)}
+          %td{ko(text: :canWriteUI)}
           <!-- /ko -->
-          <!-- ko if: !expanded() -->
-          %img{src: "http://theme.instedd.org/theme/images/icons/misc/black/arrowRight.png", style: "position:relative;top:3px", width: 11, height: 11}
+          <!-- ko if: $root.admin() && !membership.isCurrentUser() -->
+          %td
+            %input{ko(checked: :canRead), type: :checkbox}
+          %td
+            %input{ko(checked: :canWrite), type: :checkbox}
           <!-- /ko -->
-          %span{ko(text: :name)}
-        %td
-        %td
-      <!-- ko if: expanded -->
-      <!-- ko foreach: membershipLayerLinks -->
-      %tr{:style => 'height:32px'}
-        %td
-          %span{ko(text: 'membership.userDisplayName()'), style: 'margin-left:20px'}
-        <!-- ko if: !$root.admin() || membership.isCurrentUser() -->
-        %td{ko(text: :canReadUI)}
-        %td{ko(text: :canWriteUI)}
+          %td
         <!-- /ko -->
-        <!-- ko if: $root.admin() && !membership.isCurrentUser() -->
-        %td
-          %input{ko(checked: :canRead), type: :checkbox}
-        %td
-          %input{ko(checked: :canWrite), type: :checkbox}
         <!-- /ko -->
-        %td
-      <!-- /ko -->
-      <!-- /ko -->
-      <!-- /ko -->
-  <!-- /ko -->
+        <!-- /ko -->
+    <!-- /ko -->
