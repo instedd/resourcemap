@@ -11,7 +11,6 @@
 = render 'collections/tabs'
 
 .tabsline
-  %h2 Thresholds
   <!-- ko foreach :thresholds -->
   .box.grey.w60
     .toptitle 
@@ -67,8 +66,9 @@
       %button.fremove 
     %button.fadd
       Add new condition
-  .box.grey.addlayer
-    %span 
-      Add threshold
-    %button.cadd.right
-    %br.clear.all
+
+  -# New threshold link
+  .box.grey.add{ ko(visible: 'state() == "listing"'), style: 'display:none' }
+    %span Add threshold
+    %button.cadd.right{type: :button}
+    %br{clear: :all}
