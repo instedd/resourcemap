@@ -68,7 +68,7 @@ ul.taglist li a { display:block }
 .box.addlayer { padding:0 5px; margin-top:10px; width:610px; height:30px; cursor: pointer }
 .box.addlayer span { color:#1f86c8; display:inline-block; padding-top:8px }
 .box label { color:#555555 }
-
+.message { padding-top:8px; padding-bottom:8px }
 .toptitle { width:550px }
 .toptitle span { color:#000000 }
 .rightbuttons { position:absolute; right:2px; top:5px }
