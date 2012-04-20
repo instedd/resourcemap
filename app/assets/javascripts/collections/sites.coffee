@@ -145,6 +145,7 @@ $(-> if $('#collections-main').length > 0
       @collection = collection
       @search = search
       @filters = filters
+      @layers = collection.layers
       @fields = collection.fields
       @fieldsInitialized = collection.fieldsInitialized
 
@@ -164,6 +165,10 @@ $(-> if $('#collections-main').length > 0
       filter.setOptions(options) for filter in @filters
 
       "/collections/#{@id()}/search.json?#{$.param options}"
+
+    # These two methods are needed to be forwarded when editing sites inside a search
+    updatedAt: (value) => @collection.updatedAt(value)
+    fetchLocation: => @collection.fetchLocation()
 
   class window.Site extends SitesContainer
     constructor: (parent, data) ->
@@ -188,6 +193,7 @@ $(-> if $('#collections-main').length > 0
       @locationTextTemp = @locationText()
       @valid = ko.computed => @hasName()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
+      @inEditMode = ko.observable(false)
 
     sitesUrl: -> "/sites/#{@id()}/root_sites.json"
 
@@ -339,7 +345,7 @@ $(-> if $('#collections-main').length > 0
       @parseLocation success: callback, failure: callback
 
     tryGeolocateName: =>
-      return if @nameBeforeGeolocateName == @name()
+      return if @inEditMode() || @nameBeforeGeolocateName == @name()
 
       @nameBeforeGeolocateName = @name()
       @parseLocation text: @fullName(), success: (position) =>
@@ -387,6 +393,14 @@ $(-> if $('#collections-main').length > 0
         @position(data)
         @parent.fetchLocation()
         @panToPosition()
+
+    startEditMode: =>
+      @inEditMode(true)
+      @startEditLocationInMap()
+
+    exitEditMode: (saved) =>
+      @inEditMode(false)
+      @endEditLocationInMap(if saved then @position() else @originalLocation)
 
     createMarker: (drop = false) =>
       @deleteMarker()

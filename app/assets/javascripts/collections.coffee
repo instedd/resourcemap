@@ -12,9 +12,9 @@
         else
           null
       @loadingSite = ko.observable(false)
-      @newSite = ko.computed => if @editingSite() && !@editingSite().id() && !@editingSite().group() then @editingSite() else null
+      @newOrEditSite = ko.computed => if @editingSite() && !@editingSite().group() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
       @newGroup = ko.computed => if @editingSite() && !@editingSite().id() && @editingSite().group() then @editingSite() else null
-      @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().group() then @editingSite() else null
+      @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().group() && !@editingSite().inEditMode() then @editingSite() else null
       @showGroup = ko.computed => if @editingSite()?.id() && @editingSite().group() then @editingSite() else null
       @showingMap = ko.observable(true)
       @sitesCount = ko.observable(0)
@@ -176,16 +176,19 @@
       callback = (data) =>
         unless @editingSite().id()
           @editingSite().id(data.id)
-          @editingSite().updatedAt(data.updated_at)
           @editingSite().parent.addSite(@editingSite())
+
+        @editingSite().updatedAt(data.updated_at)
 
         @editingSite().position(data)
         @editingSite().parent.fetchLocation()
-        @editingSite().deleteMarker()
 
-        @selectedSite(@editingSite().parent) if @editingSite().parentId()
-
-        @exitSite()
+        if @editingSite().inEditMode()
+          @editingSite().exitEditMode(true)
+        else
+          @editingSite().deleteMarker()
+          @selectedSite(@editingSite().parent) if @editingSite().parentId()
+          @exitSite()
 
       unless @editingSite().group()
         @editingSite().copyPropertiesFromCollection(@currentCollection())
@@ -193,6 +196,10 @@
       @editingSite().post @editingSite().toJSON(), callback
 
     exitSite: =>
+      if @editingSite().inEditMode()
+        @editingSite().exitEditMode()
+        return
+
       # Unselect site if it's not on the tree
       oldParentSite = @parentSite()
       @unselectSite() unless @siteIds[@editingSite().id()]

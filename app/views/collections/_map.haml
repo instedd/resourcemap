@@ -96,7 +96,7 @@
 
   -# New Group form
   <!-- ko if: newGroup -->
-  %form{ko(with: :newGroup, submit: '$root.saveSite', attr: {action: '$root.formAction()'}), style: 'display:inline-block'}
+  %form{ko(with: :newGroup, submit: '$root.saveSite'), method: :post, style: 'display:inline-block'}
     .tableheader.w33
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
@@ -125,13 +125,18 @@
   <!-- /ko -->
 
   -# New Site form
-  <!-- ko if: newSite -->
-  %form{ko(with: :newSite, submit: '$root.saveSite', attr: {action: '$root.formAction()'}), style: 'display:inline-block'}
+  <!-- ko if: newOrEditSite -->
+  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post, style: 'display:inline-block'}
     .tableheader.w33
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
+      <!-- ko if: inEditMode() -->
+      %span{ko(text: :name)}
+      <!-- /ko -->
+      <!-- ko if: !inEditMode() -->
       %span New Site
-      <!-- ko if: $root.parentSite() && $root.parentSite().level() != 0  -->
+      <!-- /ko -->
+      <!-- ko if: $root.parentSite() && $root.parentSite().level() != 0 && !inEditMode() -->
       %span at
       %span{ko(text: '$root.parentSite().name()')}
       <!-- /ko -->
@@ -185,7 +190,7 @@
 
   -# Show Group form
   <!-- ko if: showGroup -->
-  %form{ko(with: :showGroup, submit: '$root.saveSite', attr: {action: '$root.formAction()'}), style: 'display:inline'}
+  %form{ko(with: :showGroup, submit: '$root.saveSite'), method: :post, style: 'display:inline'}
     .tableheader.w33
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
@@ -217,7 +222,7 @@
 
   -# Show Site form
   <!-- ko if: showSite -->
-  %form{ko(with: :showSite, submit: '$root.saveSite', attr: {action: '$root.formAction()'}), style: 'display:inline'}
+  %form{ko(with: :showSite, submit: '$root.saveSite'), method: :post, style: 'display:inline'}
     .tableheader.w33
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
@@ -295,6 +300,7 @@
               <!-- /ko -->
               <!-- /ko -->
     .tablebottom
+      = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
       = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
   <!-- /ko -->
   <!-- /ko -->

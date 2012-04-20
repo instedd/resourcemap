@@ -62,7 +62,7 @@
     <!-- /ko -->
   <!-- /ko -->
 .right
-  %form{ko(submit: 'performSearch', attr: {action: 'formAction()'})}
+  %form{ko(submit: 'performSearch'), method: :post}
     <!-- ko if: lastSearch() -->
     %p{style: 'display:inline'}
       = ko_link_to 'clear search', :clearSearch
