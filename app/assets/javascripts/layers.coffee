@@ -158,6 +158,7 @@
       callback = (data) =>
         @currentLayer().id(data.id)
         @currentLayer(null)
+        @currentField(null)
 
       json = {layer: @currentLayer().toJSON()}
 
