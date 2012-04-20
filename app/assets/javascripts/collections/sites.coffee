@@ -105,7 +105,14 @@ $(-> if $('#collections-main').length > 0
 
       @fieldsInitialized = true
       $.get "/collections/#{@id()}/fields", {}, (data) =>
-        @fields($.map(data, (x) => new Field(x)))
+        @layers($.map(data, (x) => new Layer(x)))
+
+        fields = []
+        for layer in @layers()
+          for field in layer.fields()
+            fields.push(field)
+
+        @fields(fields)
         callback() if callback && typeof(callback) == 'function'
 
     findFieldByCode: (code) => (field for field in @fields() when field.code() == code)[0]
@@ -121,6 +128,7 @@ $(-> if $('#collections-main').length > 0
   class window.Collection extends CollectionBase
     constructor: (data) ->
       super(data)
+      @layers = ko.observableArray()
       @fields = ko.observableArray()
       @checked = ko.observable true
       @fieldsInitialized = false

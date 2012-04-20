@@ -35,10 +35,10 @@
         <!-- ko if: group() -->
         %a{ko(click: '$root.toggleSite', style: {marginLeft: "'' + ((level() - 1) * 20) + 'px'"}), href: 'javascript:void(0)'}
           <!-- ko if: expanded() -->
-          = image_tag "http://theme.instedd.org/theme/images/icons/18/black/folder_open.png"
+          = image_tag "#{InsteddRails.url}/theme/images/icons/18/black/folder_open.png"
           <!-- /ko -->
           <!-- ko if: !expanded() -->
-          = image_tag "http://theme.instedd.org/theme/images/icons/18/black/folder.png"
+          = image_tag "#{InsteddRails.url}/theme/images/icons/18/black/folder.png"
           <!-- /ko -->
         %span{ko(text: :name, click: '$root.selectSite'), style: 'cursor: pointer'}
         <!-- /ko -->

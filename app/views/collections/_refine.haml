@@ -11,11 +11,11 @@
     <!-- ko if: filters().length > 0 -->
     Refine further
     <!-- /ko -->
-    %img{ko(attr: {src: '"http://theme.instedd.org/theme/images/icons/misc/black/arrow" + (showingRefinePopup() ? "Down" : "Right") + ".png"'}), style: "position:relative;top:1px", width: 11, height: 11}
+    %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (showingRefinePopup() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
   <!-- ko if: showingRefinePopup() -->
   #refine-popup.box{style: 'position:absolute;padding:3px;z-index:10000;width:440px;max-height:300px;overflow:auto;-webkit-box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2)'}
     #div{ko(click: 'function(data, event) { toggleRefineProperty("update") }'), style: 'cursor:pointer'}
-      %img{ko(attr: {src: '"http://theme.instedd.org/theme/images/icons/misc/grey/arrow" + (expandedRefineProperty() == \'update\' ? "Down" : "Right") + ".png"'}), style: "position:relative;top:1px", width: 11, height: 11}
+      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expandedRefineProperty() == \"update\" ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
       %span Updated within
     <!-- ko if: expandedRefineProperty() == 'update' -->
     #div{style: 'padding:10px;margin-left:10px'}
@@ -34,7 +34,7 @@
     <!-- /ko -->
     <!-- ko foreach: currentCollection().fields() -->
     #div{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.code()) }'), style: 'cursor:pointer;padding-top:6px'}
-      %img{ko(attr: {src: '"http://theme.instedd.org/theme/images/icons/misc/grey/arrow" + ($root.expandedRefineProperty() == code() ? "Down" : "Right") + ".png"'}), style: "position:relative;top:1px", width: 11, height: 11}
+      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == code() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
       %span{ko(text: :name)}
     <!-- ko if: $root.expandedRefineProperty() == code() -->
     #div{style: 'padding:10px;margin-left:10px'}

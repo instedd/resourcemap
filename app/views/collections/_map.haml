@@ -30,10 +30,10 @@
           <!-- ko if: group() -->
           %a{ko(click: '$root.toggleSite', style: {marginLeft: "'' + ((level() - 1) * 20) + 'px'"}), href: 'javascript:void(0)'}
             <!-- ko if: expanded() -->
-            = image_tag "http://theme.instedd.org/theme/images/icons/18/black/folder_open.png"
+            = image_tag "#{InsteddRails.url}/theme/images/icons/18/black/folder_open.png"
             <!-- /ko -->
             <!-- ko if: !expanded() -->
-            = image_tag "http://theme.instedd.org/theme/images/icons/18/black/folder.png"
+            = image_tag "#{InsteddRails.url}/theme/images/icons/18/black/folder.png"
             <!-- /ko -->
           %span{ko(text: :name, click: '$root.selectSite'), style: 'cursor: pointer'}
           <!-- /ko -->
@@ -147,7 +147,12 @@
                 %label Location:
                 = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}
               %hr
-              <!-- ko foreach: $root.currentCollection().fields() -->
+              <!-- ko foreach: $root.currentCollection().layers() -->
+              %div
+                %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
+                %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
+              <!-- ko if: expanded() -->
+              <!-- ko foreach: fields() -->
               %div
                 = label_tag '', '', ko(attr: {:for => :code}, text: "name() + ':'")
                 <!-- ko if: kind() == 'text' -->
@@ -170,6 +175,8 @@
                   %li
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 <!-- /ko -->
+              <!-- /ko -->
+              <!-- /ko -->
               <!-- /ko -->
     .tablebottom
       %button.grey{ko(enable: :valid), type: 'submit'} Done
@@ -233,7 +240,12 @@
                 = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}
                 <!-- /ko -->
               %hr
-              <!-- ko foreach: parentCollection().fields() -->
+              <!-- ko foreach: parentCollection().layers() -->
+              %div
+                %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
+                %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
+              <!-- ko if: expanded() -->
+              <!-- ko foreach: fields() -->
               %div
                 %label{ko(text: "name() + ':'")}
                 <!-- ko if: hasValue() -->
@@ -279,6 +291,8 @@
                 %button{ko(click: :save), style: 'float:right'} Update options
                 %button{ko(click: :exit), style: 'float:right'} Cancel
                 <!-- /ko -->
+              <!-- /ko -->
+              <!-- /ko -->
               <!-- /ko -->
     .tablebottom
       = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')

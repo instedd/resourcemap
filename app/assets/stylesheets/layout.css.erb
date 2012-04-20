@@ -28,13 +28,13 @@
 .GralTable tr { clear:both }
 .GralTable .selected { background-color: #D0D0D0; border-radius: 4px; }
 .titletable { padding:4px 0 2px 2px; display:inline-block !important; margin-left:5px !important }
-.exp { background: url(http://theme.instedd.org/theme/images/icons/misc/black/arrowRight.png) no-repeat 2px 50%; padding-left:16px }
-.col { background: url(http://theme.instedd.org/theme/images/icons/misc/black/arrowDown.png) no-repeat 0px 50%; padding-left:16px }
+.exp { background: url(<%= InsteddRails.url %>/theme/images/icons/misc/black/arrowRight.png) no-repeat 2px 50%; padding-left:16px }
+.col { background: url(<%= InsteddRails.url %>/theme/images/icons/misc/black/arrowDown.png) no-repeat 0px 50%; padding-left:16px }
 
 .box.nopadd { padding:0 }
 .box.nopadd .left { border-right:1px solid #eeeeee}
 .h50 { height:500px}
-.tableheader { background:url(http://theme.instedd.org/theme/images/interface/backtd.png) repeat-x left 32px #ffffff; position:absolute; height:40px; z-index:1 }
+.tableheader { background:url(<%= InsteddRails.url %>/theme/images/interface/backtd.png) repeat-x left 32px #ffffff; position:absolute; height:40px; z-index:1 }
 .tableheader.expanded { width:960px }
 .tableheader.expanded div { display:inline-block }
 .tableheader.expanded div:first-child { border-right:1px solid #eeeeee; width:330px }
@@ -63,7 +63,7 @@
 .tablescroll hr { width:316px; margin:0px 0px 10px 5px }
 
 ul.taglist { padding:0 4px; border:1px solid #dddddd; height:128px; overflow:auto; overflow-x:hidden; -webkit-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset; -moz-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset; box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
-ul.taglist li { background:url(http://theme.instedd.org/theme/images/interface/add.png) no-repeat 98% -15px; margin:3px 0; border:1px solid #dddddd; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px; cursor: pointer }
+ul.taglist li { background:url(<%= InsteddRails.url %>/theme/images/interface/add.png) no-repeat 98% -15px; margin:3px 0; border:1px solid #dddddd; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px; cursor: pointer }
 ul.taglist li:hover { background-color:#eaeaea }
 ul.taglist li a { display:block }
 
