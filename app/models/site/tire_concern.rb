@@ -11,7 +11,7 @@ module Site::TireConcern
     delegate :index_name, :index, to: :collection
   end
 
-  def store_in_index
+  def store_in_index(options = {})
     hash = {
       id: id,
       name: name,
@@ -23,7 +23,7 @@ module Site::TireConcern
     hash[:location] = {lat: lat.to_f, lon: lng.to_f} if lat? && lng?
     hash[:parent_ids] = hierarchy.split(',').map(&:to_i) if hierarchy?
     index.store hash
-    index.refresh
+    index.refresh unless options[:refresh] == false
   end
 
   def remove_from_index

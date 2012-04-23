@@ -38,6 +38,16 @@ module Collection::TireConcern
     map
   end
 
+  def recreate_index
+    destroy_index
+    create_index
+    sites.where(group: false).each do |site|
+      site.collection = self
+      site.store_in_index refresh: false
+    end
+    index.refresh
+  end
+
   def destroy_index
     index.delete
   end

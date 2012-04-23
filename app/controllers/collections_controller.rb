@@ -127,6 +127,10 @@ class CollectionsController < ApplicationController
     render json: results
   end
 
+  def recreate_index
+    render json: collection.recreate_index
+  end
+
   private
 
   def breadcrumb

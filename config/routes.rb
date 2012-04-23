@@ -28,6 +28,8 @@ ResourceMap::Application.routes.draw do
     get 'import_wizard_adjustments'
     post 'import_wizard_execute'
 
+    get 'recreate_index'
+
     member do
       get 'search'
     end
