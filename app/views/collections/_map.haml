@@ -313,12 +313,14 @@
       %span Loading...
 #right-panel.right
   .mapheader
+    <!-- ko if: $root.currentCollection() -->
     %label
       Export this result in
       %span{ko(click: :exportInRSS), style: 'text-decoration:underline;cursor:pointer'} RSS
       or
       %span{ko(click: :exportInJSON), style: 'text-decoration:underline;cursor:pointer'} JSON
     |
+    <!-- /ko -->
     %span{ko(text: :sitesCountText)}
     -#%span.alert 5 alerts
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
