@@ -313,8 +313,13 @@
       %span Loading...
 #right-panel.right
   .mapheader
-    %span{ko(visible: 'sitesCount() == 1')} 1 site on map
-    %span{ko(text: "'' + sitesCount() + ' sites on map'", visible: 'sitesCount() != 1')}
+    %label
+      Export this result in
+      %span{ko(click: :exportInRSS), style: 'text-decoration:underline;cursor:pointer'} RSS
+      or
+      %span{ko(click: :exportInJSON), style: 'text-decoration:underline;cursor:pointer'} JSON
+    |
+    %span{ko(text: :sitesCountText)}
     -#%span.alert 5 alerts
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}

@@ -18,6 +18,7 @@
       @showGroup = ko.computed => if @editingSite()?.id() && @editingSite().group() then @editingSite() else null
       @showingMap = ko.observable(true)
       @sitesCount = ko.observable(0)
+      @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site on map' else "#{@sitesCount()} sites on map"
       @markers = {}
       @clusters = {}
       @siteIds = {}
@@ -323,7 +324,7 @@
       query.exclude_id = @selectedSite().id() if @selectedSite()?.id() && !@selectedSite().group()
       query.search = @lastSearch() if @lastSearch()
 
-      filter.setOptions(query) for filter in @filters()
+      filter.setQueryParams(query) for filter in @filters()
 
       @requestNumber += 1
       currentRequestNumber = @requestNumber
@@ -508,7 +509,7 @@
 
         setTimeout((->
           $('.tablescroll').scrollLeft oldScrollLeft
-          @adjustContainerSize()
+          window.adjustContainerSize()
         ), 20)
 
     performSearch: =>
@@ -524,7 +525,10 @@
         @currentCollection(new CollectionSearch(rootCollection, @search(), @filters(), @sort(), @sortDirection()))
         @currentCollection().loadMoreSites()
         @lastSearch(@search())
-      @reloadMapSites() if @showingMap()
+      if @showingMap()
+        @reloadMapSites()
+      else
+        window.adjustContainerSize()
       false
 
     clearSearch: =>
@@ -607,7 +611,7 @@
         else true
 
     sortBy: (field) =>
-      @sortByCode('@' + field.code())
+      @sortByCode(field.code())
 
     sortByName: =>
       @sortByCode('name')
@@ -627,6 +631,10 @@
         @sortDirection(defaultOrder)
       @makeFixedHeaderTable()
       @performSearch()
+
+    exportInRSS: => window.open @currentCollection().link('rss')
+
+    exportInJSON: => window.open @currentCollection().link('json')
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)

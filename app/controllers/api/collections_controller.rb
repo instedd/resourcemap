@@ -9,7 +9,8 @@ class Api::CollectionsController < ApplicationController
     search.in_group params[:group] if params[:group]
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search] if params[:search]
-    search.where params.except(:action, :controller, :format, :id, :group, :page, :updated_since, :search)
+    search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
+    search.where params.except(:action, :controller, :format, :id, :group, :page, :updated_since, :search, :sort, :sort_direction)
     @results = search.results
 
     respond_to do |format|

@@ -139,6 +139,8 @@ $(-> if $('#collections-main').length > 0
       @position(data)
       @updatedAt(data.updated_at)
 
+    link: (format) => "/api/collections/#{@id()}.#{format}"
+
   # A collection that is filtered by a search result
   class window.CollectionSearch extends CollectionBase
     constructor: (collection, search, filters, sort, sortDirection) ->
@@ -160,17 +162,19 @@ $(-> if $('#collections-main').length > 0
 
       @constructorLocation(lat: collection.lat(), lng: collection.lng())
 
-    sitesUrl: ->
-      options = {}
-      options.search = @search if @search
+    sitesUrl: =>
+      "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
 
+    queryParams: =>
+      q = {}
+      q.search = @search if @search
       if @sort
-        options.sort = @sort
-        options.sort_direction = if @sortDirection then 'asc' else 'desc'
+        q.sort = @sort
+        q.sort_direction = if @sortDirection then 'asc' else 'desc'
+      filter.setQueryParams(q) for filter in @filters
+      q
 
-      filter.setOptions(options) for filter in @filters
-
-      "/collections/#{@id()}/search.json?#{$.param options}"
+    link: (format) => "/api/collections/#{@id()}.#{format}?#{$.param @queryParams()}"
 
     # These two methods are needed to be forwarded when editing sites inside a search
     updatedAt: (value) => @collection.updatedAt(value)

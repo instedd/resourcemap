@@ -41,6 +41,7 @@ class Search
 
   def sort(field, ascendent = true)
     @sort = field
+    @sort = Site.encode_elastic_search_keyword @sort if @sort != 'name' && @sort != 'updated_at' && @sort != 'created_at'
     @sort_ascendent = ascendent ? nil : 'desc'
   end
 

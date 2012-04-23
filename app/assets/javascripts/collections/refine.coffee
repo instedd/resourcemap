@@ -1,25 +1,25 @@
 $(-> if $('#collections-main').length > 0
 
   class window.FilterByLastHour
-    setOptions: (options) =>
+    setQueryParams: (options) =>
       options.updated_since = 'last_hour'
 
     description: => "updated within the last hour"
 
   class window.FilterByLastDay
-    setOptions: (options) =>
+    setQueryParams: (options) =>
       options.updated_since = 'last_day'
 
     description: => "updated within the last day"
 
   class window.FilterByLastWeek
-    setOptions: (options) =>
+    setQueryParams: (options) =>
       options.updated_since = 'last_week'
 
     description: => "updated within the last week"
 
   class window.FilterByLastMonth
-    setOptions: (options) =>
+    setQueryParams: (options) =>
       options.updated_since = 'last_month'
 
     description: => "updated within the last month"
@@ -30,7 +30,7 @@ $(-> if $('#collections-main').length > 0
       @label = label
       @value = value
 
-    setOptions: (options) =>
+    setQueryParams: (options) =>
       options["@#{@code}"] = @value
 
     description: => "where #{@label} contains \"#{@value}\""
@@ -42,7 +42,7 @@ $(-> if $('#collections-main').length > 0
       @operator = operator
       @value = value
 
-    setOptions: (options) =>
+    setQueryParams: (options) =>
       options["@#{@code}"] = "#{@operator}#{@value}"
 
     description: =>
@@ -62,7 +62,7 @@ $(-> if $('#collections-main').length > 0
       @value = value
       @valueLabel = valueLabel
 
-    setOptions: (options) =>
+    setQueryParams: (options) =>
       options["@#{@code}"] = @value
 
     description: =>

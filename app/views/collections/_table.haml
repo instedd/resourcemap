@@ -89,7 +89,12 @@
     %span.i18b-groupChat
     %span{ko(text: :name)}
     %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button'}
-  .mapheader.w60.right
+  %label
+    Export this result in
+    %span{ko(click: '$root.exportInRSS'), style: 'text-decoration:underline;cursor:pointer;vertical-align:baseline;'} RSS
+    or
+    %span{ko(click: '$root.exportInJSON'), style: 'text-decoration:underline;cursor:pointer;vertical-align:baseline;'} JSON
+  .mapheader.right
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}
     %br{clear: "all"}
