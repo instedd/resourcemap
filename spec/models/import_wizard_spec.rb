@@ -68,7 +68,7 @@ describe ImportWizard do
     fields[0].name.should eq('The visibility')
     fields[0].code.should eq('visibility')
     fields[0].kind.should eq('select_one')
-    fields[0].config.should eq(options: [{code: 'public', label: 'public'}, {code: 'private', label: 'private'}])
+    fields[0].config.should eq('options' => [{'code' => 'public', 'label' => 'public'}, {'code' => 'private', 'label' => 'private'}])
 
     sites = collection.sites.all
     sites.length.should eq(3)
@@ -105,7 +105,7 @@ describe ImportWizard do
     fields[0].name.should eq('The visibility')
     fields[0].code.should eq('visibility')
     fields[0].kind.should eq('select_one')
-    fields[0].config.should eq(options: [{code: '1', label: 'public'}, {code: '0', label: 'private'}])
+    fields[0].config.should eq('options' => [{'code' => '1', 'label' => 'public'}, {'code' => '0', 'label' => 'private'}])
 
     sites = collection.sites.all
     sites.length.should eq(3)

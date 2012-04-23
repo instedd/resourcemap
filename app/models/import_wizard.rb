@@ -123,14 +123,18 @@ class ImportWizard
             site.lng = value
           when 'text', 'select_one', 'select_many'
             site.properties[spec[:code]] = value
-          when 'numeric' then
-            site.properties[spec[:code]] = Float(value) rescue nil
+          when 'numeric'
+            site.properties[spec[:code]] = begin
+                                             Integer(value)
+                                           rescue
+                                             Float(value) rescue nil
+                                           end
           end
 
           # For select one and many we need to collect the fields options
           if spec[:kind] == 'select_one' || spec[:kind] == 'select_many'
             field = fields[spec[:code]]
-            field.config ||= {options: []}
+            field.config ||= {'options' => []}
 
             code = nil
             label = nil
@@ -152,8 +156,8 @@ class ImportWizard
 
             # Add to options, if not already present
             if code.present? && label.present?
-              existing = field.config[:options].find{|x| x[:code] == code}
-              field.config[:options] << {code: code, label: label} unless existing
+              existing = field.config['options'].find{|x| x['code'] == code}
+              field.config['options'] << {'code' => code, 'label' => label} unless existing
             end
           end
         end
@@ -166,7 +170,6 @@ class ImportWizard
         # are not called
         collection.compute_geometry_in_memory
 
-        Rails.logger.info "======================== ABOUT TO SAVE"
         collection.save!
       end
     end
