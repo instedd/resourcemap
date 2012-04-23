@@ -629,8 +629,8 @@
       else
         @sort(code)
         @sortDirection(defaultOrder)
-      @makeFixedHeaderTable()
       @performSearch()
+      @makeFixedHeaderTable()
 
     exportInRSS: => window.open @currentCollection().link('rss')
 
