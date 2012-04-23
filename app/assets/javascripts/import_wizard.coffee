@@ -135,4 +135,5 @@
       $.post "/collections/#{@collectionId}/import_wizard_execute.json", {columns: columns}, =>
         window.location = '/collections'
 
-  ko.applyBindings new ImportWizardViewModel(collectionId, columns)
+  window.model = new ImportWizardViewModel(collectionId, columns)
+  ko.applyBindings window.model

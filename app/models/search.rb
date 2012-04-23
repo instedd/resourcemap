@@ -64,7 +64,4 @@ class Search
 
     decode_elastic_search_results @search.perform.results
   end
-
-  private
-
 end

@@ -16,3 +16,19 @@ class Tire::Search::Search
     reader
   end
 end
+
+class Tire::Index
+  def update_mapping(mapping)
+    mapping.each do |type, value|
+      url, body = "#{Tire::Configuration.url}/#{@name}/#{type}/_mapping", MultiJson.encode(type => value)
+      begin
+        @response = Tire::Configuration.client.put url, body
+        raise RuntimeError, "#{@response.code} > #{@response.body}" if @response.failure?
+      ensure
+        curl = %Q|curl -X PUT "#{url}" -d '#{body}'|
+        logged('MAPPING', curl)
+      end
+    end
+    true
+  end
+end

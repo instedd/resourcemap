@@ -1,4 +1,6 @@
 class Field < ActiveRecord::Base
+  include Field::TireConcern
+
   belongs_to :collection
   belongs_to :layer
 

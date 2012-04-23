@@ -9,17 +9,33 @@ module Collection::TireConcern
   def create_index
     index.create({
       refresh: true,
-      mappings: {
-        site: {
-          properties: {
-            name: { type: :string },
-            location: { type: :geo_point },
-            created_at: { type: :date, format: :basic_date_time },
-            updated_at: { type: :date, format: :basic_date_time }
-          }
-        }
-      }
+      mappings: { site: site_mapping }
     })
+  end
+
+  def site_mapping
+    {
+      properties: {
+        name: { type: :string },
+        location: { type: :geo_point },
+        created_at: { type: :date, format: :basic_date_time },
+        updated_at: { type: :date, format: :basic_date_time },
+        properties: { properties: fields_mapping },
+      }
+    }
+  end
+
+  def update_mapping
+    index.update_mapping site: site_mapping
+    index.refresh
+  end
+
+  def fields_mapping
+    map = {}
+    fields.each do |field|
+      map[field.elastic_search_code] = field.index_mapping
+    end
+    map
   end
 
   def destroy_index
