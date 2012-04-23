@@ -504,7 +504,10 @@
         $('table.GralTable').fixedHeaderTable 'destroy'
         $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable'
 
-        setTimeout((-> $('.tablescroll').scrollLeft oldScrollLeft), 50)
+        setTimeout((->
+          $('.tablescroll').scrollLeft oldScrollLeft
+          @adjustContainerSize()
+        ), 20)
 
     performSearch: =>
       return false unless @currentCollection()
