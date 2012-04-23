@@ -499,8 +499,12 @@
 
     makeFixedHeaderTable: ->
       unless @showingMap()
+        oldScrollLeft = $('.tablescroll').scrollLeft()
+
         $('table.GralTable').fixedHeaderTable 'destroy'
         $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable'
+
+        setTimeout((-> $('.tablescroll').scrollLeft oldScrollLeft), 50)
 
     performSearch: =>
       return false unless @currentCollection()
