@@ -102,7 +102,8 @@ class CollectionsController < ApplicationController
     search.full_text_search params[:search]
     search.offset params[:offset]
     search.limit params[:limit]
-    search.where params.except(:action, :controller, :format, :id, :updated_since, :search, :limit, :offset)
+    search.sort params[:sort], params[:sort_direction] == 'asc' if params[:sort]
+    search.where params.except(:action, :controller, :format, :id, :updated_since, :search, :limit, :offset, :sort, :sort_direction)
     results = search.results.map do |result|
       source = result['_source']
 

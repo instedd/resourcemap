@@ -39,10 +39,21 @@ class Search
     self
   end
 
+  def sort(field, ascendent = true)
+    @sort = field
+    @sort_ascendent = ascendent ? nil : 'desc'
+  end
+
   def results
     apply_queries
 
-    @search.sort { by '_uid' }
+    if @sort
+      sort = @sort
+      sort_ascendent = @sort_ascendent
+      @search.sort { by sort, sort_ascendent }
+    else
+      @search.sort { by '_uid' }
+    end
 
     if @offset && @limit
       @search.from @offset

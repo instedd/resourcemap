@@ -141,10 +141,12 @@ $(-> if $('#collections-main').length > 0
 
   # A collection that is filtered by a search result
   class window.CollectionSearch extends CollectionBase
-    constructor: (collection, search, filters) ->
+    constructor: (collection, search, filters, sort, sortDirection) ->
       @collection = collection
       @search = search
       @filters = filters
+      @sort = sort
+      @sortDirection = sortDirection
       @layers = collection.layers
       @fields = collection.fields
       @fieldsInitialized = collection.fieldsInitialized
@@ -161,6 +163,10 @@ $(-> if $('#collections-main').length > 0
     sitesUrl: ->
       options = {}
       options.search = @search if @search
+
+      if @sort
+        options.sort = @sort
+        options.sort_direction = if @sortDirection then 'asc' else 'desc'
 
       filter.setOptions(options) for filter in @filters
 

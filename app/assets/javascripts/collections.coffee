@@ -31,6 +31,8 @@
       @expandedRefinePropertyOperator = ko.observable()
       @expandedRefinePropertyValue = ko.observable()
       @filters = ko.observableArray([])
+      @sort = ko.observable()
+      @sortDirection = ko.observable()
 
       @filters.subscribe => @performSearch()
 
@@ -497,8 +499,8 @@
 
     makeFixedHeaderTable: ->
       unless @showingMap()
-        unless $('table.GralTable').hasClass("fht-table")
-          $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable'
+        $('table.GralTable').fixedHeaderTable 'destroy'
+        $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable'
 
     performSearch: =>
       return false unless @currentCollection()
@@ -506,11 +508,11 @@
       rootCollection = @currentCollection().collection ? @currentCollection()
 
       @unselectSite()
-      if $.trim(@search()).length == 0 && @filters().length == 0
+      if $.trim(@search()).length == 0 && @filters().length == 0 && !@sort()
         @currentCollection(rootCollection)
         @lastSearch(null)
       else
-        @currentCollection(new CollectionSearch(rootCollection, @search(), @filters()))
+        @currentCollection(new CollectionSearch(rootCollection, @search(), @filters(), (if @sort() then "@#{@sort()}" else null), @sortDirection()))
         @currentCollection().loadMoreSites()
         @lastSearch(@search())
       @reloadMapSites() if @showingMap()
@@ -594,6 +596,19 @@
       switch event.keyCode
         when 13 then @filterByProperty()
         else true
+
+    sortBy: (field) =>
+      if @sort() == field.code()
+        if @sortDirection() == false
+          @sort(null)
+          @sortDirection(null)
+        else
+          @sortDirection(false)
+      else
+        @sort(field.code())
+        @sortDirection(true)
+      @makeFixedHeaderTable()
+      @performSearch()
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)

@@ -84,7 +84,7 @@ $(-> if $('#collections-main').length > 0
       if @name().length < 10
         '100px'
       else
-        "#{@name().length * 8}px"
+        "#{20 + @name().length * 8}px"
 
   class window.Option
     constructor: (data) ->

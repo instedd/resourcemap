@@ -12,4 +12,8 @@ class Field < ActiveRecord::Base
   def select_kind?
     kind == 'select_one' || kind == 'select_many'
   end
+
+  def non_empty_value
+    kind == 'numeric' ? 1 : 'foo'
+  end
 end
