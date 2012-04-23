@@ -109,7 +109,11 @@
           %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
           <!-- /ko -->
         <!-- /ko -->
-        %th{style: 'width:100%;min-width:100px'} Last update
+        %th{ko(click: '$root.sortByDate'), style: 'width:100%;min-width:100px;cursor:pointer'}
+          %span{style: 'display:inline'} Last update
+          <!-- ko if: $root.sort() == 'updated_at' -->
+          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+          <!-- /ko -->
         %th
     %tbody
       <!-- ko template: {name: 'table-sites-template', with: $data} -->

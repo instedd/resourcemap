@@ -82,6 +82,8 @@
           self.unselectSite() if self.selectedSite()
           self.search('')
           self.filters([])
+          self.sort(null)
+          self.sortDirection(null)
 
           initialized = self.initMap()
           self.reloadMapSites() unless initialized
@@ -610,16 +612,19 @@
     sortByName: =>
       @sortByCode('name')
 
-    sortByCode: (code) =>
+    sortByDate: =>
+      @sortByCode('updated_at', false)
+
+    sortByCode: (code, defaultOrder = true) =>
       if @sort() == code
-        if @sortDirection() == false
+        if @sortDirection() == defaultOrder
+          @sortDirection(!defaultOrder)
+        else
           @sort(null)
           @sortDirection(null)
-        else
-          @sortDirection(false)
       else
         @sort(code)
-        @sortDirection(true)
+        @sortDirection(defaultOrder)
       @makeFixedHeaderTable()
       @performSearch()
 
