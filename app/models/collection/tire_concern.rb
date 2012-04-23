@@ -16,7 +16,7 @@ module Collection::TireConcern
   def site_mapping
     {
       properties: {
-        name: { type: :string },
+        name: { type: :string, index: :not_analyzed },
         location: { type: :geo_point },
         created_at: { type: :date, format: :basic_date_time },
         updated_at: { type: :date, format: :basic_date_time },

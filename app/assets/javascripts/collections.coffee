@@ -516,7 +516,7 @@
         @currentCollection(rootCollection)
         @lastSearch(null)
       else
-        @currentCollection(new CollectionSearch(rootCollection, @search(), @filters(), (if @sort() then "@#{@sort()}" else null), @sortDirection()))
+        @currentCollection(new CollectionSearch(rootCollection, @search(), @filters(), @sort(), @sortDirection()))
         @currentCollection().loadMoreSites()
         @lastSearch(@search())
       @reloadMapSites() if @showingMap()
@@ -602,14 +602,20 @@
         else true
 
     sortBy: (field) =>
-      if @sort() == field.code()
+      @sortByCode('@' + field.code())
+
+    sortByName: =>
+      @sortByCode('name')
+
+    sortByCode: (code) =>
+      if @sort() == code
         if @sortDirection() == false
           @sort(null)
           @sortDirection(null)
         else
           @sortDirection(false)
       else
-        @sort(field.code())
+        @sort(code)
         @sortDirection(true)
       @makeFixedHeaderTable()
       @performSearch()
