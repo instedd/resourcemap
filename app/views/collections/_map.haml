@@ -121,7 +121,7 @@
                 = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}
     .tablebottom
       %button.grey{ko(enable: :valid), type: 'submit'} Done
-      %span{ko(click: '$root.exitSite')} Cancel
+      %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
   <!-- /ko -->
 
   -# New Site form
@@ -185,7 +185,7 @@
               <!-- /ko -->
     .tablebottom
       %button.grey{ko(enable: :valid), type: 'submit'} Done
-      %span{ko(click: '$root.exitSite')} Cancel
+      %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
   <!-- /ko -->
 
   -# Show Group form
