@@ -24,12 +24,17 @@ class Layer < ActiveRecord::Base
 
     if @fields_renames.present?
       collection.sites.each do |site|
+
+        # Optimization: setting the parent here avoids querying it when indexing
+        site.collection = collection
+
         originals = site.properties.slice *@fields_renames.keys
 
         @fields_renames.each do |from, to|
           site.properties.delete from unless fields_renames_values.include? from
           site.properties[to] = originals[from]
         end
+        site.record_timestamps = false
         site.save!
       end
       @fields_renames = nil

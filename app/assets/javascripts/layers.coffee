@@ -52,6 +52,7 @@
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @code = ko.observable data?.code
+      @originalCode = @code()
       @kind = ko.observable data?.kind
       @ord = ko.observable data?.ord
       @options = if data.config?.options?
@@ -138,6 +139,8 @@
         else
           0
 
+      @savingLayer = ko.observable(false)
+
     newLayer: =>
       layer = new Layer ord: (@layers().length + 1)
       @layers.push(layer)
@@ -160,6 +163,27 @@
       @currentField(null)
 
     saveLayer: =>
+      mustPrompt = false
+
+      # Check if a field's code changed
+      for field in @currentLayer().fields()
+        if field.id() && field.code() != field.originalCode
+          mustPrompt = true
+
+      continueWithSaving = true
+      if mustPrompt
+        continueWithSaving = confirm "You renamed a field's code.\nThis can break API clients that depended on that code.\nThe renaming process will take some time to finish.\nAre you sure you want to proceed?"
+
+      return unless continueWithSaving
+
+      # When saving, set the originalCode field to the current field's code,
+      # so when saving again the "confirm" doesn't trigger
+      for field in @currentLayer().fields()
+        if field.id() && field.code() != field.originalCode
+          field.originalCode = field.code()
+
+      @savingLayer(true)
+
       callback = (data) =>
         @currentLayer().id(data.id)
 
@@ -168,6 +192,8 @@
 
         @currentLayer(null)
         @currentField(null)
+
+        @savingLayer(false)
 
       json = {layer: @currentLayer().toJSON()}
 

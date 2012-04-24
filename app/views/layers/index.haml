@@ -101,8 +101,13 @@
 
     %hr/
     .bottom-actions
+      <!-- ko if: $root.savingLayer() -->
+      Saving layer, please wait...
+      <!-- /ko -->
+      <!-- ko if: !$root.savingLayer() -->
       %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button} Save
       %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'} Cancel
+      <!-- /ko -->
       <!-- ko if: !valid() -->
       %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
       <!-- /ko -->
@@ -115,25 +120,33 @@
       %em{ko(visible: '!public()')} Private layer
 
     .rightbuttons
+      <!-- ko if: !$root.savingLayer() -->
       %button{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'})}
         %img{src: "#{InsteddRails.url}/theme/images/icons/misc/grey/arrowUp.png"}
       %button{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'})}
         %img{src: "#{InsteddRails.url}/theme/images/icons/misc/grey/arrowDown.png"}
+      <!-- /ko -->
       %button.fbranch
+      <!-- ko if: !$root.savingLayer() -->
       %button.fdelete{ko(click: '$root.deleteLayer')}
+      <!-- /ko -->
 
     .middlebuttons
       <!-- ko foreach: fields -->
       %button.faccept{ko(text: :name)}
       <!-- /ko -->
 
+    <!-- ko if: !$root.savingLayer() -->
     %button.farrow{ko(click: '$root.editLayer')} Edit
+    <!-- /ko -->
 
   %br/
   <!-- /ko -->
 
+  <!-- ko if: !$root.savingLayer() -->
   -# New layer link
   .box.grey.addlayer{ko(visible: '!currentLayer()', click: '$root.newLayer'), style: 'display:none'}
     %span Add layer
     %button.cadd.right{type: :button}
     %br{clear: :all}
+  <!-- /ko -->
