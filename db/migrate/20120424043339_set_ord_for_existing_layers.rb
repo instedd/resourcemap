@@ -1,7 +1,7 @@
 class SetOrdForExistingLayers < ActiveRecord::Migration
   def up
-    Collection.includes(:layers).all.each do |collection|
-      collection.layers.each_with_index do |layer, i|
+    Collection.order('id').includes(:layers).all.each do |collection|
+      collection.layers.order('id').each_with_index do |layer, i|
         layer.ord = i + 1
         layer.save!
       end
