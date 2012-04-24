@@ -9,6 +9,8 @@ $ ->
     constructor: (data) ->
       @id = ko.observable data?.id
       @priority = ko.observable data?.priority
+      @priority.subscribe => rm.EventDispatcher.trigger rm.ThresholdEvent.CHANGE_PRIORITY, new rm.ThresholdEvent @
+
       @color = ko.observable data?.color
       @borderTopStyle = ko.computed => "1px inset #{@color()}"
       @condition = ko.observable data?.condition

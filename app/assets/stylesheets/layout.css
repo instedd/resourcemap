@@ -97,3 +97,11 @@ td.loadmore { height: 36px }
 .highlight { background-color: yellow; }
 
 .stat { border-radius: 3px; display: inline-block; height: 17px; width: 18px }
+
+/* FIXME: hack .ux-nstep as it does not work inside ko:each block */
+.ux-spinner { display:inline; position:relative }
+.ux-spinner button { cursor:pointer; width:16px; height:12px; border:medium none; background-color:transparent; background-position:center 0; background-repeat:no-repeat }
+.ux-spinner .kup { position:absolute; top:-2px; left:0px; background-image:url("/assets/up.png") }
+.ux-spinner .kdown { background-image:url("/assets/down.png") }
+.ux-spinner .kup:hover, .ux-nstep .kup:focus { background-position: center -10px }
+.ux-spinner .kup:active { background-position: center -20px }

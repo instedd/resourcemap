@@ -5,7 +5,11 @@ ResourceMap::Application.routes.draw do
     resources :sites
     resources :layers
     resources :fields
-    resources :thresholds
+    resources :thresholds do
+      member do
+        post 'set_priority'
+      end
+    end
     resources :memberships do
       collection do
         get 'invitable'

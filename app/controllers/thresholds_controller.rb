@@ -12,8 +12,13 @@ class ThresholdsController < ApplicationController
     end
   end
 
+  def set_priority
+    threshold.update_attribute :priority, params[:priority]
+
+    render json: threshold
+  end
+
   def destroy
-    threshold = collection.thresholds.find params[:id]
     threshold.destroy
 
     render json: threshold

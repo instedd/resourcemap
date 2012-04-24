@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   expose(:layer)
   expose(:fields) { collection.fields }
   expose(:thresholds) { collection.thresholds.order :priority }
+  expose(:threshold)
 
   def after_sign_in_path_for(resource)
     stored_location_for(resource) || collections_path

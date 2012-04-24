@@ -15,10 +15,10 @@
   <!-- ko foreach :thresholds -->
   .box.grey.w60
     .toptitle 
-      .ux-nstep.w06
-        %input{:disabled => "disabled", :type => "text", :STYLE => "width:12px"}
-        %button.kdown{:type => "button"}
-        %button.kup{:type => "button"}
+      .ux-spinner
+        %input{ ko(value: :priority), type: :hidden }
+        %button.kup{ ko(click: '$root.increasePriority') }
+        %button.kdown{ ko(click: '$root.decreasePriority') }
       %span
         When
         %span{ ko(text: :field) }
