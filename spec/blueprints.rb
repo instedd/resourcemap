@@ -29,6 +29,7 @@ end
 Layer.blueprint do
   collection
   name
+  ord { collection.next_layer_ord }
 end
 
 Field.blueprint do

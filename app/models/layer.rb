@@ -4,6 +4,8 @@ class Layer < ActiveRecord::Base
 
   accepts_nested_attributes_for :fields
 
+  validates_presence_of :ord
+
   after_save :update_collection_mapping
   def update_collection_mapping
     collection.update_mapping

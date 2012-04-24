@@ -3,7 +3,11 @@ ResourceMap::Application.routes.draw do
 
   resources :collections do
     resources :sites
-    resources :layers
+    resources :layers do
+      member do
+        put :set_order
+      end
+    end
     resources :fields
     resources :memberships do
       collection do

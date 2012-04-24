@@ -111,6 +111,8 @@
       %em{ko(visible: '!public()')} Private layer
 
     .rightbuttons
+      %button.fexport{ko(click: '$root.moveLayerUp', css: {disabled: '$root.isFirstLayer($data)'})}
+      %button.finsert{ko(click: '$root.moveLayerDown', css: {disabled: '$root.isLastLayer($data)'})}
       %button.fbranch
       %button.fdelete{ko(click: '$root.deleteLayer')}
 

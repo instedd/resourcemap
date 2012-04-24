@@ -57,7 +57,7 @@ class ImportWizard
       end
 
       # Prepare the new layer
-      layer = collection.layers.new name: collection.name
+      layer = collection.layers.new name: collection.name, ord: collection.next_layer_ord
       layer.collection = collection
 
       # Prepare the fields: we index by code, so later we can reference them faster

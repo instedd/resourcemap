@@ -4,6 +4,7 @@
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @public = ko.observable data?.public
+      @ord = ko.observable data?.ord
       if data?.fields
         @fields = ko.observableArray($.map(data.fields, (x) -> new Field(@, x)))
       else
@@ -41,6 +42,7 @@
     toJSON: =>
       id: @id()
       name: @name()
+      ord: @ord()
       public: @public()
       fields_attributes: $.map(@fields(), (x) -> x.toJSON())
 
@@ -134,7 +136,7 @@
           0
 
     newLayer: =>
-      layer = new Layer
+      layer = new Layer ord: (@layers().length + 1)
       @layers.push(layer)
       @currentLayer(layer)
       layer.hasFocus(true)
@@ -168,10 +170,38 @@
       else
         $.post "/collections/#{@collectionId}/layers.json", json, callback
 
+    saveLayerOrd: (layer) =>
+      json = {ord: layer.ord()}
+
+      json._method = 'put'
+      $.post "/collections/#{@collectionId}/layers/#{layer.id()}/set_order.json", json
+
     deleteLayer: (layer) =>
       if confirm("Are you sure you want to delete layer #{layer.name()}?")
         $.post "/collections/#{@collectionId}/layers/#{layer.id()}", {_method: 'delete'}, =>
           @layers.remove(layer)
+
+          @reorderLayers()
+
+    reorderLayers: =>
+      for layer, i in @layers()
+        if layer.ord() != i + 1
+          layer.ord(i + 1)
+          @saveLayerOrd(layer)
+
+    isFirstLayer: (layer) => layer.ord() == 1
+    isLastLayer: (layer) => layer.ord() == @layers().length
+
+    moveLayerDown: (layer) =>
+      nextLayer = @layers()[layer.ord()]
+      layer.ord(layer.ord() + 1)
+      nextLayer.ord(nextLayer.ord() - 1)
+      @saveLayerOrd(layer)
+      @saveLayerOrd(nextLayer)
+      @layers.sort((x, y) -> if x.ord() < y.ord() then -1 else 1)
+
+    moveLayerUp: (layer) =>
+      @moveLayerDown @layers()[layer.ord() - 2]
 
     newTextField: => @newField 'text'
     newNumericField: => @newField 'numeric'

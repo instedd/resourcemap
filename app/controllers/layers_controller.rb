@@ -10,7 +10,7 @@ class LayersController < ApplicationController
         add_breadcrumb collection.name, collection_path(collection)
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
-      format.json { render json: layers.as_json(include: :fields) }
+      format.json { render json: layers.order('ord').as_json(include: :fields) }
     end
   end
 
@@ -23,6 +23,11 @@ class LayersController < ApplicationController
   def update
     layer.fields.destroy_all
     layer.update_attributes params[:layer]
+    render json: layer
+  end
+
+  def set_order
+    layer.update_attributes ord: params[:ord]
     render json: layer
   end
 

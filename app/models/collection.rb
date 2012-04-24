@@ -41,6 +41,7 @@ class Collection < ActiveRecord::Base
       {
         id: layer.id,
         name: layer.name,
+        ord: layer.ord,
       }
     end
 
@@ -57,5 +58,14 @@ class Collection < ActiveRecord::Base
         }
       end
     end
+
+    layers.sort! { |x, y| x[:ord] <=> y[:ord] }
+    layers
+  end
+
+  # Returns the next ord value for a layer that is going to be created
+  def next_layer_ord
+    layer = layers.select('max(ord) as o').first
+    layer ? layer['o'].to_i + 1 : 1
   end
 end
