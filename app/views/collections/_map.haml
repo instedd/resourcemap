@@ -165,7 +165,7 @@
                 <!-- /ko -->
                 <!-- ko if: kind() == 'numeric' -->
                 = ko_number_field_tag :value
-                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline'
+                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
                 <!-- /ko -->
                 <!-- ko if: kind() == 'select_one' -->
                 %select{ko(value: :value, options: :optionsCodes, optionsText: 'function(o){return $data.labelFor(o)}')}
@@ -260,7 +260,7 @@
                 %span.value{ko(text: :valueUI)}
                 <!-- /ko -->
                 <!-- ko if: !editing() && kind() == 'numeric' -->
-                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline'
+                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: !hasValue() -->
@@ -271,7 +271,7 @@
                 %span.value{style: 'color:grey'} (no value)
                 <!-- /ko -->
                 <!-- ko if: !editing() && kind() == 'numeric' -->
-                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline'
+                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'text' -->
