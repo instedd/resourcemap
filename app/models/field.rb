@@ -4,6 +4,8 @@ class Field < ActiveRecord::Base
   belongs_to :collection
   belongs_to :layer
 
+  validates_presence_of :ord
+
   serialize :config
 
   before_save :set_collection_id_to_layer_id

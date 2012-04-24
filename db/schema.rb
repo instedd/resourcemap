@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120424043339) do
+ActiveRecord::Schema.define(:version => 20120424055231) do
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(:version => 20120424043339) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
     t.text     "config"
+    t.integer  "ord"
   end
 
   create_table "forms", :force => true do |t|

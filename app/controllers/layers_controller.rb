@@ -10,7 +10,7 @@ class LayersController < ApplicationController
         add_breadcrumb collection.name, collection_path(collection)
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
-      format.json { render json: layers.order('ord').as_json(include: :fields) }
+      format.json { render json: layers.as_json(include: :fields) }
     end
   end
 

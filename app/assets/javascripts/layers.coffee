@@ -53,6 +53,7 @@
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
+      @ord = ko.observable data?.ord
       @options = if data.config?.options?
                    ko.observableArray($.map(data.config.options, (x) -> new Option(x)))
                  else
@@ -96,6 +97,7 @@
         name: @name()
         code: @code()
         kind: @kind()
+        ord: @ord()
       json.config = {options: $.map(@options(), (x) -> x.toJSON())} if @isOptionsKind()
       json
 
@@ -162,7 +164,6 @@
         @currentLayer().id(data.id)
 
         for field, i in @currentLayer().fields()
-          alert data.fields[i].id
           field.id(data.fields[i].id)
 
         @currentLayer(null)
@@ -185,15 +186,12 @@
     deleteLayer: (layer) =>
       if confirm("Are you sure you want to delete layer #{layer.name()}?")
         $.post "/collections/#{@collectionId}/layers/#{layer.id()}", {_method: 'delete'}, =>
+          idx = @layers().indexOf(layer)
+          for nextLayer in @layers().slice(idx + 1)
+            nextLayer.ord(nextLayer.ord() - 1)
+            @saveLayerOrd(nextLayer)
+
           @layers.remove(layer)
-
-          @reorderLayers()
-
-    reorderLayers: =>
-      for layer, i in @layers()
-        if layer.ord() != i + 1
-          layer.ord(i + 1)
-          @saveLayerOrd(layer)
 
     isFirstLayer: (layer) => layer.ord() == 1
     isLastLayer: (layer) => layer.ord() == @layers().length
@@ -209,13 +207,25 @@
     moveLayerUp: (layer) =>
       @moveLayerDown @layers()[layer.ord() - 2]
 
+    isFirstField: (layer, field) => field.ord() == 1
+    isLastField: (layer, field) => field.ord() == layer.fields().length
+
+    moveFieldDown: (field) =>
+      nextField = @currentLayer().fields()[field.ord()]
+      field.ord(field.ord() + 1)
+      nextField.ord(nextField.ord() - 1)
+      @currentLayer().fields.sort((x, y) -> if x.ord() < y.ord() then -1 else 1)
+
+    moveFieldUp: (field) =>
+      @moveFieldDown @currentLayer().fields()[field.ord() - 2]
+
     newTextField: => @newField 'text'
     newNumericField: => @newField 'numeric'
     newSelectOneField: => @newField 'select_one'
     newSelectManyField: => @newField 'select_many'
 
     newField: (kind) =>
-      @currentField(new Field(@currentLayer(), kind: kind))
+      @currentField(new Field(@currentLayer(), kind: kind, ord: @currentLayer().fields().length + 1))
       @currentLayer().fields.push(@currentField())
       @currentField().hasFocus(true)
 
@@ -225,6 +235,7 @@
 
     deleteField: (field) =>
       idx = @currentLayer().fields().indexOf(field)
+      nextField.ord(nextField.ord() - 1) for nextField in @currentLayer().fields().slice(idx + 1)
       @currentLayer().fields.remove(field)
       if @currentLayer().fields().length == 0
         @currentField(null)

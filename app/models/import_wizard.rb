@@ -66,10 +66,12 @@ class ImportWizard
       # Fill the fields with the column specs.
       # We completely ignore the ones with selectKind equal to 'label', as processing those with
       # 'code' and 'both' is enough
+      spec_i = 1
       columns_spec.each do |spec|
         if (spec[:kind] == 'text' || spec[:kind] == 'numeric' || spec[:kind] == 'select_one' || spec[:kind] == 'select_many') && spec[:selectKind] != 'label'
-          fields[spec[:code]] = layer.fields.new code: spec[:code], name: spec[:label], kind: spec[:kind]
+          fields[spec[:code]] = layer.fields.new code: spec[:code], name: spec[:label], kind: spec[:kind], ord: spec_i
           fields[spec[:code]].layer = layer
+          spec_i += 1
         end
         if spec[:selectKind] == 'code'
           spec[:related] = columns_spec.find{|x| x[:code] == spec[:code] && x[:selectKind] == 'label'}

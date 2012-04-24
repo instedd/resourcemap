@@ -30,6 +30,8 @@
           .feditor-top
           .feditor-container
             .rightbuttons
+              %button.fexport{ko(click: '$root.moveFieldUp', css: {disabled: '$root.isFirstField($parent, $data)'})}
+              %button.finsert{ko(click: '$root.moveFieldDown', css: {disabled: '$root.isLastField($parent, $data)'})}
               %button.fdelete{ko(click: "$root.deleteField")}
             .feditor-button
               %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}

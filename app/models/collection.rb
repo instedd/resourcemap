@@ -10,8 +10,8 @@ class Collection < ActiveRecord::Base
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
   has_many :root_sites, class_name: 'Site', conditions: {parent_id: nil}
-  has_many :layers, dependent: :destroy
-  has_many :fields
+  has_many :layers, order: 'ord', dependent: :destroy
+  has_many :fields, order: 'ord'
 
   def max_value_of_property(property)
     search = new_tire_search
@@ -54,6 +54,7 @@ class Collection < ActiveRecord::Base
           code: field.code,
           kind: field.kind,
           config: field.config,
+          ord: field.ord,
           writeable: !lms || lms[field.layer_id].write,
         }
       end

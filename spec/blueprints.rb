@@ -38,4 +38,5 @@ Field.blueprint do
   name
   code { Sham.name }
   kind {'text' }
+  ord { layer.next_field_ord }
 end
