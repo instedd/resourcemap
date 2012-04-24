@@ -15,7 +15,6 @@ ResourceMap::Application.routes.draw do
       end
     end
     get 'members'
-    get 'thresholds_setting'
     get 'reminders'
     get 'settings'
     get 'download_as_csv'

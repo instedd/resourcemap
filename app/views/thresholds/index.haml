@@ -1,5 +1,3 @@
-= render 'tabs'
-
 - content_for :head do
   = javascript_include_tag 'view_models/thresholds_view_model'
   = javascript_include_tag 'maps/thresholds_map'
@@ -10,10 +8,12 @@
       rm.bootstrap();
     });
 
+= render 'collections/tabs'
+
 .tabsline
-  %h2 Thresholds
+  -# Thresholds
   <!-- ko foreach :thresholds -->
-  .box.grey.w60{ ko(visible: '$data == $root.currentThreshold()') }
+  .box.grey.w60
     .toptitle 
       .ux-nstep.w06
         %input{:disabled => "disabled", :type => "text", :STYLE => "width:12px"}
@@ -31,23 +31,24 @@
       %button.fdelete{ ko(click: '$root.deleteThreshold') }
     .middlebuttons
     %button.farrow Edit
-  %br{ ko({visible: :id}) }
-  
-  
-  .box.w60{ ko(visible: '$data == $root.currentThreshold()') }
+  %br
+  <!-- /ko -->
+  .box.w60
     .rightbuttons
       %button.fdelete
     %label Conditions
     .middlebuttons
-      when
-      %select{ko(options: "$root.fieldsOption", value: 'condition().field')}
-      %select{"data-bind" => "options: $root.comparisonsOption, value: comp , optionsText: 'comparison_value'"}
-      %select{ko(options: "$root.ofOption", value: :valueOforPercentOf)}
+      when 
+      %select  
+        %option beds
+      %select
+        %option is less than
+      %select
+        %option a value of
       %span.ux-nstep.w06 
-        %input{ko(value: 'condition().value'), style: ":size => '2', :type => 'text'"}
+        %input{:size => "2", :type => "text", :value => "10:00"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
-      %span.stat-r{ko(value: :color)}
       %button.premove 
     .middlebuttons
       %select
@@ -59,7 +60,7 @@
       %select
         %option a percent of
       %span.ux-nstep.w06 
-        %input{:size => "2", :type => "text", :value => "15"}
+        %input{:size => "2", :type => "text", :value => "15:00"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
       %span.stat-r
@@ -67,15 +68,8 @@
     %button.fadd
       Add new condition
 
-    %hr
-    .bottom-actions
-      %button.white{ko(click: "$root.addThreshold")}
-        Save
-      %a.tgrey
-        Cancel
-  <!-- /ko --> 
-  .box.grey.addlayer{ko(click: "showAddThreshold")}
-    %span
-      Add threshold
-    %button.cadd.right
-    %br.clear.all
+  -# New threshold link
+  .box.grey.add{ ko(visible: 'state() == "listing"'), style: 'display:none' }
+    %span Add threshold
+    %button.cadd.right{type: :button}
+    %br{clear: :all}

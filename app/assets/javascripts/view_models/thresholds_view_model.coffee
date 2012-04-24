@@ -8,8 +8,14 @@ $ ->
     @Messages =
       DELETE_THRESHOLD: 'Are you sure to delete threshold?'
 
+    @States =
+      LISTING     : 'listing',
+      ADDING_NEW  : 'adding_new',
+      EDITING     : 'editing'
+
     constructor: (@collectionId) ->
       @thresholds = ko.observableArray()
+      @state = ko.observable ThresholdsViewModel.States.LISTING
       @currentThreshold = ko.observable() 
       @fieldsOption = [
         "bed"

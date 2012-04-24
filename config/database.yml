@@ -4,7 +4,7 @@ development:
   database: resource_map_development
   pool: 5
   username: root
-  password:
+  password: 
 
 test:
   adapter: mysql2
@@ -12,7 +12,7 @@ test:
   database: resource_map_test
   pool: 5
   username: root
-  password:
+  password: 
 
 production:
   adapter: mysql2
@@ -21,4 +21,4 @@ production:
   database: resource_map
   pool: 5
   username: root
-  password:
+  password: 
