@@ -1,10 +1,10 @@
 class SetOrdForExistingFields < ActiveRecord::Migration
   def up
-    Collection.order('id').includes(:layers => :fields).each do |collection|
-      collection.layers.order('id').each do |layer|
-        layer.fields.order('id').each_with_index do |field, i|
-          field.ord = i + 1
-          field.save!
+    c = ActiveRecord::Base.connection
+    c.execute("select id from collections").each do |collection_id|
+      c.execute("select id from layers where collection_id = #{collection_id[0]}").each do |layer_id, i|
+        c.execute("select id from fields where layer_id = #{layer_id[0]} order by id").each_with_index do |field_id, i|
+          c.execute("update fields set ord = #{i + 1} where id = #{field_id[0]}")
         end
       end
     end
