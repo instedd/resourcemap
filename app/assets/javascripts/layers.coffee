@@ -92,6 +92,7 @@
 
     toJSON: =>
       json =
+        id: @id()
         name: @name()
         code: @code()
         kind: @kind()
@@ -159,6 +160,11 @@
     saveLayer: =>
       callback = (data) =>
         @currentLayer().id(data.id)
+
+        for field, i in @currentLayer().fields()
+          alert data.fields[i].id
+          field.id(data.fields[i].id)
+
         @currentLayer(null)
         @currentField(null)
 
