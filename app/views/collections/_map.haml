@@ -176,7 +176,7 @@
                     %span{ko(text: '$parent.labelFor($data)')}
                     %a x
                 .superblyTagfieldClearer
-                %ul.taglist{ko(foreach: :remainingOptions)}
+                %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:60px'}
                   %li
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 <!-- /ko -->
@@ -289,7 +289,7 @@
                     %span{ko(text: '$parent.labelFor($data)')}
                     %a x
                 .superblyTagfieldClearer
-                %ul.taglist{ko(foreach: :remainingOptions)}
+                %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px'}
                   %li
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 %button{ko(click: :save), style: 'float:right'} Update options
