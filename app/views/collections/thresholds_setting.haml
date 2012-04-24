@@ -13,7 +13,7 @@
 .tabsline
   %h2 Thresholds
   <!-- ko foreach :thresholds -->
-  .box.grey.w60
+  .box.grey.w60{ ko(visible: '$data == $root.currentThreshold()') }
     .toptitle 
       .ux-nstep.w06
         %input{:disabled => "disabled", :type => "text", :STYLE => "width:12px"}
@@ -31,22 +31,23 @@
       %button.fdelete{ ko(click: '$root.deleteThreshold') }
     .middlebuttons
     %button.farrow Edit
-  %br
-  <!-- /ko -->
-  .box.w60{ ko({visible: :stat}) }
+  %br{ ko({visible: :id}) }
+  
+  
+  .box.w60{ ko(visible: '$data == $root.currentThreshold()') }
     .rightbuttons
       %button.fdelete
     %label Conditions
     .middlebuttons
-      when 
-      %select{"data-bind" => "options: $root.fieldsOption, value: fields, optionsText: 'field'"} 
-      %select{"data-bind" => "options: $root.conditionsOption, value: conditions, optionsText: 'condition'"}
-      %select{"data-bind" => "options: $root.comparesOption, value: compares, optionsText: 'compare'"}
+      when
+      %select{ko(options: "$root.fieldsOption", value: 'condition().field')}
+      %select{"data-bind" => "options: $root.comparisonsOption, value: comp , optionsText: 'comparison_value'"}
+      %select{ko(options: "$root.ofOption", value: :valueOforPercentOf)}
       %span.ux-nstep.w06 
-        %input{"data-bind" => "value: values, valueUpdate: 'keydown'", :size => "2", :type => "text"}
+        %input{ko(value: 'condition().value'), style: ":size => '2', :type => 'text'"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
-      %span.stat-r{"data-bind" => "value: colors"}
+      %span.stat-r{ko(value: :color)}
       %button.premove 
     .middlebuttons
       %select
@@ -68,10 +69,11 @@
 
     %hr
     .bottom-actions
-      %button.white{ko(click: "addThreshold")}
+      %button.white{ko(click: "$root.addThreshold")}
         Save
       %a.tgrey
         Cancel
+  <!-- /ko --> 
   .box.grey.addlayer{ko(click: "showAddThreshold")}
     %span
       Add threshold

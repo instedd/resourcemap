@@ -10,56 +10,48 @@ $ ->
 
     constructor: (@collectionId) ->
       @thresholds = ko.observableArray()
+      @currentThreshold = ko.observable() 
       @fieldsOption = [
-        field: "bed"
-      ,
-        field: "hospital"
-      ,
-        field: "car garage"
-      ,
-        field: "petro station"
+        "bed"
+        "hospital"
+        "car garage"
+        "petro station"
       ]
 
-      @conditionsOption = [
-        condition: "is less than"
+      @comparisonsOption = [
+        comparison_value: "is less than"
+        comparison_key: "lt"
       ,
-        condition: "is more than"
+        comparison_value: "is more than"
+        comparison_key: "mt"
       ]
 
-      @comparesOption = [
-        compare: "a value of"
-      ,
-        compare: "a percent of"
+      @ofOption = [
+        "a value of"
+        "a percent of"
       ]
-
-      @compares = ko.observable(@comparesOption[0]) 
-      @fields = ko.observable(@fieldsOption[0])
-      @conditions = ko.observable(@conditionsOption[0])
-      @colors = ko.observable("orange") 
-      @values = ko.observable(10)
-      @stat = ko.observable(false)
 
     deleteThreshold: (threshold) =>
       threshold.destroy() if confirm ThresholdsViewModel.Messages.DELETE_THRESHOLD
 
     addThreshold: () ->
-      threshold  = 
-        priority: @thresholds().length + 1
-        condition: {
-          field: @fields().field
-          is: 
-            if @conditions().condition == "is less than"
-              "lt"
-            else
-              "mt"
-          value: @values()
-        }
-        color: @colors()
-      @thresholds.push new rm.Threshold threshold
-      @stat(false)
-
-    hideAddThreshold: () ->
-      @stat(false)
+      rm.thresholdsViewModel.currentThreshold().create()
 
     showAddThreshold: () ->
-      @stat(true)
+      defaultThreshold = 
+        collection_id: @collectionId
+        valueOforPercentOf: @ofOption[0]
+        priority: @thresholds().length + 1 
+        comp: @comparisonsOption[1]
+        value: 10
+        comparison: @comparisonsOption[0].comparison_key
+        condition: {
+          field: ko.observable(@fieldsOption[0])
+          is: "lt" 
+          value: ko.observable(10)
+        }
+        color: "#FFFFFF"
+
+      threshold = new rm.Threshold defaultThreshold
+      @thresholds.push threshold
+      @currentThreshold(threshold)
