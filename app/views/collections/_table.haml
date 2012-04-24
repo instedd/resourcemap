@@ -10,7 +10,7 @@
   %table.GralTable
     %thead
       %tr
-        %th.w32{style: 'min-width:318px;max-width:318px;overflow:auto'} Collection
+        %th.w39{style: 'overflow:auto'} Collection
         %th{style: 'width:100%'} Last update
         %th
     %tbody
@@ -30,7 +30,7 @@
 %script{type: "text/html", id: "table-sites-template"}
   <!-- ko foreach: sites -->
   %tr{ko(css: "{closed: group() && !expanded(), opened: group() && expanded, active: $data == $root.selectedSite()}")}
-    %td{style: 'min-width:318px;max-width:318px;overflow:auto'}
+    %td.w39{style: 'overflow:auto'}
       %div
         <!-- ko if: group() -->
         %a{ko(click: '$root.toggleSite', style: {marginLeft: "'' + ((level() - 1) * 20) + 'px'"}), href: 'javascript:void(0)'}
@@ -104,7 +104,7 @@
   %table.GralTable
     %thead
       %tr
-        %th.w32{ko(click: '$root.sortByName'), style: 'cursor:pointer;min-width:318px;max-width:318px;overflow:hidden'}
+        %th.w39{ko(click: '$root.sortByName'), style: 'cursor:pointer;overflow:hidden'}
           %span{style: 'display:inline'} Site
           <!-- ko if: $root.sort() == 'name' -->
           %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}

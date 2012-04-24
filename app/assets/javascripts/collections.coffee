@@ -653,10 +653,10 @@
 
     $('#container').width(containerWidth)
     $('#header').width(containerWidth)
-    $('.BreadCrumb').width(containerWidth - 340)
-    $('#right-panel').width(containerWidth - 334)
+    $('.BreadCrumb').width(containerWidth - 410)
+    $('#right-panel').width(containerWidth - 404)
     $('.tableheader.expanded').width(containerWidth)
-    $('#map').width(containerWidth - 350)
+    $('#map').width(containerWidth - 420)
     false
 
   $(window).resize adjustContainerSize

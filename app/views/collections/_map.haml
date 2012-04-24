@@ -1,9 +1,9 @@
-.left.w33.h50
+.left.w40.h50
   <!-- ko if: !loadingSite() -->
 
   -# Collections
   <!-- ko if: !currentCollection() && !editingSite() -->
-  .tableheader.w33
+  .tableheader.w40
     My Collections
   .tablescroll
     %table.GralTable.CleanTable
@@ -63,7 +63,7 @@
   -# Collection sites
   <!-- ko if: !editingSite() -->
   <!-- ko with: currentCollection -->
-  .tableheader.w33
+  .tableheader.w40
     %button.fleft{ko(click: '$root.goToRoot'), type: 'button'}
     %span.i18b-groupChat
     %span{ko(text: :name)}
@@ -96,8 +96,8 @@
 
   -# New Group form
   <!-- ko if: newGroup -->
-  %form{ko(with: :newGroup, submit: '$root.saveSite'), method: :post, style: 'display:inline-block'}
-    .tableheader.w33
+  %form{ko(with: :newGroup, submit: '$root.saveSite'), method: :post, style: 'display:inline-block;width:100%'}
+    .tableheader.w40
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
       %span New Group
@@ -126,8 +126,8 @@
 
   -# New Site form
   <!-- ko if: newOrEditSite -->
-  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post, style: 'display:inline-block'}
-    .tableheader.w33
+  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post, style: 'display:inline-block;width:100%'}
+    .tableheader.w40
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
       <!-- ko if: inEditMode() -->
@@ -151,7 +151,6 @@
               %div
                 %label Location:
                 = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}
-              %hr
               <!-- ko foreach: $root.currentCollection().layers() -->
               %div
                 %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
@@ -176,7 +175,7 @@
                     %span{ko(text: '$parent.labelFor($data)')}
                     %a x
                 .superblyTagfieldClearer
-                %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:60px'}
+                %ul.taglist{ko(foreach: :remainingOptions)}
                   %li
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 <!-- /ko -->
@@ -190,8 +189,8 @@
 
   -# Show Group form
   <!-- ko if: showGroup -->
-  %form{ko(with: :showGroup, submit: '$root.saveSite'), method: :post, style: 'display:inline'}
-    .tableheader.w33
+  %form{ko(with: :showGroup, submit: '$root.saveSite'), method: :post, style: 'display:inline;width:100%'}
+    .tableheader.w40
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
       %span{ko(text: :name)}
@@ -222,8 +221,8 @@
 
   -# Show Site form
   <!-- ko if: showSite -->
-  %form{ko(with: :showSite, submit: '$root.saveSite'), method: :post, style: 'display:inline'}
-    .tableheader.w33
+  %form{ko(with: :showSite, submit: '$root.saveSite'), method: :post, style: 'display:inline;width:100%'}
+    .tableheader.w40
       %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
       %span{ko(text: :name)}
@@ -289,7 +288,7 @@
                     %span{ko(text: '$parent.labelFor($data)')}
                     %a x
                 .superblyTagfieldClearer
-                %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px'}
+                %ul.taglist{ko(foreach: :remainingOptions)}
                   %li
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 %button{ko(click: :save), style: 'float:right'} Update options
@@ -306,7 +305,7 @@
 
   -# Loading Site...
   %form{ko(visible: :loadingSite)}
-    .tableheader.w33
+    .tableheader.w40
       %button.fleft
       %span.i18b-groupChat
       %span Loading...
