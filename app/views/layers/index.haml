@@ -30,8 +30,10 @@
           .feditor-top
           .feditor-container
             .rightbuttons
-              %button.fexport{ko(click: '$root.moveFieldUp', css: {disabled: '$root.isFirstField($parent, $data)'})}
-              %button.finsert{ko(click: '$root.moveFieldDown', css: {disabled: '$root.isLastField($parent, $data)'})}
+              %button{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'})}
+                %img{src: "#{InsteddRails.url}/theme/images/icons/misc/grey/arrowUp.png"}
+              %button{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'})}
+                %img{src: "#{InsteddRails.url}/theme/images/icons/misc/grey/arrowDown.png"}
               %button.fdelete{ko(click: "$root.deleteField")}
             .feditor-button
               %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
@@ -113,8 +115,10 @@
       %em{ko(visible: '!public()')} Private layer
 
     .rightbuttons
-      %button.fexport{ko(click: '$root.moveLayerUp', css: {disabled: '$root.isFirstLayer($data)'})}
-      %button.finsert{ko(click: '$root.moveLayerDown', css: {disabled: '$root.isLastLayer($data)'})}
+      %button{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'})}
+        %img{src: "#{InsteddRails.url}/theme/images/icons/misc/grey/arrowUp.png"}
+      %button{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'})}
+        %img{src: "#{InsteddRails.url}/theme/images/icons/misc/grey/arrowDown.png"}
       %button.fbranch
       %button.fdelete{ko(click: '$root.deleteLayer')}
 
