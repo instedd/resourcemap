@@ -232,26 +232,25 @@
         %tbody
           %tr
             %td
-              %div
+              %div{style: 'margin-bottom:14px'}
                 %label Name:
                 %span.value{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
                 <!-- ko if: editingName() -->
                 = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                 <!-- /ko -->
-              %div
+              %div{style: 'margin-bottom:14px'}
                 %label Location:
                 %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
                 <!-- ko if: editingLocation() -->
                 = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}
                 <!-- /ko -->
-              %hr
               <!-- ko foreach: parentCollection().layers() -->
-              %div
+              %div{style: 'margin-top:24px;margin-bottom:14px'}
                 %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields() -->
-              %div
+              %div{style: 'margin-bottom:14px'}
                 %label{ko(text: "name() + ':'")}
                 <!-- ko if: hasValue() -->
                 <!-- ko if: writeable() -->
