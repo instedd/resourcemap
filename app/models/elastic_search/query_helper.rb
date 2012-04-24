@@ -54,7 +54,7 @@ module ElasticSearch::QueryHelper
 
         case op
         when '='
-          conditions.push "#{key}:#{append_star_unless_numeric(value)}"
+          conditions.push "#{key}:#{value}"
         when '<'
           tire_search.filter :range, key => {lt: value}
         when '<='
