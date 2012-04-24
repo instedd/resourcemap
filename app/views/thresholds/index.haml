@@ -11,9 +11,9 @@
 = render 'collections/tabs'
 
 .tabsline
-  -# Thresholds
+  %h2 Thresholds
   <!-- ko foreach :thresholds -->
-  .box.grey.w60
+  .box.grey.w60{ ko(visible: '$data != $root.currentThreshold()') }
     .toptitle 
       .ux-nstep.w06
         %input{:disabled => "disabled", :type => "text", :STYLE => "width:12px"}
@@ -31,24 +31,23 @@
       %button.fdelete{ ko(click: '$root.deleteThreshold') }
     .middlebuttons
     %button.farrow Edit
-  %br
-  <!-- /ko -->
-  .box.w60
+  %br{ ko({visible: :id}) }
+  
+  
+  .box.w60{ ko(visible: '$data == $root.currentThreshold()') }
     .rightbuttons
       %button.fdelete
     %label Conditions
     .middlebuttons
-      when 
-      %select  
-        %option beds
-      %select
-        %option is less than
-      %select
-        %option a value of
+      when
+      %select{ko(options: "$root.fieldsOption", value: 'condition().field')}
+      %select{"data-bind" => "options: $root.comparisonsOption, value: comp , optionsText: 'comparison_value'"}
+      %select{ko(options: "$root.ofOption", value: :valueOforPercentOf)}
       %span.ux-nstep.w06 
-        %input{:size => "2", :type => "text", :value => "10:00"}
+        %input{ko(value: 'condition().value'), style: ":size => '2', :type => 'text'"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
+      %span.stat-r{ko(value: :color)}
       %button.premove 
     .middlebuttons
       %select
@@ -60,7 +59,7 @@
       %select
         %option a percent of
       %span.ux-nstep.w06 
-        %input{:size => "2", :type => "text", :value => "15:00"}
+        %input{:size => "2", :type => "text", :value => "15"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
       %span.stat-r
@@ -68,8 +67,16 @@
     %button.fadd
       Add new condition
 
-  -# New threshold link
-  .box.grey.add{ ko(visible: 'state() == "listing"'), style: 'display:none' }
-    %span Add threshold
-    %button.cadd.right{type: :button}
-    %br{clear: :all}
+    %hr
+    .bottom-actions
+      %button.white{ko(click: "$root.addThreshold")}
+        Save
+      %a.tgrey
+        Cancel
+  <!-- /ko --> 
+  %br 
+  .box.w60.grey.addlayer{ko(click: "showAddThreshold")}
+    %span
+      Add threshold
+    %button.cadd.right
+    %br.clear.all
