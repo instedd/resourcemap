@@ -1,6 +1,7 @@
 class CreateActivities < ActiveRecord::Migration
   def change
     create_table :activities do |t|
+      t.string :kind
       t.integer :user_id
       t.integer :collection_id
       t.integer :layer_id

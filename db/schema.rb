@@ -14,6 +14,7 @@
 ActiveRecord::Schema.define(:version => 20120425105422) do
 
   create_table "activities", :force => true do |t|
+    t.string   "kind"
     t.integer  "user_id"
     t.integer  "collection_id"
     t.integer  "layer_id"

@@ -6,6 +6,11 @@ class Layer < ActiveRecord::Base
 
   validates_presence_of :ord
 
+  # The user that creates/makes changes to this layer
+  attr_accessor :user
+
+  validates_presence_of :user, :if => :new_record?
+
   after_create :update_collection_mapping
   def update_collection_mapping
     collection.update_mapping
@@ -39,6 +44,11 @@ class Layer < ActiveRecord::Base
       end
       @fields_renames = nil
     end
+  end
+
+  after_create :create_activity
+  def create_activity
+    Activity.create! kind: 'layer_created', collection_id: collection.id, layer_id: id, user_id: user.id
   end
 
   # Returns the next ord value for a field that is going to be created
