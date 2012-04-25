@@ -16,7 +16,7 @@ $ ->
     constructor: (@collectionId) ->
       @thresholds = ko.observableArray()
       @state = ko.observable ThresholdsViewModel.States.LISTING
-      @currentThreshold = ko.observable() 
+      @currentThreshold = ko.observable()
       @fieldsOption = [
         "bed"
         "hospital"
@@ -61,20 +61,25 @@ $ ->
       rm.thresholdsViewModel.currentThreshold().create()
 
     showAddThreshold: () ->
-      defaultThreshold = 
+      @state ThresholdsViewModel.States.ADDING_NEW
+      defaultThreshold =
         collection_id: @collectionId
         valueOforPercentOf: @ofOption[0]
-        priority: @thresholds().length + 1 
+        priority: @thresholds().length + 1
         comp: @comparisonsOption[1]
         value: 10
         comparison: @comparisonsOption[0].comparison_key
         condition: {
           field: ko.observable(@fieldsOption[0])
-          is: "lt" 
+          is: "lt"
           value: ko.observable(10)
         }
         color: "#FFFFFF"
-
       threshold = new rm.Threshold defaultThreshold
       @thresholds.push threshold
       @currentThreshold(threshold)
+
+    cancelThreshold: =>
+      @thresholds.remove @currentThreshold()
+      @currentThreshold null
+      @state ThresholdsViewModel.States.LISTING

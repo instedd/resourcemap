@@ -32,8 +32,7 @@
     .middlebuttons
     %button.farrow Edit
   %br{ ko({visible: :id}) }
-  
-  
+
   .box.w60{ ko(visible: '$data == $root.currentThreshold()') }
     .rightbuttons
       %button.fdelete
@@ -71,12 +70,12 @@
     .bottom-actions
       %button.white{ko(click: "$root.addThreshold")}
         Save
-      %a.tgrey
-        Cancel
+      %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
   <!-- /ko --> 
-  %br 
-  .box.w60.grey.addlayer{ko(click: "showAddThreshold")}
+
+  -# New threshold link
+  .box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
     %span
       Add threshold
     %button.cadd.right
-    %br.clear.all
+    %br{clear: :all}
