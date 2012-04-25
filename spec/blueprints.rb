@@ -40,3 +40,6 @@ Field.blueprint do
   kind {'text' }
   ord { layer.next_field_ord }
 end
+
+Activity.blueprint do
+end

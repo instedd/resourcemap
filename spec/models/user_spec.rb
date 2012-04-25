@@ -38,4 +38,27 @@ describe User do
       User.make.admins?(collection).should be_false
     end
   end
+
+  context "activities" do
+    let!(:user) { User.make }
+    let!(:collection) { user.create_collection Collection.make_unsaved }
+
+    before(:each) do
+      Activity.delete_all
+    end
+
+    it "returns activities for user membership" do
+      Activity.make collection_id: collection.id, user_id: user.id, kind: 'collection_created'
+
+      user.activities.length.should eq(1)
+    end
+
+    it "doesn't return activities for user membership" do
+      user2 = User.make
+
+      Activity.make collection_id: collection.id, user_id: user.id, kind: 'collection_created'
+
+      user2.activities.length.should eq(0)
+    end
+  end
 end

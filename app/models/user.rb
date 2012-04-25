@@ -43,4 +43,8 @@ class User < ActiveRecord::Base
     lm = LayerMembership.where(user_id: self.id, collection_id: collection.id, layer_id: field.layer_id).first
     lm && lm.write
   end
+
+  def activities
+    Activity.where(collection_id: memberships.select('collection_id').map(&:collection_id))
+  end
 end

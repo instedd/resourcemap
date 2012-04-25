@@ -1,0 +1,14 @@
+.tabsline
+  .tablewrapp
+    %table.GralTable
+      %tr
+        %th Collection
+        %th User
+        %th Activity
+        %th Time
+      - activities.order('id desc').includes(:collection, :user).each do |activity|
+        %tr
+          %td= activity.collection.name
+          %td= activity.user.display_name
+          %td= activity.description
+          %td #{time_ago_in_words activity.created_at} ago
