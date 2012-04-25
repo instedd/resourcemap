@@ -412,6 +412,9 @@ $(-> if $('#collections-main').length > 0
       @inEditMode(false)
       @endEditLocationInMap(if saved then @position() else @originalLocation)
 
+      for field in window.model.currentCollection().fields()
+        field.expanded(false)
+
     createMarker: (drop = false) =>
       @deleteMarker()
 

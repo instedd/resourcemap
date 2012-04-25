@@ -31,6 +31,7 @@ $(-> if $('#collections-main').length > 0
           @options()
 
       @editing = ko.observable false
+      @expanded = ko.observable false # For select_many
 
     # The value of the UI.
     # If it's a select one or many, we need to get the label from the option code.
@@ -71,6 +72,8 @@ $(-> if $('#collections-main').length > 0
       @value([]) unless @value()
       @value(@value().diff([optionCode]))
       @value.valueHasMutated()
+
+    expand: => @expanded(true)
 
     labelFor: (code) =>
       for option in @options()

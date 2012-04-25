@@ -124,7 +124,7 @@
       %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
   <!-- /ko -->
 
-  -# New Site form
+  -# New Site or Edit Site form
   <!-- ko if: newOrEditSite -->
   %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post, style: 'display:inline-block;width:100%'}
     .tableheader.w40
@@ -174,10 +174,15 @@
                   %li.superblyTagItem{ko(click: '$parent.removeOption')}
                     %span{ko(text: '$parent.labelFor($data)')}
                     %a x
+                <!-- ko if: !expanded() -->
+                %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer'} Add more...
+                <!-- /ko -->
                 .superblyTagfieldClearer
+                <!-- ko if: expanded() -->
                 %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:60px'}
                   %li
                     %a{ko(text: :label, click: '$parent.selectOption')}
+                <!-- /ko -->
                 <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
