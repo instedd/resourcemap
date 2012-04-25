@@ -11,7 +11,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120424055231) do
+ActiveRecord::Schema.define(:version => 20120425105422) do
+
+  create_table "activities", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "collection_id"
+    t.integer  "layer_id"
+    t.integer  "field_id"
+    t.integer  "site_id"
+    t.text     "data"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -86,6 +97,7 @@ ActiveRecord::Schema.define(:version => 20120424055231) do
     t.integer  "min_zoom"
     t.integer  "max_zoom"
     t.string   "location_mode", :limit => 10,                                :default => "automatic"
+    t.integer  "user_id"
   end
 
   create_table "thresholds", :force => true do |t|
