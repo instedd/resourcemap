@@ -40,11 +40,11 @@ $ ->
     deleteThreshold: (threshold) =>
       threshold.destroy() if confirm ThresholdsViewModel.Messages.DELETE_THRESHOLD
 
-    increasePriority: (threshold) =>
+    moveThresholdUp: (threshold) =>
       index = @thresholds.indexOf threshold
       @swapPriority threshold, @thresholds()[index - 1] if index > 0
 
-    decreasePriority: (threshold) =>
+    moveThresholdDown: (threshold) =>
       index = @thresholds.indexOf threshold
       @swapPriority threshold, @thresholds()[index + 1] if index < @thresholds().length - 1
 

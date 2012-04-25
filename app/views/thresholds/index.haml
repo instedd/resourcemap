@@ -17,8 +17,8 @@
     .toptitle 
       .ux-spinner
         %input{ ko(value: :priority), type: :hidden }
-        %button.kup{ ko(click: '$root.increasePriority') }
-        %button.kdown{ ko(click: '$root.decreasePriority') }
+        %button.kup{ ko(click: '$root.moveThresholdUp') }
+        %button.kdown{ ko(click: '$root.moveThresholdDown') }
       %span
         When
         %span{ ko(text: :field) }
