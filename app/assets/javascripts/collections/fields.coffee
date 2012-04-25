@@ -26,10 +26,13 @@ $(-> if $('#collections-main').length > 0
       @valueUI = ko.computed => @valueUIFor(@value())
       @filter = ko.observable('') # The text for filtering options in a seclect_many
       @remainingOptions = ko.computed =>
-        if @value()
+        option.selected(false) for option in @options()
+        remaining = if @value()
           @options().filter((x) => @value().indexOf(x.code()) == -1 && x.label().toLowerCase().indexOf(@filter().toLowerCase()) == 0)
         else
           @options()
+        remaining[0].selected(true) if remaining.length > 0
+        remaining
 
       @editing = ko.observable false
       @expanded = ko.observable false # For select_many
@@ -80,12 +83,29 @@ $(-> if $('#collections-main').length > 0
     expand: => @expanded(true)
 
     filterKeyDown: (model, event) =>
-      if event.keyCode == 13
-        if @remainingOptions().length == 1
-          @selectOption(@remainingOptions()[0])
-        return false
-      else
-        return true
+      switch event.keyCode
+        when 13 # Enter
+          for option, i in @remainingOptions()
+            if option.selected()
+              @selectOption(option)
+              break
+          false
+        when 38 # Up
+          for option, i in @remainingOptions()
+            if option.selected() && i > 0
+              option.selected(false)
+              @remainingOptions()[i - 1].selected(true)
+              break
+          false
+        when 40 # Down
+          for option, i in @remainingOptions()
+            if option.selected() && i != @remainingOptions().length - 1
+              option.selected(false)
+              @remainingOptions()[i + 1].selected(true)
+              break
+          false
+        else
+          true
 
     labelFor: (code) =>
       for option in @options()
@@ -105,5 +125,6 @@ $(-> if $('#collections-main').length > 0
     constructor: (data) ->
       @code = ko.observable(data?.code)
       @label = ko.observable(data?.label)
+      @selected = ko.observable(false)
 
 )

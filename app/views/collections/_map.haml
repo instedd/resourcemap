@@ -181,7 +181,7 @@
                 <!-- ko if: expanded() -->
                 %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
                 %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px'}
-                  %li
+                  %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 <!-- /ko -->
                 <!-- /ko -->
@@ -296,7 +296,7 @@
                 .superblyTagfieldClearer
                 %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
                 %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
-                  %li
+                  %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 %button{ko(click: :save), style: 'float:right'} Update options
                 %button{ko(click: :exit), style: 'float:right'} Cancel

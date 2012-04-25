@@ -409,6 +409,7 @@ $(-> if $('#collections-main').length > 0
       @originalName = @name()
       @originalPosition = @position()
       for field in window.model.currentCollection().fields()
+        field.editing(false)
         field.originalValue = field.value()
 
       @inEditMode(true)
