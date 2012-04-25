@@ -405,6 +405,12 @@ $(-> if $('#collections-main').length > 0
         @panToPosition()
 
     startEditMode: =>
+      # Keep the original values, in case the user cancels
+      @originalName = @name()
+      @originalPosition = @position()
+      for field in window.model.currentCollection().fields()
+        field.originalValue = field.value()
+
       @inEditMode(true)
       @startEditLocationInMap()
 
@@ -412,8 +418,20 @@ $(-> if $('#collections-main').length > 0
       @inEditMode(false)
       @endEditLocationInMap(if saved then @position() else @originalLocation)
 
+      # Restore original name and position if not saved
+      unless saved
+        @name(@originalName)
+        @position(@originalPosition)
+        delete @originalName
+        delete @originalPosition
+
+      # Expand fields (select_many) and restore original field values if not saved
       for field in window.model.currentCollection().fields()
         field.expanded(false)
+
+        unless saved
+          field.value(field.originalValue)
+          delete field.originalValue
 
     createMarker: (drop = false) =>
       @deleteMarker()
