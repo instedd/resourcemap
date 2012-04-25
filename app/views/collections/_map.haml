@@ -179,7 +179,8 @@
                 <!-- /ko -->
                 .superblyTagfieldClearer
                 <!-- ko if: expanded() -->
-                %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:60px'}
+                %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
+                %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px'}
                   %li
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 <!-- /ko -->
@@ -293,7 +294,8 @@
                     %span{ko(text: '$parent.labelFor($data)')}
                     %a x
                 .superblyTagfieldClearer
-                %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px'}
+                %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
+                %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
                   %li
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 %button{ko(click: :save), style: 'float:right'} Update options

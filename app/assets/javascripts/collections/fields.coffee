@@ -24,9 +24,10 @@ $(-> if $('#collections-main').length > 0
       @value = ko.observable()
       @hasValue = ko.computed => @value() && (if @kind() == 'select_many' then @value().length > 0 else @value())
       @valueUI = ko.computed => @valueUIFor(@value())
+      @filter = ko.observable('') # The text for filtering options in a seclect_many
       @remainingOptions = ko.computed =>
         if @value()
-          @options().filter((x) => @value().indexOf(x.code()) == -1)
+          @options().filter((x) => @value().indexOf(x.code()) == -1 && x.label().toLowerCase().indexOf(@filter().toLowerCase()) == 0)
         else
           @options()
 
@@ -56,10 +57,12 @@ $(-> if $('#collections-main').length > 0
     exit: =>
       @value(@originalValue) if @originalValue?
       @editing(false)
+      @filter('')
       delete @originalValue
 
     save: =>
       @editing(false)
+      @filter('')
       window.model.editingSite().updateProperty(@code(), @value())
       delete @originalValue
 
@@ -67,6 +70,7 @@ $(-> if $('#collections-main').length > 0
       @value([]) unless @value()
       @value().push(option.code())
       @value.valueHasMutated()
+      @filter('')
 
     removeOption: (optionCode) =>
       @value([]) unless @value()
@@ -74,6 +78,14 @@ $(-> if $('#collections-main').length > 0
       @value.valueHasMutated()
 
     expand: => @expanded(true)
+
+    filterKeyDown: (model, event) =>
+      if event.keyCode == 13
+        if @remainingOptions().length == 1
+          @selectOption(@remainingOptions()[0])
+        return false
+      else
+        return true
 
     labelFor: (code) =>
       for option in @options()

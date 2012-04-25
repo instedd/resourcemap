@@ -425,9 +425,11 @@ $(-> if $('#collections-main').length > 0
         delete @originalName
         delete @originalPosition
 
-      # Expand fields (select_many) and restore original field values if not saved
+      # Expand fields, clear filters (select_many),
+      # and restore original field values if not saved
       for field in window.model.currentCollection().fields()
         field.expanded(false)
+        field.filter('')
 
         unless saved
           field.value(field.originalValue)
