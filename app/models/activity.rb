@@ -24,6 +24,12 @@ class Activity < ActiveRecord::Base
       "Group '#{data[:name]}' was created"
     when 'site_changed'
       "Site '#{data[:name]}' changed: #{site_changes_text}"
+    when 'group_changed'
+      "Group '#{data[:name]}' changed: #{site_changes_text}"
+    when 'site_deleted'
+      "Site '#{data[:name]}' was deleted"
+    when 'group_deleted'
+      "Group '#{data[:name]}' was deleted"
     end
   end
 

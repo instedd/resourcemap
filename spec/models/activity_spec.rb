@@ -112,6 +112,22 @@ describe Activity do
         description: "Site '#{site.name}' changed: name changed from 'Foo' to 'Bar'"
     end
 
+    it "creates one after changing one group's name" do
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, group: true, user: user
+
+      Activity.delete_all
+
+      site.name = 'Bar'
+      site.save!
+
+      assert_activity 'group_changed',
+        collection_id: collection.id,
+        user_id: user.id,
+        site_id: site.id,
+        data: {name: site.name, changes: {'name' => ['Foo', 'Bar']}},
+        description: "Group '#{site.name}' changed: name changed from 'Foo' to 'Bar'"
+    end
+
     it "creates one after changing one site's location" do
       site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
 
@@ -179,6 +195,36 @@ describe Activity do
         data: {name: site.name, changes: {'properties' => [{'beds' => 20, 'text' => 'foo'}, {'beds' => 30, 'text' => 'bar'}]}},
         description: "Site '#{site.name}' changed: 'beds' changed from 20 to 30, 'text' changed from 'foo' to 'bar'"
     end
+  end
+
+  it "creates one after destroying a group" do
+    site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, location_mode: :manual, group: true, user: user
+
+    Activity.delete_all
+
+    site.destroy
+
+    assert_activity 'group_deleted',
+      collection_id: collection.id,
+      user_id: user.id,
+      site_id: site.id,
+      data: {name: site.name},
+      description: "Group '#{site.name}' was deleted"
+  end
+
+  it "creates one after destroying a site" do
+    site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, location_mode: :manual, user: user
+
+    Activity.delete_all
+
+    site.destroy
+
+    assert_activity 'site_deleted',
+      collection_id: collection.id,
+      user_id: user.id,
+      site_id: site.id,
+      data: {name: site.name},
+      description: "Site '#{site.name}' was deleted"
   end
 
   def assert_activity(kind, options = {})

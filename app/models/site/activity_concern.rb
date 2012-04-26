@@ -4,6 +4,7 @@ module Site::ActivityConcern
   included do
     after_create :create_created_activity, :unless => :mute_activities
     after_update :create_updated_activity, :unless => :mute_activities
+    after_destroy :create_deleted_activity, :unless => :mute_activities
   end
 
   def create_created_activity
@@ -28,7 +29,11 @@ module Site::ActivityConcern
     site_changes['lng'] = [lng, lng] if site_changes['lat'] && !site_changes['lng']
 
     if site_changes.present?
-      Activity.create! kind: 'site_changed', collection_id: collection.id, user_id: user.id, site_id: id, data: {name: name, changes: site_changes}
+      Activity.create! kind: (group? ? 'group_changed' : 'site_changed'), collection_id: collection.id, user_id: user.id, site_id: id, data: {name: name, changes: site_changes}
     end
+  end
+
+  def create_deleted_activity
+    Activity.create! kind: (group? ? 'group_deleted' : 'site_deleted'), collection_id: collection.id, user_id: user.id, site_id: id, data: {name: name}
   end
 end
