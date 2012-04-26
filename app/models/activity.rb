@@ -20,6 +20,8 @@ class Activity < ActiveRecord::Base
       str = "Layer '#{data[:name]}' was created with fields: #{fields_str}"
     when 'site_created'
       "Site '#{data[:name]}' was created"
+    when 'group_created'
+      "Group '#{data[:name]}' was created"
     end
   end
 

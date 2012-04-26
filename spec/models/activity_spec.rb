@@ -66,6 +66,19 @@ describe Activity do
       description: "Site '#{site.name}' was created"
   end
 
+  it "creates one after creating a group" do
+    Activity.delete_all
+
+    site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, location_mode: :manual, group: true, user: user
+
+    assert_activity 'group_created',
+      collection_id: collection.id,
+      user_id: user.id,
+      site_id: site.id,
+      data: {name: site.name, lat: site.lat, lng: site.lng, location_mode: :manual},
+      description: "Group '#{site.name}' was created"
+  end
+
   it "creates one after importing a csv" do
     Activity.delete_all
 

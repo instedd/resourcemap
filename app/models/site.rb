@@ -23,8 +23,13 @@ class Site < ActiveRecord::Base
     site_data = {name: name}
     site_data[:lat] = lat if lat
     site_data[:lng] = lng if lng
-    site_data[:properties] = properties if properties.present?
-    Activity.create! kind: 'site_created', collection_id: collection.id, site_id: id, user_id: user.id, data: site_data
+    if group?
+      site_data[:location_mode] = location_mode
+    else
+      site_data[:properties] = properties if properties.present?
+    end
+    kind = group? ? 'group_created' : 'site_created'
+    Activity.create! kind: kind, collection_id: collection.id, site_id: id, user_id: user.id, data: site_data
   end
 
   def level
