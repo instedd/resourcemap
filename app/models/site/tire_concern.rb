@@ -22,7 +22,12 @@ module Site::TireConcern
     }
     hash[:location] = {lat: lat.to_f, lon: lng.to_f} if lat? && lng?
     hash[:parent_ids] = hierarchy.split(',').map(&:to_i) if hierarchy?
-    index.store hash
+    result = index.store hash
+
+    if result['error']
+      raise "Can't store site in index: #{result['error']}"
+    end
+
     index.refresh unless options[:refresh] == false
   end
 
