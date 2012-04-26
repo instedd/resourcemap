@@ -28,6 +28,7 @@ end
 
 Layer.blueprint do
   collection
+  user { User.make }
   name
   ord { collection.next_layer_ord }
 end

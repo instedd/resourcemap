@@ -7,28 +7,57 @@ describe Activity do
     collection = Collection.make_unsaved
     user.create_collection collection
 
-    activities = Activity.all
-    activities.length.should eq(1)
-
-    activities[0].kind.should eq('collection_created')
-    activities[0].collection_id.should eq(collection.id)
-    activities[0].user_id.should eq(user.id)
+    assert_activity 'collection_created', collection_id: collection.id, user_id: user.id, description: 'Collection was created'
   end
 
   it "creates one when layer is created" do
     collection = user.create_collection Collection.make_unsaved
     Activity.delete_all
 
-    layer = collection.layers.make_unsaved
-    layer.user = user
-    layer.save!
+    layer = collection.layers.make user: user
 
+    assert_activity 'layer_created',
+      collection_id: collection.id,
+      layer_id: layer.id,
+      user_id: user.id,
+      description: 'Layer was created'
+  end
+
+  it "creates one after running the import wizard" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Lat', 'Lon', 'Beds']
+      csv << ['Foo', '1.2', '3.4', '10']
+      csv << ['Bar', '5.6', '7.8', '20']
+      csv << ['', '', '', '']
+    end
+
+    specs = [
+      {name: 'Name', kind: 'name'},
+      {name: 'Lat', kind: 'lat'},
+      {name: 'Lon', kind: 'lng'},
+      {name: 'Beds', kind: 'numeric', code: 'beds', label: 'The beds'},
+      ]
+
+    collection = user.create_collection Collection.make_unsaved
+    Activity.delete_all
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    assert_activity 'collection_imported',
+      collection_id: collection.id,
+      user_id: user.id,
+      layer_id: collection.layers.first.id,
+      data: {groups: 0, sites: 2},
+      description: 'Import wizard: 0 groups and 2 sites were imported'
+  end
+
+  def assert_activity(kind, options = {})
     activities = Activity.all
     activities.length.should eq(1)
 
-    activities[0].kind.should eq('layer_created')
-    activities[0].collection_id.should eq(collection.id)
-    activities[0].layer_id.should eq(layer.id)
-    activities[0].user_id.should eq(user.id)
+    options.each do |key, value|
+      activities[0].send(key).should eq(value)
+    end
   end
 end

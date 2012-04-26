@@ -59,6 +59,7 @@ class ImportWizard
       # Prepare the new layer
       layer = collection.layers.new name: collection.name, ord: collection.next_layer_ord
       layer.collection = collection
+      layer.mute_activities = true
 
       # Prepare the fields: we index by code, so later we can reference them faster
       fields = {}
@@ -78,6 +79,9 @@ class ImportWizard
         end
       end
 
+      sites_count = 0
+      groups_count = 0
+
       # Now process all rows
       rows[1 .. -1].each do |row|
         parent_group = collection
@@ -92,6 +96,7 @@ class ImportWizard
             parent_group = existing
           else
             sub_group = parent_group.sites.new name: value, group: true, collection_id: collection.id
+            groups_count += 1
 
             # Optimization: setting the parent here avoids querying it when storing the hierarchy
             sub_group.collection = collection
@@ -105,6 +110,7 @@ class ImportWizard
         next unless row[name_spec[:index]].present?
 
         site = parent_group.sites.new properties: {}, collection_id: collection.id
+        sites_count += 1
 
         # Optimization: setting the parent here avoids querying it when storing the hierarchy
         site.collection = collection
@@ -173,6 +179,8 @@ class ImportWizard
         collection.compute_geometry_in_memory
 
         collection.save!
+
+        Activity.create! kind: 'collection_imported', collection_id: collection.id, layer_id: layer.id, user_id: user.id, data: {groups: groups_count, sites: sites_count}
       end
     end
 
