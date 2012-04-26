@@ -99,10 +99,10 @@ td.loadmore { height: 36px }
 .stat { border-radius: 3px; display: inline-block; height: 17px; width: 18px }
 
 /* FIXME: hack .ux-nstep as it does not work inside ko:each block */
-.ord-buttons { display:inline; position:relative }
+.ord-buttons { position:relative; float:left; margin:0 4px; padding-right:2px }
 .ord-buttons input { width:18px; height:16px; border-radius:4px; border:solid 1px #aaaaaa; color:transparent; background-color:transparent }
 .ord-buttons button { cursor:pointer; width:16px; height:12px; left:2px; border:medium none; background-color:transparent; background-position:center 0; background-repeat:no-repeat }
-.ord-buttons .up { position:absolute; top:-1px; background-image:url(/assets/up.png) }
-.ord-buttons .down { position:absolute; bottom:-3px; background-image:url(/assets/down.png) }
+.ord-buttons .up { position:absolute; top:1px; background-image:url(/assets/up.png) }
+.ord-buttons .down { position:absolute; bottom:-1px; background-image:url(/assets/down.png) }
 .ord-buttons button:hover, .ord-buttons button:focus { background-position: center -10px }
 .ord-buttons button:active { background-position: center -20px }

@@ -12,6 +12,8 @@ $ ->
       @id = ko.observable data?.id
       @collection_id = data.collection_id
       @priority = ko.observable data?.priority
+      @priority.subscribe => rm.EventDispatcher.trigger rm.ThresholdEvent.CHANGE_PRIORITY, new rm.ThresholdEvent @
+
       @condition = ko.observable data?.condition
       @comparisonValue = ko.observable @condition().is
       @valueOrPercent = ko.observable data?.valueOrPercent
@@ -39,6 +41,10 @@ $ ->
     create: ->
       event = new rm.ThresholdEvent @
       rm.EventDispatcher.trigger rm.ThresholdEvent.CREATE, event
+
+    setPriority: (priority) ->
+      @priority priority
+      rm.EventDispatcher.trigger rm.ThresholdEvent.SET_PRIORITY, new rm.ThresholdEvent @
 
     toJSON: ->
       json =

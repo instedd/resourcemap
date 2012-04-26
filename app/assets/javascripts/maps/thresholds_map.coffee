@@ -19,6 +19,6 @@ $ ->
     $.post "/collections/#{rm.thresholdsViewModel.collectionId}/thresholds.json", {_method: 'post', threshold: event.threshold.toJSON()},(data) ->
       rm.thresholdsViewModel.addThresholdSuccess()
 
-  rm.EventDispatcher.bind rm.ThresholdEvent.CHANGE_PRIORITY, (event) ->
+  rm.EventDispatcher.bind rm.ThresholdEvent.SET_PRIORITY, (event) ->
     $.post "/collections/#{rm.thresholdsViewModel.collectionId}/thresholds/#{event.threshold.id()}/set_priority.json", { priority: event.threshold.priority() }, (data) ->
       rm.thresholdsViewModel.thresholds.replace event.threshold, new rm.Threshold data

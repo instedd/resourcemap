@@ -40,3 +40,9 @@ describe 'Threshold', ->
       spyOn rm.EventDispatcher, 'trigger'
       @threshold.create()
       expect(rm.EventDispatcher.trigger).toHaveBeenCalledWith rm.ThresholdEvent.CREATE, new rm.ThresholdEvent @threshold
+      
+  describe '#setPriority', ->
+    it 'should dispatch ThresholdEvent:SET_PRIORITY event', ->
+      spyOn rm.EventDispatcher, 'trigger'
+      @threshold.setPriority 99
+      expect(rm.EventDispatcher.trigger).toHaveBeenCalledWith rm.ThresholdEvent.SET_PRIORITY, new rm.ThresholdEvent @threshold
