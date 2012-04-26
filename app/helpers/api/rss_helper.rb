@@ -7,6 +7,7 @@ module Api::RssHelper
     xml.rss rss_specification do
       xml.channel do
         xml.title collection.name
+        xml.lastBuildDate collection.updated_at.rfc822
         xml.atom :link, rel: :previous, href: url_for(params.merge page: results.previous_page, only_path: false) if results.previous_page
         xml.atom :link, rel: :next, href: url_for(params.merge page: results.next_page, only_path: false) if results.next_page
 
@@ -23,7 +24,7 @@ module Api::RssHelper
 
     xml.item do
       xml.title source['name']
-      xml.pubDate Site.parse_date(source['updated_at'])
+      xml.pubDate Site.parse_date(source['updated_at']).rfc822
       xml.link api_site_url(source['id'], format: :rss)
       xml.guid api_site_url(source['id'], format: :rss)
 
