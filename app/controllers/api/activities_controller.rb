@@ -1,5 +1,5 @@
 class Api::ActivitiesController < ApplicationController
-  PerPage = 3
+  PerPage = 50
 
   def index
     @page = (params[:page] || '1').to_i
