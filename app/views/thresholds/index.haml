@@ -14,11 +14,11 @@
   %h2 Thresholds
   <!-- ko foreach :thresholds -->
   .box.grey.w60{ ko(visible: '$data != $root.currentThreshold()') }
+    .ord-buttons
+      %input{ ko(value: :priority) }
+      %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
+      %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
     .toptitle 
-      .ord-buttons
-        %input{ ko(value: :priority) }
-        %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
-        %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
       %span
         When
         %span{ ko(text: :field) }
