@@ -77,6 +77,10 @@ $ ->
       @thresholds.remove @currentThreshold()
       @currentThreshold null
       @state ThresholdsViewModel.States.LISTING
+
+    editThreshold: (threshold)=>
+      @currentThreshold threshold
+      @state ThresholdsViewModel.States.EDITING
       
     _swapPriority: (x, y) ->
       priority = x.priority()

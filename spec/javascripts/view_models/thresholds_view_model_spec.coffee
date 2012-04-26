@@ -58,3 +58,13 @@ describe 'ThresholdsViewModel', ->
         it 'priority should not be changed', ->
           @subject.moveThresholdDown @threshold_2
           expect(@threshold_2.priority()).toEqual 2
+
+  describe 'edit threshold', ->
+    beforeEach ->
+      @subject.editThreshold @threshold
+
+    it 'should be set as current threshold', ->
+      expect(@subject.currentThreshold()).toBe @threshold
+
+    it 'should change state to editing', ->
+      expect(@subject.state()).toEqual 'editing'
