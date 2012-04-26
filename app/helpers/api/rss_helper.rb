@@ -46,6 +46,26 @@ module Api::RssHelper
     end
   end
 
+  def activities_rss(xml, activities)
+    xml.rss rss_specification do
+      xml.channel do
+        xml.title 'Activity'
+        xml.lastBuildDate activities.first.created_at.rfc822
+        activities.each do |activity|
+          activity_rss xml, activity
+        end
+      end
+    end
+  end
+
+  def activity_rss(xml, activity)
+    xml.item do
+      xml.title "[In collection '#{activity.collection.name}' by user '#{activity.user.display_name}'] #{activity.description} "
+      xml.pubDate activity.created_at.rfc822
+      xml.guid activity.id
+    end
+  end
+
   def rss_specification
     {
       'version'    => "2.0",
