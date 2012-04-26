@@ -17,10 +17,13 @@
     allReadOrWrite: (func) =>
       foundFalse = false
       foundTrue = false
+      allAdmin = true
       for link in @membershipLayerLinks()
         continue if link.membership.admin()
+        allAdmin = false
         foundTrue = true if func(link)
         foundFalse = true unless func(link)
+      return 'tristate-checked' if allAdmin
       if foundTrue && foundFalse then "tristate-partial" else if foundTrue then "tristate-checked" else "tristate-unchecked"
 
     allReadOrWriteUI: (func) =>
