@@ -27,3 +27,17 @@ describe 'ThresholdsViewModel', ->
     it 'should reset state', ->
       @subject.cancelThreshold()
       expect(@subject.state()).toEqual 'listing'
+
+
+  describe 'show threshold', ->
+    beforeEach ->
+      @subject.state 'listing'
+      @subject.thresholds [ @threshold ]
+
+    it 'should change threshold state to adding_new', ->
+      @subject.showAddThreshold()
+      expect(@subject.state()).toEqual 'adding_new' 
+
+    it 'should add default to current threshold', ->
+      @subject.showAddThreshold()
+      expect(@subject.currentThreshold()).toBeTruthy()

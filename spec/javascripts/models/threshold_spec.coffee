@@ -14,7 +14,7 @@ describe 'Threshold', ->
     expect(@threshold.field()).toEqual 'beds'
 
   it 'should has comparison', ->
-    expect(@threshold.comparison()).toEqual 'less than'
+    expect(@threshold.comparisonText()).toEqual 'less than'
 
   it 'should has value', ->
     expect(@threshold.value()).toEqual 10
@@ -34,3 +34,9 @@ describe 'Threshold', ->
       spyOn rm.EventDispatcher, 'trigger'
       @threshold.destroy()
       expect(rm.EventDispatcher.trigger).toHaveBeenCalledWith rm.ThresholdEvent.DESTROY, new rm.ThresholdEvent @threshold
+
+  describe '#create', ->
+    it 'should dispatch ThresholdEvent:CREAT event', ->
+      spyOn rm.EventDispatcher, 'trigger'
+      @threshold.create()
+      expect(rm.EventDispatcher.trigger).toHaveBeenCalledWith rm.ThresholdEvent.CREATE, new rm.ThresholdEvent @threshold

@@ -5,27 +5,26 @@ $ ->
 
     @ComparisonOperators =
       lt: 'less than'
-      mt: 'more than'
+      gt: 'greater than'
     
-    @ComparisonOperatorsReverse = 
-      lt: 'is less than' 
-      mt: 'is more than'
-
     constructor: (data) ->
+      
       @id = ko.observable data?.id
       @collection_id = data.collection_id
       @priority = ko.observable data?.priority
-      @priority.subscribe => rm.EventDispatcher.trigger rm.ThresholdEvent.CHANGE_PRIORITY, new rm.ThresholdEvent @
-
-      @color = ko.observable data?.color
-      @borderTopStyle = ko.computed => "1px inset #{@color()}"
       @condition = ko.observable data?.condition
-      @field = ko.computed => @condition().field
-      @comparison = ko.computed => Threshold.ComparisonOperators[@condition().is] 
-      @comp = ko.observable => data?.comp
-      @valueOforPercentOf = ko.observable data?.valueOforPercentOf
-      @condition().is = ko.computed =>
-        @comp().comparison_key
+      @comparisonValue = ko.observable @condition().is
+      @valueOrPercent = ko.observable data?.valueOrPercent
+      @field = ko.observable @condition().field
+      @color = ko.observable data?.color
+      @valueOrPercenValue = ko.observable @condition().value
+      @priority.subscribe => rm.EventDispatcher.trigger rm.ThresholdEvent.CHANGE_PRIORITY, new rm.ThresholdEvent @
+      @borderTopStyle = ko.computed => "1px inset #{@color()}"
+      @comparisonText = ko.observable Threshold.ComparisonOperators[@condition().is] 
+      
+      @comparisonValue.subscribe =>
+        @comparisonText Threshold.ComparisonOperators[@comparisonValue()]
+      
       @value = ko.computed =>
         if 'number' == typeof @condition().value
           @condition().value
@@ -45,4 +44,8 @@ $ ->
       json =
         priority: @priority(),
         color: @color(),
-        condition: @condition()
+        condition:{
+          field: @field()
+          is: @comparisonValue()
+          value: @condition().value
+        }

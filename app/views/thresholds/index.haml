@@ -23,7 +23,7 @@
         When
         %span{ ko(text: :field) }
         is
-        %span{ ko(text: :comparison) }
+        %span{ ko(text: :comparisonText) }
         %span{ ko(text: :value) }
         , set color
         %span.stat{ ko(style: {backgroundColor: :color, borderTop: :borderTopStyle}) }
@@ -39,9 +39,9 @@
     %label Conditions
     .middlebuttons
       when
-      %select{ko(options: "$root.fieldsOption", value: 'condition().field')}
-      %select{"data-bind" => "options: $root.comparisonsOption, value: comp , optionsText: 'comparison_value'"}
-      %select{ko(options: "$root.ofOption", value: :valueOforPercentOf)}
+      = select_tag :fields_option, options_for_select([['Bed', 'bed'], ['Hospital', 'hospital'], ['Car Garage', 'car garage'], ['Petro Station', 'petro station']]), "data-bind" => kov(value: :field)
+      = select_tag :comparison_option, options_for_select([['is less than', 'lt'], ['is greater than', 'gt']]), "data-bind" => kov(value: :comparisonValue)
+      = select_tag :value_or_percent_option, options_for_select([['a value of', 'value'], ['a percent of', 'percent']]), "data-bind" => kov(value: :valueOrPercent)
       %span.ux-nstep.w06 
         %input{ko(value: 'condition().value'), style: ":size => '2', :type => 'text'"}
         %button.kdown{:type => "button"}
