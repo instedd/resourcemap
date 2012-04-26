@@ -29,6 +29,21 @@ describe 'ThresholdsViewModel', ->
       @subject.cancelThreshold()
       expect(@subject.state()).toEqual 'listing'
 
+
+  describe 'show threshold', ->
+    beforeEach ->
+      @subject.state 'listing'
+      @subject.thresholds [ @threshold ]
+
+    it 'should change threshold state to adding_new', ->
+      @subject.showAddThreshold()
+      expect(@subject.state()).toEqual 'adding_new' 
+
+    it 'should add default to current threshold', ->
+      @subject.showAddThreshold()
+      expect(@subject.currentThreshold()).toBeTruthy()
+       
+        
   it 'should order threshold by priority', ->
     @subject.thresholds [@threshold_2, @threshold]
     @subject.refresh()
@@ -44,6 +59,8 @@ describe 'ThresholdsViewModel', ->
         @subject.moveThresholdUp @threshold_2
         expect(@threshold_2.priority()).toEqual 1
 
+
+        
       describe 'when it is on the top', ->
         it 'priority should not be changed', ->
           @subject.moveThresholdUp @threshold
