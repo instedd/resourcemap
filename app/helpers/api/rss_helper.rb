@@ -33,8 +33,10 @@ module Api::RssHelper
       end
 
       xml.rm :properties do
-        source['properties'].each do |code, value|
-          property_rss xml, code, value
+        source['properties'].each do |code, values|
+          Array(values).each do |value|
+            property_rss xml, code, value
+          end
         end
       end
 
