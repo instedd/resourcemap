@@ -1,3 +1,9 @@
+- content_for :head do
+  :javascript
+    $(function() { initActivities(); });
+
+%h1 Activity
+
 .tabsline
   .tablewrapp
     %table.GralTable
@@ -6,9 +12,15 @@
         %th User
         %th Activity
         %th Time
-      - activities.order('id desc').includes(:collection, :user).each do |activity|
-        %tr
-          %td= activity.collection.name
-          %td= activity.user.display_name
-          %td= activity.description
-          %td #{time_ago_in_words activity.created_at} ago
+      <!-- ko foreach: activities -->
+      %tr{style: 'height:32px'}
+        %td{ko(text: :collection)}
+        %td{ko(text: :user)}
+        %td{ko(text: :description)}
+        %td.timeago{ko(attr: {title: :createdAt}, text: :createdAt), style: 'min-width:150px'}
+      <!-- /ko -->
+      <!-- ko if: hasMore() -->
+      %tr{style: 'height:32px'}
+        %td{ko(click: :loadMore), colspan: 4, align: :center, style: 'text-decoration:underline;cursor:pointer'}
+          Load more
+      <!-- /ko -->
