@@ -16,19 +16,20 @@ class LayersController < ApplicationController
 
   def create
     layer = layers.new params[:layer]
-    layer.save
+    layer.user = current_user
+    layer.save!
     render json: layer.as_json(include: :fields)
   end
 
   def update
     fix_layer_fields_for_update
-    layer.update_attributes params[:layer]
+    layer.update_attributes! params[:layer]
     layer.reload
     render json: layer.as_json(include: :fields)
   end
 
   def set_order
-    layer.update_attributes ord: params[:ord]
+    layer.update_attributes! ord: params[:ord]
     render json: layer
   end
 

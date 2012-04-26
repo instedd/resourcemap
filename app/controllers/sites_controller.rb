@@ -18,7 +18,7 @@ class SitesController < ApplicationController
   end
 
   def update
-    site.update_attributes params[:site]
+    site.update_attributes! params[:site]
     render json: site
   end
 

@@ -51,7 +51,12 @@ class Layer < ActiveRecord::Base
 
   after_create :create_activity, :unless => :mute_activities
   def create_activity
-    Activity.create! kind: 'layer_created', collection_id: collection.id, layer_id: id, user_id: user.id
+    fields_data = fields.map do |field|
+      hash = {id: field.id, kind: field.kind, code: field.code, name: field.name}
+      hash[:config] = field.config if field.config
+      hash
+    end
+    Activity.create! kind: 'layer_created', collection_id: collection.id, layer_id: id, user_id: user.id, data: {fields: fields_data}
   end
 
   # Returns the next ord value for a field that is going to be created

@@ -7,20 +7,25 @@ describe Activity do
     collection = Collection.make_unsaved
     user.create_collection collection
 
-    assert_activity 'collection_created', collection_id: collection.id, user_id: user.id, description: 'Collection was created'
+    assert_activity 'collection_created',
+      collection_id: collection.id,
+      user_id: user.id,
+      data: {name: collection.name},
+      description: "Collection was created with name: #{collection.name}"
   end
 
   it "creates one when layer is created" do
     collection = user.create_collection Collection.make_unsaved
     Activity.delete_all
 
-    layer = collection.layers.make user: user
+    layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
 
     assert_activity 'layer_created',
       collection_id: collection.id,
       layer_id: layer.id,
       user_id: user.id,
-      description: 'Layer was created'
+      data: {fields: [{id: layer.fields.first.id, kind: 'text', code: 'foo', name: 'Foo'}]},
+      description: 'Layer was created with fields: Foo (foo)'
   end
 
   it "creates one after running the import wizard" do
