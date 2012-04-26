@@ -1,4 +1,6 @@
 @initActivities = ->
+  DESCRIPTION_LENGTH = 100
+
   class Activity
     constructor: (data) ->
       @id = ko.observable data?.id
@@ -6,6 +8,16 @@
       @user = ko.observable data?.user
       @description = ko.observable data?.description
       @createdAt = ko.observable data?.created_at
+      @expanded = ko.observable false
+      @canBeExpanded = ko.computed => @description().length > DESCRIPTION_LENGTH
+
+      @displayedDescription = ko.computed =>
+        if !@canBeExpanded() || @expanded()
+          @description()
+        else
+          "#{@description().substring(0, DESCRIPTION_LENGTH)}..."
+
+    expand: => @expanded(true)
 
   class ActivitiesViewModel
     constructor: (activities) ->

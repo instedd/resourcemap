@@ -14,9 +14,13 @@
         %th Time
       <!-- ko foreach: activities -->
       %tr{style: 'height:32px'}
-        %td{ko(text: :collection)}
+        %td{ko(text: :collection), style: 'min-width:120px'}
         %td{ko(text: :user)}
-        %td{ko(text: :description)}
+        %td
+          %span{ko(text: :displayedDescription), style: 'display:inline'}
+          <!-- ko if: !expanded() && canBeExpanded() -->
+          %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'} show more
+          <!-- /ko -->
         %td.timeago{ko(attr: {title: :createdAt}, text: :createdAt), style: 'min-width:150px'}
       <!-- /ko -->
       <!-- ko if: hasMore() -->

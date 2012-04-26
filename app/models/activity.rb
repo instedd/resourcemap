@@ -65,7 +65,7 @@ class Activity < ActiveRecord::Base
 
       properties[1].each do |key, new_value|
         if !properties[0].has_key? key
-          text_changes << "'#{key}' changed from (nothing) to #{format_value new_value}"
+          text_changes << "'#{key}' changed from (nothing) to #{new_value.nil? ? '(nothing)' : format_value(new_value)}"
         end
       end
     end
