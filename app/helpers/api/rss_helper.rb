@@ -51,7 +51,7 @@ module Api::RssHelper
     xml.rss rss_specification do
       xml.channel do
         xml.title 'Activity'
-        xml.lastBuildDate activities.first.created_at.rfc822
+        xml.lastBuildDate activities.first.created_at.rfc822 if activities.length > 0
         xml.atom :link, rel: :previous, href: url_for(params.merge page: @page - 1, only_path: false) if @page > 1
         xml.atom :link, rel: :next, href: url_for(params.merge page: @page + 1, only_path: false) if @hasNextPage
 
