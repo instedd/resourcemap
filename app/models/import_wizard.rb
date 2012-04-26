@@ -96,6 +96,7 @@ class ImportWizard
             parent_group = existing
           else
             sub_group = parent_group.sites.new name: value, group: true, collection_id: collection.id
+            sub_group.mute_activities = true
             groups_count += 1
 
             # Optimization: setting the parent here avoids querying it when storing the hierarchy
@@ -110,6 +111,7 @@ class ImportWizard
         next unless row[name_spec[:index]].present?
 
         site = parent_group.sites.new properties: {}, collection_id: collection.id
+        site.mute_activities = true
         sites_count += 1
 
         # Optimization: setting the parent here avoids querying it when storing the hierarchy

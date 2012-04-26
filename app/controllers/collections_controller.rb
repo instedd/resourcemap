@@ -72,7 +72,7 @@ class CollectionsController < ApplicationController
   end
 
   def upload_csv
-    collection.import_csv!(params[:file].read)
+    collection.import_csv current_user, params[:file].read
     redirect_to collections_path
   end
 

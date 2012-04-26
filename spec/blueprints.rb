@@ -24,13 +24,14 @@ Site.blueprint do
   lat { rand(180) - 90 }
   lng { rand(360) - 180 }
   group { false }
+  user { User.make }
 end
 
 Layer.blueprint do
   collection
-  user { User.make }
   name
   ord { collection.next_layer_ord }
+  user { User.make }
 end
 
 Field.blueprint do

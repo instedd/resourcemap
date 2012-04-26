@@ -1,14 +1,15 @@
 require 'spec_helper'
 
 describe Collection::CsvConcern do
+  let(:user) { User.make }
   let(:collection) { Collection.make }
 
   it "imports csv" do
-    collection.import_csv! %(
+    collection.import_csv user, %(
       id, type, name, lat, lng, parent, mode
       1, group, Group 1, 10, 20, , manual
       2, site, Site 1, 30, 40, 1,
-    )
+    ).strip
 
     collection.reload
     roots = collection.root_sites.all

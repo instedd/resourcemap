@@ -22,17 +22,26 @@ module Collection::CsvConcern
     end
   end
 
-  def import_csv!(string_or_io)
+  def import_csv(user, string_or_io)
     Collection.transaction do
       csv = CSV.new string_or_io, return_headers: false
+
+      sites_count = 0
+      groups_count = 0
 
       # Create a hash of id => [site, parent]
       hash = Hash.new
       csv.each do |row|
-        next unless row[0].present?
+        next unless row[0].present? && row[0] != 'id'
 
         site = sites.new name: row[2].strip
-        site.group = row[1].try(:strip).try(:downcase) == 'group'
+        site.mute_activities = true
+        if row[1].try(:strip).try(:downcase) == 'group'
+          site.group = true
+          groups_count += 1
+        else
+          sites_count += 1
+        end
         site.lat = row[3].strip if row[3].present?
         site.lng = row[4].strip if row[4].present?
         site.location_mode = row[6].strip if row[6].present?
@@ -53,6 +62,8 @@ module Collection::CsvConcern
       hash.each_value do |site, parent_id|
         site.save! if parent_id.blank?
       end
+
+      Activity.create! kind: 'collection_csv_imported', collection_id: id, user_id: user.id, data: {groups: groups_count, sites: sites_count}
     end
   end
 

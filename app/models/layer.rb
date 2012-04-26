@@ -1,18 +1,12 @@
 class Layer < ActiveRecord::Base
+  include Activity::AwareConcern
+
   belongs_to :collection
   has_many :fields, order: 'ord', dependent: :destroy
 
   accepts_nested_attributes_for :fields
 
   validates_presence_of :ord
-
-  # The user that creates/makes changes to this layer
-  attr_accessor :user
-
-  # Set to true to stop creating Activities for this layer
-  attr_accessor :mute_activities
-
-  validates_presence_of :user, :if => :new_record?, :unless => :mute_activities
 
   after_create :update_collection_mapping
   def update_collection_mapping
@@ -56,7 +50,7 @@ class Layer < ActiveRecord::Base
       hash[:config] = field.config if field.config
       hash
     end
-    Activity.create! kind: 'layer_created', collection_id: collection.id, layer_id: id, user_id: user.id, data: {fields: fields_data}
+    Activity.create! kind: 'layer_created', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: name, fields: fields_data}
   end
 
   # Returns the next ord value for a field that is going to be created
