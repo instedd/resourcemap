@@ -49,4 +49,5 @@
     window.model = new ActivitiesViewModel(activities)
     ko.applyBindings window.model
 
+    $('.hidden-until-loaded').show()
     window.model.refreshTimeago()
