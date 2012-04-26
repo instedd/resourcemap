@@ -96,7 +96,9 @@ module Site::GeomConcern
   def compute_parent_bounding_box_and_zoom!
     return if @skip_geom_callbacks
 
-    parent.compute_bounding_box_and_zoom!
+    the_parent = parent
+    the_parent.mute_activities = true
+    the_parent.compute_bounding_box_and_zoom!
   end
 
   def compute_collection_center!

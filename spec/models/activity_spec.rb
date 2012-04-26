@@ -56,7 +56,7 @@ describe Activity do
   it "creates one after creating a site" do
     Activity.delete_all
 
-    site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds: 20}, user: user
+    site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
 
     assert_activity 'site_created',
       collection_id: collection.id,
@@ -95,10 +95,97 @@ describe Activity do
       description: "Import CSV: 1 group and 1 site were imported"
   end
 
+  context "site changed" do
+    it "creates one after changing one site's name" do
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
+
+      Activity.delete_all
+
+      site.name = 'Bar'
+      site.save!
+
+      assert_activity 'site_changed',
+        collection_id: collection.id,
+        user_id: user.id,
+        site_id: site.id,
+        data: {name: site.name, changes: {'name' => ['Foo', 'Bar']}},
+        description: "Site '#{site.name}' changed: name changed from 'Foo' to 'Bar'"
+    end
+
+    it "creates one after changing one site's location" do
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
+
+      Activity.delete_all
+
+      site.lat = 15.1234567
+      site.save!
+
+      assert_activity 'site_changed',
+        collection_id: collection.id,
+        user_id: user.id,
+        site_id: site.id,
+        data: {name: site.name, changes: {'lat' => [10.0, 15.1234567], 'lng' => [20.0, 20.0]}},
+        description: "Site '#{site.name}' changed: location changed from (10.0, 20.0) to (15.123457, 20.0)"
+    end
+
+    it "creates one after adding one site's property" do
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {}, user: user
+
+      Activity.delete_all
+
+      site.properties_will_change!
+      site.properties['beds'] = 30
+      site.save!
+
+      assert_activity 'site_changed',
+        collection_id: collection.id,
+        user_id: user.id,
+        site_id: site.id,
+        data: {name: site.name, changes: {'properties' => [{}, {'beds' => 30}]}},
+        description: "Site '#{site.name}' changed: 'beds' changed from (nothing) to 30"
+    end
+
+    it "creates one after changing one site's property" do
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
+
+      Activity.delete_all
+
+      site.properties_will_change!
+      site.properties['beds'] = 30
+      site.save!
+
+      assert_activity 'site_changed',
+        collection_id: collection.id,
+        user_id: user.id,
+        site_id: site.id,
+        data: {name: site.name, changes: {'properties' => [{'beds' => 20}, {'beds' => 30}]}},
+        description: "Site '#{site.name}' changed: 'beds' changed from 20 to 30"
+    end
+
+    it "creates one after changing many site's properties" do
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20, 'text' => 'foo'}, user: user
+
+      Activity.delete_all
+
+      site.properties_will_change!
+      site.properties['beds'] = 30
+      site.properties['text'] = 'bar'
+      site.save!
+
+      assert_activity 'site_changed',
+        collection_id: collection.id,
+        user_id: user.id,
+        site_id: site.id,
+        data: {name: site.name, changes: {'properties' => [{'beds' => 20, 'text' => 'foo'}, {'beds' => 30, 'text' => 'bar'}]}},
+        description: "Site '#{site.name}' changed: 'beds' changed from 20 to 30, 'text' changed from 'foo' to 'bar'"
+    end
+  end
+
   def assert_activity(kind, options = {})
     activities = Activity.all
     activities.length.should eq(1)
 
+    activities[0].kind.should eq(kind)
     options.each do |key, value|
       activities[0].send(key).should eq(value)
     end

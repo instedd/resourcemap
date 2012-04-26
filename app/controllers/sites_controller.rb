@@ -13,11 +13,13 @@ class SitesController < ApplicationController
   end
 
   def create
-    site = collection.sites.create(params[:site])
+    site = collection.sites.create(params[:site].merge(user: current_user))
     render json: site
   end
 
   def update
+    site.user = current_user
+    site.properties_will_change!
     site.update_attributes! params[:site]
     render json: site
   end
@@ -25,6 +27,8 @@ class SitesController < ApplicationController
   def update_property
     return head :forbidden unless current_user.can_write_field? site.collection, params[:code]
 
+    site.user = current_user
+    site.properties_will_change!
     site.properties[params[:code]] = params[:value]
     site.save!
     render json: site
