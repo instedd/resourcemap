@@ -1,3 +1,15 @@
+- content_for :head do
+  :javascript
+    $(function() { 
+      var sites = ['Kampong Chhnang', 'Sihanoukville (Kampong Som)', 'Kampong Speu', 'Kampot', 'Mongkol Borie', 'Neak Leung'];
+      $(".sites").superblyTagField({
+        allowNewTags: true,
+        showTagsNumber: 10,
+        preset: sites,
+        tags: sites
+      });
+    });
+
 = render 'tabs'
 
 .tabsline
@@ -21,39 +33,36 @@
     %br/
     %input.w30{type: :text}
     %br/
+
     %label Sites
     %br/
     %label.smalltext site's owner will receive this reminder 
     %br/
-    .superblyTagfieldDiv
-      %ul.superblyTagItems
-        %li.superblyTagItem 
-          %span Pursat
-          %a x
-        %li.superblyTagInputItem
-          %input.superblyTagInput
-      .superblyTagfieldClearer
+    %input.sites
     %br/
     %label Date
     %br/
-    %input.w10.ux-datepicker.hasDatepicker{type: :text}
+    %input.ux-datepicker.w20{ type: :text }
     %select
       %option 14:30
     %label repeat
     %select 
       %option from Monday to Friday
     %br/
+
     %label Message
     %br/
-    %textarea.w30.ui-wajbar{placeholder: "Write your message here"}
-    .TaskBox
-      .L 0
-      .M 
-        %span.Fill
-      .R 140
-    %button.white{type: :button} Save
-    %button.white{type: :button} Cancel
-  .box.grey.addlayer
+    %textarea.ux-wajbar.w30{ placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
+
+    .clear
+
+    %hr/
+    .bottom-actions
+      %button.white{ type: :button } Save
+      %a.tgrey{ href: 'javascript:void(0)' } Cancel
+
+  -# Add new reminder link
+  .box.grey.add
     %span Add Reminder
     %button.cadd.right{type: :button}
     %br{clear: :all}
