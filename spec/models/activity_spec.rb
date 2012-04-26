@@ -25,6 +25,21 @@ describe Activity do
       description: "Layer '#{layer.name}' was created with fields: Foo (foo)"
   end
 
+  it "creates one when layer is destroyed" do
+    layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
+
+    Activity.delete_all
+
+    layer.destroy
+
+    assert_activity 'layer_deleted',
+      collection_id: collection.id,
+      layer_id: layer.id,
+      user_id: user.id,
+      data: {name: layer.name},
+      description: "Layer '#{layer.name}' was deleted"
+  end
+
   it "creates one after running the import wizard" do
     Activity.delete_all
 

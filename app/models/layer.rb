@@ -45,14 +45,19 @@ class Layer < ActiveRecord::Base
 
   # I'd move this code to a concern, but it works differntly (the fields don't
   # have an id). Must probably be a bug in Active Record.
-  after_create :create_activity, :unless => :mute_activities
-  def create_activity
+  after_create :create_created_activity, :unless => :mute_activities
+  def create_created_activity
     fields_data = fields.map do |field|
       hash = {id: field.id, kind: field.kind, code: field.code, name: field.name}
       hash[:config] = field.config if field.config
       hash
     end
     Activity.create! kind: 'layer_created', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: name, fields: fields_data}
+  end
+
+  after_destroy :create_deleted_activity, :unless => :mute_activities
+  def create_deleted_activity
+    Activity.create! kind: 'layer_deleted', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: name}
   end
 
   # Returns the next ord value for a field that is going to be created

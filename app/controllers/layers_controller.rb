@@ -34,6 +34,7 @@ class LayersController < ApplicationController
   end
 
   def destroy
+    layer.user = current_user
     layer.destroy
     head :ok
   end
