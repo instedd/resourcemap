@@ -43,6 +43,8 @@ class Layer < ActiveRecord::Base
     end
   end
 
+  # I'd move this code to a concern, but it works differntly (the fields don't
+  # have an id). Must probably be a bug in Active Record.
   after_create :create_activity, :unless => :mute_activities
   def create_activity
     fields_data = fields.map do |field|
