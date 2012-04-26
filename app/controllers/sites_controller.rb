@@ -52,6 +52,7 @@ class SitesController < ApplicationController
   end
 
   def destroy
+    site.user = current_user
     site.destroy
     render json: site
   end
