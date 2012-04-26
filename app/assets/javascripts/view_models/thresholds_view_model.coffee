@@ -80,6 +80,6 @@ $ ->
       
     _swapPriority: (x, y) ->
       priority = x.priority()
-      x.priority y.priority()
-      y.priority priority
+      x.setPriority y.priority()
+      y.setPriority priority
       @refresh()

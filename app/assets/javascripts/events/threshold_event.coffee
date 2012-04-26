@@ -9,4 +9,4 @@ $ ->
   ###
   rm.ThresholdEvent.DESTROY = 'ThresholdEvent:DESTROY'
   rm.ThresholdEvent.CREATE = 'ThresholdEvent:CREATE'
-  rm.ThresholdEvent.CHANGE_PRIORITY = 'ThresholdEvent:CHANGE_PRIORITY'
+  rm.ThresholdEvent.SET_PRIORITY = 'ThresholdEvent:SET_PRIORITY'
