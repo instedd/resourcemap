@@ -42,17 +42,11 @@ $ ->
 
     moveThresholdUp: (threshold) =>
       index = @thresholds.indexOf threshold
-      @swapPriority threshold, @thresholds()[index - 1] if index > 0
+      @_swapPriority threshold, @thresholds()[index - 1] if index > 0
 
     moveThresholdDown: (threshold) =>
       index = @thresholds.indexOf threshold
-      @swapPriority threshold, @thresholds()[index + 1] if index < @thresholds().length - 1
-
-    swapPriority: (x, y) ->
-      priority = x.priority()
-      x.priority y.priority()
-      y.priority priority
-      @refresh()
+      @_swapPriority threshold, @thresholds()[index + 1] if index < @thresholds().length - 1
 
     refresh: ->
       @thresholds.sort (x, y) -> x.priority() > y.priority() ? -1 : 1
@@ -83,3 +77,9 @@ $ ->
       @thresholds.remove @currentThreshold()
       @currentThreshold null
       @state ThresholdsViewModel.States.LISTING
+      
+    _swapPriority: (x, y) ->
+      priority = x.priority()
+      x.priority y.priority()
+      y.priority priority
+      @refresh()

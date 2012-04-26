@@ -5,10 +5,11 @@ describe 'ThresholdsViewModel', ->
     @collectionId = 123
     @subject = new rm.ThresholdsViewModel @collectionId
     @threshold = new rm.Threshold { id: 1, priority: 1, color: 'red', condition: { field: 'beds', is: 'lt', value: 12 } }
+    @threshold_2 = new rm.Threshold { id: 2, priority: 2, color: 'green', condition: { field: 'doctors', is: 'lt', value: 2} }
 
   describe 'delete threshold', ->
     beforeEach ->
-      @subject.thresholds [ @threshold ]
+      @subject.thresholds [@threshold]
 
     it 'should show confirm dialog', ->
       spyOn window, 'confirm'
@@ -27,3 +28,33 @@ describe 'ThresholdsViewModel', ->
     it 'should reset state', ->
       @subject.cancelThreshold()
       expect(@subject.state()).toEqual 'listing'
+
+  it 'should order threshold by priority', ->
+    @subject.thresholds [@threshold_2, @threshold]
+    @subject.refresh()
+    expect(@subject.thresholds()[0]).toBe @threshold
+    expect(@subject.thresholds()[1]).toBe @threshold_2
+
+  describe 'moving threshold', ->
+    beforeEach ->
+      @subject.thresholds [@threshold, @threshold_2]
+
+    describe 'up', ->
+      it 'should change priority with above threshold', ->
+        @subject.moveThresholdUp @threshold_2
+        expect(@threshold_2.priority()).toEqual 1
+
+      describe 'when it is on the top', ->
+        it 'priority should not be changed', ->
+          @subject.moveThresholdUp @threshold
+          expect(@threshold.priority()).toEqual 1
+
+    describe 'down', ->
+      it 'should change priority with below threshold', ->
+        @subject.moveThresholdDown @threshold
+        expect(@threshold.priority()).toEqual 2
+
+      describe 'when it is on the bottom', ->
+        it 'priority should not be changed', ->
+          @subject.moveThresholdDown @threshold_2
+          expect(@threshold_2.priority()).toEqual 2
