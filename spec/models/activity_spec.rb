@@ -210,6 +210,17 @@ describe Activity do
         data: {name: site.name, changes: {'properties' => [{'beds' => 20, 'text' => 'foo'}, {'beds' => 30, 'text' => 'bar'}]}},
         description: "Site '#{site.name}' changed: 'beds' changed from 20 to 30, 'text' changed from 'foo' to 'bar'"
     end
+
+    it "doesn't create one after siglaning properties will change but they didn't change" do
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
+
+      Activity.delete_all
+
+      site.properties_will_change!
+      site.save!
+
+      Activity.count.should eq(0)
+    end
   end
 
   it "creates one after destroying a group" do

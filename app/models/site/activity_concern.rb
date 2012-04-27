@@ -28,6 +28,11 @@ module Site::ActivityConcern
     site_changes['lat'] = [lat, lat] if !site_changes['lat'] && site_changes['lng']
     site_changes['lng'] = [lng, lng] if site_changes['lat'] && !site_changes['lng']
 
+    # This is the case of properties => [{}, {}]
+    if site_changes['properties'] && site_changes['properties'][0] == site_changes['properties'][1]
+      site_changes.delete 'properties'
+    end
+
     if site_changes.present?
       Activity.create! kind: (group? ? 'group_changed' : 'site_changed'), collection_id: collection.id, user_id: user.id, site_id: id, data: {name: name, changes: site_changes}
     end
