@@ -18,6 +18,8 @@ class Activity < ActiveRecord::Base
     when 'layer_created'
       fields_str = data[:fields].map { |f| "#{f[:name]} (#{f[:code]})" }.join ', '
       str = "Layer '#{data[:name]}' was created with fields: #{fields_str}"
+    when 'layer_changed'
+      "Layer '#{data[:name]}' was renamed to '#{data[:changes][:name][1]}'"
     when 'layer_deleted'
       str = "Layer '#{data[:name]}' was deleted"
     when 'site_created'

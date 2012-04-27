@@ -55,6 +55,23 @@ class Layer < ActiveRecord::Base
     Activity.create! kind: 'layer_created', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: name, fields: fields_data}
   end
 
+  before_update :record_status_before_update, :unless => :mute_activities
+  def record_status_before_update
+    @before_update_fields = fields.all
+    @before_update_changes = changes.dup
+  end
+
+  before_update :record_name_was, :unless => :mute_activities
+  def record_name_was
+    @name_was = name_was
+  end
+
+  after_update :create_updated_activity, :unless => :mute_activities
+  def create_updated_activity
+    layer_changes = changes.except 'updated_at'
+    Activity.create! kind: 'layer_changed', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: @name_was || name, changes: layer_changes}
+  end
+
   after_destroy :create_deleted_activity, :unless => :mute_activities
   def create_deleted_activity
     Activity.create! kind: 'layer_deleted', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: name}

@@ -23,6 +23,7 @@ class LayersController < ApplicationController
 
   def update
     fix_layer_fields_for_update
+    layer.user = current_user
     layer.update_attributes! params[:layer]
     layer.reload
     render json: layer.as_json(include: :fields)

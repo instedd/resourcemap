@@ -25,6 +25,24 @@ describe Activity do
       description: "Layer '#{layer.name}' was created with fields: Foo (foo)"
   end
 
+  context "layer changed" do
+    it "creates one when layer's name changes" do
+      layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
+
+      Activity.delete_all
+
+      layer.name = 'Layer2'
+      layer.save!
+
+      assert_activity 'layer_changed',
+        collection_id: collection.id,
+        layer_id: layer.id,
+        user_id: user.id,
+        data: {name: 'Layer1', changes: {'name' => ['Layer1', 'Layer2']}},
+        description: "Layer 'Layer1' was renamed to '#{layer.name}'"
+    end
+  end
+
   it "creates one when layer is destroyed" do
     layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
 
