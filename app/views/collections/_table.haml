@@ -31,7 +31,7 @@
   <!-- ko foreach: sites -->
   %tr{ko(css: "{closed: group() && !expanded(), opened: group() && expanded, active: $data == $root.selectedSite()}")}
     %td.w39{style: 'overflow:auto'}
-      %div
+      %div{style: 'margin-top:2px'}
         <!-- ko if: group() -->
         %a{ko(click: '$root.toggleSite', style: {marginLeft: "'' + ((level() - 1) * 20) + 'px'"}), href: 'javascript:void(0)'}
           <!-- ko if: expanded() -->
