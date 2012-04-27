@@ -4,7 +4,7 @@ class Layer < ActiveRecord::Base
   belongs_to :collection
   has_many :fields, order: 'ord', dependent: :destroy
 
-  accepts_nested_attributes_for :fields
+  accepts_nested_attributes_for :fields, :allow_destroy => true
 
   validates_presence_of :ord
 
@@ -15,7 +15,7 @@ class Layer < ActiveRecord::Base
 
   before_update :before_rename_site_properties_if_fields_code_changed
   def before_rename_site_properties_if_fields_code_changed
-    @fields_renames = Hash[fields.select(&:code_changed?).map{|f| [f.code_was, f.code]}]
+    @fields_renames = Hash[fields.select(&:code_changed?).reject{|f| f.code_was.nil? || f.code.nil?}.map{|f| [f.code_was, f.code]}]
   end
 
   after_update :rename_site_properties_if_fields_code_changed
