@@ -3,12 +3,13 @@ module Site::ActivityConcern
 
   included do
     after_create :create_created_activity, :unless => :mute_activities
+    before_update :record_name_was, :unless => :mute_activities
     after_update :create_updated_activity, :unless => :mute_activities
     after_destroy :create_deleted_activity, :unless => :mute_activities
   end
 
   def create_created_activity
-    site_data = {name: name}
+    site_data = {name: @name_was || name}
     site_data[:lat] = lat if lat
     site_data[:lng] = lng if lng
     if group?
@@ -18,6 +19,10 @@ module Site::ActivityConcern
     end
     kind = group? ? 'group_created' : 'site_created'
     Activity.create! kind: kind, collection_id: collection.id, site_id: id, user_id: user.id, data: site_data
+  end
+
+  def record_name_was
+    @name_was = name_was
   end
 
   def create_updated_activity
@@ -34,7 +39,7 @@ module Site::ActivityConcern
     end
 
     if site_changes.present?
-      Activity.create! kind: (group? ? 'group_changed' : 'site_changed'), collection_id: collection.id, user_id: user.id, site_id: id, data: {name: name, changes: site_changes}
+      Activity.create! kind: (group? ? 'group_changed' : 'site_changed'), collection_id: collection.id, user_id: user.id, site_id: id, data: {name: @name_was || name, changes: site_changes}
     end
   end
 

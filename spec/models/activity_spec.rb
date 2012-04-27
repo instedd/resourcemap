@@ -123,8 +123,8 @@ describe Activity do
         collection_id: collection.id,
         user_id: user.id,
         site_id: site.id,
-        data: {name: site.name, changes: {'name' => ['Foo', 'Bar']}},
-        description: "Site '#{site.name}' changed: name changed from 'Foo' to 'Bar'"
+        data: {name: 'Foo', changes: {'name' => ['Foo', 'Bar']}},
+        description: "Site 'Foo' was renamed to 'Bar'"
     end
 
     it "creates one after changing one group's name" do
@@ -139,8 +139,8 @@ describe Activity do
         collection_id: collection.id,
         user_id: user.id,
         site_id: site.id,
-        data: {name: site.name, changes: {'name' => ['Foo', 'Bar']}},
-        description: "Group '#{site.name}' changed: name changed from 'Foo' to 'Bar'"
+        data: {name: 'Foo', changes: {'name' => ['Foo', 'Bar']}},
+        description: "Group 'Foo' was renamed to 'Bar'"
     end
 
     it "creates one after changing one site's location" do

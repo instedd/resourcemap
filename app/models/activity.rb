@@ -25,9 +25,9 @@ class Activity < ActiveRecord::Base
     when 'group_created'
       "Group '#{data[:name]}' was created"
     when 'site_changed'
-      "Site '#{data[:name]}' changed: #{site_changes_text}"
+      site_or_group_changed_text 'Site'
     when 'group_changed'
-      "Group '#{data[:name]}' changed: #{site_changes_text}"
+      site_or_group_changed_text 'Group'
     when 'site_deleted'
       "Site '#{data[:name]}' was deleted"
     when 'group_deleted'
@@ -43,15 +43,27 @@ class Activity < ActiveRecord::Base
     "#{groups_created_text} and #{sites_created_text} were imported"
   end
 
+  def site_or_group_changed_text(model_name)
+    only_name_changed, changes = site_changes_text
+    if only_name_changed
+      "#{model_name} '#{data[:name]}' was renamed to '#{data[:changes][:name][1]}'"
+    else
+      "#{model_name} '#{data[:name]}' changed: #{changes}"
+    end
+  end
+
   def site_changes_text
     text_changes = []
+    only_name_changed = false
 
     if (change = data[:changes]['name'])
       text_changes << "name changed from '#{change[0]}' to '#{change[1]}'"
+      only_name_changed = true
     end
 
     if (lat_change = data[:changes]['lat']) && (lng_change = data[:changes]['lng'])
       text_changes << "location changed from (#{format_location lat_change[0]}, #{format_location lng_change[0]}) to (#{format_location lat_change[1]}, #{format_location lng_change[1]})"
+      only_name_changed = false
     end
 
     if data[:changes]['properties']
@@ -68,9 +80,11 @@ class Activity < ActiveRecord::Base
           text_changes << "'#{key}' changed from (nothing) to #{new_value.nil? ? '(nothing)' : format_value(new_value)}"
         end
       end
+
+      only_name_changed = false
     end
 
-    text_changes.join ', '
+    [only_name_changed, text_changes.join(', ')]
   end
 
   def format_value(value)
