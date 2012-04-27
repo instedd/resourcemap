@@ -8,6 +8,10 @@
 
 .tabsline
 
+  %h2 Layers
+  %p Manage layers and fields of this collection's sites
+  %br/
+
   -# Layers
   <!-- ko foreach: layers -->
   .box.w80{ko(visible: '$data == $root.currentLayer()'), style: 'display:none'}
