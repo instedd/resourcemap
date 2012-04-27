@@ -103,7 +103,7 @@ class Layer < ActiveRecord::Base
     Activity.create! kind: 'layer_changed', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: @name_was || name, changes: layer_changes}
   end
 
-  after_destroy :create_deleted_activity, :unless => :mute_activities
+  after_destroy :create_deleted_activity, :unless => :mute_activities, :if => :user
   def create_deleted_activity
     Activity.create! kind: 'layer_deleted', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: name}
   end
