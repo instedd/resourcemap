@@ -41,6 +41,23 @@ describe Activity do
         data: {name: 'Layer1', changes: {'name' => ['Layer1', 'Layer2']}},
         description: "Layer 'Layer1' was renamed to '#{layer.name}'"
     end
+
+    it "creates one when layer's field is removed" do
+      layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}, {kind: 'text', code: 'two', name: 'Two', ord: 2}]
+
+      Activity.delete_all
+
+      field = layer.fields[1]
+
+      layer.update_attributes! fields_attributes: [{id: field.id, _destroy: true}]
+
+      assert_activity 'layer_changed',
+        collection_id: collection.id,
+        layer_id: layer.id,
+        user_id: user.id,
+        data: {name: 'Layer1', changes: {'deletions' => [{'id' => field.id, 'code' => 'two', 'name' => 'Two'}]}},
+        description: "Layer 'Layer1' changed: field 'Two' (two) was deleted"
+    end
   end
 
   it "creates one when layer is destroyed" do

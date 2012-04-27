@@ -57,18 +57,29 @@ class Layer < ActiveRecord::Base
 
   before_update :record_status_before_update, :unless => :mute_activities
   def record_status_before_update
+    @name_was = name_was
     @before_update_fields = fields.all
     @before_update_changes = changes.dup
-  end
-
-  before_update :record_name_was, :unless => :mute_activities
-  def record_name_was
-    @name_was = name_was
   end
 
   after_update :create_updated_activity, :unless => :mute_activities
   def create_updated_activity
     layer_changes = changes.except 'updated_at'
+
+    after_update_fields = fields.all
+
+    deletions = []
+    @before_update_fields.each do |old_field|
+      new_field = after_update_fields.find { |f| f.id == old_field.id }
+      unless new_field
+        field_hash = {id: old_field.id, code: old_field.code, name: old_field.name}
+        field_hash[:config] = old_field.config if old_field.config.present?
+        deletions.push field_hash
+      end
+    end
+
+    layer_changes[:deletions] = deletions if deletions.present?
+
     Activity.create! kind: 'layer_changed', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: @name_was || name, changes: layer_changes}
   end
 

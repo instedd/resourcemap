@@ -19,7 +19,7 @@ class Activity < ActiveRecord::Base
       fields_str = data[:fields].map { |f| "#{f[:name]} (#{f[:code]})" }.join ', '
       str = "Layer '#{data[:name]}' was created with fields: #{fields_str}"
     when 'layer_changed'
-      "Layer '#{data[:name]}' was renamed to '#{data[:changes][:name][1]}'"
+      layer_changed_text
     when 'layer_deleted'
       str = "Layer '#{data[:name]}' was deleted"
     when 'site_created'
@@ -83,6 +83,34 @@ class Activity < ActiveRecord::Base
         end
       end
 
+      only_name_changed = false
+    end
+
+    [only_name_changed, text_changes.join(', ')]
+  end
+
+  def layer_changed_text
+    only_name_changed, changes = layer_changes_text
+    if only_name_changed
+      "Layer '#{data[:name]}' was renamed to '#{data[:changes][:name][1]}'"
+    else
+      "Layer '#{data[:name]}' changed: #{changes}"
+    end
+  end
+
+  def layer_changes_text
+    text_changes = []
+    only_name_changed = false
+
+    if (change = data[:changes]['name'])
+      text_changes << "name changed from '#{change[0]}' to '#{change[1]}'"
+      only_name_changed = true
+    end
+
+    if data[:changes][:deletions]
+      data[:changes][:deletions].each do |field|
+        text_changes << "field '#{field[:name]}' (#{field[:code]}) was deleted"
+      end
       only_name_changed = false
     end
 
