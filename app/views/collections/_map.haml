@@ -64,7 +64,7 @@
   <!-- ko if: !editingSite() -->
   <!-- ko with: currentCollection -->
   .tableheader.w40
-    %button.fleft{ko(click: '$root.goToRoot'), type: 'button'}
+    %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
     %span.i18b-groupChat
     %span{ko(text: :name)}
     %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button'}
@@ -98,7 +98,7 @@
   <!-- ko if: newGroup -->
   %form{ko(with: :newGroup, submit: '$root.saveSite'), method: :post, style: 'display:inline-block;width:100%'}
     .tableheader.w40
-      %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
+      %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
       %span New Group
       <!-- ko if: $root.parentSite() && $root.parentSite().level() != 0  -->
@@ -128,7 +128,7 @@
   <!-- ko if: newOrEditSite -->
   %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post, style: 'display:inline-block;width:100%'}
     .tableheader.w40
-      %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
+      %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
       <!-- ko if: inEditMode() -->
       %span{ko(text: :name)}
@@ -197,7 +197,7 @@
   <!-- ko if: showGroup -->
   %form{ko(with: :showGroup, submit: '$root.saveSite'), method: :post, style: 'display:inline;width:100%'}
     .tableheader.w40
-      %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
+      %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
       %span{ko(text: :name)}
     .tablescroll
@@ -229,7 +229,7 @@
   <!-- ko if: showSite -->
   %form{ko(with: :showSite, submit: '$root.saveSite'), method: :post, style: 'display:inline;width:100%'}
     .tableheader.w40
-      %button.fleft{ko(click: '$root.exitSite'), type: 'button'}
+      %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
       %span{ko(text: :name)}
     .tablescroll
@@ -312,14 +312,14 @@
   -# Loading Site...
   %form{ko(visible: :loadingSite)}
     .tableheader.w40
-      %button.fleft
+      %button.pback
       %span.i18b-groupChat
       %span Loading...
 #right-panel.right
   .mapheader
     <!-- ko if: $root.currentCollection() -->
     .greyback
-      %span{style: 'margin:0;padding:3px;display:inline-block'}
+      %span{style: 'margin:0;padding:2px;display:inline-block'}
         Export this result in
         %span{ko(click: :exportInRSS), style: 'text-decoration:underline;cursor:pointer;margin:0'} RSS
         or
