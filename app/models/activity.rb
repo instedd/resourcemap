@@ -107,9 +107,16 @@ class Activity < ActiveRecord::Base
       only_name_changed = true
     end
 
-    if data[:changes][:deletions]
-      data[:changes][:deletions].each do |field|
-        text_changes << "field '#{field[:name]}' (#{field[:code]}) was deleted"
+    if data[:changes][:added]
+      data[:changes][:added].each do |field|
+        text_changes << "#{field[:kind]} field '#{field[:name]}' (#{field[:code]}) was added"
+      end
+      only_name_changed = false
+    end
+
+    if data[:changes][:deleted]
+      data[:changes][:deleted].each do |field|
+        text_changes << "#{field[:kind]} field '#{field[:name]}' (#{field[:code]}) was deleted"
       end
       only_name_changed = false
     end

@@ -68,17 +68,29 @@ class Layer < ActiveRecord::Base
 
     after_update_fields = fields.all
 
-    deletions = []
-    @before_update_fields.each do |old_field|
-      new_field = after_update_fields.find { |f| f.id == old_field.id }
-      unless new_field
-        field_hash = {id: old_field.id, code: old_field.code, name: old_field.name}
-        field_hash[:config] = old_field.config if old_field.config.present?
-        deletions.push field_hash
+    added = []
+    deleted = []
+
+    after_update_fields.each do |new_field|
+      old_field = @before_update_fields.find { |f| f.id == new_field.id }
+      unless old_field
+        field_hash = {id: new_field.id, code: new_field.code, name: new_field.name, kind: new_field.kind}
+        field_hash[:config] = new_field.config if new_field.config.present?
+        added.push field_hash
       end
     end
 
-    layer_changes[:deletions] = deletions if deletions.present?
+    @before_update_fields.each do |old_field|
+      new_field = after_update_fields.find { |f| f.id == old_field.id }
+      unless new_field
+        field_hash = {id: old_field.id, code: old_field.code, name: old_field.name, kind: old_field.kind}
+        field_hash[:config] = old_field.config if old_field.config.present?
+        deleted.push field_hash
+      end
+    end
+
+    layer_changes[:added] = added if added.present?
+    layer_changes[:deleted] = deleted if deleted.present?
 
     Activity.create! kind: 'layer_changed', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: @name_was || name, changes: layer_changes}
   end
