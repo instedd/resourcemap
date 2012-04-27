@@ -10,7 +10,7 @@ class LayersController < ApplicationController
         add_breadcrumb collection.name, collection_path(collection)
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
-      format.json { render json: layers.as_json(include: :fields) }
+      format.json { render json: layers.includes(:fields).as_json(include: :fields) }
     end
   end
 
@@ -22,6 +22,9 @@ class LayersController < ApplicationController
   end
 
   def update
+    # FIX: For some reason using the exposed layer here results in duplicated fields being created
+    layer = collection.layers.find params[:id]
+
     fix_layer_fields_for_update
     layer.user = current_user
     layer.update_attributes! params[:layer]
@@ -69,5 +72,7 @@ class LayersController < ApplicationController
       params[:layer][:fields_attributes][max_key.to_s] = {id: id, _destroy: true}
       max_key += 1
     end
+
+    params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
   end
 end
