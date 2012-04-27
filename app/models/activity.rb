@@ -114,6 +114,21 @@ class Activity < ActiveRecord::Base
       only_name_changed = false
     end
 
+    if data[:changes][:changed]
+      data[:changes][:changed].each do |field|
+        [:name, :code, :kind].each do |key|
+          if field[key].is_a? Array
+            text_changes << "#{old_value field[:kind]} field '#{old_value field[:name]}' (#{old_value field[:code]}) #{key} changed to '#{field[key][1]}'"
+          end
+        end
+
+        if field[:config].is_a?(Array) && field[:config][0][:options] && field[:config][1][:options]
+          text_changes << "#{old_value field[:kind]} field '#{old_value field[:name]}' (#{old_value field[:code]}) options changed from #{field[:config][0][:options]} to #{field[:config][1][:options]}"
+        end
+      end
+      only_name_changed = false
+    end
+
     if data[:changes][:deleted]
       data[:changes][:deleted].each do |field|
         text_changes << "#{field[:kind]} field '#{field[:name]}' (#{field[:code]}) was deleted"
@@ -122,6 +137,10 @@ class Activity < ActiveRecord::Base
     end
 
     [only_name_changed, text_changes.join(', ')]
+  end
+
+  def old_value(value)
+    value.is_a?(Array) ? value[0] : value
   end
 
   def format_value(value)
