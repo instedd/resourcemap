@@ -233,7 +233,7 @@
       %span.i18b-groupChat
       %span{ko(text: :name)}
     .tablescroll
-      %table
+      %table{style: 'width:100%'}
         %tbody
           %tr
             %td
@@ -250,8 +250,7 @@
                 = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}
                 <!-- /ko -->
               <!-- ko foreach: parentCollection().layers() -->
-              %div{style: 'margin-top:24px;margin-bottom:14px'}
-                %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
+              %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields() -->
