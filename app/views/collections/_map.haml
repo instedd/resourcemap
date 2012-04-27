@@ -318,12 +318,12 @@
 #right-panel.right
   .mapheader
     <!-- ko if: $root.currentCollection() -->
-    %label
-      Export this result in
-      %span{ko(click: :exportInRSS), style: 'text-decoration:underline;cursor:pointer'} RSS
-      or
-      %span{ko(click: :exportInJSON), style: 'text-decoration:underline;cursor:pointer'} JSON
-    |
+    .greyback
+      %span{style: 'margin:0;padding:3px;display:inline-block'}
+        Export this result in
+        %span{ko(click: :exportInRSS), style: 'text-decoration:underline;cursor:pointer;margin:0'} RSS
+        or
+        %span{ko(click: :exportInJSON), style: 'text-decoration:underline;cursor:pointer;margin:0'} JSON
     <!-- /ko -->
     %span{ko(text: :sitesCountText)}
     -#%span.alert 5 alerts
