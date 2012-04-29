@@ -20,7 +20,7 @@
       %br/
       = ko_text_field_tag :name, hasfocus: :hasFocus, css: {error: :nameError}
       = ko_check_box_tag :public
-      = label_tag :public, 'Public layer'
+      -#= label_tag :public, 'Public layer'
 
     %label{ko(css: {error: :fieldsError})} Fields
     %br/
@@ -117,9 +117,9 @@
   .box.grey.w60{ko(visible: '$data != $root.currentLayer()'), style: 'display:none'}
     .toptitle
       %span{ko(text: :name)}
-      &rarr;
-      %em{ko(visible: :public)} Public layer
-      %em{ko(visible: '!public()')} Private layer
+      -#&rarr;
+      -#%em{ko(visible: :public)} Public layer
+      -#%em{ko(visible: '!public()')} Private layer
 
     .rightbuttons
       <!-- ko if: !$root.savingLayer() && !$root.currentLayer() -->
