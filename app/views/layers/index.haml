@@ -34,8 +34,9 @@
           .feditor-top
           .feditor-container
             .rightbuttons
-              %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'vertical-align:top;position:relative;left:28px;top:6px'}
-              %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'}), style: 'vertical-align:top;position:relative;top:17px'}
+              .btupdn{style: 'vertical-align:bottom'}
+                %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'margin-top:0'}
+                %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'})}
               %button.fdelete{ko(click: "$root.deleteField")}
             .feditor-button
               %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
@@ -123,8 +124,9 @@
 
     .rightbuttons
       <!-- ko if: !$root.savingLayer() && !$root.currentLayer() -->
-      %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'}), style: 'vertical-align:top;position:relative;left:28px'}
-      %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'}), style: 'vertical-align:top;position:relative;top:11px'}
+      .btupdn
+        %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'})}
+        %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'})}
       <!-- /ko -->
       %button.fbranch
       <!-- ko if: !$root.savingLayer() && !$root.currentLayer() -->
