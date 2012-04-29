@@ -16,10 +16,10 @@
     %tbody
       <!-- ko foreach: collections -->
       %tr
-        %td{ko(text: :name)}
-        %td.l.timeago{ko(attr: {title: :updatedAt}, text: :updatedAtTimeago)}
-        %td.l
+        %td
+          %span{ko(text: :name)}
           %button.farrow{ko(click: '$root.enterCollection'), type: :button}
+        %td.l.timeago{ko(attr: {title: :updatedAt}, text: :updatedAtTimeago)}
       <!-- /ko -->
 .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
   %button.cadd{type: "button"}
@@ -48,6 +48,7 @@
           %span.stat-r
           %span{ko(html: :highlightedName)}
         <!-- /ko -->
+      %button.farrow{ko(click: '$root.editSite'), type: :button}
     <!-- ko foreach: $root.currentCollection().fields() -->
     <!-- ko if: $parent.properties()[$data.code()] -->
     %td.l
@@ -62,7 +63,6 @@
     <!-- /ko -->
     %td.l.timeago{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
     %td.l
-      %button.farrow{ko(click: '$root.editSite'), type: :button}
   <!-- ko if: expanded -->
   <!-- ko template: {name: 'table-sites-template', with: sites} -->
   <!-- /ko -->
