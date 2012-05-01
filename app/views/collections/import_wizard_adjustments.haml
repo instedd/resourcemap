@@ -97,7 +97,10 @@
   <!-- ko if: importing() -->
   Importing, please wait. This might take several minutes.
   <!-- /ko -->
-  <!-- ko if: !importing() -->
+  <!-- ko if: importError() -->
+  %span{style: 'color:red'} Sorry, something failed during the import. Please contact InSTEDD for support.
+  <!-- /ko -->
+  <!-- ko if: !importing() && !importError() -->
   <!-- ko if: valid() -->
   %button{ko(click: :startImport)} Start importing
   <!-- /ko -->

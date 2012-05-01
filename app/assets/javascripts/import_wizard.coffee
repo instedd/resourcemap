@@ -64,6 +64,7 @@
       @error = ko.computed => @site().error()
       @valid = ko.computed => @site().valid()
       @importing = ko.observable false
+      @importError = ko.observable false
 
     computeSite: =>
       data = {name: null, properties: [], parents: []}
@@ -132,8 +133,13 @@
     startImport: =>
       @importing(true)
       columns = $.map(@columns(), (x) -> x.toJSON())
-      $.post "/collections/#{@collectionId}/import_wizard_execute.json", {columns: columns}, =>
-        window.location = '/collections'
+      $.ajax "/collections/#{@collectionId}/import_wizard_execute.json",
+        type: 'POST'
+        data: {columns: columns},
+        success: => window.location = '/collections'
+        error: =>
+          @importing(false)
+          @importError(true)
 
   window.model = new ImportWizardViewModel(collectionId, columns)
   ko.applyBindings window.model
