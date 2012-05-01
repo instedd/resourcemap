@@ -27,7 +27,11 @@ class ImportWizard
       columns_spec.map! &:with_indifferent_access
 
       # Read all the CSV to memory
-      rows = CSV.read file_for user, collection
+      begin
+        rows = CSV.read file_for(user, collection)
+      rescue ArgumentError # invalid byte sequence in UTF-8: specifying the encoding probably solves it
+        rows = CSV.read file_for(user, collection), :encoding => 'windows-1251:utf-8'
+      end
 
       # Put the index of the row in the columns spec
       rows[0].each_with_index do |row, i|
