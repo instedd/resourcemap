@@ -21,6 +21,9 @@ $ ->
     deleteThreshold: (threshold) =>
       threshold.destroy() if confirm ThresholdsViewModel.Messages.DELETE_THRESHOLD
 
+    alertTest: () =>
+      alert "Hello"
+
     moveThresholdUp: (threshold) =>
       index = @thresholds.indexOf threshold
       @_swapPriority threshold, @thresholds()[index - 1] if index > 0
@@ -45,13 +48,12 @@ $ ->
         collection_id: @collectionId
         valueOrPercent: "percent"
         priority:  @thresholds().length + 1
-        color: "#FFFFFF"
+        color: "#0000ff"
         condition: {
           field: "hospital"
           is: "gt"
           value: 10
         }
-        color: "#FFFFFF"
       threshold = new rm.Threshold defaultThreshold
       @thresholds.push threshold
       @_setCurrentThreshold(threshold)

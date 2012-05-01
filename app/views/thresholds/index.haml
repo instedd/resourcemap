@@ -3,11 +3,34 @@
   = javascript_include_tag 'maps/thresholds_map'
 
   :javascript
-    $(function() { 
-      rm.set({ collection_id: #{collection.id} });
-      rm.bootstrap();
-    });
+    function createColorPicker(threshold){
+      $('.stat').ColorPicker({
+        color: '#0000ff',
+          //animation show 
+          onShow: function (colpkr) {
+            $(colpkr).fadeIn(500);
+              return false;
+          },
+          //animation hide
+          onHide: function (colpkr) {
+            $(colpkr).fadeOut(500);
+              return false;
+          },
+          onChange: function (hsb, hex, rgb) {
+            threshold.color('#' + hex);
+          }
+         });
+    };
+    
+    function testAlert(th){
+      createColorPicker(th); 
+    };
 
+    $(function() {
+      rm.set({ collection_id: #{collection.id} });
+      rm.bootstrap(); 
+    });
+       
 = render 'collections/tabs'
 
 .tabsline
@@ -26,7 +49,7 @@
         %span{ ko(text: :comparisonText) }
         %span{ ko(text: :value) }
         , set color
-        %span.stat{ ko(style: {backgroundColor: :color, borderTop: :borderTopStyle}) }
+        %span.stat{"data-bind" => "style: {backgroundColor: color}" }
     .rightbuttons 
       %button.fdelete{ ko(click: '$root.deleteThreshold') }
     .middlebuttons
@@ -46,8 +69,8 @@
         %input{ko(value: 'condition().value'), style: ":size => '2', :type => 'text'"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
-      %span.stat-r{ko(value: :color)}
-      %button.premove 
+      %span.stat{ko(style: {backgroundColor: :color}, click: 'testAlert')}
+      %button.premove    
     .middlebuttons
       %select
         %option Or
@@ -61,11 +84,13 @@
         %input{:size => "2", :type => "text", :value => "15"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
-      %span.stat-r
+      %span.stat
+        %div{:style => "background-color: #0000ff"}
+
       %button.fremove 
+
     %button.fadd
       Add new condition
-
     %hr
     .bottom-actions
       %button.white{ ko(click: '$root.addThreshold') } Save

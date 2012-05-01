@@ -10,5 +10,6 @@
  *
  *= require_self
  *= require fixedheadertable
+ *= require colorpicker
  *= require_tree .
 */

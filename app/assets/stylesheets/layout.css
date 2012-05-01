@@ -106,3 +106,5 @@ td.loadmore { height: 36px }
 .ord-buttons .down { position:absolute; bottom:-1px; background-image:url(/assets/down.png) }
 .ord-buttons button:hover, .ord-buttons button:focus { background-position: center -10px }
 .ord-buttons button:active { background-position: center -20px }
+
+.stat div {border-radius: 3px;height: 17px; width: 18px }
