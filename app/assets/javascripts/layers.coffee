@@ -67,7 +67,7 @@
       @optionsError = ko.computed =>
         return null unless @isOptionsKind()
 
-        if @options().length > 1
+        if @options().length > 0
           codes = []
           labels = []
           for option in @options()
@@ -77,7 +77,7 @@
             labels.push option.label()
           null
         else
-          "the field '#{@name()}' must have at least two options"
+          "the field '#{@name()}' must have at least one option"
       @error = ko.computed => @nameError() || @codeError() || @optionsError()
       @valid = ko.computed => !@error()
 
