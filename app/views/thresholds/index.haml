@@ -22,7 +22,7 @@
          });
     };
     
-    function testAlert(th){
+    function buildColorPicker(th){
       createColorPicker(th); 
     };
 
@@ -69,7 +69,7 @@
         %input{ko(value: 'condition().value'), style: ":size => '2', :type => 'text'"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
-      %span.stat{ko(style: {backgroundColor: :color}, click: 'testAlert')}
+      %span.stat{ko(style: {backgroundColor: :color}, click: 'buildColorPicker')}
       %button.premove    
     .middlebuttons
       %select
