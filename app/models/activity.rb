@@ -122,8 +122,12 @@ class Activity < ActiveRecord::Base
           end
         end
 
-        if field[:config].is_a?(Array) && field[:config][0][:options] && field[:config][1][:options]
-          text_changes << "#{old_value field[:kind]} field '#{old_value field[:name]}' (#{old_value field[:code]}) options changed from #{field[:config][0][:options]} to #{field[:config][1][:options]}"
+        if field[:config].is_a?(Array)
+          old_options = (field[:config][0] || {})[:options]
+          new_options = (field[:config][1] || {})[:options]
+          if old_options != new_options
+            text_changes << "#{old_value field[:kind]} field '#{old_value field[:name]}' (#{old_value field[:code]}) options changed from #{old_options} to #{new_options}"
+          end
         end
       end
       only_name_changed = false
@@ -148,6 +152,6 @@ class Activity < ActiveRecord::Base
   end
 
   def format_location(value)
-    (value * 1e6).round / 1e6.to_f
+    ((value || 0) * 1e6).round / 1e6.to_f
   end
 end

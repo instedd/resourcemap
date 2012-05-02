@@ -33,9 +33,18 @@ module Site::ActivityConcern
     site_changes['lat'] = [lat, lat] if !site_changes['lat'] && site_changes['lng']
     site_changes['lng'] = [lng, lng] if site_changes['lat'] && !site_changes['lng']
 
+    # Sometimes we end up with [0, 0], [0, 0]
+    if site_changes['lat'] == site_changes['lng']
+      site_changes.delete 'lat'
+      site_changes.delete 'lng'
+    end
+
     # This is the case of properties => [{}, {}]
-    if site_changes['properties'] && site_changes['properties'][0] == site_changes['properties'][1]
-      site_changes.delete 'properties'
+    if site_changes['properties']
+      2.times { |i| site_changes['properties'][i].reject! { |k, v| v.nil? } }
+      if site_changes['properties'][0] == site_changes['properties'][1]
+        site_changes.delete 'properties'
+      end
     end
 
     if site_changes.present?

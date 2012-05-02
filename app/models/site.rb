@@ -19,6 +19,11 @@ class Site < ActiveRecord::Base
                      end
   end
 
+  before_save :remove_nil_properties, :unless => :group?, :if => :properties
+  def remove_nil_properties
+    self.properties.reject! { |k, v| v.nil? }
+  end
+
   def level
     hierarchy.blank? ? 1 : hierarchy.count(',') + 2
   end

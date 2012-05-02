@@ -40,4 +40,9 @@ describe Site do
       site3.level.should eq(3)
     end
   end
+
+  it "removes empty properties after save" do
+    site = Site.make properties: {foo: 1, bar: nil, baz: 3}
+    site.properties.should_not have_key(:bar)
+  end
 end
