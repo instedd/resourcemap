@@ -45,6 +45,6 @@ class User < ActiveRecord::Base
   end
 
   def activities
-    Activity.where(collection_id: memberships.select('collection_id').map(&:collection_id))
+    Activity.where(collection_id: memberships.pluck(:collection_id))
   end
 end
