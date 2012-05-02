@@ -6,7 +6,7 @@ class CollectionsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: collections }
+      format.json { render json: collections.all }
     end
   end
 
