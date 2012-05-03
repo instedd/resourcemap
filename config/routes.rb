@@ -53,6 +53,7 @@ ResourceMap::Application.routes.draw do
 
   namespace :api do
     get 'collections/:id' => 'collections#show',as: :collection
+    get 'collections/:id/count' => 'collections#count',as: :count
     get 'sites/:id' => 'sites#show', as: :site
     get 'activity' => 'activities#index', as: :activity
   end
