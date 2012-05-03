@@ -79,6 +79,20 @@ module SearchBase
     self
   end
 
+  def box(west, south, east, north)
+    @search.filter :geo_bounding_box, location: {
+      top_left: {
+        lat: north,
+        lon: west
+      },
+      bottom_right: {
+        lat: south,
+        lon: east
+      },
+    }
+    self
+  end
+
   def apply_queries
     if @queries
       query = @queries.join " AND "
