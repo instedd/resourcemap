@@ -7,8 +7,9 @@ $ ->
   rm.EventDispatcher.bind rm.SystemEvent.INITIALIZE, (event) ->
     ko.applyBindings rm.thresholdsViewModel
     $.getJSON "/collections/#{rm.thresholdsViewModel.collectionId}/fields.json", (data) ->
-      fields = $.map data, (field) -> new rm.Field field
-      rm.thresholdsViewModel.fields fields 
+      fields = [] 
+      $.map data, (field) -> fields.push field.name
+      rm.thresholdsViewModel.fields fields
 
     $.getJSON "/collections/#{rm.thresholdsViewModel.collectionId}/thresholds.json", (data) ->
       thresholds = $.map data, (threshold) -> new rm.Threshold threshold

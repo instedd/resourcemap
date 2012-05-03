@@ -54,7 +54,7 @@
       %button.fdelete{ ko(click: '$root.deleteThreshold') }
     .middlebuttons
       %button.farrow{ ko(click: '$root.editThreshold') } Edit
-
+    
   -# Form editor
   .box.w60{ ko(visible: '$data == $root.currentThreshold()') }
     .rightbuttons
@@ -62,7 +62,7 @@
     %label Conditions
     .middlebuttons
       when
-      = select_tag :fields_option, options_for_select([['Bed', 'bed'], ['Hospital', 'hospital'], ['Car Garage', 'car garage'], ['Petro Station', 'petro station']]), "data-bind" => kov(value: :field)
+      = select_tag :fields_option, nil, 'data-bind' => kov(options: '$root.fields', value: :field)
       = select_tag :comparison_option, options_for_select([['is less than', 'lt'], ['is greater than', 'gt']]), "data-bind" => kov(value: :comparisonValue)
       = select_tag :value_or_percent_option, options_for_select([['a value of', 'value'], ['a percent of', 'percent']]), "data-bind" => kov(value: :valueOrPercent)
       %span.ux-nstep.w06 

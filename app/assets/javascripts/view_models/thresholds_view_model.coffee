@@ -1,5 +1,4 @@
 #= require models/threshold
-#= require models/field
 $ ->
   module 'rm'
 
