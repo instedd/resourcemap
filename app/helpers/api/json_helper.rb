@@ -4,8 +4,6 @@ module Api::JsonHelper
   def collection_json(collection, results)
     parents = parents_as_hash results
 
-    p results
-
     obj = {}
     obj[:name] = collection.name
     obj[:previousPage] = url_for(params.merge page: results.previous_page, only_path: false) if results.previous_page
