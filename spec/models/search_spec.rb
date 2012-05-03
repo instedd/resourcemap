@@ -291,13 +291,29 @@ describe Search do
     end
   end
 
-  context "box" do
+  context "geo" do
     let!(:site1) { collection.sites.make lat: 10, lng: 20}
     let!(:site2) { collection.sites.make lat: 15, lng: 25}
     let!(:site3) { collection.sites.make lat: 40, lng: 60}
 
     it "searches by box" do
       assert_results collection.new_search.box(19, 9, 26, 16), site1, site2
+    end
+
+    it "searches by text km radius" do
+      assert_results collection.new_search.radius(12.5, 22.5, '600km'), site1, site2
+    end
+
+    it "searches by text miles radius" do
+      assert_results collection.new_search.radius(12.5, 22.5, '434mi'), site1, site2
+    end
+
+    it "searches by numeric radius" do
+      assert_results collection.new_search.radius(12.5, 22.5, 600000), site1, site2
+    end
+
+    it "searches by numeric radius on single site" do
+      assert_results collection.new_search.radius(10, 20, 1), site1
     end
   end
 

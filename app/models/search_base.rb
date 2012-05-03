@@ -93,6 +93,14 @@ module SearchBase
     self
   end
 
+  def radius(lat, lng, meters)
+    meters = meters.to_f / 1000 unless meters.is_a?(String) && (meters.end_with?('km') || meters.end_with?('mi'))
+    @search.filter :geo_distance,
+      distance: meters,
+      location: { lat: lat, lon: lng }
+    self
+  end
+
   def apply_queries
     if @queries
       query = @queries.join " AND "

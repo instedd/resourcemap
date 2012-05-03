@@ -21,7 +21,7 @@ class Api::CollectionsController < ApplicationController
   private
 
   def perform_search(*options)
-    except_params = [:action, :controller, :format, :id, :group, :updated_since, :search, :box]
+    except_params = [:action, :controller, :format, :id, :group, :updated_since, :search, :box, :lat, :lng, :radius]
 
     search = collection.new_search
 
@@ -37,6 +37,13 @@ class Api::CollectionsController < ApplicationController
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search] if params[:search]
     search.box *valid_box_coordinates if params[:box]
+
+    if params[:lat] || params[:lng] || params[:radius]
+      [:lat, :lng, :radius].each do |key|
+        raise "Missing '#{key}' parameter" unless params[key]
+      end
+      search.radius params[:lat], params[:lng], params[:radius]
+    end
 
     if options.include? :sort
       search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
