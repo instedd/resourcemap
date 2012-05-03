@@ -36,7 +36,7 @@ class Api::CollectionsController < ApplicationController
     search.in_group params[:group] if params[:group]
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search] if params[:search]
-    search.box *params[:box].split(',') if params[:box]
+    search.box *valid_box_coordinates if params[:box]
 
     if options.include? :sort
       search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
@@ -45,5 +45,16 @@ class Api::CollectionsController < ApplicationController
 
     search.where params.except(*except_params)
     search.results
+  end
+
+  def valid_box_coordinates
+    coords = params[:box].split ','
+    raise "Expected the 'box' parameter to be four comma-separated numbers" if coords.length != 4
+
+    coords.each_with_index do |coord, i|
+      Float(coord) rescue raise "Expected #{(i + 1).ordinalize} value of 'box' parameter to be a number, not '#{coord}'"
+    end
+
+    coords
   end
 end
