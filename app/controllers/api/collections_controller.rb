@@ -1,5 +1,6 @@
 class Api::CollectionsController < ApplicationController
   include Api::JsonHelper
+  include Api::GeoJsonHelper
 
   before_filter :authenticate_user!
 
@@ -25,6 +26,11 @@ class Api::CollectionsController < ApplicationController
 
   def count
     render json: perform_search(:count).total
+  end
+
+  def geo_json
+    @results = perform_search :page, :sort, :require_location
+    render json: collection_geo_json(collection, @results)
   end
 
   private
@@ -54,6 +60,10 @@ class Api::CollectionsController < ApplicationController
         raise "Missing '#{key}' parameter" unless params[key]
       end
       search.radius params[:lat], params[:lng], params[:radius]
+    end
+
+    if options.include? :require_location
+      search.require_location
     end
 
     if options.include? :sort

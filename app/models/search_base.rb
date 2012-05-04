@@ -101,6 +101,10 @@ module SearchBase
     self
   end
 
+  def require_location
+    @search.filter :exists, field: :location
+  end
+
   def apply_queries
     if @queries
       query = @queries.join " AND "
