@@ -20,4 +20,17 @@ class Field < ActiveRecord::Base
   def non_empty_value
     kind == 'numeric' ? 1 : 'foo'
   end
+
+  # Returns the label for the given option code.
+  # Returns the same code if the option is not found or this is not a
+  # select_one or select_many field.
+  def option_label(code)
+    if config && config['options']
+      config['options'].each do |option|
+        return option['label'] if option['code'] == code
+      end
+    end
+
+    return code
+  end
 end

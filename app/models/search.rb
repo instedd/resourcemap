@@ -45,6 +45,10 @@ class Search
     @sort_ascendent = ascendent ? nil : 'desc'
   end
 
+  def unlimited
+    @unlimited = true
+  end
+
   def results
     apply_queries
 
@@ -59,6 +63,8 @@ class Search
     if @offset && @limit
       @search.from @offset
       @search.size @limit
+    elsif @unlimited
+      @search.size 1_000_000
     else
       @search.size self.class.page_size
     end

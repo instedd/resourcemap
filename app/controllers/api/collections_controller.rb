@@ -4,10 +4,19 @@ class Api::CollectionsController < ApplicationController
   before_filter :authenticate_user!
 
   def show
-    @results = perform_search :page, :sort
+    options = [:sort]
+
+    if params[:format] == 'csv'
+      options << :all
+    else
+      options << :page
+    end
+
+    @results = perform_search *options
 
     respond_to do |format|
       format.rss
+      format.csv { collection_csv(collection, @results) }
       format.json { render json: collection_json(collection, @results) }
     end
   rescue => ex
@@ -31,6 +40,8 @@ class Api::CollectionsController < ApplicationController
     elsif options.include? :count
       search.offset 0
       search.limit 0
+    elsif options.include? :all
+      search.unlimited
     end
 
     search.in_group params[:group] if params[:group]
@@ -48,6 +59,7 @@ class Api::CollectionsController < ApplicationController
     if options.include? :sort
       search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
       except_params << :sort
+      except_params << :sort_direction
     end
 
     search.where params.except(*except_params)
@@ -63,5 +75,30 @@ class Api::CollectionsController < ApplicationController
     end
 
     coords
+  end
+
+  def collection_csv(collection, results)
+    fields = collection.fields.all
+
+    sites_csv = CSV.generate do |csv|
+      header = ['Name', 'Latitude', 'Longitude']
+      fields.each { |field| header << field.name }
+      header << 'Last updated'
+      csv << header
+
+      results.each do |result|
+        source = result['_source']
+
+        row = [source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
+        fields.each do |field|
+          value = source['properties'].try(:[], field.code)
+          row << field.option_label(value)
+        end
+        row << Site.parse_date(source['updated_at']).rfc822
+        csv << row
+      end
+    end
+
+    send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
 end

@@ -633,8 +633,8 @@
       @makeFixedHeaderTable()
 
     exportInRSS: => window.open @currentCollection().link('rss')
-
     exportInJSON: => window.open @currentCollection().link('json')
+    exportInCSV: => window.location = @currentCollection().link('csv')
 
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)

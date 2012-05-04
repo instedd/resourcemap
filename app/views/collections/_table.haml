@@ -89,8 +89,10 @@
     %span{style: 'margin:0;padding:3px;display:inline-block'}
       Export this result in
       %span{ko(click: '$root.exportInRSS'), style: 'text-decoration:underline;cursor:pointer;margin:0'} RSS
-      or
+      ,
       %span{ko(click: '$root.exportInJSON'), style: 'text-decoration:underline;cursor:pointer;margin:0'} JSON
+      or
+      %span{ko(click: '$root.exportInCSV'), style: 'text-decoration:underline;cursor:pointer;margin:0'} CSV
   <!-- /ko -->
   .mapheader.right
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
