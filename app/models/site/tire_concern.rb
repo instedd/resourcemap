@@ -22,6 +22,7 @@ module Site::TireConcern
     }
     hash[:location] = {lat: lat.to_f, lon: lng.to_f} if lat? && lng?
     hash[:parent_ids] = hierarchy.split(',').map(&:to_i) if hierarchy?
+    hash[:alert] = collection.thresholds_test properties
     index.store hash
     index.refresh
   end

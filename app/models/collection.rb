@@ -47,4 +47,13 @@ class Collection < ActiveRecord::Base
       }
     end
   end
+
+  def thresholds_test(properties)
+    catch(:threshold) {
+      thresholds.each do |threshold|
+        threshold.test properties
+      end
+      false
+    }
+  end
 end

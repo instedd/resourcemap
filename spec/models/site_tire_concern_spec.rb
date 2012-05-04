@@ -53,4 +53,15 @@ describe Site::TireConcern do
     search = Tire::Search::Search.new collection.index_name
     search.perform.results.length.should eq(2)
   end
+
+  it "should stores alert in index" do
+    collection = Collection.make
+    threshold = collection.thresholds.make condition: [ field: 'beds', is: :lt, value: 10 ]
+    site = collection.sites.make properties: { 'beds' => 9 }
+
+    search = Tire::Search::Search.new collection.index_name
+    search.query { string 'alert:true' }
+    result = search.perform.results
+    result.count.should eq(1)
+  end
 end
