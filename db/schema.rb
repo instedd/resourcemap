@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120410071942) do
+ActiveRecord::Schema.define(:version => 20120504052500) do
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(:version => 20120410071942) do
   create_table "thresholds", :force => true do |t|
     t.integer  "priority"
     t.string   "color"
-    t.text     "condition"
+    t.text     "conditions"
     t.integer  "collection_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false

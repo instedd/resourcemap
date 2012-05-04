@@ -56,7 +56,7 @@ describe Site::TireConcern do
 
   it "should stores alert in index" do
     collection = Collection.make
-    threshold = collection.thresholds.make condition: [ field: 'beds', is: :lt, value: 10 ]
+    threshold = collection.thresholds.make conditions: [ field: 'beds', is: :lt, value: 10 ]
     site = collection.sites.make properties: { 'beds' => 9 }
 
     search = Tire::Search::Search.new collection.index_name

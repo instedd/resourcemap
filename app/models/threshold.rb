@@ -3,18 +3,18 @@ class Threshold < ActiveRecord::Base
   validates :priority, :presence => true
   validates :color, :presence => true
   
-  serialize :condition, Array
+  serialize :conditions, Array
 
   def test(properties)
-    condition.each do |hash|
+    conditions.each do |hash|
       field = hash[:field]
       if properties.has_key? field
-        _condition(hash).evaluate properties[field]
+        condition(hash).evaluate properties[field]
       end
     end
   end
 
-  def _condition(hash)
+  def condition(hash)
     Threshold::Condition.new hash
   end
 end

@@ -33,18 +33,18 @@ describe Collection do
     end
 
     it "should return false when no threshold is hit" do
-      collection.thresholds.make condition: [ field: 'beds', is: :gt, value: 10 ]
+      collection.thresholds.make conditions: [ field: 'beds', is: :gt, value: 10 ]
       collection.thresholds_test(properties).should be_false
     end
 
     it "should return true when threshold 1 is hit" do
-      collection.thresholds.make condition: [ field: 'beds', is: :lt, value: 10 ]
+      collection.thresholds.make conditions: [ field: 'beds', is: :lt, value: 10 ]
       collection.thresholds_test(properties).should be_true
     end
 
     it "should return true when threshold 2 is hit" do
-      collection.thresholds.make condition: [ field: 'beds', is: :gt, value: 10 ]
-      collection.thresholds.make condition: [ field: 'beds', is: :eq, value: 9 ]
+      collection.thresholds.make conditions: [ field: 'beds', is: :gt, value: 10 ]
+      collection.thresholds.make conditions: [ field: 'beds', is: :eq, value: 9 ]
       collection.thresholds_test(properties).should be_true
     end
   end
