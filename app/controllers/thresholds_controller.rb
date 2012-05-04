@@ -25,6 +25,8 @@ class ThresholdsController < ApplicationController
   end
   
   def update
+    threshold.update_attribute :condition, params[:threshold][:condition]
+    render json: threshold
   end
   
   def destroy

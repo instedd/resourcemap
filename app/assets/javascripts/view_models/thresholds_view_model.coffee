@@ -1,5 +1,4 @@
 #= require models/threshold
-
 $ ->
   module 'rm'
 
@@ -15,14 +14,12 @@ $ ->
 
     constructor: (@collectionId) ->
       @thresholds = ko.observableArray()
+      @fields = ko.observableArray() 
       @state = ko.observable ThresholdsViewModel.States.LISTING
       @currentThreshold = ko.observable()
 
     deleteThreshold: (threshold) =>
       threshold.destroy() if confirm ThresholdsViewModel.Messages.DELETE_THRESHOLD
-
-    alertTest: () =>
-      alert "Hello"
 
     moveThresholdUp: (threshold) =>
       index = @thresholds.indexOf threshold
@@ -35,10 +32,13 @@ $ ->
     refresh: ->
       @thresholds.sort (x, y) -> x.priority() > y.priority() ? -1 : 1
       
-    addThreshold: () ->
-      rm.thresholdsViewModel.currentThreshold().create()
+    saveThreshold: () =>
+      if @state() == ThresholdsViewModel.States.EDITING
+        rm.thresholdsViewModel.currentThreshold().update() 
+      else
+        rm.thresholdsViewModel.currentThreshold().create()
 
-    addThresholdSuccess: () ->
+    saveThresholdSuccess: () ->
       @currentThreshold(null)
       @state ThresholdsViewModel.States.LISTING
     

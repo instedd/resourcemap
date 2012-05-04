@@ -39,6 +39,11 @@ $ ->
       event = new rm.ThresholdEvent @
       rm.EventDispatcher.trigger rm.ThresholdEvent.CREATE, event
 
+    update: ->
+      console.log "update"
+      event = new rm.ThresholdEvent @
+      rm.EventDispatcher.trigger rm.ThresholdEvent.UPDATE, event
+
     setPriority: (priority) ->
       @priority priority
       rm.EventDispatcher.trigger rm.ThresholdEvent.SET_PRIORITY, new rm.ThresholdEvent @
