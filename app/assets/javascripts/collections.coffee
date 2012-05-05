@@ -286,6 +286,7 @@
         center: center
         zoom: 4
         mapTypeId: google.maps.MapTypeId.ROADMAP
+        scaleControl: true
       @map = new google.maps.Map document.getElementById("map"), mapOptions
 
       listener = google.maps.event.addListener @map, 'bounds_changed', =>
