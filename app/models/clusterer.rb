@@ -32,13 +32,15 @@ class Clusterer
 
   def clusters
     first_pass = first_pass_clusters
-    if first_pass[:clusters]
+    if first_pass[:clusters] || first_pass[:sites]
       clusterer = Clusterer.new(@zoom)
-      first_pass[:clusters].each do |cluster|
-        new_cluster = clusterer.add_non_group cluster, cluster[:count]
-        new_cluster[:max_zoom] = cluster[:max_zoom]
-        new_cluster[:group_ids] ||= []
-        new_cluster[:group_ids] << cluster[:id]
+      if first_pass[:clusters]
+        first_pass[:clusters].each do |cluster|
+          new_cluster = clusterer.add_non_group cluster, cluster[:count]
+          new_cluster[:max_zoom] = cluster[:max_zoom]
+          new_cluster[:group_ids] ||= []
+          new_cluster[:group_ids] << cluster[:id]
+        end
       end
       if first_pass[:sites]
         first_pass[:sites].each do |site|

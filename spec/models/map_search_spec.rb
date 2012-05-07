@@ -86,7 +86,7 @@ describe MapSearch do
       search.bounds = {:s => 8, :n => 18, :e => 22, :w => 18}
       results = search.results
       results[:sites].should be_nil
-      results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1.0, :lng => 2.0, :count => 2, :max_zoom => 4}])
+      results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1.0, :lng => 2.0, :count => 2, :max_zoom => 4, :parent_ids => [@site1.id, @site3.id]}])
     end
 
     it "searches with group hierarchy with bounds crossing the anti-meridian" do
@@ -95,7 +95,7 @@ describe MapSearch do
       search.bounds = {:s => 8, :n => 18, :e => 25, :w => 120}
       results = search.results
       results[:sites].should be_nil
-      results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1.0, :lng => 2.0, :count => 2, :max_zoom => 4}])
+      results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1.0, :lng => 2.0, :count => 2, :max_zoom => 4, :parent_ids => [@site1.id, @site3.id]}])
     end
   end
 
