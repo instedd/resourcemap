@@ -186,7 +186,7 @@ class ImportWizard
 
         collection.save!
 
-        Activity.create! kind: 'collection_imported', collection_id: collection.id, layer_id: layer.id, user_id: user.id, data: {groups: groups_count, sites: sites_count}
+        Activity.create! kind: 'collection_imported', collection_id: collection.id, layer_id: layer.id, user_id: user.id, 'data' => {'groups' => groups_count, 'sites' => sites_count}
       end
     end
 

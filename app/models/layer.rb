@@ -48,11 +48,11 @@ class Layer < ActiveRecord::Base
   after_create :create_created_activity, :unless => :mute_activities
   def create_created_activity
     fields_data = fields.map do |field|
-      hash = {id: field.id, kind: field.kind, code: field.code, name: field.name}
-      hash[:config] = field.config if field.config
+      hash = {'id' => field.id, 'kind' => field.kind, 'code' => field.code, 'name' => field.name}
+      hash['config'] = field.config if field.config
       hash
     end
-    Activity.create! kind: 'layer_created', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: name, fields: fields_data}
+    Activity.create! kind: 'layer_created', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name, 'fields' => fields_data}
   end
 
   before_update :record_status_before_update, :unless => :mute_activities
@@ -64,7 +64,7 @@ class Layer < ActiveRecord::Base
 
   after_update :create_updated_activity, :unless => :mute_activities
   def create_updated_activity
-    layer_changes = changes.except 'updated_at'
+    layer_changes = changes.except('updated_at').to_hash
 
     after_update_fields = fields.all
 
@@ -78,7 +78,7 @@ class Layer < ActiveRecord::Base
         hash = field_hash(new_field)
         really_changed = false
 
-        [:name, :code, :kind, :config].each do |key|
+        ['name', 'code', 'kind', 'config'].each do |key|
           if old_field[key] != new_field[key]
             really_changed = true
             hash[key] = [old_field[key], new_field[key]]
@@ -96,16 +96,16 @@ class Layer < ActiveRecord::Base
       deleted.push field_hash(old_field) unless new_field
     end
 
-    layer_changes[:added] = added if added.present?
-    layer_changes[:changed] = changed if changed.present?
-    layer_changes[:deleted] = deleted if deleted.present?
+    layer_changes['added'] = added if added.present?
+    layer_changes['changed'] = changed if changed.present?
+    layer_changes['deleted'] = deleted if deleted.present?
 
-    Activity.create! kind: 'layer_changed', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: @name_was || name, changes: layer_changes}
+    Activity.create! kind: 'layer_changed', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => @name_was || name, 'changes' => layer_changes}
   end
 
   after_destroy :create_deleted_activity, :unless => :mute_activities, :if => :user
   def create_deleted_activity
-    Activity.create! kind: 'layer_deleted', collection_id: collection.id, layer_id: id, user_id: user.id, data: {name: name}
+    Activity.create! kind: 'layer_deleted', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name}
   end
 
   # Returns the next ord value for a field that is going to be created
@@ -117,8 +117,8 @@ class Layer < ActiveRecord::Base
   private
 
   def field_hash(field)
-    field_hash = {id: field.id, code: field.code, name: field.name, kind: field.kind}
-    field_hash[:config] = field.config if field.config.present?
+    field_hash = {'id' => field.id, 'code' => field.code, 'name' => field.name, 'kind' => field.kind}
+    field_hash['config'] = field.config if field.config.present?
     field_hash
   end
 end

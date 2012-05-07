@@ -63,7 +63,7 @@ module Collection::CsvConcern
         site.save! if parent_id.blank?
       end
 
-      Activity.create! kind: 'collection_csv_imported', collection_id: id, user_id: user.id, data: {groups: groups_count, sites: sites_count}
+      Activity.create! kind: 'collection_csv_imported', collection_id: id, user_id: user.id, 'data' => {'groups' => groups_count, 'sites' => sites_count}
     end
   end
 
