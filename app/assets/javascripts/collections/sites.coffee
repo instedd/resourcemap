@@ -28,7 +28,9 @@ $(-> if $('#collections-main').length > 0
       window.model.map.panTo @position() if positionChanged
 
       # We also zoom the map to the minZoom given of this site/group.
-      if @minZoom?
+      if @group() && @minLat && @maxLat && @minLng && @maxLng
+        window.model.map.fitBounds new google.maps.LatLngBounds(new google.maps.LatLng(@minLat, @minLng), new google.maps.LatLng(@maxLat, @maxLng))
+      else if @minZoom?
         # But in the case of a site (no max zoom), we don't want to zoom
         # out if the user already zoomed beyong the minZoom (annoying)
         unless !@maxZoom && @minZoom < window.model.map.getZoom()
@@ -191,6 +193,10 @@ $(-> if $('#collections-main').length > 0
       @name = ko.observable data?.name
       @minZoom = data?.min_zoom
       @maxZoom = data?.max_zoom
+      @minLat = data?.min_lat
+      @maxLat = data?.max_lat
+      @minLng = data?.min_lng
+      @maxLng = data?.max_lng
       @locationMode = ko.observable data?.location_mode
       @properties = ko.observable data?.properties
       @editingName = ko.observable(false)
