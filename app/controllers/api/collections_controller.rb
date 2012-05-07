@@ -36,7 +36,7 @@ class Api::CollectionsController < ApplicationController
   private
 
   def perform_search(*options)
-    except_params = [:action, :controller, :format, :id, :group, :updated_since, :search, :box, :lat, :lng, :radius]
+    except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius]
 
     search = collection.new_search
 
@@ -50,7 +50,6 @@ class Api::CollectionsController < ApplicationController
       search.unlimited
     end
 
-    search.in_group params[:group] if params[:group]
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search] if params[:search]
     search.box *valid_box_coordinates if params[:box]

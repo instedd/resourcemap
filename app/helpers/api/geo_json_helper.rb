@@ -1,7 +1,5 @@
 module Api::GeoJsonHelper
   def collection_geo_json(collection, results)
-    parents = parents_as_hash results
-
     root = {}
     root[:type] = 'Feature'
     root[:geometry] = nil
@@ -14,14 +12,13 @@ module Api::GeoJsonHelper
     props[:totalPages] = results.total_pages
 
     features[:type] = 'FeatureCollection'
-    features[:features] = results.map { |result| site_item_geo_json result, parents }
+    features[:features] = results.map { |result| site_item_geo_json result }
 
     root
   end
 
-  def site_item_geo_json(result, parents = nil)
+  def site_item_geo_json(result)
     source = result['_source']
-    parents ||= parents_as_hash([result])
 
     obj = {}
     obj[:type] = 'Feature'
@@ -33,10 +30,6 @@ module Api::GeoJsonHelper
     props[:createdAt] = Site.parse_date(source['created_at'])
     props[:updatedAt] = Site.parse_date(source['updated_at'])
     props[:properties] = source['properties']
-    props[:groups] = Array(source['parent_ids']).map do |parent_id|
-      parent = parents[parent_id]
-      {level: parent.level, id: parent.id, name: parent.name}
-    end
 
     obj
   end

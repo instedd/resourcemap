@@ -5,7 +5,7 @@ class SitesController < ApplicationController
   expose(:site)
 
   def index
-    render json: collection.root_sites.offset(params[:offset]).limit(params[:limit]).all
+    render json: collection.sites.offset(params[:offset]).limit(params[:limit]).all
   end
 
   def show
@@ -32,10 +32,6 @@ class SitesController < ApplicationController
     site.properties[params[:code]] = params[:value]
     site.save!
     render json: site
-  end
-
-  def root_sites
-    render json: site.sites.where(parent_id: site.id).offset(params[:offset]).limit(params[:limit]).all
   end
 
   def search

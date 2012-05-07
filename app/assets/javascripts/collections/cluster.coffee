@@ -6,7 +6,6 @@ $(-> if $('#collections-main').length > 0
     @map = map
     @setMap map
     @maxZoom = cluster.max_zoom
-    @parentIds = cluster.parent_ids
     @setData(cluster, false)
 
   window.Cluster.prototype = new google.maps.OverlayView

@@ -12,13 +12,8 @@ module Site::ActivityConcern
     site_data = {'name' => @name_was || name}
     site_data['lat'] = lat if lat
     site_data['lng'] = lng if lng
-    if group?
-      site_data['location_mode'] = location_mode
-    else
-      site_data['properties'] = properties if properties.present?
-    end
-    kind = group? ? 'group_created' : 'site_created'
-    Activity.create! kind: kind, collection_id: collection.id, site_id: id, user_id: user.id, data: site_data
+    site_data['properties'] = properties if properties.present?
+    Activity.create! kind: 'site_created', collection_id: collection.id, site_id: id, user_id: user.id, data: site_data
   end
 
   def record_name_was
@@ -48,11 +43,11 @@ module Site::ActivityConcern
     end
 
     if site_changes.present?
-      Activity.create! kind: (group? ? 'group_changed' : 'site_changed'), collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => @name_was || name, 'changes' => site_changes}
+      Activity.create! kind: 'site_changed', collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => @name_was || name, 'changes' => site_changes}
     end
   end
 
   def create_deleted_activity
-    Activity.create! kind: (group? ? 'group_deleted' : 'site_deleted'), collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => name}
+    Activity.create! kind: 'site_deleted', collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => name}
   end
 end

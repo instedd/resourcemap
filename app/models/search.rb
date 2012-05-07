@@ -29,16 +29,6 @@ class Search
     self
   end
 
-  def in_group(site)
-    site = Site.find(site) unless site.is_a? Site
-    parent_ids = (site.hierarchy || '').split(',').map(&:to_i)
-    parent_ids << site.id
-    parent_ids.each do |parent_id|
-      @search.filter :term, parent_ids: parent_id
-    end
-    self
-  end
-
   def sort(field, ascendent = true)
     @sort = field
     @sort = Site.encode_elastic_search_keyword @sort if @sort != 'name' && @sort != 'updated_at' && @sort != 'created_at'

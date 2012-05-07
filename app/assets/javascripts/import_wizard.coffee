@@ -14,14 +14,11 @@
       @lat = ko.observable data.lat
       @lng = ko.observable data.lng
       @properties = ko.observable data.properties
-      @parents = ko.observable data.parents
       @hasMoreThanOneName = ko.observable data.hasMoreThanOneName
-      @hasMoreThanOneGroupWithTheSameLevel = ko.observable data.hasMoreThanOneGroupWithTheSameLevel
 
       @error = ko.computed =>
         return "you must choose a column to be the Name of the site" unless @name()
         return "you chose more than one column to be the Name of the site" if @hasMoreThanOneName()
-        return "you chose more than one column for the same Level for a Group" if @hasMoreThanOneGroupWithTheSameLevel()
 
         for property in @properties()
           if property.kind() == 'select_one' || property.kind() == 'select_many'
@@ -52,7 +49,6 @@
       if @mapsToField()
         json.code = @code()
         json.label = @label()
-      json.level = @level() if @kind() == 'group'
       json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json
 
@@ -67,7 +63,7 @@
       @importError = ko.observable false
 
     computeSite: =>
-      data = {name: null, properties: [], parents: []}
+      data = {name: null, properties: []}
       propertiesByCode = {}
       levels = {}
 
@@ -84,12 +80,6 @@
 
         if column.kind() == 'lng'
           data.lng = column.value()
-          continue
-
-        if column.kind() == 'group'
-          data.hasMoreThanOneGroupWithTheSameLevel = true if levels["#{column.level()}"]
-          levels["#{column.level()}"] = true
-          data.parents.push {name: column.value(), level: column.level()}
           continue
 
         continue unless column.mapsToField()
@@ -124,9 +114,6 @@
 
         if !existing && (column.kind() == 'select_one' || column.kind() == 'select_many')
           propertiesByCode[column.code()] = property
-
-      data.parents.sort (x, y) -> if x.level < y.level then -1 else (if x.level > y.level then 1 else 0)
-      data.parents = $.map(data.parents, (x) -> x.name)
 
       new Site data
 

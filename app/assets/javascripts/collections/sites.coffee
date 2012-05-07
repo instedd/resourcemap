@@ -26,19 +26,6 @@ $(-> if $('#collections-main').length > 0
 
       window.model.reloadMapSitesAutomatically = false
       window.model.map.panTo @position() if positionChanged
-
-      # We also zoom the map to the minZoom given of this site/group.
-      if @group() && @minLat && @maxLat && @minLng && @maxLng
-        window.model.map.fitBounds new google.maps.LatLngBounds(new google.maps.LatLng(@minLat, @minLng), new google.maps.LatLng(@maxLat, @maxLng))
-      else if @minZoom?
-        # But in the case of a site (no max zoom), we don't want to zoom
-        # out if the user already zoomed beyong the minZoom (annoying)
-        unless !@maxZoom && @minZoom < window.model.map.getZoom()
-          zoom = if @minZoom == 0 then @maxZoom else @minZoom
-          window.model.map.setZoom zoom
-      else if !@maxZoom?
-        # This is the case of a collection, which doesn't have minZoom nor maxZoom
-        window.model.map.setZoom @defaultZoom() if @defaultZoom()?
       window.model.reloadMapSites()
 
   # An object that contains sites. This is a base class for Site and Collection.
@@ -91,13 +78,11 @@ $(-> if $('#collections-main').length > 0
 
     toggle: =>
       # Load more sites when we expand, but only the first time
-      if @group() && !@expanded() && @hasMoreSites() && @sitesPage == 1
+      if !@expanded() && @hasMoreSites() && @sitesPage == 1
         @loadMoreSites()
       @expanded(!@expanded())
 
   class window.CollectionBase extends SitesContainer
-    level: -> 0
-
     defaultZoom: -> 4
 
     fetchFields: (callback) =>
@@ -188,20 +173,10 @@ $(-> if $('#collections-main').length > 0
       @parent = parent
       @selected = ko.observable()
       @id = ko.observable data?.id
-      @parentId = ko.observable data?.parent_id
-      @group = ko.observable data?.group
       @name = ko.observable data?.name
-      @minZoom = data?.min_zoom
-      @maxZoom = data?.max_zoom
-      @minLat = data?.min_lat
-      @maxLat = data?.max_lat
-      @minLng = data?.min_lng
-      @maxLng = data?.max_lng
-      @locationMode = ko.observable data?.location_mode
       @properties = ko.observable data?.properties
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
-      @editingLocationMode = ko.observable(false)
       @locationText = ko.computed
         read: => (Math.round(@lat() * 100000) / 100000) + ', ' + (Math.round(@lng() * 100000) / 100000)
         write: (value) => @locationTextTemp = value
@@ -211,15 +186,9 @@ $(-> if $('#collections-main').length > 0
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
 
-    sitesUrl: -> "/sites/#{@id()}/root_sites.json"
+    parentCollection: => @parent
 
-    level: => @parent.level() + 1
-
-    defaultZoom: -> @parent.minZoom
-
-    parentCollection: => @parent.parentCollection()
-
-    hasLocation: => @position() && !(@group() && @locationMode() == 'none')
+    hasLocation: => @position()
 
     hasName: => $.trim(@name()).length > 0
 
@@ -301,29 +270,21 @@ $(-> if $('#collections-main').length > 0
 
     startEditLocationInMap: =>
       @originalLocation = @position()
-      if @group()
-        if @locationMode() == 'manual'
-          @createMarker()
-        else
-          @subscribeToLocationModeChange()
+
+      if @marker
+        @setupMarkerListener()
       else
-        if @marker
-          @setupMarkerListener()
-        else
-          @createMarker()
-        @marker.setDraggable(true)
+        @createMarker()
+
+      @marker.setDraggable(true)
       window.model.setAllMarkersInactive()
       @panToPosition()
 
     endEditLocationInMap: (position) =>
       @editingLocation(false)
       @position(position)
-      if @group()
-        @deleteMarker()
-        @unsubscribeToLocationModeChange()
-      else
-        @marker.setPosition(@position())
-        @marker.setDraggable false
+      @marker.setPosition(@position())
+      @marker.setDraggable false
       window.model.setAllMarkersActive()
       @panToPosition()
 
@@ -389,26 +350,11 @@ $(-> if $('#collections-main').length > 0
           if results.length > 0
             options.success(results[0].geometry.location)
           else
-            options.failure(@originalLocation)
+            options.failure(@originalLocation) if options.failure?
 
     exitLocation: =>
       @endEditLocationInMap(@originalLocation)
       delete @originalLocation
-
-    editLocationMode: =>
-      @editingLocationMode(true)
-
-    exitLocationMode: =>
-      @editingLocationMode(false)
-
-    saveLocationMode: =>
-      @editingLocationMode(false)
-      @editLocation() if @locationMode() == 'manual'
-
-      @post location_mode: @locationMode(), lat: @lat(), lng: @lng(), (data) =>
-        @position(data)
-        @parent.fetchLocation()
-        @panToPosition()
 
     startEditMode: =>
       # Keep the original values, in case the user cancels
@@ -445,7 +391,7 @@ $(-> if $('#collections-main').length > 0
     createMarker: (drop = false) =>
       @deleteMarker()
 
-      draggable = @group() || @editingLocation() || !@id()
+      draggable = @editingLocation() || !@id()
       @marker = new google.maps.Marker
         map: window.model.map
         position: @position()
@@ -473,28 +419,13 @@ $(-> if $('#collections-main').length > 0
         @position(@marker.getPosition())
         @locationText("#{@marker.getPosition().lat()}, #{@marker.getPosition().lng()}")
 
-    subscribeToLocationModeChange: =>
-      @subscription = @locationMode.subscribe (newLocationMode) =>
-        if newLocationMode == 'manual'
-          @createMarker true
-        else
-          @deleteMarker()
-
-    unsubscribeToLocationModeChange: =>
-      return unless @subscription
-      @subscription.dispose()
-      delete @subscription
-
     toJSON: =>
       json =
         id: @id()
-        group: @group()
         name: @name()
       json.lat = @lat() if @lat()
       json.lng = @lng() if @lng()
-      json.parent_id = @parentId() if @parentId()
       json.properties = @properties() if @properties()
-      json.location_mode = @locationMode() if @locationMode()
       json
 
 )

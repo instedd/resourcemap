@@ -23,7 +23,6 @@ Site.blueprint do
   name
   lat { rand(180) - 90 }
   lng { rand(360) - 180 }
-  group { false }
   user { User.make }
 end
 

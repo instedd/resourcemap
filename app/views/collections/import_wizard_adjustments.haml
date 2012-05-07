@@ -26,7 +26,7 @@
                     %span{ko(text: :sample)}
                   %li
                     Use as:
-                    = select_tag :kind, options_for_select([['Text field', 'text'], ['Numeric field', 'numeric'], ['Select one field', 'select_one'], ['Select many field', 'select_many'], ['Name', 'name'], ['Latitude', 'lat'], ['Longitude', 'lng'], ['Group', 'group'], ['Ignore', 'ignore']]), 'data-bind' => kov(value: :kind)
+                    = select_tag :kind, options_for_select([['Text field', 'text'], ['Numeric field', 'numeric'], ['Select one field', 'select_one'], ['Select many field', 'select_many'], ['Name', 'name'], ['Latitude', 'lat'], ['Longitude', 'lng'], ['Ignore', 'ignore']]), 'data-bind' => kov(value: :kind)
                     <!-- ko if: kind() == 'select_one' || kind() == 'select_many' -->
                     = select_tag :selectKind, options_for_select([['Use as the code', 'code'], ['Use as the label', 'label'], ['Use as both the code and label', 'both']]), 'data-bind' => kov(value: :selectKind)
                     <!-- /ko -->
@@ -37,11 +37,6 @@
                   %li
                     Field Name:
                     %input{ko(value: :label, valueUpdate: :afterkeydown)}
-                  <!-- /ko -->
-                  <!-- ko if: kind() == 'group' -->
-                  %li
-                    Level:
-                    = select_tag :level, options_for_select([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]), 'data-bind' => kov(value: :level)
                   <!-- /ko -->
       %td{ko(with: :site), valign: :top}
         %div{style: 'height: 400px;overflow:auto'}
@@ -59,12 +54,6 @@
                 %li
                   Longitude:
                   %span{ko(text: :lng)}
-            <!-- ko if: parents().length > 0 -->
-            %li
-              %span{ko(css: {error: :hasMoreThanOneGroupWithTheSameLevel})} Groups:
-              %ul{ko(foreach: :parents)}
-                %li{ko(text: '$data')}
-            <!-- /ko -->
             %li
               Properties:
               %ul{ko(foreach: :properties)}

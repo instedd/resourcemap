@@ -41,7 +41,7 @@ module Collection::TireConcern
   def recreate_index
     destroy_index
     create_index
-    sites.where(group: false).each do |site|
+    sites.each do |site|
       site.collection = self
       site.store_in_index refresh: false
     end

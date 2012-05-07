@@ -3,19 +3,11 @@
     constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
-      @currentParent = ko.observable()
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
-      @parentSite = ko.computed =>
-        if @selectedSite()
-          if @selectedSite().group() then @selectedSite() else @selectedSite().parent
-        else
-          null
       @loadingSite = ko.observable(false)
-      @newOrEditSite = ko.computed => if @editingSite() && !@editingSite().group() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
-      @newGroup = ko.computed => if @editingSite() && !@editingSite().id() && @editingSite().group() then @editingSite() else null
-      @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().group() && !@editingSite().inEditMode() then @editingSite() else null
-      @showGroup = ko.computed => if @editingSite()?.id() && @editingSite().group() then @editingSite() else null
+      @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
+      @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       @showingMap = ko.observable(true)
       @sitesCount = ko.observable(0)
       @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site on map' else "#{@sitesCount()} sites on map"
@@ -132,21 +124,13 @@
 
     createCollection: -> window.location = "/collections/new"
 
-    createGroup: => @createSiteOrGroup true
-
-    createSite: => @createSiteOrGroup false
-
-    createSiteOrGroup: (group) =>
+    createSite: =>
       @goBackToTable = true unless @showingMap()
       @showMap =>
-        parent = @parentSite() || @currentCollection()
-        parentId = if !@parentSite() || @parentSite().level() == 0 then null else @parentSite().id()
+        parent = @currentCollection()
         pos = @originalSiteLocation = @map.getCenter()
-        site = if group
-                 new Site(parent, parent_id: parentId, lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
-               else
-                 new Site(parent, parent_id: parentId, lat: pos.lat(), lng: pos.lng(), group: group)
-        site.copyPropertiesToCollection(@currentCollection()) unless site.group()
+        site = new Site(parent, lat: pos.lat(), lng: pos.lng())
+        site.copyPropertiesToCollection(@currentCollection())
         @editingSite site
         @editingSite().startEditLocationInMap()
 
@@ -192,11 +176,9 @@
           @editingSite().exitEditMode(true)
         else
           @editingSite().deleteMarker()
-          @selectedSite(@editingSite().parent) if @editingSite().parentId()
           @exitSite()
 
-      unless @editingSite().group()
-        @editingSite().copyPropertiesFromCollection(@currentCollection())
+      @editingSite().copyPropertiesFromCollection(@currentCollection())
 
       @editingSite().post @editingSite().toJSON(), callback
 
@@ -206,10 +188,6 @@
         return
 
       # Unselect site if it's not on the tree
-      oldParentSite = @parentSite()
-      @unselectSite() unless @siteIds[@editingSite().id()]
-      @selectedSite(oldParentSite) if !@selectedSite() && oldParentSite && oldParentSite.level() != 0
-      @editingSite().unsubscribeToLocationModeChange()
       @editingSite().editingLocation(false)
       @editingSite().deleteMarker() unless @editingSite().id()
       @editingSite(null)
@@ -231,16 +209,11 @@
     selectSite: (site) =>
       if @showingMap()
         if @selectedSite()
-          if @selectedSite().group()
-            @setAllMarkersActive()
-          else if @selectedSite().marker
+          if @selectedSite().marker
             # This is to prevent flicker: when the map reloads, we try to reuse the old site marker
-            if site.group()
-              @selectedSite().deleteMarker()
-            else
-              @oldSelectedSite = @selectedSite()
-              @setMarkerIcon @selectedSite().marker, 'active'
-              @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
+            @oldSelectedSite = @selectedSite()
+            @setMarkerIcon @selectedSite().marker, 'active'
+            @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
           @selectedSite().selected(false)
 
         if @selectedSite() == site
@@ -249,8 +222,6 @@
         else
           @selectedSite(site)
           @selectedSite().selected(true)
-          if @selectedSite().group()
-            @setGroupTargetMarkers()
           if @selectedSite().id() && @selectedSite().hasLocation()
             # Again, all these checks are to prevent flickering
             if @markers[@selectedSite().id()]
@@ -259,7 +230,7 @@
               @setMarkerIcon @selectedSite().marker, 'target'
               @deleteMarker @selectedSite().id(), false
             else
-              @selectedSite().createMarker() unless @selectedSite().group()
+              @selectedSite().createMarker()
             @selectedSite().panToPosition()
           else if @oldSelectedSite
             @oldSelectedSite.deleteMarker()
@@ -330,7 +301,7 @@
         w: sw.lng()
         z: @map.getZoom()
         collection_ids: collection_ids
-      query.exclude_id = @selectedSite().id() if @selectedSite()?.id() && !@selectedSite().group()
+      query.exclude_id = @selectedSite().id() if @selectedSite()?.id()
       query.search = @lastSearch() if @lastSearch()
 
       filter.setQueryParams(query) for filter in @filters()
@@ -360,7 +331,6 @@
       dataSiteIds = {}
       editingSiteId = if @editingSite()?.id() && (@editingSite().editingLocation() || @editingSite().inEditMode()) then @editingSite().id() else null
       selectedSiteId = @selectedSite()?.id()
-      selectedGroupId = if @selectedSite()?.group() && @selectedSite()?.id() then @selectedSite().id() else null
       oldSelectedSiteId = @oldSelectedSite?.id() # Optimization to prevent flickering
 
       # Add markers if they are not already on the map
@@ -384,11 +354,10 @@
             if editingSiteId && editingSiteId != site.id
               markerOptions.icon = @markerImageInactive
               markerOptions.shadow = @markerImageInactiveShadow
-            if (selectedSiteId && selectedSiteId == site.id) || (selectedGroupId && site.parent_ids && site.parent_ids.indexOf(selectedGroupId) >= 0)
+            if (selectedSiteId && selectedSiteId == site.id)
               markerOptions.icon = @markerImageTarget
               markerOptions.shadow = @markerImageTargetShadow
             @markers[site.id] = new google.maps.Marker markerOptions
-            @markers[site.id].parentIds = site.parent_ids
           localId = @markers[site.id].siteId = site.id
           do (localId) =>
             @markers[localId].listener = google.maps.event.addListener @markers[localId], 'click', (event) =>
@@ -409,8 +378,6 @@
         delete @oldSelectedSite
 
     drawClustersInMap: (clusters = []) =>
-      selectedGroupId = if @selectedSite()?.group() && @selectedSite()?.id() then @selectedSite().id() else null
-
       dataClusterIds = {}
 
       # Add clusters if they are not already on the map
@@ -421,8 +388,6 @@
           currentCluster.setData(cluster)
         else
           currentCluster = @createCluster(cluster)
-        if (selectedGroupId && cluster.parent_ids && cluster.parent_ids.indexOf(selectedGroupId) >= 0)
-          currentCluster.setTarget()
 
       # Determine which clusters need to be removed from the map
       toRemove = []
@@ -445,13 +410,6 @@
         @setMarkerIcon marker, (if selectedSiteId == siteId then 'target' else 'active')
       for clusterId, cluster of @clusters
         cluster.setActive()
-
-    setGroupTargetMarkers: =>
-      id = @selectedSite().id()
-      for siteId, marker of @markers when marker.parentIds && marker.parentIds.indexOf(id) >= 0
-        @setMarkerIcon marker, 'target'
-      for clusterId, cluster of @clusters when cluster.parentIds && cluster.parentIds.indexOf(id) >= 0
-        cluster.setTarget()
 
     setMarkerIcon: (marker, icon) =>
       switch icon

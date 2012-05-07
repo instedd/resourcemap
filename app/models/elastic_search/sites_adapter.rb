@@ -3,7 +3,7 @@ class ElasticSearch::SitesAdapter < Psych::Handler
     @listener = listener
     @source_mappings = 0
     @properties_mappings = 0
-    @site = {parent_ids: []}
+    @site = {}
   end
 
   def parse(reader)
@@ -13,7 +13,6 @@ class ElasticSearch::SitesAdapter < Psych::Handler
   def scalar(value, anchor, tag, plain, quoted, style)
     if value == '_source'
       @in_source = true
-      @site[:parent_ids].clear
     elsif @in_source
       return if @in_properties
 
@@ -25,14 +24,9 @@ class ElasticSearch::SitesAdapter < Psych::Handler
         end
         @current_property = nil
       else
-        if @in_parent_ids
-          @site[:parent_ids] << value.to_i
-        else
-          case value
-          when 'properties' then @in_properties = true
-          when 'parent_ids' then @in_parent_ids = true
-          else @current_property = value
-          end
+        case value
+        when 'properties' then @in_properties = true
+        else @current_property = value
         end
       end
     end
@@ -59,10 +53,6 @@ class ElasticSearch::SitesAdapter < Psych::Handler
       if @in_properties
         @properties_mappings -= 1
         @in_properties = false if @properties_mappings == 0
-      end
-
-      if @in_parent_ids
-        @in_parent_ids = false
       end
     end
   end

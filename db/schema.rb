@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120425105422) do
+ActiveRecord::Schema.define(:version => 20120507093946) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -89,14 +89,7 @@ ActiveRecord::Schema.define(:version => 20120425105422) do
     t.string   "hierarchy"
     t.datetime "created_at",                                                                          :null => false
     t.datetime "updated_at",                                                                          :null => false
-    t.boolean  "group",                                                      :default => false
     t.text     "properties"
-    t.decimal  "min_lat",                     :precision => 10, :scale => 6
-    t.decimal  "max_lat",                     :precision => 10, :scale => 6
-    t.decimal  "min_lng",                     :precision => 10, :scale => 6
-    t.decimal  "max_lng",                     :precision => 10, :scale => 6
-    t.integer  "min_zoom"
-    t.integer  "max_zoom"
     t.string   "location_mode", :limit => 10,                                :default => "automatic"
     t.integer  "user_id"
   end

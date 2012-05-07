@@ -69,36 +69,6 @@ describe MapSearch do
     search.results[:sites].should be_nil
   end
 
-  context "hierarchy" do
-    before(:each) do
-      @site1 = collection.sites.make :group => true
-      @site2 = collection.sites.make :group => true, :parent_id => @site1.id
-      @site21 = collection.sites.make :parent_id => @site2.id, :lat => 30, :lng => 40
-      @site21 = collection.sites.make :parent_id => @site2.id, :lat => 40, :lng => 60
-      @site3 = collection.sites.make :group => true, :parent_id => @site1.id, :lat => 1, :lng => 2, :location_mode => :manual
-      @site31 = collection.sites.make :parent_id => @site3.id, :lat => 10, :lng => 20
-      @site32 = collection.sites.make :parent_id => @site3.id, :lat => 15, :lng => 20
-    end
-
-    it "searches with group hierarchy" do
-      search = MapSearch.new collection.id
-      search.zoom = 3
-      search.bounds = {:s => 8, :n => 18, :e => 22, :w => 18}
-      results = search.results
-      results[:sites].should be_nil
-      results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1.0, :lng => 2.0, :count => 2, :max_zoom => 4, :parent_ids => [@site1.id, @site3.id]}])
-    end
-
-    it "searches with group hierarchy with bounds crossing the anti-meridian" do
-      search = MapSearch.new collection.id
-      search.zoom = 3
-      search.bounds = {:s => 8, :n => 18, :e => 25, :w => 120}
-      results = search.results
-      results[:sites].should be_nil
-      results[:clusters].should eq([{:id => "g#{@site3.id}", :lat => 1.0, :lng => 2.0, :count => 2, :max_zoom => 4, :parent_ids => [@site1.id, @site3.id]}])
-    end
-  end
-
   context "full text search" do
     let!(:layer) { collection.layers.make }
     let!(:field_prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }

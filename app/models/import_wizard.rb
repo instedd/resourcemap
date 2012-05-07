@@ -42,14 +42,8 @@ class ImportWizard
         spec[:index] = i if spec
       end
 
-      # Split the columns specs between those for columns and those for groups
-      groups_spec, columns_spec = columns_spec.partition{|x| x[:kind] == 'group'}
-
       # Also get the name spec, as the name is mandatory
       name_spec = columns_spec.find{|x| x[:kind] == 'name'}
-
-      # Sort groups by level
-      groups_spec.sort_by!{|x| x[:level].to_i}
 
       # Relate code and label select kinds for 'select one' and 'select many'
       columns_spec.each do |spec|
@@ -84,43 +78,18 @@ class ImportWizard
       end
 
       sites_count = 0
-      groups_count = 0
 
       # Now process all rows
       rows[1 .. -1].each do |row|
-        parent_group = collection
-
-        # First create the groups
-        groups_spec.each do |spec|
-          value = row[spec[:index]]
-          next if value.blank?
-
-          existing = parent_group.sites.find{|x| x.group? && x.name == value}
-          if existing
-            parent_group = existing
-          else
-            sub_group = parent_group.sites.new name: value, group: true, collection_id: collection.id
-            sub_group.mute_activities = true
-            groups_count += 1
-
-            # Optimization: setting the parent here avoids querying it when storing the hierarchy
-            sub_group.collection = collection
-            sub_group.parent = parent_group if parent_group.is_a? Site
-
-            parent_group = sub_group
-          end
-        end
-
         # Check that the name is present
         next unless row[name_spec[:index]].present?
 
-        site = parent_group.sites.new properties: {}, collection_id: collection.id
+        site = collection.sites.new properties: {}, collection_id: collection.id
         site.mute_activities = true
         sites_count += 1
 
-        # Optimization: setting the parent here avoids querying it when storing the hierarchy
+        # Optimization
         site.collection = collection
-        site.parent = parent_group if parent_group.is_a? Site
 
         # According to the spec
         columns_spec.each do |spec|
@@ -186,7 +155,7 @@ class ImportWizard
 
         collection.save!
 
-        Activity.create! kind: 'collection_imported', collection_id: collection.id, layer_id: layer.id, user_id: user.id, 'data' => {'groups' => groups_count, 'sites' => sites_count}
+        Activity.create! kind: 'collection_imported', collection_id: collection.id, layer_id: layer.id, user_id: user.id, 'data' => {'sites' => sites_count}
       end
     end
 

@@ -11,7 +11,7 @@
     .sbox.grey.w30.sitesBox
       .left.sitesDescription
         .sitesCount= sites_count
-        groups and sites
+        sites
       %button.csvDownload.white.right{type: "button", class: sites_count == 0 ? "disabled" : nil}
         = link_to_if sites_count > 0, 'download as csv', collection_download_as_csv_path(collection)
     %div

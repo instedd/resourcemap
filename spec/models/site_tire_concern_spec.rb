@@ -16,33 +16,12 @@ describe Site::TireConcern do
     Site.parse_date(results[0]["_source"]["updated_at"]).to_i.should eq(site.updated_at.to_i)
   end
 
-  it "stores hierarchy in index" do
-    collection = Collection.make
-    site1 = collection.sites.make
-    site2 = collection.sites.make :parent_id => site1.id
-    site3 = collection.sites.make :parent_id => site2.id
-
-    search = Tire::Search::Search.new collection.index_name
-    results = search.perform.results
-    result = results.select{|x| x["_id"].to_s == site3.id.to_s}.first
-    result["_source"]["parent_ids"].should eq([site1.id, site2.id])
-  end
-
   it "removes from index after destroy" do
     site = Site.make
     site.destroy
 
     search = Tire::Search::Search.new site.index_name
     search.perform.results.length.should eq(0)
-  end
-
-  it "doesn't store groups in index" do
-    collection = Collection.make
-    group = collection.sites.make :group => true
-    site = collection.sites.make
-
-    search = Tire::Search::Search.new collection.index_name
-    search.perform.results.length.should eq(1)
   end
 
   it "stores sites without lat and lng in index" do

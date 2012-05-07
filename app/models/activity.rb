@@ -12,9 +12,9 @@ class Activity < ActiveRecord::Base
     when 'collection_created'
       "Collection '#{data['name']}' was created"
     when 'collection_imported'
-      "Import wizard: #{groups_and_sites_were_imported_text}"
+      "Import wizard: #{sites_were_imported_text}"
     when 'collection_csv_imported'
-      "Import CSV: #{groups_and_sites_were_imported_text}"
+      "Import CSV: #{sites_were_imported_text}"
     when 'layer_created'
       fields_str = data['fields'].map { |f| "#{f['name']} (#{f['code']})" }.join ', '
       str = "Layer '#{data['name']}' was created with fields: #{fields_str}"
@@ -24,33 +24,26 @@ class Activity < ActiveRecord::Base
       str = "Layer '#{data['name']}' was deleted"
     when 'site_created'
       "Site '#{data['name']}' was created"
-    when 'group_created'
-      "Group '#{data['name']}' was created"
     when 'site_changed'
-      site_or_group_changed_text 'Site'
-    when 'group_changed'
-      site_or_group_changed_text 'Group'
+      site_changed_text
     when 'site_deleted'
       "Site '#{data['name']}' was deleted"
-    when 'group_deleted'
-      "Group '#{data['name']}' was deleted"
     end
   end
 
   private
 
-  def groups_and_sites_were_imported_text
-    groups_created_text = "#{data['groups']} group#{data['groups'] == 1 ? '' : 's'}"
+  def sites_were_imported_text
     sites_created_text = "#{data['sites']} site#{data['sites'] == 1 ? '' : 's'}"
-    "#{groups_created_text} and #{sites_created_text} were imported"
+    "#{sites_created_text} were imported"
   end
 
-  def site_or_group_changed_text(model_name)
+  def site_changed_text
     only_name_changed, changes = site_changes_text
     if only_name_changed
-      "#{model_name} '#{data['name']}' was renamed to '#{data['changes']['name'][1]}'"
+      "Site '#{data['name']}' was renamed to '#{data['changes']['name'][1]}'"
     else
-      "#{model_name} '#{data['name']}' changed: #{changes}"
+      "Site '#{data['name']}' changed: #{changes}"
     end
   end
 

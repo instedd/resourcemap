@@ -1,9 +1,5 @@
 module Api::RssHelper
-  include Api::TireHelper
-
   def collection_rss(xml, collection, results)
-    parents = parents_as_hash results
-
     xml.rss rss_specification do
       xml.channel do
         xml.title collection.name
@@ -12,15 +8,14 @@ module Api::RssHelper
         xml.atom :link, rel: :next, href: url_for(params.merge page: results.next_page, only_path: false) if results.next_page
 
         results.each do |result|
-          site_item_rss xml, result, parents
+          site_item_rss xml, result
         end
       end
     end
   end
 
-  def site_item_rss(xml, result, parents = nil)
+  def site_item_rss(xml, result)
     source = result['_source']
-    parents ||= parents_as_hash([result])
 
     xml.item do
       xml.title source['name']
@@ -39,10 +34,6 @@ module Api::RssHelper
             property_rss xml, code, value
           end
         end
-      end
-
-      Array(source['parent_ids']).each do |parent_id|
-        group_rss xml, parents[parent_id]
       end
     end
   end
@@ -83,12 +74,5 @@ module Api::RssHelper
 
   def property_rss(xml, code, value)
     xml.__send__ "rm:#{code}", value
-  end
-
-  def group_rss(xml, group)
-    xml.rm :group, level: group.level do
-      xml.rm :id, group.id
-      xml.rm :name, group.name
-    end
   end
 end

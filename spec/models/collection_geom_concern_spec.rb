@@ -13,7 +13,7 @@ describe Collection::GeomConcern do
   end
 
   it "ignores sites without lat/lng", :focus => true do
-    site1 = collection.sites.make :lat => nil, :lng => nil, :group => true
+    site1 = collection.sites.make :lat => nil, :lng => nil
     site2 = collection.sites.make :lat => 30, :lng => 20
 
     collection.reload

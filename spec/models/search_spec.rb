@@ -172,33 +172,6 @@ describe Search do
     end
   end
 
-  context "in group" do
-    before(:each) do
-      @parent1 = collection.sites.make :group => true
-        @parent11 = collection.sites.make :parent_id => @parent1.id, :group => true
-          @site111 = collection.sites.make :parent_id => @parent11.id
-          @site112 = collection.sites.make :parent_id => @parent11.id
-        @site11 = collection.sites.make :parent_id => @parent1.id
-      @parent2 = collection.sites.make :group => true
-        collection.sites.make :parent_id => @parent2.id
-    end
-
-    it "gets sites in root group" do
-      search = collection.new_search.in_group(@parent1)
-      assert_results search, @site111, @site112, @site11
-    end
-
-    it "gets sites in nested group" do
-      search = collection.new_search.in_group(@parent11)
-      assert_results search, @site111, @site112
-    end
-
-    it "gets sites in nested group with id" do
-      search = collection.new_search.in_group(@parent11.id)
-      assert_results search, @site111, @site112
-    end
-  end
-
   context "after" do
     before(:each) do
       @site1 = collection.sites.make :updated_at => (Time.now - 3.days)

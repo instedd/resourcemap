@@ -29,7 +29,6 @@ class MapSearch
 
     set_bounds_filter
     apply_queries
-    clusterer.groups = @groups if @zoom
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse @search.stream
@@ -41,8 +40,6 @@ class MapSearch
   def set_bounds_filter
     if @zoom
       width, height = Clusterer.cell_size_for @zoom
-      extend_to_cell_limits width, height
-      extend_to_groups_limits
       extend_to_cell_limits width, height
       adjust_bounds_to_world_limits
     end
@@ -70,26 +67,6 @@ class MapSearch
   def extend_to_limit(key, sign, size)
     value = @bounds[key].to_f / size
     @bounds[key] = (sign >= 0 ? value.ceil : value.floor) * size
-  end
-
-  def extend_to_groups_limits
-    sites = Site.where collection_id: @collection_ids
-    sites = sites.where group: true
-    sites = sites.where('min_zoom <= ? AND ? <= max_zoom', @zoom, @zoom)
-    sites = sites.where('max_lat >= ? AND ? >= min_lat', @bounds[:s], @bounds[:n])
-    if @bounds[:w] <= @bounds[:e]
-      sites = sites.where('max_lng >= ? AND ? >= min_lng', @bounds[:w], @bounds[:e])
-    else
-      sites = sites.where('(max_lng >= ? AND ? >= min_lng) OR (max_lng >= ? AND ? >= min_lng)', @bounds[:w], 180, -180, @bounds[:e])
-    end
-    @groups = sites.values_of(:id, :lat, :lng, :min_lat, :max_lat, :min_lng, :max_lng, :max_zoom).map do |id, lat, lng, min_lat, max_lat, min_lng, max_lng, max_zoom|
-      @bounds[:n] = max_lat + 0.001 if max_lat > @bounds[:n]
-      @bounds[:s] = min_lat - 0.001 if min_lat < @bounds[:s]
-      @bounds[:e] = max_lng + 0.001 if max_lng > @bounds[:e]
-      @bounds[:w] = min_lng - 0.001 if min_lng < @bounds[:w]
-
-      {id: id, lat: lat, lng: lng, max_zoom: max_zoom}
-    end
   end
 
   def adjust_bounds_to_world_limits

@@ -29,20 +29,12 @@
 -# Sites template
 %script{type: "text/html", id: "table-sites-template"}
   <!-- ko foreach: sites -->
-  %tr{ko(css: "{closed: group() && !expanded(), opened: group() && expanded, active: $data == $root.selectedSite()}")}
+  %tr{ko(css: "{active: $data == $root.selectedSite()}")}
     %td.w39{style: 'overflow:auto'}
       %div{style: 'margin-top:2px'}
-        <!-- ko if: group() -->
-        %a{ko(click: '$root.toggleSite', style: {marginLeft: "'' + ((level() - 1) * 20) + 'px'"}), href: 'javascript:void(0)'}
-          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
-        %span{ko(text: :name, click: '$root.selectSite'), style: 'cursor: pointer'}
-        <!-- /ko -->
-
-        <!-- ko if: !group() -->
-        %p{ko(style: {marginLeft: "'' + (10 + (level() - 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
+        %p{ko(click: '$root.selectSite'), style: 'cursor: pointer'}
           %span.stat-r
           %span{ko(html: :highlightedName)}
-        <!-- /ko -->
       %button.farrow{ko(click: '$root.editSite'), type: :button}
     <!-- ko foreach: $root.currentCollection().fields() -->
     <!-- ko if: $parent.properties()[$data.code()] -->
@@ -58,21 +50,6 @@
     <!-- /ko -->
     %td.l.timeago{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
     %td.l
-  <!-- ko if: expanded -->
-  <!-- ko template: {name: 'table-sites-template', with: sites} -->
-  <!-- /ko -->
-  <!-- ko if: group() && hasMoreSites() && !loadingSites()-->
-  %tr
-    %td.loadmore
-      = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + (level() - 1) * 20) + 'px'"})
-    %td
-  <!-- /ko -->
-  <!-- ko if: group() && hasMoreSites() && loadingSites()-->
-  %tr
-    %td.loadmore
-      %span{ko(style: {marginLeft: "'' + (20 + (level() - 1) * 20) + 'px'"})} Loading...
-  <!-- /ko -->
-  <!-- /ko -->
   <!-- /ko -->
 
 -# Collection sites
@@ -124,14 +101,7 @@
       <!-- ko template: {name: 'table-sites-template', with: $data} -->
       <!-- /ko -->
 .tablebottom
-  Add
-  %button.ffolder{ko(click: '$root.createGroup')} Group
-  or
-  %button.flocation{ko(click: '$root.createSite')} Site
-  <!-- ko if: $root.parentSite() && $root.parentSite().level() != 0 -->
-  at
-  %span{ko(text: '$root.parentSite().name()')}
-  <!-- /ko -->
+  %button.flocation{ko(click: '$root.createSite')} Create Site
   <!-- ko if: hasMoreSites() && !loadingSites()-->
   %span.loadmore
     = ko_link_to "Load more sites...", :loadMoreSites

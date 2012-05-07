@@ -167,8 +167,8 @@ describe Activity do
       'collection_id' => collection.id,
       'user_id' => user.id,
       'layer_id' => collection.layers.first.id,
-      'data' => {'groups' => 0, 'sites' => 2},
-      'description' => 'Import wizard: 0 groups and 2 sites were imported'
+      'data' => {'sites' => 2},
+      'description' => 'Import wizard: 2 sites were imported'
   end
 
   it "creates one after creating a site" do
@@ -184,33 +184,19 @@ describe Activity do
       'description' => "Site '#{site.name}' was created"
   end
 
-  it "creates one after creating a group" do
-    Activity.delete_all
-
-    site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, location_mode: :manual, group: true, user: user
-
-    assert_activity 'group_created',
-      'collection_id' => collection.id,
-      'user_id' => user.id,
-      'site_id' => site.id,
-      'data' => {'name' => site.name, 'lat' => site.lat, 'lng' => site.lng, 'location_mode' => :manual},
-      'description' => "Group '#{site.name}' was created"
-  end
-
   it "creates one after importing a csv" do
     Activity.delete_all
 
     collection.import_csv user, %(
-      id, type, name, lat, lng, parent, mode
-      1, group, Group 1, 10, 20, , manual
-      2, site, Site 1, 30, 40, 1,
+      id, name, lat, lng
+      1, Site 1, 30, 40
     ).strip
 
     assert_activity 'collection_csv_imported',
       'collection_id' => collection.id,
       'user_id' => user.id,
-      'data' => {'groups' => 1, 'sites' => 1},
-      'description' => "Import CSV: 1 group and 1 site were imported"
+      'data' => {'sites' => 1},
+      'description' => "Import CSV: 1 site were imported"
   end
 
   context "site changed" do
@@ -228,22 +214,6 @@ describe Activity do
         'site_id' => site.id,
         'data' => {'name' => 'Foo', 'changes' => {'name' => ['Foo', 'Bar']}},
         'description' => "Site 'Foo' was renamed to 'Bar'"
-    end
-
-    it "creates one after changing one group's name" do
-      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, group: true, user: user
-
-      Activity.delete_all
-
-      site.name = 'Bar'
-      site.save!
-
-      assert_activity 'group_changed',
-        'collection_id' => collection.id,
-        'user_id' => user.id,
-        'site_id' => site.id,
-        'data' => {'name' => 'Foo', 'changes' => {'name' => ['Foo', 'Bar']}},
-        'description' => "Group 'Foo' was renamed to 'Bar'"
     end
 
     it "creates one after changing one site's location" do
@@ -324,21 +294,6 @@ describe Activity do
 
       Activity.count.should eq(0)
     end
-  end
-
-  it "creates one after destroying a group" do
-    site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, location_mode: :manual, group: true, user: user
-
-    Activity.delete_all
-
-    site.destroy
-
-    assert_activity 'group_deleted',
-      'collection_id' => collection.id,
-      'user_id' => user.id,
-      'site_id' => site.id,
-      'data' => {'name' => site.name},
-      'description' => "Group '#{site.name}' was deleted"
   end
 
   it "creates one after destroying a site" do

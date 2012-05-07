@@ -5,26 +5,11 @@ class Site < ActiveRecord::Base
   include Site::TireConcern
 
   belongs_to :collection
-  belongs_to :parent, foreign_key: 'parent_id', class_name: name
-  has_many :sites, foreign_key: 'parent_id', class_name: name, dependent: :destroy
 
   serialize :properties, Hash
 
-  before_create :store_hierarchy, :if => :parent_id
-  def store_hierarchy
-    self.hierarchy = if parent.hierarchy
-                       "#{parent.hierarchy},#{self.parent_id}"
-                     else
-                       "#{self.parent_id}"
-                     end
-  end
-
-  before_save :remove_nil_properties, :unless => :group?, :if => :properties
+  before_save :remove_nil_properties, :if => :properties
   def remove_nil_properties
     self.properties.reject! { |k, v| v.nil? }
-  end
-
-  def level
-    hierarchy.blank? ? 1 : hierarchy.count(',') + 2
   end
 end

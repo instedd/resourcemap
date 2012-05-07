@@ -24,35 +24,13 @@
   -# Sites template
   %script{type: "text/html", id: "map-sites-template"}
     <!-- ko foreach: sites -->
-    %tr{ko(css: "{closed: group() && !expanded(), opened: group() && expanded, active: $data == $root.selectedSite()}")}
+    %tr{ko(css: {active: "$data == $root.selectedSite()"})}
       %td
         %div
-          <!-- ko if: group() -->
-          %a{ko(click: '$root.toggleSite', style: {marginLeft: "'' + ((level() - 1) * 20) + 'px'"}), href: 'javascript:void(0)'}
-            %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
-          %span{ko(text: :name, click: '$root.selectSite'), style: 'cursor: pointer'}
-          <!-- /ko -->
-
-          <!-- ko if: !group() -->
-          %p{ko(style: {marginLeft: "'' + (10 + (level() - 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
+          %p{ko(click: '$root.selectSite'), style: 'cursor: pointer'}
             %span.stat-r
             %span{ko(html: :highlightedName)}
-          <!-- /ko -->
         %button.farrow{ko(click: '$root.editSite'), type: "button"}
-    <!-- ko if: expanded -->
-    <!-- ko template: {name: 'map-sites-template', with: sites} -->
-    <!-- /ko -->
-    <!-- ko if: group() && hasMoreSites() && !loadingSites()-->
-    %tr
-      %td.loadmore
-        = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + (level() - 1) * 20) + 'px'"})
-    <!-- /ko -->
-    <!-- ko if: group() && hasMoreSites() && loadingSites()-->
-    %tr
-      %td.loadmore
-        %span{ko(style: {marginLeft: "'' + (20 + (level() - 1) * 20) + 'px'"})} Loading...
-    <!-- /ko -->
-    <!-- /ko -->
     <!-- /ko -->
 
   -# Collection sites
@@ -78,45 +56,8 @@
           %td.loadmore Loading...
         <!-- /ko -->
   .tablebottom
-    Add
-    %button.ffolder{ko(click: '$root.createGroup')} Group
-    or
-    %button.flocation{ko(click: '$root.createSite')} Site
-    <!-- ko if: $root.parentSite() && $root.parentSite().level() != 0 -->
-    at
-    %span{ko(text: '$root.parentSite().name()')}
-    <!-- /ko -->
+    %button.flocation{ko(click: '$root.createSite')} Create Site
   <!-- /ko -->
-  <!-- /ko -->
-
-  -# New Group form
-  <!-- ko if: newGroup -->
-  %form{ko(with: :newGroup, submit: '$root.saveSite'), method: :post, style: 'display:inline-block;width:100%'}
-    .tableheader.w40
-      %button.pback{ko(click: '$root.exitSite'), type: 'button'}
-      %span.i18b-groupChat
-      %span New Group
-      <!-- ko if: $root.parentSite() && $root.parentSite().level() != 0  -->
-      %span at
-      %span{ko(text: '$root.parentSite().name()')}
-      <!-- /ko -->
-    .tablescroll
-      %table
-        %tbody
-          %tr
-            %td
-              %div
-                = label_tag :name, "Name:"
-                = text_field_tag :name, '', placeholder: 'Enter new group name', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true)
-              %div
-                %label Mode:
-                = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(value: :locationMode)
-              %div{ko(visible: "locationMode() == 'manual'")}
-                %label Location:
-                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}
-    .tablebottom
-      %button.grey{ko(enable: :valid), type: 'submit'} Done
-      %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
   <!-- /ko -->
 
   -# New Site or Edit Site form
@@ -130,10 +71,6 @@
       <!-- /ko -->
       <!-- ko if: !inEditMode() -->
       %span New Site
-      <!-- /ko -->
-      <!-- ko if: $root.parentSite() && $root.parentSite().level() != 0 && !inEditMode() -->
-      %span at
-      %span{ko(text: '$root.parentSite().name()')}
       <!-- /ko -->
     .tablescroll
       %table
@@ -186,38 +123,6 @@
     .tablebottom
       %button.grey{ko(enable: :valid), type: 'submit'} Done
       %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
-  <!-- /ko -->
-
-  -# Show Group form
-  <!-- ko if: showGroup -->
-  %form{ko(with: :showGroup, submit: '$root.saveSite'), method: :post, style: 'display:inline;width:100%'}
-    .tableheader.w40
-      %button.pback{ko(click: '$root.exitSite'), type: 'button'}
-      %span.i18b-groupChat
-      %span{ko(text: :name)}
-    .tablescroll
-      %table
-        %tbody
-          %tr
-            %td
-              %div
-                %label Name:
-                %span{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
-                <!-- ko if: editingName() -->
-                = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
-                <!-- /ko -->
-              %div
-                %label Mode:
-                %span{ko(text: :locationMode, click: 'editLocationMode', visible: '!editingLocationMode()'), style: 'cursor: pointer'}
-                = select_tag :location_mode, options_for_select(['automatic', 'manual', 'none']), 'data-bind' => kov(value: :locationMode, visible: :editingLocationMode, hasfocus: true, event: {change: :saveLocationMode, blur: :saveLocationMode})
-              %div{ko(visible: "locationMode() == 'manual'")}
-                %label Location:
-                %span{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
-                <!-- ko if: editingLocation() -->
-                = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}
-                <!-- /ko -->
-    .tablebottom
-      = link_to 'Delete Group', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
   <!-- /ko -->
 
   -# Show Site form
