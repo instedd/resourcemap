@@ -6,6 +6,7 @@ $(-> if $('#collections-main').length > 0
     @map = map
     @setMap map
     @maxZoom = cluster.max_zoom
+    @parentIds = cluster.parent_ids
     @setData(cluster, false)
 
   window.Cluster.prototype = new google.maps.OverlayView
@@ -66,6 +67,10 @@ $(-> if $('#collections-main').length > 0
     @countDiv.style.left = @countClick.style.left = "#{pos.x - 12 - @digits}px"
     @countDiv.style.top = @countClick.style.top = "#{pos.y + 2}px"
 
+    if @startAsActive
+      $(@div).addClass('target')
+      delete @startAsActive
+
   window.Cluster.prototype.onRemove = ->
     google.maps.event.removeListener @divDownListener
     google.maps.event.removeListener @divUpListener
@@ -87,13 +92,22 @@ $(-> if $('#collections-main').length > 0
     @countDiv.innerText = (@count).toString() if @countDiv
 
   window.Cluster.prototype.setActive = (draw = true) ->
+    $(@div).removeClass('target')
     $(@div).removeClass('inactive')
-    $(@shadow).removeClass('inactive')
     @draw() if draw
 
   window.Cluster.prototype.setInactive = (draw = true) ->
+    $(@div).removeClass('target')
     $(@div).addClass('inactive')
     @draw() if draw
+
+  window.Cluster.prototype.setTarget = (draw = true) ->
+    if @div
+      $(@div).removeClass('inactive')
+      $(@div).addClass('target')
+      @draw() if draw
+    else
+      @startAsActive = true
 
   window.Cluster.prototype.adjustZIndex = ->
     zIndex = window.model.zIndex(@position.lat())

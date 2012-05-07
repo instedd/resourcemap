@@ -47,6 +47,7 @@ class MapSearch
       adjust_bounds_to_world_limits
     end
 
+    @search.filter :exists, field: :location
     @search.filter :geo_bounding_box, location: {
       top_left: {
         lat: @bounds[:n],

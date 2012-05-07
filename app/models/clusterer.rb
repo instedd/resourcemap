@@ -4,7 +4,7 @@ class Clusterer
   def initialize(zoom)
     @zoom = zoom
     @width, @height = self.class.cell_size_for zoom
-    @clusters = Hash.new { |h, k| h[k] = {lat_sum: 0, lng_sum: 0, count: 0} }
+    @clusters = Hash.new { |h, k| h[k] = {lat_sum: 0, lng_sum: 0, count: 0, parent_ids: []} }
   end
 
   def self.cell_size_for(zoom)
@@ -78,6 +78,7 @@ class Clusterer
     cluster[:lat_sum] += group[:lat].to_f
     cluster[:lng_sum] += group[:lng].to_f
     cluster[:max_zoom] = group[:max_zoom]
+    cluster[:parent_ids] |= site[:parent_ids] if site[:parent_ids]
     cluster
   end
 
@@ -89,6 +90,7 @@ class Clusterer
     cluster[:count] += weight
     cluster[:lat_sum] += weight * site[:lat].to_f
     cluster[:lng_sum] += weight * site[:lng].to_f
+    cluster[:parent_ids] |= site[:parent_ids] if site[:parent_ids]
     cluster
   end
 
@@ -105,7 +107,9 @@ class Clusterer
     @clusters.each_value do |cluster|
       count = cluster[:count]
       if count == 1
-        sites_to_return << {id: cluster[:site_id], lat: cluster[:lat_sum], lng: cluster[:lng_sum]}
+        site = {id: cluster[:site_id], lat: cluster[:lat_sum], lng: cluster[:lng_sum]}
+        site[:parent_ids] = cluster[:parent_ids] if cluster[:parent_ids].present?
+        sites_to_return << site
       else
         hash = {
           id: cluster[:id],
@@ -116,6 +120,7 @@ class Clusterer
         hash[:max_zoom] = cluster[:max_zoom] if cluster[:max_zoom]
         hash[:group_ids] = cluster[:group_ids] if cluster[:group_ids]
         hash[:site_ids] = cluster[:site_ids] if cluster[:site_ids]
+        hash[:parent_ids] = cluster[:parent_ids] if cluster[:parent_ids].present?
         clusters_to_return.push hash
       end
     end

@@ -231,18 +231,26 @@
     selectSite: (site) =>
       if @showingMap()
         if @selectedSite()
-          # This is to prevent flicker: when the map reloads, we try to reuse the old site marker
-          if @selectedSite().marker
-            @oldSelectedSite = @selectedSite()
-            @setMarkerIcon @selectedSite().marker, 'active'
-            @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
+          if @selectedSite().group()
+            @setAllMarkersActive()
+          else if @selectedSite().marker
+            # This is to prevent flicker: when the map reloads, we try to reuse the old site marker
+            if site.group()
+              @selectedSite().deleteMarker()
+            else
+              @oldSelectedSite = @selectedSite()
+              @setMarkerIcon @selectedSite().marker, 'active'
+              @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
           @selectedSite().selected(false)
+
         if @selectedSite() == site
           @selectedSite(null)
           @reloadMapSites()
         else
           @selectedSite(site)
           @selectedSite().selected(true)
+          if @selectedSite().group()
+            @setGroupTargetMarkers()
           if @selectedSite().id() && @selectedSite().hasLocation()
             # Again, all these checks are to prevent flickering
             if @markers[@selectedSite().id()]
@@ -350,8 +358,9 @@
 
     drawSitesInMap: (sites = []) =>
       dataSiteIds = {}
-      editingSiteId = if @editingSite()?.id() && @editingSite().editingLocation() then @editingSite().id() else null
+      editingSiteId = if @editingSite()?.id() && (@editingSite().editingLocation() || @editingSite().inEditMode()) then @editingSite().id() else null
       selectedSiteId = @selectedSite()?.id()
+      selectedGroupId = if @selectedSite()?.group() && @selectedSite()?.id() then @selectedSite().id() else null
       oldSelectedSiteId = @oldSelectedSite?.id() # Optimization to prevent flickering
 
       # Add markers if they are not already on the map
@@ -375,10 +384,11 @@
             if editingSiteId && editingSiteId != site.id
               markerOptions.icon = @markerImageInactive
               markerOptions.shadow = @markerImageInactiveShadow
-            if selectedSiteId && selectedSiteId == site.id
+            if (selectedSiteId && selectedSiteId == site.id) || (selectedGroupId && site.parent_ids && site.parent_ids.indexOf(selectedGroupId) >= 0)
               markerOptions.icon = @markerImageTarget
               markerOptions.shadow = @markerImageTargetShadow
             @markers[site.id] = new google.maps.Marker markerOptions
+            @markers[site.id].parentIds = site.parent_ids
           localId = @markers[site.id].siteId = site.id
           do (localId) =>
             @markers[localId].listener = google.maps.event.addListener @markers[localId], 'click', (event) =>
@@ -395,10 +405,12 @@
         @deleteMarker siteId
 
       if @oldSelectedSite
-        @oldSelectedSite.deleteMarker()
+        @oldSelectedSite.deleteMarker() if @oldSelectedSite.id() != selectedSiteId
         delete @oldSelectedSite
 
     drawClustersInMap: (clusters = []) =>
+      selectedGroupId = if @selectedSite()?.group() && @selectedSite()?.id() then @selectedSite().id() else null
+
       dataClusterIds = {}
 
       # Add clusters if they are not already on the map
@@ -408,7 +420,9 @@
         if currentCluster
           currentCluster.setData(cluster)
         else
-          @createCluster(cluster)
+          currentCluster = @createCluster(cluster)
+        if (selectedGroupId && cluster.parent_ids && cluster.parent_ids.indexOf(selectedGroupId) >= 0)
+          currentCluster.setTarget()
 
       # Determine which clusters need to be removed from the map
       toRemove = []
@@ -431,6 +445,13 @@
         @setMarkerIcon marker, (if selectedSiteId == siteId then 'target' else 'active')
       for clusterId, cluster of @clusters
         cluster.setActive()
+
+    setGroupTargetMarkers: =>
+      id = @selectedSite().id()
+      for siteId, marker of @markers when marker.parentIds && marker.parentIds.indexOf(id) >= 0
+        @setMarkerIcon marker, 'target'
+      for clusterId, cluster of @clusters when cluster.parentIds && cluster.parentIds.indexOf(id) >= 0
+        cluster.setTarget()
 
     setMarkerIcon: (marker, icon) =>
       switch icon
