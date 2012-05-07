@@ -1,6 +1,12 @@
 - content_for :head do
   :javascript
-    $(function() { initLayers(); });
+    $(function() {
+      initLayers();
+      $('.hierarchy_upload').live('change', function() {
+        $('.hierarchy_form').submit()
+        window.model.startUploadHierarchy();
+      });
+    });
 
   :css
     .error { color: red; }
@@ -67,11 +73,15 @@
                 %button.lmultipleoptions
                 %br/
                 Select many
+              %span{ko(click: '$root.newHierarchyField')}
+                %button.lmultipleoptions
+                %br/
+                Hierarchy
 
       .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField', style: {marginTop: '$root.currentFieldMarginTop'}), style: 'position:relative'}
         %p.title Type
         %p.smalltext The data type to fill in this field.
-        = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'select_one'], ['Select many', 'select_many']]), 'data-bind' => kov(value: :kind)
+        = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'select_one'], ['Select many', 'select_many'], ['Hierarchy', 'hierarchy']]), 'data-bind' => kov(value: :kind)
         %hr/
         %label{ko(css: {error: :nameError})} Name
         %p.smalltext The name of this field as it is presented.
@@ -96,6 +106,21 @@
             %input.arrowinput{ko(value: :code, hasfocus: :hasFocus, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Code", style: 'position:relative;top:2px'}
             %input.ux-text{ko(value: :label, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Label", style: 'width: 150px !important'}
             %button.clist-add{ko(click: '$root.addOption', enable: '$root.optionValid')}
+        <!-- /ko -->
+        <!-- ko if: kind() == 'hierarchy' -->
+        %hr/
+        %label Hierarchy
+        %p.smalltext Upload a CSV: ID, ParentID, ItemName
+        %form.hierarchy_form{action: collection_decode_hierarchy_csv_path(collection), method: :post, enctype: 'multipart/form-data', target: 'hierarchy_iframe'}
+          %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
+          %input.hierarchy_upload{type: :file, name: :file}
+        %iframe#hierarchy_iframe{style: 'display:none'}
+        <!-- ko if: uploadingHierarchy() -->
+        Uploading, please wait...
+        <!-- /ko -->
+        <!-- ko if: !uploadingHierarchy() && hierarchy() -->
+        Done
+        <!-- /ko -->
         <!-- /ko -->
         %br/
         %br/

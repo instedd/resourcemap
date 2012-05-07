@@ -49,4 +49,23 @@ Site ID,Type,Name,Lat,Lng,Parent ID,Mode
 4,Site,Site B.1,4.567,5.678,2,
     ).strip)
   end
+
+  it "decodes hierarchy csv" do
+    json = collection.decode_hierarchy_csv %(
+      ID, ParentID, ItemName
+      1,,Site 1
+      2,,Site 2
+      3,,Site 3
+      4,1,Site 1.1
+      5,1,Site 1.2
+      6,1,Site 1.3
+    ).strip
+
+    json.should eq([
+      {id: '1', name: 'Site 1', sub: [{id: '4', name: 'Site 1.1'}, {id: '5', name: 'Site 1.2'}, {id: '6', name: 'Site 1.3'}]},
+      {id: '2', name: 'Site 2'},
+      {id: '3', name: 'Site 3'}
+    ])
+
+  end
 end

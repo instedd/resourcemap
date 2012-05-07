@@ -33,10 +33,8 @@ ResourceMap::Application.routes.draw do
     post 'import_wizard_execute'
 
     get 'recreate_index'
-
-    member do
-      get 'search'
-    end
+    get 'search'
+    post 'decode_hierarchy_csv'
   end
 
   resources :sites do

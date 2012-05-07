@@ -127,6 +127,10 @@ class CollectionsController < ApplicationController
     render json: results
   end
 
+  def decode_hierarchy_csv
+    @hierarchy = collection.decode_hierarchy_csv(params[:file].read)
+  end
+
   def recreate_index
     render json: collection.recreate_index
   end

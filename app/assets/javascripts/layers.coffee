@@ -59,8 +59,10 @@
                    ko.observableArray($.map(data.config.options, (x) -> new Option(x)))
                  else
                    ko.observableArray()
+      @hierarchy = ko.observable data.config?.hierarchy
       @hasFocus = ko.observable(false)
       @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
+      @uploadingHierarchy = ko.observable(false)
       @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer.fields().indexOf(@) + 1}"
       @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
       @codeError = ko.computed => if @hasCode() then null else "the field #{@fieldErrorDescription()} is missing a Code"
@@ -91,6 +93,7 @@
         when 'numeric' then 'lnumber'
         when 'select_one' then 'lsingleoption'
         when 'select_many' then 'lmultipleoptions'
+        when 'hierarchy' then 'lmultipleoptions'
 
     toJSON: =>
       json =
@@ -249,6 +252,7 @@
     newNumericField: => @newField 'numeric'
     newSelectOneField: => @newField 'select_one'
     newSelectManyField: => @newField 'select_many'
+    newHierarchyField: => @newField 'hierarchy'
 
     newField: (kind) =>
       @currentField(new Field(@currentLayer(), kind: kind, ord: @currentLayer().fields().length + 1))
@@ -291,6 +295,13 @@
     removeOption: (option) =>
       @currentField().options.remove(option)
       @newOption().hasFocus(true)
+
+    startUploadHierarchy: =>
+      @currentField().uploadingHierarchy(true)
+
+    hierarchyUploaded: (hierarchy) =>
+      @currentField().hierarchy(hierarchy)
+      @currentField().uploadingHierarchy(false)
 
   match = window.location.toString().match(/\/collections\/(\d+)\/layers/)
   collectionId = parseInt(match[1])
