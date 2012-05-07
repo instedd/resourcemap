@@ -13,6 +13,14 @@ class Field < ActiveRecord::Base
     self.collection_id = layer.collection_id if layer
   end
 
+  before_save :save_config_as_hash_not_with_indifferent_access, :if => :config?
+  def save_config_as_hash_not_with_indifferent_access
+    self.config = config.to_hash
+
+    self.config['options'].map!(&:to_hash) if self.config['options']
+    sanitize_hierarchy_items self.config['hierarchy'] if self.config['hierarchy']
+  end
+
   def select_kind?
     kind == 'select_one' || kind == 'select_many'
   end
@@ -32,5 +40,14 @@ class Field < ActiveRecord::Base
     end
 
     return code
+  end
+
+  private
+
+  def sanitize_hierarchy_items(items)
+    items.map! &:to_hash
+    items.each do |item|
+      sanitize_hierarchy_items item['sub'] if item['sub']
+    end
   end
 end

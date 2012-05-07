@@ -129,6 +129,7 @@ class CollectionsController < ApplicationController
 
   def decode_hierarchy_csv
     @hierarchy = collection.decode_hierarchy_csv(params[:file].read)
+    render layout: false
   end
 
   def recreate_index

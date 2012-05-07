@@ -12,6 +12,19 @@
     .error { color: red; }
 = render 'collections/tabs'
 
+-# Hierarchy item template
+%script{type: "text/html", id: "hierarchy-items-template"}
+  <!-- ko foreach: hierarchyItems -->
+  %div
+    %a{ko(click: :toggleExpand, style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
+      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"}), style: 'position:relative;top:2px'}
+      %span{ko(text: :name)}
+    <!-- ko if: expanded -->
+    <!-- ko template: {name: 'hierarchy-items-template', with: hierarchyItems} -->
+    <!-- /ko -->
+    <!-- /ko -->
+  <!-- /ko -->
+
 .tabsline
 
   %h2 Layers
@@ -111,7 +124,7 @@
         %hr/
         %label Hierarchy
         %p.smalltext Upload a CSV: ID, ParentID, ItemName
-        %form.hierarchy_form{action: collection_decode_hierarchy_csv_path(collection), method: :post, enctype: 'multipart/form-data', target: 'hierarchy_iframe'}
+        %form.hierarchy_form{action: collection_decode_hierarchy_csv_path(collection), method: :post, enctype: 'multipart/form-data', target: 'hierarchy_iframe', style: 'margin-top:6px;margin-bottom:10px'}
           %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
           %input.hierarchy_upload{type: :file, name: :file}
         %iframe#hierarchy_iframe{style: 'display:none'}
@@ -119,7 +132,9 @@
         Uploading, please wait...
         <!-- /ko -->
         <!-- ko if: !uploadingHierarchy() && hierarchy() -->
-        Done
+        .hierarchy-container
+          <!-- ko template: {name: 'hierarchy-items-template', with: hierarchyItems} -->
+          <!-- /ko -->
         <!-- /ko -->
         <!-- /ko -->
         %br/

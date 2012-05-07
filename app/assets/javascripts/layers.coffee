@@ -60,6 +60,7 @@
                  else
                    ko.observableArray()
       @hierarchy = ko.observable data.config?.hierarchy
+      @initHierarchyItems() if @hierarchy()
       @hasFocus = ko.observable(false)
       @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
       @uploadingHierarchy = ko.observable(false)
@@ -95,6 +96,14 @@
         when 'select_many' then 'lmultipleoptions'
         when 'hierarchy' then 'lmultipleoptions'
 
+    setHierarchy: (hierarchy) =>
+      @hierarchy(hierarchy)
+      @initHierarchyItems()
+      @uploadingHierarchy(false)
+
+    initHierarchyItems: =>
+      @hierarchyItems = ko.observableArray $.map(@hierarchy(), (x) -> new HierarchyItem(x))
+
     toJSON: =>
       json =
         id: @id()
@@ -103,6 +112,7 @@
         kind: @kind()
         ord: @ord()
       json.config = {options: $.map(@options(), (x) -> x.toJSON())} if @isOptionsKind()
+      json.config = {hierarchy: @hierarchy()} if @kind() == 'hierarchy'
       json
 
   class Option
@@ -122,6 +132,20 @@
     toJSON: =>
       code: @code()
       label: @label()
+
+  class HierarchyItem
+    constructor: (data, level = 0) ->
+      @id = ko.observable(data?.id)
+      @name = ko.observable(data?.name)
+      @level = ko.observable(level)
+      @expanded = ko.observable(false)
+      @hierarchyItems = if data.sub?
+               ko.observableArray($.map(data.sub, (x) -> new HierarchyItem(x, level + 1)))
+             else
+               ko.observableArray()
+
+    toggleExpand: =>
+      @expanded(!@expanded())
 
   class LayersViewModel
     constructor: (collectionId, layers) ->
@@ -300,8 +324,7 @@
       @currentField().uploadingHierarchy(true)
 
     hierarchyUploaded: (hierarchy) =>
-      @currentField().hierarchy(hierarchy)
-      @currentField().uploadingHierarchy(false)
+      @currentField().setHierarchy(hierarchy)
 
   match = window.location.toString().match(/\/collections\/(\d+)\/layers/)
   collectionId = parseInt(match[1])

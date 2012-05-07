@@ -1,6 +1,6 @@
 class LayersController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :fix_field_options, only: [:create, :update]
+  before_filter :fix_field_config, only: [:create, :update]
 
   def index
     respond_to do |format|
@@ -46,10 +46,28 @@ class LayersController < ApplicationController
   private
 
   # The options come as a hash insted of a list, so we convert the hash to a list
-  def fix_field_options
+  # Also fix hierarchy in the same way.
+  def fix_field_config
     if params[:layer] && params[:layer][:fields_attributes]
       params[:layer][:fields_attributes].each do |field_idx, field|
-        field[:config][:options] = field[:config][:options].values if field[:config] && field[:config][:options]
+        if field[:config]
+          if field[:config][:options]
+            field[:config][:options] = field[:config][:options].values
+          end
+          if field[:config][:hierarchy]
+            field[:config][:hierarchy] = field[:config][:hierarchy].values
+            sanitize_items field[:config][:hierarchy]
+          end
+        end
+      end
+    end
+  end
+
+  def sanitize_items(items)
+    items.each do |item|
+      if item[:sub]
+        item[:sub] = item[:sub].values
+        sanitize_items item[:sub]
       end
     end
   end
