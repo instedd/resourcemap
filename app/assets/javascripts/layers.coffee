@@ -81,7 +81,10 @@
           null
         else
           "the field '#{@name()}' must have at least one option"
-      @error = ko.computed => @nameError() || @codeError() || @optionsError()
+      @hierarchyError = ko.computed =>
+        return null unless @kind() == 'hierarchy'
+        if @hierarchy() && @hierarchy().length > 0 then null else "the field #{@fieldErrorDescription()} is missing the Hierarchy"
+      @error = ko.computed => @nameError() || @codeError() || @optionsError() || @hierarchyError()
       @valid = ko.computed => !@error()
 
     hasName: => $.trim(@name()).length > 0
