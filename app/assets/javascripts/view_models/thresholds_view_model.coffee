@@ -39,7 +39,12 @@ $ ->
         rm.thresholdsViewModel.currentThreshold().create()
 
     addCondition: () ->
-       
+      con = {
+        field: "Beds"
+        is: "gt"
+        value: "10"
+      }
+      rm.thresholdsViewModel.currentThreshold().addCondition(con) 
 
     saveThresholdSuccess: () ->
       @currentThreshold(null)

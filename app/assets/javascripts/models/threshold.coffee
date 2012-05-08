@@ -51,6 +51,22 @@ $ ->
       @priority priority
       rm.EventDispatcher.trigger rm.ThresholdEvent.SET_PRIORITY, new rm.ThresholdEvent @
 
+    addCondition:(con) ->
+      condition = {}
+      condition.field = ko.observable con.field
+      condition.comparisonText = ko.observable Threshold.ComparisonOperators[con.is]
+      condition.is = ko.observable con.is 
+      condition.comparisonValue = ko.observable con.value
+      condition.valueOrPercent = ko.observable "value" 
+      condition.comparisonValue.subscribe =>
+        condition.comparisonText Threshold.ComparisonOperators[condition.comparisonValue]
+      condition.value = ko.computed =>
+        if 'number' == typeof con.value
+          con.value
+        else
+          con.value 
+      @conditions.push (condition)
+
     isNewRecord: ->
       not @id()?
 
