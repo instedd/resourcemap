@@ -18,4 +18,21 @@ describe Threshold do
       expect { threshold.test({ hash[:field] => hash[:property_value] }) }.to throw_symbol :threshold, true
     end
   end
+
+  describe "multiple conditions" do
+    let!(:threshold) { Threshold.make conditions: [ {field: 'beds', is: :gt, value: 10}, {field: 'doctors', is: :lte, value: 2} ] }
+
+    it "should throw :threshold when all conditions are matched" do
+      expect { threshold.test({'beds' => 11, 'doctors' => 2}) }.to throw_symbol :threshold, true
+    end
+
+    it "should not throw when one condition is not matched" do
+      expect { threshold.test({'beds' => 9, 'doctors' => 2}) }.to_not throw_symbol
+      expect { threshold.test({'beds' => 11, 'doctors' => 3}) }.to_not throw_symbol
+    end
+
+    it "should not throw when no condition is matched" do
+      expect { threshold.test({'beds' => 9, 'doctors' => 3}) }.to_not throw_symbol
+    end
+  end
 end

@@ -9,6 +9,6 @@ class Threshold::Condition
   end
 
   def evaluate(value)
-    throw :threshold, true if __send__(@operator, value, @value)
+    send @operator, value, @value
   end
 end
