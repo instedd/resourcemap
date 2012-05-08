@@ -8,29 +8,33 @@ $ ->
       gt: 'greater than'
     
     constructor: (data) ->
+      _self = this 
       @id = ko.observable data?.id
       @collection_id = data.collection_id
       @priority = ko.observable data?.priority
-      @condition = ko.observable data?.condition
-      @comparisonValue = ko.observable @condition().is
       @valueOrPercent = ko.observable data?.valueOrPercent
-      @field = ko.observable @condition().field
       @color = ko.observable data?.color
-      @valueOrPercenValue = ko.observable @condition().value
       @priority.subscribe => rm.EventDispatcher.trigger rm.ThresholdEvent.CHANGE_PRIORITY, new rm.ThresholdEvent @
       @borderTopStyle = ko.computed => "1px inset #{@color()}"
-      @comparisonText = ko.observable Threshold.ComparisonOperators[@condition().is]
-      
-      @comparisonValue.subscribe =>
-        @comparisonText Threshold.ComparisonOperators[@comparisonValue()]
-      
-      @value = ko.computed =>
-        if 'number' == typeof @condition().value
-          @condition().value
-        else
-          percent = (@condition().value[0] * 100).toFixed 0
-          "#{percent}% of #{@condition().value[1]}"
-
+      @conditions = ko.observableArray []
+      $.map data.conditions, (con) ->
+         
+        condition = {}
+        condition.field = ko.observable con.field
+        condition.comparisonText = ko.observable Threshold.ComparisonOperators[con.is]
+        condition.is = ko.observable con.is 
+        condition.comparisonValue = ko.observable con.value
+        condition.valueOrPercent = ko.observable "value" 
+        condition.comparisonValue.subscribe =>
+          condition.comparisonText Threshold.ComparisonOperators[condition.comparisonValue]
+        condition.value = ko.computed =>
+          if 'number' == typeof con.value
+            con.value
+          else
+            con.value 
+            #percent = (con.value[0] * 100).toFixed 0
+            #"#{percent}% of #{con.value[1]}"
+        _self.conditions.push condition
     destroy: ->
       event = new rm.ThresholdEvent @
       rm.EventDispatcher.trigger rm.ThresholdEvent.DESTROY, event
@@ -40,7 +44,6 @@ $ ->
       rm.EventDispatcher.trigger rm.ThresholdEvent.CREATE, event
 
     update: ->
-      console.log "update"
       event = new rm.ThresholdEvent @
       rm.EventDispatcher.trigger rm.ThresholdEvent.UPDATE, event
 
@@ -52,10 +55,14 @@ $ ->
       not @id()?
 
     toJSON: ->
+      conditions = []
+      $.map @conditions(), (con) ->
+        condition = {}
+        condition.field = con.field()
+        condition.is = con.is()
+        condition.value = con.value()
+        conditions.push condition
       json =
         priority  : @priority(),
         color     : @color(),
-        condition :
-          field : @field()
-          is    : @comparisonValue()
-          value : @condition().value
+        conditions : conditions

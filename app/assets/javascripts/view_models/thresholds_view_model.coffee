@@ -38,6 +38,9 @@ $ ->
       else
         rm.thresholdsViewModel.currentThreshold().create()
 
+    addCondition: () ->
+       
+
     saveThresholdSuccess: () ->
       @currentThreshold(null)
       @state ThresholdsViewModel.States.LISTING
@@ -49,11 +52,11 @@ $ ->
         valueOrPercent: "percent"
         priority:  @thresholds().length + 1
         color: "#0000ff"
-        condition: {
-          field: "hospital"
+        conditions: [
+          field: "Beds"
           is: "gt"
-          value: 10
-        }
+          value: "10"
+        ]
       threshold = new rm.Threshold defaultThreshold
       @thresholds.push threshold
       @_setCurrentThreshold(threshold)

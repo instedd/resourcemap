@@ -13,7 +13,7 @@ class ThresholdsController < ApplicationController
   end
 
   def create
-    threshold = thresholds.new :priority => params[:threshold][:priority], :color => params[:threshold][:color], :condition => params[:threshold][:condition], :collection_id => params[:collection_id]
+    threshold = thresholds.new :priority => params[:threshold][:priority], :color => params[:threshold][:color], :conditions => params[:threshold][:conditions].values, :collection_id => params[:collection_id]
     threshold.save
     render json: threshold
   end
@@ -25,7 +25,8 @@ class ThresholdsController < ApplicationController
   end
   
   def update
-    threshold.update_attribute :condition, params[:threshold][:condition]
+    params[:threshold][:conditions] = params[:threshold][:conditions].values
+    threshold.update_attributes params[:threshold]
     render json: threshold
   end
   

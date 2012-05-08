@@ -44,12 +44,16 @@
     .toptitle 
       %span
         When
-        %span{ ko(text: :field) }
-        is
-        %span{ ko(text: :comparisonText) }
-        %span{ ko(text: :value) }
-        , set color
-        %span.stat{"data-bind" => "style: {backgroundColor: color}" }
+      <!-- ko foreach :conditions --> 
+      %span{ ko(visible: '1 > 0')}
+        and
+      %span{ ko(text: :field) }
+      is
+      %span{ ko(text: :comparisonText) }
+      %span{ ko(text: :value) }
+      <!-- /ko --> 
+      , set color
+      %span.stat{"data-bind" => "style: {backgroundColor: color}" }
     .rightbuttons 
       %button.fdelete{ ko(click: '$root.deleteThreshold') }
     .middlebuttons
@@ -61,41 +65,26 @@
       %button.fdelete
     %label Conditions
     .middlebuttons
-      when
+      %span
+        When
+      <!-- ko foreach :conditions --> 
       = select_tag :fields_option, nil, 'data-bind' => kov(options: '$root.fields', value: :field)
-      = select_tag :comparison_option, options_for_select([['is less than', 'lt'], ['is greater than', 'gt']]), "data-bind" => kov(value: :comparisonValue)
+      = select_tag :comparison_option, options_for_select([['is less than', 'lt'], ['is greater than', 'gt']]), "data-bind" => kov(value: :is)
       = select_tag :value_or_percent_option, options_for_select([['a value of', 'value'], ['a percent of', 'percent']]), "data-bind" => kov(value: :valueOrPercent)
       %span.ux-nstep.w06 
-        %input{ko(value: 'condition().value'), style: ":size => '2', :type => 'text'"}
+        %input{ko(value: :value), style: ":size => '2', :type => 'text'"}
         %button.kdown{:type => "button"}
         %button.kup{:type => "button"}
+      <!-- /ko --> 
       %span.stat{ko(style: {backgroundColor: :color}, click: 'buildColorPicker')}
       %button.premove    
-    .middlebuttons
-      %select
-        %option Or
-      %select  
-        %option Ocupation
-      %select
-        %option is more than
-      %select
-        %option a percent of
-      %span.ux-nstep.w06 
-        %input{:size => "2", :type => "text", :value => "15"}
-        %button.kdown{:type => "button"}
-        %button.kup{:type => "button"}
-      %span.stat
-        %div{:style => "background-color: #0000ff"}
-
-      %button.fremove 
-
-    %button.fadd
+    
+    %button.fadd{ko(click: '$root.addCondition') }
       Add new condition
     %hr
     .bottom-actions
       %button.white{ ko(click: '$root.saveThreshold') } Save
       %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
-
   %br/
   <!-- /ko --> 
 

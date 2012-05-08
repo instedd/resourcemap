@@ -24,7 +24,7 @@ $ ->
       rm.thresholdsViewModel.saveThresholdSuccess()
 
   rm.EventDispatcher.bind rm.ThresholdEvent.UPDATE, (event) ->
-    $.post "/collections/#{rm.thresholdsViewModel.collectionId}/thresholds/#{event.threshold.id()}.json", {_method: 'put', threshold: event.threshold.toJSON()},(data) ->
+    $.post "/collections/#{rm.thresholdsViewModel.collectionId}/thresholds/#{event.threshold.id()}.json", {_method: 'put', threshold: event.threshold.toJSON()}, (data) ->
       rm.thresholdsViewModel.saveThresholdSuccess()
 
   rm.EventDispatcher.bind rm.ThresholdEvent.SET_PRIORITY, (event) ->
