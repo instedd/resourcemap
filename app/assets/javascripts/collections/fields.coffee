@@ -16,14 +16,20 @@ $(-> if $('#collections-main').length > 0
       @name = ko.observable data?.name
       @kind = ko.observable data?.kind
       @writeable = ko.observable data?.writeable
+
+      @value = ko.observable()
+      @hasValue = ko.computed => @value() && (if @kind() == 'select_many' then @value().length > 0 else @value())
+      @valueUI = ko.computed => @valueUIFor(@value())
+
       @options = if data.config?.options?
                    ko.observableArray($.map(data.config.options, (x) => new Option(x)))
                  else
                    ko.observableArray()
       @optionsCodes = ko.computed => $.map(@options(), (x) => x.code())
-      @value = ko.observable()
-      @hasValue = ko.computed => @value() && (if @kind() == 'select_many' then @value().length > 0 else @value())
-      @valueUI = ko.computed => @valueUIFor(@value())
+
+      @hierarchy = ko.observable data.config?.hierarchy
+      @buildHierarchyItems() if @hierarchy()
+
       @filter = ko.observable('') # The text for filtering options in a seclect_many
       @remainingOptions = ko.computed =>
         option.selected(false) for option in @options()
@@ -44,8 +50,14 @@ $(-> if $('#collections-main').length > 0
         if value then @labelFor(value) else ''
       else if @kind() == 'select_many'
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
+      else if @kind() == 'hierarchy'
+        if value then @hierarchyItemsMap[value] else ''
       else
         value
+
+    buildHierarchyItems: =>
+      @hierarchyItemsMap = {}
+      @hierarchyItems = ko.observableArray $.map(@hierarchy(), (x) => new HierarchyItem(@, x))
 
     edit: =>
       @originalValue = @value()

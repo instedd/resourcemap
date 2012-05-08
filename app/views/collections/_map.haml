@@ -117,6 +117,11 @@
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 <!-- /ko -->
                 <!-- /ko -->
+                <!-- ko if: kind() == 'hierarchy' -->
+                .hierarchy-container
+                  <!-- ko template: {name: 'hierarchy-items-template', with: hierarchyItems} -->
+                  <!-- /ko -->
+                <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
@@ -201,6 +206,14 @@
                 %button{ko(click: :exit), style: 'float:right'} Cancel
                 .clear
                 <!-- /ko -->
+                <!-- ko if: editing() && kind() == 'hierarchy' -->
+                .hierarchy-container
+                  <!-- ko template: {name: 'hierarchy-items-template', with: hierarchyItems} -->
+                  <!-- /ko -->
+                %button{ko(click: :save), style: 'float:right'} Update hierarchy
+                %button{ko(click: :exit), style: 'float:right'} Cancel
+                .clear
+                <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
@@ -209,6 +222,19 @@
       = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
   <!-- /ko -->
   <!-- /ko -->
+
+  -# Hierarchy item template
+  %script{type: "text/html", id: "hierarchy-items-template"}
+    <!-- ko foreach: hierarchyItems -->
+    .hierarchy{ko(css: {active: 'selected()'})}
+      %a{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
+        %img{ko(click: :toggleExpand, attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"}), style: 'position:relative;top:2px'}
+        %span{ko(click: :select, text: :name)}
+    <!-- ko if: expanded -->
+    <!-- ko template: {name: 'hierarchy-items-template', with: hierarchyItems} -->
+    <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
 
   -# Loading Site...
   %form{ko(visible: :loadingSite)}
