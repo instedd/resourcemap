@@ -46,7 +46,8 @@ $ ->
       }
       rm.thresholdsViewModel.currentThreshold().addCondition(con) 
 
-    saveThresholdSuccess: () ->
+    saveThresholdSuccess: (threshold) ->
+      @currentThreshold().id(threshold.id)
       @currentThreshold(null)
       @state ThresholdsViewModel.States.LISTING
     

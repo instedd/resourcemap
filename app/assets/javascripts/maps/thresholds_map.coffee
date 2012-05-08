@@ -21,11 +21,11 @@ $ ->
   
   rm.EventDispatcher.bind rm.ThresholdEvent.CREATE, (event) ->
     $.post "/collections/#{rm.thresholdsViewModel.collectionId}/thresholds.json", {_method: 'post', threshold: event.threshold.toJSON()},(data) ->
-      rm.thresholdsViewModel.saveThresholdSuccess()
+      rm.thresholdsViewModel.saveThresholdSuccess(data)
 
   rm.EventDispatcher.bind rm.ThresholdEvent.UPDATE, (event) ->
     $.post "/collections/#{rm.thresholdsViewModel.collectionId}/thresholds/#{event.threshold.id()}.json", {_method: 'put', threshold: event.threshold.toJSON()}, (data) ->
-      rm.thresholdsViewModel.saveThresholdSuccess()
+      rm.thresholdsViewModel.saveThresholdSuccess(data)
 
   rm.EventDispatcher.bind rm.ThresholdEvent.SET_PRIORITY, (event) ->
     $.post "/collections/#{rm.thresholdsViewModel.collectionId}/thresholds/#{event.threshold.id()}/set_priority.json", { priority: event.threshold.priority() }, (data) ->
