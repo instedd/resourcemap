@@ -6,10 +6,9 @@ class Threshold < ActiveRecord::Base
   serialize :conditions, Array
 
   def test(properties)
-    conditions.each do |hash|
-      field = hash[:field]
-      if properties.has_key? field
-        condition(hash).evaluate properties[field]
+    throw :threshold, true if conditions.all? do |hash|
+      if property = properties[field = hash[:field]]
+        true if condition(hash).evaluate(property)
       end
     end
   end
