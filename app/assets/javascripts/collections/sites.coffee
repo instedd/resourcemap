@@ -28,9 +28,7 @@ $(-> if $('#collections-main').length > 0
       window.model.map.panTo @position() if positionChanged
       window.model.reloadMapSites()
 
-  # An object that contains sites. This is a base class for Site and Collection.
-  # Initially, the contained sites are empty. To load more, invoke 'loadMoreSites'.
-  class window.SitesContainer extends Locatable
+  class window.CollectionBase extends Locatable
     constructor: (data) ->
       super(data)
       @id = ko.observable data?.id
@@ -64,9 +62,9 @@ $(-> if $('#collections-main').length > 0
     addSite: (site) =>
       # This check is because the selected site might be selected on the map,
       # but not in the tree. So we use that one instead of the one from the server,
-      # and set it's parent to this site.
+      # and set its collection to ourself.
       if window.model.selectedSite()?.id() == site.id()
-        window.model.selectedSite().parent = @
+        window.model.selectedSite().collection = @
         @sites.push(window.model.selectedSite())
       else
         @sites.push(site)
@@ -81,9 +79,6 @@ $(-> if $('#collections-main').length > 0
       if !@expanded() && @hasMoreSites() && @sitesPage == 1
         @loadMoreSites()
       @expanded(!@expanded())
-
-  class window.CollectionBase extends SitesContainer
-    defaultZoom: -> 4
 
     fetchFields: (callback) =>
       if @fieldsInitialized
@@ -106,8 +101,6 @@ $(-> if $('#collections-main').length > 0
 
     clearFieldValues: =>
       field.value(null) for field in @fields()
-
-    parentCollection: => @
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
@@ -167,14 +160,16 @@ $(-> if $('#collections-main').length > 0
     updatedAt: (value) => @collection.updatedAt(value)
     fetchLocation: => @collection.fetchLocation()
 
-  class window.Site extends SitesContainer
-    constructor: (parent, data) ->
+  class window.Site extends Locatable
+    constructor: (collection, data) ->
       super(data)
-      @parent = parent
+      @collection = collection
       @selected = ko.observable()
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @properties = ko.observable data?.properties
+      @updatedAt = ko.observable(data.updated_at)
+      @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
       @locationText = ko.computed
@@ -185,8 +180,6 @@ $(-> if $('#collections-main').length > 0
       @valid = ko.computed => @hasName()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
-
-    parentCollection: => @parent
 
     hasLocation: => @position()
 
@@ -203,7 +196,7 @@ $(-> if $('#collections-main').length > 0
       $.get "/sites/#{@id()}.json", {}, (data) =>
         @position(data)
         @updatedAt(data.updated_at)
-      @parent.fetchLocation()
+      @collection.fetchLocation()
 
     updateProperty: (code, value) =>
       @properties()[code] = value
@@ -234,13 +227,13 @@ $(-> if $('#collections-main').length > 0
       data = {site: json}
       if @id()
         data._method = 'put'
-        $.post "/collections/#{@parentCollection().id()}/sites/#{@id()}.json", data, callback_with_updated_at
+        $.post "/collections/#{@collection.id()}/sites/#{@id()}.json", data, callback_with_updated_at
       else
-        $.post "/collections/#{@parentCollection().id()}/sites", data, callback_with_updated_at
+        $.post "/collections/#{@collection.id()}/sites", data, callback_with_updated_at
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
-      @parent.propagateUpdatedAt(value)
+      @collection.propagateUpdatedAt(value)
 
     editName: =>
       @originalName = @name()
@@ -299,7 +292,7 @@ $(-> if $('#collections-main').length > 0
 
       save = =>
         @post lat: @lat(), lng: @lng(), (data) =>
-          @parent.fetchLocation()
+          @collection.fetchLocation()
           @endEditLocationInMap(data)
 
       @parseLocation
@@ -330,16 +323,7 @@ $(-> if $('#collections-main').length > 0
         @marker.setPosition(position)
         @panToPosition()
 
-    fullName: =>
-      name = @name()
-
-      nextParent = @parent
-      while nextParent
-        name += ", "
-        name += nextParent.name()
-        nextParent = nextParent.parent
-
-      name
+    fullName: => "#{@collection.name()}, #{@name()}"
 
     parseLocation: (options) =>
       text = options.text || @locationTextTemp

@@ -5,7 +5,6 @@ $(-> if $('#collections-main').length > 0
   window.Cluster = (map, cluster) ->
     @map = map
     @setMap map
-    @maxZoom = cluster.max_zoom
     @setData(cluster, false)
 
   window.Cluster.prototype = new google.maps.OverlayView
@@ -43,8 +42,7 @@ $(-> if $('#collections-main').length > 0
       center = window.model.map.getCenter()
       if !@originalLatLng || (@originalLatLng.lat() == center.lat() && @originalLatLng.lng() == center.lng())
         @map.panTo @position
-        nextZoom = (if @maxZoom then @maxZoom else @map.getZoom()) + 1
-        @map.setZoom nextZoom
+        @map.setZoom(@map.getZoom() + 1)
 
     @divDownListener = google.maps.event.addDomListener @divClick, 'mousedown', listenerDownCallback
     @divUpListener = google.maps.event.addDomListener @divClick, 'mouseup', listenerUpCallback

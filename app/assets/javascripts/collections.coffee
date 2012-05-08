@@ -127,9 +127,8 @@
     createSite: =>
       @goBackToTable = true unless @showingMap()
       @showMap =>
-        parent = @currentCollection()
         pos = @originalSiteLocation = @map.getCenter()
-        site = new Site(parent, lat: pos.lat(), lng: pos.lng())
+        site = new Site(@currentCollection(), lat: pos.lat(), lng: pos.lng())
         site.copyPropertiesToCollection(@currentCollection())
         @editingSite site
         @editingSite().startEditLocationInMap()
@@ -137,7 +136,7 @@
     editSite: (site) =>
       @goBackToTable = true unless @showingMap()
       @showMap =>
-        site.copyPropertiesToCollection(site.parentCollection())
+        site.copyPropertiesToCollection(site.collection)
         if @selectedSite() && @selectedSite().id() == site.id()
           @unselectSite()
           @selectSite(site)
@@ -155,8 +154,8 @@
           @setMarkerIcon @selectedSite().marker, 'active'
         $.get "/sites/#{siteId}.json", {}, (data) =>
           @loadingSite(false)
-          parent = window.model.findCollectionById(data.collection_id)
-          site = new Site(parent, data)
+          collection = window.model.findCollectionById(data.collection_id)
+          site = new Site(collection, data)
           @editSite site
 
     saveSite: =>
@@ -165,12 +164,12 @@
       callback = (data) =>
         unless @editingSite().id()
           @editingSite().id(data.id)
-          @editingSite().parent.addSite(@editingSite())
+          @currentCollection().addSite(@editingSite())
 
         @editingSite().updatedAt(data.updated_at)
 
         @editingSite().position(data)
-        @editingSite().parent.fetchLocation()
+        @currentCollection().fetchLocation()
 
         if @editingSite().inEditMode()
           @editingSite().exitEditMode(true)
@@ -199,9 +198,9 @@
     deleteSite: =>
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
         @unselectSite()
-        @editingSite().parent.removeSite(@editingSite())
+        @currentCollection().removeSite(@editingSite())
         $.post "/sites/#{@editingSite().id()}", {_method: 'delete'}, =>
-          @editingSite().parent.fetchLocation()
+          @currentCollection().fetchLocation()
           @editingSite().deleteMarker()
           @exitSite()
           @reloadMapSites() if @showingMap()
