@@ -143,9 +143,9 @@
       @level = ko.observable(level)
       @expanded = ko.observable(false)
       @hierarchyItems = if data.sub?
-               ko.observableArray($.map(data.sub, (x) -> new HierarchyItem(x, level + 1)))
-             else
-               ko.observableArray()
+                          ko.observableArray($.map(data.sub, (x) -> new HierarchyItem(x, level + 1)))
+                        else
+                          ko.observableArray()
 
     toggleExpand: =>
       @expanded(!@expanded())
