@@ -1,6 +1,7 @@
 @initCollections = ->
+
   class CollectionViewModel
-    constructor: (collections) ->
+    initialize: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
       @editingSite = ko.observable()
@@ -26,8 +27,12 @@
       @filters = ko.observableArray([])
       @sort = ko.observable()
       @sortDirection = ko.observable()
+      @groupBy = ko.observable(@defaultGroupBy)
 
       @filters.subscribe => @performSearch()
+      @groupBy.subscribe => @performSearch()
+
+      @inSearch = ko.computed => @currentCollection()?.isSearch()
 
       # To be used for form actions, so the url doesn't change
       @formAction = ko.computed => "##{if @currentCollection() then @currentCollection().id() else ''}"
@@ -83,6 +88,8 @@
           self.refreshTimeago()
           self.makeFixedHeaderTable()
       ).run()
+
+    defaultGroupBy: {code: (-> ''), name: (-> 'None')}
 
     showMap: (callback) =>
       if @showingMap()
@@ -247,7 +254,7 @@
       @selectSite(@selectedSite()) if @selectedSite()
 
     toggleSite: (site) =>
-      site.toggle()
+      site.toggleExpand()
 
     initMap: =>
       return true unless @showingMap()
@@ -497,17 +504,24 @@
       rootCollection = @currentCollection().collection ? @currentCollection()
 
       @unselectSite()
+
       if $.trim(@search()).length == 0 && @filters().length == 0 && !@sort()
-        @currentCollection(rootCollection)
+        if @groupBy().code() == ''
+          @currentCollection(rootCollection)
+        else
+          @currentCollection(new CollectionHierarchy(rootCollection, @groupBy()))
         @lastSearch(null)
       else
         @currentCollection(new CollectionSearch(rootCollection, @search(), @filters(), @sort(), @sortDirection()))
         @currentCollection().loadMoreSites()
         @lastSearch(@search())
+        @groupBy(@defaultGroupBy)
+
       if @showingMap()
         @reloadMapSites()
       else
         window.adjustContainerSize()
+
       false
 
     clearSearch: =>
@@ -616,7 +630,8 @@
     exportInCSV: => window.location = @currentCollection().link('csv')
 
   $.get "/collections.json", {}, (collections) =>
-    window.model = new CollectionViewModel(collections)
+    window.model = new CollectionViewModel
+    window.model.initialize(collections)
     ko.applyBindings window.model
     window.model.initSammy()
 

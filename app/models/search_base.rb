@@ -105,6 +105,14 @@ module SearchBase
     @search.filter :exists, field: :location
   end
 
+  def hierarchy(code, value)
+    if value.present?
+      eq code, value
+    else
+      @search.filter :not, {exists: {field: Site.encode_elastic_search_keyword(code)}}
+    end
+  end
+
   def apply_queries
     if @queries
       query = @queries.join " AND "

@@ -28,15 +28,15 @@ $(-> if $('#collections-main').length > 0
       window.model.map.panTo @position() if positionChanged
       window.model.reloadMapSites()
 
-  class window.CollectionBase extends Locatable
+  class window.SitesContainer extends Locatable
     constructor: (data) ->
       super(data)
-      @id = ko.observable data?.id
-      @name = ko.observable data?.name
-      @updatedAt = ko.observable(data.updated_at)
-      @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
-      @sites = ko.observableArray()
+
+      @initSites()
+
+    initSites: =>
       @expanded = ko.observable false
+      @sites = ko.observableArray()
       @sitesPage = 1
       @hasMoreSites = ko.observable true
       @loadingSites = ko.observable false
@@ -55,7 +55,7 @@ $(-> if $('#collections-main').length > 0
         else
           @hasMoreSites false
         for site in data
-          @addSite new Site(this, site)
+          @addSite @createSite(site)
         @loadingSites false
         window.model.refreshTimeago()
 
@@ -74,11 +74,21 @@ $(-> if $('#collections-main').length > 0
       @sites.remove site
       delete window.model.siteIds[site.id()]
 
-    toggle: =>
+    toggleExpand: =>
       # Load more sites when we expand, but only the first time
       if !@expanded() && @hasMoreSites() && @sitesPage == 1
         @loadMoreSites()
       @expanded(!@expanded())
+
+    createSite: (site) => new Site(@, site)
+
+  class window.CollectionBase extends SitesContainer
+    constructor: (data) ->
+      super(data)
+      @id = ko.observable data?.id
+      @name = ko.observable data?.name
+      @updatedAt = ko.observable(data.updated_at)
+      @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
 
     fetchFields: (callback) =>
       if @fieldsInitialized
@@ -113,6 +123,10 @@ $(-> if $('#collections-main').length > 0
       @checked = ko.observable true
       @fieldsInitialized = false
 
+      @groupByOptions = ko.computed => [window.model.defaultGroupBy].concat(@fields().filter((f) -> f.kind() == 'hierarchy'))
+
+    isSearch: => false
+
     sitesUrl: -> "/collections/#{@id()}/sites.json"
 
     fetchLocation: => $.get "/collections/#{@id()}.json", {}, (data) =>
@@ -121,26 +135,34 @@ $(-> if $('#collections-main').length > 0
 
     link: (format) => "/api/collections/#{@id()}.#{format}"
 
-  # A collection that is filtered by a search result
-  class window.CollectionSearch extends CollectionBase
-    constructor: (collection, search, filters, sort, sortDirection) ->
+  class window.CollectionDecorator extends CollectionBase
+    constructor: (collection) ->
       @collection = collection
+
+      @id = ko.observable collection.id()
+      @name = ko.observable collection.name()
+      @layers = collection.layers
+      @fields = collection.fields
+      @fieldsInitialized = collection.fieldsInitialized
+      @groupByOptions = collection.groupByOptions
+
+      @initSites()
+
+      @constructorLocation(lat: collection.lat(), lng: collection.lng())
+
+    createSite: (site) => new Site(@collection, site)
+
+  # A collection that is filtered by a search result
+  class window.CollectionSearch extends CollectionDecorator
+    constructor: (collection, search, filters, sort, sortDirection) ->
+      super(collection)
+
       @search = search
       @filters = filters
       @sort = sort
       @sortDirection = sortDirection
-      @layers = collection.layers
-      @fields = collection.fields
-      @fieldsInitialized = collection.fieldsInitialized
 
-      @id = ko.observable collection.id()
-      @name = ko.observable collection.name()
-      @sites = ko.observableArray()
-      @sitesPage = 1
-      @hasMoreSites = ko.observable true
-      @loadingSites = ko.observable false
-
-      @constructorLocation(lat: collection.lat(), lng: collection.lng())
+    isSearch: => true
 
     sitesUrl: =>
       "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
@@ -160,9 +182,57 @@ $(-> if $('#collections-main').length > 0
     updatedAt: (value) => @collection.updatedAt(value)
     fetchLocation: => @collection.fetchLocation()
 
+  # A collection that groups the items by a hierarchy field
+  class window.CollectionHierarchy extends CollectionDecorator
+    constructor: (collection, field) ->
+      super(collection)
+
+      @field = field
+      @hierarchyItems = ko.observableArray $.map(field.hierarchy(), (x) => new HierarchyItem(field, x))
+
+      @loadMoreSites()
+
+    isSearch: => false
+
+    sitesUrl: =>
+      "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
+
+    queryParams: =>
+      hierarchy_code: @field.code()
+
+  # Used when grouping by a hierarchy field
+  class window.HierarchyItem extends SitesContainer
+    constructor: (field, data, level = 0) ->
+      @field = field
+
+      @id = ko.observable(data.id)
+      @name = ko.observable(data.name)
+      @level = ko.observable(level)
+      @selected = ko.observable(false)
+      @hierarchyItems = if data.sub?
+                          ko.observableArray($.map(data.sub, (x) => new HierarchyItem(@field, x, level + 1)))
+                        else
+                          ko.observableArray()
+
+      @initSites()
+
+    sitesUrl: =>
+      "/collections/#{window.model.currentCollection().id()}/search.json?#{$.param @queryParams()}"
+
+    queryParams: =>
+      hierarchy_code: @field.code()
+      hierarchy_value: @id()
+
+    createSite: (site) => new Site(window.model.currentCollection().collection, site)
+
+    addSite: (site) =>
+      super(site)
+      site.level(@level() + 1)
+
   class window.Site extends Locatable
     constructor: (collection, data) ->
       super(data)
+
       @collection = collection
       @selected = ko.observable()
       @id = ko.observable data?.id
@@ -180,6 +250,7 @@ $(-> if $('#collections-main').length > 0
       @valid = ko.computed => @hasName()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
+      @level = ko.observable(0)
 
     hasLocation: => @position()
 

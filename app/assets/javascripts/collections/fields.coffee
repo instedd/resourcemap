@@ -51,13 +51,13 @@ $(-> if $('#collections-main').length > 0
       else if @kind() == 'select_many'
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
       else if @kind() == 'hierarchy'
-        if value then @hierarchyItemsMap[value] else ''
+        if value then @fieldHierarchyItemsMap[value] else ''
       else
         value
 
     buildHierarchyItems: =>
-      @hierarchyItemsMap = {}
-      @hierarchyItems = ko.observableArray $.map(@hierarchy(), (x) => new HierarchyItem(@, x))
+      @fieldHierarchyItemsMap = {}
+      @fieldHierarchyItems = ko.observableArray $.map(@hierarchy(), (x) => new FieldHierarchyItem(@, x))
 
     edit: =>
       @originalValue = @value()
