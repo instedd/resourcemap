@@ -117,6 +117,8 @@ $(-> if $('#collections-main').length > 0
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
 
+    link: (format) => "/api/collections/#{@id()}.#{format}"
+
     level: => -1
 
     performHierarchyChanges: (site, changes) =>
@@ -139,8 +141,6 @@ $(-> if $('#collections-main').length > 0
       @position(data)
       @updatedAt(data.updated_at)
 
-    link: (format) => "/api/collections/#{@id()}.#{format}"
-
   class window.CollectionDecorator extends CollectionBase
     constructor: (collection) ->
       @collection = collection
@@ -157,6 +157,10 @@ $(-> if $('#collections-main').length > 0
       @constructorLocation(lat: collection.lat(), lng: collection.lng())
 
     createSite: (site) => new Site(@collection, site)
+
+    # These two methods are needed to be forwarded when editing sites inside a search
+    updatedAt: (value) => @collection.updatedAt(value)
+    fetchLocation: => @collection.fetchLocation()
 
   # A collection that is filtered by a search result
   class window.CollectionSearch extends CollectionDecorator
@@ -183,10 +187,6 @@ $(-> if $('#collections-main').length > 0
       q
 
     link: (format) => "/api/collections/#{@id()}.#{format}?#{$.param @queryParams()}"
-
-    # These two methods are needed to be forwarded when editing sites inside a search
-    updatedAt: (value) => @collection.updatedAt(value)
-    fetchLocation: => @collection.fetchLocation()
 
   # A collection that groups the items by a hierarchy field
   class window.CollectionHierarchy extends CollectionDecorator
@@ -301,12 +301,22 @@ $(-> if $('#collections-main').length > 0
         @propagateUpdatedAt(data.updated_at)
 
     copyPropertiesFromCollection: (collection) =>
+      oldProperties = @properties()
+
+      hierarchyChanges = []
+
       @properties({})
       for field in collection.fields()
+        if field.kind() == 'hierarchy'
+          hierarchyChanges.push({field: field, oldValue: oldProperties[field.code()], newValue: field.value()})
+
         if field.value()
           @properties()[field.code()] = field.value()
         else
           delete @properties()[field.code()]
+
+      if window.model.currentCollection()
+        window.model.currentCollection().performHierarchyChanges(@, hierarchyChanges)
 
     copyPropertiesToCollection: (collection) =>
       collection.fetchFields =>
