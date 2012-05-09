@@ -36,31 +36,30 @@
 .tabsline
   %h2 Thresholds
   <!-- ko foreach :thresholds -->
-  .box.grey.w60{ ko(visible: '$data != $root.currentThreshold()') }
-    .ord-buttons
-      %input{ ko(value: :priority) }
-      %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
-      %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
+  .box.grey.w60{ ko(visible: '$data != $root.currentThreshold()'), style: 'display:none' }
     .toptitle 
+      .ord-buttons
+        %input{ ko(value: :priority) }
+        %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
+        %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
       %span
         When
-      <!-- ko foreach :conditions --> 
-      %span{ ko(visible: '1 > 0')}
-        and
-      %span{ ko(text: :field) }
-      is
-      %span{ ko(text: :comparisonText) }
-      %span{ ko(text: :value) }
-      <!-- /ko --> 
-      , set color
-      %span.stat{"data-bind" => "style: {backgroundColor: color}" }
+        <!-- ko foreach :conditions --> 
+        %span{ ko(visible: '1 > 0') } and
+        %span{ ko(text: :field) } is
+        %span{ ko(text: :comparisonText) }
+        %span{ ko(text: :value) }
+        <!-- /ko --> 
+        , set color
+        %span.stat{"data-bind" => "style: {backgroundColor: color}" }
+
     .rightbuttons 
       %button.fdelete{ ko(click: '$root.deleteThreshold') }
-    .middlebuttons
-      %button.farrow{ ko(click: '$root.editThreshold') } Edit
+
+    %button.farrow{ ko(click: '$root.editThreshold') } Edit
     
   -# Form editor
-  .box.w60{ ko(visible: '$data == $root.currentThreshold()') }
+  .box.w60{ ko(visible: '$data == $root.currentThreshold()'), style: 'display:none' }
     .rightbuttons
       %button.fdelete
     %label Conditions

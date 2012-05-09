@@ -11,7 +11,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120504052500) do
+ActiveRecord::Schema.define(:version => 20120507093946) do
+
+  create_table "activities", :force => true do |t|
+    t.string   "kind"
+    t.integer  "user_id"
+    t.integer  "collection_id"
+    t.integer  "layer_id"
+    t.integer  "field_id"
+    t.integer  "site_id"
+    t.text     "data"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
 
   create_table "collections", :force => true do |t|
     t.string   "name"
@@ -32,6 +44,7 @@ ActiveRecord::Schema.define(:version => 20120504052500) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
     t.text     "config"
+    t.integer  "ord"
   end
 
   create_table "layer_memberships", :force => true do |t|
@@ -50,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20120504052500) do
     t.boolean  "public"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.integer  "ord"
   end
 
   create_table "memberships", :force => true do |t|
@@ -69,14 +83,7 @@ ActiveRecord::Schema.define(:version => 20120504052500) do
     t.string   "hierarchy"
     t.datetime "created_at",                                                                          :null => false
     t.datetime "updated_at",                                                                          :null => false
-    t.boolean  "group",                                                      :default => false
     t.text     "properties"
-    t.decimal  "min_lat",                     :precision => 10, :scale => 6
-    t.decimal  "max_lat",                     :precision => 10, :scale => 6
-    t.decimal  "min_lng",                     :precision => 10, :scale => 6
-    t.decimal  "max_lng",                     :precision => 10, :scale => 6
-    t.integer  "min_zoom"
-    t.integer  "max_zoom"
     t.string   "location_mode", :limit => 10,                                :default => "automatic"
   end
 

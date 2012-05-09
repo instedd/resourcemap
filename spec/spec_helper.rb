@@ -37,9 +37,6 @@ RSpec.configure do |config|
 
   # Delete all test indexes after running all specs
   config.after(:suite) do
-    indexes = JSON.parse Tire::Configuration.client.get("#{Tire::Configuration.url}/_status").body
-    indexes['indices'].each do |name, index|
-      Tire::Index.new(name).delete if name =~ /^collection_test_(\d+)$/
-    end
+    Tire.delete_indices_that_match /^collection_test_\d+$/
   end
 end

@@ -1,4 +1,5 @@
 class Membership < ActiveRecord::Base
+  include Membership::ActivityConcern
   include Membership::LayerAccessConcern
 
   belongs_to :user

@@ -1,29 +1,25 @@
 module Api::RssHelper
-  include Api::TireHelper
-
   def collection_rss(xml, collection, results)
-    parents = parents_as_hash results
-
     xml.rss rss_specification do
       xml.channel do
         xml.title collection.name
+        xml.lastBuildDate collection.updated_at.rfc822
         xml.atom :link, rel: :previous, href: url_for(params.merge page: results.previous_page, only_path: false) if results.previous_page
         xml.atom :link, rel: :next, href: url_for(params.merge page: results.next_page, only_path: false) if results.next_page
 
         results.each do |result|
-          site_item_rss xml, result, parents
+          site_item_rss xml, result
         end
       end
     end
   end
 
-  def site_item_rss(xml, result, parents = nil)
+  def site_item_rss(xml, result)
     source = result['_source']
-    parents ||= parents_as_hash([result])
 
     xml.item do
       xml.title source['name']
-      xml.pubDate Site.parse_date(source['updated_at'])
+      xml.pubDate Site.parse_date(source['updated_at']).rfc822
       xml.link api_site_url(source['id'], format: :rss)
       xml.guid api_site_url(source['id'], format: :rss)
 
@@ -32,13 +28,36 @@ module Api::RssHelper
         xml.geo :long, source['location']['lon']
       end
 
-      source['properties'].each do |code, value|
-        property_rss xml, code, value
+      xml.rm :properties do
+        source['properties'].each do |code, values|
+          Array(values).each do |value|
+            property_rss xml, code, value
+          end
+        end
       end
+    end
+  end
 
-      Array(source['parent_ids']).each do |parent_id|
-        group_rss xml, parents[parent_id]
+  def activities_rss(xml, activities)
+    xml.rss rss_specification do
+      xml.channel do
+        xml.title 'Activity'
+        xml.lastBuildDate activities.first.created_at.rfc822 if activities.length > 0
+        xml.atom :link, rel: :previous, href: url_for(params.merge page: @page - 1, only_path: false) if @page > 1
+        xml.atom :link, rel: :next, href: url_for(params.merge page: @page + 1, only_path: false) if @hasNextPage
+
+        activities.each do |activity|
+          activity_rss xml, activity
+        end
       end
+    end
+  end
+
+  def activity_rss(xml, activity)
+    xml.item do
+      xml.title "[In collection '#{activity.collection.name}' by user '#{activity.user.display_name}'] #{activity.description} "
+      xml.pubDate activity.created_at.rfc822
+      xml.guid activity.id
     end
   end
 
@@ -54,16 +73,6 @@ module Api::RssHelper
   private
 
   def property_rss(xml, code, value)
-    xml.rm :property do
-      xml.rm :code, code
-      xml.rm :value, value
-    end
-  end
-
-  def group_rss(xml, group)
-    xml.rm :group, level: group.level do
-      xml.rm :id, group.id
-      xml.rm :name, group.name
-    end
+    xml.__send__ "rm:#{code}", value
   end
 end

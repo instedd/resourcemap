@@ -6,7 +6,7 @@ class CollectionsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: collections }
+      format.json { render json: collections.all }
     end
   end
 
@@ -67,7 +67,7 @@ class CollectionsController < ApplicationController
   end
 
   def upload_csv
-    collection.import_csv!(params[:file].read)
+    collection.import_csv current_user, params[:file].read
     redirect_to collections_path
   end
 
@@ -93,9 +93,12 @@ class CollectionsController < ApplicationController
 
   def search
     search = collection.new_search
+    search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search]
     search.offset params[:offset]
     search.limit params[:limit]
+    search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
+    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction)
     results = search.results.map do |result|
       source = result['_source']
 
@@ -117,6 +120,15 @@ class CollectionsController < ApplicationController
       obj
     end
     render json: results
+  end
+
+  def decode_hierarchy_csv
+    @hierarchy = collection.decode_hierarchy_csv(params[:file].read)
+    render layout: false
+  end
+
+  def recreate_index
+    render json: collection.recreate_index
   end
 
   private

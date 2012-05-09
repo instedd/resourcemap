@@ -1,641 +1,35 @@
+#=require_directory ./collections
+
 @initCollections = ->
-  SITES_PER_PAGE = 25
-
-  # Repesents a cluster on the map.
-  # It consists of a location and a count.
-  Cluster = (map, cluster) ->
-    @map = map
-    @setMap map
-    @maxZoom = cluster.max_zoom
-    @setData(cluster, false)
-
-  Cluster.prototype = new google.maps.OverlayView
-
-  Cluster.prototype.onAdd = ->
-    @div = document.createElement 'DIV'
-    @div.className = 'cluster'
-    @shadow = document.createElement 'DIV'
-    @shadow.className = 'cluster-shadow'
-    @countDiv = document.createElement 'DIV'
-    @countDiv.className = 'cluster-count'
-    @setCount @count
-
-    @divClick = document.createElement 'DIV'
-    @divClick.className = 'cluster-click'
-
-    @countClick = document.createElement 'DIV'
-    @countClick.className = 'cluster-count-click'
-
-    @adjustZIndex()
-    @setActive(false)
-
-    @getPanes().overlayImage.appendChild @div
-    @getPanes().overlayImage.appendChild @countDiv
-    @getPanes().overlayShadow.appendChild @shadow
-    @getPanes().overlayMouseTarget.appendChild @divClick
-    @getPanes().overlayMouseTarget.appendChild @countClick
-
-    # Instead of a listener for click we create two listeners for mousedown and mouseup:
-    # If the user clicks a cluster and drags it, we want to drag the map but not zoom in
-    listenerDownCallback = =>
-      @originalLatLng = window.model.map.getCenter()
-
-    listenerUpCallback = =>
-      center = window.model.map.getCenter()
-      if !@originalLatLng || (@originalLatLng.lat() == center.lat() && @originalLatLng.lng() == center.lng())
-        @map.panTo @position
-        nextZoom = (if @maxZoom then @maxZoom else @map.getZoom()) + 1
-        @map.setZoom nextZoom
-
-    @divDownListener = google.maps.event.addDomListener @divClick, 'mousedown', listenerDownCallback
-    @divUpListener = google.maps.event.addDomListener @divClick, 'mouseup', listenerUpCallback
-
-    @countDownListener = google.maps.event.addDomListener @countClick, 'mousedown', listenerDownCallback
-    @countUpListener = google.maps.event.addDomListener @countClick, 'mouseup', listenerUpCallback
-
-  Cluster.prototype.draw = ->
-    pos = @getProjection().fromLatLngToDivPixel @position
-    @div.style.left = @divClick.style.left = "#{pos.x - 13}px"
-    @div.style.top = @divClick.style.top = "#{pos.y - 36}px"
-    @shadow.style.left = "#{pos.x - 7}px"
-    @shadow.style.top = "#{pos.y - 36}px"
-
-    # If the count on the cluster is too big (more than 3 digits)
-    # we move the div containing the count to the left
-    @digits = Math.floor(2 * Math.log(@count / 10) / Math.log(10));
-    @digits = 0 if @digits < 0
-    @countDiv.style.left = @countClick.style.left = "#{pos.x - 12 - @digits}px"
-    @countDiv.style.top = @countClick.style.top = "#{pos.y + 2}px"
-
-  Cluster.prototype.onRemove = ->
-    google.maps.event.removeListener @divDownListener
-    google.maps.event.removeListener @divUpListener
-    google.maps.event.removeListener @countDownListener
-    google.maps.event.removeListener @countUpListener
-    @div.parentNode.removeChild @div
-    @shadow.parentNode.removeChild @shadow
-    @countDiv.parentNode.removeChild @countDiv
-    @divClick.parentNode.removeChild @divClick
-    @countClick.parentNode.removeChild @countClick
-
-  Cluster.prototype.setData = (cluster, draw = true) ->
-    @position = new google.maps.LatLng(cluster.lat, cluster.lng)
-    @setCount cluster.count
-    @draw() if draw
-
-  Cluster.prototype.setCount = (count) ->
-    @count = count
-    @countDiv.innerText = (@count).toString() if @countDiv
-
-  Cluster.prototype.setActive = (draw = true) ->
-    $(@div).removeClass('inactive')
-    $(@shadow).removeClass('inactive')
-    @draw() if draw
-
-  Cluster.prototype.setInactive = (draw = true) ->
-    $(@div).addClass('inactive')
-    @draw() if draw
-
-  Cluster.prototype.adjustZIndex = ->
-    zIndex = window.model.zIndex(@position.lat())
-    @div.style.zIndex = zIndex if @div
-    @countDiv.style.zIndex = zIndex - 10 if @countDiv
-
-  # A Layer field
-  class Field
-    constructor: (data) ->
-      @code = ko.observable data?.code
-      @name = ko.observable data?.name
-      @kind = ko.observable data?.kind
-      @writeable = ko.observable data?.writeable
-      @options = if data.config?.options?
-                   ko.observableArray($.map(data.config.options, (x) => new Option(x)))
-                 else
-                   ko.observableArray()
-      @optionsCodes = ko.computed => $.map(@options(), (x) => x.code())
-      @value = ko.observable()
-      @hasValue = ko.computed => @value() && (if @kind() == 'select_many' then @value().length > 0 else @value())
-      @valueUI = ko.computed => @valueUIFor(@value())
-      @remainingOptions = ko.computed =>
-        if @value()
-          @options().filter((x) => @value().indexOf(x.code()) == -1)
-        else
-          @options()
-
-      @editing = ko.observable false
-
-    # The value of the UI.
-    # If it's a select one or many, we need to get the label from the option code.
-    valueUIFor: (value) =>
-      if @kind() == 'select_one'
-        if value then @labelFor(value) else ''
-      else if @kind() == 'select_many'
-        if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
-      else
-        value
-
-    edit: =>
-      @originalValue = @value()
-      @editing(true)
-
-    keyPress: (field, event) =>
-      switch event.keyCode
-        when 13 then @save()
-        when 27 then @exit()
-        else true
-
-    exit: =>
-      @value(@originalValue) if @originalValue?
-      @editing(false)
-      delete @originalValue
-
-    save: =>
-      @editing(false)
-      window.model.editingSite().updateProperty(@code(), @value())
-      delete @originalValue
-
-    selectOption: (option) =>
-      @value([]) unless @value()
-      @value().push(option.code())
-      @value.valueHasMutated()
-
-    removeOption: (optionCode) =>
-      @value([]) unless @value()
-      @value(@value().diff([optionCode]))
-      @value.valueHasMutated()
-
-    labelFor: (code) =>
-      for option in @options()
-        if option.code() == code
-          return option.label()
-      null
-
-    # In the table view, use a fixed size width for each property column,
-    # which depends on the length of the name.
-    suggestedWidth: =>
-      if @name().length < 10
-        '100px'
-      else
-        "#{@name().length * 8}px"
-
-  class Option
-    constructor: (data) ->
-      @code = ko.observable(data?.code)
-      @label = ko.observable(data?.label)
-
-  # An object with a position on the map.
-  class Locatable
-    constructor: (data) ->
-      @constructorLocation(data)
-
-    constructorLocation: (data) ->
-      @lat = ko.observable data?.lat
-      @lng = ko.observable data?.lng
-      @position = ko.computed
-        read: => if @lat() && @lng() then new google.maps.LatLng(@lat(), @lng()) else null
-        write: (latLng) =>
-          if typeof(latLng.lat) == 'function'
-            @lat(latLng.lat()); @lng(latLng.lng())
-          else
-            @lat(latLng.lat); @lng(latLng.lng)
-        owner: @
-
-    # Pans the map to this object's location, and the reload the map's sites and clusters.
-    panToPosition: =>
-      currentPosition = window.model.map.getCenter()
-      positionChanged = @position() && (Math.abs(@position().lat() - currentPosition.lat()) > 1e-6 || Math.abs(@position().lng() - currentPosition.lng()) > 1e-6)
-
-      window.model.reloadMapSitesAutomatically = false
-      window.model.map.panTo @position() if positionChanged
-
-      # We also zoom the map to the minZoom given of this site/group.
-      if @minZoom?
-        # But in the case of a site (no max zoom), we don't want to zoom
-        # out if the user already zoomed beyong the minZoom (annoying)
-        unless !@maxZoom && @minZoom < window.model.map.getZoom()
-          zoom = if @minZoom == 0 then @maxZoom else @minZoom
-          window.model.map.setZoom zoom
-      else if !@maxZoom?
-        # This is the case of a collection, which doesn't have minZoom nor maxZoom
-        window.model.map.setZoom @defaultZoom() if @defaultZoom()?
-      window.model.reloadMapSites()
-
-  # An object that contains sites. This is a base class for Site and Collection.
-  # Initially, the contained sites are empty. To load more, invoke 'loadMoreSites'.
-  class SitesContainer extends Locatable
-    constructor: (data) ->
-      super(data)
-      @id = ko.observable data?.id
-      @name = ko.observable data?.name
-      @updatedAt = ko.observable(data.updated_at)
-      @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
-      @sites = ko.observableArray()
-      @expanded = ko.observable false
-      @sitesPage = 1
-      @hasMoreSites = ko.observable true
-      @loadingSites = ko.observable false
-
-    # Loads SITES_PER_PAGE sites more from the server, it there are more sites.
-    loadMoreSites: =>
-      return unless @hasMoreSites()
-
-      @loadingSites true
-      # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
-      # extra element so the user always sees SITES_PER_PAGE elements.
-      $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1}, (data) =>
-        @sitesPage += 1
-        if data.length == SITES_PER_PAGE + 1
-          data.pop()
-        else
-          @hasMoreSites false
-        for site in data
-          @addSite new Site(this, site)
-        @loadingSites false
-        window.model.refreshTimeago()
-
-    addSite: (site) =>
-      # This check is because the selected site might be selected on the map,
-      # but not in the tree. So we use that one instead of the one from the server,
-      # and set it's parent to this site.
-      if window.model.selectedSite()?.id() == site.id()
-        window.model.selectedSite().parent = @
-        @sites.push(window.model.selectedSite())
-      else
-        @sites.push(site)
-      window.model.siteIds[site.id()] = site
-
-    removeSite: (site) =>
-      @sites.remove site
-      delete window.model.siteIds[site.id()]
-
-    toggle: =>
-      # Load more sites when we expand, but only the first time
-      if @group() && !@expanded() && @hasMoreSites() && @sitesPage == 1
-        @loadMoreSites()
-      @expanded(!@expanded())
-
-  class CollectionBase extends SitesContainer
-    level: -> 0
-
-    defaultZoom: -> 4
-
-    fetchFields: (callback) =>
-      if @fieldsInitialized
-        callback() if callback && typeof(callback) == 'function'
-        return
-
-      @fieldsInitialized = true
-      $.get "/collections/#{@id()}/fields", {}, (data) =>
-        @fields($.map(data, (x) => new Field(x)))
-        callback() if callback && typeof(callback) == 'function'
-
-    findFieldByCode: (code) => (field for field in @fields() when field.code() == code)[0]
-
-    clearFieldValues: =>
-      field.value(null) for field in @fields()
-
-    parentCollection: => @
-
-    propagateUpdatedAt: (value) =>
-      @updatedAt(value)
-
-  class Collection extends CollectionBase
-    constructor: (data) ->
-      super(data)
-      @fields = ko.observableArray()
-      @checked = ko.observable true
-      @fieldsInitialized = false
-
-    sitesUrl: -> "/collections/#{@id()}/sites.json"
-
-    fetchLocation: => $.get "/collections/#{@id()}.json", {}, (data) =>
-      @position(data)
-      @updatedAt(data.updated_at)
-
-  # A collection that is filtered by a search result
-  class CollectionSearch extends CollectionBase
-    constructor: (collection, search) ->
-      @collection = collection
-      @search = search
-      @fields = collection.fields
-      @fieldsInitialized = collection.fieldsInitialized
-
-      @id = ko.observable collection.id()
-      @name = ko.observable collection.name()
-      @sites = ko.observableArray()
-      @sitesPage = 1
-      @hasMoreSites = ko.observable true
-      @loadingSites = ko.observable false
-
-      @constructorLocation(lat: collection.lat(), lng: collection.lng())
-
-    sitesUrl: -> "/collections/#{@id()}/search.json?search=" + escape(@search)
-
-  class Site extends SitesContainer
-    constructor: (parent, data) ->
-      super(data)
-      @parent = parent
-      @selected = ko.observable()
-      @id = ko.observable data?.id
-      @parentId = ko.observable data?.parent_id
-      @group = ko.observable data?.group
-      @name = ko.observable data?.name
-      @minZoom = data?.min_zoom
-      @maxZoom = data?.max_zoom
-      @locationMode = ko.observable data?.location_mode
-      @properties = ko.observable data?.properties
-      @editingName = ko.observable(false)
-      @editingLocation = ko.observable(false)
-      @editingLocationMode = ko.observable(false)
-      @locationText = ko.computed
-        read: => (Math.round(@lat() * 100000) / 100000) + ', ' + (Math.round(@lng() * 100000) / 100000)
-        write: (value) => @locationTextTemp = value
-        owner: @
-      @locationTextTemp = @locationText()
-      @valid = ko.computed => @hasName()
-      @highlightedName = ko.computed => window.model.highlightSearch(@name())
-
-    sitesUrl: -> "/sites/#{@id()}/root_sites.json"
-
-    level: => @parent.level() + 1
-
-    defaultZoom: -> @parent.minZoom
-
-    parentCollection: => @parent.parentCollection()
-
-    hasLocation: => @position() && !(@group() && @locationMode() == 'none')
-
-    hasName: => $.trim(@name()).length > 0
-
-    propertyValue: (field) =>
-      value = @properties()[field.code()]
-      field.valueUIFor(value)
-
-    highlightedPropertyValue: (field) =>
-      window.model.highlightSearch(@propertyValue(field))
-
-    fetchLocation: =>
-      $.get "/sites/#{@id()}.json", {}, (data) =>
-        @position(data)
-        @updatedAt(data.updated_at)
-      @parent.fetchLocation()
-
-    updateProperty: (code, value) =>
-      @properties()[code] = value
-      $.post "/sites/#{@id()}/update_property.json", {code: code, value: value}, (data) =>
-        @propagateUpdatedAt(data.updated_at)
-
-    copyPropertiesFromCollection: (collection) =>
-      @properties({})
-      for field in collection.fields()
-        if field.value()
-          @properties()[field.code()] = field.value()
-        else
-          delete @properties()[field.code()]
-
-    copyPropertiesToCollection: (collection) =>
-      collection.fetchFields =>
-        collection.clearFieldValues()
-        if @properties()
-          for field in collection.fields()
-            value = @properties()[field.code()]
-            field.value(value)
-
-    post: (json, callback) =>
-      callback_with_updated_at = (data) =>
-        @propagateUpdatedAt(data.updated_at)
-        callback(data) if callback && typeof(callback) == 'function'
-
-      data = {site: json}
-      if @id()
-        data._method = 'put'
-        $.post "/collections/#{@parentCollection().id()}/sites/#{@id()}.json", data, callback_with_updated_at
-      else
-        $.post "/collections/#{@parentCollection().id()}/sites", data, callback_with_updated_at
-
-    propagateUpdatedAt: (value) =>
-      @updatedAt(value)
-      @parent.propagateUpdatedAt(value)
-
-    editName: =>
-      @originalName = @name()
-      @editingName(true)
-
-    nameKeyPress: (site, event) =>
-      switch event.keyCode
-        when 13 then @saveName()
-        when 27 then @exitName()
-        else true
-
-    saveName: =>
-      if @hasName()
-        @post name: @name()
-        @editingName(false)
-      else
-        @exitName()
-
-    exitName: =>
-      @name(@originalName)
-      @editingName(false)
-      delete @originalName
-
-    editLocation: =>
-      @editingLocation(true)
-      @startEditLocationInMap()
-
-    startEditLocationInMap: =>
-      @originalLocation = @position()
-      if @group()
-        if @locationMode() == 'manual'
-          @createMarker()
-        else
-          @subscribeToLocationModeChange()
-      else
-        if @marker
-          @setupMarkerListener()
-        else
-          @createMarker()
-        @marker.setDraggable(true)
-      window.model.setAllMarkersInactive()
-      @panToPosition()
-
-    endEditLocationInMap: (position) =>
-      @editingLocation(false)
-      @position(position)
-      if @group()
-        @deleteMarker()
-        @unsubscribeToLocationModeChange()
-      else
-        @marker.setPosition(@position())
-        @marker.setDraggable false
-      window.model.setAllMarkersActive()
-      @panToPosition()
-
-    locationKeyPress: (site, event) =>
-      switch event.keyCode
-        when 13 then @saveLocation()
-        when 27 then @exitLocation()
-        else true
-
-    saveLocation: =>
-      window.model.setAllMarkersActive()
-
-      save = =>
-        @post lat: @lat(), lng: @lng(), (data) =>
-          @parent.fetchLocation()
-          @endEditLocationInMap(data)
-
-      @parseLocation
-        success: (position) => @position(position); save()
-        failure: (position) => @position(position); @endEditLocationInMap(position)
-
-    newLocationKeyPress: (site, event) =>
-      switch event.keyCode
-        when 13
-          @moveLocation()
-          false
-        else true
-
-    moveLocation: =>
-      callback = (position) =>
-        @position(position)
-        @marker.setPosition(position)
-        @panToPosition()
-
-      @parseLocation success: callback, failure: callback
-
-    tryGeolocateName: =>
-      return if @nameBeforeGeolocateName == @name()
-
-      @nameBeforeGeolocateName = @name()
-      @parseLocation text: @fullName(), success: (position) =>
-        @position(position)
-        @marker.setPosition(position)
-        @panToPosition()
-
-    fullName: =>
-      name = @name()
-
-      nextParent = @parent
-      while nextParent
-        name += ", "
-        name += nextParent.name()
-        nextParent = nextParent.parent
-
-      name
-
-    parseLocation: (options) =>
-      text = options.text || @locationTextTemp
-      if match = text.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
-        options.success(new google.maps.LatLng(parseFloat(match[1]), parseFloat(match[2])))
-      else
-        window.model.geocoder.geocode { 'address': text}, (results, status) =>
-          if results.length > 0
-            options.success(results[0].geometry.location)
-          else
-            options.failure(@originalLocation)
-
-    exitLocation: =>
-      @endEditLocationInMap(@originalLocation)
-      delete @originalLocation
-
-    editLocationMode: =>
-      @editingLocationMode(true)
-
-    exitLocationMode: =>
-      @editingLocationMode(false)
-
-    saveLocationMode: =>
-      @editingLocationMode(false)
-      @editLocation() if @locationMode() == 'manual'
-
-      @post location_mode: @locationMode(), lat: @lat(), lng: @lng(), (data) =>
-        @position(data)
-        @parent.fetchLocation()
-        @panToPosition()
-
-    createMarker: (drop = false) =>
-      @deleteMarker()
-
-      draggable = @group() || @editingLocation() || !@id()
-      @marker = new google.maps.Marker
-        map: window.model.map
-        position: @position()
-        animation: if drop || !@id() then google.maps.Animation.DROP else null
-        draggable: draggable
-        icon: window.model.markerImageTarget
-        shadow: window.model.markerImageTargetShadow
-        zIndex: 200000
-      @setupMarkerListener()
-      window.model.setAllMarkersInactive() if draggable
-
-    deleteMarker: (removeFromMap = true) =>
-      return unless @marker
-      @marker.setMap null if removeFromMap
-      delete @marker
-      @deleteMarkerListener() if removeFromMap
-
-    deleteMarkerListener: =>
-      return unless @markerListener
-      google.maps.event.removeListener @markerListener
-      delete @markerListener
-
-    setupMarkerListener: =>
-      @markerListener = google.maps.event.addListener @marker, 'position_changed', =>
-        @position(@marker.getPosition())
-        @locationText("#{@marker.getPosition().lat()}, #{@marker.getPosition().lng()}")
-
-    subscribeToLocationModeChange: =>
-      @subscription = @locationMode.subscribe (newLocationMode) =>
-        if newLocationMode == 'manual'
-          @createMarker true
-        else
-          @deleteMarker()
-
-    unsubscribeToLocationModeChange: =>
-      return unless @subscription
-      @subscription.dispose()
-      delete @subscription
-
-    toJSON: =>
-      json =
-        id: @id()
-        group: @group()
-        name: @name()
-      json.lat = @lat() if @lat()
-      json.lng = @lng() if @lng()
-      json.parent_id = @parentId() if @parentId()
-      json.properties = @properties() if @properties()
-      json.location_mode = @locationMode() if @locationMode()
-      json
-
   class CollectionViewModel
     constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
-      @currentParent = ko.observable()
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
-      @parentSite = ko.computed =>
-        if @selectedSite()
-          if @selectedSite().group() then @selectedSite() else @selectedSite().parent
-        else
-          null
       @loadingSite = ko.observable(false)
-      @newSite = ko.computed => if @editingSite() && !@editingSite().id() && !@editingSite().group() then @editingSite() else null
-      @newGroup = ko.computed => if @editingSite() && !@editingSite().id() && @editingSite().group() then @editingSite() else null
-      @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().group() then @editingSite() else null
-      @showGroup = ko.computed => if @editingSite()?.id() && @editingSite().group() then @editingSite() else null
+      @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
+      @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       @showingMap = ko.observable(true)
       @sitesCount = ko.observable(0)
+      @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site on map' else "#{@sitesCount()} sites on map"
       @markers = {}
       @clusters = {}
       @siteIds = {}
       @reloadMapSitesAutomatically = true
       @requestNumber = 0
-      @geocoder = new google.maps.Geocoder();
+      @geocoder = new google.maps.Geocoder()
       @search = ko.observable('')
       @lastSearch = ko.observable(null)
+      @showingRefinePopup = ko.observable(false)
+      @expandedRefineProperty = ko.observable()
+      @expandedRefinePropertyOperator = ko.observable()
+      @expandedRefinePropertyValue = ko.observable()
+      @filters = ko.observableArray([])
+      @sort = ko.observable()
+      @sortDirection = ko.observable()
+
+      @filters.subscribe => @performSearch()
 
       # To be used for form actions, so the url doesn't change
       @formAction = ko.computed => "##{if @currentCollection() then @currentCollection().id() else ''}"
@@ -682,6 +76,9 @@
           self.currentCollection(null)
           self.unselectSite() if self.selectedSite()
           self.search('')
+          self.filters([])
+          self.sort(null)
+          self.sortDirection(null)
 
           initialized = self.initMap()
           self.reloadMapSites() unless initialized
@@ -729,28 +126,19 @@
 
     createCollection: -> window.location = "/collections/new"
 
-    createGroup: => @createSiteOrGroup true
-
-    createSite: => @createSiteOrGroup false
-
-    createSiteOrGroup: (group) =>
+    createSite: =>
       @goBackToTable = true unless @showingMap()
       @showMap =>
-        parent = @parentSite() || @currentCollection()
-        parentId = if !@parentSite() || @parentSite().level() == 0 then null else @parentSite().id()
         pos = @originalSiteLocation = @map.getCenter()
-        site = if group
-                 new Site(parent, parent_id: parentId, lat: pos.lat(), lng: pos.lng(), group: group, location_mode: 'auto')
-               else
-                 new Site(parent, parent_id: parentId, lat: pos.lat(), lng: pos.lng(), group: group)
-        site.copyPropertiesToCollection(@currentCollection()) unless site.group()
+        site = new Site(@currentCollection(), lat: pos.lat(), lng: pos.lng())
+        site.copyPropertiesToCollection(@currentCollection())
         @editingSite site
         @editingSite().startEditLocationInMap()
 
     editSite: (site) =>
       @goBackToTable = true unless @showingMap()
       @showMap =>
-        site.copyPropertiesToCollection(site.parentCollection())
+        site.copyPropertiesToCollection(site.collection)
         if @selectedSite() && @selectedSite().id() == site.id()
           @unselectSite()
           @selectSite(site)
@@ -768,8 +156,8 @@
           @setMarkerIcon @selectedSite().marker, 'active'
         $.get "/sites/#{siteId}.json", {}, (data) =>
           @loadingSite(false)
-          parent = window.model.findCollectionById(data.collection_id)
-          site = new Site(parent, data)
+          collection = window.model.findCollectionById(data.collection_id)
+          site = new Site(collection, data)
           @editSite site
 
     saveSite: =>
@@ -778,28 +166,29 @@
       callback = (data) =>
         unless @editingSite().id()
           @editingSite().id(data.id)
-          @editingSite().updatedAt(data.updated_at)
-          @editingSite().parent.addSite(@editingSite())
+          @currentCollection().addSite(@editingSite())
+
+        @editingSite().updatedAt(data.updated_at)
 
         @editingSite().position(data)
-        @editingSite().parent.fetchLocation()
-        @editingSite().deleteMarker()
+        @currentCollection().fetchLocation()
 
-        @selectedSite(@editingSite().parent) if @editingSite().parentId()
+        if @editingSite().inEditMode()
+          @editingSite().exitEditMode(true)
+        else
+          @editingSite().deleteMarker()
+          @exitSite()
 
-        @exitSite()
-
-      unless @editingSite().group()
-        @editingSite().copyPropertiesFromCollection(@currentCollection())
+      @editingSite().copyPropertiesFromCollection(@currentCollection())
 
       @editingSite().post @editingSite().toJSON(), callback
 
     exitSite: =>
+      if @editingSite().inEditMode()
+        @editingSite().exitEditMode()
+        return
+
       # Unselect site if it's not on the tree
-      oldParentSite = @parentSite()
-      @unselectSite() unless @siteIds[@editingSite().id()]
-      @selectedSite(oldParentSite) if !@selectedSite() && oldParentSite && oldParentSite.level() != 0
-      @editingSite().unsubscribeToLocationModeChange()
       @editingSite().editingLocation(false)
       @editingSite().deleteMarker() unless @editingSite().id()
       @editingSite(null)
@@ -811,9 +200,9 @@
     deleteSite: =>
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
         @unselectSite()
-        @editingSite().parent.removeSite(@editingSite())
+        @currentCollection().removeSite(@editingSite())
         $.post "/sites/#{@editingSite().id()}", {_method: 'delete'}, =>
-          @editingSite().parent.fetchLocation()
+          @currentCollection().fetchLocation()
           @editingSite().deleteMarker()
           @exitSite()
           @reloadMapSites() if @showingMap()
@@ -821,12 +210,13 @@
     selectSite: (site) =>
       if @showingMap()
         if @selectedSite()
-          # This is to prevent flicker: when the map reloads, we try to reuse the old site marker
           if @selectedSite().marker
+            # This is to prevent flicker: when the map reloads, we try to reuse the old site marker
             @oldSelectedSite = @selectedSite()
             @setMarkerIcon @selectedSite().marker, 'active'
             @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
           @selectedSite().selected(false)
+
         if @selectedSite() == site
           @selectedSite(null)
           @reloadMapSites()
@@ -841,7 +231,7 @@
               @setMarkerIcon @selectedSite().marker, 'target'
               @deleteMarker @selectedSite().id(), false
             else
-              @selectedSite().createMarker() unless @selectedSite().group()
+              @selectedSite().createMarker()
             @selectedSite().panToPosition()
           else if @oldSelectedSite
             @oldSelectedSite.deleteMarker()
@@ -876,6 +266,7 @@
         center: center
         zoom: 4
         mapTypeId: google.maps.MapTypeId.ROADMAP
+        scaleControl: true
       @map = new google.maps.Map document.getElementById("map"), mapOptions
 
       listener = google.maps.event.addListener @map, 'bounds_changed', =>
@@ -911,8 +302,10 @@
         w: sw.lng()
         z: @map.getZoom()
         collection_ids: collection_ids
-      query.exclude_id = @selectedSite().id() if @selectedSite()?.id() && !@selectedSite().group()
+      query.exclude_id = @selectedSite().id() if @selectedSite()?.id()
       query.search = @lastSearch() if @lastSearch()
+
+      filter.setQueryParams(query) for filter in @filters()
 
       @requestNumber += 1
       currentRequestNumber = @requestNumber
@@ -937,7 +330,7 @@
 
     drawSitesInMap: (sites = []) =>
       dataSiteIds = {}
-      editingSiteId = if @editingSite()?.id() && @editingSite().editingLocation() then @editingSite().id() else null
+      editingSiteId = if @editingSite()?.id() && (@editingSite().editingLocation() || @editingSite().inEditMode()) then @editingSite().id() else null
       selectedSiteId = @selectedSite()?.id()
       oldSelectedSiteId = @oldSelectedSite?.id() # Optimization to prevent flickering
 
@@ -962,7 +355,7 @@
             if editingSiteId && editingSiteId != site.id
               markerOptions.icon = @markerImageInactive
               markerOptions.shadow = @markerImageInactiveShadow
-            if selectedSiteId && selectedSiteId == site.id
+            if (selectedSiteId && selectedSiteId == site.id)
               markerOptions.icon = @markerImageTarget
               markerOptions.shadow = @markerImageTargetShadow
             @markers[site.id] = new google.maps.Marker markerOptions
@@ -982,7 +375,7 @@
         @deleteMarker siteId
 
       if @oldSelectedSite
-        @oldSelectedSite.deleteMarker()
+        @oldSelectedSite.deleteMarker() if @oldSelectedSite.id() != selectedSiteId
         delete @oldSelectedSite
 
     drawClustersInMap: (clusters = []) =>
@@ -995,7 +388,7 @@
         if currentCluster
           currentCluster.setData(cluster)
         else
-          @createCluster(cluster)
+          currentCluster = @createCluster(cluster)
 
       # Determine which clusters need to be removed from the map
       toRemove = []
@@ -1090,20 +483,33 @@
 
     makeFixedHeaderTable: ->
       unless @showingMap()
-        unless $('table.GralTable').hasClass("fht-table")
-          $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable'
+        oldScrollLeft = $('.tablescroll').scrollLeft()
+
+        $('table.GralTable').fixedHeaderTable 'destroy'
+        $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable'
+
+        setTimeout((->
+          $('.tablescroll').scrollLeft oldScrollLeft
+          window.adjustContainerSize()
+        ), 20)
 
     performSearch: =>
+      return false unless @currentCollection()
+
+      rootCollection = @currentCollection().collection ? @currentCollection()
+
       @unselectSite()
-      if $.trim(@search()).length == 0
-        @currentCollection(@currentCollection().collection)
+      if $.trim(@search()).length == 0 && @filters().length == 0 && !@sort()
+        @currentCollection(rootCollection)
         @lastSearch(null)
       else
-        originalCollection = if @lastSearch() then @currentCollection().collection else @currentCollection()
-        @currentCollection(new CollectionSearch(originalCollection, @search()))
+        @currentCollection(new CollectionSearch(rootCollection, @search(), @filters(), @sort(), @sortDirection()))
         @currentCollection().loadMoreSites()
         @lastSearch(@search())
-      @reloadMapSites() if @showingMap()
+      if @showingMap()
+        @reloadMapSites()
+      else
+        window.adjustContainerSize()
       false
 
     clearSearch: =>
@@ -1121,6 +527,96 @@
       else
         text
 
+    toggleRefinePopup: =>
+      @showingRefinePopup(!@showingRefinePopup())
+      if @showingRefinePopup()
+        $refine = $('#refine')
+        refineOffset = $refine.offset()
+        $('#refine-popup').offset(top: refineOffset.top + $refine.outerHeight(), left: refineOffset.left)
+      else
+        @expandedRefineProperty(null)
+        @expandedRefinePropertyOperator('=')
+        @expandedRefinePropertyValue('')
+
+    toggleRefineProperty: (property) =>
+      @expandedRefinePropertyOperator('=')
+      @expandedRefinePropertyValue('')
+      if @expandedRefineProperty() == property
+        @expandedRefineProperty(null)
+      else
+        @expandedRefineProperty(null) # Needed because sometimes we get a stack overflow (can't find the reason to it)
+        @expandedRefineProperty(property)
+
+    filterDescription: (filter) =>
+      if @filters()[0] == filter
+        "Show sites #{filter.description()}"
+      else
+        filter.description()
+
+    removeFilter: (filter) =>
+      @filters.remove filter
+
+    filterByLastHour: =>
+      @filters.push(new FilterByLastHour())
+      @toggleRefinePopup()
+
+    filterByLastDay: =>
+      @filters.push(new FilterByLastDay())
+      @toggleRefinePopup()
+
+    filterByLastWeek: =>
+      @filters.push(new FilterByLastWeek())
+      @toggleRefinePopup()
+
+    filterByLastMonth: =>
+      @filters.push(new FilterByLastMonth())
+      @toggleRefinePopup()
+
+    filterByProperty: =>
+      return if $.trim(@expandedRefinePropertyValue()).length == 0
+
+      field = @currentCollection().findFieldByCode @expandedRefineProperty()
+      if field.kind() == 'text'
+        @filters.push(new FilterByTextProperty(field.code(), field.name(), @expandedRefinePropertyValue()))
+      else if field.kind() == 'numeric'
+        @filters.push(new FilterByNumericProperty(field.code(), field.name(), @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
+      else if field.kind() == 'select_one' || field.kind() == 'select_many'
+        valueLabel = (option for option in field.options() when option.code() == @expandedRefinePropertyValue())[0].label()
+        @filters.push(new FilterBySelectProperty(field.code(), field.name(), @expandedRefinePropertyValue(), valueLabel))
+
+      @toggleRefinePopup()
+
+    expandedRefinePropertyValueKeyPress: (model, event) =>
+      switch event.keyCode
+        when 13 then @filterByProperty()
+        else true
+
+    sortBy: (field) =>
+      @sortByCode(field.code())
+
+    sortByName: =>
+      @sortByCode('name')
+
+    sortByDate: =>
+      @sortByCode('updated_at', false)
+
+    sortByCode: (code, defaultOrder = true) =>
+      if @sort() == code
+        if @sortDirection() == defaultOrder
+          @sortDirection(!defaultOrder)
+        else
+          @sort(null)
+          @sortDirection(null)
+      else
+        @sort(code)
+        @sortDirection(defaultOrder)
+      @performSearch()
+      @makeFixedHeaderTable()
+
+    exportInRSS: => window.open @currentCollection().link('rss')
+    exportInJSON: => window.open @currentCollection().link('json')
+    exportInCSV: => window.location = @currentCollection().link('csv')
+
   $.get "/collections.json", {}, (collections) =>
     window.model = new CollectionViewModel(collections)
     ko.applyBindings window.model
@@ -1128,6 +624,7 @@
 
     $('#collections-dummy').remove()
     $('#collections-main').show()
+    $('#refine-container').show()
 
   # Adjust width to window
   window.adjustContainerSize = ->
@@ -1137,10 +634,10 @@
 
     $('#container').width(containerWidth)
     $('#header').width(containerWidth)
-    $('.BreadCrumb').width(containerWidth - 340)
-    $('#right-panel').width(containerWidth - 334)
+    $('.BreadCrumb').width(containerWidth - 410)
+    $('#right-panel').width(containerWidth - 404)
     $('.tableheader.expanded').width(containerWidth)
-    $('#map').width(containerWidth - 350)
+    $('#map').width(containerWidth - 420)
     false
 
   $(window).resize adjustContainerSize

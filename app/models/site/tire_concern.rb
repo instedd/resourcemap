@@ -4,14 +4,14 @@ module Site::TireConcern
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
 
   included do
-    after_save :store_in_index, :unless => :group?
-    after_destroy :remove_from_index, :unless => :group?
-    after_find :decode_elastic_search_keywords, :unless => :group?, :if => :properties?
+    after_save :store_in_index
+    after_destroy :remove_from_index
+    after_find :decode_elastic_search_keywords, :if => :properties?
 
     delegate :index_name, :index, to: :collection
   end
 
-  def store_in_index
+  def store_in_index(options = {})
     hash = {
       id: id,
       name: name,
@@ -21,10 +21,14 @@ module Site::TireConcern
       updated_at: updated_at.strftime(DateFormat),
     }
     hash[:location] = {lat: lat.to_f, lon: lng.to_f} if lat? && lng?
-    hash[:parent_ids] = hierarchy.split(',').map(&:to_i) if hierarchy?
     hash[:alert] = collection.thresholds_test properties
-    index.store hash
-    index.refresh
+    result = index.store hash
+
+    if result['error']
+      raise "Can't store site in index: #{result['error']}"
+    end
+
+    index.refresh unless options[:refresh] == false
   end
 
   def remove_from_index

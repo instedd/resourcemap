@@ -32,9 +32,8 @@ class MembershipsController < ApplicationController
     users = User.
       where('email LIKE ?', "#{params[:term]}%").
       where("id not in (?)", collection.memberships.value_of(:user_id)).
-      order('email').
-      all
-    render json: users.map(&:email)
+      order('email')
+    render json: users.pluck(:email)
   end
 
   def destroy

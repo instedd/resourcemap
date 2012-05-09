@@ -25,12 +25,14 @@ Site.blueprint do
   name
   lat { rand(180) - 90 }
   lng { rand(360) - 180 }
-  group { false }
+  user { User.make }
 end
 
 Layer.blueprint do
   collection
   name
+  ord { collection.next_layer_ord }
+  user { User.make }
 end
 
 Field.blueprint do
@@ -39,6 +41,10 @@ Field.blueprint do
   name
   code { Sham.name }
   kind {'text' }
+  ord { layer.next_field_ord }
+end
+
+Activity.blueprint do
 end
 
 Threshold.blueprint do

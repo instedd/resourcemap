@@ -4,9 +4,10 @@ class ApplicationController < ActionController::Base
   expose(:collections) { current_user.collections }
   expose(:collection)
   expose(:collection_memberships) { collection.memberships.includes(:user) }
-  expose(:layers) { collection.layers.includes(:fields) }
+  expose(:layers) { collection.layers }
   expose(:layer)
   expose(:fields) { collection.fields }
+  expose(:activities) { current_user.activities }
   expose(:thresholds) { collection.thresholds.order :priority }
   expose(:threshold)
 

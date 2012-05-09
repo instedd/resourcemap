@@ -1,0 +1,36 @@
+- content_for :head do
+  :javascript
+    $(function() { initActivities(); });
+
+%h1 Activity
+
+.hidden-until-loaded
+  .tabsline
+
+    %p{style: 'margin-top:0px'}
+      View as
+      #{link_to 'RSS', api_activity_path(format: :rss), target: '_blank'}
+
+    .tablewrapp
+      %table.GralTable
+        %tr
+          %th Collection
+          %th User
+          %th Activity
+          %th Time
+        <!-- ko foreach: activities -->
+        %tr{style: 'height:32px'}
+          %td{ko(text: :collection), style: 'min-width:120px'}
+          %td{ko(text: :user)}
+          %td
+            %span{ko(text: :displayedDescription), style: 'display:inline'}
+            <!-- ko if: !expanded() && canBeExpanded() -->
+            %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'} show more
+            <!-- /ko -->
+          %td.timeago{ko(attr: {title: :createdAt}, text: :createdAt), style: 'min-width:150px'}
+        <!-- /ko -->
+        <!-- ko if: hasMore() -->
+        %tr{style: 'height:32px'}
+          %td{ko(click: :loadMore), colspan: 4, align: :center, style: 'text-decoration:underline;cursor:pointer'}
+            Load more
+        <!-- /ko -->
