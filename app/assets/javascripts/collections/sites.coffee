@@ -216,12 +216,13 @@ $(-> if $('#collections-main').length > 0
 
     performHierarchyChange: (site, change) =>
       if change.oldValue?
-        @hierarchyItemsMap[change.oldValue].removeSite(site)
+        item = @hierarchyItemsMap[change.oldValue]
+        item.removeSite(site) if item
       else
         @removeSite(site)
 
       item = @hierarchyItemsMap[change.newValue]
-      item.addSite(site) if item.sitesPage > 1
+      item.addSite(site) if item && item.sitesPage > 1
 
   # Used when grouping by a hierarchy field
   class window.HierarchyItem extends SitesContainer
