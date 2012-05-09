@@ -65,9 +65,12 @@ $(-> if $('#collections-main').length > 0
       # and set its collection to ourself.
       if window.model.selectedSite()?.id() == site.id()
         window.model.selectedSite().collection = @
-        @sites.push(window.model.selectedSite())
+        site = window.model.selectedSite()
       else
-        @sites.push(site)
+        site = window.model.siteIds[site.id()] if window.model.siteIds[site.id()]
+
+      @sites.push(site)
+
       window.model.siteIds[site.id()] = site
 
     removeSite: (site) =>
@@ -89,6 +92,8 @@ $(-> if $('#collections-main').length > 0
       @name = ko.observable data?.name
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
+
+    level: => -1
 
     fetchFields: (callback) =>
       if @fieldsInitialized
@@ -225,10 +230,6 @@ $(-> if $('#collections-main').length > 0
 
     createSite: (site) => new Site(window.model.currentCollection().collection, site)
 
-    addSite: (site) =>
-      super(site)
-      site.level(@level() + 1)
-
   class window.Site extends Locatable
     constructor: (collection, data) ->
       super(data)
@@ -250,7 +251,6 @@ $(-> if $('#collections-main').length > 0
       @valid = ko.computed => @hasName()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
-      @level = ko.observable(0)
 
     hasLocation: => @position()
 
