@@ -29,8 +29,8 @@
       @sortDirection = ko.observable()
       @groupBy = ko.observable(@defaultGroupBy)
 
-      @filters.subscribe => @performSearch()
-      @groupBy.subscribe => @performSearch()
+      @filters.subscribe => @performSearchOrHierarchy()
+      @groupBy.subscribe => @performSearchOrHierarchy()
 
       @inSearch = ko.computed => @currentCollection()?.isSearch()
 
@@ -498,7 +498,7 @@
           window.adjustContainerSize()
         ), 20)
 
-    performSearch: =>
+    performSearchOrHierarchy: =>
       return false unless @currentCollection()
 
       rootCollection = @currentCollection().collection ? @currentCollection()
@@ -525,7 +525,7 @@
 
     clearSearch: =>
       @search('')
-      @performSearch()
+      @performSearchOrHierarchy()
 
     highlightSearch: (text) =>
       if @lastSearch()
@@ -621,7 +621,7 @@
       else
         @sort(code)
         @sortDirection(defaultOrder)
-      @performSearch()
+      @performSearchOrHierarchy()
       @makeFixedHeaderTable()
 
     exportInRSS: => window.open @currentCollection().link('rss')

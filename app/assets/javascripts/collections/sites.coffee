@@ -64,7 +64,6 @@ $(-> if $('#collections-main').length > 0
       # but not in the tree. So we use that one instead of the one from the server,
       # and set its collection to ourself.
       if window.model.selectedSite()?.id() == site.id()
-        window.model.selectedSite().collection = @
         site = window.model.selectedSite()
       else
         site = window.model.siteIds[site.id()] if window.model.siteIds[site.id()]
@@ -93,8 +92,6 @@ $(-> if $('#collections-main').length > 0
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
 
-    level: => -1
-
     fetchFields: (callback) =>
       if @fieldsInitialized
         callback() if callback && typeof(callback) == 'function'
@@ -119,6 +116,10 @@ $(-> if $('#collections-main').length > 0
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
+
+    level: => -1
+
+    performHierarchyChanges: (site, changes) =>
 
   class window.Collection extends CollectionBase
     constructor: (data) ->
@@ -193,7 +194,8 @@ $(-> if $('#collections-main').length > 0
       super(collection)
 
       @field = field
-      @hierarchyItems = ko.observableArray $.map(field.hierarchy(), (x) => new HierarchyItem(field, x))
+      @hierarchyItemsMap = {}
+      @hierarchyItems = ko.observableArray $.map(field.hierarchy(), (x) => new HierarchyItem(@, field, x))
 
       @loadMoreSites()
 
@@ -205,17 +207,35 @@ $(-> if $('#collections-main').length > 0
     queryParams: =>
       hierarchy_code: @field.code()
 
+    # The next two methods are invoked when a site's hierarchy field changes
+    # value: we need to move it from the old node to the new node.
+    performHierarchyChanges: (site, changes) =>
+      for change in changes
+        if change.field.code() == @field.code()
+          @performHierarchyChange(site, change)
+
+    performHierarchyChange: (site, change) =>
+      if change.oldValue?
+        @hierarchyItemsMap[change.oldValue].removeSite(site)
+      else
+        @removeSite(site)
+
+      item = @hierarchyItemsMap[change.newValue]
+      item.addSite(site) if item.sitesPage > 1
+
   # Used when grouping by a hierarchy field
   class window.HierarchyItem extends SitesContainer
-    constructor: (field, data, level = 0) ->
+    constructor: (collection, field, data, level = 0) ->
       @field = field
+
+      collection.hierarchyItemsMap[data.id] = @
 
       @id = ko.observable(data.id)
       @name = ko.observable(data.name)
       @level = ko.observable(level)
       @selected = ko.observable(false)
       @hierarchyItems = if data.sub?
-                          ko.observableArray($.map(data.sub, (x) => new HierarchyItem(@field, x, level + 1)))
+                          ko.observableArray($.map(data.sub, (x) => new HierarchyItem(collection, @field, x, level + 1)))
                         else
                           ko.observableArray()
 
@@ -270,7 +290,12 @@ $(-> if $('#collections-main').length > 0
       @collection.fetchLocation()
 
     updateProperty: (code, value) =>
+      field = @collection.findFieldByCode(code)
+      if field.kind() == 'hierarchy' && window.model.currentCollection()
+        window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[code], newValue: value}])
+
       @properties()[code] = value
+
       $.post "/sites/#{@id()}/update_property.json", {code: code, value: value}, (data) =>
         @propagateUpdatedAt(data.updated_at)
 

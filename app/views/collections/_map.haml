@@ -50,11 +50,11 @@
   %script{type: "text/html", id: "map-hierarchy-items-template"}
     <!-- ko foreach: hierarchyItems -->
     %tr{ko(css: {active: :selected})}
-      %td{style: 'height:30px'}
+      %td{ko(click: :toggleExpand), style: 'height:30px;cursor:pointer'}
         %div
-          %a{ko(click: :toggleExpand, style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
+          %a{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
             %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
-          %span{ko(text: :name), style: 'cursor: pointer'}
+          %span{ko(text: :name)}
     <!-- ko if: expanded -->
     <!-- ko template: {name: 'map-hierarchy-items-template', with: hierarchyItems} -->
     <!-- /ko -->
@@ -100,8 +100,10 @@
         %tr
           %td.loadmore Loading...
         <!-- /ko -->
+  <!-- ko if: !isSearch() && $root.groupBy().code() == '' -->
   .tablebottom
     %button.flocation{ko(click: '$root.createSite')} Create Site
+  <!-- /ko -->
 
   <!-- /ko -->
   <!-- /ko -->

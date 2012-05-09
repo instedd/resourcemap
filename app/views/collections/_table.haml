@@ -32,7 +32,7 @@
   %tr{ko(css: "{active: $data == $root.selectedSite()}")}
     %td.w39{style: 'overflow:auto'}
       %div{style: 'margin-top:2px'}
-        %p{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
+        %p{ko(style: {marginLeft: "'' + (($parent.level() + 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
           %span.stat-r
           %span{ko(html: :highlightedName)}
       %button.farrow{ko(click: '$root.editSite'), type: :button}
@@ -56,11 +56,11 @@
 %script{type: "text/html", id: "table-hierarchy-items-template"}
   <!-- ko foreach: hierarchyItems -->
   %tr{ko(css: {active: :selected})}
-    %td.w39{style: 'overflow:auto; height:30px'}
+    %td.w39{ko(click: :toggleExpand), style: 'overflow:auto;height:30px;cursor:pointer'}
       %div{style: 'margin-top:2px'}
-        %a{ko(click: :toggleExpand, style: {marginLeft: "'' + (($parent.level() + 1) * 20) + 'px'"}), href: 'javascript:void(0)'}
+        %a{ko(style: {marginLeft: "'' + (($parent.level() + 1) * 20) + 'px'"}), href: 'javascript:void(0)'}
           %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
-        %span{ko(text: :name), style: 'cursor: pointer'}
+        %span{ko(text: :name)}
     <!-- ko foreach: $root.currentCollection().fields() -->
     %td.l
     <!-- /ko -->
@@ -137,7 +137,9 @@
       <!-- ko template: {name: 'table-sites-template', with: $data} -->
       <!-- /ko -->
 .tablebottom
+  <!-- ko if: !isSearch() && $root.groupBy().code() == '' -->
   %button.flocation{ko(click: '$root.createSite')} Create Site
+  <!-- /ko -->
   <!-- ko if: hasMoreSites() && !loadingSites()-->
   %span.loadmore
     = ko_link_to "Load more sites...", :loadMoreSites
