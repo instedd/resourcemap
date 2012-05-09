@@ -515,7 +515,6 @@
         @currentCollection(new CollectionSearch(rootCollection, @search(), @filters(), @sort(), @sortDirection()))
         @currentCollection().loadMoreSites()
         @lastSearch(@search())
-        @groupBy(@defaultGroupBy)
 
       if @showingMap()
         @reloadMapSites()
