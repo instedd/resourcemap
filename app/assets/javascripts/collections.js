@@ -13,5 +13,6 @@
 //= require collections/layer
 //= require collections/field
 //= require collections/option
-//= require collections/refine
-//= require collections/index
+//= require collections/filters
+//= require collections/collection_view_model
+//= require collections/run
