@@ -14,5 +14,7 @@ class Api::ActivitiesController < ApplicationController
       @hasNextPage = true
       @activities = @activities[0 .. -2]
     end
+
+    render :index, layout: false
   end
 end
