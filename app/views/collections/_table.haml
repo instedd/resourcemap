@@ -137,7 +137,7 @@
       <!-- ko template: {name: 'table-sites-template', with: $data} -->
       <!-- /ko -->
 .tablebottom
-  <!-- ko if: !isSearch() && $root.groupBy().code() == '' -->
+  <!-- ko if: !isSearch() -->
   %button.flocation{ko(click: '$root.createSite')} Create Site
   <!-- /ko -->
   <!-- ko if: hasMoreSites() && !loadingSites()-->

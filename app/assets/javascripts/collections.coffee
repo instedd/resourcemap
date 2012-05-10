@@ -172,7 +172,7 @@
       callback = (data) =>
         unless @editingSite().id()
           @editingSite().id(data.id)
-          @currentCollection().addSite(@editingSite())
+          @currentCollection().addSite(@editingSite(), true)
 
         @editingSite().updatedAt(data.updated_at)
 

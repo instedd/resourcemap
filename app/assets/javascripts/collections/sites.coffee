@@ -59,7 +59,7 @@ $(-> if $('#collections-main').length > 0
         @loadingSites false
         window.model.refreshTimeago()
 
-    addSite: (site) =>
+    addSite: (site, isNew = false) =>
       # This check is because the selected site might be selected on the map,
       # but not in the tree. So we use that one instead of the one from the server,
       # and set its collection to ourself.
@@ -211,6 +211,21 @@ $(-> if $('#collections-main').length > 0
     queryParams: =>
       hierarchy_code: @field.code()
 
+    addSite: (site, isNew = false) =>
+      # We also add the site to the original collection
+      # or to the hierarchy item where it belongs, if it's a new site
+      if isNew
+        @collection.addSite site
+
+        if site.properties()[@field.code()]
+          item = @hierarchyItemsMap[site.properties()[@field.code()]]
+          item.addSite site if item && item.sitesPage > 1
+        else
+          super(site)
+      else
+        super(site)
+
+
     # The next two methods are invoked when a site's hierarchy field changes
     # value: we need to move it from the old node to the new node.
     performHierarchyChanges: (site, changes) =>
@@ -311,7 +326,7 @@ $(-> if $('#collections-main').length > 0
 
       @properties({})
       for field in collection.fields()
-        if field.kind() == 'hierarchy'
+        if field.kind() == 'hierarchy' && @id()
           hierarchyChanges.push({field: field, oldValue: oldProperties[field.code()], newValue: field.value()})
 
         if field.value()
