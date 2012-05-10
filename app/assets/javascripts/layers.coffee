@@ -335,3 +335,5 @@
   $.get "/collections/#{collectionId}/layers.json", {}, (layers) =>
     window.model = new LayersViewModel(collectionId, layers)
     ko.applyBindings window.model
+
+    $('.hidden-until-loaded').show()
