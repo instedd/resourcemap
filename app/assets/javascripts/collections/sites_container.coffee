@@ -1,12 +1,7 @@
 $(-> if $('#collections-main').length > 0
 
-  class window.SitesContainer extends Locatable
-    constructor: (data) ->
-      super(data)
-
-      @initSites()
-
-    initSites: =>
+  class window.SitesContainer
+    @constructorSitesContainer: ->
       @expanded = ko.observable false
       @sites = ko.observableArray()
       @sitesPage = 1
@@ -14,7 +9,7 @@ $(-> if $('#collections-main').length > 0
       @loadingSites = ko.observable false
 
     # Loads SITES_PER_PAGE sites more from the server, it there are more sites.
-    loadMoreSites: =>
+    @loadMoreSites: ->
       return unless @hasMoreSites()
 
       @loadingSites true
@@ -31,7 +26,7 @@ $(-> if $('#collections-main').length > 0
         @loadingSites false
         window.model.refreshTimeago()
 
-    addSite: (site, isNew = false) =>
+    @addSite: (site, isNew = false) ->
       # This check is because the selected site might be selected on the map,
       # but not in the tree. So we use that one instead of the one from the server,
       # and set its collection to ourself.
@@ -44,16 +39,16 @@ $(-> if $('#collections-main').length > 0
 
       window.model.siteIds[site.id()] = site
 
-    removeSite: (site) =>
+    @removeSite: (site) ->
       @sites.remove site
       delete window.model.siteIds[site.id()]
 
-    toggleExpand: =>
+    @toggleExpand: ->
       # Load more sites when we expand, but only the first time
       if !@expanded() && @hasMoreSites() && @sitesPage == 1
         @loadMoreSites()
       @expanded(!@expanded())
 
-    createSite: (site) => new Site(@, site)
+    @createSite: (site) -> new Site(@, site)
 
 )

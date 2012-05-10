@@ -124,4 +124,10 @@ $(-> if $('#collections-main').length > 0
       else
         "#{20 + @name().length * 8}px"
 
+  class window.Option
+    constructor: (data) ->
+      @code = ko.observable(data?.code)
+      @label = ko.observable(data?.label)
+      @selected = ko.observable(false)
+
 )

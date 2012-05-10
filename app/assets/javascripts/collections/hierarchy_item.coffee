@@ -1,8 +1,12 @@
 $(-> if $('#collections-main').length > 0
 
   # Used when grouping by a hierarchy field
-  class window.HierarchyItem extends SitesContainer
+  class window.HierarchyItem extends Module
+    @include SitesContainer
+
     constructor: (collection, field, data, level = 0) ->
+      @constructorSitesContainer()
+
       @field = field
 
       collection.hierarchyItemsMap[data.id] = @
@@ -15,8 +19,6 @@ $(-> if $('#collections-main').length > 0
                           ko.observableArray($.map(data.sub, (x) => new HierarchyItem(collection, @field, x, level + 1)))
                         else
                           ko.observableArray()
-
-      @initSites()
 
     sitesUrl: =>
       "/collections/#{window.model.currentCollection().id()}/search.json?#{$.param @queryParams()}"

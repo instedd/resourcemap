@@ -1,8 +1,13 @@
 $(-> if $('#collections-main').length > 0
 
-  class window.CollectionBase extends window.SitesContainer
+  class window.CollectionBase extends Module
+    @include Locatable
+    @include SitesContainer
+
     constructor: (data) ->
-      super(data)
+      @constructorLocatable(data)
+      @constructorSitesContainer()
+
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @updatedAt = ko.observable(data.updated_at)

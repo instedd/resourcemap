@@ -1,8 +1,10 @@
 $(-> if $('#collections-main').length > 0
 
-  class window.Site extends Locatable
+  class window.Site extends Module
+    @include Locatable
+
     constructor: (collection, data) ->
-      super(data)
+      @constructorLocatable(data)
 
       @collection = collection
       @selected = ko.observable()

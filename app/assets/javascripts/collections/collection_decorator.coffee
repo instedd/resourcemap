@@ -2,6 +2,10 @@ $(-> if $('#collections-main').length > 0
 
   class window.CollectionDecorator extends CollectionBase
     constructor: (collection) ->
+      # These two are because we are not calling super
+      @constructorLocatable(lat: collection.lat(), lng: collection.lng())
+      @constructorSitesContainer()
+
       @collection = collection
 
       @id = ko.observable collection.id()
@@ -10,10 +14,6 @@ $(-> if $('#collections-main').length > 0
       @fields = collection.fields
       @fieldsInitialized = collection.fieldsInitialized
       @groupByOptions = collection.groupByOptions
-
-      @initSites()
-
-      @constructorLocation(lat: collection.lat(), lng: collection.lng())
 
     createSite: (site) => new Site(@collection, site)
 

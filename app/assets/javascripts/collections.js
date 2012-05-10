@@ -7,9 +7,11 @@
 //= require collections/collection_search
 //= require collections/collection_hierarchy
 //= require collections/hierarchy_item
+//= require collections/field_hierarchy_item
 //= require collections/site
 //= require collections/cluster
-//= require collections/fields
-//= require collections/hierarchy
+//= require collections/layer
+//= require collections/field
+//= require collections/option
 //= require collections/refine
 //= require collections/index

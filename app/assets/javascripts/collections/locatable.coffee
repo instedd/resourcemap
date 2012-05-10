@@ -2,10 +2,7 @@ $(-> if $('#collections-main').length > 0
 
   # An object with a position on the map.
   class window.Locatable
-    constructor: (data) ->
-      @constructorLocation(data)
-
-    constructorLocation: (data) ->
+    @constructorLocatable: (data) ->
       @lat = ko.observable data?.lat
       @lng = ko.observable data?.lng
       @position = ko.computed
@@ -18,7 +15,7 @@ $(-> if $('#collections-main').length > 0
         owner: @
 
     # Pans the map to this object's location, and the reload the map's sites and clusters.
-    panToPosition: =>
+    @panToPosition: ->
       currentPosition = window.model.map.getCenter()
       positionChanged = @position() && (Math.abs(@position().lat() - currentPosition.lat()) > 1e-6 || Math.abs(@position().lng() - currentPosition.lng()) > 1e-6)
 
