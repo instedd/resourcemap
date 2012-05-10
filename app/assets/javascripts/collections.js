@@ -14,5 +14,13 @@
 //= require collections/field
 //= require collections/option
 //= require collections/filters
-//= require collections/collection_view_model
+//= require collections/collections_view_model
+//= require collections/sites_view_model
+//= require collections/export_links_view_model
+//= require collections/map_view_model
+//= require collections/refine_view_model
+//= require collections/search_view_model
+//= require collections/sammy_view_model
+//= require collections/sort_view_model
+//= require collections/main_view_model
 //= require collections/run

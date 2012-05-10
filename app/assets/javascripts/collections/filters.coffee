@@ -31,7 +31,7 @@ $(-> if $('#collections-main').length > 0
 
     description: => "updated within the last month"
 
-  class window.FilterByTextProperty
+  class window.FilterByTextProperty extends Filter
     constructor: (code, label, value) ->
       @code = code
       @label = label
@@ -42,7 +42,7 @@ $(-> if $('#collections-main').length > 0
 
     description: => "where #{@label} contains \"#{@value}\""
 
-  class window.FilterByNumericProperty
+  class window.FilterByNumericProperty extends Filter
     constructor: (code, label, operator, value) ->
       @code = code
       @label = label
@@ -62,7 +62,7 @@ $(-> if $('#collections-main').length > 0
         when '>=' then str += " is greater than or equal to "
       str += "#{@value}"
 
-  class window.FilterBySelectProperty
+  class window.FilterBySelectProperty extends Filter
     constructor: (code, label, value, valueLabel) ->
       @code = code
       @label = label

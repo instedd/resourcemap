@@ -2,7 +2,7 @@ $(-> if $('#collections-main').length > 0
 
   # Get collections and start the view model
   $.get "/collections.json", {}, (collections) =>
-    window.model = new CollectionViewModel
+    window.model = new MainViewModel
     window.model.initialize(collections)
     ko.applyBindings window.model
     window.model.initSammy()
