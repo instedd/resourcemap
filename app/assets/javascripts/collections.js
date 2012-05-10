@@ -1,0 +1,15 @@
+//= require collections/constants
+//= require collections/locatable
+//= require collections/sites_container
+//= require collections/collection_base
+//= require collections/collection
+//= require collections/collection_decorator
+//= require collections/collection_search
+//= require collections/collection_hierarchy
+//= require collections/hierarchy_item
+//= require collections/site
+//= require collections/cluster
+//= require collections/fields
+//= require collections/hierarchy
+//= require collections/refine
+//= require collections/index

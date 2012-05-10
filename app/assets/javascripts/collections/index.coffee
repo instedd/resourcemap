@@ -1,6 +1,6 @@
-@initCollections = ->
+$(-> if $('#collections-main').length > 0
 
-  class CollectionViewModel
+  class window.CollectionViewModel
     initialize: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
@@ -668,3 +668,4 @@
            $refinePopup.has(event.target).length > 0
       window.model.toggleRefinePopup() if window.model.showingRefinePopup()
 
+)
