@@ -538,16 +538,18 @@
       else
         text
 
-    toggleRefinePopup: =>
+    toggleRefinePopup: (model, event) =>
       @showingRefinePopup(!@showingRefinePopup())
       if @showingRefinePopup()
-        $refine = $('#refine')
+        $refine = $('.refine')
         refineOffset = $refine.offset()
-        $('#refine-popup').offset(top: refineOffset.top + $refine.outerHeight(), left: refineOffset.left)
+        $('.refine-popup').offset(top: refineOffset.top + $refine.outerHeight(), left: refineOffset.left)
+        false
       else
         @expandedRefineProperty(null)
         @expandedRefinePropertyOperator('=')
         @expandedRefinePropertyValue('')
+      event.stopPropagation()
 
     toggleRefineProperty: (property) =>
       @expandedRefinePropertyOperator('=')
@@ -654,3 +656,14 @@
 
   $(window).resize adjustContainerSize
   setTimeout(adjustContainerSize, 100)
+
+  # Hide the refine popup if clicking outside it
+  $(window.document).click (event) ->
+    $refine = $('.refine')
+    $refinePopup = $('.refine-popup')
+    unless $refine.get(0) == event.target ||
+           $refinePopup.get(0) == event.target ||
+           $refine.has(event.target).length > 0 ||
+           $refinePopup.has(event.target).length > 0
+      window.model.toggleRefinePopup() if window.model.showingRefinePopup()
+
