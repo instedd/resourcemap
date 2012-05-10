@@ -17,7 +17,7 @@
       @siteIds = {}
       @reloadMapSitesAutomatically = true
       @requestNumber = 0
-      @geocoder = new google.maps.Geocoder();
+      @geocoder = new google.maps.Geocoder()
       @search = ko.observable('')
       @lastSearch = ko.observable(null)
       @showingRefinePopup = ko.observable(false)
