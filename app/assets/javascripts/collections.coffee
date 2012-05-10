@@ -82,6 +82,7 @@
           self.filters([])
           self.sort(null)
           self.sortDirection(null)
+          self.groupBy(self.defaultGroupBy)
 
           initialized = self.initMap()
           self.reloadMapSites() unless initialized
