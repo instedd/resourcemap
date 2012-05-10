@@ -171,6 +171,10 @@ $(-> if $('#collections-main').length > 0
       @filters = filters
       @sort = sort
       @sortDirection = sortDirection
+      @hasDateFilter = ko.computed =>
+        for filter in @filters
+          return true if filter.isDateFilter()
+        false
 
     isSearch: => true
 

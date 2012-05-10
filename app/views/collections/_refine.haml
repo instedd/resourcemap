@@ -19,6 +19,7 @@
     %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (showingRefinePopup() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
   <!-- ko if: showingRefinePopup() -->
   .refine-popup.box{style: 'position:absolute;padding:3px;z-index:10000;width:440px;max-height:300px;overflow:auto;-webkit-box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2)'}
+    <!-- ko if: !inSearch() || !currentCollection().hasDateFilter() -->
     #div{ko(click: 'function(data, event) { toggleRefineProperty("update") }'), style: 'cursor:pointer'}
       %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expandedRefineProperty() == \"update\" ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
       %span Updated within
@@ -36,6 +37,7 @@
       %input#refine-last-month{ko(click: '$root.filterByLastMonth'), type: :radio, name: 'refine-update'}
       %label{:for => 'refine-last-month'} the last month
       %br/
+    <!-- /ko -->
     <!-- /ko -->
     <!-- ko foreach: currentCollection().fields() -->
     #div{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.code()) }'), style: 'cursor:pointer;padding-top:6px'}

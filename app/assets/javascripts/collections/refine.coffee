@@ -1,24 +1,31 @@
 $(-> if $('#collections-main').length > 0
 
-  class window.FilterByLastHour
+  class window.Filter
+    isDateFilter: => false
+
+  class window.FilterByDate
+    isDateFilter: => true
+
+  class window.FilterByLastHour extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_hour'
 
     description: => "updated within the last hour"
 
-  class window.FilterByLastDay
+
+  class window.FilterByLastDay extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_day'
 
     description: => "updated within the last day"
 
-  class window.FilterByLastWeek
+  class window.FilterByLastWeek extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_week'
 
     description: => "updated within the last week"
 
-  class window.FilterByLastMonth
+  class window.FilterByLastMonth extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_month'
 
