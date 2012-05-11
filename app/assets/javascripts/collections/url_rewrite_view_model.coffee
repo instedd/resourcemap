@@ -3,9 +3,7 @@ onCollections ->
   class @UrlRewriteViewModel
     @rewriteUrl: ->
       @rewritingUrl = true
-      @rewriteUrlCore()
 
-    @rewriteUrlCore: ->
       hash = ""
       query = {}
 
@@ -33,4 +31,7 @@ onCollections ->
       params = $.param query
       hash += "?#{params}" if params.length > 0
 
-      window.location.hash = hash
+      if window.location.hash == hash
+        @rewritingUrl = false
+      else
+        window.location.hash = hash

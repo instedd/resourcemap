@@ -8,7 +8,7 @@ onCollections ->
       @inSearch = ko.computed => @currentCollection()?.isSearch()
 
     @performSearchOrHierarchy: ->
-      return false unless @currentCollection()
+      return false if !@currentCollection() || @ignorePerformSearchOrHierarchy
 
       rootCollection = @currentCollection().collection ? @currentCollection()
 
