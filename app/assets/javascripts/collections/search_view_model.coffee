@@ -30,6 +30,8 @@ onCollections ->
       else
         window.adjustContainerSize()
 
+      @rewriteUrl()
+
       false
 
     @clearSearch: ->

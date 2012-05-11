@@ -46,4 +46,6 @@ onCollections ->
 
     level: => -1
 
+    setQueryParams: (q) -> q
+
     performHierarchyChanges: (site, changes) =>

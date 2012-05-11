@@ -28,6 +28,7 @@ onCollections ->
         else
           @selectSite(site)
         @editingSite(site)
+        @rewriteUrl()
 
     @editSiteFromMarker: (siteId) ->
       site = @siteIds[siteId]
@@ -69,16 +70,16 @@ onCollections ->
     @exitSite: ->
       if @editingSite().inEditMode()
         @editingSite().exitEditMode()
-        return
-
-      # Unselect site if it's not on the tree
-      @editingSite().editingLocation(false)
-      @editingSite().deleteMarker() unless @editingSite().id()
-      @editingSite(null)
-      window.model.setAllMarkersActive()
-      if @goBackToTable
-        @showTable()
-        delete @goBackToTable
+      else
+        # Unselect site if it's not on the tree
+        @editingSite().editingLocation(false)
+        @editingSite().deleteMarker() unless @editingSite().id()
+        @editingSite(null)
+        window.model.setAllMarkersActive()
+        if @goBackToTable
+          @showTable()
+          delete @goBackToTable
+      @rewriteUrl()
 
     @deleteSite: ->
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
@@ -120,13 +121,14 @@ onCollections ->
             @oldSelectedSite.deleteMarker()
             delete @oldSelectedSite
             @reloadMapSites()
-
       else
         @selectedSite().selected(false) if @selectedSite()
         if @selectedSite() == site
           @selectedSite(null)
         else
           @selectedSite(site)
+
+      @rewriteUrl()
 
     @unselectSite: ->
       @selectSite(@selectedSite()) if @selectedSite()

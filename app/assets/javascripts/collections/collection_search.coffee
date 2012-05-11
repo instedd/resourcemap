@@ -22,7 +22,9 @@ onCollections ->
       "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
 
     queryParams: =>
-      q = {}
+      @setQueryParams {}
+
+    setQueryParams: (q) =>
       q.search = @search if @search
       if @sort
         q.sort = @sort

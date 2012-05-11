@@ -19,7 +19,11 @@ onCollections ->
       "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
 
     queryParams: =>
-      hierarchy_code: @field.code()
+      @setQueryParams {}
+
+    setQueryParams: (q) =>
+      q.hierarchy_code = @field.code()
+      q
 
     addSite: (site, isNew = false) =>
       # We also add the site to the original collection
@@ -34,7 +38,6 @@ onCollections ->
           super(site)
       else
         super(site)
-
 
     # The next two methods are invoked when a site's hierarchy field changes
     # value: we need to move it from the old node to the new node.

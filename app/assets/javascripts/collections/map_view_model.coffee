@@ -50,12 +50,17 @@ onCollections ->
       listener = google.maps.event.addListener @map, 'bounds_changed', =>
         google.maps.event.removeListener listener
         @reloadMapSites()
+        @rewriteUrl()
 
-      google.maps.event.addListener @map, 'dragend', => @reloadMapSites()
+      google.maps.event.addListener @map, 'dragend', =>
+        @reloadMapSites()
+        @rewriteUrl()
+
       google.maps.event.addListener @map, 'zoom_changed', =>
         listener2 = google.maps.event.addListener @map, 'bounds_changed', =>
           google.maps.event.removeListener listener2
           @reloadMapSites() if @reloadMapSitesAutomatically
+          @rewriteUrl()
 
       true
 
