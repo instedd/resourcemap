@@ -69,8 +69,8 @@ onCollections ->
             switch value
               when 'last_hour' then @filters.push(new FilterByLastHour())
               when 'last_day' then @filters.push(new FilterByLastDay())
-              when 'last_week' then @filters.push(new FilterByLastWeekHour())
-              when 'last_month' then @filters.push(new FilterByLastMonthHour())
+              when 'last_week' then @filters.push(new FilterByLastWeek())
+              when 'last_month' then @filters.push(new FilterByLastMonth())
             foundSearchOrHierarchy = true
 
       @ignorePerformSearchOrHierarchy = false
