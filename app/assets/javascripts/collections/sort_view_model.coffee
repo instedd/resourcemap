@@ -1,6 +1,6 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.SortViewModel
+  class @SortViewModel
     @constructorSortViewModel: ->
       @sort = ko.observable()
       @sortDirection = ko.observable()
@@ -26,5 +26,3 @@ $(-> if $('#collections-main').length > 0
         @sortDirection(defaultOrder)
       @performSearchOrHierarchy()
       @makeFixedHeaderTable()
-
-)

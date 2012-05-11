@@ -1,6 +1,6 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.SearchViewModel
+  class @SearchViewModel
     @constructorSearchViewModel: ->
       @search = ko.observable('')
       @lastSearch = ko.observable(null)
@@ -46,5 +46,3 @@ $(-> if $('#collections-main').length > 0
           text
       else
         text
-
-)

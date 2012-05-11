@@ -1,7 +1,7 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
   # An object with a position on the map.
-  class window.Locatable
+  class @Locatable
     @constructorLocatable: (data) ->
       @lat = ko.observable data?.lat
       @lng = ko.observable data?.lng
@@ -22,5 +22,3 @@ $(-> if $('#collections-main').length > 0
       window.model.reloadMapSitesAutomatically = false
       window.model.map.panTo @position() if positionChanged
       window.model.reloadMapSites()
-
-)

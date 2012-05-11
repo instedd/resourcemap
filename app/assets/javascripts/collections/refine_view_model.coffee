@@ -1,6 +1,6 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.RefineViewModel
+  class @RefineViewModel
     @constructorRefineViewModel: ->
       @showingRefinePopup = ko.observable(false)
       @expandedRefineProperty = ko.observable()
@@ -73,4 +73,3 @@ $(-> if $('#collections-main').length > 0
       switch event.keyCode
         when 13 then @filterByProperty()
         else true
-)

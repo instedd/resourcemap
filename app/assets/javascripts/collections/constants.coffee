@@ -1,5 +1,3 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
   window.SITES_PER_PAGE = 25
-
-)

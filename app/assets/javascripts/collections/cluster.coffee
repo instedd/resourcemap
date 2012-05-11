@@ -1,8 +1,8 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
   # Repesents a cluster on the map.
   # It consists of a location and a count.
-  class window.Cluster extends google.maps.OverlayView
+  class @Cluster extends google.maps.OverlayView
     constructor: (map, cluster) ->
       @map = map
       @setMap map
@@ -109,4 +109,3 @@ $(-> if $('#collections-main').length > 0
       zIndex = window.model.zIndex(@position.lat())
       @div.style.zIndex = zIndex if @div
       @countDiv.style.zIndex = zIndex - 10 if @countDiv
-)

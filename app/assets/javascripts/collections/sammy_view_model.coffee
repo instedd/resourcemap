@@ -1,6 +1,6 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.SammyViewModel
+  class @SammyViewModel
     @initSammy: ->
       self = this
 
@@ -34,5 +34,3 @@ $(-> if $('#collections-main').length > 0
           self.refreshTimeago()
           self.makeFixedHeaderTable()
       ).run()
-
-)

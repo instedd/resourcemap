@@ -1,9 +1,7 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.Option
+  class @Option
     constructor: (data) ->
       @code = ko.observable(data?.code)
       @label = ko.observable(data?.label)
       @selected = ko.observable(false)
-
-)

@@ -1,7 +1,7 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
   # A Layer field
-  class window.Field
+  class @Field
     constructor: (data) ->
       @code = ko.observable data?.code
       @name = ko.observable data?.name
@@ -123,5 +123,3 @@ $(-> if $('#collections-main').length > 0
         '100px'
       else
         "#{20 + @name().length * 8}px"
-
-)

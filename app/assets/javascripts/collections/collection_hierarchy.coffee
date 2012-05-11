@@ -1,7 +1,9 @@
-$(-> if $('#collections-main').length > 0
+#= require collections/collection_decorator
+
+onCollections ->
 
   # A collection that groups the items by a hierarchy field
-  class window.CollectionHierarchy extends CollectionDecorator
+  class @CollectionHierarchy extends CollectionDecorator
     constructor: (collection, field) ->
       super(collection)
 
@@ -50,5 +52,3 @@ $(-> if $('#collections-main').length > 0
 
       item = @hierarchyItemsMap[change.newValue]
       item.addSite(site) if item && item.sitesPage > 1
-
-)

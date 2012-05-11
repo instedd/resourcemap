@@ -1,6 +1,16 @@
-$(-> if $('#collections-main').length > 0
+#= require module
+#= require collections/collections_view_model
+#= require collections/sites_view_model
+#= require collections/export_links_view_model
+#= require collections/map_view_model
+#= require collections/refine_view_model
+#= require collections/search_view_model
+#= require collections/sammy_view_model
+#= require collections/sort_view_model
 
-  class window.MainViewModel extends Module
+onCollections ->
+
+  class @MainViewModel extends Module
     @include CollectionsViewModel
     @include SitesViewModel
     @include ExportLinksViewModel
@@ -47,5 +57,3 @@ $(-> if $('#collections-main').length > 0
         element.text "Maximum #{field.name()}: #{data}"
 
     refreshTimeago: -> $('.timeago').timeago()
-
-)

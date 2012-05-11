@@ -1,6 +1,6 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.Layer
+  class @Layer
     constructor: (data) ->
       @name = ko.observable data?.name
       @fields = ko.observableArray($.map(data.fields, (x) => new Field(x)))
@@ -8,5 +8,3 @@ $(-> if $('#collections-main').length > 0
 
     toggleExpand: =>
       @expanded(!@expanded())
-
-)

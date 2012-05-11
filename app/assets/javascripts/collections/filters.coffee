@@ -1,37 +1,37 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.Filter
+  class @Filter
     isDateFilter: => false
 
-  class window.FilterByDate
+  class @FilterByDate
     isDateFilter: => true
 
-  class window.FilterByLastHour extends FilterByDate
+  class @FilterByLastHour extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_hour'
 
     description: => "updated within the last hour"
 
 
-  class window.FilterByLastDay extends FilterByDate
+  class @FilterByLastDay extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_day'
 
     description: => "updated within the last day"
 
-  class window.FilterByLastWeek extends FilterByDate
+  class @FilterByLastWeek extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_week'
 
     description: => "updated within the last week"
 
-  class window.FilterByLastMonth extends FilterByDate
+  class @FilterByLastMonth extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_month'
 
     description: => "updated within the last month"
 
-  class window.FilterByTextProperty extends Filter
+  class @FilterByTextProperty extends Filter
     constructor: (code, label, value) ->
       @code = code
       @label = label
@@ -42,7 +42,7 @@ $(-> if $('#collections-main').length > 0
 
     description: => "where #{@label} contains \"#{@value}\""
 
-  class window.FilterByNumericProperty extends Filter
+  class @FilterByNumericProperty extends Filter
     constructor: (code, label, operator, value) ->
       @code = code
       @label = label
@@ -62,7 +62,7 @@ $(-> if $('#collections-main').length > 0
         when '>=' then str += " is greater than or equal to "
       str += "#{@value}"
 
-  class window.FilterBySelectProperty extends Filter
+  class @FilterBySelectProperty extends Filter
     constructor: (code, label, value, valueLabel) ->
       @code = code
       @label = label
@@ -74,5 +74,3 @@ $(-> if $('#collections-main').length > 0
 
     description: =>
       "where #{@label} is \"#{@valueLabel}\""
-
-)

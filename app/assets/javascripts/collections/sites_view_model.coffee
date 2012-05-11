@@ -1,6 +1,6 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.SitesViewModel
+  class @SitesViewModel
     @constructorSitesViewModel: ->
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
@@ -131,5 +131,3 @@ $(-> if $('#collections-main').length > 0
 
     @unselectSite: ->
       @selectSite(@selectedSite()) if @selectedSite()
-
-)

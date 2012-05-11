@@ -1,6 +1,8 @@
-$(-> if $('#collections-main').length > 0
+#= require collections/collection_base
 
-  class window.Collection extends CollectionBase
+onCollections ->
+
+  class @Collection extends CollectionBase
     constructor: (data) ->
       super(data)
       @layers = ko.observableArray()
@@ -17,5 +19,3 @@ $(-> if $('#collections-main').length > 0
     fetchLocation: => $.get "/collections/#{@id()}.json", {}, (data) =>
       @position(data)
       @updatedAt(data.updated_at)
-
-)

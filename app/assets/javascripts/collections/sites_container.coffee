@@ -1,6 +1,6 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.SitesContainer
+  class @SitesContainer
     @constructorSitesContainer: ->
       @expanded = ko.observable false
       @sites = ko.observableArray()
@@ -50,5 +50,3 @@ $(-> if $('#collections-main').length > 0
       @expanded(!@expanded())
 
     @createSite: (site) -> new Site(@, site)
-
-)

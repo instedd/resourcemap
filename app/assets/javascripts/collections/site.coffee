@@ -1,6 +1,9 @@
-$(-> if $('#collections-main').length > 0
+#= require module
+#= require collections/locatable
 
-  class window.Site extends Module
+onCollections ->
+
+  class @Site extends Module
     @include Locatable
 
     constructor: (collection, data) ->
@@ -269,5 +272,3 @@ $(-> if $('#collections-main').length > 0
       json.lng = @lng() if @lng()
       json.properties = @properties() if @properties()
       json
-
-)

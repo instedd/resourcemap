@@ -1,7 +1,9 @@
-$(-> if $('#collections-main').length > 0
+#= require collections/collection_decorator
+
+onCollections ->
 
   # A collection that is filtered by a search result
-  class window.CollectionSearch extends CollectionDecorator
+  class @CollectionSearch extends CollectionDecorator
     constructor: (collection, search, filters, sort, sortDirection) ->
       super(collection)
 
@@ -29,5 +31,3 @@ $(-> if $('#collections-main').length > 0
       q
 
     link: (format) => "/api/collections/#{@id()}.#{format}?#{$.param @queryParams()}"
-
-)

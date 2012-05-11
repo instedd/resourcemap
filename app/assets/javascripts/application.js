@@ -18,10 +18,4 @@
 //= require jquery.timeago
 //= require knockout-2.0.0
 //= require sammy
-//= require array
-//= require module
-//= require activities
-//= require collections
-//= require import_wizard
-//= require layers
-//= require memberships
+//= require_tree

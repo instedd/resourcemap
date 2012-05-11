@@ -1,4 +1,7 @@
-$(-> if $('#collections-main').length > 0
+#= require collections/on_collections
+#= require collections/main_view_model
+
+onCollections ->
 
   # Get collections and start the view model
   $.get "/collections.json", {}, (collections) =>
@@ -37,5 +40,3 @@ $(-> if $('#collections-main').length > 0
            $refine.has(event.target).length > 0 ||
            $refinePopup.has(event.target).length > 0
       window.model.toggleRefinePopup() if window.model.showingRefinePopup()
-
-)

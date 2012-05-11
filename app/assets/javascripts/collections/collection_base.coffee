@@ -1,6 +1,10 @@
-$(-> if $('#collections-main').length > 0
+#= require module
+#= require collections/locatable
+#= require collections/sites_container
 
-  class window.CollectionBase extends Module
+onCollections ->
+
+  class @CollectionBase extends Module
     @include Locatable
     @include SitesContainer
 
@@ -43,5 +47,3 @@ $(-> if $('#collections-main').length > 0
     level: => -1
 
     performHierarchyChanges: (site, changes) =>
-
-)

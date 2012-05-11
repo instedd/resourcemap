@@ -1,7 +1,7 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
   # A Layer field
-  class window.Field
+  class @Field
     constructor: (data) ->
       @code = ko.observable data?.code
       @name = ko.observable data?.name
@@ -129,5 +129,3 @@ $(-> if $('#collections-main').length > 0
       @code = ko.observable(data?.code)
       @label = ko.observable(data?.label)
       @selected = ko.observable(false)
-
-)

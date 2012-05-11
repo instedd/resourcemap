@@ -1,7 +1,10 @@
-$(-> if $('#collections-main').length > 0
+#= require module
+#= require collections/sites_container
+
+onCollections ->
 
   # Used when grouping by a hierarchy field
-  class window.HierarchyItem extends Module
+  class @HierarchyItem extends Module
     @include SitesContainer
 
     constructor: (collection, field, data, level = 0) ->
@@ -28,5 +31,3 @@ $(-> if $('#collections-main').length > 0
       hierarchy_value: @id()
 
     createSite: (site) => new Site(window.model.currentCollection().collection, site)
-
-)

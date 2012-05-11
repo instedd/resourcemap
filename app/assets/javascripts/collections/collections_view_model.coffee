@@ -1,6 +1,6 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.CollectionsViewModel
+  class @CollectionsViewModel
     @constructorCollectionsViewModel: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
@@ -14,4 +14,3 @@ $(-> if $('#collections-main').length > 0
     @editCollection: (collection) -> window.location = "/collections/#{collection.id()}"
 
     @createCollection: -> window.location = "/collections/new"
-)

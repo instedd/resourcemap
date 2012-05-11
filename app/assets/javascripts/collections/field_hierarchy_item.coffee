@@ -1,7 +1,7 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
   # Used when selecting a hierarchy field value
-  class window.FieldHierarchyItem
+  class @FieldHierarchyItem
     constructor: (field, data, parent = null, level = 0) ->
       field.fieldHierarchyItemsMap[data.id] = data.name
 
@@ -28,5 +28,3 @@ $(-> if $('#collections-main').length > 0
       @parent.toggleParentsExpand() if @parent
 
     select: => @field.value(@id())
-
-)

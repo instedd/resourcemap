@@ -1,6 +1,6 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.MapViewModel
+  class @MapViewModel
     @constructorMapViewModel: ->
       @showingMap = ko.observable(true)
       @sitesCount = ko.observable(0)
@@ -285,5 +285,3 @@ $(-> if $('#collections-main').length > 0
           $('.tablescroll').scrollLeft oldScrollLeft
           window.adjustContainerSize()
         ), 20)
-
-)
