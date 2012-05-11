@@ -6,6 +6,8 @@ onCollections ->
 
       Sammy( ->
         @get '#:collection', ->
+          self.queryParams = @params
+
           rewriting = self.rewritingUrl
           self.rewritingUrl = false
           return if rewriting
@@ -23,6 +25,8 @@ onCollections ->
             self.makeFixedHeaderTable()
             self.rewriteUrl()
         @get '#/', ->
+          self.queryParams = @params
+
           rewriting = self.rewritingUrl
           self.rewritingUrl = false
           return if rewriting

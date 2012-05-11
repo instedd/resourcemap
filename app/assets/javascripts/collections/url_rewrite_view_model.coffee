@@ -23,15 +23,11 @@ onCollections ->
       else if @selectedSite()
         query.selected_site = @selectedSite().id()
 
-      # Append map bounds and zoom
-      bounds = @map.getBounds()
-      if bounds
-        ne = bounds.getNorthEast()
-        sw = bounds.getSouthWest()
-        query.n = ne.lat()
-        query.s = sw.lat()
-        query.e = ne.lng()
-        query.w = sw.lng()
+      # Append map center and zoom
+      center = @map.getCenter()
+      if center
+        query.lat = center.lat()
+        query.lng = center.lng()
         query.z = @map.getZoom()
 
       params = $.param query

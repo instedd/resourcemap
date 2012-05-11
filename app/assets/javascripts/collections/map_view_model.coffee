@@ -33,16 +33,19 @@ onCollections ->
       return true unless @showingMap()
       return false if @map
 
-      center = if @currentCollection()?.position()
+      center = if @queryParams.lat && @queryParams.lng
+                 new google.maps.LatLng(@queryParams.lat, @queryParams.lng)
+               else if @currentCollection()?.position()
                  @currentCollection().position()
                else if @collections().length > 0 && @collections()[0].position()
                  @collections()[0].position()
                else
                  new google.maps.LatLng(10, 90)
+      zoom = if @queryParams.z then parseInt(@queryParams.z) else 4
 
       mapOptions =
         center: center
-        zoom: 4
+        zoom: zoom
         mapTypeId: google.maps.MapTypeId.ROADMAP
         scaleControl: true
       @map = new google.maps.Map document.getElementById("map"), mapOptions
