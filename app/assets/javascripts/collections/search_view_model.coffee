@@ -22,8 +22,9 @@ onCollections ->
         @lastSearch(null)
       else
         @currentCollection(new CollectionSearch(rootCollection, @search(), @filters(), @sort(), @sortDirection()))
-        @currentCollection().loadMoreSites()
         @lastSearch(@search())
+
+      @currentCollection().loadMoreSites() if @currentCollection().sitesPage == 1
 
       if @showingMap()
         @reloadMapSites()

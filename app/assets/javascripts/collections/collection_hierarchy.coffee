@@ -11,8 +11,6 @@ onCollections ->
       @hierarchyItemsMap = {}
       @hierarchyItems = ko.observableArray $.map(field.hierarchy(), (x) => new HierarchyItem(@, field, x))
 
-      @loadMoreSites()
-
     isSearch: => false
 
     sitesUrl: =>

@@ -55,8 +55,6 @@ onCollections ->
     @processQueryParams: ->
       @ignorePerformSearchOrHierarchy = true
 
-      foundSearchOrHierarchy = false
-
       for key in @queryParams.keys(true)
         value = @queryParams[key]
         switch key
@@ -64,18 +62,25 @@ onCollections ->
             continue
           when 'search'
             @search(value)
-            foundSearchOrHierarchy = true
           when 'updated_since'
             switch value
-              when 'last_hour' then @filters.push(new FilterByLastHour())
-              when 'last_day' then @filters.push(new FilterByLastDay())
-              when 'last_week' then @filters.push(new FilterByLastWeek())
-              when 'last_month' then @filters.push(new FilterByLastMonth())
-            foundSearchOrHierarchy = true
+              when 'last_hour' then @filterByLastHour()
+              when 'last_day' then @filterByLastDay()
+              when 'last_week' then @filterByLastWeek()
+              when 'last_month' then @filterByLastMonth()
+          else
+            key = key.substring(1) if key[0] == '@'
+            @expandedRefineProperty(key)
+
+            if value.length >= 2 && (value[0] == '>' || value[0] == '<') && value[1] == '='
+              @expandedRefinePropertyOperator(value.substring(0, 2))
+              @expandedRefinePropertyValue(value.substring(2))
+            else if value[0] == '=' || value[0] == '>' || value[0] == '<'
+              @expandedRefinePropertyOperator(value[0])
+              @expandedRefinePropertyValue(value.substring(1))
+            else
+              @expandedRefinePropertyValue(value)
+            @filterByProperty()
 
       @ignorePerformSearchOrHierarchy = false
-      if foundSearchOrHierarchy
-        @performSearchOrHierarchy()
-      else
-        @currentCollection().loadMoreSites() if @currentCollection() && @currentCollection().sitesPage == 1
-
+      @performSearchOrHierarchy()

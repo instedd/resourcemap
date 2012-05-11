@@ -8,6 +8,9 @@ onCollections ->
       @expandedRefinePropertyValue = ko.observable()
       @filters = ko.observableArray([])
 
+    @hideRefinePopup: ->
+      @showingRefinePopup(false)
+
     @toggleRefinePopup: (model, event) ->
       @showingRefinePopup(!@showingRefinePopup())
       if @showingRefinePopup()
@@ -19,7 +22,7 @@ onCollections ->
         @expandedRefineProperty(null)
         @expandedRefinePropertyOperator('=')
         @expandedRefinePropertyValue('')
-      event.stopPropagation()
+      event.stopPropagation() if event
 
     @toggleRefineProperty: (property) ->
       @expandedRefinePropertyOperator('=')
@@ -41,19 +44,19 @@ onCollections ->
 
     @filterByLastHour: ->
       @filters.push(new FilterByLastHour())
-      @toggleRefinePopup()
+      @hideRefinePopup()
 
     @filterByLastDay: ->
       @filters.push(new FilterByLastDay())
-      @toggleRefinePopup()
+      @hideRefinePopup()
 
     @filterByLastWeek: ->
       @filters.push(new FilterByLastWeek())
-      @toggleRefinePopup()
+      @hideRefinePopup()
 
     @filterByLastMonth: ->
       @filters.push(new FilterByLastMonth())
-      @toggleRefinePopup()
+      @hideRefinePopup()
 
     @filterByProperty: ->
       return if $.trim(@expandedRefinePropertyValue()).length == 0
@@ -67,7 +70,7 @@ onCollections ->
         valueLabel = (option for option in field.options() when option.code() == @expandedRefinePropertyValue())[0].label()
         @filters.push(new FilterBySelectProperty(field.code(), field.name(), @expandedRefinePropertyValue(), valueLabel))
 
-      @toggleRefinePopup()
+      @hideRefinePopup()
 
     @expandedRefinePropertyValueKeyPress: (model, event) ->
       switch event.keyCode

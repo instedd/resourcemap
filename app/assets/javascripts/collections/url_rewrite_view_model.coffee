@@ -2,6 +2,8 @@ onCollections ->
 
   class @UrlRewriteViewModel
     @rewriteUrl: ->
+      return if @rewritingUrl
+
       @rewritingUrl = true
 
       hash = ""
@@ -22,11 +24,12 @@ onCollections ->
         query.selected_site = @selectedSite().id()
 
       # Append map center and zoom
-      center = @map.getCenter()
-      if center
-        query.lat = center.lat()
-        query.lng = center.lng()
-        query.z = @map.getZoom()
+      if @map
+        center = @map.getCenter()
+        if center
+          query.lat = center.lat()
+          query.lng = center.lng()
+          query.z = @map.getZoom()
 
       params = $.param query
       hash += "?#{params}" if params.length > 0
