@@ -110,7 +110,7 @@
 
   -# New Site or Edit Site form
   <!-- ko if: newOrEditSite -->
-  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post, style: 'display:inline-block;width:100%'}
+  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
     .tableheader.w40
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
@@ -180,7 +180,7 @@
 
   -# Show Site form
   <!-- ko if: showSite -->
-  %form{ko(with: :showSite, submit: '$root.saveSite'), method: :post, style: 'display:inline;width:100%'}
+  %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline;width:100%'}
     .tableheader.w40
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat

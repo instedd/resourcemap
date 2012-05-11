@@ -10,7 +10,6 @@ onCollections ->
       @markers = {}
 
     @createSite: ->
-      console.log @
       @goBackToTable = true unless @showingMap()
       @showMap =>
         pos = @originalSiteLocation = @map.getCenter()

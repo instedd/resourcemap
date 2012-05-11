@@ -7,6 +7,7 @@
 #= require collections/search_view_model
 #= require collections/sammy_view_model
 #= require collections/sort_view_model
+#= require collections/url_rewrite_view_model
 
 onCollections ->
 
@@ -19,6 +20,7 @@ onCollections ->
     @include SearchViewModel
     @include SammyViewModel
     @include SortViewModel
+    @include UrlRewriteViewModel
 
     initialize: (collections) ->
       @constructorCollectionsViewModel(collections)

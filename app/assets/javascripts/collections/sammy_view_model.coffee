@@ -6,9 +6,6 @@ onCollections ->
 
       Sammy( ->
         @get '#:collection', ->
-          # We don't want to fetch the collection if there's a search
-          return if $.trim(self.search()).length > 0
-
           collection = self.findCollectionById parseInt(this.params.collection)
           self.currentCollection collection
           self.unselectSite() if self.selectedSite()
@@ -33,4 +30,8 @@ onCollections ->
           self.reloadMapSites() unless initialized
           self.refreshTimeago()
           self.makeFixedHeaderTable()
+
+        # This is a dummy route so we don't get errors from Sammy:
+        # https://github.com/quirkey/sammy/issues/71
+        @post '#/null', ->
       ).run()

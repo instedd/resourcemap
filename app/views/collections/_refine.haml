@@ -69,7 +69,7 @@
     <!-- /ko -->
   <!-- /ko -->
 .right
-  %form{ko(submit: 'performSearchOrHierarchy'), method: :post}
+  %form{ko(submit: 'performSearchOrHierarchy'), action: '#/null', method: :post}
     <!-- ko if: lastSearch() -->
     %p{style: 'display:inline'}
       = ko_link_to 'clear search', :clearSearch
