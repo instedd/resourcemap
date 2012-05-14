@@ -30,6 +30,19 @@ onCollections ->
         @editingSite(site)
         @rewriteUrl()
 
+    @selectSiteFromId: (siteId) ->
+      site = @siteIds[siteId]
+      if site
+        @selectSite site
+      else
+        @loadingSite(true)
+        $.get "/sites/#{siteId}.json", {}, (data) =>
+          @loadingSite(false)
+          collection = window.model.findCollectionById(data.collection_id)
+          site = new Site(collection, data)
+          collection.addSite(site)
+          @selectSite site
+
     @editSiteFromMarker: (siteId) ->
       site = @siteIds[siteId]
       if site

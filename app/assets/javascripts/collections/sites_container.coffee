@@ -7,6 +7,7 @@ onCollections ->
       @sitesPage = 1
       @hasMoreSites = ko.observable true
       @loadingSites = ko.observable false
+      @siteIds = {}
 
     # Loads SITES_PER_PAGE sites more from the server, it there are more sites.
     @loadMoreSites: ->
@@ -27,6 +28,8 @@ onCollections ->
         window.model.refreshTimeago()
 
     @addSite: (site, isNew = false) ->
+      return if @siteIds[site.id()]
+
       # This check is because the selected site might be selected on the map,
       # but not in the tree. So we use that one instead of the one from the server,
       # and set its collection to ourself.
@@ -38,6 +41,7 @@ onCollections ->
       @sites.push(site)
 
       window.model.siteIds[site.id()] = site
+      @siteIds[site.id()] = site
 
     @removeSite: (site) ->
       @sites.remove site

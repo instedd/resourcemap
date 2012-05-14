@@ -52,35 +52,3 @@ onCollections ->
         @post '#/null', ->
       ).run()
 
-    @processQueryParams: ->
-      @ignorePerformSearchOrHierarchy = true
-
-      for key in @queryParams.keys(true)
-        value = @queryParams[key]
-        switch key
-          when 'collection', 'lat', 'lng', 'z'
-            continue
-          when 'search'
-            @search(value)
-          when 'updated_since'
-            switch value
-              when 'last_hour' then @filterByLastHour()
-              when 'last_day' then @filterByLastDay()
-              when 'last_week' then @filterByLastWeek()
-              when 'last_month' then @filterByLastMonth()
-          else
-            key = key.substring(1) if key[0] == '@'
-            @expandedRefineProperty(key)
-
-            if value.length >= 2 && (value[0] == '>' || value[0] == '<') && value[1] == '='
-              @expandedRefinePropertyOperator(value.substring(0, 2))
-              @expandedRefinePropertyValue(value.substring(2))
-            else if value[0] == '=' || value[0] == '>' || value[0] == '<'
-              @expandedRefinePropertyOperator(value[0])
-              @expandedRefinePropertyValue(value.substring(1))
-            else
-              @expandedRefinePropertyValue(value)
-            @filterByProperty()
-
-      @ignorePerformSearchOrHierarchy = false
-      @performSearchOrHierarchy()
