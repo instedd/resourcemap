@@ -47,6 +47,7 @@ onCollections ->
       selectedSiteId = null
       editingSiteId = null
       showTable = false
+      groupBy = null
 
       for key in @queryParams.keys(true)
         value = @queryParams[key]
@@ -67,6 +68,8 @@ onCollections ->
             editingSiteId = parseInt(value)
           when '_table'
             showTable = true
+          when 'hierarchy_code'
+            groupBy = value
           else
             key = key.substring(1) if key[0] == '@'
             @expandedRefineProperty(key)
@@ -87,5 +90,6 @@ onCollections ->
       @showTable() if showTable
       @selectSiteFromId(selectedSiteId) if selectedSiteId
       @editSiteFromMarker(editingSiteId) if editingSiteId
+      @groupBy(@currentCollection().findFieldByCode(groupBy)) if groupBy && @currentCollection()
 
 
