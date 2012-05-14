@@ -28,7 +28,7 @@ onCollections ->
         window.model.refreshTimeago()
 
     @addSite: (site, isNew = false) ->
-      return if @siteIds[site.id()]
+      return @siteIds[site.id()] if @siteIds[site.id()]
 
       # This check is because the selected site might be selected on the map,
       # but not in the tree. So we use that one instead of the one from the server,
@@ -42,6 +42,8 @@ onCollections ->
 
       window.model.siteIds[site.id()] = site
       @siteIds[site.id()] = site
+
+      site
 
     @removeSite: (site) ->
       @sites.remove site

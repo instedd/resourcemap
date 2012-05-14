@@ -31,6 +31,9 @@ onCollections ->
           query.lng = center.lng()
           query.z = @map.getZoom()
 
+      # Append map/table view mode
+      query._table = true unless @showingMap()
+
       params = $.param query
       hash += "?#{params}" if params.length > 0
 
@@ -43,6 +46,7 @@ onCollections ->
       @ignorePerformSearchOrHierarchy = true
       selectedSiteId = null
       editingSiteId = null
+      showTable = false
 
       for key in @queryParams.keys(true)
         value = @queryParams[key]
@@ -61,6 +65,8 @@ onCollections ->
             selectedSiteId = parseInt(value)
           when 'editing_site'
             editingSiteId = parseInt(value)
+          when '_table'
+            showTable = true
           else
             key = key.substring(1) if key[0] == '@'
             @expandedRefineProperty(key)
@@ -78,5 +84,8 @@ onCollections ->
       @ignorePerformSearchOrHierarchy = false
       @performSearchOrHierarchy()
 
+      @showTable() if showTable
       @selectSiteFromId(selectedSiteId) if selectedSiteId
       @editSiteFromMarker(editingSiteId) if editingSiteId
+
+

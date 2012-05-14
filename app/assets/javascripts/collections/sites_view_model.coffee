@@ -40,7 +40,7 @@ onCollections ->
           @loadingSite(false)
           collection = window.model.findCollectionById(data.collection_id)
           site = new Site(collection, data)
-          collection.addSite(site)
+          site = collection.addSite(site)
           @selectSite site
 
     @editSiteFromMarker: (siteId) ->

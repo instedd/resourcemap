@@ -29,6 +29,9 @@ onCollections ->
         @collections()[idx].checked.subscribe (newValue) =>
           @reloadMapSites()
 
+      @showingMap.subscribe =>
+        @rewriteUrl()
+
     @initMap: ->
       return true unless @showingMap()
       return false if @map
@@ -87,6 +90,8 @@ onCollections ->
       setTimeout(window.adjustContainerSize 10)
 
     @reloadMapSites: (callback) ->
+      return unless @showingMap()
+
       bounds = @map.getBounds()
 
       # Wait until map is loaded
