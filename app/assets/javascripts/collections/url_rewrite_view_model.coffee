@@ -70,6 +70,10 @@ onCollections ->
             showTable = true
           when 'hierarchy_code'
             groupBy = value
+          when 'sort'
+            @sort(value)
+          when 'sort_direction'
+            @sortDirection(value == 'asc')
           else
             key = key.substring(1) if key[0] == '@'
             @expandedRefineProperty(key)
