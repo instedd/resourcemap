@@ -12,6 +12,8 @@ onCollections ->
           self.rewritingUrl = false
           return if rewriting
 
+          self.rewritingUrl = true
+
           collection = self.findCollectionById parseInt(this.params.collection)
           self.currentCollection collection
           self.unselectSite() if self.selectedSite()
@@ -23,6 +25,8 @@ onCollections ->
             self.processQueryParams()
             self.refreshTimeago()
             self.makeFixedHeaderTable()
+
+            self.rewritingUrl = false
             self.rewriteUrl()
         @get '#/', ->
           self.queryParams = @params
@@ -30,6 +34,8 @@ onCollections ->
           rewriting = self.rewritingUrl
           self.rewritingUrl = false
           return if rewriting
+
+          self.rewritingUrl = true
 
           self.currentCollection(null)
           self.unselectSite() if self.selectedSite()
@@ -45,6 +51,7 @@ onCollections ->
           self.refreshTimeago()
           self.makeFixedHeaderTable()
 
+          self.rewritingUrl = false
           self.rewriteUrl()
 
         # This is a dummy route so we don't get errors from Sammy:

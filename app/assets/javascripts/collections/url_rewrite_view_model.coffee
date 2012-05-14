@@ -95,5 +95,3 @@ onCollections ->
       @selectSiteFromId(selectedSiteId) if selectedSiteId
       @editSiteFromMarker(editingSiteId) if editingSiteId
       @groupBy(@currentCollection().findFieldByCode(groupBy)) if groupBy && @currentCollection()
-
-
