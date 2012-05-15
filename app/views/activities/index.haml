@@ -9,7 +9,7 @@
 
     %p{style: 'margin-top:0px'}
       View as
-      #{link_to 'RSS', api_activity_path(format: :rss), target: '_blank'}
+      %a{ko(click: 'viewAsRSS'), href: 'javascript:void(0)'} RSS
 
     %table{width: '100%'}
       %tr

@@ -28,6 +28,9 @@
       @selectedCollectionIds = ko.observableArray $.map($('.collection_id'), (x) -> x.value)
       @selectedKinds = ko.observableArray <%= Activity::Kinds.to_json %>
 
+      @collectionsCount = $('.collection_id').length
+      @kindsCount = <%= Activity::Kinds.length %>
+
       @selectedCollectionIds.subscribe => @refreshActivities()
       @selectedKinds.subscribe => @refreshActivities()
 
@@ -42,24 +45,25 @@
     loadMore: =>
       @loading(true)
 
-      q = {}
-
-      if @selectedCollectionIds().length == 0
-        q.collection_ids = [0]
-      else
-        q.collection_ids = @selectedCollectionIds()
-
-      if @selectedKinds().length == 0
-        q.kinds = [0]
-      else
-        q.kinds = @selectedKinds()
-
-      if @activities().length > 0
-        q.before_id = @activities()[@activities().length - 1].id()
+      q = @setQueryParams({})
+      q.before_id = @activities()[@activities().length - 1].id() if @activities().length > 0
 
       $.get "/activity.json", q, (activities) =>
         @pushActivities(activities)
         @loading(false)
+
+    setQueryParams: (q) =>
+      if @selectedCollectionIds().length == 0
+        q.collection_ids = [0]
+      else if @selectedCollectionIds().length < @collectionsCount
+        q.collection_ids = @selectedCollectionIds()
+
+      if @selectedKinds().length == 0
+        q.kinds = [0]
+      else if @selectedKinds().length < @kindsCount
+        q.kinds = @selectedKinds()
+
+      q
 
     refreshActivities: =>
       @activities([])
@@ -67,17 +71,25 @@
 
     checkAllCollectionIds: =>
       ids = $.map($('.collection_id'), (x) -> x.value)
-      @selectedCollectionIds(ids) if @selectedCollectionIds().length != ids.length
+      @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
 
     uncheckAllCollectionIds: =>
       @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
 
     checkAllKinds: =>
       kinds = <%= Activity::Kinds.to_json %>
-      @selectedKinds(kinds) if @selectedKinds().length != kinds.length
+      @selectedKinds(kinds) if @selectedKinds().length != @kindsCount
 
     uncheckAllKinds: =>
       @selectedKinds([]) if @selectedKinds().length != 0
+
+    viewAsRSS: =>
+      q = @setQueryParams({})
+      params = $.param q
+
+      url = "/api/activity.rss"
+      url += "?#{params}" if params.length > 0
+      window.open url
 
     refreshTimeago: => $('.timeago').timeago()
 
