@@ -44,6 +44,7 @@
 
     loadMore: =>
       @loading(true)
+      @hasMore(true)
 
       q = @setQueryParams({})
       q.before_id = @activities()[@activities().length - 1].id() if @activities().length > 0
