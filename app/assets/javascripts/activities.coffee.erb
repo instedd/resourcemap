@@ -25,8 +25,13 @@
       @hasMore = ko.observable true
       @loading = ko.observable false
       @pushActivities activities
+      @selectedCollectionIds = ko.observableArray $.map($('.collection_id'), (x) -> x.value)
+      @selectedKinds = ko.observableArray <%= Activity::Kinds.to_json %>
 
-    pushActivities: (activities) ->
+      @selectedCollectionIds.subscribe => @refreshActivities()
+      @selectedKinds.subscribe => @refreshActivities()
+
+    pushActivities: (activities) =>
       if activities.length == 25
         activities = activities.slice(0, activities.length - 1)
       else
@@ -34,14 +39,45 @@
 
       @activities.push new Activity(activity) for activity in activities
 
-    loadMore: ->
+    loadMore: =>
       @loading(true)
 
-      lastId = @activities()[@activities().length - 1].id()
+      q = {}
 
-      $.get "/activity.json?before_id=#{lastId}", {}, (activities) =>
-        @pushActivities activities
+      if @selectedCollectionIds().length == 0
+        q.collection_ids = [0]
+      else
+        q.collection_ids = @selectedCollectionIds()
+
+      if @selectedKinds().length == 0
+        q.kinds = [0]
+      else
+        q.kinds = @selectedKinds()
+
+      if @activities().length > 0
+        q.before_id = @activities()[@activities().length - 1].id()
+
+      $.get "/activity.json", q, (activities) =>
+        @pushActivities(activities)
         @loading(false)
+
+    refreshActivities: =>
+      @activities([])
+      @loadMore()
+
+    checkAllCollectionIds: =>
+      ids = $.map($('.collection_id'), (x) -> x.value)
+      @selectedCollectionIds(ids) if @selectedCollectionIds().length != ids.length
+
+    uncheckAllCollectionIds: =>
+      @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
+
+    checkAllKinds: =>
+      kinds = <%= Activity::Kinds.to_json %>
+      @selectedKinds(kinds) if @selectedKinds().length != kinds.length
+
+    uncheckAllKinds: =>
+      @selectedKinds([]) if @selectedKinds().length != 0
 
     refreshTimeago: => $('.timeago').timeago()
 
