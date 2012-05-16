@@ -98,7 +98,8 @@ class CollectionsController < ApplicationController
     search.offset params[:offset]
     search.limit params[:limit]
     search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
-    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction)
+    search.hierarchy params[:hierarchy_code], params[:hierarchy_value] if params[:hierarchy_code]
+    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value)
     results = search.results.map do |result|
       source = result['_source']
 

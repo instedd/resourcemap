@@ -16,7 +16,7 @@ class Api::CollectionsController < ApplicationController
     @results = perform_search *options
 
     respond_to do |format|
-      format.rss
+      format.rss { render :show, layout: false }
       format.csv { collection_csv(collection, @results) }
       format.json { render json: collection_json(collection, @results) }
     end

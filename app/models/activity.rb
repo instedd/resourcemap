@@ -1,4 +1,6 @@
 class Activity < ActiveRecord::Base
+  Kinds = %W(collection_created collection_imported collection_csv_imported layer_created layer_changed layer_deleted site_created site_changed site_deleted)
+
   belongs_to :collection
   belongs_to :user
   belongs_to :layer
@@ -6,6 +8,8 @@ class Activity < ActiveRecord::Base
   belongs_to :site
 
   serialize :data
+
+  validates_inclusion_of :kind, :in => Kinds
 
   def description
     case kind
