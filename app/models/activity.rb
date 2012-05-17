@@ -52,6 +52,8 @@ class Activity < ActiveRecord::Base
   end
 
   def site_changes_text
+    fields = collection.fields.index_by(&:es_code)
+
     text_changes = []
     only_name_changed = false
 
@@ -70,13 +72,15 @@ class Activity < ActiveRecord::Base
       properties[0].each do |key, old_value|
         new_value = properties[1][key]
         if new_value != old_value
-          text_changes << "'#{key}' changed from #{format_value old_value} to #{format_value new_value}"
+          code = fields[key].try(:code)
+          text_changes << "'#{code}' changed from #{format_value old_value} to #{format_value new_value}"
         end
       end
 
       properties[1].each do |key, new_value|
         if !properties[0].has_key? key
-          text_changes << "'#{key}' changed from (nothing) to #{new_value.nil? ? '(nothing)' : format_value(new_value)}"
+          code = fields[key].try(:code)
+          text_changes << "'#{code}' changed from (nothing) to #{new_value.nil? ? '(nothing)' : format_value(new_value)}"
         end
       end
 

@@ -11,51 +11,51 @@ module SearchBase
     self
   end
 
-  def eq(property, value)
-    check_field_exists property
+  def eq(es_code, value)
+    check_field_exists es_code
 
-    query_key = Site.encode_elastic_search_keyword(property)
-    query_value = property_value(property.to_s, value)
+    query_key = es_code
+    query_value = es_code_value(es_code, value)
     add_query %Q(#{query_key}:"#{query_value}")
     self
   end
 
   ['lt', 'lte', 'gt', 'gte'].each do |op|
     class_eval %Q(
-      def #{op}(property, value)
-        check_field_exists property
+      def #{op}(es_code, value)
+        check_field_exists es_code
 
-        @search.filter :range, Site.encode_elastic_search_keyword(property) => {#{op}: value}
+        @search.filter :range, es_code => {#{op}: value}
         self
       end
     )
   end
 
-  def op(property, op, value)
+  def op(es_code, op, value)
     case op.to_s.downcase
-    when '<', 'l' then lt(property, value)
-    when '<=', 'lte' then lte(property, value)
-    when '>', 'gt' then gt(property, value)
-    when '>=', 'gte' then gte(property, value)
-    when '=', '==', 'eq' then eq(property, value)
+    when '<', 'l' then lt(es_code, value)
+    when '<=', 'lte' then lte(es_code, value)
+    when '>', 'gt' then gt(es_code, value)
+    when '>=', 'gte' then gte(es_code, value)
+    when '=', '==', 'eq' then eq(es_code, value)
     else raise "Invalid operation: #{op}"
     end
     self
   end
 
   def where(properties = {})
-    properties.each do |property, value|
+    properties.each do |es_code, value|
       if value.is_a? String
         case
-        when value[0 .. 1] == '<=' then lte(property, value[2 .. -1].strip)
-        when value[0] == '<' then lt(property, value[1 .. -1].strip)
-        when value[0 .. 1] == '>=' then gte(property, value[2 .. -1].strip)
-        when value[0] == '>' then gt(property, value[1 .. -1].strip)
-        when value[0] == '=' then eq(property, value[1 .. -1].strip)
-        else eq(property, value)
+        when value[0 .. 1] == '<=' then lte(es_code, value[2 .. -1].strip)
+        when value[0] == '<' then lt(es_code, value[1 .. -1].strip)
+        when value[0 .. 1] == '>=' then gte(es_code, value[2 .. -1].strip)
+        when value[0] == '>' then gt(es_code, value[1 .. -1].strip)
+        when value[0] == '=' then eq(es_code, value[1 .. -1].strip)
+        else eq(es_code, value)
         end
       else
-        eq(property, value)
+        eq(es_code, value)
       end
     end
     self
@@ -105,11 +105,11 @@ module SearchBase
     @search.filter :exists, field: :location
   end
 
-  def hierarchy(code, value)
+  def hierarchy(es_code, value)
     if value.present?
-      eq code, value
+      eq es_code, value
     else
-      @search.filter :not, {exists: {field: Site.encode_elastic_search_keyword(code)}}
+      @search.filter :not, {exists: {field: es_code}}
     end
   end
 
@@ -122,15 +122,8 @@ module SearchBase
 
   private
 
-  def decode_elastic_search_results(results)
-    results.each do |result|
-      result['_source']['properties'] = Site.decode_elastic_search_keywords(result['_source']['properties'])
-    end
-    results
-  end
-
-  def property_value(property, value)
-    field = fields.find { |x| x.code == property }
+  def es_code_value(es_code, value)
+    field = fields.find { |x| x.es_code == es_code }
     if field && field.config && field.config['options']
       field.config['options'].each do |option|
         return option['code'] if option['label'] == value
@@ -157,9 +150,8 @@ module SearchBase
     time
   end
 
-  def check_field_exists(name)
-    name = Site.decode_elastic_search_keyword name.to_s
-    raise "Unknown field: #{name}" unless fields.any?{|f| f.code == name}
+  def check_field_exists(es_code)
+    raise "Unknown field: #{es_code}" unless fields.any?{|f| f.es_code == es_code}
   end
 
   def fields

@@ -5,16 +5,15 @@ APP_PATH = File.expand_path('../../config/application',  __FILE__)
 require File.expand_path('../../config/boot',  __FILE__)
 require File.expand_path('../../config/environment',  __FILE__)
 
-sites = Site.where(:group => :false)
-count = sites.count
-current = 0
+collections = Collection
+count = collections.count
 
 i = 0.0
-sites.find_each do |site|
+collections.find_each do |collection|
   i += 1
   percentage = (100 * (i / count)).round
-  print "\rIndexing sites: %#{percentage}"
-  site.store_in_index
+  print "\rRecreating collection #{i.to_i}/#{count}: %#{percentage}"
+  collection.recreate_index
 end
 
-puts "\rIndexing sites: %100"
+puts "\rRecreating collections: %100"

@@ -73,9 +73,11 @@ describe MapSearch do
     let!(:layer) { collection.layers.make }
     let!(:field_prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
     let!(:field_beds) { layer.fields.make :kind => 'numeric', :code => 'beds' }
-    let!(:site1) { collection.sites.make :name => "Argentina", :properties => {'beds' => 8, 'prop' => 'foo'} }
-    let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {'beds' => 10, 'prop' => 'bar'} }
-    let!(:site3) { collection.sites.make :name => "Cordoba bar", :properties => {'beds' => 20, 'prop' => 'baz'} }
+    let!(:prop) { field_prop.es_code }
+    let!(:beds) { field_beds.es_code }
+    let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds => 8, prop => 'foo'} }
+    let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds => 10, prop => 'bar'} }
+    let!(:site3) { collection.sites.make :name => "Cordoba bar", :properties => {beds => 20, prop => 'baz'} }
     let!(:search) { MapSearch.new collection.id }
 
     it "searches by name" do

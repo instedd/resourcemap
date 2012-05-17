@@ -3,9 +3,10 @@ onCollections ->
   # A Layer field
   class @Field
     constructor: (data) ->
-      @code = ko.observable data?.code
-      @name = ko.observable data?.name
-      @kind = ko.observable data?.kind
+      @esCode = ko.observable "#{data.id}"
+      @code = ko.observable data.code
+      @name = ko.observable data.name
+      @kind = ko.observable data.kind
       @writeable = ko.observable data?.writeable
 
       @value = ko.observable()
@@ -69,7 +70,7 @@ onCollections ->
     save: =>
       @editing(false)
       @filter('')
-      window.model.editingSite().updateProperty(@code(), @value())
+      window.model.editingSite().updateProperty(@esCode(), @value())
       delete @originalValue
 
     selectOption: (option) =>
@@ -123,9 +124,3 @@ onCollections ->
         '100px'
       else
         "#{20 + @name().length * 8}px"
-
-  class window.Option
-    constructor: (data) ->
-      @code = ko.observable(data?.code)
-      @label = ko.observable(data?.label)
-      @selected = ko.observable(false)

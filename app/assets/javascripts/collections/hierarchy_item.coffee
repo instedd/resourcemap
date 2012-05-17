@@ -27,7 +27,7 @@ onCollections ->
       "/collections/#{window.model.currentCollection().id()}/search.json?#{$.param @queryParams()}"
 
     queryParams: =>
-      hierarchy_code: @field.code()
+      hierarchy_code: @field.esCode()
       hierarchy_value: @id()
 
     createSite: (site) => new Site(window.model.currentCollection().collection, site)

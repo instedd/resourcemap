@@ -94,4 +94,4 @@ onCollections ->
       @showTable() if showTable
       @selectSiteFromId(selectedSiteId) if selectedSiteId
       @editSiteFromMarker(editingSiteId) if editingSiteId
-      @groupBy(@currentCollection().findFieldByCode(groupBy)) if groupBy && @currentCollection()
+      @groupBy(@currentCollection().findFieldByEsCode(groupBy)) if groupBy && @currentCollection()

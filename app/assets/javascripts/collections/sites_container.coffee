@@ -48,6 +48,7 @@ onCollections ->
     @removeSite: (site) ->
       @sites.remove site
       delete window.model.siteIds[site.id()]
+      delete @siteIds[site.id()]
 
     @toggleExpand: ->
       # Load more sites when we expand, but only the first time

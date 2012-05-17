@@ -6,7 +6,6 @@ module Site::TireConcern
   included do
     after_save :store_in_index
     after_destroy :remove_from_index
-    after_find :decode_elastic_search_keywords, :if => :properties?
 
     delegate :index_name, :index, to: :collection
   end
@@ -16,7 +15,7 @@ module Site::TireConcern
       id: id,
       name: name,
       type: :site,
-      properties: self.class.encode_elastic_search_keywords(properties),
+      properties: properties,
       created_at: created_at.strftime(DateFormat),
       updated_at: updated_at.strftime(DateFormat),
     }
@@ -28,6 +27,12 @@ module Site::TireConcern
     end
 
     index.refresh unless options[:refresh] == false
+  end
+
+  def from_index
+    search = collection.new_search
+    search.id id
+    search.results.first
   end
 
   def remove_from_index
@@ -43,37 +48,5 @@ module Site::TireConcern
     def format_date(date)
       date.strftime DateFormat
     end
-
-    def encode_elastic_search_keywords(hash)
-      Hash[
-        hash.map do |key, value|
-          [encode_elastic_search_keyword(key), value]
-        end
-      ]
-    end
-
-    def decode_elastic_search_keywords(hash)
-      Hash[
-        hash.map do |key, value|
-          [decode_elastic_search_keyword(key), value]
-        end
-      ]
-    end
-
-    def encode_elastic_search_keyword(key)
-      key = "@#{key}" unless key.to_s[0] == '@'
-      key
-    end
-
-    def decode_elastic_search_keyword(key)
-      key = key.to_s[1 .. -1] if key.to_s[0] == '@'
-      key
-    end
-  end
-
-  private
-
-  def decode_elastic_search_keywords
-    self.properties = self.class.decode_elastic_search_keywords(properties)
   end
 end
