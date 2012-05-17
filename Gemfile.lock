@@ -135,6 +135,8 @@ GEM
       railties (>= 3.0)
       rspec (~> 2.9.0)
     rvm (1.11.3.3)
+    rvm-capistrano (1.1.0)
+      capistrano (>= 2.0.0)
     sass (3.1.16)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
@@ -186,6 +188,7 @@ DEPENDENCIES
   rspec
   rspec-rails
   rvm
+  rvm-capistrano
   sass-rails (~> 3.2.3)
   shoulda-matchers
   tire
