@@ -27,10 +27,50 @@
     %tr{ko(css: {active: "$data == $root.selectedSite()"})}
       %td
         %div
-          %p{ko(click: '$root.selectSite'), style: 'cursor: pointer'}
+          %p{ko(style: {marginLeft: "'' + (($parent.level() + 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
             %span.stat-r
             %span{ko(html: :highlightedName)}
         %button.farrow{ko(click: '$root.editSite'), type: "button"}
+    <!-- /ko -->
+
+  -# Field hierarchy item template (used when selecting a hierarchy field value for a site)
+  %script{type: "text/html", id: "field-hierarchy-items-template"}
+    <!-- ko foreach: fieldHierarchyItems -->
+    .hierarchy{ko(css: {active: 'selected()'})}
+      %a{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
+        %img{ko(click: :toggleExpand, attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"}), style: 'position:relative;top:2px'}
+        %span{ko(click: :select, text: :name)}
+    <!-- ko if: expanded -->
+    <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
+    <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
+
+  -# Hierarchy item template (used when grouping results by hierarchy item)
+  %script{type: "text/html", id: "map-hierarchy-items-template"}
+    <!-- ko foreach: hierarchyItems -->
+    %tr{ko(css: {active: :selected})}
+      %td{ko(click: :toggleExpand), style: 'height:30px;cursor:pointer'}
+        %div
+          %a{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
+            %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
+          %span{ko(text: :name)}
+    <!-- ko if: expanded -->
+    <!-- ko template: {name: 'map-hierarchy-items-template', with: hierarchyItems} -->
+    <!-- /ko -->
+    <!-- ko template: {name: 'map-sites-template', with: $data} -->
+    <!-- /ko -->
+    <!-- ko if: hasMoreSites() && !loadingSites()-->
+    %tr
+      %td.loadmore
+        = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + level() * 20) + 'px'"})
+    <!-- /ko -->
+    <!-- ko if: hasMoreSites() && loadingSites()-->
+    %tr
+      %td.loadmore
+        %span{ko(style: {marginLeft: "'' + (20 + (level() - 1) * 20) + 'px'"})} Loading...
+    <!-- /ko -->
+    <!-- /ko -->
     <!-- /ko -->
 
   -# Collection sites
@@ -41,9 +81,14 @@
     %span.i18b-groupChat
     %span{ko(text: :name)}
     %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:9px'}
+
   .tablescroll
     %table.GralTable.CleanTable
       %tbody
+        <!-- ko if: !isSearch() && $root.groupBy().code() != '' -->
+        <!-- ko template: {name: 'map-hierarchy-items-template', with: $data} -->
+        <!-- /ko -->
+        <!-- /ko -->
         <!-- ko template: {name: 'map-sites-template', with: $data} -->
         <!-- /ko -->
         <!-- ko if: hasMoreSites() && !loadingSites()-->
@@ -55,14 +100,17 @@
         %tr
           %td.loadmore Loading...
         <!-- /ko -->
+  <!-- ko if: !isSearch() -->
   .tablebottom
     %button.flocation{ko(click: '$root.createSite')} Create Site
+  <!-- /ko -->
+
   <!-- /ko -->
   <!-- /ko -->
 
   -# New Site or Edit Site form
   <!-- ko if: newOrEditSite -->
-  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post, style: 'display:inline-block;width:100%'}
+  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
     .tableheader.w40
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
@@ -119,7 +167,7 @@
                 <!-- /ko -->
                 <!-- ko if: kind() == 'hierarchy' -->
                 .hierarchy-container
-                  <!-- ko template: {name: 'hierarchy-items-template', with: hierarchyItems} -->
+                  <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
                   <!-- /ko -->
                 <!-- /ko -->
               <!-- /ko -->
@@ -132,7 +180,7 @@
 
   -# Show Site form
   <!-- ko if: showSite -->
-  %form{ko(with: :showSite, submit: '$root.saveSite'), method: :post, style: 'display:inline;width:100%'}
+  %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline;width:100%'}
     .tableheader.w40
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span.i18b-groupChat
@@ -208,7 +256,7 @@
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'hierarchy' -->
                 .hierarchy-container
-                  <!-- ko template: {name: 'hierarchy-items-template', with: hierarchyItems} -->
+                  <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
                   <!-- /ko -->
                 %button{ko(click: :save), style: 'float:right'} Update hierarchy
                 %button{ko(click: :exit), style: 'float:right'} Cancel
@@ -222,19 +270,6 @@
       = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
   <!-- /ko -->
   <!-- /ko -->
-
-  -# Hierarchy item template
-  %script{type: "text/html", id: "hierarchy-items-template"}
-    <!-- ko foreach: hierarchyItems -->
-    .hierarchy{ko(css: {active: 'selected()'})}
-      %a{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
-        %img{ko(click: :toggleExpand, attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"}), style: 'position:relative;top:2px'}
-        %span{ko(click: :select, text: :name)}
-    <!-- ko if: expanded -->
-    <!-- ko template: {name: 'hierarchy-items-template', with: hierarchyItems} -->
-    <!-- /ko -->
-    <!-- /ko -->
-    <!-- /ko -->
 
   -# Loading Site...
   %form{ko(visible: :loadingSite)}

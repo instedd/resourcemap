@@ -1,8 +1,9 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.HierarchyItem
+  # Used when selecting a hierarchy field value
+  class @FieldHierarchyItem
     constructor: (field, data, parent = null, level = 0) ->
-      field.hierarchyItemsMap[data.id] = data.name
+      field.fieldHierarchyItemsMap[data.id] = data.name
 
       @field = field
       @parent = parent
@@ -12,20 +13,18 @@ $(-> if $('#collections-main').length > 0
       @level = ko.observable(level)
       @expanded = ko.observable(false)
       @selected = ko.computed => @field.value() == @id()
-      @hierarchyItems = if data.sub?
-                          ko.observableArray($.map(data.sub, (x) => new HierarchyItem(@field, x, @, level + 1)))
+      @fieldHierarchyItems = if data.sub?
+                          ko.observableArray($.map(data.sub, (x) => new FieldHierarchyItem(@field, x, @, level + 1)))
                         else
                           ko.observableArray()
-
       @selected.subscribe (newValue) =>
         @toggleParentsExpand() if newValue
 
-    toggleExpand: => @expanded(!@expanded())
+    toggleExpand: =>
+      @expanded(!@expanded())
 
     toggleParentsExpand: =>
       @expanded(true) if @field.value() != @id()
       @parent.toggleParentsExpand() if @parent
 
     select: => @field.value(@id())
-
-)

@@ -1,168 +1,14 @@
-$(-> if $('#collections-main').length > 0
+#= require module
+#= require collections/locatable
 
-  SITES_PER_PAGE = 25
+onCollections ->
 
-  # An object with a position on the map.
-  class window.Locatable
-    constructor: (data) ->
-      @constructorLocation(data)
+  class @Site extends Module
+    @include Locatable
 
-    constructorLocation: (data) ->
-      @lat = ko.observable data?.lat
-      @lng = ko.observable data?.lng
-      @position = ko.computed
-        read: => if @lat() && @lng() then new google.maps.LatLng(@lat(), @lng()) else null
-        write: (latLng) =>
-          if typeof(latLng.lat) == 'function'
-            @lat(latLng.lat()); @lng(latLng.lng())
-          else
-            @lat(latLng.lat); @lng(latLng.lng)
-        owner: @
-
-    # Pans the map to this object's location, and the reload the map's sites and clusters.
-    panToPosition: =>
-      currentPosition = window.model.map.getCenter()
-      positionChanged = @position() && (Math.abs(@position().lat() - currentPosition.lat()) > 1e-6 || Math.abs(@position().lng() - currentPosition.lng()) > 1e-6)
-
-      window.model.reloadMapSitesAutomatically = false
-      window.model.map.panTo @position() if positionChanged
-      window.model.reloadMapSites()
-
-  class window.CollectionBase extends Locatable
-    constructor: (data) ->
-      super(data)
-      @id = ko.observable data?.id
-      @name = ko.observable data?.name
-      @updatedAt = ko.observable(data.updated_at)
-      @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
-      @sites = ko.observableArray()
-      @expanded = ko.observable false
-      @sitesPage = 1
-      @hasMoreSites = ko.observable true
-      @loadingSites = ko.observable false
-
-    # Loads SITES_PER_PAGE sites more from the server, it there are more sites.
-    loadMoreSites: =>
-      return unless @hasMoreSites()
-
-      @loadingSites true
-      # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
-      # extra element so the user always sees SITES_PER_PAGE elements.
-      $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1}, (data) =>
-        @sitesPage += 1
-        if data.length == SITES_PER_PAGE + 1
-          data.pop()
-        else
-          @hasMoreSites false
-        for site in data
-          @addSite new Site(this, site)
-        @loadingSites false
-        window.model.refreshTimeago()
-
-    addSite: (site) =>
-      # This check is because the selected site might be selected on the map,
-      # but not in the tree. So we use that one instead of the one from the server,
-      # and set its collection to ourself.
-      if window.model.selectedSite()?.id() == site.id()
-        window.model.selectedSite().collection = @
-        @sites.push(window.model.selectedSite())
-      else
-        @sites.push(site)
-      window.model.siteIds[site.id()] = site
-
-    removeSite: (site) =>
-      @sites.remove site
-      delete window.model.siteIds[site.id()]
-
-    toggle: =>
-      # Load more sites when we expand, but only the first time
-      if !@expanded() && @hasMoreSites() && @sitesPage == 1
-        @loadMoreSites()
-      @expanded(!@expanded())
-
-    fetchFields: (callback) =>
-      if @fieldsInitialized
-        callback() if callback && typeof(callback) == 'function'
-        return
-
-      @fieldsInitialized = true
-      $.get "/collections/#{@id()}/fields", {}, (data) =>
-        @layers($.map(data, (x) => new Layer(x)))
-
-        fields = []
-        for layer in @layers()
-          for field in layer.fields()
-            fields.push(field)
-
-        @fields(fields)
-        callback() if callback && typeof(callback) == 'function'
-
-    findFieldByCode: (code) => (field for field in @fields() when field.code() == code)[0]
-
-    clearFieldValues: =>
-      field.value(null) for field in @fields()
-
-    propagateUpdatedAt: (value) =>
-      @updatedAt(value)
-
-  class window.Collection extends CollectionBase
-    constructor: (data) ->
-      super(data)
-      @layers = ko.observableArray()
-      @fields = ko.observableArray()
-      @checked = ko.observable true
-      @fieldsInitialized = false
-
-    sitesUrl: -> "/collections/#{@id()}/sites.json"
-
-    fetchLocation: => $.get "/collections/#{@id()}.json", {}, (data) =>
-      @position(data)
-      @updatedAt(data.updated_at)
-
-    link: (format) => "/api/collections/#{@id()}.#{format}"
-
-  # A collection that is filtered by a search result
-  class window.CollectionSearch extends CollectionBase
-    constructor: (collection, search, filters, sort, sortDirection) ->
-      @collection = collection
-      @search = search
-      @filters = filters
-      @sort = sort
-      @sortDirection = sortDirection
-      @layers = collection.layers
-      @fields = collection.fields
-      @fieldsInitialized = collection.fieldsInitialized
-
-      @id = ko.observable collection.id()
-      @name = ko.observable collection.name()
-      @sites = ko.observableArray()
-      @sitesPage = 1
-      @hasMoreSites = ko.observable true
-      @loadingSites = ko.observable false
-
-      @constructorLocation(lat: collection.lat(), lng: collection.lng())
-
-    sitesUrl: =>
-      "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
-
-    queryParams: =>
-      q = {}
-      q.search = @search if @search
-      if @sort
-        q.sort = @sort
-        q.sort_direction = if @sortDirection then 'asc' else 'desc'
-      filter.setQueryParams(q) for filter in @filters
-      q
-
-    link: (format) => "/api/collections/#{@id()}.#{format}?#{$.param @queryParams()}"
-
-    # These two methods are needed to be forwarded when editing sites inside a search
-    updatedAt: (value) => @collection.updatedAt(value)
-    fetchLocation: => @collection.fetchLocation()
-
-  class window.Site extends Locatable
     constructor: (collection, data) ->
-      super(data)
+      @constructorLocatable(data)
+
       @collection = collection
       @selected = ko.observable()
       @id = ko.observable data?.id
@@ -199,17 +45,32 @@ $(-> if $('#collections-main').length > 0
       @collection.fetchLocation()
 
     updateProperty: (code, value) =>
+      field = @collection.findFieldByCode(code)
+      if field.kind() == 'hierarchy' && window.model.currentCollection()
+        window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[code], newValue: value}])
+
       @properties()[code] = value
+
       $.post "/sites/#{@id()}/update_property.json", {code: code, value: value}, (data) =>
         @propagateUpdatedAt(data.updated_at)
 
     copyPropertiesFromCollection: (collection) =>
+      oldProperties = @properties()
+
+      hierarchyChanges = []
+
       @properties({})
       for field in collection.fields()
+        if field.kind() == 'hierarchy' && @id()
+          hierarchyChanges.push({field: field, oldValue: oldProperties[field.code()], newValue: field.value()})
+
         if field.value()
           @properties()[field.code()] = field.value()
         else
           delete @properties()[field.code()]
+
+      if window.model.currentCollection()
+        window.model.currentCollection().performHierarchyChanges(@, hierarchyChanges)
 
     copyPropertiesToCollection: (collection) =>
       collection.fetchFields =>
@@ -411,5 +272,3 @@ $(-> if $('#collections-main').length > 0
       json.lng = @lng() if @lng()
       json.properties = @properties() if @properties()
       json
-
-)

@@ -1,0 +1,102 @@
+@initActivities = ->
+  DESCRIPTION_LENGTH = 100
+
+  class Activity
+    constructor: (data) ->
+      @id = ko.observable data?.id
+      @collection = ko.observable data?.collection
+      @user = ko.observable data?.user
+      @description = ko.observable data?.description
+      @createdAt = ko.observable data?.created_at
+      @expanded = ko.observable false
+      @canBeExpanded = ko.computed => @description().length > DESCRIPTION_LENGTH
+
+      @displayedDescription = ko.computed =>
+        if !@canBeExpanded() || @expanded()
+          @description()
+        else
+          "#{@description().substring(0, DESCRIPTION_LENGTH)}..."
+
+    expand: => @expanded(true)
+
+  class ActivitiesViewModel
+    constructor: (activities) ->
+      @activities = ko.observableArray []
+      @hasMore = ko.observable true
+      @loading = ko.observable false
+      @pushActivities activities
+      @selectedCollectionIds = ko.observableArray $.map($('.collection_id'), (x) -> x.value)
+      @selectedKinds = ko.observableArray <%= Activity::Kinds.to_json %>
+
+      @collectionsCount = $('.collection_id').length
+      @kindsCount = <%= Activity::Kinds.length %>
+
+      @selectedCollectionIds.subscribe => @refreshActivities()
+      @selectedKinds.subscribe => @refreshActivities()
+
+    pushActivities: (activities) =>
+      if activities.length == 25
+        activities = activities.slice(0, activities.length - 1)
+      else
+        @hasMore false
+
+      @activities.push new Activity(activity) for activity in activities
+
+    loadMore: =>
+      @loading(true)
+      @hasMore(true)
+
+      q = @setQueryParams({})
+      q.before_id = @activities()[@activities().length - 1].id() if @activities().length > 0
+
+      $.get "/activity.json", q, (activities) =>
+        @pushActivities(activities)
+        @loading(false)
+
+    setQueryParams: (q) =>
+      if @selectedCollectionIds().length == 0
+        q.collection_ids = [0]
+      else if @selectedCollectionIds().length < @collectionsCount
+        q.collection_ids = @selectedCollectionIds()
+
+      if @selectedKinds().length == 0
+        q.kinds = [0]
+      else if @selectedKinds().length < @kindsCount
+        q.kinds = @selectedKinds()
+
+      q
+
+    refreshActivities: =>
+      @activities([])
+      @loadMore()
+
+    checkAllCollectionIds: =>
+      ids = $.map($('.collection_id'), (x) -> x.value)
+      @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
+
+    uncheckAllCollectionIds: =>
+      @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
+
+    checkAllKinds: =>
+      kinds = <%= Activity::Kinds.to_json %>
+      @selectedKinds(kinds) if @selectedKinds().length != @kindsCount
+
+    uncheckAllKinds: =>
+      @selectedKinds([]) if @selectedKinds().length != 0
+
+    viewAsRSS: =>
+      q = @setQueryParams({})
+      params = $.param q
+
+      url = "/api/activity.rss"
+      url += "?#{params}" if params.length > 0
+      window.open url
+
+    refreshTimeago: => $('.timeago').timeago()
+
+  $.get "/activity.json", {}, (activities) =>
+    window.model = new ActivitiesViewModel(activities)
+    ko.applyBindings window.model
+
+    $('.hidden-until-loaded').show()
+    window.model.refreshTimeago()
