@@ -35,6 +35,9 @@ onCollections ->
       @editing = ko.observable false
       @expanded = ko.observable false # For select_many
 
+    codeForLink: (api = false) =>
+      if api then @code() else @esCode()
+
     # The value of the UI.
     # If it's a select one or many, we need to get the label from the option code.
     valueUIFor: (value) =>

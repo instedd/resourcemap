@@ -63,12 +63,12 @@ onCollections ->
 
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
       if field.kind() == 'text'
-        @filters.push(new FilterByTextProperty(field.esCode(), field.name(), @expandedRefinePropertyValue()))
+        @filters.push(new FilterByTextProperty(field, @expandedRefinePropertyValue()))
       else if field.kind() == 'numeric'
-        @filters.push(new FilterByNumericProperty(field.esCode(), field.name(), @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
+        @filters.push(new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
       else if field.kind() == 'select_one' || field.kind() == 'select_many'
         valueLabel = (option for option in field.options() when option.code() == @expandedRefinePropertyValue())[0].label()
-        @filters.push(new FilterBySelectProperty(field.esCode(), field.name(), @expandedRefinePropertyValue(), valueLabel))
+        @filters.push(new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel))
 
       @hideRefinePopup()
 
