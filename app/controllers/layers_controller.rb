@@ -53,7 +53,9 @@ class LayersController < ApplicationController
         if field[:config]
           if field[:config][:options]
             field[:config][:options] = field[:config][:options].values
+            field[:config][:options].each { |option| option['id'] = option['id'].to_i }
           end
+          field[:config][:next_id] = field[:config][:next_id].to_i if field[:config][:next_id]
           if field[:config][:hierarchy]
             field[:config][:hierarchy] = field[:config][:hierarchy].values
             sanitize_items field[:config][:hierarchy]

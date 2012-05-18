@@ -23,7 +23,7 @@ reporting_progress(Field, "Migrating field") do |field|
         option['id'] = i + 1
         option['ord'] ||= i + 1
       end
-      field.config['nextId'] = field.config['options'].length + 1
+      field.config['next_id'] = field.config['options'].length + 1
       field.save!
     end
   end

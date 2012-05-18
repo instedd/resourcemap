@@ -67,6 +67,7 @@ onCollections ->
       else if field.kind() == 'numeric'
         @filters.push(new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
       else if field.kind() == 'select_one' || field.kind() == 'select_many'
+        @expandedRefinePropertyValue(parseInt(@expandedRefinePropertyValue()))
         valueLabel = (option for option in field.options() when option.id() == @expandedRefinePropertyValue())[0].label()
         @filters.push(new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel))
 

@@ -100,7 +100,7 @@ class ImportWizard
           # For select one and many we need to collect the fields options
           if spec[:kind] == 'select_one' || spec[:kind] == 'select_many'
             field = fields[spec[:code]]
-            field.config ||= {'options' => [], 'nextId' => 1}
+            field.config ||= {'options' => [], 'next_id' => 1}
 
             code = nil
             label = nil
@@ -126,9 +126,9 @@ class ImportWizard
               if existing
                 value = existing['id']
               else
-                value = field.config['nextId']
-                field.config['options'] << {'id' => field.config['nextId'], 'code' => code, 'label' => label}
-                field.config['nextId'] += 1
+                value = field.config['next_id']
+                field.config['options'] << {'id' => field.config['next_id'], 'code' => code, 'label' => label}
+                field.config['next_id'] += 1
               end
             end
           end

@@ -75,7 +75,6 @@ onCollections ->
           when 'sort_direction'
             @sortDirection(value == 'asc')
           else
-            key = key.substring(1) if key[0] == '@'
             @expandedRefineProperty(key)
 
             if value.length >= 2 && (value[0] == '>' || value[0] == '<') && value[1] == '='
