@@ -136,7 +136,7 @@ module SearchBase
     field = fields.find { |x| x.es_code == es_code }
     if field && field.config && field.config['options']
       field.config['options'].each do |option|
-        return option['code'] if option['label'] == value
+        return option['id'] if option['label'] == value
       end
     end
     value

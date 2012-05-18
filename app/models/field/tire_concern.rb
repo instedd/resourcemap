@@ -2,9 +2,11 @@ module Field::TireConcern
   extend ActiveSupport::Concern
 
   def index_mapping
-    case kind
-    when 'numeric'
+    case
+    when stored_as_number?
       { type: :long }
+    when kind == 'select_many'
+      { type: :array, index: :not_analyzed }
     else
       { type: :string, index: :not_analyzed }
     end

@@ -147,7 +147,7 @@
                 = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
                 <!-- /ko -->
                 <!-- ko if: kind() == 'select_one' -->
-                %select{ko(value: :value, options: :optionsCodes, optionsText: 'function(o){return $data.labelFor(o)}')}
+                %select{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
                 <!-- /ko -->
                 <!-- ko if: kind() == 'select_many' -->
                 %ul.superblyTagItems{ko(foreach: :value)}
@@ -238,7 +238,7 @@
                 = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'select_one' -->
-                %select{ko(value: :value, options: :optionsCodes, optionsText: 'function(o){return $data.labelFor(o)}', hasfocus: true, event: {change: :save, blur: :save})}
+                %select{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}', hasfocus: true, event: {change: :save, blur: :save})}
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'select_many' -->
                 %ul.superblyTagItems{ko(foreach: :value)}

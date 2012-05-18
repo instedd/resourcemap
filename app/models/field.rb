@@ -25,8 +25,8 @@ class Field < ActiveRecord::Base
     kind == 'select_one' || kind == 'select_many'
   end
 
-  def non_empty_value
-    kind == 'numeric' ? 1 : 'foo'
+  def stored_as_number?
+    kind == 'numeric' || kind == 'select_one'
   end
 
   # Returns the label for the given option code.

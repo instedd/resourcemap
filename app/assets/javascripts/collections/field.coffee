@@ -13,24 +13,30 @@ onCollections ->
       @hasValue = ko.computed => @value() && (if @kind() == 'select_many' then @value().length > 0 else @value())
       @valueUI = ko.computed => @valueUIFor(@value())
 
-      @options = if data.config?.options?
-                   ko.observableArray($.map(data.config.options, (x) => new Option(x)))
-                 else
-                   ko.observableArray()
-      @optionsCodes = ko.computed => $.map(@options(), (x) => x.code())
+      if @kind() == 'select_one' || @kind() == 'select_many'
+        @options = if data.config?.options?
+                     ko.observableArray($.map(data.config.options, (x) => new Option(x)))
+                   else
+                     ko.observableArray()
+        @optionsIds = ko.computed => $.map(@options(), (x) => x.id())
 
-      @hierarchy = ko.observable data.config?.hierarchy
-      @buildHierarchyItems() if @hierarchy()
+      if @kind() == 'hierarchy'
+        @hierarchy = ko.observable data.config?.hierarchy
+        @buildHierarchyItems() if @hierarchy()
 
-      @filter = ko.observable('') # The text for filtering options in a seclect_many
-      @remainingOptions = ko.computed =>
-        option.selected(false) for option in @options()
-        remaining = if @value()
-          @options().filter((x) => @value().indexOf(x.code()) == -1 && x.label().toLowerCase().indexOf(@filter().toLowerCase()) == 0)
-        else
-          @options()
-        remaining[0].selected(true) if remaining.length > 0
-        remaining
+      if @kind() == 'select_many'
+        @filter = ko.observable('') # The text for filtering options in a seclect_many
+        @remainingOptions = ko.computed =>
+          option.selected(false) for option in @options()
+          remaining = if @value()
+            console.log @value()
+            @options().filter((x) => @value().indexOf(x.id()) == -1 && x.label().toLowerCase().indexOf(@filter().toLowerCase()) == 0)
+          else
+            @options()
+          remaining[0].selected(true) if remaining.length > 0
+          remaining
+      else
+        @filter = ->
 
       @editing = ko.observable false
       @expanded = ko.observable false # For select_many
@@ -78,13 +84,13 @@ onCollections ->
 
     selectOption: (option) =>
       @value([]) unless @value()
-      @value().push(option.code())
+      @value().push(option.id())
       @value.valueHasMutated()
       @filter('')
 
-    removeOption: (optionCode) =>
+    removeOption: (optionId) =>
       @value([]) unless @value()
-      @value(@value().diff([optionCode]))
+      @value(@value().diff([optionId]))
       @value.valueHasMutated()
 
     expand: => @expanded(true)
@@ -114,9 +120,9 @@ onCollections ->
         else
           true
 
-    labelFor: (code) =>
+    labelFor: (id) =>
       for option in @options()
-        if option.code() == code
+        if option.id() == id
           return option.label()
       null
 

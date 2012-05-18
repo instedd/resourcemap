@@ -23,12 +23,12 @@ module ElasticSearch::QueryHelper
       conditions = []
 
       if text = search_hash.search
-        codes = search_value_codes search_hash.search, collection, fields
+        ids = search_value_ids search_hash.search, collection, fields
 
-        if codes.present?
-          codes = codes.map { |k, v| %Q(#{k}:"#{v}") }
-          codes.push append_star_unless_numeric(search_hash.search)
-          conditions.push "(#{codes.join " OR "})"
+        if ids.present?
+          ids = ids.map { |k, v| %Q(#{k}:"#{v}") }
+          ids.push append_star_unless_numeric(search_hash.search)
+          conditions.push "(#{ids.join " OR "})"
         else
           conditions.push append_star_unless_numeric(search_hash.search)
         end
@@ -48,8 +48,8 @@ module ElasticSearch::QueryHelper
           op, value = SearchParser.get_op_and_val value
 
           # Check if the user is searching a label instead of the code
-          code = search_value_code field, /#{value}/i
-          value = code if code
+          id = search_value_id field, /#{value}/i
+          value = id if id
         end
 
         case op
@@ -71,29 +71,29 @@ module ElasticSearch::QueryHelper
 
     private
 
-    # Searches value codes from their labels on this collections' fields,
+    # Searches value ids from their labels on this collections' fields,
     # or in the given fields.
-    # Returns a hash of matching field codes and the codes. For example:
-    # {:field_es_code => :option_code}
-    def search_value_codes(text, collection, fields_to_search = nil)
+    # Returns a hash of matching field codes and the ids. For example:
+    # {:field_es_code => :option_id}
+    def search_value_ids(text, collection, fields_to_search = nil)
       fields_to_search ||= collection.fields.all
       fields_to_search = fields_to_search.select &:select_kind?
 
       codes = {}
       regex = /#{text}/i
       fields_to_search.each do |field|
-        option_code = search_value_code field, regex
-        codes[field.es_code] = option_code if option_code
+        option_id = search_value_id field, regex
+        codes[field.es_code] = option_id if option_id
       end
       codes
     end
 
-    def search_value_code(field, regex)
+    def search_value_id(field, regex)
       return nil unless field.config && field.config['options']
 
       field.config['options'].each do |option|
-        if option['label'] =~ regex
-          return option['code']
+        if option['code'] =~ regex || option['label'] =~ regex
+          return option['id']
         end
       end
       nil

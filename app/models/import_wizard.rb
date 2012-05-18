@@ -97,23 +97,10 @@ class ImportWizard
 
           value = row[spec[:index]].try(:strip)
 
-          case spec[:kind]
-          when 'name'
-            site.name = value
-          when 'lat'
-            site.lat = value
-          when 'lng'
-            site.lng = value
-          when 'text', 'select_one', 'select_many'
-            site.properties[spec[:code]] = value
-          when 'numeric'
-            site.properties[spec[:code]] = value.to_i_or_f
-          end
-
           # For select one and many we need to collect the fields options
           if spec[:kind] == 'select_one' || spec[:kind] == 'select_many'
             field = fields[spec[:code]]
-            field.config ||= {'options' => []}
+            field.config ||= {'options' => [], 'nextId' => 1}
 
             code = nil
             label = nil
@@ -136,9 +123,30 @@ class ImportWizard
             # Add to options, if not already present
             if code.present? && label.present?
               existing = field.config['options'].find{|x| x['code'] == code}
-              field.config['options'] << {'code' => code, 'label' => label} unless existing
+              if existing
+                value = existing['id']
+              else
+                value = field.config['nextId']
+                field.config['options'] << {'id' => field.config['nextId'], 'code' => code, 'label' => label}
+                field.config['nextId'] += 1
+              end
             end
           end
+
+          # Assign the site value
+          case spec[:kind]
+          when 'name'
+            site.name = value
+          when 'lat'
+            site.lat = value
+          when 'lng'
+            site.lng = value
+          when 'text', 'select_one', 'select_many'
+            site.properties[spec[:code]] = value
+          when 'numeric'
+            site.properties[spec[:code]] = value.to_i_or_f
+          end
+
         end
       end
 

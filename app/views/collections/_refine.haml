@@ -62,7 +62,7 @@
       <!-- /ko -->
       <!-- ko if: kind() == 'select_one' || kind() == 'select_many' -->
       is:
-      %select{ko(value: '$root.expandedRefinePropertyValue', options: :optionsCodes, optionsText: 'function(o){return $data.labelFor(o)}')}
+      %select{ko(value: '$root.expandedRefinePropertyValue', options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
       %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
       <!-- /ko -->
     <!-- /ko -->
