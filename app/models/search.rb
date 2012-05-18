@@ -30,7 +30,7 @@ class Search
   end
 
   def sort(es_code, ascendent = true)
-    @sort = es_code
+    @sort = decode(es_code)
     @sort_ascendent = ascendent ? nil : 'desc'
   end
 
