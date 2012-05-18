@@ -1,6 +1,6 @@
 ResourceMap::Application.routes.draw do
   devise_for :users
-
+  match 'messaging' => 'messaging#index'
   resources :collections do
     resources :sites
     resources :layers do

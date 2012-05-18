@@ -12,4 +12,8 @@ class Site < ActiveRecord::Base
   def remove_nil_properties
     self.properties.reject! { |k, v| v.nil? }
   end
+
+  def update_properties(user, site)
+        
+  end
 end
