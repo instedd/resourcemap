@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120507093946) do
+ActiveRecord::Schema.define(:version => 20120517085356) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -74,6 +74,36 @@ ActiveRecord::Schema.define(:version => 20120507093946) do
     t.boolean  "admin",         :default => false
   end
 
+  create_table "reminders", :force => true do |t|
+    t.string   "name"
+    t.date     "reminder_date"
+    t.text     "reminder_message"
+    t.integer  "repeat_id"
+    t.integer  "collection_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "reminders", ["collection_id"], :name => "index_reminders_on_collection_id"
+  add_index "reminders", ["repeat_id"], :name => "index_reminders_on_repeat_id"
+
+  create_table "repeats", :force => true do |t|
+    t.string   "name"
+    t.integer  "order"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "site_reminders", :force => true do |t|
+    t.integer  "reminder_id"
+    t.integer  "site_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "site_reminders", ["reminder_id"], :name => "index_site_reminders_on_reminder_id"
+  add_index "site_reminders", ["site_id"], :name => "index_site_reminders_on_site_id"
+
   create_table "sites", :force => true do |t|
     t.integer  "collection_id"
     t.string   "name"
@@ -83,14 +113,21 @@ ActiveRecord::Schema.define(:version => 20120507093946) do
     t.string   "hierarchy"
     t.datetime "created_at",                                                                          :null => false
     t.datetime "updated_at",                                                                          :null => false
+    t.boolean  "group",                                                      :default => false
     t.text     "properties"
+    t.decimal  "min_lat",                     :precision => 10, :scale => 6
+    t.decimal  "max_lat",                     :precision => 10, :scale => 6
+    t.decimal  "min_lng",                     :precision => 10, :scale => 6
+    t.decimal  "max_lng",                     :precision => 10, :scale => 6
+    t.integer  "min_zoom"
+    t.integer  "max_zoom"
     t.string   "location_mode", :limit => 10,                                :default => "automatic"
   end
 
   create_table "thresholds", :force => true do |t|
     t.integer  "priority"
     t.string   "color"
-    t.text     "conditions"
+    t.text     "condition"
     t.integer  "collection_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
