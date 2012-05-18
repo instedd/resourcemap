@@ -36,54 +36,69 @@
 .tabsline
   %h2 Thresholds
   <!-- ko foreach :thresholds -->
-  .box.grey.w60{ ko(visible: '$data != $root.currentThreshold()'), style: 'display:none' }
+  <!-- ko if: $data != $root.currentThreshold() -->
+  .box.grey.w60
     .toptitle 
       .ord-buttons
         %input{ ko(value: :priority) }
         %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
         %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
       %span
-        When
         <!-- ko foreach :conditions --> 
-        %span{ ko(visible: '1 > 0') } and
-        %span{ ko(text: :field) } is
-        %span{ ko(text: :comparisonText) }
+        <!-- ko if: $parent.isFirstCondition($data) --> 
+        When
+        <!-- /ko -->
+        <!-- ko if: !$parent.isFirstCondition($data) --> 
+        and
+        <!-- /ko -->
+        %span{ ko(text: '$root.getField(field()).name') }
+        %span{ ko(text: :comparison) }
         %span{ ko(text: :value) }
         <!-- /ko --> 
-        , set color
+        &rarr; set color
         %span.stat{"data-bind" => "style: {backgroundColor: color}" }
 
     .rightbuttons 
       %button.fdelete{ ko(click: '$root.deleteThreshold') }
 
     %button.farrow{ ko(click: '$root.editThreshold') } Edit
-    
+  <!-- /ko -->
+
   -# Form editor
-  .box.w60{ ko(visible: '$data == $root.currentThreshold()'), style: 'display:none' }
+  <!-- ko if: $data == $root.currentThreshold() -->
+  .box.w60
     .rightbuttons
       %button.fdelete
     %label Conditions
     .middlebuttons
       %span
-        When
       <!-- ko foreach :conditions --> 
-      = select_tag :fields_option, nil, 'data-bind' => kov(options: '$root.fields', value: :field)
-      = select_tag :comparison_option, options_for_select([['is less than', 'lt'], ['is greater than', 'gt']]), "data-bind" => kov(value: :is)
-      = select_tag :value_or_percent_option, options_for_select([['a value of', 'value'], ['a percent of', 'percent']]), "data-bind" => kov(value: :valueOrPercent)
+      <!-- ko if: $parent.isFirstCondition($data) --> 
+      When
+      <!-- /ko -->
+      <!-- ko if: !$parent.isFirstCondition($data) --> 
+      %br
+      And
+      <!-- /ko -->
+      %select{ ko(options: '$root.fields', optionsText: "'name'", optionsValue: "'code'", value: :field) }
+      %select{ ko(options: '$root.getField($data.field()).comparisonOptions', optionsText: "'value'", optionsValue: "'key'", value: :is) }
+      %select{ ko(options: :types, optionsText: "'value'", optionsValue:"'key'", value: :type) }
       %span.ux-nstep.w06 
-        %input{ko(value: :value), style: ":size => '2', :type => 'text'"}
-        %button.kdown{:type => "button"}
-        %button.kup{:type => "button"}
-      <!-- /ko --> 
-      %span.stat{ko(style: {backgroundColor: :color}, click: 'buildColorPicker')}
+        %input{ ko(value: :rawValue), type: :text }
+      <!-- ko if: $parent.isLastCondition($data) --> 
+      set color
+      %span.stat{ ko(style: { backgroundColor: '$parent.color' }, click: 'buildColorPicker') }
+      <!-- /ko -->
       %button.premove    
-    
+      <!-- /ko --> 
     %button.fadd{ko(click: '$root.addCondition') }
       Add new condition
     %hr
     .bottom-actions
       %button.white{ ko(click: '$root.saveThreshold') } Save
       %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
+  <!-- /ko -->
+      
   %br/
   <!-- /ko --> 
 

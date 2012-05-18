@@ -1,4 +1,5 @@
 #= require models/threshold
+
 $ ->
   module 'rm'
 
@@ -13,8 +14,8 @@ $ ->
       EDITING     : 'editing'
 
     constructor: (@collectionId) ->
+      @fields = ko.observableArray()
       @thresholds = ko.observableArray()
-      @fields = ko.observableArray() 
       @state = ko.observable ThresholdsViewModel.States.LISTING
       @currentThreshold = ko.observable()
 
@@ -44,7 +45,7 @@ $ ->
         is: "gt"
         value: "10"
       }
-      rm.thresholdsViewModel.currentThreshold().addCondition(con) 
+      rm.thresholdsViewModel.currentThreshold().addCondition(con)
 
     saveThresholdSuccess: (threshold) ->
       @currentThreshold().id(threshold.id)
@@ -53,19 +54,8 @@ $ ->
     
     showAddThreshold: () ->
       @state ThresholdsViewModel.States.ADDING_NEW
-      defaultThreshold =
-        collection_id: @collectionId
-        valueOrPercent: "percent"
-        priority:  @thresholds().length + 1
-        color: "#0000ff"
-        conditions: [
-          field: "Beds"
-          is: "gt"
-          value: "10"
-        ]
-      threshold = new rm.Threshold defaultThreshold
-      @thresholds.push threshold
-      @_setCurrentThreshold(threshold)
+      @_setCurrentThreshold(@_newThreshold())
+      @thresholds.push @currentThreshold
 
     cancelThreshold: =>
       @_setCurrentThreshold null
@@ -74,6 +64,21 @@ $ ->
     editThreshold: (threshold) =>
       @_setCurrentThreshold threshold
       @state ThresholdsViewModel.States.EDITING
+
+    getField: (code) ->
+      for field in @fields()
+        return field if field.code() == code
+
+    _newThreshold: ->
+      lastThresholdPriority = @thresholds()[@thresholds().length - 1]?.priority() ? 0
+      new rm.Threshold
+        collection_id: @collectionId
+        priority: lastThresholdPriority + 1
+        color: "#0000ff"
+        conditions: [ ]
+
+    _getLastThreshold: ->
+      @thresholds()[@thresholds().length - 1] if @thresholds().length > 0
 
     _setCurrentThreshold: (threshold)->
       @thresholds.remove @currentThreshold() if @currentThreshold()?.isNewRecord()
