@@ -6,7 +6,7 @@ onCollections ->
       @sortDirection = ko.observable()
 
     @sortBy: (field) ->
-      @sortByCode(field.code())
+      @sortByCode(field.esCode())
 
     @sortByName: ->
       @sortByCode('name')

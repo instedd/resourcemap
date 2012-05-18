@@ -32,7 +32,7 @@ onCollections ->
     hasName: => $.trim(@name()).length > 0
 
     propertyValue: (field) =>
-      value = @properties()[field.code()]
+      value = @properties()[field.esCode()]
       field.valueUIFor(value)
 
     highlightedPropertyValue: (field) =>
@@ -44,14 +44,14 @@ onCollections ->
         @updatedAt(data.updated_at)
       @collection.fetchLocation()
 
-    updateProperty: (code, value) =>
-      field = @collection.findFieldByCode(code)
+    updateProperty: (esCode, value) =>
+      field = @collection.findFieldByEsCode(esCode)
       if field.kind() == 'hierarchy' && window.model.currentCollection()
-        window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[code], newValue: value}])
+        window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[esCode], newValue: value}])
 
-      @properties()[code] = value
+      @properties()[esCode] = value
 
-      $.post "/sites/#{@id()}/update_property.json", {code: code, value: value}, (data) =>
+      $.post "/sites/#{@id()}/update_property.json", {es_code: esCode, value: value}, (data) =>
         @propagateUpdatedAt(data.updated_at)
 
     copyPropertiesFromCollection: (collection) =>
@@ -62,12 +62,12 @@ onCollections ->
       @properties({})
       for field in collection.fields()
         if field.kind() == 'hierarchy' && @id()
-          hierarchyChanges.push({field: field, oldValue: oldProperties[field.code()], newValue: field.value()})
+          hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode()], newValue: field.value()})
 
         if field.value()
-          @properties()[field.code()] = field.value()
+          @properties()[field.esCode()] = field.value()
         else
-          delete @properties()[field.code()]
+          delete @properties()[field.esCode()]
 
       if window.model.currentCollection()
         window.model.currentCollection().performHierarchyChanges(@, hierarchyChanges)
@@ -77,7 +77,7 @@ onCollections ->
         collection.clearFieldValues()
         if @properties()
           for field in collection.fields()
-            value = @properties()[field.code()]
+            value = @properties()[field.esCode()]
             field.value(value)
 
     post: (json, callback) =>

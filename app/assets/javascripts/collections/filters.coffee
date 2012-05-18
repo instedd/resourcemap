@@ -32,25 +32,25 @@ onCollections ->
     description: => "updated within the last month"
 
   class @FilterByTextProperty extends Filter
-    constructor: (code, label, value) ->
-      @code = code
+    constructor: (esCode, label, value) ->
+      @esCode = esCode
       @label = label
       @value = value
 
     setQueryParams: (options) =>
-      options["@#{@code}"] = @value
+      options[@esCode] = @value
 
     description: => "where #{@label} contains \"#{@value}\""
 
   class @FilterByNumericProperty extends Filter
-    constructor: (code, label, operator, value) ->
-      @code = code
+    constructor: (esCode, label, operator, value) ->
+      @esCode = esCode
       @label = label
       @operator = operator
       @value = value
 
     setQueryParams: (options) =>
-      options["@#{@code}"] = "#{@operator}#{@value}"
+      options[@esCode] = "#{@operator}#{@value}"
 
     description: =>
       str = "where #{@label} "
@@ -63,14 +63,14 @@ onCollections ->
       str += "#{@value}"
 
   class @FilterBySelectProperty extends Filter
-    constructor: (code, label, value, valueLabel) ->
-      @code = code
+    constructor: (esCode, label, value, valueLabel) ->
+      @esCode = esCode
       @label = label
       @value = value
       @valueLabel = valueLabel
 
     setQueryParams: (options) =>
-      options["@#{@code}"] = @value
+      options[@esCode] = @value
 
     description: =>
       "where #{@label} is \"#{@valueLabel}\""

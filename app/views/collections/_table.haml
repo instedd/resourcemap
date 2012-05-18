@@ -37,14 +37,14 @@
           %span{ko(html: :highlightedName)}
       %button.farrow{ko(click: '$root.editSite'), type: :button}
     <!-- ko foreach: $root.currentCollection().fields() -->
-    <!-- ko if: $parent.properties()[$data.code()] -->
+    <!-- ko if: $parent.properties()[$data.esCode()] -->
     %td.l
       %span{ko(html: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
       <!-- ko if: kind() == 'numeric' -->
       = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline'
       <!-- /ko -->
     <!-- /ko -->
-    <!-- ko if: !$parent.properties()[$data.code()] -->
+    <!-- ko if: !$parent.properties()[$data.esCode()] -->
     %td.l
     <!-- /ko -->
     <!-- /ko -->
@@ -117,7 +117,7 @@
         <!-- ko foreach: $root.currentCollection().fields() -->
         %th{ko(click: '$root.sortBy', style: {maxWidth: 'suggestedWidth()', minWidth: 'suggestedWidth()'}), style: 'overflow:hidden;cursor:pointer'}
           %span{ko(text: :name), style: 'display:inline'}
-          <!-- ko if: $root.sort() == code() -->
+          <!-- ko if: $root.sort() == esCode() -->
           %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
           <!-- /ko -->
         <!-- /ko -->
@@ -128,7 +128,7 @@
           <!-- /ko -->
         %th
     %tbody
-      <!-- ko if: !isSearch() && $root.groupBy().code() != '' -->
+      <!-- ko if: !isSearch() && $root.groupBy().esCode() != '' -->
       <!-- ko template: {name: 'table-hierarchy-items-template', with: $data} -->
       <!-- /ko -->
       <!-- /ko -->

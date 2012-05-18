@@ -11,6 +11,11 @@ module Collection::TireConcern
       refresh: true,
       mappings: { site: site_mapping }
     })
+
+    # This is because in the tests collections are created and the
+    # fields association will almost always be empty, but it needs to
+    # be refreshed afte creating layers and fields.
+    clear_association_cache if Rails.env.test?
   end
 
   def site_mapping
@@ -31,11 +36,7 @@ module Collection::TireConcern
   end
 
   def fields_mapping
-    map = {}
-    fields.each do |field|
-      map[field.elastic_search_code] = field.index_mapping
-    end
-    map
+    fields.each_with_object({}) { |field, hash| hash[field.es_code] = field.index_mapping }
   end
 
   def recreate_index

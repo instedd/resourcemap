@@ -85,7 +85,7 @@
   .tablescroll
     %table.GralTable.CleanTable
       %tbody
-        <!-- ko if: !isSearch() && $root.groupBy().code() != '' -->
+        <!-- ko if: !isSearch() && $root.groupBy().esCode() != '' -->
         <!-- ko template: {name: 'map-hierarchy-items-template', with: $data} -->
         <!-- /ko -->
         <!-- /ko -->
@@ -138,7 +138,7 @@
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields() -->
               %div
-                = label_tag '', '', ko(attr: {:for => :code}, text: "name() + ':'")
+                = label_tag '', '', ko(attr: {:for => :esCode}, text: "name() + ':'")
                 <!-- ko if: kind() == 'text' -->
                 = ko_text_field_tag :value
                 <!-- /ko -->

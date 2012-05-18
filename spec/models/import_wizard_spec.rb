@@ -36,10 +36,10 @@ describe ImportWizard do
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({'beds' => 10})
+    sites[0].properties.should eq({fields[0].es_code => 10})
 
     sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({'beds' => 20})
+    sites[1].properties.should eq({fields[0].es_code => 20})
   end
 
   it "imports with select one mapped to both code and label" do
@@ -73,9 +73,9 @@ describe ImportWizard do
     sites = collection.sites.all
     sites.length.should eq(3)
 
-    sites[0].properties.should eq({'visibility' => 'public'})
-    sites[1].properties.should eq({'visibility' => 'private'})
-    sites[2].properties.should eq({'visibility' => 'private'})
+    sites[0].properties.should eq({fields[0].es_code => 'public'})
+    sites[1].properties.should eq({fields[0].es_code => 'private'})
+    sites[2].properties.should eq({fields[0].es_code => 'private'})
   end
 
   it "imports with two select ones mapped to code and label" do
@@ -110,8 +110,8 @@ describe ImportWizard do
     sites = collection.sites.all
     sites.length.should eq(3)
 
-    sites[0].properties.should eq({'visibility' => '1'})
-    sites[1].properties.should eq({'visibility' => '0'})
-    sites[2].properties.should eq({'visibility' => '0'})
+    sites[0].properties.should eq({fields[0].es_code => '1'})
+    sites[1].properties.should eq({fields[0].es_code => '0'})
+    sites[2].properties.should eq({fields[0].es_code => '0'})
   end
 end

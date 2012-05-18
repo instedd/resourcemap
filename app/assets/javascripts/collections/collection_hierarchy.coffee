@@ -20,17 +20,17 @@ onCollections ->
       @setQueryParams {}
 
     setQueryParams: (q) =>
-      q.hierarchy_code = @field.code()
+      q.hierarchy_code = @field.esCode()
       q
 
-    addSite: (site, isNew = false) =>
+    addSite: (site, isNew = fase) =>
       # We also add the site to the original collection
       # or to the hierarchy item where it belongs, if it's a new site
       if isNew
         @collection.addSite site
 
-        if site.properties()[@field.code()]
-          item = @hierarchyItemsMap[site.properties()[@field.code()]]
+        if site.properties()[@field.esCode()]
+          item = @hierarchyItemsMap[site.properties()[@field.esCode()]]
           item.addSite site if item && item.sitesPage > 1
         else
           super(site)
@@ -41,7 +41,7 @@ onCollections ->
     # value: we need to move it from the old node to the new node.
     performHierarchyChanges: (site, changes) =>
       for change in changes
-        if change.field.code() == @field.code()
+        if change.field.esCode() == @field.esCode()
           @performHierarchyChange(site, change)
 
     performHierarchyChange: (site, change) =>

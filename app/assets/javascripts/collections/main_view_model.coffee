@@ -43,7 +43,7 @@ onCollections ->
       # with the view.
       @[k] = v.bind(@) for k, v of @ when v.bind? && !ko.isObservable(v)
 
-    defaultGroupBy: {code: (-> ''), name: (-> 'None')}
+    defaultGroupBy: {esCode: (-> ''), name: (-> 'None')}
 
     showPopupWithMaxValueOfProperty: (field, event) =>
       # Create a popup that first says "Loading...", then loads the content via ajax.
@@ -55,7 +55,7 @@ onCollections ->
         element.remove()
         $(event.target).unbind 'mouseout', mouseoutHandler
       event = $(event.target).bind 'mouseout', mouseoutHandler
-      $.get "/collections/#{@currentCollection().id()}/max_value_of_property.json", {property: field.code()}, (data) =>
+      $.get "/collections/#{@currentCollection().id()}/max_value_of_property.json", {property: field.esCode()}, (data) =>
         element.text "Maximum #{field.name()}: #{data}"
 
     refreshTimeago: -> $('.timeago').timeago()

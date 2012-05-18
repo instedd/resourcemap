@@ -29,9 +29,8 @@ class Search
     self
   end
 
-  def sort(field, ascendent = true)
-    @sort = field
-    @sort = Site.encode_elastic_search_keyword @sort if @sort != 'name' && @sort != 'updated_at' && @sort != 'created_at'
+  def sort(es_code, ascendent = true)
+    @sort = es_code
     @sort_ascendent = ascendent ? nil : 'desc'
   end
 
@@ -59,6 +58,6 @@ class Search
       @search.size self.class.page_size
     end
 
-    decode_elastic_search_results @search.perform.results
+    @search.perform.results
   end
 end

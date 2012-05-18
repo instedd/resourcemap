@@ -10,7 +10,14 @@ module Field::TireConcern
     end
   end
 
-  def elastic_search_code
-    Site.encode_elastic_search_keyword code
+  # Returns the code to store this field in Elastic Search
+  def es_code
+    id.to_s
+  end
+
+  module ClassMethods
+    def where_es_code_is(es_code)
+      where(:id => es_code.to_i)
+    end
   end
 end

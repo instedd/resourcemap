@@ -172,9 +172,12 @@ describe Activity do
   end
 
   it "creates one after creating a site" do
+    layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'beds', name: 'Beds', ord: 1}]
+    field = layer.fields.first
+
     Activity.delete_all
 
-    site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
+    site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {field.es_code => 20}, user: user
 
     assert_activity 'site_created',
       'collection_id' => collection.id,
@@ -200,8 +203,13 @@ describe Activity do
   end
 
   context "site changed" do
+    let!(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'beds', name: 'Beds', ord: 1}, {kind: 'numeric', code: 'tables', name: 'Tables', ord: 2}, {kind: 'text', code: 'text', name: 'Text', ord: 3}] }
+    let(:beds) { layer.fields.first }
+    let(:tables) { layer.fields.second }
+    let(:text) { layer.fields.third }
+
     it "creates one after changing one site's name" do
-      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20}, user: user
 
       Activity.delete_all
 
@@ -217,7 +225,7 @@ describe Activity do
     end
 
     it "creates one after changing one site's location" do
-      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20}, user: user
 
       Activity.delete_all
 
@@ -238,54 +246,54 @@ describe Activity do
       Activity.delete_all
 
       site.properties_will_change!
-      site.properties['beds'] = 30
+      site.properties[beds.es_code] = 30
       site.save!
 
       assert_activity 'site_changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'properties' => [{}, {'beds' => 30}]}},
+        'data' => {'name' => site.name, 'changes' => {'properties' => [{}, {beds.es_code => 30}]}},
         'description' => "Site '#{site.name}' changed: 'beds' changed from (nothing) to 30"
     end
 
     it "creates one after changing one site's property" do
-      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20}, user: user
 
       Activity.delete_all
 
       site.properties_will_change!
-      site.properties['beds'] = 30
+      site.properties[beds.es_code] = 30
       site.save!
 
       assert_activity 'site_changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'properties' => [{'beds' => 20}, {'beds' => 30}]}},
+        'data' => {'name' => site.name, 'changes' => {'properties' => [{beds.es_code => 20}, {beds.es_code => 30}]}},
         'description' => "Site '#{site.name}' changed: 'beds' changed from 20 to 30"
     end
 
     it "creates one after changing many site's properties" do
-      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20, 'text' => 'foo'}, user: user
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20, text.es_code => 'foo'}, user: user
 
       Activity.delete_all
 
       site.properties_will_change!
-      site.properties['beds'] = 30
-      site.properties['text'] = 'bar'
+      site.properties[beds.es_code] = 30
+      site.properties[text.es_code] = 'bar'
       site.save!
 
       assert_activity 'site_changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'properties' => [{'beds' => 20, 'text' => 'foo'}, {'beds' => 30, 'text' => 'bar'}]}},
+        'data' => {'name' => site.name, 'changes' => {'properties' => [{beds.es_code => 20, text.es_code => 'foo'}, {beds.es_code => 30, text.es_code => 'bar'}]}},
         'description' => "Site '#{site.name}' changed: 'beds' changed from 20 to 30, 'text' changed from 'foo' to 'bar'"
     end
 
     it "doesn't create one after siglaning properties will change but they didn't change" do
-      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {'beds' => 20}, user: user
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20}, user: user
 
       Activity.delete_all
 
