@@ -5,8 +5,6 @@ module Field::TireConcern
     case
     when stored_as_number?
       { type: :long }
-    when select_many?
-      { type: :array, index: :not_analyzed }
     else
       { type: :string, index: :not_analyzed }
     end
