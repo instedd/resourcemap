@@ -14,7 +14,7 @@ class Site < ActiveRecord::Base
     self.properties.keys.each do |key|
       field = fields[key]
       self.properties[key] = properties[key].to_i_or_f if field && field.stored_as_number?
-      self.properties[key].map!(&:to_i) if field && field.kind == 'select_many'
+      self.properties[key].map!(&:to_i) if field && field.select_many?
     end
   end
 
@@ -30,10 +30,10 @@ class Site < ActiveRecord::Base
     properties.each do |key, value|
       field = fields[key]
       if field
-        if field.kind == 'select_one'
+        if field.select_one?
           option = field.config['options'].find { |o| o['id'] == value }
           props[field.name] = option ? option['label'] : value
-        elsif field.kind == 'select_many'
+        elsif field.select_many?
           if value.is_a? Array
             props[field.name] = value.map do |val|
               option = field.config['options'].find { |o| o['id'] == val }
@@ -42,7 +42,7 @@ class Site < ActiveRecord::Base
           else
             props[field.name] = value
           end
-        elsif field.kind == 'hierarchy'
+        elsif field.hierarchy?
           props[field.name] = value
         else
           props[field.name] = value

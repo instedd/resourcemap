@@ -3,7 +3,7 @@ class Api::ActivitiesController < ApplicationController
 
   def index
     @page = (params[:page] || '1').to_i
-    @activities = Activity.order('id desc').includes(:collection, :user)
+    @activities = Activity.order('id desc').includes(:collection, :site, :user)
     @activities = @activities.limit(PerPage + 1)
     if @page > 1
       @activities.offset((@page - 1) * PerPage)
