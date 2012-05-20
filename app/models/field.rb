@@ -49,6 +49,16 @@ class Field < ActiveRecord::Base
     return code
   end
 
+  def strongly_type(value)
+    if stored_as_number?
+      value.to_i_or_f
+    elsif select_many?
+      value.map &:to_i
+    else
+      value
+    end
+  end
+
   private
 
   def sanitize_hierarchy_items(items)

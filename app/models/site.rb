@@ -13,8 +13,7 @@ class Site < ActiveRecord::Base
     fields = collection.fields.index_by(&:es_code)
     self.properties.keys.each do |key|
       field = fields[key]
-      self.properties[key] = properties[key].to_i_or_f if field && field.stored_as_number?
-      self.properties[key].map!(&:to_i) if field && field.select_many?
+      self.properties[key] = field.strongly_type(properties[key]) if field
     end
   end
 
