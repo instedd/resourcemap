@@ -40,10 +40,10 @@ reporting_progress(Site.includes(:collection), "Migrating site") do |site|
     site.properties.each do |key, value|
       field = fields_by_code[key] || fields_by_es_code[key]
       if field
-        if field.kind == 'select_one'
+        if field.kind == 'select_one' && field.config['options'].respond_to?(:find)
           option = field.config['options'].find { |o| o['code'] == value }
           props[field.es_code] = option ? option['id'] : value
-        elsif field.kind == 'select_many'
+        elsif field.kind == 'select_many' && field.config['options'].respond_to?(:find)
           if value.respond_to? :map!
             value.map! do |code|
               option = field.config['options'].find { |o| o['code'] == code }
