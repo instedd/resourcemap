@@ -33,7 +33,7 @@ class Field < ActiveRecord::Base
   end
 
   def stored_as_number?
-    numeric? || select_kind?
+    numeric? || select_one?
   end
 
   # Returns the label for the given option code.
