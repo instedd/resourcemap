@@ -73,6 +73,36 @@ ActiveRecord::Schema.define(:version => 20120517090400) do
     t.boolean  "admin",         :default => false
   end
 
+  create_table "reminders", :force => true do |t|
+    t.string   "name"
+    t.date     "reminder_date"
+    t.text     "reminder_message"
+    t.integer  "repeat_id"
+    t.integer  "collection_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "reminders", ["collection_id"], :name => "index_reminders_on_collection_id"
+  add_index "reminders", ["repeat_id"], :name => "index_reminders_on_repeat_id"
+
+  create_table "repeats", :force => true do |t|
+    t.string   "name"
+    t.integer  "order"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "site_reminders", :force => true do |t|
+    t.integer  "reminder_id"
+    t.integer  "site_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "site_reminders", ["reminder_id"], :name => "index_site_reminders_on_reminder_id"
+  add_index "site_reminders", ["site_id"], :name => "index_site_reminders_on_site_id"
+
   create_table "messages", :force => true do |t|
     t.string   "guid"
     t.string   "country"

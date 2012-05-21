@@ -2,35 +2,13 @@
 
 describe 'Threshold', ->
   beforeEach ->
-    @threshold = new rm.Threshold { priority: 1, color: '#ff0000', condition: { field: 'beds', is: 'lt', value: 10 } }
+    @threshold = new rm.Threshold { priority: 1, color: '#ff0000', conditions: [{ field: 'beds', is: 'lt', type: 'value', value: 10 }] }
 
-  it 'should has priority', ->
-    expect(@threshold.priority()).toEqual 1
-
-  it 'should has color', ->
-    expect(@threshold.color()).toEqual '#ff0000'
-
-  it 'should has field', ->
-    expect(@threshold.field()).toEqual 'beds'
-
-  it 'should has comparison', ->
-    expect(@threshold.comparisonText()).toEqual 'less than'
-
-  it 'should has value', ->
-    expect(@threshold.value()).toEqual 10
+  it 'should have 1 condition', ->
+    expect(@threshold.conditions().length).toEqual 1
 
   it 'should be new record', ->
     expect(@threshold.isNewRecord()).toBeTruthy()
-
-  describe 'with percentage value', ->
-    beforeEach ->
-      @threshold = new rm.Threshold { condition: { field: 'beds', is: 'lt', value: [0.75, 'doctors'] } }
-
-    it 'should format to percentage', ->
-      expect(@threshold.value()).toMatch /// 75\% ///
-
-    it 'should display value', ->
-      expect(@threshold.value()).toEqual '75% of doctors'
 
   describe '#destroy', ->
     it 'should dispatch ThresholdEvent:DESTROY event', ->
@@ -49,3 +27,9 @@ describe 'Threshold', ->
       spyOn rm.EventDispatcher, 'trigger'
       @threshold.setPriority 99
       expect(rm.EventDispatcher.trigger).toHaveBeenCalledWith rm.ThresholdEvent.SET_PRIORITY, new rm.ThresholdEvent @threshold
+
+  it 'should check is first condtion', ->
+    @threshold.isFirstCondition @threshold.conditions()[0]
+
+  it 'should check is last condtion', ->
+    @threshold.isLastCondition @threshold.conditions()[0]

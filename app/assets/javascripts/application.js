@@ -20,6 +20,7 @@
 //= require knockout-2.0.0
 //= require sammy
 //= require module
+//= require utils
 //= require event_dispatcher
 //= require bootstrap
 //= require events/system_event

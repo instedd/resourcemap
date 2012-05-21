@@ -77,7 +77,7 @@ class ImportWizard
         end
       end
 
-      sites_count = 0
+      sites = []
 
       # Now process all rows
       rows[1 .. -1].each do |row|
@@ -86,7 +86,7 @@ class ImportWizard
 
         site = collection.sites.new properties: {}, collection_id: collection.id
         site.mute_activities = true
-        sites_count += 1
+        sites << site
 
         # Optimization
         site.collection = collection
@@ -107,11 +107,7 @@ class ImportWizard
           when 'text', 'select_one', 'select_many'
             site.properties[spec[:code]] = value
           when 'numeric'
-            site.properties[spec[:code]] = begin
-                                             Integer(value)
-                                           rescue
-                                             Float(value) rescue nil
-                                           end
+            site.properties[spec[:code]] = value.to_i_or_f
           end
 
           # For select one and many we need to collect the fields options
@@ -149,13 +145,15 @@ class ImportWizard
       Collection.transaction do
         layer.save!
 
-        # Force computing bounds and such in memory, so a thousand callbacks
-        # are not called
+        # Force computing bounds and such in memory, so a thousand callbacks are not called
         collection.compute_geometry_in_memory
+
+        # Need to change site properties from code to field.es_code
+        sites.each { |site| site.properties = Hash[site.properties.map { |k, v| [fields[k].es_code, v] }] }
 
         collection.save!
 
-        Activity.create! kind: 'collection_imported', collection_id: collection.id, layer_id: layer.id, user_id: user.id, 'data' => {'sites' => sites_count}
+        Activity.create! kind: 'collection_imported', collection_id: collection.id, layer_id: layer.id, user_id: user.id, 'data' => {'sites' => sites.length}
       end
     end
 

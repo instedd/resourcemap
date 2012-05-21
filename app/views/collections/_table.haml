@@ -32,24 +32,56 @@
   %tr{ko(css: "{active: $data == $root.selectedSite()}")}
     %td.w39{style: 'overflow:auto'}
       %div{style: 'margin-top:2px'}
-        %p{ko(click: '$root.selectSite'), style: 'cursor: pointer'}
+        %p{ko(style: {marginLeft: "'' + (($parent.level() + 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
           %span.stat-r
           %span{ko(html: :highlightedName)}
       %button.farrow{ko(click: '$root.editSite'), type: :button}
     <!-- ko foreach: $root.currentCollection().fields() -->
-    <!-- ko if: $parent.properties()[$data.code()] -->
+    <!-- ko if: $parent.properties()[$data.esCode()] -->
     %td.l
       %span{ko(html: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
       <!-- ko if: kind() == 'numeric' -->
       = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline'
       <!-- /ko -->
     <!-- /ko -->
-    <!-- ko if: !$parent.properties()[$data.code()] -->
+    <!-- ko if: !$parent.properties()[$data.esCode()] -->
     %td.l
     <!-- /ko -->
     <!-- /ko -->
     %td.l.timeago{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
     %td.l
+  <!-- /ko -->
+
+-# Hierarchy item template (used when grouping results by hierarchy item)
+%script{type: "text/html", id: "table-hierarchy-items-template"}
+  <!-- ko foreach: hierarchyItems -->
+  %tr{ko(css: {active: :selected})}
+    %td.w39{ko(click: :toggleExpand), style: 'overflow:auto;height:30px;cursor:pointer'}
+      %div{style: 'margin-top:2px'}
+        %a{ko(style: {marginLeft: "'' + (($parent.level() + 1) * 20) + 'px'"}), href: 'javascript:void(0)'}
+          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
+        %span{ko(text: :name)}
+    <!-- ko foreach: $root.currentCollection().fields() -->
+    %td.l
+    <!-- /ko -->
+    %td.l
+    %td.l
+  <!-- ko if: expanded -->
+  <!-- ko template: {name: 'table-hierarchy-items-template', with: hierarchyItems} -->
+  <!-- /ko -->
+  <!-- ko template: {name: 'table-sites-template', with: $data} -->
+  <!-- /ko -->
+  <!-- ko if: hasMoreSites() && !loadingSites()-->
+  %tr
+    %td.loadmore
+      = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + level() * 20) + 'px'"})
+  <!-- /ko -->
+  <!-- ko if: hasMoreSites() && loadingSites()-->
+  %tr
+    %td.loadmore
+      %span{ko(style: {marginLeft: "'' + (20 + (level() - 1) * 20) + 'px'"})} Loading...
+  <!-- /ko -->
+  <!-- /ko -->
   <!-- /ko -->
 
 -# Collection sites
@@ -61,7 +93,6 @@
     %span.i18b-groupChat
     %span{ko(text: :name)}
     %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:9px'}
-  <!-- ko if: $root.currentCollection() -->
   .greyback
     %span{style: 'margin:0;padding:3px;display:inline-block'}
       Export this result in
@@ -70,7 +101,6 @@
       %span{ko(click: '$root.exportInJSON'), style: 'text-decoration:underline;cursor:pointer;margin:0'} JSON
       or
       %span{ko(click: '$root.exportInCSV'), style: 'text-decoration:underline;cursor:pointer;margin:0'} CSV
-  <!-- /ko -->
   .mapheader.right
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}
@@ -87,7 +117,7 @@
         <!-- ko foreach: $root.currentCollection().fields() -->
         %th{ko(click: '$root.sortBy', style: {maxWidth: 'suggestedWidth()', minWidth: 'suggestedWidth()'}), style: 'overflow:hidden;cursor:pointer'}
           %span{ko(text: :name), style: 'display:inline'}
-          <!-- ko if: $root.sort() == code() -->
+          <!-- ko if: $root.sort() == esCode() -->
           %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
           <!-- /ko -->
         <!-- /ko -->
@@ -98,10 +128,16 @@
           <!-- /ko -->
         %th
     %tbody
+      <!-- ko if: !isSearch() && $root.groupBy().esCode() != '' -->
+      <!-- ko template: {name: 'table-hierarchy-items-template', with: $data} -->
+      <!-- /ko -->
+      <!-- /ko -->
       <!-- ko template: {name: 'table-sites-template', with: $data} -->
       <!-- /ko -->
 .tablebottom
+  <!-- ko if: !isSearch() -->
   %button.flocation{ko(click: '$root.createSite')} Create Site
+  <!-- /ko -->
   <!-- ko if: hasMoreSites() && !loadingSites()-->
   %span.loadmore
     = ko_link_to "Load more sites...", :loadMoreSites

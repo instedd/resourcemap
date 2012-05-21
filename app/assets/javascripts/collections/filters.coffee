@@ -1,49 +1,56 @@
-$(-> if $('#collections-main').length > 0
+onCollections ->
 
-  class window.FilterByLastHour
+  class @Filter
+    isDateFilter: => false
+
+  class @FilterByDate
+    isDateFilter: => true
+
+  class @FilterByLastHour extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_hour'
 
     description: => "updated within the last hour"
 
-  class window.FilterByLastDay
+
+  class @FilterByLastDay extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_day'
 
     description: => "updated within the last day"
 
-  class window.FilterByLastWeek
+  class @FilterByLastWeek extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_week'
 
     description: => "updated within the last week"
 
-  class window.FilterByLastMonth
+  class @FilterByLastMonth extends FilterByDate
     setQueryParams: (options) =>
       options.updated_since = 'last_month'
 
     description: => "updated within the last month"
 
-  class window.FilterByTextProperty
-    constructor: (code, label, value) ->
-      @code = code
+  class @FilterByTextProperty extends Filter
+    constructor: (esCode, label, value) ->
+      @esCode = esCode
       @label = label
       @value = value
 
     setQueryParams: (options) =>
-      options["@#{@code}"] = @value
+      options[@esCode] = @value
 
     description: => "where #{@label} contains \"#{@value}\""
 
-  class window.FilterByNumericProperty
-    constructor: (code, label, operator, value) ->
-      @code = code
+  class @FilterByNumericProperty extends Filter
+    constructor: (esCode, label, operator, value) ->
+      @esCode = esCode
       @label = label
       @operator = operator
       @value = value
 
     setQueryParams: (options) =>
-      options["@#{@code}"] = "#{@operator}#{@value}"
+      options[@esCode] = "#{@operator}#{@value}"
 
     description: =>
       str = "where #{@label} "
@@ -55,17 +62,15 @@ $(-> if $('#collections-main').length > 0
         when '>=' then str += " is greater than or equal to "
       str += "#{@value}"
 
-  class window.FilterBySelectProperty
-    constructor: (code, label, value, valueLabel) ->
-      @code = code
+  class @FilterBySelectProperty extends Filter
+    constructor: (esCode, label, value, valueLabel) ->
+      @esCode = esCode
       @label = label
       @value = value
       @valueLabel = valueLabel
 
     setQueryParams: (options) =>
-      options["@#{@code}"] = @value
+      options[@esCode] = @value
 
     description: =>
       "where #{@label} is \"#{@valueLabel}\""
-
-)

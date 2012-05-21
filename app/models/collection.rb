@@ -13,11 +13,12 @@ class Collection < ActiveRecord::Base
   has_many :fields, order: 'ord'
   has_many :thresholds
 
-  def max_value_of_property(property)
+  def max_value_of_property(es_code)
     search = new_tire_search
-    search.sort { by Site.encode_elastic_search_keyword(property), 'desc' }
-    search.size 1
-    search.perform.results.first['_source']['properties'][Site.encode_elastic_search_keyword(property)] rescue 0
+    search.sort { by es_code, 'desc' }
+    search.size 2000
+    results = search.perform.results
+    results.first['_source']['properties'][es_code] rescue 0
   end
 
   def visible_fields_for(user)

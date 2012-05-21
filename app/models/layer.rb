@@ -13,36 +13,6 @@ class Layer < ActiveRecord::Base
     collection.update_mapping
   end
 
-  before_update :before_rename_site_properties_if_fields_code_changed
-  def before_rename_site_properties_if_fields_code_changed
-    @fields_renames = Hash[fields.select(&:code_changed?).reject{|f| f.code_was.nil? || f.code.nil?}.map{|f| [f.code_was, f.code]}]
-  end
-
-  after_update :rename_site_properties_if_fields_code_changed
-  def rename_site_properties_if_fields_code_changed
-    collection.update_mapping
-
-    fields_renames_values = @fields_renames.values
-
-    if @fields_renames.present?
-      collection.sites.each do |site|
-
-        # Optimization: setting the parent here avoids querying it when indexing
-        site.collection = collection
-
-        originals = site.properties.slice *@fields_renames.keys
-
-        @fields_renames.each do |from, to|
-          site.properties.delete from unless fields_renames_values.include? from
-          site.properties[to] = originals[from]
-        end
-        site.record_timestamps = false
-        site.save!
-      end
-      @fields_renames = nil
-    end
-  end
-
   # I'd move this code to a concern, but it works differntly (the fields don't
   # have an id). Must probably be a bug in Active Record.
   after_create :create_created_activity, :unless => :mute_activities

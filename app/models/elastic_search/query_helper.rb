@@ -26,7 +26,7 @@ module ElasticSearch::QueryHelper
         codes = search_value_codes search_hash.search, collection, fields
 
         if codes.present?
-          codes = codes.map { |k, v| %Q(#{Site.encode_elastic_search_keyword(k)}:"#{v}") }
+          codes = codes.map { |k, v| %Q(#{k}:"#{v}") }
           codes.push append_star_unless_numeric(search_hash.search)
           conditions.push "(#{codes.join " OR "})"
         else
@@ -44,7 +44,7 @@ module ElasticSearch::QueryHelper
           field =  collection.fields.find { |x| x.code == key || x.name == key}
           next unless field
 
-          key = Site.encode_elastic_search_keyword field.code
+          key = field.es_code
           op, value = SearchParser.get_op_and_val value
 
           # Check if the user is searching a label instead of the code
@@ -74,7 +74,7 @@ module ElasticSearch::QueryHelper
     # Searches value codes from their labels on this collections' fields,
     # or in the given fields.
     # Returns a hash of matching field codes and the codes. For example:
-    # {:field_code => :option_code}
+    # {:field_es_code => :option_code}
     def search_value_codes(text, collection, fields_to_search = nil)
       fields_to_search ||= collection.fields.all
       fields_to_search = fields_to_search.select &:select_kind?
@@ -83,7 +83,7 @@ module ElasticSearch::QueryHelper
       regex = /#{text}/i
       fields_to_search.each do |field|
         option_code = search_value_code field, regex
-        codes[field.code] = option_code if option_code
+        codes[field.es_code] = option_code if option_code
       end
       codes
     end

@@ -4,8 +4,9 @@ describe 'ThresholdsViewModel', ->
   beforeEach ->
     @collectionId = 123
     @subject = new rm.ThresholdsViewModel @collectionId
-    @threshold = new rm.Threshold { id: 1, priority: 1, color: 'red', condition: { field: 'beds', is: 'lt', value: 12 } }
-    @threshold_2 = new rm.Threshold { id: 2, priority: 2, color: 'green', condition: { field: 'doctors', is: 'lt', value: 2} }
+    @threshold = new rm.Threshold { id: 1, priority: 1, color: 'red', conditions: [{ field: 'beds', is: 'lt', value: 12 }] }
+    @threshold_2 = new rm.Threshold { id: 2, priority: 2, color: 'green', conditions: [{ field: 'doctors', is: 'lt', value: 2}] }
+    @field = new rm.Field { name: 'Available Beds', code: 'beds', kind: 'numeric' }
 
   describe 'delete threshold', ->
     beforeEach ->
@@ -85,3 +86,7 @@ describe 'ThresholdsViewModel', ->
 
     it 'should change state to editing', ->
       expect(@subject.state()).toEqual 'editing'
+
+  it 'should get field by code', ->
+    @subject.fields [@field]
+    expect(@subject.getField('beds')).toBe @field

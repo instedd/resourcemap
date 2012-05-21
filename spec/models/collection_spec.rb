@@ -8,19 +8,22 @@ describe Collection do
   it { should have_many :fields }
   it { should have_many :thresholds }
 
-  let(:collection) { Collection.make }
+  let!(:user) { User.make }
+  let!(:collection) { user.create_collection Collection.make_unsaved }
+  let!(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'foo', name: 'Foo', ord: 1}] }
+  let!(:field) { layer.fields.first }
 
   context "max value" do
     it "gets max value for property that exists" do
-      collection.sites.make :properties => {'beds' => 10}
-      collection.sites.make :properties => {'beds' => 20}, :lat => nil, :lng => nil
-      collection.sites.make :properties => {'beds' => 5}
+      collection.sites.make :properties => {field.es_code => 10}
+      collection.sites.make :properties => {field.es_code => 20}, :lat => nil, :lng => nil
+      collection.sites.make :properties => {field.es_code => 5}
 
-      collection.max_value_of_property('beds').should eq(20)
+      collection.max_value_of_property(field.es_code).should eq(20)
     end
 
     it "gets max value for property that doesn't exist" do
-      collection.max_value_of_property('beds').should eq(0)
+      collection.max_value_of_property(field.es_code).should eq(0)
     end
   end
 

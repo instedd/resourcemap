@@ -1,20 +1,12 @@
-$(-> if $('#collections-main').length > 0
-
-  class window.Layer
-    constructor: (data) ->
-      @name = ko.observable data?.name
-      @fields = ko.observableArray($.map(data.fields, (x) => new Field(x)))
-      @expanded = ko.observable(true)
-
-    toggleExpand: =>
-      @expanded(!@expanded())
+onCollections ->
 
   # A Layer field
-  class window.Field
+  class @Field
     constructor: (data) ->
-      @code = ko.observable data?.code
-      @name = ko.observable data?.name
-      @kind = ko.observable data?.kind
+      @esCode = ko.observable "#{data.id}"
+      @code = ko.observable data.code
+      @name = ko.observable data.name
+      @kind = ko.observable data.kind
       @writeable = ko.observable data?.writeable
 
       @value = ko.observable()
@@ -51,13 +43,13 @@ $(-> if $('#collections-main').length > 0
       else if @kind() == 'select_many'
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
       else if @kind() == 'hierarchy'
-        if value then @hierarchyItemsMap[value] else ''
+        if value then @fieldHierarchyItemsMap[value] else ''
       else
         value
 
     buildHierarchyItems: =>
-      @hierarchyItemsMap = {}
-      @hierarchyItems = ko.observableArray $.map(@hierarchy(), (x) => new HierarchyItem(@, x))
+      @fieldHierarchyItemsMap = {}
+      @fieldHierarchyItems = ko.observableArray $.map(@hierarchy(), (x) => new FieldHierarchyItem(@, x))
 
     edit: =>
       @originalValue = @value()
@@ -78,7 +70,7 @@ $(-> if $('#collections-main').length > 0
     save: =>
       @editing(false)
       @filter('')
-      window.model.editingSite().updateProperty(@code(), @value())
+      window.model.editingSite().updateProperty(@esCode(), @value())
       delete @originalValue
 
     selectOption: (option) =>
@@ -132,11 +124,3 @@ $(-> if $('#collections-main').length > 0
         '100px'
       else
         "#{20 + @name().length * 8}px"
-
-  class window.Option
-    constructor: (data) ->
-      @code = ko.observable(data?.code)
-      @label = ko.observable(data?.label)
-      @selected = ko.observable(false)
-
-)
