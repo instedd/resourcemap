@@ -12,7 +12,7 @@ $ ->
     constructor: (data) ->
       @field = ko.observable data?.field
       @is = ko.observable data?.is
-      @type = ko.observable data.type ? 'value'
+      @type = ko.observable data?.type ? 'value'
       @rawValue = ko.observable data?.value
 
       @comparison = ko.computed => rm.ComparisonOptions.getText @is()
