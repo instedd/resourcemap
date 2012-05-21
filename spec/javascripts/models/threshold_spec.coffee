@@ -37,3 +37,7 @@ describe 'Threshold', ->
   it 'should add condition', ->
     @threshold.addNewCondition()
     expect(@threshold.conditions().length).toEqual 2
+
+  it 'should remove condition', ->
+    @threshold.removeCondition @threshold.conditions()[0]
+    expect(@threshold.conditions().length).toEqual 0

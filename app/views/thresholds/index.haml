@@ -89,7 +89,7 @@
       set color
       %span.stat{ ko(style: { backgroundColor: '$parent.color' }, click: 'buildColorPicker') }
       <!-- /ko -->
-      %button.premove    
+      %button.premove{ ko(click: '$parent.removeCondition') }
       <!-- /ko --> 
     %button.fadd{ko(click: :addNewCondition) }
       Add new condition

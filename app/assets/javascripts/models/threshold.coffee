@@ -90,3 +90,6 @@ $ ->
 
     addNewCondition: =>
       @conditions.push new rm.Condition
+
+    removeCondition: (condition) =>
+      @conditions.remove condition
