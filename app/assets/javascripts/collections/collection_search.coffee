@@ -18,6 +18,10 @@ onCollections ->
 
     isSearch: => true
 
+    addSite: (site, isNew = false) =>
+      @collection.addSite site if isNew
+      super(site)
+
     sitesUrl: =>
       "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
 

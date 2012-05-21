@@ -135,9 +135,7 @@
       <!-- ko template: {name: 'table-sites-template', with: $data} -->
       <!-- /ko -->
 .tablebottom
-  <!-- ko if: !isSearch() -->
   %button.flocation{ko(click: '$root.createSite')} Create Site
-  <!-- /ko -->
   <!-- ko if: hasMoreSites() && !loadingSites()-->
   %span.loadmore
     = ko_link_to "Load more sites...", :loadMoreSites
