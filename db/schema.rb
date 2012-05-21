@@ -113,21 +113,14 @@ ActiveRecord::Schema.define(:version => 20120517085356) do
     t.string   "hierarchy"
     t.datetime "created_at",                                                                          :null => false
     t.datetime "updated_at",                                                                          :null => false
-    t.boolean  "group",                                                      :default => false
     t.text     "properties"
-    t.decimal  "min_lat",                     :precision => 10, :scale => 6
-    t.decimal  "max_lat",                     :precision => 10, :scale => 6
-    t.decimal  "min_lng",                     :precision => 10, :scale => 6
-    t.decimal  "max_lng",                     :precision => 10, :scale => 6
-    t.integer  "min_zoom"
-    t.integer  "max_zoom"
     t.string   "location_mode", :limit => 10,                                :default => "automatic"
   end
 
   create_table "thresholds", :force => true do |t|
     t.integer  "priority"
     t.string   "color"
-    t.text     "condition"
+    t.text     "conditions"
     t.integer  "collection_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
