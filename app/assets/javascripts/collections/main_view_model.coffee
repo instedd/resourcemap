@@ -1,4 +1,8 @@
 #= require module
+#= require collections/site
+#= require collections/cluster
+#= require collections/constants
+
 #= require collections/collections_view_model
 #= require collections/sites_view_model
 #= require collections/export_links_view_model
@@ -8,7 +12,6 @@
 #= require collections/sammy_view_model
 #= require collections/sort_view_model
 #= require collections/url_rewrite_view_model
-
 onCollections ->
 
   class @MainViewModel extends Module
