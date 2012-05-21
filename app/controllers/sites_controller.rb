@@ -13,7 +13,6 @@ class SitesController < ApplicationController
   end
 
   def create 
-    puts params[:site]
     site = collection.sites.create(params[:site].merge(user: current_user))
     render json: site
   end
