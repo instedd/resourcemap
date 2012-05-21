@@ -167,6 +167,7 @@ $(-> if $('#collections-main').length > 0
       @selected = ko.observable()
       @id = ko.observable data?.id
       @name = ko.observable data?.name
+      @idWithPrefix = ko.observable data?.id_with_prefix
       @properties = ko.observable data?.properties
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
@@ -238,7 +239,7 @@ $(-> if $('#collections-main').length > 0
     editName: =>
       @originalName = @name()
       @editingName(true)
-
+    
     nameKeyPress: (site, event) =>
       switch event.keyCode
         when 13 then @saveName()
@@ -256,7 +257,7 @@ $(-> if $('#collections-main').length > 0
       @name(@originalName)
       @editingName(false)
       delete @originalName
-
+    
     editLocation: =>
       @editingLocation(true)
       @startEditLocationInMap()
