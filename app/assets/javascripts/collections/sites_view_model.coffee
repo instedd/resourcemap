@@ -81,6 +81,7 @@ onCollections ->
       @editingSite().post @editingSite().toJSON(), callback
 
     @exitSite: ->
+      field.editing(false) for field in @currentCollection().fields()
       if @editingSite().inEditMode()
         @editingSite().exitEditMode()
       else
