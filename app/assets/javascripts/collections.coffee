@@ -1,5 +1,3 @@
-#=require collections/main_view_model
-
 window.onCollections = (callback) -> $(-> callback() if $('#collections-main').length > 0)
 
 
