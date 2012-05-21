@@ -87,3 +87,6 @@ $ ->
 
     isLastCondition: (condition) ->
       @conditions().length - 1 == @conditions().indexOf condition
+
+    addNewCondition: =>
+      @conditions.push new rm.Condition

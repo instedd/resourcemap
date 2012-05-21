@@ -33,3 +33,7 @@ describe 'Threshold', ->
 
   it 'should check is last condtion', ->
     @threshold.isLastCondition @threshold.conditions()[0]
+
+  it 'should add condition', ->
+    @threshold.addNewCondition()
+    expect(@threshold.conditions().length).toEqual 2
