@@ -6,11 +6,12 @@
 # Note that this schema.rb definition is the authoritative source for your
 # database schema. If you need to create the application database on another
 # system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations # you'll amass, the slower it'll run and the greater likelihood for issues).
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120517090400) do
+ActiveRecord::Schema.define(:version => 20120521084835) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -73,6 +74,26 @@ ActiveRecord::Schema.define(:version => 20120517090400) do
     t.boolean  "admin",         :default => false
   end
 
+  create_table "messages", :force => true do |t|
+    t.string   "guid"
+    t.string   "country"
+    t.string   "carrier"
+    t.string   "channel"
+    t.string   "application"
+    t.string   "from"
+    t.string   "to"
+    t.string   "subject"
+    t.string   "body"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "prefixes", :force => true do |t|
+    t.string   "version"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "reminders", :force => true do |t|
     t.string   "name"
     t.date     "reminder_date"
@@ -102,20 +123,6 @@ ActiveRecord::Schema.define(:version => 20120517090400) do
 
   add_index "site_reminders", ["reminder_id"], :name => "index_site_reminders_on_reminder_id"
   add_index "site_reminders", ["site_id"], :name => "index_site_reminders_on_site_id"
-
-  create_table "messages", :force => true do |t|
-    t.string   "guid"
-    t.string   "country"
-    t.string   "carrier"
-    t.string   "channel"
-    t.string   "application"
-    t.string   "from"
-    t.string   "to"
-    t.string   "subject"
-    t.string   "body"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-  end
 
   create_table "sites", :force => true do |t|
     t.integer  "collection_id"
