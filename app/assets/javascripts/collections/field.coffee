@@ -25,11 +25,10 @@ onCollections ->
         @buildHierarchyItems() if @hierarchy()
 
       if @kind() == 'select_many'
-        @filter = ko.observable('') # The text for filtering options in a seclect_many
+        @filter = ko.observable('') # The text for filtering options in a select_many
         @remainingOptions = ko.computed =>
           option.selected(false) for option in @options()
           remaining = if @value()
-            console.log @value()
             @options().filter((x) => @value().indexOf(x.id()) == -1 && x.label().toLowerCase().indexOf(@filter().toLowerCase()) == 0)
           else
             @options()

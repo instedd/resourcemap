@@ -1,4 +1,5 @@
-window.onCollections = (callback) -> $(-> callback() if $('#collections-main').length > 0)
+#= require collections/on_collections
+#= require_tree ./collections/.
 
 onCollections ->
 
