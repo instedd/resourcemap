@@ -190,15 +190,17 @@ onCollections ->
 
     @drawClustersInMap: (clusters = []) ->
       dataClusterIds = {}
+      editing = window.model.editingSite() && (window.model.editingSite().inEditMode() || window.model.editingSite().editingLocation())
 
       # Add clusters if they are not already on the map
       for cluster in clusters
         dataClusterIds[cluster.id] = cluster.id
         currentCluster = @clusters[cluster.id]
         if currentCluster
-          currentCluster.setData(cluster)
+          currentCluster.setData(cluster, false)
         else
           currentCluster = @createCluster(cluster)
+        currentCluster.setInactive() if editing
 
       # Determine which clusters need to be removed from the map
       toRemove = []
@@ -258,7 +260,7 @@ onCollections ->
       south = bounds.getSouthWest().lat()
       total = north - south
       current = lat - south
-      -Math.round(current * 100000 / total)
+      -Math.round(current * 1000000 / total)
 
     @adjustZIndexes: ->
       for siteId, marker of @markers

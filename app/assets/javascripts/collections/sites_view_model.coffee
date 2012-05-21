@@ -15,6 +15,7 @@ onCollections ->
         pos = @originalSiteLocation = @map.getCenter()
         site = new Site(@currentCollection(), lat: pos.lat(), lng: pos.lng())
         site.copyPropertiesToCollection(@currentCollection())
+        @unselectSite()
         @editingSite site
         @editingSite().startEditLocationInMap()
 
