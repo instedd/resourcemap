@@ -1,4 +1,5 @@
-window.onLayers = (callback) -> $(-> callback() if $('#layers-main').length > 0)
+#= require layers/on_layers
+#= require_tree ./layers/.
 
 onLayers ->
   match = window.location.toString().match(/\/collections\/(\d+)\/layers/)
