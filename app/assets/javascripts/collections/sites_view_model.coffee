@@ -9,6 +9,9 @@ onCollections ->
       @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       @markers = {}
 
+    @editingSiteLocation: ->
+      @editingSite() && (@editingSite().inEditMode() || @editingSite().editingLocation())
+
     @createSite: ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
@@ -45,6 +48,8 @@ onCollections ->
           @selectSite site
 
     @editSiteFromMarker: (siteId) ->
+      @exitSite() if @editingSite()
+
       site = @siteIds[siteId]
       if site
         @editSite site

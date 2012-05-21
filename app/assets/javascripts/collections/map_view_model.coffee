@@ -190,7 +190,7 @@ onCollections ->
 
     @drawClustersInMap: (clusters = []) ->
       dataClusterIds = {}
-      editing = window.model.editingSite() && (window.model.editingSite().inEditMode() || window.model.editingSite().editingLocation())
+      editing = window.model.editingSiteLocation()
 
       # Add clusters if they are not already on the map
       for cluster in clusters
