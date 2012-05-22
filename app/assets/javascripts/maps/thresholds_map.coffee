@@ -13,6 +13,8 @@ $ ->
         thresholds = $.map data, (threshold) -> new rm.Threshold threshold
         rm.thresholdsViewModel.thresholds thresholds
 
+        $('.hidden-until-loaded').show()
+
 
   rm.EventDispatcher.bind rm.ThresholdEvent.DESTROY, (event) ->
     $.post "/collections/#{rm.thresholdsViewModel.collectionId}/thresholds/#{event.threshold.id}.json", { _method: 'delete' }, ->
