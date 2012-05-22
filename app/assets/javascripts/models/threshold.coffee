@@ -4,14 +4,18 @@ $ ->
   module 'rm'
 
   rm.Threshold = class Threshold
+
+    @DefaultColor = '#99cc00'
     
     constructor: (data) ->
       @id = data?.id
       @collection_id = data.collection_id
       @priority = ko.observable data?.priority
-      @color = ko.observable data?.color
+      @color = ko.observable data?.color ? Threshold.DefaultColor
       data.conditions ?= []
       @conditions = ko.observableArray $.map data.conditions, (condition) -> new rm.Condition condition
+
+      @colorPickerId = ko.computed => "threshold-color-#{@id ? 'new'}"
 
     destroy: ->
       event = new rm.ThresholdEvent @

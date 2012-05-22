@@ -3,29 +3,6 @@
   = javascript_include_tag 'maps/thresholds_map'
 
   :javascript
-    function createColorPicker(threshold){
-      $('.stat').ColorPicker({
-        color: '#0000ff',
-          //animation show 
-          onShow: function (colpkr) {
-            $(colpkr).fadeIn(500);
-              return false;
-          },
-          //animation hide
-          onHide: function (colpkr) {
-            $(colpkr).fadeOut(500);
-              return false;
-          },
-          onChange: function (hsb, hex, rgb) {
-            threshold.color('#' + hex);
-          }
-         });
-    };
-    
-    function buildColorPicker(th){
-      createColorPicker(th); 
-    };
-
     $(function() {
       rm.set({ collection_id: #{collection.id} });
       rm.bootstrap(); 
@@ -88,7 +65,8 @@
           %input{ ko(value: :rawValue), type: :text }
         <!-- ko if: $parent.isLastCondition($data) --> 
         set color
-        %span.stat{ ko(style: { backgroundColor: '$parent.color' }, click: 'buildColorPicker') }
+        %input{ ko(colorPicker: '$parent.color'), type: :text }
+        -# %span.stat{ ko(style: { backgroundColor: '$parent.color' }, click: 'buildColorPicker') }
         <!-- /ko -->
         %button.premove{ ko(click: '$parent.removeCondition') }
         <!-- /ko --> 
