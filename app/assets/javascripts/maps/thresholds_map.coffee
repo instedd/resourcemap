@@ -12,6 +12,7 @@ $ ->
       $.getJSON "/collections/#{rm.thresholdsViewModel.collectionId}/thresholds.json", (data) ->
         thresholds = $.map data, (threshold) -> new rm.Threshold threshold
         rm.thresholdsViewModel.thresholds thresholds
+        rm.thresholdsViewModel.isReady true
 
 
   rm.EventDispatcher.bind rm.ThresholdEvent.DESTROY, (event) ->

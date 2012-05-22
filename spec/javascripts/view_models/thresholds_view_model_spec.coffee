@@ -8,6 +8,9 @@ describe 'ThresholdsViewModel', ->
     @threshold_2 = new rm.Threshold { id: 2, priority: 2, color: 'green', conditions: [{ field: 'doctors', is: 'lt', value: 2}] }
     @field = new rm.Field { name: 'Available Beds', code: 'beds', kind: 'numeric' }
 
+  it 'should not be ready', ->
+    expect(@subject.isReady()).toBeFalsy()
+
   describe 'delete threshold', ->
     beforeEach ->
       @subject.thresholds [@threshold]
