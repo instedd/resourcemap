@@ -66,7 +66,6 @@
         <!-- ko if: $parent.isLastCondition($data) --> 
         set color
         %input{ ko(colorPicker: '$parent.color'), type: :text }
-        -# %span.stat{ ko(style: { backgroundColor: '$parent.color' }, click: 'buildColorPicker') }
         <!-- /ko -->
         %button.premove{ ko(click: '$parent.removeCondition') }
         <!-- /ko --> 
