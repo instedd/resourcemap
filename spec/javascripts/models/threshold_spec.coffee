@@ -10,6 +10,10 @@ describe 'Threshold', ->
   it 'should be new record', ->
     expect(@threshold.isNewRecord()).toBeTruthy()
 
+  it 'should default threshold have no conditions', ->
+    threshold = new rm.Threshold {}
+    expect(threshold.conditions().length).toEqual 0
+
   describe '#destroy', ->
     it 'should dispatch ThresholdEvent:DESTROY event', ->
       spyOn rm.EventDispatcher, 'trigger'

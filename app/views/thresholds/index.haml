@@ -69,7 +69,7 @@
     <!-- ko if: $data == $root.currentThreshold() -->
     .box.w60
       .rightbuttons
-        %button.fdelete
+        %button.fdelete{ ko(visible: '!isNewRecord') }
       %label Conditions
       .middlebuttons
         %span

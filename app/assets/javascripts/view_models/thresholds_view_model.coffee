@@ -55,8 +55,8 @@ $ ->
     
     showAddThreshold: () ->
       @state ThresholdsViewModel.States.ADDING_NEW
-      @_setCurrentThreshold(@_newThreshold())
-      @thresholds.push @currentThreshold
+      @_setCurrentThreshold(new rm.Threshold { collection_id: @collectionId })
+      @thresholds.push @currentThreshold()
 
     cancelThreshold: =>
       @_setCurrentThreshold null
@@ -70,16 +70,16 @@ $ ->
       for field in @fields()
         return field if field.code() == code
 
-    _newThreshold: ->
-      lastThresholdPriority = @thresholds()[@thresholds().length - 1]?.priority() ? 0
-      new rm.Threshold
-        collection_id: @collectionId
-        priority: lastThresholdPriority + 1
-        color: "#0000ff"
-        conditions: [ ]
+    # _newThreshold: ->
+    #   lastThresholdPriority = @thresholds()[@thresholds().length - 1]?.priority() ? 0
+    #   new rm.Threshold
+    #     collection_id: @collectionId
+    #     priority: lastThresholdPriority + 1
+    #     color: "#0000ff"
+    #     conditions: [ ]
 
-    _getLastThreshold: ->
-      @thresholds()[@thresholds().length - 1] if @thresholds().length > 0
+    # _getLastThreshold: ->
+    #   @thresholds()[@thresholds().length - 1] if @thresholds().length > 0
 
     _setCurrentThreshold: (threshold)->
       @thresholds.remove @currentThreshold() if @currentThreshold()?.isNewRecord()
