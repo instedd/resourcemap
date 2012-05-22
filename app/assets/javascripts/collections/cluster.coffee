@@ -40,8 +40,7 @@ onCollections ->
       listenerUpCallback = =>
         center = window.model.map.getCenter()
         if !@originalLatLng || (@originalLatLng.lat() == center.lat() && @originalLatLng.lng() == center.lng())
-          @map.panTo @position
-          @map.setZoom(@map.getZoom() + 1)
+          @map.fitBounds @bounds
 
       @divDownListener = google.maps.event.addDomListener @divClick, 'mousedown', listenerDownCallback
       @divUpListener = google.maps.event.addDomListener @divClick, 'mouseup', listenerUpCallback
@@ -80,6 +79,10 @@ onCollections ->
 
     setData: (cluster, draw = true) =>
       @position = new google.maps.LatLng(cluster.lat, cluster.lng)
+      @bounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(cluster.min_lat, cluster.min_lng),
+        new google.maps.LatLng(cluster.max_lat, cluster.max_lng)
+      )
       @setCount cluster.count
       @draw() if draw
 
