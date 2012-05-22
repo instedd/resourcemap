@@ -18,6 +18,7 @@ $ ->
       @thresholds = ko.observableArray()
       @state = ko.observable ThresholdsViewModel.States.LISTING
       @currentThreshold = ko.observable()
+      @isReady = ko.observable()
 
     deleteThreshold: (threshold) =>
       threshold.destroy() if confirm ThresholdsViewModel.Messages.DELETE_THRESHOLD

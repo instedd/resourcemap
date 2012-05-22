@@ -34,7 +34,7 @@
 = render 'collections/tabs'
 
 .tabsline
-  .hidden-until-loaded
+  .hidden-until-loaded{ ko(css: { ready: :isReady }) }
     %h2 Thresholds
     <!-- ko foreach :thresholds -->
     <!-- ko if: $data != $root.currentThreshold() -->
