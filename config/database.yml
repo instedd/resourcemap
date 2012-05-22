@@ -4,7 +4,7 @@ development:
   database: resource_map_development
   pool: 5
   username: root
-  password:
+  password: 
 
 test:
   adapter: mysql2

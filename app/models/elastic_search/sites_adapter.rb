@@ -15,12 +15,12 @@ class ElasticSearch::SitesAdapter < Psych::Handler
       @in_source = true
     elsif @in_source
       return if @in_properties
-
       if @current_property
         case @current_property
         when 'id' then @site[:id] = value.to_i
         when 'lat' then @site[:lat] = value.to_f
         when 'lon' then @site[:lng] = value.to_f
+        when 'name' then @site[:name] = value.to_s
         end
         @current_property = nil
       else
