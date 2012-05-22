@@ -11,6 +11,7 @@ describe MapSearch do
     site = Site.make
 
     search = MapSearch.new []
+    search.zoom = 1
     search.results.should eq({})
   end
 
@@ -18,6 +19,7 @@ describe MapSearch do
     site = Site.make
 
     search = MapSearch.new site.collection_id
+    search.zoom = 1
     search.results[:sites].should eq([{:id => site.id, :lat => site.lat.to_f, :lng => site.lng.to_f}])
   end
 
@@ -25,6 +27,7 @@ describe MapSearch do
     site = Site.make
 
     search = MapSearch.new site.collection_id
+    search.zoom = 1
     search.exclude_id site.id
     search.results[:sites].should be_nil
   end
@@ -34,6 +37,7 @@ describe MapSearch do
     other_collection = Collection.make
 
     search = MapSearch.new other_collection.id
+    search.zoom = 1
     search.results[:sites].should be_nil
   end
 
@@ -42,6 +46,7 @@ describe MapSearch do
     site2 = Site.make :lat => -45, :lng => -90
 
     search = MapSearch.new [site1.collection_id, site2.collection_id]
+    search.zoom = 1
     search.results[:sites].length.should eq(2)
   end
 
@@ -49,6 +54,7 @@ describe MapSearch do
     site = Site.make :lat => 10, :lng => 20
 
     search = MapSearch.new site.collection_id
+    search.zoom = 10
     search.bounds = {:s => 9, :n => 11, :w => 19, :e => 21}
     search.results[:sites].length.should eq(1)
   end
@@ -57,6 +63,7 @@ describe MapSearch do
     site = Site.make :lat => 10, :lng => 20
 
     search = MapSearch.new site.collection_id
+    search.zoom = 10
     search.bounds = {:s => 11, :n => 12, :w => 21, :e => 22}
     search.results[:sites].should be_nil
   end
@@ -65,6 +72,7 @@ describe MapSearch do
     site = Site.make :lat => nil, :lng => nil
 
     search = MapSearch.new site.collection_id
+    search.zoom = 1
     search.bounds = {:s => 11, :n => 12, :w => 21, :e => 22}
     search.results[:sites].should be_nil
   end
@@ -79,6 +87,8 @@ describe MapSearch do
     let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds => 10, prop => 2} }
     let!(:site3) { collection.sites.make :name => "Cordoba bar", :properties => {beds => 20, prop => 3} }
     let!(:search) { MapSearch.new collection.id }
+
+    before(:each) { search.zoom = 1 }
 
     it "searches by name" do
       search.full_text_search 'Argent'
