@@ -1,5 +1,5 @@
 onLayers ->
-  class @LayersViewModel
+  class @MainViewModel
     constructor: (collectionId, layers) ->
       @collectionId = collectionId
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))

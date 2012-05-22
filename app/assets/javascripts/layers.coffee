@@ -10,7 +10,7 @@ onLayers ->
     window.model.startUploadHierarchy()
 
   $.get "/collections/#{collectionId}/layers.json", {}, (layers) =>
-    window.model = new LayersViewModel(collectionId, layers)
+    window.model = new MainViewModel(collectionId, layers)
     ko.applyBindings window.model
 
     $('.hidden-until-loaded').show()
