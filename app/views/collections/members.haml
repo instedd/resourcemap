@@ -5,7 +5,7 @@
     $(function() { initMemberships(#{current_user.id}, #{collection.id}, #{collection_admin?}, #{collection.layers.map{|x| {id: x.id, name: x.name}}.to_json}); });
 
 .tabsline
-  .hidden-until-loaded
+  #memberships-main.hidden-until-loaded
     %h2 Members
     %p Manage who can see this collection and who can read/write its layers
     %br/
@@ -15,7 +15,6 @@
     %br/
     %br/
 
-  .hidden-until-loaded
     <!-- ko if: groupBy() == 'Users' -->
     .tablewrapp
       %table.GralTable
@@ -34,7 +33,17 @@
           %td{ko(click: :toggleExpanded), style: 'cursor:pointer'}
             %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
             %span{ko(text: :userDisplayName)}
-          %td{ko(html: :adminUI)}
+          - if collection_admin?
+            <!-- ko if: isCurrentUser() -->
+            %td{ko(html: :adminUI)}
+            <!-- /ko -->
+            <!-- ko if: !isCurrentUser() -->
+            %td
+              %input{ko(checked: :admin), type: :checkbox}
+            <!-- /ko -->
+          - else
+            %td{ko(html: :adminUI)}
+
           <!-- ko if: !$root.admin() || isCurrentUser() -->
           %td{ko(text: :allReadUI)}
           %td{ko(text: :allWriteUI)}
