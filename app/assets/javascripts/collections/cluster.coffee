@@ -88,7 +88,7 @@ onCollections ->
 
     setCount: (count) =>
       @count = count
-      @countDiv.innerText = (@count).toString() if @countDiv
+      @countDiv.innerHTML = (@count).toString() if @countDiv
 
     setActive: (draw = true) =>
       if @div
