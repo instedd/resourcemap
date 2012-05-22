@@ -103,9 +103,17 @@
     %br/
     <!-- /ko --> 
 
+    <!-- ko if: fields().length == 0 -->
+    Please
+    %strong add Layers
+    first before managing your thresholds.
+    <!-- /ko -->
+
     -# New threshold link
+    <!-- ko if: fields().length -->
     .box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
       %span
         Add threshold
       %button.cadd.right
       %br{clear: :all}
+    <!-- /ko -->
