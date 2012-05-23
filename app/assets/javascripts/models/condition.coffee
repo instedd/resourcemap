@@ -18,3 +18,4 @@ $ ->
       @comparison = ko.computed => rm.ComparisonOptions.getText @is()
       @value = ko.computed => if @type() == 'value' then "#{@rawValue()}" else "#{@rawValue()}%"
       @types = rm.Utils.hashToArray Condition.Types
+      @valid = ko.computed => @field()? and @is()? and @type()? and @rawValue()?

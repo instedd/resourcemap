@@ -9,13 +9,16 @@ $ ->
     
     constructor: (data) ->
       @id = data?.id
-      @collection_id = data.collection_id
+      @collectionId = data.collection_id
       @priority = ko.observable data?.priority
       @color = ko.observable data?.color ? Threshold.DefaultColor
       data.conditions ?= []
       @conditions = ko.observableArray $.map data.conditions, (condition) -> new rm.Condition condition
 
       @colorPickerId = ko.computed => "threshold-color-#{@id ? 'new'}"
+      @valid = ko.computed =>
+        valid = condition.valid() and condition.valid for condition in @conditions()
+        valid and @collectionId? and @color()? and @conditions().length > 0
 
     destroy: ->
       event = new rm.ThresholdEvent @

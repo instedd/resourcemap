@@ -16,3 +16,6 @@ describe 'Condition', ->
   it 'should format percent value', ->
     @condition.type 'percent'
     expect(@condition.value()).toEqual '10%'
+
+  it 'should be valid', ->
+    expect(@condition.valid()).toBeTruthy()

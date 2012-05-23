@@ -73,7 +73,7 @@
         Add new condition
       %hr
       .bottom-actions
-        %button.white{ ko(click: '$root.saveThreshold') } Save
+        %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
         %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
     <!-- /ko -->
         
