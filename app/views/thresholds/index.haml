@@ -61,8 +61,9 @@
         %select{ ko(options: '$root.fields', optionsText: "'name'", optionsValue: "'code'", value: :field) }
         %select{ ko(options: '$root.getField($data.field()).comparisonOptions', optionsText: "'value'", optionsValue: "'key'", value: :is) }
         %select{ ko(options: :types, optionsText: "'value'", optionsValue:"'key'", value: :type) }
+        %label{ ko(css: { error: '!valid()' }) }
         %span.ux-nstep.w06 
-          %input{ ko(value: :rawValue), type: :text }
+          %input{ ko(value: :rawValue, css: { error: '!valid()' }), type: :text }
         <!-- ko if: $parent.isLastCondition($data) --> 
         set color
         %input{ ko(colorPicker: '$parent.color'), type: :text }
@@ -75,6 +76,9 @@
       .bottom-actions
         %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
         %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
+        <!-- ko if: !valid() -->
+        %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
+        <!-- /ko -->
     <!-- /ko -->
         
     %br/

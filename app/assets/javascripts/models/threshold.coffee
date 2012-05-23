@@ -16,9 +16,12 @@ $ ->
       @conditions = ko.observableArray $.map data.conditions, (condition) -> new rm.Condition condition
 
       @colorPickerId = ko.computed => "threshold-color-#{@id ? 'new'}"
-      @valid = ko.computed =>
-        valid = condition.valid() and condition.valid for condition in @conditions()
-        valid and @collectionId? and @color()? and @conditions().length > 0
+      @error = ko.computed =>
+        return "the threshold must have at least one conditions" if @conditions().length is 0
+        for condition, i in @conditions()
+          return "condition #{i+1} #{condition.error()}" unless condition.valid()
+      @valid = ko.computed => not @error()?
+
 
     destroy: ->
       event = new rm.ThresholdEvent @
