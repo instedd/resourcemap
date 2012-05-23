@@ -1,5 +1,3 @@
-require 'csv'
-
 module Collection::CsvConcern
   extend ActiveSupport::Concern
 
