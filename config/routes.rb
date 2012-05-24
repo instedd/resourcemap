@@ -1,6 +1,6 @@
 ResourceMap::Application.routes.draw do
   devise_for :users
-
+  match 'messaging' => 'messaging#index'
   resources :collections do
     resources :sites
     resources :layers do
@@ -9,6 +9,11 @@ ResourceMap::Application.routes.draw do
       end
     end
     resources :fields
+    resources :thresholds do
+      member do
+        post 'set_priority'
+      end
+    end
     resources :memberships do
       collection do
         get 'invitable'
@@ -20,7 +25,6 @@ ResourceMap::Application.routes.draw do
       end
     end
     get 'members'
-    get 'thresholds'
     get 'reminders'
     get 'settings'
     get 'download_as_csv'

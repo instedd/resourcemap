@@ -44,24 +44,24 @@ onLayers ->
     saveLayer: =>
       @savingLayer(true)
 
-      callback = (data) =>
-        @currentLayer().id(data.id)
-
-        for field, i in @currentLayer().fields()
-          field.id(data.fields[i].id)
-
-        @currentLayer(null)
-        @currentField(null)
-
-        @savingLayer(false)
-
       json = {layer: @currentLayer().toJSON()}
 
       if @currentLayer().id()
         json._method = 'put'
-        $.post "/collections/#{@collectionId}/layers/#{@currentLayer().id()}.json", json, callback
+        $.post "/collections/#{@collectionId}/layers/#{@currentLayer().id()}.json", json, @saveLayerCallback
       else
-        $.post "/collections/#{@collectionId}/layers.json", json, callback
+        $.post "/collections/#{@collectionId}/layers.json", json, @saveLayerCallback
+
+    saveLayerCallback: (data) =>
+      @currentLayer().id(data.id)
+
+      for field, i in @currentLayer().fields()
+        field.id(data.fields[i].id)
+
+      @currentLayer(null)
+      @currentField(null)
+
+      @savingLayer(false)
 
     saveLayerOrd: (layer) =>
       json = {ord: layer.ord()}

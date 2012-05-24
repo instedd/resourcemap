@@ -1,7 +1,8 @@
 #= require module
 #= require collections/locatable
 #= require collections/sites_container
-
+#= require collections/layer
+#= require collections/field
 onCollections ->
 
   class @CollectionBase extends Module

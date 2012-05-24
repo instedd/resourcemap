@@ -42,11 +42,6 @@ class CollectionsController < ApplicationController
     add_breadcrumb "Members", collection_members_path(collection)
   end
 
-  def thresholds
-    add_breadcrumb collection.name, collection_path(collection)
-    add_breadcrumb "Thresholds", collection_thresholds_path(collection)
-  end
-
   def reminders
     add_breadcrumb collection.name, collection_path(collection)
     add_breadcrumb "Reminders", collection_reminders_path(collection)

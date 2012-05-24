@@ -1,5 +1,8 @@
-onCollections ->
+#= require module
+#= require collections/site
 
+onCollections ->
+  
   class @SitesContainer
     @constructorSitesContainer: ->
       @expanded = ko.observable false

@@ -7,6 +7,8 @@ Sham.define do
   email { Faker::Internet.email }
   password { Faker::Name.name }
   username { Faker::Internet.user_name }
+  color { "##{rand(255**3).to_s(16)}" }
+  sn { |i| i }
 end
 
 User.blueprint do
@@ -43,4 +45,10 @@ Field.blueprint do
 end
 
 Activity.blueprint do
+end
+
+Threshold.blueprint do
+  collection
+  ord { Sham.sn }
+  color { Sham.color }
 end

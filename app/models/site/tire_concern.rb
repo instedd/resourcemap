@@ -20,6 +20,7 @@ module Site::TireConcern
       updated_at: updated_at.strftime(DateFormat),
     }
     hash[:location] = {lat: lat.to_f, lon: lng.to_f} if lat? && lng?
+    hash[:alert] = collection.thresholds_test properties
     result = index.store hash
 
     if result['error']

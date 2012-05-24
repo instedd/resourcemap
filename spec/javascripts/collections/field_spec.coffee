@@ -1,5 +1,7 @@
 describe 'Field', ->
   beforeEach ->
+    window.runOnCallbacks 'collections'
+
     editingSite = updateProperty: ->
 
     window.model = {}

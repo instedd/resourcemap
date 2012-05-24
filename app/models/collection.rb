@@ -11,6 +11,7 @@ class Collection < ActiveRecord::Base
   has_many :sites, dependent: :delete_all
   has_many :layers, order: 'ord', dependent: :destroy
   has_many :fields, order: 'ord'
+  has_many :thresholds
 
   def max_value_of_property(es_code)
     search = new_tire_search
@@ -68,5 +69,14 @@ class Collection < ActiveRecord::Base
   def next_layer_ord
     layer = layers.select('max(ord) as o').first
     layer ? layer['o'].to_i + 1 : 1
+  end
+  
+  def thresholds_test(properties)
+    catch(:threshold) {
+      thresholds.each do |threshold|
+        threshold.test properties
+      end
+      false
+    }
   end
 end

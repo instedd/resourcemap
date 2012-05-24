@@ -68,8 +68,8 @@ ul.taglist li:hover { background-color:#eaeaea }
 ul.taglist li a { display:block }
 
 .box { position:relative; -webkit-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.3); -moz-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.3); box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.3) }
-.box.addlayer { padding:0 5px; margin-top:10px; width:610px; height:30px; cursor: pointer }
-.box.addlayer span { color:#1f86c8; display:inline-block; padding-top:8px }
+.box.add { padding:0 5px; margin-top:10px; width:610px; height:30px; cursor: pointer }
+.box.add span { color:#1f86c8; display:inline-block; padding-top:8px }
 .box label { color:#555555 }
 
 .toptitle { width:550px }
@@ -96,6 +96,7 @@ td.loadmore { height: 36px }
 .tablescroll .superblyTagItem { top:4px;cursor:pointer }
 
 .hidden-until-loaded { display: none }
+.ready { display: inherit !important }
 
 .highlight { background-color: yellow; }
 
@@ -137,3 +138,14 @@ td.loadmore { height: 36px }
 .fmoveup { background:url(/assets/moveUp.png) no-repeat; position:absolute; top:0 }
 
 .hierarchy.active { background:#d0d0d0 }
+
+.stat { border-radius: 4px; display: inline-block; height: 20px; width: 20px; vertical-align:middle }
+
+/* FIXME: hack .ux-nstep as it does not work inside ko:each block */
+.ord-buttons { position:relative; float:left; margin:0 4px; padding-right:2px }
+.ord-buttons input { width:18px; height:16px; border-radius:4px; border:solid 1px #aaaaaa; color:transparent; background-color:transparent }
+.ord-buttons button { cursor:pointer; width:16px; height:12px; left:2px; border:medium none; background-color:transparent; background-position:center 0; background-repeat:no-repeat }
+.ord-buttons .up { position:absolute; top:1px; background-image:url(/assets/up.png) }
+.ord-buttons .down { position:absolute; bottom:-1px; background-image:url(/assets/down.png) }
+.ord-buttons button:hover, .ord-buttons button:focus { background-position: center -10px }
+.ord-buttons button:active { background-position: center -20px }
