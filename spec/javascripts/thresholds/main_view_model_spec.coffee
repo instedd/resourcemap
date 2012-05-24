@@ -89,3 +89,19 @@ describe 'MainViewModel', ->
       @threshold.conditions [new Condition]
       @model.cancelThreshold()
       expect(@model.thresholds()[0].conditions().length).toEqual 0
+
+  describe 'delete threshold', ->
+    beforeEach ->
+      @threshold = new Threshold id: 1, conditions: [], color: 'red'
+      @model.thresholds.push @threshold
+
+    it 'should show confirm dialog', ->
+      spyOn window, 'confirm'
+      @model.deleteThreshold @threshold
+      expect(window.confirm).toHaveBeenCalledWith 'Are you sure to delete threshold?'
+
+    it "should delete the threshold's json", ->
+      spyOn(window, 'confirm').andReturn true
+      spyOn($, 'post').andReturn true
+      @model.deleteThreshold @threshold
+      @expect($.post).toHaveBeenCalledWith "/collections/#{@collectionId}/thresholds/#{@threshold.id()}.json", { _method: 'delete' }, @model.deleteThresholdCallback

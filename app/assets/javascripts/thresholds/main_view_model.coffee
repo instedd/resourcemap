@@ -29,6 +29,7 @@ onThresholds ->
     saveThresholdCallback: (data) =>
       @currentThreshold().id(data?.id)
       @currentThreshold null
+      delete @originalThreshold
       @saving(false)
 
     cancelThreshold: =>
@@ -37,8 +38,16 @@ onThresholds ->
       else
         @thresholds.remove @currentThreshold()
       @currentThreshold null
+      delete @originalThreshold
 
     deleteThreshold: (threshold) =>
+      if window.confirm 'Are you sure to delete threshold?'
+        @deletedThreshold = threshold
+        $.post "/collections/#{@collectionId}/thresholds/#{threshold.id()}.json", { _method: 'delete' }, @deleteThresholdCallback
+
+    deleteThresholdCallback: =>
+      @thresholds.remove @deleteThreshold
+      delete @deleteThreshold
 
     findField: (esCode) =>
       (field for field in @fields() when field.esCode() == esCode)[0]
