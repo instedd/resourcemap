@@ -18,3 +18,5 @@ $ ->
       @comparison = ko.computed => rm.ComparisonOptions.getText @is()
       @value = ko.computed => if @type() == 'value' then "#{@rawValue()}" else "#{@rawValue()}%"
       @types = rm.Utils.hashToArray Condition.Types
+      @error = ko.computed => return "value is missing" unless @rawValue()
+      @valid = ko.computed => not @error()?

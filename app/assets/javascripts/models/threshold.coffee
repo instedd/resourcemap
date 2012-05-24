@@ -4,35 +4,24 @@ $ ->
   module 'rm'
 
   rm.Threshold = class Threshold
+
+    @DefaultColor = '#99cc00'
     
     constructor: (data) ->
-      # _self = this 
       @id = data?.id
-      @collection_id = data.collection_id
+      @collectionId = data.collection_id
       @priority = ko.observable data?.priority
-      @color = ko.observable data?.color
+      @color = ko.observable data?.color ? Threshold.DefaultColor
+      data.conditions ?= []
       @conditions = ko.observableArray $.map data.conditions, (condition) -> new rm.Condition condition
-      # @valueOrPercent = ko.observable data?.valueOrPercent
-      # @priority.subscribe => rm.EventDispatcher.trigger rm.ThresholdEvent.CHANGE_PRIORITY, new rm.ThresholdEvent @
-      # @borderTopStyle = ko.computed => "1px inset #{@color()}"
-      # $.map data.conditions, (con) ->
-      #    
-      #   condition = {}
-      #   condition.field = ko.observable con.field
-      #   condition.comparisonText = ko.observable Threshold.ComparisonOperators[con.is]
-      #   condition.is = ko.observable con.is 
-      #   condition.comparisonValue = ko.observable con.value
-      #   condition.valueOrPercent = ko.observable "value" 
-      #   condition.comparisonValue.subscribe =>
-      #     condition.comparisonText Threshold.ComparisonOperators[condition.comparisonValue]
-      #   condition.value = ko.computed =>
-      #     if 'number' == typeof con.value
-      #       con.value
-      #     else
-      #       con.value 
-      #       #percent = (con.value[0] * 100).toFixed 0
-      #       #"#{percent}% of #{con.value[1]}"
-      #   _self.conditions.push condition
+
+      @colorPickerId = ko.computed => "threshold-color-#{@id ? 'new'}"
+      @error = ko.computed =>
+        return "the threshold must have at least one conditions" if @conditions().length is 0
+        for condition, i in @conditions()
+          return "condition #{i+1} #{condition.error()}" unless condition.valid()
+      @valid = ko.computed => not @error()?
+
 
     destroy: ->
       event = new rm.ThresholdEvent @
@@ -49,22 +38,6 @@ $ ->
     setPriority: (priority) ->
       @priority priority
       rm.EventDispatcher.trigger rm.ThresholdEvent.SET_PRIORITY, new rm.ThresholdEvent @
-
-    # addCondition:(con) ->
-    #   condition = {}
-    #   condition.field = ko.observable con.field
-    #   condition.comparisonText = ko.observable Threshold.ComparisonOperators[con.is]
-    #   condition.is = ko.observable con.is 
-    #   condition.comparisonValue = ko.observable con.value
-    #   condition.valueOrPercent = ko.observable "value" 
-    #   condition.comparisonValue.subscribe =>
-    #     condition.comparisonText Threshold.ComparisonOperators[condition.comparisonValue]
-    #   condition.value = ko.computed =>
-    #     if 'number' == typeof con.value
-    #       con.value
-    #     else
-    #       con.value 
-    #   @conditions.push (condition)
 
     isNewRecord: ->
       not @id?

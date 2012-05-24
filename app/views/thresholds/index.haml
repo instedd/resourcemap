@@ -3,29 +3,6 @@
   = javascript_include_tag 'maps/thresholds_map'
 
   :javascript
-    function createColorPicker(threshold){
-      $('.stat').ColorPicker({
-        color: '#0000ff',
-          //animation show 
-          onShow: function (colpkr) {
-            $(colpkr).fadeIn(500);
-              return false;
-          },
-          //animation hide
-          onHide: function (colpkr) {
-            $(colpkr).fadeOut(500);
-              return false;
-          },
-          onChange: function (hsb, hex, rgb) {
-            threshold.color('#' + hex);
-          }
-         });
-    };
-    
-    function buildColorPicker(th){
-      createColorPicker(th); 
-    };
-
     $(function() {
       rm.set({ collection_id: #{collection.id} });
       rm.bootstrap(); 
@@ -69,7 +46,7 @@
     <!-- ko if: $data == $root.currentThreshold() -->
     .box.w60
       .rightbuttons
-        %button.fdelete
+        %button.fdelete{ ko(visible: '!isNewRecord') }
       %label Conditions
       .middlebuttons
         %span
@@ -84,11 +61,12 @@
         %select{ ko(options: '$root.fields', optionsText: "'name'", optionsValue: "'code'", value: :field) }
         %select{ ko(options: '$root.getField($data.field()).comparisonOptions', optionsText: "'value'", optionsValue: "'key'", value: :is) }
         %select{ ko(options: :types, optionsText: "'value'", optionsValue:"'key'", value: :type) }
+        %label{ ko(css: { error: '!valid()' }) }
         %span.ux-nstep.w06 
-          %input{ ko(value: :rawValue), type: :text }
+          %input{ ko(value: :rawValue, css: { error: '!valid()' }), type: :text }
         <!-- ko if: $parent.isLastCondition($data) --> 
         set color
-        %span.stat{ ko(style: { backgroundColor: '$parent.color' }, click: 'buildColorPicker') }
+        %input{ ko(colorPicker: '$parent.color'), type: :text }
         <!-- /ko -->
         %button.premove{ ko(click: '$parent.removeCondition') }
         <!-- /ko --> 
@@ -96,16 +74,27 @@
         Add new condition
       %hr
       .bottom-actions
-        %button.white{ ko(click: '$root.saveThreshold') } Save
+        %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
         %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
+        <!-- ko if: !valid() -->
+        %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
+        <!-- /ko -->
     <!-- /ko -->
         
     %br/
     <!-- /ko --> 
 
+    <!-- ko if: fields().length == 0 -->
+    Please
+    %strong add Layers
+    first before managing your thresholds.
+    <!-- /ko -->
+
     -# New threshold link
+    <!-- ko if: fields().length -->
     .box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
       %span
         Add threshold
       %button.cadd.right
       %br{clear: :all}
+    <!-- /ko -->
