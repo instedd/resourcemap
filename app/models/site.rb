@@ -22,7 +22,12 @@ class Site < ActiveRecord::Base
     self.properties.reject! { |k, v| v.nil? }
   end
 
-  def update_properties(user, site)
+  def update_properties(site, user, props)
+    props.each do |p|
+      field = Field.find_by_code(p.values[0])
+      site.properties[field.id.to_s] = p.values[1]
+    end
+    site.save!
   end
 
   def assign_id_with_prefix
@@ -37,7 +42,6 @@ class Site < ActiveRecord::Base
       id_with_prefix = site.get_id_with_prefix
       id_with_prefix[1].next!
     end
-    puts id_with_prefix.join
     id_with_prefix.join
   end
 

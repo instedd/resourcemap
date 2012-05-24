@@ -10,20 +10,18 @@ class MessagingController < ApplicationController
 
   # POST /messaging
   def index
-    #raise HttpVerbNotSupported.new unless request.post?
-    
+    raise HttpVerbNotSupported.new unless request.post?
     message = save_message
-
     begin
       message.process! params
     rescue => err
       message.reply = err.message
     ensure
     if (message.reply != "Invalid command")
-      message[:layer_id] = get_layer_id(params[:body])
+      message[:collection_id] = get_collection_id(params[:body])
     end
-      message.save
-      render :text => message.reply, :content_type => "text/plain"
+    message.save
+    render :text => message.reply, :content_type => "text/plain"
     end
   end
 
@@ -33,15 +31,15 @@ class MessagingController < ApplicationController
     end
   end
 
-  def get_layer_id(bodyMsg)
+  def get_collection_id(bodyMsg)
     if (bodyMsg[5] == "q")
-      layerId = Message.getLayerId(bodyMsg, 7)
+      collectionId = Message.getCollectionId(bodyMsg, 7)
     elsif (bodyMsg[5] == "u")
-      resourceCode = Message.getLayerId(bodyMsg, 7)
-      resource = Resource.find_by_id_with_prefix(resourceCode)  
-      layerId = resource.layer_id
+      siteCode = Message.getCollectionId(bodyMsg, 7)
+      site = Site.find_by_id_with_prefix(siteCode)  
+      collectionId = site.collection_id
     end
-    return layerId
+    return collectionId
   end
 
   def save_message
