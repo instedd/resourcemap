@@ -38,8 +38,8 @@ class ExecVisitor < Visitor
     id = node.resource_id.text_value
      
     if site = Site.find_by_id_with_prefix(id)
-      raise MSG[:can_not_use_gateway] unless can_use_gateway?(site.collection)
-      #raise MSG[:can_not_update]      unless can_update?(node.sender, site)
+      #raise MSG[:can_not_use_gateway] unless can_use_gateway?(site.collection)
+      raise MSG[:can_not_update]      unless can_update?(node.sender, site)
       update site, node.property_list, node.sender
       MSG[:update_successfully]
     else
