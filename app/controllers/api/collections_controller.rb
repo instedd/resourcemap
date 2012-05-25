@@ -101,8 +101,8 @@ class Api::CollectionsController < ApplicationController
 
         row = [source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
         fields.each do |field|
-          value = source['properties'].try(:[], field.code)
-          row << field.option_label(value)
+          value = source['properties'][field.es_code]
+          row << field.human_value(value)
         end
         row << Site.parse_date(source['updated_at']).rfc822
         csv << row
