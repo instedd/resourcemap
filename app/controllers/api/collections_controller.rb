@@ -3,6 +3,7 @@ class Api::CollectionsController < ApplicationController
   include Api::GeoJsonHelper
 
   before_filter :authenticate_user!
+  around_filter :rescue_with_check_api_docs
 
   def show
     options = [:sort]
@@ -20,21 +21,15 @@ class Api::CollectionsController < ApplicationController
       format.csv { collection_csv(collection, @results) }
       format.json { render json: collection_json(collection, @results) }
     end
-  rescue => ex
-    check_api_docs ex
   end
 
   def count
     render json: perform_search(:count).total
-  rescue => ex
-    check_api_docs ex
   end
 
   def geo_json
     @results = perform_search :page, :sort, :require_location
     render json: collection_geo_json(collection, @results)
-  rescue => ex
-    check_api_docs ex
   end
 
   private
@@ -116,7 +111,9 @@ class Api::CollectionsController < ApplicationController
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
 
-  def check_api_docs(ex)
+  def rescue_with_check_api_docs
+    yield
+  rescue => ex
     render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
   end
 end
