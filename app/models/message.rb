@@ -12,7 +12,7 @@ class Message < ActiveRecord::Base
   end
   
   def visit(command, context)
-		command.sender = self.sender
+    command.sender = self.sender
   	command.accept ExecVisitor.new(context)
   end
 
@@ -26,7 +26,7 @@ class Message < ActiveRecord::Base
     self.from && self.from.start_with?("#{protocol.to_s}://")
   end
 
-  def self.getLayerId(bodyMsg, start)
+  def self.getCollectionId(bodyMsg, start)
     k = 1
     for j in (1..bodyMsg.length)
     if (bodyMsg[start+k] != " ")

@@ -84,8 +84,10 @@ ActiveRecord::Schema.define(:version => 20120524063529) do
     t.string   "to"
     t.string   "subject"
     t.string   "body"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.text     "reply"
+    t.integer  "collection_id"
   end
 
   create_table "prefixes", :force => true do |t|

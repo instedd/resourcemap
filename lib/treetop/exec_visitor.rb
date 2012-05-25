@@ -14,6 +14,16 @@ class ExecVisitor < Visitor
   end
   
   def visit_query_command(node)
+    if collection = Collection.find_by_id(node.layer_id.value)
+      raise MSG[:can_not_use_gateway] unless can_use_gateway?(collection)
+      raise MSG[:can_not_query]       unless can_view?(node.sender, collection)
+      
+      if reply = collection.query_sites(node.conditional_expression.to_options)
+        reply.empty? ? MSG[:query_not_match] : reply
+      end
+
+    end
+    
     if layer = Layer.find_by_id(node.layer_id.value)
       raise MSG[:can_not_use_gateway] unless can_use_gateway?(layer)
       raise MSG[:can_not_query]       unless can_view?(node.sender, layer)
@@ -26,18 +36,18 @@ class ExecVisitor < Visitor
 
   def visit_update_command(node)
     id = node.resource_id.text_value
+     
     if site = Site.find_by_id_with_prefix(id)
-      #raise MSG[:can_not_use_gateway] unless can_use_gateway?(resource.layer)
-      #raise MSG[:can_not_update]      unless can_update?(node.sender, resource)
-
+      #raise MSG[:can_not_use_gateway] unless can_use_gateway?(site.collection)
+      raise MSG[:can_not_update]      unless can_update?(node.sender, site)
       update site, node.property_list, node.sender
       MSG[:update_successfully]
     else
-      raise "Can't find resource with ID=#{id}" if site.nil?
+      raise "Can't find site with ID=#{id}" if site.nil?
     end
   end
 
-  def can_use_gateway?(layer)
+  def can_use_gateway?(colleciton)
     gateway = Gateway.find_by_nuntium_name(self.context[:channel])
     gateway.nil? || gateway.allows_layer?(layer)
   end
@@ -46,21 +56,20 @@ class ExecVisitor < Visitor
     sender && sender.can_view?(layer)
   end
 
-  def can_update?(sender, resource)
-    sender && sender.can_update?(resource)
+  def can_update?(sender, site)
+    sender && sender.can_update?(site)
   end
 
   private
   
-  def update(resource, node, sender)
+  def update(site, node, sender)
 		properties = []
-
 		until node and node.kind_of? AssignmentExpressionNode
       properties << node.assignment_expression.to_options
       node = node.next
     end
     properties << node.to_options
-		resource.update_properties sender, properties
+		site.update_properties site, sender, properties
   end
 
 end

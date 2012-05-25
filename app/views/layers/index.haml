@@ -1,4 +1,6 @@
 - content_for :head do
+  = javascript_include_tag 'layers'
+
   :css
     .error { color: red; }
 = render 'collections/tabs'

@@ -88,3 +88,13 @@
       %button.cadd.right
       %br{clear: :all}
     <!-- /ko -->
+    <!-- /ko -->
+
+    -# New threshold link
+    <!-- ko if: fields().length -->
+    .box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
+      %span
+        Add threshold
+      %button.cadd.right
+      %br{clear: :all}
+    <!-- /ko -->

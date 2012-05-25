@@ -5,6 +5,7 @@ require 'faker'
 Sham.define do
   name { Faker::Name.name }
   email { Faker::Internet.email }
+  phone_number { rand(1111111..9999999) }
   password { Faker::Name.name }
   username { Faker::Internet.user_name }
   color { "##{rand(255**3).to_s(16)}" }
@@ -14,6 +15,7 @@ end
 User.blueprint do
   email
   password
+  phone_number
 end
 
 Collection.blueprint do

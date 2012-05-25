@@ -6,7 +6,9 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
-
+  validates_uniqueness_of :phone_number
+  validates_presence_of :phone_number 
+  validates_numericality_of :phone_number
   has_many :memberships
   has_many :collections, through: :memberships
 
@@ -46,5 +48,16 @@ class User < ActiveRecord::Base
 
   def activities
     Activity.where(collection_id: memberships.pluck(:collection_id))
+  end
+
+  def can_update?(site)
+		can_update_site = false
+		if siteMember = Membership.find_by_user_id_and_collection_id(self.id, site.id)
+			can_update_site = true
+		end
+    if membership = self.memberships.where(:collection_id => site.collection).first
+      return membership.admin? || can_update_site#AccessRights.can_update?(membership.access_rights) || can_update_resource
+    end
+    false
   end
 end
