@@ -21,16 +21,20 @@ class Api::CollectionsController < ApplicationController
       format.json { render json: collection_json(collection, @results) }
     end
   rescue => ex
-    render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
+    check_api_docs ex
   end
 
   def count
     render json: perform_search(:count).total
+  rescue => ex
+    check_api_docs ex
   end
 
   def geo_json
     @results = perform_search :page, :sort, :require_location
     render json: collection_geo_json(collection, @results)
+  rescue => ex
+    check_api_docs ex
   end
 
   private
@@ -110,5 +114,9 @@ class Api::CollectionsController < ApplicationController
     end
 
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
+  end
+
+  def check_api_docs(ex)
+    render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
   end
 end
