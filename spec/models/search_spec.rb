@@ -29,6 +29,13 @@ describe Search do
       assert_results search, site2
     end
 
+    it "searches by equality with @code" do
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      search.where '@beds' => 10
+      assert_results search, site2
+    end
+
     it "searches by equality of two properties" do
       search = collection.new_search
       search.where beds.es_code => 10, tables.es_code => 2
@@ -281,6 +288,31 @@ describe Search do
 
     it "searches by numeric radius on single site" do
       assert_results collection.new_search.radius(10, 20, 1), site1
+    end
+  end
+
+  context "results format" do
+    let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
+    let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+    let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+
+    let!(:site1) { collection.sites.make :properties => {text.es_code => 'foo', numeric.es_code => 1, select_one.es_code => 1, select_many.es_code => [1, 2]} }
+
+    it "gets results" do
+      result = collection.new_search.results[0]
+      result['_source']['properties'][text.es_code].should eq('foo')
+      result['_source']['properties'][numeric.es_code].should eq(1)
+      result['_source']['properties'][select_one.es_code].should eq(1)
+      result['_source']['properties'][select_many.es_code].should eq([1, 2])
+    end
+
+    it "gets api results" do
+      result = collection.new_search.api_results[0]
+      result['_source']['properties'][text.code].should eq('foo')
+      result['_source']['properties'][numeric.code].should eq(1)
+      result['_source']['properties'][select_one.code].should eq('one')
+      result['_source']['properties'][select_many.code].should eq(['one', 'two'])
     end
   end
 

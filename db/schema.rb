@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120524063529) do
+ActiveRecord::Schema.define(:version => 20120525062851) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -33,6 +33,10 @@ ActiveRecord::Schema.define(:version => 20120524063529) do
     t.datetime "updated_at",                                 :null => false
     t.decimal  "lat",         :precision => 10, :scale => 6
     t.decimal  "lng",         :precision => 10, :scale => 6
+    t.decimal  "min_lat",     :precision => 10, :scale => 6
+    t.decimal  "min_lng",     :precision => 10, :scale => 6
+    t.decimal  "max_lat",     :precision => 10, :scale => 6
+    t.decimal  "max_lng",     :precision => 10, :scale => 6
   end
 
   create_table "fields", :force => true do |t|
