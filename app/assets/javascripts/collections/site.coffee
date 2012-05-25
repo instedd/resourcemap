@@ -246,6 +246,7 @@ onCollections ->
         icon: window.model.markerImageTarget
         shadow: window.model.markerImageTargetShadow
         zIndex: 2000000
+      @marker.name = @name()
       @setupMarkerListener()
       window.model.setAllMarkersInactive() if draggable
 

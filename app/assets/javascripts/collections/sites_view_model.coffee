@@ -50,6 +50,9 @@ onCollections ->
     @editSiteFromMarker: (siteId) ->
       @exitSite() if @editingSite()
 
+      # Remove name popup if any
+      window.model.markers[siteId].popup.remove() if window.model.markers[siteId]?.popup
+
       site = @siteIds[siteId]
       if site
         @editSite site
@@ -69,7 +72,7 @@ onCollections ->
       callback = (data) =>
         unless @editingSite().id()
           @editingSite().id(data.id)
-          @editingSite().idWithPrefix(data.id_with_prefix) 
+          @editingSite().idWithPrefix(data.id_with_prefix)
           @currentCollection().addSite(@editingSite(), true)
 
         @editingSite().updatedAt(data.updated_at)
