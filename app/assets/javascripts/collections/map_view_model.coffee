@@ -168,11 +168,12 @@ onCollections ->
             if (selectedSiteId && selectedSiteId == site.id)
               markerOptions.icon = @markerImageTarget
               markerOptions.shadow = @markerImageTargetShadow
-            
-            new_marker = new google.maps.Marker markerOptions
-            new_marker.setTitle site.name
-            
-            @markers[site.id] = new_marker
+
+            newMarker = new google.maps.Marker markerOptions
+            newMarker.setTitle site.name
+            console.log newMarker.getTitle()
+
+            @markers[site.id] = newMarker
           localId = @markers[site.id].siteId = site.id
           do (localId) =>
             @markers[localId].listener = google.maps.event.addListener @markers[localId], 'click', (event) =>
