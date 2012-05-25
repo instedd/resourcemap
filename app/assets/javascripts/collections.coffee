@@ -1,7 +1,8 @@
-window.onCollections = (callback) -> $(-> callback() if $('#collections-main').length > 0)
+#= require collections/on_collections
+#= require_tree ./collections/.
 
-
-onCollections ->
+# We do the check again so tests don't trigger this initialization
+onCollections -> if $('#collections-main').length > 0
 
   # Get collections and start the view model
   $.get "/collections.json", {}, (collections) =>

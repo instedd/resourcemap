@@ -168,7 +168,12 @@ onCollections ->
             if (selectedSiteId && selectedSiteId == site.id)
               markerOptions.icon = @markerImageTarget
               markerOptions.shadow = @markerImageTargetShadow
-            @markers[site.id] = new google.maps.Marker markerOptions
+
+            newMarker = new google.maps.Marker markerOptions
+            newMarker.setTitle site.name
+            console.log newMarker.getTitle()
+
+            @markers[site.id] = newMarker
           localId = @markers[site.id].siteId = site.id
           do (localId) =>
             @markers[localId].listener = google.maps.event.addListener @markers[localId], 'click', (event) =>
@@ -190,15 +195,17 @@ onCollections ->
 
     @drawClustersInMap: (clusters = []) ->
       dataClusterIds = {}
+      editing = window.model.editingSiteLocation()
 
       # Add clusters if they are not already on the map
       for cluster in clusters
         dataClusterIds[cluster.id] = cluster.id
         currentCluster = @clusters[cluster.id]
         if currentCluster
-          currentCluster.setData(cluster)
+          currentCluster.setData(cluster, false)
         else
           currentCluster = @createCluster(cluster)
+        currentCluster.setInactive() if editing
 
       # Determine which clusters need to be removed from the map
       toRemove = []
@@ -258,7 +265,7 @@ onCollections ->
       south = bounds.getSouthWest().lat()
       total = north - south
       current = lat - south
-      -Math.round(current * 100000 / total)
+      -Math.round(current * 1000000 / total)
 
     @adjustZIndexes: ->
       for siteId, marker of @markers

@@ -40,8 +40,7 @@ onCollections ->
       listenerUpCallback = =>
         center = window.model.map.getCenter()
         if !@originalLatLng || (@originalLatLng.lat() == center.lat() && @originalLatLng.lng() == center.lng())
-          @map.panTo @position
-          @map.setZoom(@map.getZoom() + 1)
+          @map.fitBounds @bounds
 
       @divDownListener = google.maps.event.addDomListener @divClick, 'mousedown', listenerDownCallback
       @divUpListener = google.maps.event.addDomListener @divClick, 'mouseup', listenerUpCallback
@@ -63,9 +62,9 @@ onCollections ->
       @countDiv.style.left = @countClick.style.left = "#{pos.x - 12 - @digits}px"
       @countDiv.style.top = @countClick.style.top = "#{pos.y + 2}px"
 
-      if @startAsActive
-        $(@div).addClass('target')
-        delete @startAsActive
+      if @startAs
+        $(@div).addClass(@startAs)
+        delete @startAs
 
     onRemove: =>
       google.maps.event.removeListener @divDownListener
@@ -80,22 +79,30 @@ onCollections ->
 
     setData: (cluster, draw = true) =>
       @position = new google.maps.LatLng(cluster.lat, cluster.lng)
+      @bounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(cluster.min_lat, cluster.min_lng),
+        new google.maps.LatLng(cluster.max_lat, cluster.max_lng)
+      )
       @setCount cluster.count
       @draw() if draw
 
     setCount: (count) =>
       @count = count
-      @countDiv.innerText = (@count).toString() if @countDiv
+      @countDiv.innerHTML = (@count).toString() if @countDiv
 
     setActive: (draw = true) =>
-      $(@div).removeClass('target')
-      $(@div).removeClass('inactive')
-      @draw() if draw
+      if @div
+        $(@div).removeClass('target')
+        $(@div).removeClass('inactive')
+        @draw() if draw
 
     setInactive: (draw = true) =>
-      $(@div).removeClass('target')
-      $(@div).addClass('inactive')
-      @draw() if draw
+      if @div
+        $(@div).removeClass('target')
+        $(@div).addClass('inactive')
+        @draw() if draw
+      else
+        @startAs = 'inactive'
 
     setTarget: (draw = true) =>
       if @div
@@ -103,7 +110,7 @@ onCollections ->
         $(@div).addClass('target')
         @draw() if draw
       else
-        @startAsActive = true
+        @startAs = 'target'
 
     adjustZIndex: =>
       zIndex = window.model.zIndex(@position.lat())

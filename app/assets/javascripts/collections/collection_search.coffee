@@ -18,18 +18,26 @@ onCollections ->
 
     isSearch: => true
 
+    addSite: (site, isNew = false) =>
+      @collection.addSite site if isNew
+      super(site)
+
     sitesUrl: =>
       "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
 
-    queryParams: =>
-      @setQueryParams {}
+    queryParams: (api = false) =>
+      @setQueryParams {}, api
 
-    setQueryParams: (q) =>
+    setQueryParams: (q, api = false) =>
       q.search = @search if @search
       if @sort
-        q.sort = @sort
+        if api
+          field = @collection.findFieldByEsCode(@sort)
+          q.sort = if field then field.code() else @sort
+        else
+          q.sort = @sort
         q.sort_direction = if @sortDirection then 'asc' else 'desc'
-      filter.setQueryParams(q) for filter in @filters
+      filter.setQueryParams(q, api) for filter in @filters
       q
 
-    link: (format) => "/api/collections/#{@id()}.#{format}?#{$.param @queryParams()}"
+    link: (format) => "/api/collections/#{@id()}.#{format}?#{$.param @queryParams(true)}"

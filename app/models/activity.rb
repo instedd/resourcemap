@@ -72,15 +72,17 @@ class Activity < ActiveRecord::Base
       properties[0].each do |key, old_value|
         new_value = properties[1][key]
         if new_value != old_value
-          code = fields[key].try(:code)
-          text_changes << "'#{code}' changed from #{format_value old_value} to #{format_value new_value}"
+          field = fields[key]
+          code = field.try(:code)
+          text_changes << "'#{code}' changed from #{format_value field, old_value} to #{format_value field, new_value}"
         end
       end
 
       properties[1].each do |key, new_value|
         if !properties[0].has_key? key
-          code = fields[key].try(:code)
-          text_changes << "'#{code}' changed from (nothing) to #{new_value.nil? ? '(nothing)' : format_value(new_value)}"
+          field = fields[key]
+          code = field.try(:code)
+          text_changes << "'#{code}' changed from (nothing) to #{new_value.nil? ? '(nothing)' : format_value(field, new_value)}"
         end
       end
 
@@ -127,7 +129,7 @@ class Activity < ActiveRecord::Base
           old_options = (field['config'][0] || {})['options']
           new_options = (field['config'][1] || {})['options']
           if old_options != new_options
-            text_changes << "#{old_value field['kind']} field '#{old_value field['name']}' (#{old_value field['code']}) options changed from #{old_options} to #{new_options}"
+            text_changes << "#{old_value field['kind']} field '#{old_value field['name']}' (#{old_value field['code']}) options changed from #{format_options old_options} to #{format_options new_options}"
           end
         end
       end
@@ -148,8 +150,23 @@ class Activity < ActiveRecord::Base
     value.is_a?(Array) ? value[0] : value
   end
 
-  def format_value(value)
-    value.is_a?(String) ? "'#{value}'" : value
+  def format_value(field, value)
+    if field && field.select_one?
+      format_option field, value
+    elsif field && field.select_many? && value.is_a?(Array)
+      value.map { |v| format_option field, v }
+    else
+      value.is_a?(String) ? "'#{value}'" : value
+    end
+  end
+
+  def format_option(field, value)
+    option = field.config['options'].find { |o| o['id'] == value }
+    option ? "#{option['label']} (#{option['code']})" : value
+  end
+
+  def format_options(options)
+    options.map { |option| "#{option['label']} (#{option['code']})" }
   end
 
   def format_location(value)

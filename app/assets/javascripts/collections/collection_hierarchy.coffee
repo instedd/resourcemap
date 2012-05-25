@@ -23,7 +23,7 @@ onCollections ->
       q.hierarchy_code = @field.esCode()
       q
 
-    addSite: (site, isNew = fase) =>
+    addSite: (site, isNew = false) =>
       # We also add the site to the original collection
       # or to the hierarchy item where it belongs, if it's a new site
       if isNew

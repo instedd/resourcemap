@@ -6,6 +6,10 @@
 #
 # Before executing the search you must invoke apply_queries.
 module SearchBase
+  def use_codes_instead_of_es_codes
+    @use_codes_instead_of_es_codes = true
+  end
+
   def id(id)
     @search.filter :term, id: id
     self
@@ -14,7 +18,7 @@ module SearchBase
   def eq(es_code, value)
     check_field_exists es_code
 
-    query_key = es_code
+    query_key = decode(es_code)
     query_value = es_code_value(es_code, value)
     add_query %Q(#{query_key}:"#{query_value}")
     self
@@ -25,7 +29,7 @@ module SearchBase
       def #{op}(es_code, value)
         check_field_exists es_code
 
-        @search.filter :range, es_code => {#{op}: value}
+        @search.filter :range, decode(es_code) => {#{op}: value}
         self
       end
     )
@@ -122,11 +126,17 @@ module SearchBase
 
   private
 
+  def decode(code)
+    return code unless @use_codes_instead_of_es_codes
+
+    fields.find { |x| x.code == code }.es_code
+  end
+
   def es_code_value(es_code, value)
     field = fields.find { |x| x.es_code == es_code }
     if field && field.config && field.config['options']
       field.config['options'].each do |option|
-        return option['code'] if option['label'] == value
+        return option['id'] if option['label'] == value
       end
     end
     value
@@ -150,8 +160,12 @@ module SearchBase
     time
   end
 
-  def check_field_exists(es_code)
-    raise "Unknown field: #{es_code}" unless fields.any?{|f| f.es_code == es_code}
+  def check_field_exists(code)
+    if @use_codes_instead_of_es_codes
+      raise "Unknown field: #{code}" unless fields.any?{|f| f.code == code}
+    else
+      raise "Unknown field: #{code}" unless fields.any?{|f| f.es_code == code}
+    end
   end
 
   def fields

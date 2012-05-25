@@ -1,10 +1,13 @@
 class Field < ActiveRecord::Base
+  Kinds = %w(text numeric select_one select_many hierarchy)
+
   include Field::TireConcern
 
   belongs_to :collection
   belongs_to :layer
 
   validates_presence_of :ord
+  validates_inclusion_of :kind, :in => Kinds
 
   serialize :config
 
@@ -21,12 +24,16 @@ class Field < ActiveRecord::Base
     sanitize_hierarchy_items self.config['hierarchy'] if self.config['hierarchy']
   end
 
-  def select_kind?
-    kind == 'select_one' || kind == 'select_many'
+  Kinds.each do |kind|
+    class_eval %Q(def #{kind}?; kind == '#{kind}'; end)
   end
 
-  def non_empty_value
-    kind == 'numeric' ? 1 : 'foo'
+  def select_kind?
+    select_one? || select_many?
+  end
+
+  def stored_as_number?
+    numeric? || select_one?
   end
 
   # Returns the label for the given option code.
@@ -40,6 +47,16 @@ class Field < ActiveRecord::Base
     end
 
     return code
+  end
+
+  def strongly_type(value)
+    if stored_as_number?
+      value.to_i_or_f
+    elsif select_many?
+      value.map &:to_i
+    else
+      value
+    end
   end
 
   private

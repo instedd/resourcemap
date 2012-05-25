@@ -1,15 +1,6 @@
 - content_for :head do
   = javascript_include_tag 'layers'
 
-  :javascript
-    $(function() {
-      initLayers();
-      $('.hierarchy_upload').live('change', function() {
-        $('.hierarchy_form').submit()
-        window.model.startUploadHierarchy();
-      });
-    });
-
   :css
     .error { color: red; }
 = render 'collections/tabs'
@@ -28,7 +19,7 @@
   <!-- /ko -->
 
 .tabsline
-  .hidden-until-loaded
+  #layers-main.hidden-until-loaded
     %h2 Layers
     %p Manage layers and fields of this collection's sites
     %br/

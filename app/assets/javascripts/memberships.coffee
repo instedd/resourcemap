@@ -117,6 +117,9 @@
       @adminUI = ko.computed => if @admin() then "<b>Yes</b>" else "No"
       @isCurrentUser = ko.computed => window.userId == @userId()
 
+      @admin.subscribe (newValue) =>
+        $.post "/collections/#{collectionId}/memberships/#{@userId()}/#{if newValue then 'set' else 'unset'}_admin.json"
+
     initializeLinks: =>
       @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
       @initializeAllReadAllWrite()

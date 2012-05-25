@@ -1,0 +1,26 @@
+-# Hierarchy item template (used when grouping results by hierarchy item)
+%script{type: "text/html", id: "map-hierarchy-items-template"}
+  <!-- ko foreach: hierarchyItems -->
+  %tr{ko(css: {active: :selected})}
+    %td{ko(click: :toggleExpand), style: 'height:30px;cursor:pointer'}
+      %div
+        %a{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
+          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
+        %span{ko(text: :name)}
+  <!-- ko if: expanded -->
+  <!-- ko template: {name: 'map-hierarchy-items-template', with: hierarchyItems} -->
+  <!-- /ko -->
+  <!-- ko template: {name: 'map-sites-template', with: $data} -->
+  <!-- /ko -->
+  <!-- ko if: hasMoreSites() && !loadingSites()-->
+  %tr
+    %td.loadmore
+      = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + level() * 20) + 'px'"})
+  <!-- /ko -->
+  <!-- ko if: hasMoreSites() && loadingSites()-->
+  %tr
+    %td.loadmore
+      %span{ko(style: {marginLeft: "'' + (20 + (level() - 1) * 20) + 'px'"})} Loading...
+  <!-- /ko -->
+  <!-- /ko -->
+  <!-- /ko -->

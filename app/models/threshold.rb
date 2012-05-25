@@ -1,8 +1,10 @@
 class Threshold < ActiveRecord::Base
   belongs_to :collection
-  validates :priority, :presence => true
+
+  validates :collection, :presence => true
+  validates :ord, :presence => true
   validates :color, :presence => true
-  
+
   serialize :conditions, Array
 
   def test(properties)

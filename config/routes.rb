@@ -20,6 +20,8 @@ ResourceMap::Application.routes.draw do
       end
       member do
         post 'set_layer_access'
+        post 'set_admin'
+        post 'unset_admin'
       end
     end
     get 'members'

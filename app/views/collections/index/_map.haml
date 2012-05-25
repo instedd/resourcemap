@@ -21,58 +21,6 @@
     %span.createCollection Create Collection
   <!-- /ko -->
 
-  -# Sites template
-  %script{type: "text/html", id: "map-sites-template"}
-    <!-- ko foreach: sites -->
-    %tr{ko(css: {active: "$data == $root.selectedSite()"})}
-      %td
-        %div
-          %p{ko(style: {marginLeft: "'' + (($parent.level() + 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
-            %span.stat-r
-            %span{ko(html: :highlightedName)}
-        %button.farrow{ko(click: '$root.editSite'), type: "button"}
-    <!-- /ko -->
-
-  -# Field hierarchy item template (used when selecting a hierarchy field value for a site)
-  %script{type: "text/html", id: "field-hierarchy-items-template"}
-    <!-- ko foreach: fieldHierarchyItems -->
-    .hierarchy{ko(css: {active: 'selected()'})}
-      %a{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
-        %img{ko(click: :toggleExpand, attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"}), style: 'position:relative;top:2px'}
-        %span{ko(click: :select, text: :name)}
-    <!-- ko if: expanded -->
-    <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
-    <!-- /ko -->
-    <!-- /ko -->
-    <!-- /ko -->
-
-  -# Hierarchy item template (used when grouping results by hierarchy item)
-  %script{type: "text/html", id: "map-hierarchy-items-template"}
-    <!-- ko foreach: hierarchyItems -->
-    %tr{ko(css: {active: :selected})}
-      %td{ko(click: :toggleExpand), style: 'height:30px;cursor:pointer'}
-        %div
-          %a{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
-            %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
-          %span{ko(text: :name)}
-    <!-- ko if: expanded -->
-    <!-- ko template: {name: 'map-hierarchy-items-template', with: hierarchyItems} -->
-    <!-- /ko -->
-    <!-- ko template: {name: 'map-sites-template', with: $data} -->
-    <!-- /ko -->
-    <!-- ko if: hasMoreSites() && !loadingSites()-->
-    %tr
-      %td.loadmore
-        = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + level() * 20) + 'px'"})
-    <!-- /ko -->
-    <!-- ko if: hasMoreSites() && loadingSites()-->
-    %tr
-      %td.loadmore
-        %span{ko(style: {marginLeft: "'' + (20 + (level() - 1) * 20) + 'px'"})} Loading...
-    <!-- /ko -->
-    <!-- /ko -->
-    <!-- /ko -->
-
   -# Collection sites
   <!-- ko if: !editingSite() -->
   <!-- ko with: currentCollection -->
@@ -100,10 +48,8 @@
         %tr
           %td.loadmore Loading...
         <!-- /ko -->
-  <!-- ko if: !isSearch() -->
   .tablebottom
     %button.flocation{ko(click: '$root.createSite')} Create Site
-  <!-- /ko -->
 
   <!-- /ko -->
   <!-- /ko -->
@@ -147,7 +93,7 @@
                 = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
                 <!-- /ko -->
                 <!-- ko if: kind() == 'select_one' -->
-                %select{ko(value: :value, options: :optionsCodes, optionsText: 'function(o){return $data.labelFor(o)}')}
+                %select{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
                 <!-- /ko -->
                 <!-- ko if: kind() == 'select_many' -->
                 %ul.superblyTagItems{ko(foreach: :value)}
@@ -202,9 +148,6 @@
                 <!-- ko if: editingLocation() -->
                 = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}
                 <!-- /ko -->
-              %div{style: 'margin-bottom:14px'}
-                %label ID With Prefix:
-                %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
               <!-- ko foreach: collection.layers() -->
               %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
@@ -241,7 +184,7 @@
                 = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'select_one' -->
-                %select{ko(value: :value, options: :optionsCodes, optionsText: 'function(o){return $data.labelFor(o)}', hasfocus: true, event: {change: :save, blur: :save})}
+                %select{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}', hasfocus: true, event: {change: :save, blur: :save})}
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'select_many' -->
                 %ul.superblyTagItems{ko(foreach: :value)}

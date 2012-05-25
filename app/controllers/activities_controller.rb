@@ -3,7 +3,7 @@ class ActivitiesController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        acts = Activity.order('id desc').includes(:collection, :user)
+        acts = Activity.order('id desc').includes(:collection, :site, :user)
         acts = acts.limit(25)
         acts = acts.where('id < ?', params[:before_id]) if params[:before_id]
 

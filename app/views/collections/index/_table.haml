@@ -26,64 +26,6 @@
   %span.createCollection Create Collection
 <!-- /ko -->
 
--# Sites template
-%script{type: "text/html", id: "table-sites-template"}
-  <!-- ko foreach: sites -->
-  %tr{ko(css: "{active: $data == $root.selectedSite()}")}
-    %td.w39{style: 'overflow:auto'}
-      %div{style: 'margin-top:2px'}
-        %p{ko(style: {marginLeft: "'' + (($parent.level() + 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
-          %span.stat-r
-          %span{ko(html: :highlightedName)}
-      %button.farrow{ko(click: '$root.editSite'), type: :button}
-    <!-- ko foreach: $root.currentCollection().fields() -->
-    <!-- ko if: $parent.properties()[$data.esCode()] -->
-    %td.l
-      %span{ko(html: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
-      <!-- ko if: kind() == 'numeric' -->
-      = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline'
-      <!-- /ko -->
-    <!-- /ko -->
-    <!-- ko if: !$parent.properties()[$data.esCode()] -->
-    %td.l
-    <!-- /ko -->
-    <!-- /ko -->
-    %td.l.timeago{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
-    %td.l
-  <!-- /ko -->
-
--# Hierarchy item template (used when grouping results by hierarchy item)
-%script{type: "text/html", id: "table-hierarchy-items-template"}
-  <!-- ko foreach: hierarchyItems -->
-  %tr{ko(css: {active: :selected})}
-    %td.w39{ko(click: :toggleExpand), style: 'overflow:auto;height:30px;cursor:pointer'}
-      %div{style: 'margin-top:2px'}
-        %a{ko(style: {marginLeft: "'' + (($parent.level() + 1) * 20) + 'px'"}), href: 'javascript:void(0)'}
-          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
-        %span{ko(text: :name)}
-    <!-- ko foreach: $root.currentCollection().fields() -->
-    %td.l
-    <!-- /ko -->
-    %td.l
-    %td.l
-  <!-- ko if: expanded -->
-  <!-- ko template: {name: 'table-hierarchy-items-template', with: hierarchyItems} -->
-  <!-- /ko -->
-  <!-- ko template: {name: 'table-sites-template', with: $data} -->
-  <!-- /ko -->
-  <!-- ko if: hasMoreSites() && !loadingSites()-->
-  %tr
-    %td.loadmore
-      = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + level() * 20) + 'px'"})
-  <!-- /ko -->
-  <!-- ko if: hasMoreSites() && loadingSites()-->
-  %tr
-    %td.loadmore
-      %span{ko(style: {marginLeft: "'' + (20 + (level() - 1) * 20) + 'px'"})} Loading...
-  <!-- /ko -->
-  <!-- /ko -->
-  <!-- /ko -->
-
 -# Collection sites
 <!-- ko if: !editingSite() -->
 <!-- ko with: currentCollection -->
@@ -129,15 +71,13 @@
         %th
     %tbody
       <!-- ko if: !isSearch() && $root.groupBy().esCode() != '' -->
-      <!-- ko template: {name: 'table-hierarchy-items-template', with: $data} -->
-      <!-- /ko -->
+      <!--   ko template: {name: 'table-hierarchy-items-template', with: $data} -->
+      <!--   /ko -->
       <!-- /ko -->
       <!-- ko template: {name: 'table-sites-template', with: $data} -->
       <!-- /ko -->
 .tablebottom
-  <!-- ko if: !isSearch() -->
   %button.flocation{ko(click: '$root.createSite')} Create Site
-  <!-- /ko -->
   <!-- ko if: hasMoreSites() && !loadingSites()-->
   %span.loadmore
     = ko_link_to "Load more sites...", :loadMoreSites

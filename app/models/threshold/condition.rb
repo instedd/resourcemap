@@ -2,7 +2,7 @@ class Threshold::Condition
   include Threshold::ComparisonConcern
 
   attr_accessor :field, :operator, :value
-  
+
   def initialize(hash)
     @operator = hash[:is]
     @value = hash[:value]

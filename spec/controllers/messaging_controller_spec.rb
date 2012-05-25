@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MessagingController do
-#  describe "POST 'index'" do
+  describe "POST 'index'" do
     before(:each) do
       @params = { "guid" => "123", "from" => "sms://0", "body" => "foo" }
     end

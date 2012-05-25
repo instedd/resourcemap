@@ -16,4 +16,5 @@ collections.find_each do |collection|
   collection.recreate_index
 end
 
-puts "\rRecreating collections: %100"
+print "\r#{' ' * 80}"
+print "\rDone!"

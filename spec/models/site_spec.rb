@@ -8,6 +8,7 @@ describe Site do
   let!(:layer) { collection.layers.make user: user }
   let!(:prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
   let!(:beds) { layer.fields.make :kind => 'numeric', :code => 'beds' }
+  let!(:many) { layer.fields.make :kind => 'select_many', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
 
   it "converts properties values to int if the field is int" do
     site = collection.sites.make properties: {beds.es_code => '123'}
@@ -17,6 +18,11 @@ describe Site do
   it "converts properties values to float if the field is float" do
     site = collection.sites.make properties: {beds.es_code => '123.4'}
     site.properties[beds.es_code].should eq(123.4)
+  end
+
+  it "convert select_many to ints" do
+    site = collection.sites.make properties: {many.es_code => ['1', '2']}
+    site.properties[many.es_code].should eq([1, 2])
   end
 
   it "removes empty properties after save" do

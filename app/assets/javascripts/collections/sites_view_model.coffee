@@ -9,12 +9,16 @@ onCollections ->
       @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       @markers = {}
 
+    @editingSiteLocation: ->
+      @editingSite() && (@editingSite().inEditMode() || @editingSite().editingLocation())
+
     @createSite: ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
         pos = @originalSiteLocation = @map.getCenter()
         site = new Site(@currentCollection(), lat: pos.lat(), lng: pos.lng())
         site.copyPropertiesToCollection(@currentCollection())
+        @unselectSite()
         @editingSite site
         @editingSite().startEditLocationInMap()
 
@@ -44,6 +48,8 @@ onCollections ->
           @selectSite site
 
     @editSiteFromMarker: (siteId) ->
+      @exitSite() if @editingSite()
+
       site = @siteIds[siteId]
       if site
         @editSite site
@@ -82,6 +88,7 @@ onCollections ->
       @editingSite().post @editingSite().toJSON(), callback
 
     @exitSite: ->
+      field.editing(false) for field in @currentCollection().fields()
       if @editingSite().inEditMode()
         @editingSite().exitEditMode()
       else
