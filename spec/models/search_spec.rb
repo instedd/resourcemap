@@ -29,6 +29,13 @@ describe Search do
       assert_results search, site2
     end
 
+    it "searches by equality with @code" do
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      search.where '@beds' => 10
+      assert_results search, site2
+    end
+
     it "searches by equality of two properties" do
       search = collection.new_search
       search.where beds.es_code => 10, tables.es_code => 2

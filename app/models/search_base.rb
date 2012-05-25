@@ -129,7 +129,12 @@ module SearchBase
   def decode(code)
     return code unless @use_codes_instead_of_es_codes
 
+    code = remove_at_from_code code
     fields.find { |x| x.code == code }.es_code
+  end
+
+  def remove_at_from_code(code)
+    code.start_with?('@') ? code[1 .. -1] : code
   end
 
   def es_code_value(es_code, value)
@@ -162,6 +167,7 @@ module SearchBase
 
   def check_field_exists(code)
     if @use_codes_instead_of_es_codes
+      code = remove_at_from_code code
       raise "Unknown field: #{code}" unless fields.any?{|f| f.code == code}
     else
       raise "Unknown field: #{code}" unless fields.any?{|f| f.es_code == code}
