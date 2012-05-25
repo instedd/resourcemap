@@ -11,7 +11,7 @@ module Collection::TireConcern
       refresh: true,
       mappings: { site: site_mapping }
     })
-    raise "Can't create index for collection #{name} (ID: #{id})" unless success
+    raise "Can't create index for collection #{name} (ID: #{id})." unless success
 
     # This is because in the tests collections are created and the
     # fields association will almost always be empty, but it needs to
