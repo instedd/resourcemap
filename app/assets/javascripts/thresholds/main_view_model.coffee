@@ -46,8 +46,8 @@ onThresholds ->
         $.post "/collections/#{@collectionId}/thresholds/#{threshold.id()}.json", { _method: 'delete' }, @deleteThresholdCallback
 
     deleteThresholdCallback: =>
-      @thresholds.remove @deleteThreshold
-      delete @deleteThreshold
+      @thresholds.remove @deletedThreshold
+      delete @deletedThreshold
 
     findField: (esCode) =>
       (field for field in @fields() when field.esCode() == esCode)[0]
