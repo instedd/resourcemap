@@ -72,7 +72,7 @@ class Api::CollectionsController < ApplicationController
     end
 
     search.where params.except(*except_params)
-    search.results
+    search.api_results
   end
 
   def valid_box_coordinates
