@@ -5,9 +5,7 @@ class LayersController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @show_breadcrumb = true
-        add_breadcrumb "Collections", collections_path
-        add_breadcrumb collection.name, collection_path(collection)
+        show_collection_breadcrumb
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
       format.json { render json: layers.includes(:fields).all.as_json(include: :fields) }
