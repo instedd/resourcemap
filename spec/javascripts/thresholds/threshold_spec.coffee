@@ -18,8 +18,10 @@ describe 'Threshold', ->
     expect(@threshold.valid()).toBeFalsy()
 
   it 'should convert to json', ->
+    @threshold.id(1)
     expect(@threshold.toJSON()).toEqual {
-      color: '#ff0000',
+      id: 1
+      color: '#ff0000'
       conditions: [{field: '1', op: 'lt', value: 10, type: 'value'}]
     }
 

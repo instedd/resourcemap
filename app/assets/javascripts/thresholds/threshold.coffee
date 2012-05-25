@@ -26,6 +26,7 @@ onThresholds ->
       @conditions().length - 1 == @conditions().indexOf condition
 
     toJSON: =>
+      id: @id()
       color: @color()
       conditions: $.map(@conditions(), (condition) -> condition.toJSON())
       ord: @ord()
