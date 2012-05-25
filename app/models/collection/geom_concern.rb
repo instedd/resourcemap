@@ -17,7 +17,7 @@ module Collection::GeomConcern
     set_bounding_box min_lat, max_lat, min_lng, max_lng
   end
 
-  def compute_center
+  def compute_bounding_box
     sites.where('lat is not null && lng is not null').select('min(lat) as v1, max(lat) as v2, min(lng) as v3, max(lng) as v4').each do |v|
       set_bounding_box v.v1, v.v2, v.v3, v.v4 if v.v1 && v.v2 && v.v3 && v.v4
     end
@@ -32,8 +32,8 @@ module Collection::GeomConcern
     self.lng = (min_lng + max_lng) / 2
   end
 
-  def compute_center!
-    compute_center
+  def compute_bounding_box!
+    compute_bounding_box
     save!
   end
 end
