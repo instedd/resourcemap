@@ -14,17 +14,20 @@ module Collection::GeomConcern
       min_lng = site.lng if site.lng < min_lng
       max_lng = site.lng if site.lng > max_lng
     end
-
-    set_center min_lat, max_lat, min_lng, max_lng
+    set_bounding_box min_lat, max_lat, min_lng, max_lng
   end
 
   def compute_center
     sites.where('lat is not null && lng is not null').select('min(lat) as v1, max(lat) as v2, min(lng) as v3, max(lng) as v4').each do |v|
-      set_center v.v1, v.v2, v.v3, v.v4 if v.v1 && v.v2 && v.v3 && v.v4
+      set_bounding_box v.v1, v.v2, v.v3, v.v4 if v.v1 && v.v2 && v.v3 && v.v4
     end
   end
 
-  def set_center(min_lat, max_lat, min_lng, max_lng)
+  def set_bounding_box(min_lat, max_lat, min_lng, max_lng)
+    self.min_lat = min_lat
+    self.max_lat = max_lat
+    self.min_lng = min_lng
+    self.max_lng = max_lng
     self.lat = (min_lat + max_lat) / 2
     self.lng = (min_lng + max_lng) / 2
   end
