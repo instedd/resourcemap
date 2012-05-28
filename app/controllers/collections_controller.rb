@@ -2,7 +2,7 @@ class CollectionsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :authenticate_collection_admin!, :only => :destroy
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
-  before_filter :show_collection_breadcrumb, :except => [:index, :new]
+  before_filter :show_collection_breadcrumb, :except => [:index, :new, :create]
 
   def index
     respond_to do |format|
@@ -17,7 +17,7 @@ class CollectionsController < ApplicationController
 
   def create
     if current_user.create_collection collection
-      redirect_to collections_path, notice: "Collection #{collection.name} created"
+      redirect_to collection_path(collection), notice: "Collection #{collection.name} created"
     else
       render :new
     end
