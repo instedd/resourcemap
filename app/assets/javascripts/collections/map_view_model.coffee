@@ -93,7 +93,7 @@ onCollections ->
           if callback && typeof(callback) == 'function'
             callback()
       setTimeout(showMap, 10)
-      setTimeout(window.adjustContainerSize 10)
+      setTimeout(window.adjustContainerSize, 10)
 
     @reloadMapSites: (callback) ->
       return unless @showingMap()
@@ -313,7 +313,7 @@ onCollections ->
       @showingMap(false)
       @refreshTimeago()
       @makeFixedHeaderTable()
-      setTimeout(window.adjustContainerSize 10)
+      setTimeout(window.adjustContainerSize, 10)
 
     @makeFixedHeaderTable: ->
       unless @showingMap()
