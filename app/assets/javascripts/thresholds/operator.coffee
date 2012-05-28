@@ -10,4 +10,4 @@ onThresholds ->
       @label = ko.observable label
 
     @findByCode: (code) ->
-      @[code?.toUpperCase()]
+      @[code?.toUpperCase()] ? @EQ

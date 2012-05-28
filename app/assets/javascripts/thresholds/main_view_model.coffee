@@ -51,7 +51,7 @@ onThresholds ->
       delete @deletedThreshold
 
     findField: (esCode) =>
-      (field for field in @fields() when field.esCode() == esCode)[0]
+      return field for field in @fields() when field.esCode() == esCode
 
     nextOrd: =>
       ord = 0

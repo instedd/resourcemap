@@ -4,7 +4,8 @@ describe 'Threshold', ->
 
     @collectionId = 1
     window.model = new MainViewModel @collectionId
-    window.model.fields [new Field id: '1', code: 'beds']
+    @field_beds = new Field id: '1', code: 'beds'
+    window.model.fields [@field_beds]
     @threshold = new Threshold { collection_id: 1, priority: 1, color: '#ff0000', conditions: [{ field: '1', op: 'lt', type: 'value', value: 10 }] }
 
   it 'should have 1 condition', ->
@@ -42,6 +43,7 @@ describe 'Threshold', ->
     @threshold.isLastCondition @threshold.conditions()[0]
 
   it 'should add condition', ->
+    spyOn(window.model, 'findField').andReturn @field_beds
     @threshold.addNewCondition()
     expect(@threshold.conditions().length).toEqual 2
 

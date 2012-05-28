@@ -3,10 +3,12 @@ describe 'MainViewModel', ->
     window.runOnCallbacks 'thresholds'
 
     @collectionId = 1
-    @model = new MainViewModel @collectionId, [{id: 1, code: 'beds'}]
+    @model = new MainViewModel @collectionId
+    @field = new Field id: '1', kind: 'numeric'
+    @model.fields [@field]
 
   it 'should find field', ->
-    expect(@model.findField('1')).toBe @model.fields()[0]
+    expect(@model.findField('1')).toBe @field
 
   describe 'cancel threshold', ->
     beforeEach ->
@@ -61,6 +63,7 @@ describe 'MainViewModel', ->
 
   describe 'add threshold', ->
     beforeEach ->
+      spyOn(window.model, 'findField').andReturn @field
       @model.addThreshold()
 
     it 'should add threshold to thresholds', ->
@@ -89,6 +92,7 @@ describe 'MainViewModel', ->
       expect(@model.thresholds()[0].color()).toBe 'red'
 
     it 'should restore the conditions when canceling', ->
+      spyOn(window.model, 'findField').andReturn @field
       @threshold.conditions [new Condition]
       @model.cancelThreshold()
       expect(@model.thresholds()[0].conditions().length).toEqual 0
