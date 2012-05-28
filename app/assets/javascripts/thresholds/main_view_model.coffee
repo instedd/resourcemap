@@ -9,8 +9,9 @@ onThresholds ->
 
     addThreshold: =>
       threshold = new Threshold ord: @nextOrd()
-      @thresholds.push threshold
+      threshold.addNewCondition()
       @currentThreshold threshold
+      @thresholds.push threshold
 
     editThreshold: (threshold) =>
       @originalThreshold = new Threshold(threshold.toJSON())

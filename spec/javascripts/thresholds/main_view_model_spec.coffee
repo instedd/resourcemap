@@ -74,6 +74,9 @@ describe 'MainViewModel', ->
       @model.addThreshold()
       expect(@model.thresholds()[1].ord()).toEqual 3
 
+    it 'should add one condition', ->
+      expect(@model.thresholds()[0].conditions().length).toEqual 1
+
   describe 'edit threshold', ->
     beforeEach ->
       @threshold = new Threshold id: 1, conditions: [], color: 'red'
