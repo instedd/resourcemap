@@ -56,10 +56,6 @@ class CollectionsController < ApplicationController
     redirect_to collections_path, notice: "Collection #{collection.name} deleted"
   end
 
-  def download_as_csv
-    send_data collection.export_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
-  end
-
   def csv_template
     send_data collection.csv_template, type: 'text/csv', filename: "collection_sites_template.csv"
   end

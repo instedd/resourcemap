@@ -24,17 +24,6 @@ describe Collection::CsvConcern do
     roots[1].lng.to_f.should eq(40.0)
   end
 
-  it "exports csv" do
-    site = collection.sites.make
-
-    collection.reload
-    csv = collection.export_csv
-    csv.strip.should eq(%(
-Site ID,Name,Lat,Lng
-#{site.id},#{site.name},#{site.lat},#{site.lng}
-).strip)
-  end
-
   it "decodes hierarchy csv" do
     json = collection.decode_hierarchy_csv %(
       ID, ParentID, ItemName
