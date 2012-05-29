@@ -90,18 +90,17 @@ class Api::CollectionsController < ApplicationController
     fields = collection.fields.all
 
     sites_csv = CSV.generate do |csv|
-      header = ['Name', 'Latitude', 'Longitude']
-      fields.each { |field| header << field.name }
-      header << 'Last updated'
+      header = ['id', 'name', 'lat', 'long']
+      fields.each { |field| header << field.code }
+      header << 'last updated'
       csv << header
 
       results.each do |result|
         source = result['_source']
 
-        row = [source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
+        row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
         fields.each do |field|
-          value = source['properties'][field.code]
-          row << field.human_value(value)
+          row << Array(source['properties'][field.code]).join(", ")
         end
         row << Site.parse_date(source['updated_at']).rfc822
         csv << row

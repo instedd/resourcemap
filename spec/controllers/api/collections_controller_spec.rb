@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Api::CollectionsController do
   include Devise::TestHelpers
+  render_views
 
   let!(:user) { User.make }
   let!(:collection) { user.create_collection(Collection.make_unsaved) }
@@ -39,14 +40,47 @@ describe Api::CollectionsController do
       json["sites"][0]["properties"][numeric.code].should eq(site.properties[numeric.es_code])
       json["sites"][0]["properties"][select_one.code].should eq('one')
       json["sites"][0]["properties"][select_many.code].should eq(['one', 'two'])
-
-
-
-
-
     end
   end
 
+  describe "GET RSS collection" do
+    before(:each) do
+      get :show, id: collection.id, format: 'rss'
+    end
+
+    it { response.should be_success }
+
+    it "should return RSS" do
+      rss =  Hash.from_xml response.body
+
+      rss["rss"]["channel"]["title"].should eq(collection.name)
+      rss["rss"]["channel"]["item"]["title"].should eq(site.name)
+      rss["rss"]["channel"]["item"]["lat"].should eq(site.lat.to_s)
+      rss["rss"]["channel"]["item"]["long"].should eq(site.lng.to_s)
+      rss["rss"]["channel"]["item"]["guid"].should eq(api_site_url site, format: 'rss')
 
 
+      rss["rss"]["channel"]["item"]["properties"].length.should eq(4)
+
+      rss["rss"]["channel"]["item"]["properties"][text.code].should eq(site.properties[text.es_code])
+      rss["rss"]["channel"]["item"]["properties"][numeric.code].should eq(site.properties[numeric.es_code].to_s)
+      rss["rss"]["channel"]["item"]["properties"][select_one.code].should eq('one')
+      rss["rss"]["channel"]["item"]["properties"][select_many.code].should eq(['one', 'two'])
+    end
+  end
+
+  describe "GET CSV collection" do
+    before(:each) do
+      get :show, id: collection.id, format: 'csv'
+    end
+
+    it { response.should be_success }
+
+    it "should return CSV" do
+      csv =  CSV.parse response.body
+
+      csv[0].should eq(['id', 'name', 'lat', 'long', text.code, numeric.code, select_one.code, select_many.code, 'last updated'])
+      csv[1].should eq([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'one', 'one, two', site.updated_at.rfc822])
+    end
+  end
 end
