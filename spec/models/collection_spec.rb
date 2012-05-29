@@ -1,7 +1,5 @@
 require 'spec_helper'
-
-describe Collection do
-  it { should validate_presence_of :name }
+describe Collection do it { should validate_presence_of :name }
   it { should have_many :memberships }
   it { should have_many :users }
   it { should have_many :layers }
@@ -50,5 +48,29 @@ describe Collection do
       collection.thresholds.make conditions: [ field: 'beds', is: :eq, value: 9 ]
       collection.thresholds_test(properties).should be_true
     end
+  end
+
+  describe "SMS query" do
+    before(:each) do
+      OPERATOR  = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte"}
+    end
+    
+    it "should prepare response_sms" do 
+      option = {:field_code => "AB", :field_id => 2}
+      result = [{"_source"=>{"id"=>1, "name"=>"Siem Reap Health Center", "properties"=>{"1"=>15, "2"=>40, "3"=>6}}}] 
+      collection.response_prepare(option[:field_code], option[:field_id], result).should eq("[\"#{option[:field_code]}\"] in #{[result[0]["_source"]["name"],40].join(", ")}")
+    end 
+    
+    describe "Operator parser" do 
+      it "should return operator for search class" do
+        collection.operator_parser(">").should eq("gt")
+        collection.operator_parser("<").should eq("lt")
+        collection.operator_parser("=>").should eq("gte")
+        collection.operator_parser("=<").should eq("lte")
+        collection.operator_parser(">=").should eq("gte")
+        collection.operator_parser("<=").should eq("lte")
+      end
+    end 
+
   end
 end

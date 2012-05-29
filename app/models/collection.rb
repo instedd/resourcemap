@@ -12,6 +12,8 @@ class Collection < ActiveRecord::Base
   has_many :layers, order: 'ord', dependent: :destroy
   has_many :fields, order: 'ord'
   has_many :thresholds
+  
+  OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte"}
 
   def max_value_of_property(es_code)
     search = new_tire_search
@@ -78,5 +80,31 @@ class Collection < ActiveRecord::Base
       end
       false
     }
+  end
+
+  def query_sites(option)
+    operator = operator_parser option[:operator]
+    field = Field.find_by_code option[:code]
+    
+    search = self.new_search 
+    search.use_codes_instead_of_es_codes
+    search.send operator , option[:code], option[:value]
+    results = search.results
+    response_prepare(option[:code], field.id, results) 
+  end
+
+  def response_prepare(field_code, field_id, results)
+    array_result = [] 
+    results.each do |r|
+      array_result.push r["_source"]["name"]  # get site name
+      array_result.push r["_source"]["properties"][field_id.to_s] # get properties value
+    end
+    response_sms = (array_result.empty?)? "There is no site matched" : array_result.join(", ")
+    result = "[\"#{field_code}\"] in #{response_sms}"
+    result 
+  end
+
+  def operator_parser(op)
+    OPERATOR[op]
   end
 end
