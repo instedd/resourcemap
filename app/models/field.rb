@@ -40,7 +40,7 @@ class Field < ActiveRecord::Base
     if stored_as_number?
       value.to_i_or_f
     elsif select_many?
-      value.map &:to_i
+      value.is_a?(Array) ? value.map(&:to_i) : value.to_i
     else
       value
     end
