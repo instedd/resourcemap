@@ -14,7 +14,7 @@ class ExecVisitor < Visitor
   def visit_query_command(node)
     if collection = Collection.find_by_id(node.layer_id.value)
       #raise MSG[:can_not_use_gateway] unless can_use_gateway?(collection)
-      #raise MSG[:can_not_query]       unless can_view?(node.sender, collection)
+      raise MSG[:can_not_query]       unless can_view?(node.sender, collection)
       
       if reply = collection.query_sites(node.conditional_expression.to_options)
         reply.empty? ? MSG[:query_not_match] : reply
@@ -40,7 +40,7 @@ class ExecVisitor < Visitor
     gateway.nil? || gateway.allows_layer?(layer)
   end
 
-  def can_view?(sender, layer)
+  def can_view?(sender, collection)
     sender && sender.can_view?(layer)
   end
 
