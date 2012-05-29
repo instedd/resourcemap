@@ -31,7 +31,7 @@ group :test, :development do
   gem 'machinist', '1.0.6'
   gem 'capistrano'
   gem 'rvm'
-  gem 'rvm-capistrano'
+  gem 'rvm-capistrano', '1.2.2'
   gem 'jasminerice'
   gem 'guard-jasmine'
 end
