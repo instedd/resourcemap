@@ -1,8 +1,6 @@
 = render 'tabs'
 
 - content_for :head do
-  = javascript_include_tag 'memberships'
-
   :javascript
     $(function() { initMemberships(#{current_user.id}, #{collection.id}, #{collection_admin?}, #{collection.layers.map{|x| {id: x.id, name: x.name}}.to_json}); });
   :css
