@@ -120,7 +120,7 @@
           %form.hierarchy_form{action: collection_decode_hierarchy_csv_path(collection), method: :post, enctype: 'multipart/form-data', target: 'hierarchy_iframe', style: 'margin-top:6px;margin-bottom:10px'}
             %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
             %input.hierarchy_upload{type: :file, name: :file}
-          %iframe#hierarchy_iframe{style: 'display:none'}
+          %iframe#hierarchy_iframe{name: 'hierarchy_iframe', style: 'display:none'}
           <!-- ko if: uploadingHierarchy() -->
           Uploading, please wait...
           <!-- /ko -->
