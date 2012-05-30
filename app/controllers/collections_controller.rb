@@ -1,7 +1,8 @@
 class CollectionsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :authenticate_collection_admin!, :only => :destroy
-  before_filter :breadcrumb
+  before_filter :show_collections_breadcrumb, :only => [:index, :new]
+  before_filter :show_collection_breadcrumb, :except => [:index, :new, :create]
 
   def index
     respond_to do |format|
@@ -16,7 +17,7 @@ class CollectionsController < ApplicationController
 
   def create
     if current_user.create_collection collection
-      redirect_to collections_path, notice: "Collection #{collection.name} created"
+      redirect_to collection_path(collection), notice: "Collection #{collection.name} created"
     else
       render :new
     end
@@ -32,23 +33,20 @@ class CollectionsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html { add_breadcrumb collection.name, collection_path(collection) }
+      format.html
       format.json { render json: collection }
     end
   end
 
   def members
-    add_breadcrumb collection.name, collection_path(collection)
     add_breadcrumb "Members", collection_members_path(collection)
   end
 
   def reminders
-    add_breadcrumb collection.name, collection_path(collection)
     add_breadcrumb "Reminders", collection_reminders_path(collection)
   end
 
   def settings
-    add_breadcrumb collection.name, collection_path(collection)
     add_breadcrumb "Settings", collection_settings_path(collection)
   end
 
@@ -56,10 +54,6 @@ class CollectionsController < ApplicationController
     collection.destroy
 
     redirect_to collections_path, notice: "Collection #{collection.name} deleted"
-  end
-
-  def download_as_csv
-    send_data collection.export_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
 
   def csv_template
@@ -82,7 +76,12 @@ class CollectionsController < ApplicationController
     redirect_to collection_import_wizard_path(collection), :notice => "The file was not a valid CSV file"
   end
 
+  def import_wizard
+    add_breadcrumb "Import wizard", collection_settings_path(collection)
+  end
+
   def import_wizard_adjustments
+    add_breadcrumb "Import wizard", collection_settings_path(collection)
     @sample = ImportWizard.sample(current_user, collection)
   end
 
@@ -130,12 +129,5 @@ class CollectionsController < ApplicationController
 
   def recreate_index
     render json: collection.recreate_index
-  end
-
-  private
-
-  def breadcrumb
-    @show_breadcrumb = true
-    add_breadcrumb "Collections", collections_path
   end
 end

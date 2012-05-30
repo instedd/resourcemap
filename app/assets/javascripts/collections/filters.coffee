@@ -7,53 +7,51 @@ onCollections ->
     isDateFilter: => true
 
   class @FilterByLastHour extends FilterByDate
-    setQueryParams: (options) =>
+    setQueryParams: (options, api = false) =>
       options.updated_since = 'last_hour'
 
     description: => "updated within the last hour"
 
 
   class @FilterByLastDay extends FilterByDate
-    setQueryParams: (options) =>
+    setQueryParams: (options, api = false) =>
       options.updated_since = 'last_day'
 
     description: => "updated within the last day"
 
   class @FilterByLastWeek extends FilterByDate
-    setQueryParams: (options) =>
+    setQueryParams: (options, api = false) =>
       options.updated_since = 'last_week'
 
     description: => "updated within the last week"
 
   class @FilterByLastMonth extends FilterByDate
-    setQueryParams: (options) =>
+    setQueryParams: (options, api = false) =>
       options.updated_since = 'last_month'
 
     description: => "updated within the last month"
 
   class @FilterByTextProperty extends Filter
-    constructor: (esCode, label, value) ->
-      @esCode = esCode
-      @label = label
+    constructor: (field, value) ->
+      @field = field
       @value = value
 
-    setQueryParams: (options) =>
-      options[@esCode] = @value
+    setQueryParams: (options, api = false) =>
+      options[@field.codeForLink(api)] = @value
 
-    description: => "where #{@label} contains \"#{@value}\""
+    description: => "where #{@field.name()} contains \"#{@value}\""
 
   class @FilterByNumericProperty extends Filter
-    constructor: (esCode, label, operator, value) ->
-      @esCode = esCode
-      @label = label
+    constructor: (field, operator, value) ->
+      @field = field
       @operator = operator
       @value = value
 
-    setQueryParams: (options) =>
-      options[@esCode] = "#{@operator}#{@value}"
+    setQueryParams: (options, api = false) =>
+      options[@field.codeForLink(api)] = "#{@operator}#{@value}"
 
     description: =>
-      str = "where #{@label} "
+      str = "where #{@field.name()} "
       switch @operator
         when '=' then str += " equals "
         when '<' then str += " is less than "
@@ -63,14 +61,13 @@ onCollections ->
       str += "#{@value}"
 
   class @FilterBySelectProperty extends Filter
-    constructor: (esCode, label, value, valueLabel) ->
-      @esCode = esCode
-      @label = label
+    constructor: (field, value, valueLabel) ->
+      @field = field
       @value = value
       @valueLabel = valueLabel
 
-    setQueryParams: (options) =>
-      options[@esCode] = @value
+    setQueryParams: (options, api = false) =>
+      options[@field.codeForLink(api)] = @value
 
     description: =>
-      "where #{@label} is \"#{@valueLabel}\""
+      "where #{@field.name()} is \"#{@valueLabel}\""

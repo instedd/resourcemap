@@ -1,12 +1,12 @@
 class ThresholdsController < ApplicationController
   before_filter :authenticate_user!
 
+  before_filter :fix_conditions, only: [:create, :update]
+
   def index
     respond_to do |format|
       format.html do
-        @show_breadcrumb = true
-        add_breadcrumb "Collections", collections_path
-        add_breadcrumb collection.name, collection_path(collection)
+        show_collection_breadcrumb
         add_breadcrumb "Thresholds", collection_thresholds_path(collection)
       end
       format.json { render json: thresholds }
@@ -14,26 +14,31 @@ class ThresholdsController < ApplicationController
   end
 
   def create
-    threshold = thresholds.new :priority => params[:threshold][:priority], :color => params[:threshold][:color], :conditions => params[:threshold][:conditions].values, :collection_id => params[:collection_id]
-    threshold.save
+    threshold = thresholds.new params[:threshold]
+    threshold.save!
     render json: threshold
   end
 
-  def set_priority
-    threshold.update_attribute :priority, params[:priority]
+  def set_order
+    threshold.update_attribute :ord, params[:ord]
 
     render json: threshold
   end
-  
+
   def update
-    params[:threshold][:conditions] = params[:threshold][:conditions].values
     threshold.update_attributes params[:threshold]
     render json: threshold
   end
-  
+
   def destroy
     threshold.destroy
 
     render json: threshold
+  end
+
+  private
+
+  def fix_conditions
+    params[:threshold][:conditions] = params[:threshold][:conditions].values
   end
 end

@@ -22,6 +22,20 @@ describe Search do
       assert_results search, site2
     end
 
+    it "searches by equality with code" do
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      search.where 'beds' => 10
+      assert_results search, site2
+    end
+
+    it "searches by equality with @code" do
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      search.where '@beds' => 10
+      assert_results search, site2
+    end
+
     it "searches by equality of two properties" do
       search = collection.new_search
       search.where beds.es_code => 10, tables.es_code => 2
@@ -55,6 +69,13 @@ describe Search do
     it "searches with lt" do
       search = collection.new_search
       search.lt beds.es_code, 8
+      assert_results search, site1
+    end
+
+    it "searches with lt with code" do
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      search.lt 'beds', 8
       assert_results search, site1
     end
 
@@ -192,11 +213,11 @@ describe Search do
 
   context "full text search" do
     let!(:layer) { collection.layers.make }
-    let!(:prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+    let!(:prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}, {'id' => 3, 'code' => 'baz', 'label' => 'COCO'}]} }
     let!(:beds) { layer.fields.make :kind => 'numeric', :code => 'beds' }
-    let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds.es_code => 8, prop.es_code => 'foo'} }
-    let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds.es_code => 10, prop.es_code => 'bar'} }
-    let!(:site3) { collection.sites.make :name => "Cordoba bar Buenos", :properties => {beds.es_code => 20, prop.es_code => 'baz'} }
+    let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds.es_code => 8, prop.es_code => 1} }
+    let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds.es_code => 10, prop.es_code => 2} }
+    let!(:site3) { collection.sites.make :name => "Cordoba bar Buenos", :properties => {beds.es_code => 20, prop.es_code => 3} }
 
     it "finds by name" do
       assert_results collection.new_search.full_text_search("Argent"), site1
@@ -267,6 +288,31 @@ describe Search do
 
     it "searches by numeric radius on single site" do
       assert_results collection.new_search.radius(10, 20, 1), site1
+    end
+  end
+
+  context "results format" do
+    let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
+    let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+    let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+
+    let!(:site1) { collection.sites.make :properties => {text.es_code => 'foo', numeric.es_code => 1, select_one.es_code => 1, select_many.es_code => [1, 2]} }
+
+    it "gets results" do
+      result = collection.new_search.results[0]
+      result['_source']['properties'][text.es_code].should eq('foo')
+      result['_source']['properties'][numeric.es_code].should eq(1)
+      result['_source']['properties'][select_one.es_code].should eq(1)
+      result['_source']['properties'][select_many.es_code].should eq([1, 2])
+    end
+
+    it "gets api results" do
+      result = collection.new_search.api_results[0]
+      result['_source']['properties'][text.code].should eq('foo')
+      result['_source']['properties'][numeric.code].should eq(1)
+      result['_source']['properties'][select_one.code].should eq('one')
+      result['_source']['properties'][select_many.code].should eq(['one', 'two'])
     end
   end
 

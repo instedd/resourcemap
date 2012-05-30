@@ -11,6 +11,7 @@ describe MapSearch do
     site = Site.make
 
     search = MapSearch.new []
+    search.zoom = 1
     search.results.should eq({})
   end
 
@@ -18,13 +19,15 @@ describe MapSearch do
     site = Site.make
 
     search = MapSearch.new site.collection_id
-    search.results[:sites].should eq([{:id => site.id, :lat => site.lat.to_f, :lng => site.lng.to_f}])
+    search.zoom = 1
+    search.results[:sites].should eq([id: site.id, lat: site.lat.to_f, lng: site.lng.to_f, name: site.name])
   end
 
   it "searches with excluded id" do
     site = Site.make
 
     search = MapSearch.new site.collection_id
+    search.zoom = 1
     search.exclude_id site.id
     search.results[:sites].should be_nil
   end
@@ -34,6 +37,7 @@ describe MapSearch do
     other_collection = Collection.make
 
     search = MapSearch.new other_collection.id
+    search.zoom = 1
     search.results[:sites].should be_nil
   end
 
@@ -42,6 +46,7 @@ describe MapSearch do
     site2 = Site.make :lat => -45, :lng => -90
 
     search = MapSearch.new [site1.collection_id, site2.collection_id]
+    search.zoom = 1
     search.results[:sites].length.should eq(2)
   end
 
@@ -49,6 +54,7 @@ describe MapSearch do
     site = Site.make :lat => 10, :lng => 20
 
     search = MapSearch.new site.collection_id
+    search.zoom = 10
     search.bounds = {:s => 9, :n => 11, :w => 19, :e => 21}
     search.results[:sites].length.should eq(1)
   end
@@ -57,6 +63,7 @@ describe MapSearch do
     site = Site.make :lat => 10, :lng => 20
 
     search = MapSearch.new site.collection_id
+    search.zoom = 10
     search.bounds = {:s => 11, :n => 12, :w => 21, :e => 22}
     search.results[:sites].should be_nil
   end
@@ -65,20 +72,23 @@ describe MapSearch do
     site = Site.make :lat => nil, :lng => nil
 
     search = MapSearch.new site.collection_id
+    search.zoom = 1
     search.bounds = {:s => 11, :n => 12, :w => 21, :e => 22}
     search.results[:sites].should be_nil
   end
 
   context "full text search" do
     let!(:layer) { collection.layers.make }
-    let!(:field_prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+    let!(:field_prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}, {'id' => 3, 'code' => 'baz', 'label' => 'COCO'}]} }
     let!(:field_beds) { layer.fields.make :kind => 'numeric', :code => 'beds' }
     let!(:prop) { field_prop.es_code }
     let!(:beds) { field_beds.es_code }
-    let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds => 8, prop => 'foo'} }
-    let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds => 10, prop => 'bar'} }
-    let!(:site3) { collection.sites.make :name => "Cordoba bar", :properties => {beds => 20, prop => 'baz'} }
+    let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds => 8, prop => 1} }
+    let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds => 10, prop => 2} }
+    let!(:site3) { collection.sites.make :name => "Cordoba bar", :properties => {beds => 20, prop => 3} }
     let!(:search) { MapSearch.new collection.id }
+
+    before(:each) { search.zoom = 1 }
 
     it "searches by name" do
       search.full_text_search 'Argent'

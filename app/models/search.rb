@@ -30,7 +30,7 @@ class Search
   end
 
   def sort(es_code, ascendent = true)
-    @sort = es_code
+    @sort = decode(es_code)
     @sort_ascendent = ascendent ? nil : 'desc'
   end
 
@@ -59,5 +59,20 @@ class Search
     end
 
     @search.perform.results
+  end
+
+  def api_results
+    fields_by_es_code = fields.index_by &:es_code
+
+    items = results()
+    items.each do |item|
+      item['_source']['properties'] = Hash[
+        item['_source']['properties'].map do |es_code, value|
+          field = fields_by_es_code[es_code]
+          field ? [field.code, field.api_value(value)] : [es_code, value]
+        end
+      ]
+    end
+    items
   end
 end

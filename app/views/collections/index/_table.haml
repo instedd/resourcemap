@@ -1,0 +1,89 @@
+<!-- ko if: !currentCollection() && !editingSite() -->
+-# Collections
+.tableheader.expanded
+  %div{style: 'padding-top:6px;padding-left:15px'} My Collections
+  .mapheader.w60.right
+    %button.icon_button.ftable.right{ko(click: '$root.showTable', css: "{active: !$root.showingMap()}")}
+    %button.icon_button.fmap.right{ko(click: '$root.showMap', css: "{active: $root.showingMap()}")}
+    %br{clear: "all"}
+.tablescroll
+  %table.GralTable
+    %thead
+      %tr
+        %th.w39{style: 'overflow:auto'} Collection
+        %th{style: 'width:100%'} Last update
+        %th
+    %tbody
+      <!-- ko foreach: collections -->
+      %tr
+        %td
+          %span{ko(text: :name)}
+          %button.farrow{ko(click: '$root.enterCollection'), type: :button}
+        %td.l.timeago{ko(attr: {title: :updatedAt}, text: :updatedAtTimeago)}
+      <!-- /ko -->
+.tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
+  %button.cadd{type: "button"}
+  %span.createCollection Create Collection
+<!-- /ko -->
+
+-# Collection sites
+<!-- ko if: !editingSite() -->
+<!-- ko with: currentCollection -->
+.tableheader.expanded
+  %div
+    %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
+    %span.i18b-groupChat
+    %span{ko(text: :name)}
+    %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:9px'}
+  .greyback
+    %span{style: 'margin:0;padding:3px;display:inline-block'}
+      Export this result in
+      %span{ko(click: '$root.exportInRSS'), style: 'text-decoration:underline;cursor:pointer;margin:0'} RSS
+      ,
+      %span{ko(click: '$root.exportInJSON'), style: 'text-decoration:underline;cursor:pointer;margin:0'} JSON
+      or
+      %span{ko(click: '$root.exportInCSV'), style: 'text-decoration:underline;cursor:pointer;margin:0'} CSV
+  .mapheader.right
+    %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
+    %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}
+    %br{clear: "all"}
+.tablescroll
+  %table.GralTable
+    %thead
+      %tr
+        %th.w39{ko(click: '$root.sortByName'), style: 'cursor:pointer;overflow:hidden'}
+          %span{style: 'display:inline'} Site
+          <!-- ko if: $root.sort() == 'name' -->
+          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+          <!-- /ko -->
+        <!-- ko foreach: $root.currentCollection().fields() -->
+        %th{ko(click: '$root.sortBy', style: {maxWidth: 'suggestedWidth()', minWidth: 'suggestedWidth()'}), style: 'overflow:hidden;cursor:pointer'}
+          %span{ko(text: :name), style: 'display:inline'}
+          <!-- ko if: $root.sort() == esCode() -->
+          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+          <!-- /ko -->
+        <!-- /ko -->
+        %th{ko(click: '$root.sortByDate'), style: 'width:100%;min-width:100px;cursor:pointer'}
+          %span{style: 'display:inline'} Last update
+          <!-- ko if: $root.sort() == 'updated_at' -->
+          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+          <!-- /ko -->
+        %th
+    %tbody
+      <!-- ko if: !isSearch() && $root.groupBy().esCode() != '' -->
+      <!--   ko template: {name: 'table-hierarchy-items-template', with: $data} -->
+      <!--   /ko -->
+      <!-- /ko -->
+      <!-- ko template: {name: 'table-sites-template', with: $data} -->
+      <!-- /ko -->
+.tablebottom
+  %button.flocation{ko(click: '$root.createSite')} Create Site
+  <!-- ko if: hasMoreSites() && !loadingSites()-->
+  %span.loadmore
+    = ko_link_to "Load more sites...", :loadMoreSites
+  <!-- /ko -->
+  <!-- ko if: hasMoreSites() && loadingSites()-->
+  %span.loadmore Loading...
+  <!-- /ko -->
+<!-- /ko -->
+<!-- /ko -->

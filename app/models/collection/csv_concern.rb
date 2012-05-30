@@ -1,5 +1,3 @@
-require 'csv'
-
 module Collection::CsvConcern
   extend ActiveSupport::Concern
 
@@ -8,15 +6,6 @@ module Collection::CsvConcern
       csv << csv_header
       csv << [1, "Site 1", 1.234, 5.678]
       csv << [2, "Site 2", 3.456, 4.567]
-    end
-  end
-
-  def export_csv
-    CSV.generate do |csv|
-      csv << csv_header
-      sites.each do |site|
-        csv << [site.id, site.name, site.lat, site.lng]
-      end
     end
   end
 

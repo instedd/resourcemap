@@ -1,8 +1,3 @@
-$ ->
-  window.module = (name) ->
-    window[name] ?= {}
-
-        
 moduleKeywords = ['extended', 'included']
 
 # See http://arcturo.github.com/library/coffeescript/03_classes.html (Extending classes)

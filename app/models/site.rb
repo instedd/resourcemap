@@ -13,7 +13,7 @@ class Site < ActiveRecord::Base
     fields = collection.fields.index_by(&:es_code)
     self.properties.keys.each do |key|
       field = fields[key]
-      self.properties[key] = properties[key].to_i_or_f if field && field.kind == 'numeric'
+      self.properties[key] = field.strongly_type(properties[key]) if field
     end
   end
 
@@ -21,7 +21,7 @@ class Site < ActiveRecord::Base
   def remove_nil_properties
     self.properties.reject! { |k, v| v.nil? }
   end
-
+  
   def update_properties(site, user, props)
     props.each do |p|
       field = Field.find_by_code(p.values[0])
@@ -30,15 +30,30 @@ class Site < ActiveRecord::Base
     site.save!
   end
 
+  def human_properties
+    fields = collection.fields.index_by(&:es_code)
+
+    props = {}
+    properties.each do |key, value|
+      field = fields[key]
+      if field
+        props[field.name] = field.human_value value
+      else
+        props[key] = value
+      end
+    end
+    props
+  end
+
   def assign_id_with_prefix
-    self.id_with_prefix = generate_id_with_prefix if self.id_with_prefix.nil? 
+    self.id_with_prefix = generate_id_with_prefix if self.id_with_prefix.nil?
   end
 
   def generate_id_with_prefix
     site = Site.find_last_by_collection_id(self.collection_id)
     if site.nil?
-      id_with_prefix = [Prefix.next.version,1]    
-    else 
+      id_with_prefix = [Prefix.next.version,1]
+    else
       id_with_prefix = site.get_id_with_prefix
       id_with_prefix[1].next!
     end
@@ -46,6 +61,6 @@ class Site < ActiveRecord::Base
   end
 
   def get_id_with_prefix
-    self.id_with_prefix.split /(\d+)/ 
+    self.id_with_prefix.split /(\d+)/
   end
 end

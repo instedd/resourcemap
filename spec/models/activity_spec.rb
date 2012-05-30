@@ -94,20 +94,20 @@ describe Activity do
     end
 
     it "creates one when layer's field's options changes" do
-      layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'select_one', code: 'one', name: 'One', config: {'options' => [{'code' => '1'}]}, ord: 1}]
+      layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'select_one', code: 'one', name: 'One', config: {'options' => [{'code' => '1', 'label' => 'One'}]}, ord: 1}]
 
       Activity.delete_all
 
       field = layer.fields.last
 
-      layer.update_attributes! fields_attributes: [{id: field.id, code: 'one', name: 'One', kind: 'select_one', config: {'options' => [{'code' => '2'}]}, ord: 1}]
+      layer.update_attributes! fields_attributes: [{id: field.id, code: 'one', name: 'One', kind: 'select_one', config: {'options' => [{'code' => '2', 'label' => 'Two'}]}, ord: 1}]
 
       assert_activity 'layer_changed',
         'collection_id' => collection.id,
         'layer_id' => layer.id,
         'user_id' => user.id,
-        'data' => {'name' => 'Layer1', 'changes' => {'changed' => [{'id' => field.id, 'code' => 'one', 'name' => 'One', 'kind' => 'select_one', 'config' => [{'options' => [{'code' => '1'}]}, {'options' => [{'code' => '2'}]}]}]}},
-        'description' => %(Layer 'Layer1' changed: select_one field 'One' (one) options changed from [{"code"=>"1"}] to [{"code"=>"2"}])
+        'data' => {'name' => 'Layer1', 'changes' => {'changed' => [{'id' => field.id, 'code' => 'one', 'name' => 'One', 'kind' => 'select_one', 'config' => [{'options' => [{'code' => '1', 'label' => 'One'}]}, {'options' => [{'code' => '2', 'label' => 'Two'}]}]}]}},
+        'description' => %(Layer 'Layer1' changed: select_one field 'One' (one) options changed from ["One (1)"] to ["Two (2)"])
     end
 
     it "creates one when layer's field is removed" do

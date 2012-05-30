@@ -52,7 +52,7 @@ onCollections ->
       # Create a popup that first says "Loading...", then loads the content via ajax.
       # The popup is removed when on mouse out.
       offset = $(event.target).offset()
-      element = $("<div id=\"thepopup\" style=\"position:absolute;top:#{offset.top - 30}px;left:#{offset.left}px;padding:4px;background-color:black;color:white;border:1px solid grey\">Loading maximum value...</div>")
+      element = $("<div style=\"position:absolute;top:#{offset.top - 30}px;left:#{offset.left}px;padding:4px;background-color:black;color:white;border:1px solid grey\">Loading maximum value...</div>")
       $(document.body).append(element)
       mouseoutHandler = ->
         element.remove()

@@ -20,9 +20,4 @@
 //= require knockout-2.0.0
 //= require custom_bindings/colorpicker
 //= require sammy
-//= require module
-//= require utils
-//= require event_dispatcher
-//= require bootstrap
-//= require events/system_event
-//= require events/threshold_event
+//= require_tree

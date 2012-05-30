@@ -53,6 +53,12 @@ onCollections ->
         scaleControl: true
       @map = new google.maps.Map document.getElementById("map"), mapOptions
 
+      # Create a dummy overlay to easily get a position of a marker in pixels
+      # See the second answer in http://stackoverflow.com/questions/2674392/how-to-access-google-maps-api-v3-markers-div-and-its-pixel-position
+      @map.dummyOverlay = new google.maps.OverlayView()
+      @map.dummyOverlay.draw = ->
+      @map.dummyOverlay.setMap @map
+
       listener = google.maps.event.addListener @map, 'bounds_changed', =>
         google.maps.event.removeListener listener
         @reloadMapSites()
@@ -87,7 +93,7 @@ onCollections ->
           if callback && typeof(callback) == 'function'
             callback()
       setTimeout(showMap, 10)
-      setTimeout(window.adjustContainerSize 10)
+      setTimeout(window.adjustContainerSize, 10)
 
     @reloadMapSites: (callback) ->
       return unless @showingMap()
@@ -150,7 +156,7 @@ onCollections ->
         unless @markers[site.id]
           if site.id == oldSelectedSiteId
             @markers[site.id] = @oldSelectedSite.marker
-            @deleteMarkerListener site.id
+            @deleteMarkerListeners site.id
             @setMarkerIcon @markers[site.id], 'active'
             @oldSelectedSite.deleteMarker false
             delete @oldSelectedSite
@@ -168,12 +174,13 @@ onCollections ->
             if (selectedSiteId && selectedSiteId == site.id)
               markerOptions.icon = @markerImageTarget
               markerOptions.shadow = @markerImageTargetShadow
-            @markers[site.id] = new google.maps.Marker markerOptions
+
+            newMarker = new google.maps.Marker markerOptions
+            newMarker.name = site.name
+
+            @markers[site.id] = newMarker
           localId = @markers[site.id].siteId = site.id
-          do (localId) =>
-            @markers[localId].listener = google.maps.event.addListener @markers[localId], 'click', (event) =>
-              @setMarkerIcon @markers[localId], 'target'
-              @editSiteFromMarker localId
+          do (localId) => @setupMarkerListeners @markers[localId], localId
 
       # Determine which markers need to be removed from the map
       toRemove = []
@@ -188,17 +195,37 @@ onCollections ->
         @oldSelectedSite.deleteMarker() if @oldSelectedSite.id() != selectedSiteId
         delete @oldSelectedSite
 
+    @setupMarkerListeners: (marker, localId) ->
+      marker.clickListener = google.maps.event.addListener marker, 'click', (event) =>
+        @setMarkerIcon marker, 'target'
+        @editSiteFromMarker localId
+
+      # Create a popup and position it in the top center. To do so we need to add it to the document,
+      # get its width and reposition accordingly.
+      marker.mouseOverListener = google.maps.event.addListener marker, 'mouseover', (event) =>
+        pos = window.model.map.dummyOverlay.getProjection().fromLatLngToContainerPixel marker.getPosition()
+        offset = $('#map').offset()
+        marker.popup = $("<div style=\"position:absolute;top:#{offset.top + pos.y - 64}px;left:#{offset.left + pos.x}px;padding:4px;background-color:black;color:white;border:1px solid grey\">#{marker.name}</div>")
+        $(document.body).append(marker.popup)
+        offset = $(marker.popup).offset()
+        offset.left -= $(marker.popup).width() / 2
+        $(marker.popup).offset(offset)
+      marker.mouseOutListener = google.maps.event.addListener marker, 'mouseout', (event) =>
+        marker.popup.remove()
+
     @drawClustersInMap: (clusters = []) ->
       dataClusterIds = {}
+      editing = window.model.editingSiteLocation()
 
       # Add clusters if they are not already on the map
       for cluster in clusters
         dataClusterIds[cluster.id] = cluster.id
         currentCluster = @clusters[cluster.id]
         if currentCluster
-          currentCluster.setData(cluster)
+          currentCluster.setData(cluster, false)
         else
           currentCluster = @createCluster(cluster)
+        currentCluster.setInactive() if editing
 
       # Determine which clusters need to be removed from the map
       toRemove = []
@@ -237,13 +264,14 @@ onCollections ->
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap
-      @deleteMarkerListener siteId
+      @deleteMarkerListeners siteId
       delete @markers[siteId]
 
-    @deleteMarkerListener: (siteId) ->
-      if @markers[siteId].listener
-        google.maps.event.removeListener @markers[siteId].listener
-        delete @markers[siteId].listener
+    @deleteMarkerListeners: (siteId) ->
+      for listener in ['click', 'mouseOver', 'mouseOut']
+        if @markers[siteId]["#{listener}Listener"]
+          google.maps.event.removeListener @markers[siteId]["#{listener}Listener"]
+          delete @markers[siteId]["#{listener}Listener"]
 
     @createCluster: (cluster) ->
       @clusters[cluster.id] = new Cluster @map, cluster
@@ -258,7 +286,7 @@ onCollections ->
       south = bounds.getSouthWest().lat()
       total = north - south
       current = lat - south
-      -Math.round(current * 100000 / total)
+      -Math.round(current * 1000000 / total)
 
     @adjustZIndexes: ->
       for siteId, marker of @markers
@@ -285,7 +313,7 @@ onCollections ->
       @showingMap(false)
       @refreshTimeago()
       @makeFixedHeaderTable()
-      setTimeout(window.adjustContainerSize 10)
+      setTimeout(window.adjustContainerSize, 10)
 
     @makeFixedHeaderTable: ->
       unless @showingMap()

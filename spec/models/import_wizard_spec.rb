@@ -68,14 +68,14 @@ describe ImportWizard do
     fields[0].name.should eq('The visibility')
     fields[0].code.should eq('visibility')
     fields[0].kind.should eq('select_one')
-    fields[0].config.should eq('options' => [{'code' => 'public', 'label' => 'public'}, {'code' => 'private', 'label' => 'private'}])
+    fields[0].config.should eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => 'public', 'label' => 'public'}, {'id' => 2, 'code' => 'private', 'label' => 'private'}])
 
     sites = collection.sites.all
     sites.length.should eq(3)
 
-    sites[0].properties.should eq({fields[0].es_code => 'public'})
-    sites[1].properties.should eq({fields[0].es_code => 'private'})
-    sites[2].properties.should eq({fields[0].es_code => 'private'})
+    sites[0].properties.should eq({fields[0].es_code => 1})
+    sites[1].properties.should eq({fields[0].es_code => 2})
+    sites[2].properties.should eq({fields[0].es_code => 2})
   end
 
   it "imports with two select ones mapped to code and label" do
@@ -105,13 +105,13 @@ describe ImportWizard do
     fields[0].name.should eq('The visibility')
     fields[0].code.should eq('visibility')
     fields[0].kind.should eq('select_one')
-    fields[0].config.should eq('options' => [{'code' => '1', 'label' => 'public'}, {'code' => '0', 'label' => 'private'}])
+    fields[0].config.should eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => '1', 'label' => 'public'}, {'id' => 2, 'code' => '0', 'label' => 'private'}])
 
     sites = collection.sites.all
     sites.length.should eq(3)
 
-    sites[0].properties.should eq({fields[0].es_code => '1'})
-    sites[1].properties.should eq({fields[0].es_code => '0'})
-    sites[2].properties.should eq({fields[0].es_code => '0'})
+    sites[0].properties.should eq({fields[0].es_code => 1})
+    sites[1].properties.should eq({fields[0].es_code => 2})
+    sites[2].properties.should eq({fields[0].es_code => 2})
   end
 end

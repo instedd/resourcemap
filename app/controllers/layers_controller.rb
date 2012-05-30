@@ -5,9 +5,7 @@ class LayersController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @show_breadcrumb = true
-        add_breadcrumb "Collections", collections_path
-        add_breadcrumb collection.name, collection_path(collection)
+        show_collection_breadcrumb
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
       format.json { render json: layers.includes(:fields).all.as_json(include: :fields) }
@@ -53,7 +51,9 @@ class LayersController < ApplicationController
         if field[:config]
           if field[:config][:options]
             field[:config][:options] = field[:config][:options].values
+            field[:config][:options].each { |option| option['id'] = option['id'].to_i }
           end
+          field[:config][:next_id] = field[:config][:next_id].to_i if field[:config][:next_id]
           if field[:config][:hierarchy]
             field[:config][:hierarchy] = field[:config][:hierarchy].values
             sanitize_items field[:config][:hierarchy]

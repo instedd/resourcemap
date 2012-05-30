@@ -1,0 +1,31 @@
+-# Hierarchy item template (used when grouping results by hierarchy item)
+%script{type: "text/html", id: "table-hierarchy-items-template"}
+  <!-- ko foreach: hierarchyItems -->
+  %tr{ko(css: {active: :selected})}
+    %td.w39{ko(click: :toggleExpand), style: 'overflow:auto;height:30px;cursor:pointer'}
+      %div{style: 'margin-top:2px'}
+        %a{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
+          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
+        %span{ko(text: :name)}
+    <!-- ko foreach: $root.currentCollection().fields() -->
+    %td.l
+    <!-- /ko -->
+    %td.l
+    %td.l
+  <!-- ko if: expanded -->
+  <!-- ko template: {name: 'table-hierarchy-items-template', with: hierarchyItems} -->
+  <!-- /ko -->
+  <!-- ko template: {name: 'table-sites-template', with: $data} -->
+  <!-- /ko -->
+  <!-- ko if: hasMoreSites() && !loadingSites()-->
+  %tr
+    %td.loadmore
+      = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + level() * 20) + 'px'"})
+  <!-- /ko -->
+  <!-- ko if: hasMoreSites() && loadingSites()-->
+  %tr
+    %td.loadmore
+      %span{ko(style: {marginLeft: "'' + (30 + (level() + 1) * 20) + 'px'"})} Loading...
+  <!-- /ko -->
+  <!-- /ko -->
+  <!-- /ko -->

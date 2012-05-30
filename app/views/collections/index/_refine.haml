@@ -1,0 +1,80 @@
+<!-- ko if: !inSearch() && currentCollection() && currentCollection().groupByOptions().length > 1 -->
+.left{ko(with: :currentCollection), style: 'margin-right:8px'}
+  Group by
+  %select{ko(value: '$root.groupBy', options: :groupByOptions, optionsText: 'function(o){return o.name();}')}
+<!-- /ko -->
+.left.superblyTagItems
+  <!-- ko foreach: filters() -->
+  %li.superblyTagItem{ko(click: '$root.removeFilter'), style: 'float:left;padding:3px;margin-right:4px;cursor:pointer'}
+    %span{ko(text: '$root.filterDescription($data)')}
+    %a x
+  <!-- /ko -->
+  .refine.box{ko(click: 'toggleRefinePopup'), style: 'float:left;padding:3px;cursor:pointer;position:relative;top:1px'}
+    <!-- ko if: filters().length == 0 -->
+    Refine results
+    <!-- /ko -->
+    <!-- ko if: filters().length > 0 -->
+    Refine further
+    <!-- /ko -->
+    %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (showingRefinePopup() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+  <!-- ko if: showingRefinePopup() -->
+  .refine-popup.box{style: 'position:absolute;padding:3px;z-index:10000;width:440px;max-height:300px;overflow:auto;-webkit-box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2)'}
+    <!-- ko if: !inSearch() || !currentCollection().hasDateFilter() -->
+    #div{ko(click: 'function(data, event) { toggleRefineProperty("update") }'), style: 'cursor:pointer'}
+      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expandedRefineProperty() == \"update\" ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+      %span Updated within
+    <!-- ko if: expandedRefineProperty() == 'update' -->
+    #div{style: 'padding:10px;margin-left:10px'}
+      %input#refine-last-hour{ko(click: '$root.filterByLastHour'), type: :radio, name: 'refine-update'}
+      %label{:for => 'refine-last-hour'} the last hour
+      %br/
+      %input#refine-last-day{ko(click: '$root.filterByLastDay'), type: :radio, name: 'refine-update'}
+      %label{:for => 'refine-last-day'} the last day
+      %br/
+      %input#refine-last-week{ko(click: '$root.filterByLastWeek'), type: :radio, name: 'refine-update'}
+      %label{:for => 'refine-last-week'} the last week
+      %br/
+      %input#refine-last-month{ko(click: '$root.filterByLastMonth'), type: :radio, name: 'refine-update'}
+      %label{:for => 'refine-last-month'} the last month
+      %br/
+    <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko foreach: currentCollection().fields() -->
+    #div{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.esCode()) }'), style: 'cursor:pointer;padding-top:6px'}
+      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == esCode() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+      %span{ko(text: :name)}
+    <!-- ko if: $root.expandedRefineProperty() == esCode() -->
+    #div{style: 'padding:10px;margin-left:10px'}
+      <!-- ko if: kind() == 'text' -->
+      equals:
+      %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
+      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      <!-- /ko -->
+      <!-- ko if: kind() == 'numeric' -->
+      %select{ko(value: '$root.expandedRefinePropertyOperator')}
+        %option{value: '='} equals
+        %option{value: '<'} is less than
+        %option{value: '<='} is less than or equal to
+        %option{value: '>'} is greater than
+        %option{value: '>='} is greater than or equal to
+      %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true), type: :number}
+      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      <!-- /ko -->
+      <!-- ko if: kind() == 'select_one' || kind() == 'select_many' -->
+      is:
+      %select{ko(value: '$root.expandedRefinePropertyValue', options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
+      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
+  <!-- /ko -->
+.right
+  %form{ko(submit: 'performSearchOrHierarchy'), action: '#/null', method: :post}
+    <!-- ko if: lastSearch() -->
+    %p{style: 'display:inline'}
+      = ko_link_to 'clear search', :clearSearch
+    <!-- /ko -->
+    = ko_text_field_tag :search
+    %input{type: :submit, value: 'Search'}
+.clear
+%br/

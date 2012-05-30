@@ -1,6 +1,6 @@
 class MembershipsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access]
+  before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin]
 
   def index
     layer_memberships = collection.layer_memberships.all.inject({}) do |hash, membership|
@@ -47,6 +47,24 @@ class MembershipsController < ApplicationController
   def set_layer_access
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_layer_access params
+    render json: :ok
+  end
+
+  def set_admin
+    change_admin_flag true
+  end
+
+  def unset_admin
+    change_admin_flag false
+  end
+
+  private
+
+  def change_admin_flag(new_value)
+    membership = collection.memberships.find_by_user_id params[:id]
+    membership.admin = new_value
+    membership.save!
+
     render json: :ok
   end
 end

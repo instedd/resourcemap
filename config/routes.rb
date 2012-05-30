@@ -12,7 +12,7 @@ ResourceMap::Application.routes.draw do
     resources :fields
     resources :thresholds do
       member do
-        post 'set_priority'
+        post :set_order
       end
     end
     resources :reminders
@@ -25,11 +25,12 @@ ResourceMap::Application.routes.draw do
       end
       member do
         post 'set_layer_access'
+        post 'set_admin'
+        post 'unset_admin'
       end
     end
     get 'members'
     get 'settings'
-    get 'download_as_csv'
     get 'csv_template'
     get 'max_value_of_property'
 

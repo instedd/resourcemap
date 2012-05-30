@@ -10,7 +10,7 @@ module Threshold::ComparisonConcern
   end
 
   def lte(a, b)
-    lt(a, b) || eq(a, b)
+    a <= b
   end
 
   def gt(a, b)
@@ -18,6 +18,6 @@ module Threshold::ComparisonConcern
   end
 
   def gte(a, b)
-    gt(a, b) || eq(a, b)
+    a >= b
   end
 end
