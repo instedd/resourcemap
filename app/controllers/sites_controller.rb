@@ -5,7 +5,8 @@ class SitesController < ApplicationController
   expose(:site)
 
   def index
-    render json: collection.sites.offset(params[:offset]).limit(params[:limit]).all
+    sites = collection.sites.offset(params[:offset]).limit(params[:limit])
+    render json: sites
   end
 
   def show
