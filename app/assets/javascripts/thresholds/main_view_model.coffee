@@ -58,3 +58,20 @@ onThresholds ->
       for threshold in @thresholds()
         ord = threshold.ord() if threshold.ord() > ord
       ord += 1
+
+    moveThresholdDown: (threshold) =>
+      index = @thresholds.indexOf(threshold)
+      @swapThresholdsOrder threshold, @thresholds()[index+1] if index < @thresholds().length - 1
+
+    moveThresholdUp: (threshold) =>
+     index = @thresholds.indexOf(threshold)
+     @swapThresholdsOrder(threshold, @thresholds()[index-1]) if index > 0
+
+    swapThresholdsOrder: (thresholds...) =>
+      order = $.map thresholds, (threshold) -> threshold.ord()
+      $.each thresholds, (i, threshold) => threshold.setOrder order.pop(), @setThresholdOrderCallback
+      @refresh()
+
+    setThresholdOrderCallback: (data) =>
+
+    refresh: => @thresholds.sort (x, y) -> x.ord() > y.ord() ? -1 : 1

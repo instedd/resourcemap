@@ -112,3 +112,40 @@ describe 'MainViewModel', ->
       spyOn($, 'post').andReturn true
       @model.deleteThreshold @threshold
       @expect($.post).toHaveBeenCalledWith "/collections/#{@collectionId}/thresholds/#{@threshold.id()}.json", { _method: 'delete' }, @model.deleteThresholdCallback
+
+  describe 'move threshold', ->
+    beforeEach ->
+      @threshold_1 = new Threshold id: 1, ord: 1, collection_id: @collectionId
+      @threshold_2 = new Threshold id: 2, ord: 2, collection_id: @collectionId
+      @model.thresholds [ @threshold_1, @threshold_2 ]
+      spyOn($, 'post')
+
+    describe 'down', ->
+      it 'should change threshold order', ->
+        @model.moveThresholdDown @threshold_1
+        expect(@threshold_1.ord()).toEqual 2
+        expect(@threshold_2.ord()).toEqual 1
+
+      it "should post set threshold order's json", ->
+        @model.moveThresholdDown @threshold_1
+        expect($.post).toHaveBeenCalledWith("/collections/#{@model.collectionId}/thresholds/#{@threshold_1.id()}/set_order.json", { ord: 2 }, @model.setThresholdOrderCallback)
+        expect($.post).toHaveBeenCalledWith("/collections/#{@model.collectionId}/thresholds/#{@threshold_2.id()}/set_order.json", { ord: 1 }, @model.setThresholdOrderCallback)
+
+      it 'should not change order when it is the last threshold', ->
+        @model.moveThresholdDown @threshold_2
+        expect(@threshold_2.ord()).toEqual 2
+
+    describe 'up', ->
+      it 'should change threshold order', ->
+        @model.moveThresholdUp @threshold_2
+        expect(@threshold_1.ord()).toEqual 2
+        expect(@threshold_2.ord()).toEqual 1
+
+      it "should post set threshold order's json", ->
+        @model.moveThresholdUp @threshold_2
+        expect($.post).toHaveBeenCalledWith("/collections/#{@model.collectionId}/thresholds/#{@threshold_1.id()}/set_order.json", { ord: 2 }, @model.setThresholdOrderCallback)
+        expect($.post).toHaveBeenCalledWith("/collections/#{@model.collectionId}/thresholds/#{@threshold_2.id()}/set_order.json", { ord: 1 }, @model.setThresholdOrderCallback)
+
+      it 'should not change order when it is the last threshold', ->
+        @model.moveThresholdUp @threshold_1
+        expect(@threshold_1.ord()).toEqual 1

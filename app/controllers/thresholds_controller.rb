@@ -19,8 +19,8 @@ class ThresholdsController < ApplicationController
     render json: threshold
   end
 
-  def set_priority
-    threshold.update_attribute :priority, params[:priority]
+  def set_order
+    threshold.update_attribute :ord, params[:ord]
 
     render json: threshold
   end

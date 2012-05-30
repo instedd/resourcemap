@@ -11,7 +11,7 @@ ResourceMap::Application.routes.draw do
     resources :fields
     resources :thresholds do
       member do
-        post 'set_priority'
+        post :set_order
       end
     end
     resources :memberships do
