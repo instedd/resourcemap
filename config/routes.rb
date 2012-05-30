@@ -35,6 +35,7 @@ ResourceMap::Application.routes.draw do
     get 'bulk_update'
     post 'bulk_update_upload_csv'
     get 'bulk_update_adjustments'
+    get 'bulk_update_sample'
     post 'bulk_update_execute'
 
     get 'recreate_index'
