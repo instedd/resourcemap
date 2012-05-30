@@ -1,7 +1,7 @@
 = javascript_include_tag 'import_wizard'
 
 :javascript
-  $(function() { initImportWizard(#{collection.id}, #{@sample.to_json}); });
+  $(function() { initBulkUpdate(#{collection.id}, #{@sample.to_json}); });
 
 :css
   .ignored, .ignored input, .ignored select { color: grey; }
@@ -10,7 +10,7 @@
 = render 'tabs'
 
 .tabsline
-  %h2 Import Wizard
+  %h2 Bulk update
   %p Now specify how to map each column to a field.
   %br/
 

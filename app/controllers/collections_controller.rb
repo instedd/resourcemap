@@ -69,24 +69,24 @@ class CollectionsController < ApplicationController
     render json: collection.max_value_of_property(params[:property])
   end
 
-  def import_wizard_upload_csv
-    ImportWizard.import current_user, collection, params[:file].read
-    redirect_to collection_import_wizard_adjustments_path(collection)
+  def bulk_update_upload_csv
+    BulkUpdate.import current_user, collection, params[:file].read
+    redirect_to collection_bulk_update_adjustments_path(collection)
   rescue => ex
-    redirect_to collection_import_wizard_path(collection), :notice => "The file was not a valid CSV file"
+    redirect_to collection_bulk_update_path(collection), :notice => "The file was not a valid CSV file"
   end
 
-  def import_wizard
-    add_breadcrumb "Import wizard", collection_settings_path(collection)
+  def bulk_update
+    add_breadcrumb "Import wizard", collection_bulk_update_path(collection)
   end
 
-  def import_wizard_adjustments
-    add_breadcrumb "Import wizard", collection_settings_path(collection)
-    @sample = ImportWizard.sample(current_user, collection)
+  def bulk_update_adjustments
+    add_breadcrumb "Import wizard", collection_bulk_update_path(collection)
+    @sample = BulkUpdate.sample(current_user, collection)
   end
 
-  def import_wizard_execute
-    ImportWizard.execute(current_user, collection, params[:columns].values)
+  def bulk_update_execute
+    BulkUpdate.execute(current_user, collection, params[:columns].values)
     render :json => :ok
   end
 

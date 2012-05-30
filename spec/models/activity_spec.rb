@@ -160,8 +160,8 @@ describe Activity do
       {name: 'Beds', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
-    ImportWizard.import user, collection, csv_string
-    ImportWizard.execute user, collection, specs
+    BulkUpdate.import user, collection, csv_string
+    BulkUpdate.execute user, collection, specs
 
     assert_activity 'collection_imported',
       'collection_id' => collection.id,
