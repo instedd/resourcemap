@@ -81,7 +81,7 @@ onCollections ->
 
     removeOption: (optionCode) =>
       @value([]) unless @value()
-      @value(@value().diff([optionCode]))
+      @value(arrayDiff(@value(), [optionCode]))
       @value.valueHasMutated()
 
     expand: => @expanded(true)
