@@ -37,23 +37,7 @@ class Site < ActiveRecord::Base
     properties.each do |key, value|
       field = fields[key]
       if field
-        if field.select_one?
-          option = field.config['options'].find { |o| o['id'] == value }
-          props[field.name] = option ? option['label'] : value
-        elsif field.select_many?
-          if value.is_a? Array
-            props[field.name] = value.map do |val|
-              option = field.config['options'].find { |o| o['id'] == val }
-              option ? option['label'] : val
-            end
-          else
-            props[field.name] = value
-          end
-        elsif field.hierarchy?
-          props[field.name] = value
-        else
-          props[field.name] = value
-        end
+        props[field.name] = field.human_value value
       else
         props[key] = value
       end

@@ -20,4 +20,21 @@ describe Field do
       item['sub'].first.class.should eq(Hash)
     end
   end
+
+  describe "cast strongly type" do
+    let!(:config_options) { [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}] }
+
+    describe "select_many" do
+      let!(:field) { Field.make kind: 'select_many', config: {options: config_options} }
+
+      it "should convert value to integer" do
+        field.strongly_type('1').should eq 1
+        field.strongly_type('2').should eq 2
+      end
+
+      pending "should not convert value when option does not exist" do
+        field.strongly_type('3').should eq 0
+      end
+    end
+  end
 end

@@ -36,30 +36,81 @@ class Field < ActiveRecord::Base
     numeric? || select_one?
   end
 
-  # Returns the label for the given option code.
-  # Returns the same code if the option is not found or this is not a
-  # select_one or select_many field.
-  def option_label(code)
-    if config && config['options']
-      config['options'].each do |option|
-        return option['label'] if option['code'] == code
-      end
-    end
-
-    return code
-  end
-
   def strongly_type(value)
     if stored_as_number?
       value.to_i_or_f
     elsif select_many?
-      value.map &:to_i
+      value.is_a?(Array) ? value.map(&:to_i) : value.to_i
     else
       value
     end
   end
 
+  def api_value(value)
+    if select_one?
+      option = config['options'].find { |o| o['id'] == value }
+      return option ? option['code'] : value
+    elsif select_many?
+      if value.is_a? Array
+        return value.map do |val|
+          option = config['options'].find { |o| o['id'] == val }
+          option ? option['code'] : val
+        end
+      else
+        return value
+      end
+    elsif hierarchy?
+      return value
+    else
+      return value
+    end
+  end
+
+  def human_value(value)
+    if select_one?
+      option = config['options'].find { |o| o['id'] == value }
+      return option ? option['label'] : value
+    elsif select_many?
+      if value.is_a? Array
+        return value.map do |val|
+          option = config['options'].find { |o| o['id'] == val }
+          option ? option['label'] : val
+        end.join ', '
+      else
+        return value
+      end
+    elsif hierarchy?
+      return find_hierarchy_value value
+    else
+      return value
+    end
+  end
+
   private
+
+  def find_hierarchy_value(value)
+    @hierarchy_items_map ||= create_hierarchy_items_map
+    item = @hierarchy_items_map[value]
+    item ? hierarchy_item_to_s(item) : value
+  end
+
+  def create_hierarchy_items_map(map = {}, items = config['hierarchy'], parent = nil)
+    items.each do |item|
+      map_item = {'name' => item['name'], 'parent' => parent}
+      map[item['id']] = map_item
+      create_hierarchy_items_map map, item['sub'], map_item if item['sub'].present?
+    end
+    map
+  end
+
+  def hierarchy_item_to_s(str = '', item)
+    if item['parent']
+      hierarchy_item_to_s str, item['parent']
+      str << ' - '
+    end
+    str << item['name']
+    str
+  end
 
   def sanitize_hierarchy_items(items)
     items.map! &:to_hash

@@ -8,9 +8,9 @@
     .box.grey.w60
       .toptitle
         .ord-buttons
-          -#%input{ ko(value: :priority) }
-          -#%button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
-          -#%button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
+          %input{ ko(value: :ord) }
+          %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
+          %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
         %span
           <!-- ko foreach :conditions -->
           <!-- ko if: $parent.isFirstCondition($data) -->
@@ -41,23 +41,29 @@
       .middlebuttons
         %span
         <!-- ko foreach :conditions -->
-        <!-- ko if: $parent.isFirstCondition($data) -->
+        <!--    ko if: $parent.isFirstCondition($data) -->
         When
-        <!-- /ko -->
-        <!-- ko if: !$parent.isFirstCondition($data) -->
+        <!--    /ko -->
+        <!--    ko if: !$parent.isFirstCondition($data) -->
         %br
         And
-        <!-- /ko -->
+        <!--    /ko -->
         %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
-        %select{ ko(options: '$data.field().operators', optionsText: "'label'", value: :op) }
+        <!--    ko if: field().operators().length == 1 -->
+        %span{ ko(text: 'field().operators()[0].label') }
+        %select{ ko(options: 'field().options', optionsText: "'label'", optionsValue:"'id'", value: :value) }
+        <!--    /ko -->
+        <!--    ko if: field().operators().length > 1 -->
+        %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
         %select{ ko(options: 'ValueType.ALL', optionsText: "'label'", value: :valueType) }
         %label{ ko(css: { error: '!valid()' }) }
         %span.w06
           %input{ ko(value: :value, valueUpdate: :afterkeydown, css: { error: '!valid()' }), type: :text, style: 'width:60px' }
-        <!-- ko if: $parent.isLastCondition($data) -->
+        <!--    /ko -->
+        <!--    ko if: $parent.isLastCondition($data) -->
         set color
         %input{ ko(colorPicker: '$parent.color'), type: :text }
-        <!-- /ko -->
+        <!--    /ko -->
         %button.premove{ ko(click: '$parent.removeCondition') }
         <!-- /ko -->
       %button.fadd{ko(click: :addNewCondition) }

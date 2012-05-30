@@ -2,14 +2,14 @@
 #= require collections/site
 
 onCollections ->
-  
+
   class @SitesContainer
     @constructorSitesContainer: ->
       @expanded = ko.observable false
       @sites = ko.observableArray()
       @sitesPage = 1
       @hasMoreSites = ko.observable true
-      @loadingSites = ko.observable false
+      @loadingSites = ko.observable true
       @siteIds = {}
 
     # Loads SITES_PER_PAGE sites more from the server, it there are more sites.

@@ -7,10 +7,19 @@ class Threshold < ActiveRecord::Base
 
   serialize :conditions, Array
 
+  before_save :strongly_type_conditions
+  def strongly_type_conditions
+    fields = collection.fields.index_by(&:es_code)
+    self.conditions.each_with_index do |hash, i|
+      field = fields[hash[:field]]
+      self.conditions[i][:value] = field.strongly_type(hash[:value]) if field
+    end
+  end
+
   def test(properties)
     throw :threshold, true if conditions.all? do |hash|
-      if property = properties[field = hash[:field]]
-        true if condition(hash).evaluate(property)
+      if value = properties[hash[:field]]
+        true if condition(hash).evaluate(value)
       end
     end
   end

@@ -2,9 +2,10 @@ onThresholds ->
   class @Threshold
     constructor: (data) ->
       @id = ko.observable data?.id
-      @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
+      @collectionId = data?.collection_id
       @ord = ko.observable data?.ord
       @color = ko.observable(data?.color ? '#ff0000')
+      @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
       @error = ko.computed =>
         return "the threshold must have at least one condition" if @conditions().length is 0
         for condition, i in @conditions()
@@ -24,6 +25,10 @@ onThresholds ->
 
     isLastCondition: (condition) ->
       @conditions().length - 1 == @conditions().indexOf condition
+
+    setOrder: (ord, callback) ->
+      @ord ord
+      $.post "/collections/#{@collectionId}/thresholds/#{@id()}/set_order.json", { ord: ord }, callback
 
     toJSON: =>
       id: @id()

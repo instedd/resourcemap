@@ -103,6 +103,8 @@ onCollections ->
         if @goBackToTable
           @showTable()
           delete @goBackToTable
+        else
+          @reloadMapSites()
       @rewriteUrl()
 
     @deleteSite: ->

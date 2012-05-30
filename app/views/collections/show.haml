@@ -13,7 +13,7 @@
         .sitesCount= sites_count
         sites
       %button.csvDownload.white.right{type: "button", class: sites_count == 0 ? "disabled" : nil}
-        = link_to_if sites_count > 0, 'download as csv', collection_download_as_csv_path(collection)
+        = link_to_if sites_count > 0, 'download as csv', api_collection_path(collection, format: "csv")
     %div
       = link_to 'Download a sample CSV file', collection_csv_template_path(collection), class: 'icon fimport black'
       and fill it with the status of multiple sites

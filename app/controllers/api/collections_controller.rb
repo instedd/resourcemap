@@ -3,6 +3,7 @@ class Api::CollectionsController < ApplicationController
   include Api::GeoJsonHelper
 
   before_filter :authenticate_user!
+  around_filter :rescue_with_check_api_docs
 
   def show
     options = [:sort]
@@ -20,8 +21,6 @@ class Api::CollectionsController < ApplicationController
       format.csv { collection_csv(collection, @results) }
       format.json { render json: collection_json(collection, @results) }
     end
-  rescue => ex
-    render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
   end
 
   def count
@@ -73,7 +72,7 @@ class Api::CollectionsController < ApplicationController
     end
 
     search.where params.except(*except_params)
-    search.results
+    search.api_results
   end
 
   def valid_box_coordinates
@@ -91,18 +90,17 @@ class Api::CollectionsController < ApplicationController
     fields = collection.fields.all
 
     sites_csv = CSV.generate do |csv|
-      header = ['Name', 'Latitude', 'Longitude']
-      fields.each { |field| header << field.name }
-      header << 'Last updated'
+      header = ['id', 'name', 'lat', 'long']
+      fields.each { |field| header << field.code }
+      header << 'last updated'
       csv << header
 
       results.each do |result|
         source = result['_source']
 
-        row = [source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
+        row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
         fields.each do |field|
-          value = source['properties'].try(:[], field.code)
-          row << field.option_label(value)
+          row << Array(source['properties'][field.code]).join(", ")
         end
         row << Site.parse_date(source['updated_at']).rfc822
         csv << row
@@ -110,5 +108,11 @@ class Api::CollectionsController < ApplicationController
     end
 
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
+  end
+
+  def rescue_with_check_api_docs
+    yield
+  rescue => ex
+    render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
   end
 end

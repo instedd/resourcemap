@@ -9,8 +9,9 @@ onThresholds ->
 
     addThreshold: =>
       threshold = new Threshold ord: @nextOrd()
-      @thresholds.push threshold
+      threshold.addNewCondition()
       @currentThreshold threshold
+      @thresholds.push threshold
 
     editThreshold: (threshold) =>
       @originalThreshold = new Threshold(threshold.toJSON())
@@ -50,10 +51,27 @@ onThresholds ->
       delete @deletedThreshold
 
     findField: (esCode) =>
-      (field for field in @fields() when field.esCode() == esCode)[0]
+      return field for field in @fields() when field.esCode() == esCode
 
     nextOrd: =>
       ord = 0
       for threshold in @thresholds()
         ord = threshold.ord() if threshold.ord() > ord
       ord += 1
+
+    moveThresholdDown: (threshold) =>
+      index = @thresholds.indexOf(threshold)
+      @swapThresholdsOrder threshold, @thresholds()[index+1] if index < @thresholds().length - 1
+
+    moveThresholdUp: (threshold) =>
+     index = @thresholds.indexOf(threshold)
+     @swapThresholdsOrder(threshold, @thresholds()[index-1]) if index > 0
+
+    swapThresholdsOrder: (thresholds...) =>
+      order = $.map thresholds, (threshold) -> threshold.ord()
+      $.each thresholds, (i, threshold) => threshold.setOrder order.pop(), @setThresholdOrderCallback
+      @refresh()
+
+    setThresholdOrderCallback: (data) =>
+
+    refresh: => @thresholds.sort (x, y) -> x.ord() > y.ord() ? -1 : 1
