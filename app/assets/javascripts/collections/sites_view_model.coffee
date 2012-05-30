@@ -10,7 +10,7 @@ onCollections ->
       @markers = {}
 
     @editingSiteLocation: ->
-      @editingSite() && (@editingSite().inEditMode() || @editingSite().editingLocation())
+      @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
     @createSite: ->
       @goBackToTable = true unless @showingMap()
