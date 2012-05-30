@@ -70,10 +70,11 @@ class MapSearch
   end
 
   def adjust_bounds_to_world_limits
-    @bounds[:n] = 90 if @bounds[:n].to_f >= 90
-    @bounds[:s] = -90 if @bounds[:s].to_f <= -90
-    @bounds[:e] = 180 if @bounds[:e].to_f >= 180
-    @bounds[:w] = -180 if @bounds[:w].to_f <= -180
+    #See https://github.com/elasticsearch/elasticsearch/pull/1602#issuecomment-5978326
+    @bounds[:n] = 89.99 if @bounds[:n].to_f > 90
+    @bounds[:s] = -89.99 if @bounds[:s].to_f < -90
+    @bounds[:e] = 179.99 if @bounds[:e].to_f > 180
+    @bounds[:w] = -179.99 if @bounds[:w].to_f < -180
   end
 
   def collection

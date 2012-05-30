@@ -2,9 +2,7 @@ class ExecVisitor < Visitor
   MSG = {
     :query_not_match => "No result. Your query did not match.",
     :update_successfully => "Data has been successfully updated.",
-    :can_not_update => "You have no access right to update. Please contact the layer's owner for more information.",
-    :can_not_query => "You have no access right to view. Please contact the layer's owner for more information.",
-    :can_not_use_gateway => "You cannot use this channel for viewing or updating this layer. Please contact the layer's owner for more information."
+    :can_not_update => "You have no access right to update. Please contact the layer's owner for more information.", :can_not_query => "You have no access right to view. Please contact the layer's owner for more information.", :can_not_use_gateway => "You cannot use this channel for viewing or updating this layer. Please contact the layer's owner for more information."
   }
 
   attr_accessor :context
@@ -15,20 +13,10 @@ class ExecVisitor < Visitor
   
   def visit_query_command(node)
     if collection = Collection.find_by_id(node.layer_id.value)
-      raise MSG[:can_not_use_gateway] unless can_use_gateway?(collection)
+      #raise MSG[:can_not_use_gateway] unless can_use_gateway?(collection)
       raise MSG[:can_not_query]       unless can_view?(node.sender, collection)
       
       if reply = collection.query_sites(node.conditional_expression.to_options)
-        reply.empty? ? MSG[:query_not_match] : reply
-      end
-
-    end
-    
-    if layer = Layer.find_by_id(node.layer_id.value)
-      raise MSG[:can_not_use_gateway] unless can_use_gateway?(layer)
-      raise MSG[:can_not_query]       unless can_view?(node.sender, layer)
-      
-      if reply = layer.query_resources(node.conditional_expression.to_options)
         reply.empty? ? MSG[:query_not_match] : reply
       end
     end
@@ -52,7 +40,7 @@ class ExecVisitor < Visitor
     gateway.nil? || gateway.allows_layer?(layer)
   end
 
-  def can_view?(sender, layer)
+  def can_view?(sender, collection)
     sender && sender.can_view?(layer)
   end
 

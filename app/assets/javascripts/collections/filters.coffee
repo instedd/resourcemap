@@ -70,4 +70,4 @@ onCollections ->
       options[@field.codeForLink(api)] = @value
 
     description: =>
-      "where #{@label} is \"#{@valueLabel}\""
+      "where #{@field.name()} is \"#{@valueLabel}\""

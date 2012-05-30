@@ -27,7 +27,6 @@ ResourceMap::Application.routes.draw do
     get 'members'
     get 'reminders'
     get 'settings'
-    get 'download_as_csv'
     get 'csv_template'
     get 'max_value_of_property'
 

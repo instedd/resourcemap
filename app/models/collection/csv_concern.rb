@@ -9,15 +9,6 @@ module Collection::CsvConcern
     end
   end
 
-  def export_csv
-    CSV.generate do |csv|
-      csv << csv_header
-      sites.each do |site|
-        csv << [site.id, site.name, site.lat, site.lng]
-      end
-    end
-  end
-
   def import_csv(user, string_or_io)
     Collection.transaction do
       csv = CSV.new string_or_io, return_headers: false

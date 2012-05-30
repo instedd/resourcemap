@@ -50,6 +50,14 @@ class User < ActiveRecord::Base
     Activity.where(collection_id: memberships.pluck(:collection_id))
   end
 
+  def can_view?(collection)
+    return collection.public if collection.public
+    if membership = self.memberships.where(:collection_id => collection.id).first
+      return membership.admin
+    end
+    false
+  end
+  
   def can_update?(site)
 		can_update_site = false
 		if siteMember = Membership.find_by_user_id_and_collection_id(self.id, site.id)
