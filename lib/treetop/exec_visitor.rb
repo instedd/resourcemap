@@ -6,16 +6,14 @@ class ExecVisitor < Visitor
   }
 
   attr_accessor :context
-
-  def initialize(context={})
+def initialize(context={})
     self.context = context
   end
   
   def visit_query_command(node)
     if collection = Collection.find_by_id(node.layer_id.value)
       #raise MSG[:can_not_use_gateway] unless can_use_gateway?(collection)
-      raise MSG[:can_not_query]       unless can_view?(node.sender, collection)
-      
+      raise MSG[:can_not_query]       unless can_view?(node.conditional_expression.to_options, node.sender, collection)
       if reply = collection.query_sites(node.conditional_expression.to_options)
         reply.empty? ? MSG[:query_not_match] : reply
       end
@@ -27,7 +25,7 @@ class ExecVisitor < Visitor
      
     if site = Site.find_by_id_with_prefix(id)
       #raise MSG[:can_not_use_gateway] unless can_use_gateway?(site.collection)
-      raise MSG[:can_not_update]      unless can_update?(node.sender, site)
+      raise MSG[:can_not_update]      unless can_update?(node.property_list, node.sender, site)
       update site, node.property_list, node.sender
       MSG[:update_successfully]
     else
@@ -40,24 +38,28 @@ class ExecVisitor < Visitor
     gateway.nil? || gateway.allows_layer?(layer)
   end
 
-  def can_view?(sender, collection)
-    sender && sender.can_view?(layer)
+  def can_view?(option, sender, collection)
+    sender && sender.can_view?(collection, option[:code])
   end
 
-  def can_update?(sender, site)
-    sender && sender.can_update?(site)
+  def can_update?(node, sender, site)
+    properties = node_to_properties node
+    sender && sender.can_update?(site, properties)
   end
 
   private
   
   def update(site, node, sender)
-		properties = []
+    properties = node_to_properties(node)
+		site.update_properties site, sender, properties
+  end
+
+  def node_to_properties(node)
+    properties = []
 		until node and node.kind_of? AssignmentExpressionNode
       properties << node.assignment_expression.to_options
       node = node.next
     end
     properties << node.to_options
-		site.update_properties site, sender, properties
   end
-
 end

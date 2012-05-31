@@ -61,4 +61,73 @@ describe User do
       user2.activities.length.should eq(0)
     end
   end
+
+  describe "Permission" do
+    before(:each) do
+      @user1  = User.make
+      @user = User.create(:email => "demo@instedd.org", :password => "123456", :phone_number => "855123456789")
+      @collection = Collection.make
+			@site  = @collection.sites.make
+      @layer = @collection.layers.create(:name => "health center")
+      @properties =[{:code=>"AB", :value=>"26"}]  
+      Field.create(:collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1, :kind => "numeric")
+    end
+    
+    it "should be able to view and update layer" do
+      @collection.memberships.create(:user => @user, :admin => false)
+      @collection.layer_memberships.create( :layer_id => @layer.id, :read => true, :user_id => @user.id, :write => true)    
+      Field.create(:collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1, :kind => "numeric")
+      @user.can_view?(@collection, @properties[0][:code]).should be_true
+      @user.can_update?(@site, @properties).should be_true
+    end
+    
+    context "can update" do
+      it "should return true when user have write permission on layer" do 
+        @collection.layer_memberships.create( :layer_id => @layer.id, :read => true, :user_id => @user.id, :write => true)    
+        @user.validate_layer_write_permission(@site, @properties).should be_true
+      end
+      
+      it "should return false when user don't have write permission on layer" do 
+        @user.validate_layer_write_permission(@site, @properties).should be_false
+      end
+    end
+    
+    context "can view" do
+      it "should return true when user have read permission on layer" do
+        @collection.layer_memberships.create( :layer_id => @layer.id, :read => true, :user_id => @user.id, :write => true)    
+        @user.validate_layer_read_permission(@collection, @properties[0][:code]).should be_true
+      end
+      
+      it "should return false when user don't have write permission on layer" do 
+        @user.validate_layer_read_permission(@site, @properties[0][:code]).should be_false
+      end
+    end
+#    context "can_view" d
+#      before(:each) do
+#        @layer.memberships.create(:user => @user, :role => 'User', :access_rights => AccessRights::VIEW)
+#      end
+#
+#      it "should be able to view layer" do
+#        @user.can_view?(@collection).should be_true
+#      end
+#
+#      it "should not be able to update layer" do
+#        @user.can_update?(@site).should be_false
+#      end
+#    end
+#
+#    context "can_update" do
+#      before(:each) do
+#        @collection.memberships.create(:user => @user, :role => 'User', :access_rights => AccessRights::UPDATE)
+#      end
+#
+#      it "should not be able to view layer" do
+#        @user.can_view?(@collection).should be_false
+#      end
+#
+#      it "should be able to update layer" do
+#        @user.can_update?(@site).should be_true
+#      end
+#    end
+  end
 end
