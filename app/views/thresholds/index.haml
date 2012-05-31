@@ -8,9 +8,9 @@
     .box.grey.w60
       .toptitle
         .ord-buttons
-          -#%input{ ko(value: :priority) }
-          -#%button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
-          -#%button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
+          %input{ ko(value: :ord) }
+          %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
+          %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
         %span
           <!-- ko foreach :conditions -->
           <!-- ko if: $parent.isFirstCondition($data) -->
@@ -55,7 +55,9 @@
         <!--    /ko -->
         <!--    ko if: field().operators().length > 1 -->
         %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
+        <!--    ko if: !(field().kind() == 'text') -->
         %select{ ko(options: 'ValueType.ALL', optionsText: "'label'", value: :valueType) }
+        <!--    /ko -->
         %label{ ko(css: { error: '!valid()' }) }
         %span.w06
           %input{ ko(value: :value, valueUpdate: :afterkeydown, css: { error: '!valid()' }), type: :text, style: 'width:60px' }

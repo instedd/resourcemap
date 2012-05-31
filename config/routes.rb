@@ -1,6 +1,7 @@
 ResourceMap::Application.routes.draw do
   devise_for :users
   match 'messaging' => 'messaging#index'
+  resources :repeats
   resources :collections do
     resources :sites
     resources :layers do
@@ -11,9 +12,13 @@ ResourceMap::Application.routes.draw do
     resources :fields
     resources :thresholds do
       member do
-        post 'set_priority'
+        post :set_order
       end
     end
+    resources :reminders
+      member do
+      end
+
     resources :memberships do
       collection do
         get 'invitable'
@@ -25,7 +30,6 @@ ResourceMap::Application.routes.draw do
       end
     end
     get 'members'
-    get 'reminders'
     get 'settings'
     get 'csv_template'
     get 'max_value_of_property'
