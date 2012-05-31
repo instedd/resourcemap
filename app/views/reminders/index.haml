@@ -1,29 +1,3 @@
-- content_for :head do
-  :javascript
-    $(function() { 
-    
-       function doAjaxStuff() {
-        $.ajax({
-          url: "/collections/" + window.model.collectionId() + "/sites",
-          dataType: 'json',
-          success: function (result) {
-            var tags = new Array();
-
-            $.each(result, function (intIndex, objValue){ 
-              tags.push(result[intIndex].name); 
-              });
-
-            $(".sites").superblyTagField({
-              preset: [],
-              allowNewTags: false,
-              tags: tags
-            });
-          }
-        });
-      }
-      doAjaxStuff();
-    });
-
 = render 'collections/tabs'
 
 .tabsline
@@ -47,14 +21,14 @@
       <!-- ko with: currentReminder -->
       %label{ko(css: {error: 'nameError'})} Name
       %br/
-      %input.w30{type: :text}
+      %input.w30{ko(value: 'name'), type: :text}
       %br/
 
-      %label Sites
+      %label{ko(css: {error: 'sitesError'})} Sites
       %br/
       %label.smalltext site's owner will receive this reminder 
       %br/
-      %input.sites
+      %input.sites{ko(value: 'sites')}
       %br/
       %label Date
       %br/
@@ -74,7 +48,7 @@
       .bottom-actions
         %button.white{ ko(click: '$root.saveReminder')} Save
         %a.tgrey{ href: 'javascript:void(0)' } Cancel
-        %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
+        %span{ko(text: "error()"), style: 'color:red;margin-left:20px'}
       <!-- /ko -->
     -# Add new reminder link
     .box.grey.add{ ko(visible: '!currentReminder()', click: 'showAddReminder'), style: 'display:none'}
