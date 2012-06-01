@@ -1,7 +1,7 @@
 ko.bindingHandlers.superblyTagField =
   init: (element, valueAccessor) ->
     value = valueAccessor()
-    $(element).val ko.utils.unwrapObservable value    
+    $(element).val ko.utils.unwrapObservable value
     
     window.model.loadSites (sites) ->
       $(element).superblyTagField {preset: [], allowNewTags: false, tags: sites}

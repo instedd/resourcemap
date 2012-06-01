@@ -19,11 +19,6 @@ onReminders ->
         else
           return "Sites is missing"
 
-      
-    getSites: (text) =>
-      $.get("/collections/#{@collection_id()}/sites?query=#{text}", (data)) ->
-        @sites(data)
-
     error: =>
       errorMessage = @nameError() || @sitesError()
       if errorMessage then "Can't save: " + errorMessage else "" 
