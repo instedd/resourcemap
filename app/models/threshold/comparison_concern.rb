@@ -20,4 +20,8 @@ module Threshold::ComparisonConcern
   def gte(a, b)
     a >= b
   end
+
+  def con(a, b)
+    not a.scan(/#{a}/).empty?
+  end
 end
