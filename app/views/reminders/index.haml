@@ -1,3 +1,12 @@
+- content_for :head do
+  :javascript 
+    $(function(){
+      if ($.fn.datepicker) {
+        $(".ux-datepicker:not([readonly])")
+          .click(function(){ $(this).datepicker("show"); })
+          .datepicker();
+      }
+    });
 = render 'collections/tabs'
 
 .tabsline
@@ -32,7 +41,7 @@
       %br/
       %label Date
       %br/
-      %input.ux-datepicker.w20{ type: :text }
+      %input.ux-datepicker.w20{ko(bindDatePicker: true), type: :text }
       %select{ko(options: '$root.getTimes()')}
       %label repeat
       %select{ko(options: '$root.repeats', optionsText: "'name'", optionsValue: "'id'")}
