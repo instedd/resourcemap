@@ -9,6 +9,16 @@ class Site < ActiveRecord::Base
   serialize :properties, Hash
   before_create :assign_id_with_prefix
   before_save :strongly_type_properties
+
+  after_save :create_site_history
+
+  has_many :site_histories
+
+  def create_site_history
+    history = SiteHistory.create_from_site self
+    self.site_histories.insert(history)
+  end
+
   def strongly_type_properties
     fields = collection.fields.index_by(&:es_code)
     self.properties.keys.each do |key|
@@ -21,7 +31,7 @@ class Site < ActiveRecord::Base
   def remove_nil_properties
     self.properties.reject! { |k, v| v.nil? }
   end
-  
+
   def update_properties(site, user, props)
     props.each do |p|
       field = Field.find_by_code(p.values[0])

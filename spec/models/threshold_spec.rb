@@ -8,8 +8,9 @@ describe Threshold do
 
   let!(:collection) { Collection.make }
   let!(:layer) { collection.layers.make }
-  let!(:beds) { layer.fields.make id: 123, code: 'beds', kind: 'numeric' }
-  let!(:doctors) { layer.fields.make id: 124, code: 'doctors', kind: 'numeric' }
+  let!(:beds) { layer.fields.make id: 1, code: 'beds', kind: 'numeric' }
+  let!(:doctors) { layer.fields.make id: 2, code: 'doctors', kind: 'numeric' }
+  let!(:options) { [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}] }
 
   it "should convert conditions' value to int if the field is int" do
     threshold = collection.thresholds.make conditions: [ field: beds.es_code, op: :lt, value: '10' ]
@@ -17,11 +18,11 @@ describe Threshold do
   end
 
   [
-    { field: '123', op: :lt, value: '10', property_value: 9 },
-    { field: '123', op: :lte, value: '10', property_value: 10 },
-    { field: '123', op: :gt, value: '10', property_value: 11 },
-    { field: '123', op: :gte, value: '10', property_value: 10 },
-    { field: '123', op: :eq, value: '10', property_value: 10 }
+    { field: '1', op: :lt, value: '10', property_value: 9 },
+    { field: '1', op: :lte, value: '10', property_value: 10 },
+    { field: '1', op: :gt, value: '10', property_value: 11 },
+    { field: '1', op: :gte, value: '10', property_value: 10 },
+    { field: '1', op: :eq, value: '10', property_value: 10 }
   ].each do |hash|
     it "should throw :threshold with #{hash[:op].to_s} condition" do
       threshold = collection.thresholds.make conditions: [ hash ]
@@ -44,5 +45,35 @@ describe Threshold do
     it "should not throw when no condition is matched" do
       expect { threshold.test({beds.es_code => 9, doctors.es_code => 3}) }.to_not throw_symbol
     end
+  end
+
+  describe "should test text field" do
+    let!(:field) { layer.fields.make code: 'txt', kind: 'text' }
+
+    it "for equality" do
+      threshold = collection.thresholds.make conditions: [{field: field.es_code, op: :eq, value: 'hello'}]
+      expect { threshold.test({field.es_code => 'hello'}) }.to throw_symbol :threshold, true
+    end
+
+    it "for inclusion" do
+      threshold = collection.thresholds.make conditions: [{field: field.es_code, op: :con, value: 'hello'}]
+      expect { threshold.test({field.es_code => 'This is hello world.'}) }.to throw_symbol :threshold, true
+    end
+  end
+
+  it "should test select_one field for equality" do
+    field = layer.fields.make code: 'one', kind: 'select_one', config: {options: options}
+    threshold = collection.thresholds.make conditions: [{field: field.es_code, op: :eq, value: 1}]
+
+    expect { threshold.test({field.es_code => 1}) }.to throw_symbol :threshold, true
+    expect { threshold.test({field.es_code => 2}) }.to_not throw_symbol
+  end
+
+  it "should test select_many field for equality" do
+    field = layer.fields.make code: 'many', kind: 'select_many', config: {options: options}
+    threshold = collection.thresholds.make conditions: [{field: field.es_code, op: :eq, value: 2}]
+
+    expect { threshold.test({field.es_code => 1}) }.to_not throw_symbol
+    expect { threshold.test({field.es_code => 2}) }.to throw_symbol :threshold, true
   end
 end

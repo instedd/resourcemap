@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120525062851) do
+ActiveRecord::Schema.define(:version => 20120531045615) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -119,6 +119,25 @@ ActiveRecord::Schema.define(:version => 20120525062851) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "site_histories", :force => true do |t|
+    t.integer  "collection_id"
+    t.string   "name"
+    t.decimal  "lat",                          :precision => 10, :scale => 6
+    t.decimal  "lng",                          :precision => 10, :scale => 6
+    t.integer  "parent_id"
+    t.string   "hierarchy"
+    t.datetime "created_at",                                                                           :null => false
+    t.datetime "updated_at",                                                                           :null => false
+    t.text     "properties"
+    t.string   "location_mode",  :limit => 10,                                :default => "automatic"
+    t.string   "id_with_prefix"
+    t.datetime "valid_since"
+    t.datetime "valid_to"
+    t.integer  "site_id"
+  end
+
+  add_index "site_histories", ["site_id"], :name => "index_site_histories_on_site_id"
 
   create_table "site_reminders", :force => true do |t|
     t.integer  "reminder_id"

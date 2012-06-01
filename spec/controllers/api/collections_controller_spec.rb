@@ -80,7 +80,7 @@ describe Api::CollectionsController do
       csv =  CSV.parse response.body
 
       csv[0].should eq(['id', 'name', 'lat', 'long', text.code, numeric.code, select_one.code, select_many.code, 'last updated'])
-      csv[1].should eq([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'one', 'one, two', site.updated_at.rfc822])
+      csv[1].should eq([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'one', 'one, two', site.updated_at.to_datetime.rfc822])
     end
   end
 end

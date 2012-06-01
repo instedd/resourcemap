@@ -50,10 +50,6 @@ describe Collection do it { should validate_presence_of :name }
   end
 
   describe "SMS query" do
-    before(:each) do
-      OPERATOR  = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte"}
-    end
-    
     it "should prepare response_sms" do 
       option = {:field_code => "AB", :field_id => 2}
       result = [{"_source"=>{"id"=>1, "name"=>"Siem Reap Health Center", "properties"=>{"1"=>15, "2"=>40, "3"=>6}}}] 
