@@ -66,6 +66,15 @@ describe Site do
     site.site_histories.last.name.should == "New name"
   end
 
+  it "should set valid_to in history on update" do
+    site = Site.make
+    site.name = "New name"
+    site.save
+    site.site_histories.count.should == 2
+    site.site_histories.first.valid_to.to_i.should eq(Time.now.to_i)
+    site.site_histories.last.valid_to.should be_nil
+  end
+
   it "should set valid_to in history before delete" do
     site = Site.make
     site.site_histories.count.should == 1
@@ -77,5 +86,6 @@ describe Site do
     site_histories.count.should == 1
     site_histories.last.valid_to.to_i.should eq(Time.now.to_i)
   end
+
 
 end
