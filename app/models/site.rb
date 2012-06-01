@@ -16,7 +16,7 @@ class Site < ActiveRecord::Base
   has_many :site_histories
 
   def update_site_history
-    history = SiteHistory.first(:conditions => "site_id = #{self.id} AND valid_to IS NULL")
+    history = SiteHistory.get_current_value self
     if history
       history.set_valid_to self.updated_at
     end
@@ -26,7 +26,7 @@ class Site < ActiveRecord::Base
   end
 
   def update_site_history_expiration
-    history = SiteHistory.first(:conditions => "site_id = #{self.id} AND valid_to IS NULL")
+    history = SiteHistory.get_current_value self
     history.set_valid_to Time.now
   end
 
