@@ -8,6 +8,7 @@ onReminders ->
     constructor: (collectionId) ->
       @reminders= ko.observableArray()
       @repeats = ko.observableArray()
+      @sites = ko.observableArray()
       @currentState = ko.observable MainViewModel.State.LISTING
       @currentReminder = ko.observable()
       @collectionId = ko.observable collectionId
@@ -17,7 +18,6 @@ onReminders ->
     showAddReminder: =>
       @currentState MainViewModel.State.ADDING_NEW
       @currentReminder new Reminder({})
-      @doAjaxGetSites()
  
     getTimes: =>
       times = []
@@ -25,14 +25,9 @@ onReminders ->
         do ->
         times = times.concat ["#{i}:00","#{i}:30"]
       times
-    doAjaxGetSites: =>
-      $.get "/collections/#{@collectionId()}/sites", (sites) ->
-        tags = new Array
-        $.each sites, (index, value) =>
-          tags.push sites[index].name
-        $(".sites").superblyTagField {preset: [],allowNewTags: false,tags: tags}
 
     saveReminder: =>
-
-
-
+    
+    loadSites: (callback) ->
+      $.get "/collections/#{@collectionId()}/sites", (sites) ->
+        callback $.map sites, (site) => site.name

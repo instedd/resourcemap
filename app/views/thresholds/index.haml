@@ -55,7 +55,9 @@
         <!--    /ko -->
         <!--    ko if: field().operators().length > 1 -->
         %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
+        <!--    ko if: !(field().kind() == 'text') -->
         %select{ ko(options: 'ValueType.ALL', optionsText: "'label'", value: :valueType) }
+        <!--    /ko -->
         %label{ ko(css: { error: '!valid()' }) }
         %span.w06
           %input{ ko(value: :value, valueUpdate: :afterkeydown, css: { error: '!valid()' }), type: :text, style: 'width:60px' }
