@@ -27,7 +27,3 @@ onReminders ->
     error: =>
       errorMessage = @nameError() || @sitesError()
       if errorMessage then "Can't save: " + errorMessage else "" 
-
-
-        #post: (reminder) =>
-        #  $.post("/reminders", k)
