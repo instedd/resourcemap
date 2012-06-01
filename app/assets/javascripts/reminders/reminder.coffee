@@ -4,6 +4,9 @@ onReminders ->
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @reminder_date = ko.observable data?.reminder_date
+      @reminder_time = ko.observable data?.reminder_time
+      @reminder_datetime = ko.computed =>
+        @reminder_date() + " " + @reminder_time()
       @reminder_message = ko.observable data?.reminder_message
       @repeat_id = ko.observable data?.repeat_id
       @collection_id = ko.observable data?.collection_id
@@ -18,7 +21,17 @@ onReminders ->
           return null
         else
           return "Sites is missing"
+      @reminderDateError =ko.computed =>
+        if $.trim(@reminder_date()).length > 0
+          return null
+        else
+          return "Reminder's date is missing"
+      @reminderMessageError = ko.computed =>
+        if $.trim(@reminder_message()).length > 0
+          return null
+        else
+          return "Reminder's message is missing"
 
     error: =>
-      errorMessage = @nameError() || @sitesError()
-      if errorMessage then "Can't save: " + errorMessage else "" 
+      errorMessage = @nameError() || @sitesError() || @reminderDateError() || @reminderMessageError()
+      if errorMessage then "Can't save: " + errorMessage else ""

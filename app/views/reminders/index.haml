@@ -30,26 +30,26 @@
       <!-- ko with: currentReminder -->
       %label{ko(css: {error: 'nameError'})} Name
       %br/
-      %input.w30{ko(value: 'name'), type: :text}
+      %input.w30{ko(value: 'name', valueUpdate: :afterkeydown), type: :text}
       %br/
 
       %label{ko(css: {error: 'sitesError'})} Sites
       %br/
       %label.smalltext site's owner will receive this reminder 
       %br/
-      %input.sites{ko(superblyTagField: 'sites'), type: :text}
+      %input.sites{ko(superblyTagField: 'sites', valueUpdate: :afterkeydown), type: :text}
       %br/
-      %label Date
+      %label{ko(css: {error: 'reminderDateError'})} Date
       %br/
-      %input.ux-datepicker.w20{ko(bindDatePicker: true), type: :text }
-      %select{ko(options: '$root.getTimes()')}
+      %input.ux-datepicker.w20{ko(value: :reminder_date,valueUpdate: :afterkeydown, bindDatePicker: true), type: :text }
+      %select{ko(options: '$root.getTimes()', value: :reminder_time)}
       %label repeat
       %select{ko(options: '$root.repeats', optionsText: "'name'", optionsValue: "'id'")}
       %br/
 
-      %label Message
+      %label{ko(css: {error: 'reminderMessageError'})} Message
       %br/
-      %textarea.ux-wajbar.w30{ placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
+      %textarea.ux-wajbar.w30{ko(value: :reminder_message, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
 
       .clear
 
