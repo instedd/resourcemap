@@ -18,7 +18,7 @@ describe SiteHistory do
     site_history.location_mode.should == site.location_mode
     site_history.id_with_prefix.should == site.id_with_prefix
     site_history.valid_to.should == nil
-    site_history.valid_since.to_i.should eq(Time.now.to_i)
+    site_history.valid_since.to_i.should eq(site.created_at.to_i)
 
   end
 

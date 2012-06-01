@@ -6,8 +6,8 @@ class SiteHistory < ActiveRecord::Base
 
   end
 
-  def set_valid_to
-    self.valid_to = Time.now
+  def set_valid_to(date)
+    self.valid_to = date
     self.save
   end
 end

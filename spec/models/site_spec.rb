@@ -71,7 +71,7 @@ describe Site do
     site.name = "New name"
     site.save
     site.site_histories.count.should == 2
-    site.site_histories.first.valid_to.to_i.should eq(Time.now.to_i)
+    site.site_histories.first.valid_to.to_i.should eq(site.updated_at.to_i)
     site.site_histories.last.valid_to.should be_nil
   end
 

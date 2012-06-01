@@ -18,7 +18,7 @@ class Site < ActiveRecord::Base
   def update_site_history
     history = SiteHistory.first(:conditions => "site_id = #{self.id} AND valid_to IS NULL")
     if history
-      history.set_valid_to
+      history.set_valid_to self.updated_at
     end
 
     history = SiteHistory.create_from_site self
@@ -27,7 +27,7 @@ class Site < ActiveRecord::Base
 
   def update_site_history_expiration
     history = SiteHistory.first(:conditions => "site_id = #{self.id} AND valid_to IS NULL")
-    history.set_valid_to
+    history.set_valid_to Time.now
   end
 
   def strongly_type_properties
