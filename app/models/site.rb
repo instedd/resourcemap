@@ -3,6 +3,7 @@ class Site < ActiveRecord::Base
   include Site::ActivityConcern
   include Site::GeomConcern
   include Site::TireConcern
+  include VersioningConcern
 
   belongs_to :collection
 
@@ -10,24 +11,18 @@ class Site < ActiveRecord::Base
   before_create :assign_id_with_prefix
   before_save :strongly_type_properties
 
-  after_save :update_site_history
-  before_destroy :update_site_history_expiration
+  after_save :create_site_history
+  before_destroy :set_site_history_expiration
 
   has_many :site_histories
 
-  def update_site_history
-    history = SiteHistory.get_current_value self
-    if history
-      history.set_valid_to self.updated_at
-    end
-
-    history = SiteHistory.create_from_site self
+  def create_site_history
+    history = create_history(SiteHistory, self)
     self.site_histories.insert(history)
   end
 
-  def update_site_history_expiration
-    history = SiteHistory.get_current_value self
-    history.set_valid_to Time.now
+  def set_site_history_expiration
+    set_history_expiration(SiteHistory, self)
   end
 
   def strongly_type_properties
