@@ -11,12 +11,19 @@ class Site < ActiveRecord::Base
   before_save :strongly_type_properties
 
   after_save :create_site_history
+  before_destroy :update_site_history_expiration
 
   has_many :site_histories
 
   def create_site_history
     history = SiteHistory.create_from_site self
     self.site_histories.insert(history)
+  end
+
+  def update_site_history_expiration
+    history = SiteHistory.first(:conditions => "site_id = #{self.id} AND valid_to IS NULL")
+    history.valid_to = Time.now
+    history.save
   end
 
   def strongly_type_properties

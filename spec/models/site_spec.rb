@@ -56,6 +56,26 @@ describe Site do
     site.site_histories.count.should == 1
   end
 
+  it "should store history on update" do
+    site = Site.make
+    site.site_histories.count.should == 1
+    site.name = "New name"
+    site.save
+    site.name.should == "New name"
+    site.site_histories.count.should == 2
+    site.site_histories.last.name.should == "New name"
+  end
 
+  it "should set valid_to in history before delete" do
+    site = Site.make
+    site.site_histories.count.should == 1
+    site.site_histories.last.valid_to.should be_nil
+    site_id = site.id
+    site.destroy
+    site_histories = SiteHistory.all(:conditions => "site_id = #{site_id}")
+    Site.find_all_by_id(site_id).count.should == 0
+    site_histories.count.should == 1
+    site_histories.last.valid_to.to_i.should eq(Time.now.to_i)
+  end
 
 end
