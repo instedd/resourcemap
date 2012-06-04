@@ -26,8 +26,8 @@
       %button.farrow Edit
     %br/
     <!-- /ko-->
-    .box.w60{ko(visible: 'isVisibleFormEntry()')}
-      <!-- ko with: currentReminder -->
+    <!-- ko with: currentReminder -->
+    .box.w60      
       %label{ko(css: {error: 'nameError'})} Name
       %br/
       %input.w30{ko(value: 'name', valueUpdate: :afterkeydown), type: :text}
@@ -44,7 +44,7 @@
       %input.ux-datepicker.w20{ko(value: :reminder_date,valueUpdate: :afterkeydown, bindDatePicker: true), type: :text }
       %select{ko(options: '$root.getTimes()', value: :reminder_time)}
       %label repeat
-      %select{ko(options: '$root.repeats', optionsText: "'name'", optionsValue: "'id'")}
+      %select{ko(options: '$root.repeats', optionsText: "'name'", optionsValue: "'id'", value: :repeat_id)}
       %br/
 
       %label{ko(css: {error: 'reminderMessageError'})} Message
@@ -58,7 +58,7 @@
         %button.white{ko(click: '$root.saveReminder', enable: :valid)} Save
         %a.tgrey{ko(click: '$root.cancelReminder'), href: 'javascript:void(0)' } Cancel
         %span{ko(text: "error()"), style: 'color:red;margin-left:20px'}
-      <!-- /ko -->
+    <!-- /ko -->
     -# Add new reminder link
     .box.grey.add{ ko(visible: '!currentReminder()', click: 'showAddReminder'), style: 'display:none'}
       %span Add Reminder

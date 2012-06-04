@@ -12,12 +12,12 @@ onReminders ->
       @currentState = ko.observable MainViewModel.State.LISTING
       @currentReminder = ko.observable()
       @collectionId = ko.observable collectionId
-      @isVisibleFormEntry = ko.computed =>
-        return @currentState() != MainViewModel.State.LISTING
+      #      @isVisibleFormEntry = ko.computed =>
+      #        return @currentState() != MainViewModel.State.LISTING
 
     showAddReminder: =>
       @currentState MainViewModel.State.ADDING_NEW
-      @currentReminder new Reminder({})
+      @currentReminder new Reminder({collection_id: @collectionId()})
  
     getTimes: =>
       times = []
@@ -27,7 +27,14 @@ onReminders ->
       times
 
     saveReminder: =>
-    
+      param = {reminder: @currentReminder().toJSON()}
+      $.post "/collections/#{@collectionId()}/reminders.json", param, @saveReminderCallback
+
+    saveReminderCallback: (data) =>
+      @currentReminder().id(data.id)
+      @reminders.push @currentReminder()
+      @currentReminder(null)
+
     loadSites: (callback) ->
       $.get "/collections/#{@collectionId()}/sites", (sites) ->
         callback $.map sites, (site) => site.name

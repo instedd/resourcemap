@@ -38,3 +38,11 @@ onReminders ->
         if errorMessage then "Can't save: " + errorMessage else ""
 
       @valid = ko.computed => !@error()
+
+    toJSON: =>
+      name: @name()
+      reminder_date: @reminder_date()
+      reminder_message: @reminder_message()
+      repeat_id: @repeat_id()
+      collection_id: @collection_id()
+

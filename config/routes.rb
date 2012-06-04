@@ -16,8 +16,6 @@ ResourceMap::Application.routes.draw do
       end
     end
     resources :reminders
-      member do
-      end
 
     resources :memberships do
       collection do

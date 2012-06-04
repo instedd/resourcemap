@@ -12,6 +12,7 @@ class Collection < ActiveRecord::Base
   has_many :layers, order: 'ord', dependent: :destroy
   has_many :fields, order: 'ord'
   has_many :thresholds
+  has_many :reminders
   
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte"}
 
