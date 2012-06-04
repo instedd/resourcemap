@@ -82,7 +82,10 @@ class CollectionsController < ApplicationController
 
   def bulk_update_adjustments
     add_breadcrumb "Import wizard", collection_bulk_update_path(collection)
-    @sample = BulkUpdate.sample(current_user, collection)
+  end
+
+  def bulk_update_sample
+    render json: BulkUpdate.sample(current_user, collection)
   end
 
   def bulk_update_execute
