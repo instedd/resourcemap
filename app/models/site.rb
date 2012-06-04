@@ -11,8 +11,6 @@ class Site < ActiveRecord::Base
   before_create :assign_id_with_prefix
   before_save :strongly_type_properties
 
-  has_many :site_histories
-
   def strongly_type_properties
     fields = collection.fields.index_by(&:es_code)
     self.properties.keys.each do |key|

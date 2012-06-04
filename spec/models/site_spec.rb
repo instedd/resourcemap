@@ -51,41 +51,39 @@ describe Site do
 
   it "should store history on creation" do
     site = Site.make_unsaved
-    site.site_histories.count.should == 0
-    site.save
-    site.site_histories.count.should == 1
+    site.histories.count.should == 0
+    site.save!
+    site.histories.count.should == 1
   end
 
   it "should store history on update" do
     site = Site.make
-    site.site_histories.count.should == 1
+    site.histories.count.should == 1
     site.name = "New name"
-    site.save
+    site.save!
     site.name.should == "New name"
-    site.site_histories.count.should == 2
-    site.site_histories.last.name.should == "New name"
+    site.histories.count.should == 2
+    site.histories.last.name.should == "New name"
   end
 
   it "should set valid_to in history on update" do
     site = Site.make
     site.name = "New name"
-    site.save
-    site.site_histories.count.should == 2
-    site.site_histories.first.valid_to.to_i.should eq(site.updated_at.to_i)
-    site.site_histories.last.valid_to.should be_nil
+    site.save!
+    site.histories.count.should == 2
+    site.histories.first.valid_to.to_i.should eq(site.updated_at.to_i)
+    site.histories.last.valid_to.should be_nil
   end
 
   it "should set valid_to in history before delete" do
     site = Site.make
-    site.site_histories.count.should == 1
-    site.site_histories.last.valid_to.should be_nil
+    site.histories.count.should == 1
+    site.histories.last.valid_to.should be_nil
     site_id = site.id
     site.destroy
-    site_histories = SiteHistory.all(:conditions => "site_id = #{site_id}")
+    histories = site.histories.all
     Site.find_all_by_id(site_id).count.should == 0
-    site_histories.count.should == 1
-    site_histories.last.valid_to.to_i.should eq(Time.now.to_i)
+    histories.count.should == 1
+    histories.last.valid_to.to_i.should eq(Time.now.to_i)
   end
-
-
 end

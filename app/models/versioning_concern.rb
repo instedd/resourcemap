@@ -2,48 +2,36 @@ module VersioningConcern
   extend ActiveSupport::Concern
 
   included do
-    after_save :create_history
-    before_destroy :set_history_expiration
-  end
+    after_create :create_history
+    after_update :expire_current_history_and_create_new_one
+    before_destroy :expire_current_history
 
-  def relationship_prop(object)
-    "#{self.class.name.underscore}_id"
-  end
-
-  def history_class(object)
-    "#{object.class.name}History".constantize
-  end
-
-  def create_from(object)
-    history_class = history_class(object)
-    history = history_class.new
-    object.attributes.each_pair do |att_name, att_value|
-      if(!(['id', 'created_at', 'updated_at'].include? att_name))
-        history[att_name] = att_value
-      end
-    end
-    history["valid_since"] = self.updated_at
-    history[relationship_prop self] = object.id
-    history.save
-    history
-  end
-
-  def get_current_value(object)
-    history_class(object).first(:conditions => "#{relationship_prop self} = #{object.id} AND valid_to IS NULL")
+    has_many :histories, :class_name => "#{name}History"
   end
 
   def create_history
-    history = get_current_value self
-    if history
-      history.valid_to = self.updated_at
-      history.save
+    history = histories.new
+    attributes.each_pair do |att_name, att_value|
+      unless ['id', 'created_at', 'updated_at'].include? att_name
+        history[att_name] = att_value
+      end
     end
-    create_from self
+    history["valid_since"] = updated_at
+    history[self.class.name.foreign_key] = id
+    history.save!
+    history
   end
 
-  def set_history_expiration
-    history = get_current_value self
-    history.valid_to = Time.now
-    history.save
+  def current_history
+    histories.where(valid_to: nil).first
+  end
+
+  def expire_current_history_and_create_new_one
+    expire_current_history
+    create_history
+  end
+
+  def expire_current_history
+    current_history.try :update_attributes!, valid_to: Time.now
   end
 end
