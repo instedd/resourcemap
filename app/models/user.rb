@@ -51,8 +51,8 @@ class User < ActiveRecord::Base
 
   def can_view?(collection, option)
     return collection.public if collection.public
-    
     membership = self.memberships.where(:collection_id => collection.id).first
+    return false unless membership
     return membership.admin if membership.admin
     
     return true if(validate_layer_read_permission(collection, option))
@@ -61,6 +61,7 @@ class User < ActiveRecord::Base
   
   def can_update?(site, properties)
     membership = self.memberships.where(:collection_id => site.collection_id).first
+    return false unless membership 
     return membership.admin if membership.admin?    
     return true if(validate_layer_write_permission(site, properties)) 
     false

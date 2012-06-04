@@ -13,7 +13,7 @@ class Collection < ActiveRecord::Base
   has_many :fields, order: 'ord'
   has_many :thresholds
 
-  OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte"}
+  OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
   def max_value_of_property(es_code)
     search = new_tire_search
@@ -88,6 +88,7 @@ class Collection < ActiveRecord::Base
 
     search = self.new_search
     search.use_codes_instead_of_es_codes
+     
     search.send operator , option[:code], option[:value]
     results = search.results
     response_prepare(option[:code], field.id, results)
