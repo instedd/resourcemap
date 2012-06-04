@@ -1,4 +1,4 @@
-@initImportWizard = (collectionId, columns) ->
+@initBulkUpdate = (collectionId, columns) ->
   class Property
     constructor: (data) ->
       @code = ko.observable data.code
@@ -52,7 +52,7 @@
       json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json
 
-  class ImportWizardViewModel
+  class BulkUpdateViewModel
     constructor: (collectionId, columns) ->
       @collectionId = collectionId
       @columns = ko.observableArray $.map(columns, (x) -> new Column(x))
@@ -120,7 +120,7 @@
     startImport: =>
       @importing(true)
       columns = $.map(@columns(), (x) -> x.toJSON())
-      $.ajax "/collections/#{@collectionId}/import_wizard_execute.json",
+      $.ajax "/collections/#{@collectionId}/bulk_update_execute.json",
         type: 'POST'
         data: {columns: columns},
         success: => window.location = '/collections'
@@ -128,5 +128,5 @@
           @importing(false)
           @importError(true)
 
-  window.model = new ImportWizardViewModel(collectionId, columns)
+  window.model = new BulkUpdateViewModel(collectionId, columns)
   ko.applyBindings window.model
