@@ -107,6 +107,7 @@ module SearchBase
 
   def require_location
     @search.filter :exists, field: :location
+    self
   end
 
   def hierarchy(es_code, value)

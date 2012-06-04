@@ -34,20 +34,20 @@ onCollections ->
         @editingSite(site)
         @rewriteUrl()
 
-    @selectSiteFromId: (siteId) ->
+    @selectSiteFromId: (siteId, collectionId) ->
       site = @siteIds[siteId]
       if site
         @selectSite site
       else
         @loadingSite(true)
-        $.get "/sites/#{siteId}.json", {}, (data) =>
+        $.get "/collections/#{collectionId}/sites/#{siteId}.json", {}, (data) =>
           @loadingSite(false)
-          collection = window.model.findCollectionById(data.collection_id)
+          collection = window.model.findCollectionById(collectionId)
           site = new Site(collection, data)
           site = collection.addSite(site)
           @selectSite site
 
-    @editSiteFromMarker: (siteId) ->
+    @editSiteFromMarker: (siteId, collectionId) ->
       @exitSite() if @editingSite()
 
       # Remove name popup if any
@@ -60,9 +60,9 @@ onCollections ->
         @loadingSite(true)
         if @selectedSite() && @selectedSite().marker
           @setMarkerIcon @selectedSite().marker, 'active'
-        $.get "/sites/#{siteId}.json", {}, (data) =>
+        $.get "/collections/#{collectionId}/sites/#{siteId}.json", {}, (data) =>
           @loadingSite(false)
-          collection = window.model.findCollectionById(data.collection_id)
+          collection = window.model.findCollectionById(collectionId)
           site = new Site(collection, data)
           @editSite site
 

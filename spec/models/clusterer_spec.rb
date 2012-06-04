@@ -4,9 +4,9 @@ describe Clusterer do
   let(:clusterer) { Clusterer.new 1 }
 
   it "leaves single site alone" do
-    clusterer.add id:1, name:'foo',lat: 30, lng:40
+    clusterer.add id: 1, name: 'foo',lat: 30, lng: 40, collection_id: 12
     clusters = clusterer.clusters
-    clusters[:sites].should eq([{id:1, name:'foo',lat: 30, lng:40}])
+    clusters[:sites].should eq([{id: 1, name: 'foo', lat: 30, lng: 40, collection_id: 12}])
     clusters[:clusters].should be_nil
   end
 

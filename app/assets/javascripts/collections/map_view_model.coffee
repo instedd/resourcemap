@@ -177,6 +177,7 @@ onCollections ->
 
             newMarker = new google.maps.Marker markerOptions
             newMarker.name = site.name
+            newMarker.collectionId = site.collection_id
 
             @markers[site.id] = newMarker
           localId = @markers[site.id].siteId = site.id
@@ -198,7 +199,7 @@ onCollections ->
     @setupMarkerListeners: (marker, localId) ->
       marker.clickListener = google.maps.event.addListener marker, 'click', (event) =>
         @setMarkerIcon marker, 'target'
-        @editSiteFromMarker localId
+        @editSiteFromMarker localId, marker.collectionId
 
       # Create a popup and position it in the top center. To do so we need to add it to the document,
       # get its width and reposition accordingly.

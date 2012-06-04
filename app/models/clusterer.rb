@@ -27,6 +27,7 @@ class Clusterer
       cluster[:id] = "#{@zoom}:#{x}:#{y}"
       cluster[:site_id] = site[:id]
       cluster[:name] = site[:name]
+      cluster[:collection_id] = site[:collection_id]
       cluster[:count] += 1
       cluster[:min_lat] = lat if lat < cluster[:min_lat]
       cluster[:min_lng] = lng if lng < cluster[:min_lng]
@@ -35,7 +36,7 @@ class Clusterer
       cluster[:lat_sum] += lat
       cluster[:lng_sum] += lng
     else
-      @sites.push id: site[:id], name:site[:name],lat: lat, lng: lng
+      @sites.push id: site[:id], name: site[:name], lat: lat, lng: lng, collection_id: site[:collection_id]
     end
   end
 
@@ -49,7 +50,7 @@ class Clusterer
       @clusters.each_value do |cluster|
         count = cluster[:count]
         if count == 1
-          sites_to_return.push id: cluster[:site_id], name: cluster[:name], lat: cluster[:lat_sum], lng: cluster[:lng_sum]
+          sites_to_return.push id: cluster[:site_id], name: cluster[:name], lat: cluster[:lat_sum], lng: cluster[:lng_sum], collection_id: cluster[:collection_id]
         else
           hash = {
             id: cluster[:id],

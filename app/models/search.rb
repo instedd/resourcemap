@@ -38,6 +38,8 @@ class Search
     @unlimited = true
   end
 
+  # Returns the results from ElasticSearch without modifications. Keys are ids
+  # and so are values (when applicable).
   def results
     apply_queries
 
@@ -61,6 +63,8 @@ class Search
     @search.perform.results
   end
 
+  # Returns the results from ElasticSearch but with codes as keys and codes as
+  # values (when applicable).
   def api_results
     fields_by_es_code = fields.index_by &:es_code
 
@@ -72,6 +76,20 @@ class Search
           field ? [field.code, field.api_value(value)] : [es_code, value]
         end
       ]
+    end
+    items
+  end
+
+  # Returns the results from ElasticSearch but with the location field
+  # returned as lat/lng fields.
+  def ui_results
+    items = results()
+    items.each do |item|
+      if item['_source']['location']
+        item['_source']['lat'] = item['_source']['location']['lat']
+        item['_source']['lng'] = item['_source']['location']['lon']
+        item['_source'].delete 'location'
+      end
     end
     items
   end

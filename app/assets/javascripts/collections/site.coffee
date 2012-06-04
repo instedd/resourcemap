@@ -40,7 +40,7 @@ onCollections ->
       window.model.highlightSearch(@propertyValue(field))
 
     fetchLocation: =>
-      $.get "/sites/#{@id()}.json", {}, (data) =>
+      $.get "/collections/#{@collection.id()}/sites/#{@id()}.json", {}, (data) =>
         @position(data)
         @updatedAt(data.updated_at)
       @collection.fetchLocation()
