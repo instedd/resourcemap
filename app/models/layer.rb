@@ -1,5 +1,6 @@
 class Layer < ActiveRecord::Base
   include Activity::AwareConcern
+  include HistoryConcern
 
   belongs_to :collection
   has_many :fields, order: 'ord', dependent: :destroy
