@@ -55,7 +55,7 @@
 
       %hr/
       .bottom-actions
-        %button.white{ ko(click: '$root.saveReminder')} Save
+        %button.white{ko(click: '$root.saveReminder', enable: :valid)} Save
         %a.tgrey{ href: 'javascript:void(0)' } Cancel
         %span{ko(text: "error()"), style: 'color:red;margin-left:20px'}
       <!-- /ko -->

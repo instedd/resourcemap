@@ -26,12 +26,15 @@ onReminders ->
           return null
         else
           return "Reminder's date is missing"
+
       @reminderMessageError = ko.computed =>
         if $.trim(@reminder_message()).length > 0
           return null
         else
           return "Reminder's message is missing"
 
-    error: =>
-      errorMessage = @nameError() || @sitesError() || @reminderDateError() || @reminderMessageError()
-      if errorMessage then "Can't save: " + errorMessage else ""
+      @error = ko.computed =>
+        errorMessage = @nameError() || @sitesError() || @reminderDateError() || @reminderMessageError()
+        if errorMessage then "Can't save: " + errorMessage else ""
+
+      @valid = ko.computed => !@error()
