@@ -3,7 +3,7 @@ class AddHistoryToExistingSites < ActiveRecord::Migration
     Site.find_each do |site|
       sh = SiteHistory.find_by_site_id site.id
       if(!sh)
-        shist = SiteHistory.create_from_site site
+        shist = site.create_history
         shist.save
       end
     end

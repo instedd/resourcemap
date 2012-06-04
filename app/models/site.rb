@@ -3,7 +3,7 @@ class Site < ActiveRecord::Base
   include Site::ActivityConcern
   include Site::GeomConcern
   include Site::TireConcern
-  include VersioningConcern
+  include HistoryConcern
 
   belongs_to :collection
 

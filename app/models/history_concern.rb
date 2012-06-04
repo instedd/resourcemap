@@ -1,4 +1,4 @@
-module VersioningConcern
+module HistoryConcern
   extend ActiveSupport::Concern
 
   included do
