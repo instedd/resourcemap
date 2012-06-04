@@ -37,19 +37,4 @@ class Message < ActiveRecord::Base
       end
     end
   end
-
-  def self.generateLayerMessagingByLayerId(layer_id, year)
-    layerReport = []
-    month = []
-    month = [1,2,3,4,5,6,7,8,9,10,11,12]
-    for i in (0..(month.length-1))
-      countMsg = Message.where("date_format(created_at, '%Y') = ? and date_format(created_at, '%m') = ? and layer_id = ?", year,month[i],layer_id).count
-      message = {
-        "month" => month[i],
-        "count" => countMsg
-        }
-      layerReport.push(message)
-    end
-    return layerReport
-  end
 end
