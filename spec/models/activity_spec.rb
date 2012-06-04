@@ -302,6 +302,18 @@ describe Activity do
 
       Activity.count.should eq(0)
     end
+
+    it "doesn't create one if lat/lng updated but not changed" do
+      site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lat = "-1.9537"
+      site.lng = "30.103090000000066"
+      site.save!
+
+      Activity.count.should eq(0)
+    end
   end
 
   it "creates one after destroying a site" do

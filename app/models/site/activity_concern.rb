@@ -34,6 +34,14 @@ module Site::ActivityConcern
       site_changes.delete 'lng'
     end
 
+    # If there'a not much difference in lat/lng
+    if site_changes['lat'] &&
+      (site_changes['lat'][0] - site_changes['lat'][1]).abs < 1e07 &&
+      (site_changes['lng'][0] - site_changes['lng'][1]).abs < 1e07
+      site_changes.delete 'lat'
+      site_changes.delete 'lng'
+    end
+
     # This is the case of properties => [{}, {}]
     if site_changes['properties']
       2.times { |i| site_changes['properties'][i].reject! { |k, v| v.nil? } }
