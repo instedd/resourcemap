@@ -18,7 +18,7 @@ describe SiteHistory do
 
   it "should create from site" do
     site = Site.make
-    site_history = SiteHistory.create_from_site site
+    site_history = site.create_from site
     assert_properties(site_history, site)
     site_history.valid_to.should be_nil
     site_history.valid_since.to_i.should eq(site.created_at.to_i)
@@ -26,7 +26,7 @@ describe SiteHistory do
 
   it "should get current value for new site" do
     site = Site.make
-    site_history = SiteHistory.get_current_value site
+    site_history = site.get_current_value site
     site_history.should be
     site_history.valid_to.should be_nil
     assert_properties(site_history, site)
@@ -38,7 +38,7 @@ describe SiteHistory do
     sleep 1
     site.name = "new name"
     site.save
-    site_history = SiteHistory.get_current_value site
+    site_history = site.get_current_value site
     site_history.should be
     site_history.valid_to.should be_nil
     assert_properties(site_history, site)
@@ -49,7 +49,7 @@ describe SiteHistory do
     site = Site.make
     site_copy = site
     site.destroy
-    site_history = SiteHistory.get_current_value site_copy
+    site_history = site.get_current_value site_copy
     site_history.should be_nil
   end
 

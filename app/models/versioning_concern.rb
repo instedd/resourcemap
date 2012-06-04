@@ -6,19 +6,43 @@ module VersioningConcern
     before_destroy :set_history_expiration
   end
 
+  def relationship_prop(object)
+    "#{self.class.name.underscore}_id"
+  end
+
+  def history_class(object)
+    "#{object.class.name}History".constantize
+  end
+
+  def create_from(object)
+    history_class = history_class(object)
+    history = history_class.new
+    object.attributes.each_pair do |att_name, att_value|
+      if(!(['id', 'created_at', 'updated_at'].include? att_name))
+        history[att_name] = att_value
+      end
+    end
+    history["valid_since"] = self.updated_at
+    history[relationship_prop self] = object.id
+    history.save
+    history
+  end
+
+  def get_current_value(object)
+    history_class(object).first(:conditions => "#{relationship_prop self} = #{object.id} AND valid_to IS NULL")
+  end
+
   def create_history
-    history_class = "#{self.class.name}History".constantize
-    history = history_class.get_current_value self
+    history = get_current_value self
     if history
       history.set_valid_to self.updated_at
     end
-    history_class.create_from_site self
-    self.site_histories.insert(history)
+    create_from self
   end
 
   def set_history_expiration
-    history_class = "#{self.class.name}History".constantize
-    history = history_class.get_current_value self
-    history.set_valid_to Time.now
+    history = get_current_value self
+    history.valid_to = Time.now
+    history.save
   end
 end
