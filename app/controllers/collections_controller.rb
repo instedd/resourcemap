@@ -51,9 +51,13 @@ class CollectionsController < ApplicationController
   end
 
   def destroy
-    collection.destroy
-
-    redirect_to collections_path, notice: "Collection #{collection.name} deleted"
+    if params[:only_sites]
+      collection.delete_sites_and_activities
+      redirect_to collection_path(collection), notice: "Collection #{collection.name}'s sites deleted"
+    else
+      collection.destroy
+      redirect_to collections_path, notice: "Collection #{collection.name} deleted"
+    end
   end
 
   def csv_template

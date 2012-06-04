@@ -12,6 +12,7 @@ class Collection < ActiveRecord::Base
   has_many :layers, order: 'ord', dependent: :destroy
   has_many :fields, order: 'ord'
   has_many :thresholds
+  has_many :activities
 
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte"}
 
@@ -71,6 +72,14 @@ class Collection < ActiveRecord::Base
   def next_layer_ord
     layer = layers.select('max(ord) as o').first
     layer ? layer['o'].to_i + 1 : 1
+  end
+
+  def delete_sites_and_activities
+    ActiveRecord::Base.transaction do
+      Activity.where(collection_id: id).delete_all
+      Site.where(collection_id: id).delete_all
+      recreate_index
+    end
   end
 
   def thresholds_test(properties)
