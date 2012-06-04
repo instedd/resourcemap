@@ -35,7 +35,8 @@ module VersioningConcern
   def create_history
     history = get_current_value self
     if history
-      history.set_valid_to self.updated_at
+      history.valid_to = self.updated_at
+      history.save
     end
     create_from self
   end
