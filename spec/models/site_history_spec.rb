@@ -11,10 +11,7 @@ describe SiteHistory do
     site_history.lng.should == site.lng
     site_history.parent_id.should == site.parent_id
     site_history.hierarchy.should == site.hierarchy
-    # TODO: fix? blueprints problem?
-    #puts site_history.properties
-    #puts site.properties
-    #site_history.properties.should eq(site.properties)
+    site_history.properties.should eq(site.properties)
     site_history.location_mode.should == site.location_mode
     site_history.id_with_prefix.should == site.id_with_prefix
   end
