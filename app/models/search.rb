@@ -30,12 +30,18 @@ class Search
   end
 
   def sort(es_code, ascendent = true)
-    @sort = decode(es_code)
+    if es_code == 'id' || es_code == 'name'
+      @sort = es_code
+    else
+      @sort = decode(es_code)
+    end
     @sort_ascendent = ascendent ? nil : 'desc'
+    self
   end
 
   def unlimited
     @unlimited = true
+    self
   end
 
   # Returns the results from ElasticSearch without modifications. Keys are ids

@@ -8,6 +8,7 @@
 module SearchBase
   def use_codes_instead_of_es_codes
     @use_codes_instead_of_es_codes = true
+    self
   end
 
   def id(id)

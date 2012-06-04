@@ -322,6 +322,35 @@ describe Search do
     end
   end
 
+  context "sort" do
+    let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+
+    let!(:site1) { collection.sites.make :name => 'b', :properties => {numeric.es_code => 2} }
+    let!(:site2) { collection.sites.make :name => 'a', :properties => {numeric.es_code => 1} }
+
+    let!(:search) { collection.new_search.use_codes_instead_of_es_codes }
+
+    it "sorts by field asc" do
+      result = search.sort(numeric.code).results
+      result.map { |x| x['_id'].to_i } .should eq([site2.id, site1.id])
+    end
+
+    it "sorts by field desc" do
+      result = search.sort(numeric.code, false).results
+      result.map { |x| x['_id'].to_i } .should eq([site1.id, site2.id])
+    end
+
+    it "sorts by name asc" do
+      result = search.sort('name').results
+      result.map { |x| x['_id'].to_i } .should eq([site2.id, site1.id])
+    end
+
+    it "sorts by name desc" do
+      result = search.sort('name', false).results
+      result.map { |x| x['_id'].to_i } .should eq([site1.id, site2.id])
+    end
+  end
+
   def assert_results(search, *sites)
     search.results.map{|r| r['_id'].to_i}.sort.should =~ sites.map(&:id)
   end
