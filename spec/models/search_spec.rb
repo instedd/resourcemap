@@ -297,7 +297,7 @@ describe Search do
     let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
     let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
 
-    let!(:site1) { collection.sites.make :properties => {text.es_code => 'foo', numeric.es_code => 1, select_one.es_code => 1, select_many.es_code => [1, 2]} }
+    let!(:site1) { collection.sites.make :lat => 1, :lng => 2, :properties => {text.es_code => 'foo', numeric.es_code => 1, select_one.es_code => 1, select_many.es_code => [1, 2]} }
 
     it "gets results" do
       result = collection.new_search.results[0]
@@ -313,6 +313,41 @@ describe Search do
       result['_source']['properties'][numeric.code].should eq(1)
       result['_source']['properties'][select_one.code].should eq('one')
       result['_source']['properties'][select_many.code].should eq(['one', 'two'])
+    end
+
+    it "gets ui results" do
+      result = collection.new_search.ui_results[0]
+      result['_source']['lat'].should eq(1)
+      result['_source']['lng'].should eq(2)
+    end
+  end
+
+  context "sort" do
+    let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+
+    let!(:site1) { collection.sites.make :name => 'b', :properties => {numeric.es_code => 2} }
+    let!(:site2) { collection.sites.make :name => 'a', :properties => {numeric.es_code => 1} }
+
+    let!(:search) { collection.new_search.use_codes_instead_of_es_codes }
+
+    it "sorts by field asc" do
+      result = search.sort(numeric.code).results
+      result.map { |x| x['_id'].to_i } .should eq([site2.id, site1.id])
+    end
+
+    it "sorts by field desc" do
+      result = search.sort(numeric.code, false).results
+      result.map { |x| x['_id'].to_i } .should eq([site1.id, site2.id])
+    end
+
+    it "sorts by name asc" do
+      result = search.sort('name').results
+      result.map { |x| x['_id'].to_i } .should eq([site2.id, site1.id])
+    end
+
+    it "sorts by name desc" do
+      result = search.sort('name', false).results
+      result.map { |x| x['_id'].to_i } .should eq([site1.id, site2.id])
     end
   end
 

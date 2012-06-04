@@ -2,6 +2,7 @@ class Field < ActiveRecord::Base
   Kinds = %w(text numeric select_one select_many hierarchy)
 
   include Field::TireConcern
+  include HistoryConcern
 
   belongs_to :collection
   belongs_to :layer

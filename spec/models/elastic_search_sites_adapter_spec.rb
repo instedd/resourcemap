@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ElasticSearch::SitesAdapter do
   it "adapts one site" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
@@ -31,7 +31,7 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts one site without conflicting on properties" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
@@ -59,8 +59,8 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts two sites" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185
-    listener.should_receive(:add).with :id => 181985, :lat => -47.55442222700955, :lng => 137.5797882218185
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63
+    listener.should_receive(:add).with :id => 181985, :lat => -47.55442222700955, :lng => 137.5797882218185, :collection_id => 63
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(

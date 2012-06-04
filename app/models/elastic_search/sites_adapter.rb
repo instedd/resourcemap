@@ -13,6 +13,12 @@ class ElasticSearch::SitesAdapter < Psych::Handler
   def scalar(value, anchor, tag, plain, quoted, style)
     if value == '_source'
       @in_source = true
+    elsif value == '_index'
+      @in_index = true
+    elsif @in_index
+      value =~ /(\d+)/
+      @site[:collection_id] = $1.to_i
+      @in_index = false
     elsif @in_source
       return if @in_properties
       if @current_property

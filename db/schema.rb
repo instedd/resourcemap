@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120531045615) do
+ActiveRecord::Schema.define(:version => 20120604100103) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -39,6 +39,23 @@ ActiveRecord::Schema.define(:version => 20120531045615) do
     t.decimal  "max_lng",     :precision => 10, :scale => 6
   end
 
+  create_table "field_histories", :force => true do |t|
+    t.integer  "collection_id"
+    t.integer  "layer_id"
+    t.string   "name"
+    t.string   "code"
+    t.string   "kind"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.text     "config"
+    t.integer  "ord"
+    t.datetime "valid_since"
+    t.datetime "valid_to"
+    t.integer  "field_id"
+  end
+
+  add_index "field_histories", ["field_id"], :name => "index_field_histories_on_field_id"
+
   create_table "fields", :force => true do |t|
     t.integer  "collection_id"
     t.integer  "layer_id"
@@ -50,6 +67,20 @@ ActiveRecord::Schema.define(:version => 20120531045615) do
     t.text     "config"
     t.integer  "ord"
   end
+
+  create_table "layer_histories", :force => true do |t|
+    t.integer  "collection_id"
+    t.string   "name"
+    t.boolean  "public"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.integer  "ord"
+    t.datetime "valid_since"
+    t.datetime "valid_to"
+    t.integer  "layer_id"
+  end
+
+  add_index "layer_histories", ["layer_id"], :name => "index_layer_histories_on_layer_id"
 
   create_table "layer_memberships", :force => true do |t|
     t.integer  "collection_id"

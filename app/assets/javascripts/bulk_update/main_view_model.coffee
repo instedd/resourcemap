@@ -1,58 +1,5 @@
-@initImportWizard = (collectionId, columns) ->
-  class Property
-    constructor: (data) ->
-      @code = ko.observable data.code
-      @name = ko.observable data.name
-      @kind = ko.observable data.kind
-      @value = ko.observable data.value
-      @valueCode = ko.observable data.valueCode
-      @valueLabel = ko.observable data.valueLabel
-
-  class Site
-    constructor: (data) ->
-      @name = ko.observable data.name
-      @lat = ko.observable data.lat
-      @lng = ko.observable data.lng
-      @properties = ko.observable data.properties
-      @hasMoreThanOneName = ko.observable data.hasMoreThanOneName
-
-      @error = ko.computed =>
-        return "you must choose a column to be the Name of the site" unless @name()
-        return "you chose more than one column to be the Name of the site" if @hasMoreThanOneName()
-
-        for property in @properties()
-          if property.kind() == 'select_one' || property.kind() == 'select_many'
-            return "you must choose a column to be the Code of property #{property.code()}" unless property.valueCode()
-            return "you must choose a column to be the Label of property #{property.code()}" unless property.valueLabel()
-        null
-
-      @valid = ko.computed => !@error()
-
-  class Column
-    constructor: (data) ->
-      @name = ko.observable data.name
-      @kind = ko.observable data.kind
-      @code = ko.observable data.code
-      @label = ko.observable data.label
-      @sample = ko.observable data.sample
-      @value = ko.observable data.value
-      @level = ko.observable 1
-      @selectKind = ko.observable 'code'
-
-      @mapsToField = ko.computed =>
-        @kind() == 'text' || @kind() == 'numeric' || @kind() == 'select_one' || @kind() == 'select_many'
-
-    toJSON: =>
-      json =
-        name: @name()
-        kind: @kind()
-      if @mapsToField()
-        json.code = @code()
-        json.label = @label()
-      json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
-      json
-
-  class ImportWizardViewModel
+onBulkUpdate ->
+  class @MainViewModel
     constructor: (collectionId, columns) ->
       @collectionId = collectionId
       @columns = ko.observableArray $.map(columns, (x) -> new Column(x))
@@ -120,13 +67,10 @@
     startImport: =>
       @importing(true)
       columns = $.map(@columns(), (x) -> x.toJSON())
-      $.ajax "/collections/#{@collectionId}/import_wizard_execute.json",
+      $.ajax "/collections/#{@collectionId}/bulk_update_execute.json",
         type: 'POST'
         data: {columns: columns},
         success: => window.location = '/collections'
         error: =>
           @importing(false)
           @importError(true)
-
-  window.model = new ImportWizardViewModel(collectionId, columns)
-  ko.applyBindings window.model

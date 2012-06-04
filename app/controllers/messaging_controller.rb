@@ -4,7 +4,6 @@ require 'digest'
 class MessagingController < ApplicationController
   helper_method :save_message
   protect_from_forgery :except => :index
-	skip_before_filter :authenticate, :only => :getLayerMessaging
 
   USER_NAME, PASSWORD = 'iLab', '1c4989610bce6c4879c01bb65a45ad43'
 
@@ -51,10 +50,4 @@ class MessagingController < ApplicationController
       m.to = params[:to]
     end
   end
-
-  def getLayerMessaging
-    layerMessaging = Message.generateLayerMessagingByLayerId(params["layerId"], params["year"])
-    render :json => layerMessaging
-  end
-
 end

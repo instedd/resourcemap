@@ -20,8 +20,10 @@ onCollections ->
       # Append selected site or editing site, if any
       if @editingSite()
         query.editing_site = @editingSite().id()
+        query.editing_collection = @editingSite().collection.id()
       else if @selectedSite()
         query.selected_site = @selectedSite().id()
+        query.selected_collection = @selectedSite().collection.id()
 
       # Append map center and zoom
       if @map
@@ -45,7 +47,9 @@ onCollections ->
     @processQueryParams: ->
       @ignorePerformSearchOrHierarchy = true
       selectedSiteId = null
+      selectedCollectionId = null
       editingSiteId = null
+      editingCollectionId = null
       showTable = false
       groupBy = null
 
@@ -64,8 +68,12 @@ onCollections ->
               when 'last_month' then @filterByLastMonth()
           when 'selected_site'
             selectedSiteId = parseInt(value)
+          when 'selected_collection'
+            selectedCollectionId = parseInt(value)
           when 'editing_site'
             editingSiteId = parseInt(value)
+          when 'editing_collection'
+            editingCollectionId = parseInt(value)
           when '_table'
             showTable = true
           when 'hierarchy_code'
@@ -91,6 +99,6 @@ onCollections ->
       @performSearchOrHierarchy()
 
       @showTable() if showTable
-      @selectSiteFromId(selectedSiteId) if selectedSiteId
-      @editSiteFromMarker(editingSiteId) if editingSiteId
+      @selectSiteFromId(selectedSiteId, selectedCollectionId) if selectedSiteId
+      @editSiteFromMarker(editingSiteId, editingCollectionId) if editingSiteId
       @groupBy(@currentCollection().findFieldByEsCode(groupBy)) if groupBy && @currentCollection()

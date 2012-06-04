@@ -160,8 +160,8 @@ describe Activity do
       {name: 'Beds', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
-    ImportWizard.import user, collection, csv_string
-    ImportWizard.execute user, collection, specs
+    BulkUpdate.import user, collection, csv_string
+    BulkUpdate.execute user, collection, specs
 
     assert_activity 'collection_imported',
       'collection_id' => collection.id,
@@ -298,6 +298,18 @@ describe Activity do
       Activity.delete_all
 
       site.properties_will_change!
+      site.save!
+
+      Activity.count.should eq(0)
+    end
+
+    it "doesn't create one if lat/lng updated but not changed" do
+      site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lat = "-1.9537"
+      site.lng = "30.103090000000066"
       site.save!
 
       Activity.count.should eq(0)

@@ -1,5 +1,5 @@
-class ImportWizard
-  TmpDir = "#{Rails.root}/tmp/import_wizard"
+class BulkUpdate
+  TmpDir = "#{Rails.root}/tmp/bulk_update"
 
   class << self
     def import(user, collection, contents)

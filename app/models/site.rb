@@ -3,21 +3,13 @@ class Site < ActiveRecord::Base
   include Site::ActivityConcern
   include Site::GeomConcern
   include Site::TireConcern
+  include HistoryConcern
 
   belongs_to :collection
 
   serialize :properties, Hash
   before_create :assign_id_with_prefix
   before_save :strongly_type_properties
-
-  after_save :create_site_history
-
-  has_many :site_histories
-
-  def create_site_history
-    history = SiteHistory.create_from_site self
-    self.site_histories.insert(history)
-  end
 
   def strongly_type_properties
     fields = collection.fields.index_by(&:es_code)

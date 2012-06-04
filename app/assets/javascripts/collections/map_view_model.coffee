@@ -146,7 +146,7 @@ onCollections ->
 
     @drawSitesInMap: (sites = []) ->
       dataSiteIds = {}
-      editingSiteId = if @editingSite()?.id() && (@editingSite().editingLocation() || @editingSite().inEditMode()) then @editingSite().id() else null
+      editing = window.model.editingSiteLocation()
       selectedSiteId = @selectedSite()?.id()
       oldSelectedSiteId = @oldSelectedSite?.id() # Optimization to prevent flickering
 
@@ -168,15 +168,16 @@ onCollections ->
               optimized: false
 
             # Show site in grey if editing a site (but not if it's the one being edited)
-            if editingSiteId && editingSiteId != site.id
+            if editing
               markerOptions.icon = @markerImageInactive
               markerOptions.shadow = @markerImageInactiveShadow
-            if (selectedSiteId && selectedSiteId == site.id)
+            else if (selectedSiteId && selectedSiteId == site.id)
               markerOptions.icon = @markerImageTarget
               markerOptions.shadow = @markerImageTargetShadow
 
             newMarker = new google.maps.Marker markerOptions
             newMarker.name = site.name
+            newMarker.collectionId = site.collection_id
 
             @markers[site.id] = newMarker
           localId = @markers[site.id].siteId = site.id
@@ -198,7 +199,7 @@ onCollections ->
     @setupMarkerListeners: (marker, localId) ->
       marker.clickListener = google.maps.event.addListener marker, 'click', (event) =>
         @setMarkerIcon marker, 'target'
-        @editSiteFromMarker localId
+        @editSiteFromMarker localId, marker.collectionId
 
       # Create a popup and position it in the top center. To do so we need to add it to the document,
       # get its width and reposition accordingly.
