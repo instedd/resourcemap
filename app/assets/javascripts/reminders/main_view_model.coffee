@@ -31,3 +31,7 @@ onReminders ->
     loadSites: (callback) ->
       $.get "/collections/#{@collectionId()}/sites", (sites) ->
         callback $.map sites, (site) => site.name
+
+    cancelReminder: =>
+      @currentReminder(null)
+      @currentState(MainViewModel.State.LISTING)
