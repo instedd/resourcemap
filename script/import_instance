@@ -8,6 +8,11 @@ if ARGV.length == 1
     puts "File '#{filename}' does not exist"
     exit
   end
+
+  if File.directory? filename
+    puts "File '#{filename}' must not be a directory"
+    exit
+  end
 else
   dump_files = Dir['./*.sql']
   if dump_files.length == 0
