@@ -11,20 +11,6 @@ class Site < ActiveRecord::Base
   before_create :assign_id_with_prefix
   before_save :strongly_type_properties
 
-  after_save :create_site_history
-  before_destroy :set_site_history_expiration
-
-  has_many :site_histories
-
-  def create_site_history
-    history = create_history(SiteHistory, self)
-    self.site_histories.insert(history)
-  end
-
-  def set_site_history_expiration
-    set_history_expiration(SiteHistory, self)
-  end
-
   def strongly_type_properties
     fields = collection.fields.index_by(&:es_code)
     self.properties.keys.each do |key|

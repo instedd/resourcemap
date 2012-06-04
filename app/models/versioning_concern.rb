@@ -1,15 +1,37 @@
 module VersioningConcern
+  extend ActiveSupport::Concern
 
-  def create_history(history_class, object)
-    history = history_class.get_current_value object
-    if history
-      history.set_valid_to object.updated_at
-    end
-    history_class.create_from_site object
+  included do
+    after_create :create_history
+    after_update :expire_current_history_and_create_new_one
+    before_destroy :expire_current_history
+
+    has_many :histories, :class_name => "#{name}History"
   end
 
-  def set_history_expiration(history_class, object)
-    history = history_class.get_current_value object
-    history.set_valid_to Time.now
+  def create_history
+    history = histories.new
+    attributes.each_pair do |att_name, att_value|
+      unless ['id', 'created_at', 'updated_at'].include? att_name
+        history[att_name] = att_value
+      end
+    end
+    history["valid_since"] = updated_at
+    history[self.class.name.foreign_key] = id
+    history.save!
+    history
+  end
+
+  def current_history
+    histories.where(valid_to: nil).first
+  end
+
+  def expire_current_history_and_create_new_one
+    expire_current_history
+    create_history
+  end
+
+  def expire_current_history
+    current_history.try :update_attributes!, valid_to: Time.now
   end
 end
