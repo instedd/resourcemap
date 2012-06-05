@@ -27,7 +27,7 @@ class Collection < ActiveRecord::Base
   end
 
   def create_snapshot(name, date)
-    snapshots.create(name: name, date: date)
+    snapshots.create!(name: name, date: date)
   end
 
   def visible_fields_for(user)
