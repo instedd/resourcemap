@@ -91,10 +91,6 @@ describe Collection do
       snapshot = snapshots.first
       snapshot.name.should eq("last_year")
       snapshot.date.should eq(date)
-
     end
-
-
   end
-
 end

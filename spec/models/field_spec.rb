@@ -4,6 +4,8 @@ describe Field do
   it { should belong_to :collection }
   it { should belong_to :layer }
 
+  it_behaves_like "it includes History::Concern"
+
   it "sanitizes options" do
     field = Field.make config: {options: [{code: 'foo', label: 'bar'}]}.with_indifferent_access
     field.config.class.should eq(Hash)

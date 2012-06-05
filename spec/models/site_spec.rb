@@ -3,6 +3,8 @@ require 'spec_helper'
 describe Site do
   it { should belong_to :collection }
 
+  it_behaves_like "it includes History::Concern"
+
   let!(:user) { User.make }
   let!(:collection) { user.create_collection Collection.make_unsaved }
   let!(:layer) { collection.layers.make user: user }
@@ -47,46 +49,5 @@ describe Site do
     prefix_and_id.size.should == 2
     prefix_and_id[0].should == 'AD'
     prefix_and_id[1].should == '999'
-  end
-
-  it "should store history on creation" do
-    site = Site.make_unsaved
-    site.histories.count.should == 0
-    site.save!
-    site.histories.count.should == 1
-  end
-
-  it "should store history on update" do
-    site = Site.make
-    site.histories.count.should == 1
-    site.name = "New name"
-    site.save!
-    site.name.should == "New name"
-    site.histories.count.should == 2
-    site.histories.last.name.should == "New name"
-  end
-
-  it "should set valid_to in history on update" do
-    site = Site.make
-    site.name = "New name"
-    site.save!
-    site.histories.count.should == 2
-    site.histories.first.valid_to.to_i.should eq(site.updated_at.to_i)
-    site.histories.last.valid_to.should be_nil
-  end
-
-  it "should set valid_to in history before delete" do
-    site = Site.make
-    site.histories.count.should == 1
-    site.histories.last.valid_to.should be_nil
-    site_id = site.id
-
-    stub_time '2020-01-01 10:00:00'
-
-    site.destroy
-    histories = site.histories.all
-    Site.find_all_by_id(site_id).count.should == 0
-    histories.count.should == 1
-    histories.last.valid_to.should eq(Time.now)
   end
 end
