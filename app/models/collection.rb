@@ -14,6 +14,7 @@ class Collection < ActiveRecord::Base
   has_many :thresholds
   has_many :reminders
   has_many :activities
+  has_many :snapshots
 
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
@@ -23,6 +24,10 @@ class Collection < ActiveRecord::Base
     search.size 2000
     results = search.perform.results
     results.first['_source']['properties'][es_code] rescue 0
+  end
+
+  def create_snapshot(name, date)
+    snapshots.create(name: name, date: date)
   end
 
   def visible_fields_for(user)
@@ -98,7 +103,7 @@ class Collection < ActiveRecord::Base
 
     search = self.new_search
     search.use_codes_instead_of_es_codes
-     
+
     search.send operator , option[:code], option[:value]
     results = search.results
     response_prepare(option[:code], field.id, results)

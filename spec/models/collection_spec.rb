@@ -69,4 +69,32 @@ describe Collection do
       end
     end
   end
+
+  describe "Snapshot tests" do
+    it "should create snapshot for last year" do
+      stub_time '2011-01-01 10:00:00'
+
+      collection.sites.make :name => 'site1 last year'
+      collection.sites.make :name => 'site2 last year'
+
+      stub_time '2012-06-05 12:17:58'
+
+      collection.sites.make :name => 'site3 today'
+      collection.sites.make :name => 'site4 today'
+
+      date = '2011-01-01 10:00:00'.to_time
+      collection.create_snapshot("last_year", date)
+
+      snapshots = collection.snapshots
+      snapshots.count.should eq(1)
+
+      snapshot = snapshots.first
+      snapshot.name.should eq("last_year")
+      snapshot.date.should eq(date)
+
+    end
+
+
+  end
+
 end
