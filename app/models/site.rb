@@ -2,13 +2,13 @@ class Site < ActiveRecord::Base
   include Activity::AwareConcern
   include Site::ActivityConcern
   include Site::GeomConcern
+  include Site::PrefixConcern
   include Site::TireConcern
   include HistoryConcern
 
   belongs_to :collection
 
   serialize :properties, Hash
-  before_create :assign_id_with_prefix
   before_save :strongly_type_properties
 
   def strongly_type_properties
@@ -45,24 +45,5 @@ class Site < ActiveRecord::Base
       end
     end
     props
-  end
-
-  def assign_id_with_prefix
-    self.id_with_prefix = generate_id_with_prefix if self.id_with_prefix.nil?
-  end
-
-  def generate_id_with_prefix
-    site = Site.find_last_by_collection_id(self.collection_id)
-    if site.nil?
-      id_with_prefix = [Prefix.next.version,1]
-    else
-      id_with_prefix = site.get_id_with_prefix
-      id_with_prefix[1].next!
-    end
-    id_with_prefix.join
-  end
-
-  def get_id_with_prefix
-    self.id_with_prefix.split /(\d+)/
   end
 end
