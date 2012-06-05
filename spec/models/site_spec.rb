@@ -80,10 +80,13 @@ describe Site do
     site.histories.count.should == 1
     site.histories.last.valid_to.should be_nil
     site_id = site.id
+
+    stub_time '2020-01-01 10:00:00'
+
     site.destroy
     histories = site.histories.all
     Site.find_all_by_id(site_id).count.should == 0
     histories.count.should == 1
-    histories.last.valid_to.to_i.should eq(Time.now.to_i)
+    histories.last.valid_to.should eq(Time.now)
   end
 end
