@@ -1,4 +1,4 @@
-onBulkUpdate ->
+onImportWizard ->
   class @Property
     constructor: (data) ->
       @code = ko.observable data.code

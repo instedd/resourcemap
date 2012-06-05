@@ -34,11 +34,11 @@ ResourceMap::Application.routes.draw do
 
     post 'upload_csv'
 
-    get 'bulk_update'
-    post 'bulk_update_upload_csv'
-    get 'bulk_update_adjustments'
-    get 'bulk_update_sample'
-    post 'bulk_update_execute'
+    get 'import_wizard'
+    post 'import_wizard_upload_csv'
+    get 'import_wizard_adjustments'
+    get 'import_wizard_sample'
+    post 'import_wizard_execute'
 
     get 'recreate_index'
     get 'search'

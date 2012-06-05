@@ -1,4 +1,4 @@
-onBulkUpdate ->
+onImportWizard ->
   class @Site
     constructor: (data) ->
       @name = ko.observable data.name

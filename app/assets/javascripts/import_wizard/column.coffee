@@ -1,4 +1,4 @@
-onBulkUpdate ->
+onImportWizard ->
   class @Column
     constructor: (data) ->
       @name = ko.observable data.name

@@ -4,9 +4,9 @@
 = render 'tabs'
 
 .tabsline
-  %h2 Bulk update
+  %h2 Import wizard
   %p First, upload your CSV file
 
-  %form#upload_form{action: collection_bulk_update_upload_csv_path(collection), method: :post, enctype: 'multipart/form-data'}
+  %form#upload_form{action: collection_import_wizard_upload_csv_path(collection), method: :post, enctype: 'multipart/form-data'}
     %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
     %input#upload{type: :file, name: :file}

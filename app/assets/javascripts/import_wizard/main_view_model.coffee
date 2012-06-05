@@ -1,4 +1,4 @@
-onBulkUpdate ->
+onImportWizard ->
   class @MainViewModel
     constructor: (collectionId, columns) ->
       @collectionId = collectionId
@@ -67,7 +67,7 @@ onBulkUpdate ->
     startImport: =>
       @importing(true)
       columns = $.map(@columns(), (x) -> x.toJSON())
-      $.ajax "/collections/#{@collectionId}/bulk_update_execute.json",
+      $.ajax "/collections/#{@collectionId}/import_wizard_execute.json",
         type: 'POST'
         data: {columns: columns},
         success: => window.location = '/collections'

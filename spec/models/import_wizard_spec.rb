@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BulkUpdate do
+describe ImportWizard do
   let!(:user) { User.make }
   let!(:collection) { user.create_collection Collection.make_unsaved }
 
@@ -19,8 +19,8 @@ describe BulkUpdate do
       {name: 'Beds', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
-    BulkUpdate.import user, collection, csv_string
-    BulkUpdate.execute user, collection, specs
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
     layers.length.should eq(1)
@@ -56,8 +56,8 @@ describe BulkUpdate do
       {name: 'Visibility', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'both'},
       ]
 
-    BulkUpdate.import user, collection, csv_string
-    BulkUpdate.execute user, collection, specs
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
     layers.length.should eq(1)
@@ -93,8 +93,8 @@ describe BulkUpdate do
       {name: 'Visibility Code', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'code'},
       ]
 
-    BulkUpdate.import user, collection, csv_string
-    BulkUpdate.execute user, collection, specs
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
     layers.length.should eq(1)
