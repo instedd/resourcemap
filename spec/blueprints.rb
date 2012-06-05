@@ -2,6 +2,14 @@ require 'machinist/active_record'
 require 'sham'
 require 'faker'
 
+def rand_in_range(from, to)
+  rand * (to - from) + from
+end
+
+def rand_time(from, to)
+  Time.at(rand_in_range(from.to_f, to.to_f))
+end
+
 Sham.define do
   name { Faker::Name.name }
   email { Faker::Internet.email }
@@ -53,4 +61,10 @@ Threshold.blueprint do
   collection
   ord { Sham.sn }
   color { Sham.color }
+end
+
+Snapshot.blueprint do
+  collection
+  date {rand_time(2.days.ago, Time.now)}
+  name
 end
