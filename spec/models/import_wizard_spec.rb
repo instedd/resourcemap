@@ -92,6 +92,41 @@ describe ImportWizard do
     site2.properties.should eq({fields[0].es_code => 20, text.es_code => 'lala'})
   end
 
+  it "imports with name, lat, lon and one new numeric property and existing ID empty" do
+    csv_string = CSV.generate do |csv|
+      csv << ['ID', 'Name', 'Lat', 'Lon', 'Beds']
+      csv << ["", 'Foo', '1.2', '3.4', '10']
+      csv << ['', '', '', '']
+    end
+
+    specs = [
+      {name: 'ID', usage: 'id'},
+      {name: 'Name', usage: 'name'},
+      {name: 'Lat', usage: 'lat'},
+      {name: 'Lon', usage: 'lng'},
+      {name: 'Beds', usage: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    layers = collection.layers.all
+    layers.length.should eq(2)
+    layers[1].name.should eq('Import wizard')
+
+    fields = layers[1].fields.all
+    fields.length.should eq(1)
+    fields[0].name.should eq('The beds')
+    fields[0].code.should eq('beds')
+    fields[0].kind.should eq('numeric')
+
+    sites = collection.sites.all
+    sites.length.should eq(1)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({fields[0].es_code => 10})
+  end
+
   it "imports with new select one mapped to both code and label" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Visibility']
