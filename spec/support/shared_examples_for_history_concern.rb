@@ -70,6 +70,24 @@ shared_examples "it includes History::Concern" do
     model_history.valid_since.to_i.should eq(model.updated_at.to_i)
   end
 
+  it "should not get new elements in history for date" do
+
+    stub_time '2011-01-01 10:00:00'
+
+    described_class.make :name => '1 last year'
+    described_class.make :name => '2 last year'
+
+    stub_time '2012-06-05 12:17:58'
+
+    described_class.make :name => '3 today'
+    described_class.make :name => '4 today'
+
+    date = '2011-01-01 10:00:00'.to_time
+
+    histories = described_class.get_history_for(date)
+    histories.count.should eq(2)
+  end
+
   def assert_model_equals_history(model, history)
     model.attributes.keys.each do |key|
       model[key].should eq(history[key]) unless ['id', 'created_at', 'updated_at'].include? key

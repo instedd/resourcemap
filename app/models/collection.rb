@@ -28,6 +28,8 @@ class Collection < ActiveRecord::Base
 
   def create_snapshot(name, date)
     snapshots.create!(name: name, date: date)
+
+    #sites.get_history_for(date)
   end
 
   def visible_fields_for(user)
