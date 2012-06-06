@@ -34,4 +34,11 @@ module HistoryConcern
   def expire_current_history
     current_history.try :update_attributes!, valid_to: Time.now
   end
+
+  module ClassMethods
+    def get_history_for(date)
+      history_class = "#{self.name}History".constantize
+      history_class.where("valid_since <= :date && (:date < valid_to || valid_to is null)", {:date => date})
+    end
+  end
 end
