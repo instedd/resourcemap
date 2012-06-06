@@ -49,8 +49,8 @@ describe ImportWizard do
   end
 
   it "imports with name, lat, lon and one new numeric property and existing ID" do
-    site1 = collection.sites.make name: 'Foo old'
-    site2 = collection.sites.make name: 'Bar old'
+    site1 = collection.sites.make name: 'Foo old', properties: {text.es_code => 'coco'}
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}
 
     csv_string = CSV.generate do |csv|
       csv << ['ID', 'Name', 'Lat', 'Lon', 'Beds']

@@ -26,7 +26,7 @@ onImportWizard ->
         usage: @usage()
         name: @name()
       if @usage() == 'existing_field'
-        json.field_id = @field().id()
+        json.field_id = @field().id
       if @usage() == 'new_field'
         json.kind = @kind()
         json.code = @code()
