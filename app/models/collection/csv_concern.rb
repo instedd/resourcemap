@@ -9,6 +9,28 @@ module Collection::CsvConcern
     end
   end
 
+  def to_csv(elastic_search_api_results = new_search.unlimited.api_results)
+    fields = self.fields.all
+
+    CSV.generate do |csv|
+      header = ['id', 'name', 'lat', 'long']
+      fields.each { |field| header << field.code }
+      header << 'last updated'
+      csv << header
+
+      elastic_search_api_results.each do |result|
+        source = result['_source']
+
+        row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
+        fields.each do |field|
+          row << Array(source['properties'][field.code]).join(", ")
+        end
+        row << Site.parse_date(source['updated_at']).rfc822
+        csv << row
+      end
+    end
+  end
+
   def import_csv(user, string_or_io)
     Collection.transaction do
       csv = CSV.new string_or_io, return_headers: false
