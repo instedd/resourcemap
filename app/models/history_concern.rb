@@ -35,6 +35,7 @@ module HistoryConcern
     current_history.try :update_attributes!, valid_to: Time.now
   end
 
+
   module ClassMethods
     def get_history_for(date)
       history_class = "#{self.name}History".constantize

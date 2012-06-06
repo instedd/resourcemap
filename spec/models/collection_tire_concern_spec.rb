@@ -19,4 +19,6 @@ describe Collection::TireConcern do
     index_name_for_snapshot = Collection.index_name 32, snapshot: "last_year"
     index_name_for_snapshot.should eq("collection_test_32_last_year")
   end
+  
+  
 end

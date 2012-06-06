@@ -28,11 +28,14 @@ class Collection < ActiveRecord::Base
 
   def create_snapshot(name, date)
     snapshots.create!(name: name, date: date)
-
     snapshot_sites = Site.get_history_for(date)
 
+    index = Tire::Index.new Collection.index_name id, snapshot: name
+    index.create
 
-
+    snapshot_sites.each do |site_history|
+      site_history.store_in index
+    end
   end
 
   def visible_fields_for(user)

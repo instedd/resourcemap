@@ -71,7 +71,7 @@ describe Collection do
   end
 
   describe "Snapshot tests" do
-    it "should create snapshot for last year" do
+    before(:each) do
       stub_time '2011-01-01 10:00:00'
 
       collection.sites.make :name => 'site1 last year'
@@ -82,7 +82,11 @@ describe Collection do
       collection.sites.make :name => 'site3 today'
       collection.sites.make :name => 'site4 today'
 
+    end
+
+    it "should create snapshot for last year" do
       date = '2011-01-01 10:00:00'.to_time
+
       collection.create_snapshot("last_year", date)
 
       snapshots = collection.snapshots
@@ -91,6 +95,17 @@ describe Collection do
       snapshot = snapshots.first
       snapshot.name.should eq("last_year")
       snapshot.date.should eq(date)
+    end
+
+    it "should create index with sites" do
+      date = '2011-01-01 10:00:00'.to_time
+
+      collection.create_snapshot("last_year", date)
+
+      index_name = Collection.index_name collection.id, snapshot: "last_year"
+
+      search = Tire::Search::Search.new index_name
+      search.perform.results.length.should eq(2)
     end
   end
 end

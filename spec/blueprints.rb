@@ -57,6 +57,15 @@ end
 Activity.blueprint do
 end
 
+SiteHistory.blueprint do
+  #collection No sham defined for collection
+  name
+  lat { rand(180) - 90 }
+  lng { rand(360) - 180 }
+  valid_since {rand_time(2.days.ago, Time.now)}
+  valid_to nil
+end
+
 Threshold.blueprint do
   collection
   ord { Sham.sn }
@@ -68,3 +77,4 @@ Snapshot.blueprint do
   date {rand_time(2.days.ago, Time.now)}
   name
 end
+

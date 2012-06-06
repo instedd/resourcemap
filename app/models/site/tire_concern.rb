@@ -42,6 +42,7 @@ module Site::TireConcern
   end
 
   module ClassMethods
+
     def parse_date(date)
       DateTime.strptime date, DateFormat
     end
