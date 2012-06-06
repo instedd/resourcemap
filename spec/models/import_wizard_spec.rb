@@ -85,11 +85,11 @@ describe ImportWizard do
 
     site1.reload
     site1.name.should eq('Foo')
-    site1.properties.should eq({fields[0].es_code => 10})
+    site1.properties.should eq({fields[0].es_code => 10, text.es_code => 'coco'})
 
     site2.reload
     site2.name.should eq('Bar')
-    site2.properties.should eq({fields[0].es_code => 20})
+    site2.properties.should eq({fields[0].es_code => 20, text.es_code => 'lala'})
   end
 
   it "imports with new select one mapped to both code and label" do

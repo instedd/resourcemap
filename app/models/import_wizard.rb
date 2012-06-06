@@ -147,25 +147,25 @@ class ImportWizard
             if existing_field
               case existing_field.kind
               when 'numeric', 'text'
-                site.properties[existing_field.code] = value
+                site.properties[existing_field] = value
               when 'select_one'
                 existing_option = existing_field.config['options'].find { |x| x['code'] == value }
                 if existing_option
-                  site.properties[existing_field.code] = existing_option['id']
+                  site.properties[existing_field] = existing_option['id']
                 else
-                  site.properties[existing_field.code] = existing_field.config['next_id']
+                  site.properties[existing_field] = existing_field.config['next_id']
                   existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => value, 'label' => value}
                   existing_field.config['next_id'] += 1
                 end
               when 'select_many'
-                site.properties[existing_field.code] = []
+                site.properties[existing_field] = []
                 value.split(',').each do |v|
                   v = v.strip
                   existing_option = existing_field.config['options'].find { |x| x['code'] == v }
                   if existing_option
-                    site.properties[existing_field.code] << existing_option['id']
+                    site.properties[existing_field] << existing_option['id']
                   else
-                    site.properties[existing_field.code] << existing_field.config['next_id']
+                    site.properties[existing_field] << existing_field.config['next_id']
                     existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => v, 'label' => v}
                     existing_field.config['next_id'] += 1
                   end
@@ -184,28 +184,28 @@ class ImportWizard
           when 'lng'
             site.lng = value
           when 'new_field'
-            case spec[:kind]
-            when 'text', 'select_one', 'select_many'
-              site.properties[spec[:code]] = value
-            when 'numeric'
-              site.properties[spec[:code]] = value.to_i_or_f
-            end
+            field = fields[spec[:code]]
+            site.properties[field] = field.strongly_type value
           end
         end
       end
 
       Collection.transaction do
+        new_fields = layer.fields.select(&:new_record?)
+
+        # Update existing fields
         fields.each_value do |field|
           field.save! unless field.new_record?
         end
 
-        layer.save! if layer.fields.length > 0
+        # Create layer and new fields
+        layer.save! if new_fields.length > 0
 
         # Force computing bounds and such in memory, so a thousand callbacks are not called
         collection.compute_geometry_in_memory
 
         # Need to change site properties from code to field.es_code
-        sites.each { |site| site.properties = Hash[site.properties.map { |k, v| [fields[k].es_code, v] }] }
+        sites.each { |site| site.properties = Hash[site.properties.map { |k, v| [k.is_a?(Field) ? k.es_code : k, v] }] }
 
         # This will update the existing sites
         sites.each { |site| site.save! unless site.new_record? }
