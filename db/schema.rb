@@ -68,12 +68,6 @@ ActiveRecord::Schema.define(:version => 20120605081614) do
     t.integer  "ord"
   end
 
-  create_table "forms", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
   create_table "layer_histories", :force => true do |t|
     t.integer  "collection_id"
     t.string   "name"

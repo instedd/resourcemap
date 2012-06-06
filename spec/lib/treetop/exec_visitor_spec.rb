@@ -23,7 +23,7 @@ describe ExecVisitor, "Process query command" do
   end
 
   it "should recognize collection_id equals to @collection.id" do
-    @node.layer_id.value.should == @collection.id
+    @node.collection_id.value.should == @collection.id
   end
 
   it "should recognize property name equals to AB" do
@@ -57,7 +57,7 @@ describe ExecVisitor, "Process query command" do
     context "valid criteria" do
       it "should get Siemreap Health Center when their Ambulance property greater than 5" do
         @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"10"=>15, "11"=>40})
-        @visitor.visit_query_command(@node).should eq('["AB"] in Siemreap Healt Center, 15')
+        @visitor.visit_query_command(@node).should eq('["AB"] in Siemreap Healt Center=15')
       end
 
       it "should return no result for public collection" do
@@ -105,7 +105,7 @@ describe ExecVisitor, "Process query command" do
       it "should query property pname equals to Phnom Penh" do
         @layer.fields.make(:id => 22, :name => "pname", :code => "PN", :ord => 1, :kind => "text")
         @collection.sites.make(:name => 'Bayon', :properties => {"22"=>"Phnom Penh"})
-        @visitor.visit_query_command(@node).should eq "[\"PN\"] in Bayon, Phnom Penh" 
+        @visitor.visit_query_command(@node).should eq "[\"PN\"] in Bayon=Phnom Penh" 
       end
     end
   end
