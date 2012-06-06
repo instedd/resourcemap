@@ -2,7 +2,7 @@
 
 .tabsline
   #thresholds-main.hidden-until-loaded{ ko(css: { ready: :isReady }) }
-    %h2 Thresholds
+    %h2 Alert
     <!-- ko foreach :thresholds -->
     <!-- ko if: $data != $root.currentThreshold() -->
     .box.grey.w60
@@ -37,6 +37,31 @@
     .box.w90
       .rightbuttons
         -#%button.fdelete{ ko(visible: '!isNewRecord') }
+      %label Properties 
+      .middlebuttons 
+        Name 
+        %br
+        %input{type: :text, style: 'width:120px'} 
+        %br   
+        Apply this alert to
+        %br 
+        %input#GroupB_1{:name => "GroupB", :type => "radio"}/
+        %label{:for => "GroupB_1"} All sites
+        %input#GroupB_2{:name => "GroupB", :type => "radio"}/
+        %label{:for => "GroupB_2"} Some sites
+        .superblyTagfieldDiv
+          %ul.superblyTagItems
+            %li.superblyTagItem
+              %span Cholera
+              %a x
+            %li.superblyTagItem
+              %span H1N1
+              %a x
+            %li.superblyTagInputItem
+              %input.superblyTagInput{:autocomplete => "false", :style => "width: 20px; ", :type => "text"}
+                %ul.superblySuggestItems{:style => "display: none; "}
+          .superblyTagfieldClearer
+      %br
       %label Conditions
       .middlebuttons
         %span
@@ -69,8 +94,10 @@
         %button.premove{ ko(click: '$parent.removeCondition') }
         <!-- /ko -->
       %button.fadd{ko(click: :addNewCondition) }
-        Add new condition
+        Add another condition
       %hr
+      %label Change site display on map
+
       .bottom-actions
         %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
         %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
@@ -92,7 +119,7 @@
     <!-- ko if: fields().length -->
     .box.grey.add{ ko(visible: '!currentThreshold()', click: 'addThreshold'), style: 'display:none'}
       %span
-        Add threshold
+        Add Alert
       %button.cadd.right
       %br{clear: :all}
     <!-- /ko -->
@@ -102,7 +129,7 @@
     <!-- ko if: fields().length -->
     .box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
       %span
-        Add threshold
+        Add Alert
       %button.cadd.right
       %br{clear: :all}
     <!-- /ko -->
