@@ -112,8 +112,7 @@ class Collection < ActiveRecord::Base
   def response_prepare(field_code, field_id, results)
     array_result = []
     results.each do |r|
-      array_result.push r["_source"]["name"]  # get site name
-      array_result.push r["_source"]["properties"][field_id.to_s] # get properties value
+      array_result.push "#{r["_source"]["name"]}=#{r["_source"]["properties"][field_id.to_s]}"
     end
     response_sms = (array_result.empty?)? "There is no site matched" : array_result.join(", ")
     result = "[\"#{field_code}\"] in #{response_sms}"
