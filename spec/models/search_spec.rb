@@ -4,10 +4,6 @@ describe Search do
   let!(:collection) { Collection.make }
   let!(:layer) { collection.layers.make }
 
-  before(:all) do
-    Tire.delete_indices_that_match /^collection_test_\d+$/
-  end
-
   context "search by property" do
     let!(:beds) { layer.fields.make :code => 'beds' }
     let!(:tables) { layer.fields.make :code => 'tables' }
