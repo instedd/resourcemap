@@ -3,10 +3,6 @@ require 'spec_helper'
 describe MapSearch do
   let(:collection) { Collection.make }
 
-  before(:all) do
-    Tire.delete_indices_that_match /^collection_test_\d+$/
-  end
-
   it "searches based on no collection" do
     site = Site.make
 

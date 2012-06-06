@@ -87,26 +87,7 @@ class Api::CollectionsController < ApplicationController
   end
 
   def collection_csv(collection, results)
-    fields = collection.fields.all
-
-    sites_csv = CSV.generate do |csv|
-      header = ['id', 'name', 'lat', 'long']
-      fields.each { |field| header << field.code }
-      header << 'last updated'
-      csv << header
-
-      results.each do |result|
-        source = result['_source']
-
-        row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
-        fields.each do |field|
-          row << Array(source['properties'][field.code]).join(", ")
-        end
-        row << Site.parse_date(source['updated_at']).rfc822
-        csv << row
-      end
-    end
-
+    sites_csv = collection.to_csv results
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
 

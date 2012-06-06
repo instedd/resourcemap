@@ -25,6 +25,11 @@ class Field < ActiveRecord::Base
     sanitize_hierarchy_items self.config['hierarchy'] if self.config['hierarchy']
   end
 
+  after_create :update_collection_mapping
+  def update_collection_mapping
+    collection.update_mapping
+  end
+
   Kinds.each do |kind|
     class_eval %Q(def #{kind}?; kind == '#{kind}'; end)
   end

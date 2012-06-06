@@ -31,10 +31,6 @@ RSpec.configure do |config|
   # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = false
 
-  def Collection.index_name(id)
-    "collection_test_#{id}"
-  end
-
   def stub_time(time)
     time = Time.parse time
     Time.stub(:now) { time }
@@ -42,6 +38,6 @@ RSpec.configure do |config|
 
   # Delete all test indexes after running all specs
   config.after(:suite) do
-    Tire.delete_indices_that_match /^collection_test_\d+$/
+    Tire.delete_indices_that_match /^collection_test_\d+/
   end
 end

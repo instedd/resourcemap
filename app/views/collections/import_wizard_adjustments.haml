@@ -15,7 +15,7 @@
         %td{valign: :top}
           %div{style: 'height: 400px;overflow:auto'}
             %ul{ko(foreach: :columns)}
-              %li{ko(css: {ignored: "kind() == 'ignore'"})}
+              %li{ko(css: {ignored: "usage() == 'ignore'"})}
                 %div
                   %strong{ko(text: :name)}
                   %ul
@@ -24,22 +24,37 @@
                       %span{ko(text: :sample)}
                     %li
                       Use as:
-                      = select_tag :kind, options_for_select([['Text field', 'text'], ['Numeric field', 'numeric'], ['Select one field', 'select_one'], ['Select many field', 'select_many'], ['Name', 'name'], ['Latitude', 'lat'], ['Longitude', 'lng'], ['Ignore', 'ignore']]), 'data-bind' => kov(value: :kind)
-                      <!-- ko if: kind() == 'select_one' || kind() == 'select_many' -->
+                      %select{ko(options: '$root.usages', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
+                      /ko if: usage() == 'existing_field'
+                      %select{ko(options: '$root.layers', optionsText: "'name'", value: 'layer')}
+                      %select{ko(options: 'layer().fields', optionsText: "'name'", value: 'field')}
+                      //ko
+                      /ko if: usage() == 'new_field'
+                      = select_tag :kind, options_for_select([['Text field', 'text'], ['Numeric field', 'numeric'], ['Select one field', 'select_one'], ['Select many field', 'select_many']]), 'data-bind' => kov(value: :kind)
+                      /ko if: kind() == 'select_one' || kind() == 'select_many'
                       = select_tag :selectKind, options_for_select([['Use as the code', 'code'], ['Use as the label', 'label'], ['Use as both the code and label', 'both']]), 'data-bind' => kov(value: :selectKind)
-                      <!-- /ko -->
-                    <!-- ko if: mapsToField() -->
+                      //ko
+                      //ko
+                    /ko if: usage() == 'new_field'
                     %li
                       Field Code:
                       %input{ko(value: :code, valueUpdate: :afterkeydown)}
                     %li
                       Field Name:
                       %input{ko(value: :label, valueUpdate: :afterkeydown)}
-                    <!-- /ko -->
+                    //ko
         %td{ko(with: :site), valign: :top}
           %div{style: 'height: 400px;overflow:auto'}
             Sample site preview:
             %ul
+              %li
+                %span{ko(css: {error: "hasMoreThanOneId()"})} ID:
+                /ko if: id()
+                %span{ko(text: :id)}
+                //ko
+                /ko if: !id()
+                %span New ID
+                //ko
               %li
                 %span{ko(css: {error: "!name() || hasMoreThanOneName()"})} Name:
                 %span{ko(text: :name)}
@@ -47,52 +62,74 @@
                 Location:
                 %ul
                   %li
-                    Latitude:
+                    %span{ko(css: {error: "hasMoreThanOneLat()"})} Latitude:
                     %span{ko(text: :lat)}
                   %li
-                    Longitude:
+                    %span{ko(css: {error: "hasMoreThanOneLng()"})} Longitude:
                     %span{ko(text: :lng)}
               %li
                 Properties:
                 %ul{ko(foreach: :properties)}
                   %li
-                    %strong
-                      Code:
-                      %span{ko(text: :code)}
-                      %br/
+                    /ko if: usage == 'new_field'
+                    %strong New Field
+                    %br/
+                    From column:
+                    %span{ko(text: :column)}
+                    %br/
+                    Code:
+                    %span{ko(text: :code)}
+                    %br/
                     Name:
                     %span{ko(text: :name)}
                     %br/
                     Field type:
                     %span{ko(text: :kind)}
                     %br/
-                    <!-- ko if: kind() != 'select_one' && kind() != 'select_many' -->
+                    /ko if: kind != 'select_one' && kind != 'select_many'
                     Value:
                     %span{ko(text: :value)}
                     %br/
-                    <!-- /ko -->
-                    <!-- ko if: kind() == 'select_one' || kind() == 'select_many' -->
+                    //ko
+                    /ko if: kind == 'select_one' || kind == 'select_many'
                     %span{ko(css: {error: "!valueCode()"})} Value code:
                     %span{ko(text: :valueCode)}
                     %br/
                     %span{ko(css: {error: "!valueLabel()"})} Value label:
                     %span{ko(text: :valueLabel)}
                     %br/
-                    <!-- /ko -->
+                    //ko
+                    //ko
+
+                    /ko if: usage == 'existing_field' && layer && field
+                    %strong Existing field
+                    %br/
+                    From column:
+                    %span{ko(text: :column)}
+                    %br/
+                    Layer:
+                    %span{ko(text: 'layer.name')}
+                    %br/
+                    Field:
+                    %span{ko(text: 'field.name')}
+                    %br/
+                    Value:
+                    %span{ko(text: :value)}
+                    //ko
 
     %br/
-    <!-- ko if: importing() -->
+    /ko if: importing()
     Importing, please wait. This might take several minutes.
-    <!-- /ko -->
-    <!-- ko if: importError() -->
+    //ko
+    /ko if: importError()
     %span{style: 'color:red'} Sorry, something failed during the import. Please contact InSTEDD for support.
-    <!-- /ko -->
-    <!-- ko if: !importing() && !importError() -->
-    <!-- ko if: valid() -->
+    //ko
+    /ko if: !importing() && !importError()
+    /ko if: valid()
     %button{ko(click: :startImport)} Start importing
-    <!-- /ko -->
-    <!-- ko if: !valid() -->
+    //ko
+    /ko if: !valid()
     %span.error Fix this error to start importing:
     %span{ko(text: :error)}
-    <!-- /ko -->
-    <!-- /ko -->
+    //ko
+    //ko

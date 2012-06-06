@@ -1,9 +1,13 @@
 onImportWizard ->
   class @Property
     constructor: (data) ->
-      @code = ko.observable data.code
-      @name = ko.observable data.name
-      @kind = ko.observable data.kind
-      @value = ko.observable data.value
-      @valueCode = ko.observable data.valueCode
-      @valueLabel = ko.observable data.valueLabel
+      @column = data.column
+      @usage = data.usage
+      @layer = data.layer
+      @field = data.field
+      @kind = data.kind
+      @code = data.code
+      @name = data.name
+      @value = data.value
+      @valueCode = data.valueCode
+      @valueLabel = data.valueLabel
