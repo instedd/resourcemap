@@ -28,7 +28,7 @@ class Collection < ActiveRecord::Base
 
   def create_snapshot(name, date)
     snapshots.create!(name: name, date: date)
-    snapshot_sites = Site.get_history_for(date)
+    snapshot_sites = Site.get_history_for(id, date)
 
     index = Tire::Index.new Collection.index_name id, snapshot: name
     index.create

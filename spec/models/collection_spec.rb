@@ -74,13 +74,13 @@ describe Collection do
     before(:each) do
       stub_time '2011-01-01 10:00:00'
 
-      collection.sites.make :name => 'site1 last year'
-      collection.sites.make :name => 'site2 last year'
+      collection.sites.make name: 'site1 last year'
+      collection.sites.make name: 'site2 last year'
 
       stub_time '2012-06-05 12:17:58'
 
-      collection.sites.make :name => 'site3 today'
-      collection.sites.make :name => 'site4 today'
+      collection.sites.make name: 'site3 today'
+      collection.sites.make name: 'site4 today'
 
     end
 
@@ -99,13 +99,23 @@ describe Collection do
 
     it "should create index with sites" do
       date = '2011-01-01 10:00:00'.to_time
-
       collection.create_snapshot("last_year", date)
 
       index_name = Collection.index_name collection.id, snapshot: "last_year"
-
       search = Tire::Search::Search.new index_name
       search.perform.results.length.should eq(2)
+    end
+
+    it 'should not include site of other collections in index' do
+      stub_time '2011-01-01 10:00:00'
+      Site.make collection_id: 34
+
+      date = '2011-01-01 10:00:00'.to_time
+      collection.create_snapshot("last_year", date)
+      index_name = Collection.index_name collection.id, snapshot: "last_year"
+      search = Tire::Search::Search.new index_name
+      search.perform.results.length.should eq(2)
+
     end
   end
 end
