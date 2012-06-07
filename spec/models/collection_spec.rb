@@ -118,14 +118,35 @@ describe Collection do
 
     it "should delete history when collection is destroyed" do
       collection_id = collection.id
+      collection.layers.make
+      collection.fields.make
+
       date = Time.now
+
       site_histories = Site.get_history_for collection_id, date
       site_histories.count.should eq(4)
+
+      layer_histories = Layer.get_history_for collection_id, date
+      layer_histories.count.should eq(1)
+
+      field_histories = Field.get_history_for collection_id, date
+
+      puts collection.fields.first.histories.first.attributes
+      puts collection_id
+      puts date
+
+      field_histories.count.should eq(1)
 
       collection.destroy
 
       new_site_histories = Site.get_history_for collection_id, date
-      site_histories.count.should eq(0)
+      new_site_histories.count.should eq(0)
+
+      new_layer_histories = Layer.get_history_for collection_id, date
+      new_layer_histories.count.should eq(0)
+
+      new_field_histories = Field.get_history_for collection_id, date
+      new_field_histories.count.should eq(0)
     end
   end
 end
