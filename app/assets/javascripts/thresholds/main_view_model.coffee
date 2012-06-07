@@ -3,6 +3,7 @@ onThresholds ->
     constructor: (@collectionId) ->
       @fields = ko.observableArray()
       @thresholds = ko.observableArray([])
+      @sites = ko.observableArray([])
       @currentThreshold = ko.observable()
       @saving = ko.observable(false)
       @isReady = ko.observable(false)
@@ -17,6 +18,11 @@ onThresholds ->
       @originalThreshold = new Threshold(threshold.toJSON())
       @currentThreshold threshold
 
+    loadSites: (callback) ->
+      $.get "/collections/#{@collectionId}/sites", (sites) ->
+        callback $.map sites, (site) => site.name
+
+      
     saveThreshold: =>
       @saving(true)
 

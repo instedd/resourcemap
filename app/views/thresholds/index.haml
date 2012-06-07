@@ -49,18 +49,8 @@
         %label{:for => "GroupB_1"} All sites
         %input#GroupB_2{:name => "GroupB", :type => "radio"}/
         %label{:for => "GroupB_2"} Some sites
-        .superblyTagfieldDiv
-          %ul.superblyTagItems
-            %li.superblyTagItem
-              %span Cholera
-              %a x
-            %li.superblyTagItem
-              %span H1N1
-              %a x
-            %li.superblyTagInputItem
-              %input.superblyTagInput{:autocomplete => "false", :style => "width: 20px; ", :type => "text"}
-                %ul.superblySuggestItems{:style => "display: none; "}
-          .superblyTagfieldClearer
+        %br 
+        %input.sites{ko(superblyTagField: '$root.sites'), type: :text}
       %br
       %label Conditions
       .middlebuttons
