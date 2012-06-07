@@ -71,7 +71,6 @@ shared_examples "it includes History::Concern" do
   end
 
   it "should not get new elements in history for date" do
-
     collection = Collection.make
 
     stub_time '2011-01-01 10:00:00'

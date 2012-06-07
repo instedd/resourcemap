@@ -46,8 +46,10 @@ Layer.blueprint do
 end
 
 Field.blueprint do
-  collection
+  # First specify the layer, then the collection must always be that of the layer
   layer
+  collection { layer.collection }
+
   name
   code { Sham.name }
   kind {'text' }

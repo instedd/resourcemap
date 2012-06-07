@@ -39,7 +39,7 @@ module HistoryConcern
   module ClassMethods
     def get_history_for(collection_id, date)
       history_class = "#{self.name}History".constantize
-      history_class.where "collection_id = :collection_id && valid_since <= :date && (:date < valid_to || valid_to is null)", date: date, collection_id: collection_id
+      history_class.where(collection_id: collection_id).where "valid_since <= :date && (:date < valid_to || valid_to is null)", date: date
     end
   end
 end
