@@ -8,7 +8,7 @@ class SiteHistory < ActiveRecord::Base
 
   def store_in(index, options = {})
     hash = {
-      id: id,
+      id: site_id,
       name: name,
       type: :site,
       properties: properties,
