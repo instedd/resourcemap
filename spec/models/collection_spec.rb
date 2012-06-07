@@ -123,29 +123,25 @@ describe Collection do
 
       date = Time.now
 
-      site_histories = Site.get_history_for collection_id, date
+      site_histories = collection.site_histories.at_date(date)
       site_histories.count.should eq(4)
 
-      layer_histories = Layer.get_history_for collection_id, date
+      layer_histories = collection.layer_histories.at_date(date)
       layer_histories.count.should eq(1)
 
-      field_histories = Field.get_history_for collection_id, date
-
-      puts collection.fields.first.histories.first.attributes
-      puts collection_id
-      puts date
+      field_histories = collection.field_histories.at_date(date)
 
       field_histories.count.should eq(1)
 
       collection.destroy
 
-      new_site_histories = Site.get_history_for collection_id, date
+      new_site_histories = collection.site_histories.at_date(date)
       new_site_histories.count.should eq(0)
 
-      new_layer_histories = Layer.get_history_for collection_id, date
+      new_layer_histories = collection.layer_histories.at_date(date)
       new_layer_histories.count.should eq(0)
 
-      new_field_histories = Field.get_history_for collection_id, date
+      new_field_histories = collection.field_histories.at_date(date)
       new_field_histories.count.should eq(0)
     end
   end
