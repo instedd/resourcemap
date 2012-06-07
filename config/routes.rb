@@ -33,6 +33,7 @@ ResourceMap::Application.routes.draw do
     get 'max_value_of_property'
 
     post 'upload_csv'
+    post 'create_snapshot'
 
     get 'import_wizard'
     post 'import_wizard_upload_csv'

@@ -69,6 +69,12 @@ class CollectionsController < ApplicationController
     redirect_to collections_path
   end
 
+  def create_snapshot
+    if collection.snapshots.create date: Time.now, name: params[:name]
+      redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} created"
+    end
+  end
+
   def max_value_of_property
     render json: collection.max_value_of_property(params[:property])
   end
