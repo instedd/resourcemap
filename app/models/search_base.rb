@@ -21,7 +21,7 @@ module SearchBase
 
     query_key = decode(es_code)
     query_value = es_code_value(es_code, value)
-    add_query %Q(#{query_key}:"#{query_value}")
+    @search.filter :term, query_key => query_value
     self
   end
 

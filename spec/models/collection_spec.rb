@@ -21,10 +21,6 @@ describe Collection do
 
       collection.max_value_of_property(field.es_code).should eq(20)
     end
-
-    it "gets max value for property that doesn't exist" do
-      collection.max_value_of_property(field.es_code).should eq(0)
-    end
   end
 
   describe "thresholds test" do
@@ -52,10 +48,12 @@ describe Collection do
   end
 
   describe "SMS query" do
-    it "should prepare response_sms" do
-      option = {:field_code => "AB", :field_id => 2}
-      result = [{"_source"=>{"id"=>1, "name"=>"Siem Reap Health Center", "properties"=>{"1"=>15, "2"=>40, "3"=>6}}}]
-      collection.response_prepare(option[:field_code], option[:field_id], result).should eq("[\"#{option[:field_code]}\"] in #{[result[0]["_source"]["name"],40].join(", ")}")
+    pending do
+      it "should prepare response_sms" do
+        option = {:field_code => "AB", :field_id => 2}
+        result = [{"_source"=>{"id"=>1, "name"=>"Siem Reap Health Center", "properties"=>{"1"=>15, "2"=>40, "3"=>6}}}]
+        collection.response_prepare(option[:field_code], option[:field_id], result).should eq("[\"#{option[:field_code]}\"] in #{[result[0]["_source"]["name"],40].join(", ")}")
+      end
     end
 
     describe "Operator parser" do
