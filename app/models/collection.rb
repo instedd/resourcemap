@@ -29,18 +29,6 @@ class Collection < ActiveRecord::Base
     results.first['_source']['properties'][es_code] rescue 0
   end
 
-  def create_snapshot(name, date)
-    snapshots.create! name: name, date: date
-    snapshot_sites = site_histories.at_date date
-
-    index = Tire::Index.new Collection.index_name id, snapshot: name
-    index.create
-
-    snapshot_sites.each do |site_history|
-      site_history.store_in index
-    end
-  end
-
   def visible_fields_for(user)
     membership = user.membership_in self
     return [] unless membership

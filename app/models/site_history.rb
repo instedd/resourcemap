@@ -4,7 +4,7 @@ class SiteHistory < ActiveRecord::Base
 
   serialize :properties, Hash
 
-  def store_in(index, options = {})
-    Site::IndexUtils.store self, site_id, index, options
+  def store_in(index)
+    Site::IndexUtils.store self, site_id, index
   end
 end

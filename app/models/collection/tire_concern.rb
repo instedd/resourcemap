@@ -58,8 +58,8 @@ module Collection::TireConcern
     @index ||= self.class.index(id)
   end
 
-  def index_name
-    self.class.index_name(id)
+  def index_name(options = {})
+    self.class.index_name id, options
   end
 
   def new_search

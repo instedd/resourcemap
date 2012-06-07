@@ -77,6 +77,6 @@ end
 Snapshot.blueprint do
   collection
   date {rand_time(2.days.ago, Time.now)}
-  name
+  name { Sham.username }
 end
 
