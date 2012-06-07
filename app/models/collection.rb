@@ -15,6 +15,9 @@ class Collection < ActiveRecord::Base
   has_many :reminders
   has_many :activities
   has_many :snapshots
+  has_many :site_histories, dependent: :destroy
+  has_many :layer_histories, dependent: :destroy
+  has_many :field_histories, dependent: :destroy
 
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 

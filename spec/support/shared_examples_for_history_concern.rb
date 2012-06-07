@@ -73,14 +73,11 @@ shared_examples "it includes History::Concern" do
   it "should not get new elements in history for date" do
 
     collection = Collection.make
-    puts collection.id
 
     stub_time '2011-01-01 10:00:00'
 
     described_class.make name: '1 last year', collection_id: collection.id
-    pepe = described_class.make name: '2 last year', collection_id: collection.id
-
-    puts pepe.attributes
+    described_class.make name: '2 last year', collection_id: collection.id
 
     stub_time '2012-06-05 12:17:58'
 

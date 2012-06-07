@@ -1,5 +1,6 @@
 class SiteHistory < ActiveRecord::Base
   belongs_to :site
+  belongs_to :collection
 
   serialize :properties, Hash
 
@@ -16,8 +17,7 @@ class SiteHistory < ActiveRecord::Base
     }
 
     hash[:location] = {lat: lat.to_f, lon: lng.to_f} if lat? && lng?
-    #sitehistory doesnt have a collection
-    #hash[:alert] = collection.thresholds_test properties
+    hash[:alert] = collection.thresholds_test properties
     result = index.store hash
 
     if result['error']

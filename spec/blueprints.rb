@@ -58,7 +58,7 @@ Activity.blueprint do
 end
 
 SiteHistory.blueprint do
-  #collection No sham defined for collection
+  collection
   name
   lat { rand(180) - 90 }
   lng { rand(360) - 180 }

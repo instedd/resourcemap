@@ -115,5 +115,17 @@ describe Collection do
       search.perform.results.length.should eq(2)
 
     end
+
+    it "should delete history when collection is destroyed" do
+      collection_id = collection.id
+      date = Time.now
+      site_histories = Site.get_history_for collection_id, date
+      site_histories.count.should eq(4)
+
+      collection.destroy
+
+      new_site_histories = Site.get_history_for collection_id, date
+      site_histories.count.should eq(0)
+    end
   end
 end
