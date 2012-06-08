@@ -9,6 +9,11 @@ onReminders ->
   window.model = new MainViewModel(collectionId)
   ko.applyBindings(window.model)
 
+  $.get "/collections/#{collectionId}/reminders.json", (data) ->
+    reminders = $.map data, (reminder) ->
+      new Reminder reminder
+    window.model.reminders reminders
+
   $.get '/repeats.json', (data) ->
     repeats = $.map data, (repeat) ->
       new Repeat repeat

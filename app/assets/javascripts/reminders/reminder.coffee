@@ -9,6 +9,7 @@ onReminders ->
         @reminder_date() + " " + @reminder_time()
       @reminder_message = ko.observable data?.reminder_message
       @repeat_id = ko.observable data?.repeat_id
+      @repeat = ko.observable new Repeat(data?.repeat)
       @collection_id = ko.observable data?.collection_id
       @sites = ko.observable()
       @nameError = ko.computed =>

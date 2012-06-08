@@ -15,14 +15,13 @@
     <!-- ko foreach: reminders -->
     .box.grey.w60
       .toptitle
-        %span Vaccines
+        %span{ko(text: 'name')} 
         &rarr;
         %em Montly for all sites
       .rightbuttons
         %button.fdelete
       .message
-        %span This is to inform that the condition will be applied....TThis is to inform that the condition will be applied....This is to inform that the condition will be applied....TThis is to inform that the condition will be applied....
-
+        %span{ko(text: 'reminder_message')} 
       %button.farrow Edit
     %br/
     <!-- /ko-->
