@@ -2,11 +2,19 @@ module HistoryConcern
   extend ActiveSupport::Concern
 
   included do
+    history_class_name = "#{name}History"
+
     after_create :create_history
     after_update :expire_current_history_and_create_new_one
     before_destroy :expire_current_history
 
-    has_many :histories, :class_name => "#{name}History"
+    has_many :histories, :class_name => history_class_name
+
+    class << history_class_name.constantize
+      def at_date(date)
+        where "valid_since <= :date && (:date < valid_to || valid_to is null)", date: date
+      end
+    end
   end
 
   def create_history

@@ -230,7 +230,7 @@ module Command
       elements[1]
     end
 
-    def layer_id
+    def collection_id
       elements[2]
     end
 

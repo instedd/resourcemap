@@ -11,3 +11,6 @@ public/assets
 .bundle
 spec/reports
 *.swp
+*.project
+*.classpath
+nbprojec/*

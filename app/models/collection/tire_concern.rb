@@ -20,24 +20,12 @@ module Collection::TireConcern
   end
 
   def site_mapping
-    {
-      properties: {
-        name: { type: :string, index: :not_analyzed },
-        location: { type: :geo_point },
-        created_at: { type: :date, format: :basic_date_time },
-        updated_at: { type: :date, format: :basic_date_time },
-        properties: { properties: fields_mapping },
-      }
-    }
+    Site::IndexUtils.site_mapping(fields)
   end
 
   def update_mapping
     index.update_mapping site: site_mapping
     index.refresh
-  end
-
-  def fields_mapping
-    fields.each_with_object({}) { |field, hash| hash[field.es_code] = field.index_mapping }
   end
 
   def recreate_index
@@ -58,8 +46,8 @@ module Collection::TireConcern
     @index ||= self.class.index(id)
   end
 
-  def index_name
-    self.class.index_name(id)
+  def index_name(options = {})
+    self.class.index_name id, options
   end
 
   def new_search
@@ -75,8 +63,15 @@ module Collection::TireConcern
   end
 
   module ClassMethods
-    def index_name(id)
-      "collection_#{id}"
+    INDEX_NAME_PREFIX = Rails.env == 'test' ? "collection_test" : "collection"
+
+    def index_name(id, options = {})
+      if options[:snapshot]
+        "#{INDEX_NAME_PREFIX}_#{id}_#{options[:snapshot]}"
+      else
+        "#{INDEX_NAME_PREFIX}_#{id}"
+      end
+
     end
 
     def index(id)

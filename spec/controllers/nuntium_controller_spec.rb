@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe MessagingController do
-  describe "POST 'index'" do
+describe NuntiumController do
+  describe "POST 'receive'" do
     before(:each) do
       @collection = Collection.make(:name => 'Healt Center')
       @layer = @collection.layers.make(:name => "default")
@@ -17,33 +17,32 @@ describe MessagingController do
 
     it "should save message" do
       Message.should_receive(:create!).with(:guid => "123", :from => "sms://85512345678", :body => "dyrm u AA1 AB=2").and_return(@message)
-      post :index, @params
+      post :receive, @params
     end
-    pending do 
-      describe "should validate post data" do
-        def post_index_without(param)
-          post :index, @params.clone.delete_if { |k| k == param.to_s }
-        end
+    
+    describe "should validate post data" do
+      def post_receive_without(param)
+        post :receive, @params.clone.delete_if { |k, v| k == param }
+      end
 
-        it "should response error" do
-          post :index
-          response.response_code.should eq(400)
-        end
+      it "should response error" do
+        post :receive
+        response.response_code.should eq(400)
+      end
 
-        it "should check for guid" do
-          post_index_without :guid
-          response.body.should match /Validation failed: Guid can't be blank/
-        end
+      it "should check for guid" do
+        post_receive_without :guid
+        response.body.should match /Validation failed: Guid can't be blank/
+      end
 
-        it "should check for from" do
-          post_index_without :from
-          response.body.should match /Validation failed: From can't be blank/
-        end
+      it "should check for from" do
+        post_receive_without :from
+        response.body.should match /Validation failed: From can't be blank/
+      end
 
-        it "should check for body" do
-          post_index_without :body
-          response.body.should match /Validation failed: Body can't be blank/
-        end
+      it "should check for body" do
+        post_receive_without :body
+        response.body.should match /Validation failed: Body can't be blank/
       end
     end
     describe "message processing" do
@@ -53,12 +52,12 @@ describe MessagingController do
       end
 
       it "should process message" do
-        post :index, @params
+        post :receive, @params
         response.response_code.should == 200
       end
 
       it "should response plain text" do
-        post :index, @params
+        post :receive, @params
         response.content_type.should == "text/plain"
       end
     end

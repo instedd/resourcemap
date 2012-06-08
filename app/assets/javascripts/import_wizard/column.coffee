@@ -2,23 +2,34 @@ onImportWizard ->
   class @Column
     constructor: (data) ->
       @name = ko.observable data.name
+
+      # How to use this column (new field? existing field? id? name? lat? lng? ignore?)
+      @usage = ko.observable data.usage
+
+      # For existing fields
+      @layer = ko.observable(if data.layer_id then window.model.findLayer(data.layer_id) else null)
+      @field = ko.observable(if @layer() then @layer().findField(data.field_id) else null)
+
+      # For new fields
       @kind = ko.observable data.kind
       @code = ko.observable data.code
       @label = ko.observable data.label
-      @sample = ko.observable data.sample
-      @value = ko.observable data.value
-      @level = ko.observable 1
+
+      # For new select_one or select_many fields
       @selectKind = ko.observable 'code'
 
-      @mapsToField = ko.computed =>
-        @kind() == 'text' || @kind() == 'numeric' || @kind() == 'select_one' || @kind() == 'select_many'
+      @sample = ko.observable data.sample
+      @value = ko.observable data.value
 
     toJSON: =>
       json =
+        usage: @usage()
         name: @name()
-        kind: @kind()
-      if @mapsToField()
+      if @usage() == 'existing_field'
+        json.field_id = @field().id
+      if @usage() == 'new_field'
+        json.kind = @kind()
         json.code = @code()
         json.label = @label()
-      json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
+        json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json

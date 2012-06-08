@@ -6,15 +6,18 @@ class Collection < ActiveRecord::Base
   validates_presence_of :name
 
   has_many :memberships, :dependent => :destroy
-  has_many :layer_memberships
+  has_many :layer_memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
   has_many :layers, order: 'ord', dependent: :destroy
   has_many :fields, order: 'ord'
-  has_many :thresholds
-  has_many :reminders
-  has_many :activities
-  has_many :snapshots
+  has_many :thresholds, dependent: :destroy
+  has_many :reminders, dependent: :destroy
+  has_many :activities, dependent: :destroy
+  has_many :snapshots, dependent: :destroy
+  has_many :site_histories, dependent: :destroy
+  has_many :layer_histories, dependent: :destroy
+  has_many :field_histories, dependent: :destroy
 
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
@@ -24,10 +27,6 @@ class Collection < ActiveRecord::Base
     search.size 2000
     results = search.perform.results
     results.first['_source']['properties'][es_code] rescue 0
-  end
-
-  def create_snapshot(name, date)
-    snapshots.create!(name: name, date: date)
   end
 
   def visible_fields_for(user)
@@ -112,8 +111,7 @@ class Collection < ActiveRecord::Base
   def response_prepare(field_code, field_id, results)
     array_result = []
     results.each do |r|
-      array_result.push r["_source"]["name"]  # get site name
-      array_result.push r["_source"]["properties"][field_id.to_s] # get properties value
+      array_result.push "#{r["_source"]["name"]}=#{r["_source"]["properties"][field_id.to_s]}"
     end
     response_sms = (array_result.empty?)? "There is no site matched" : array_result.join(", ")
     result = "[\"#{field_code}\"] in #{response_sms}"

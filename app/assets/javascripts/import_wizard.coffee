@@ -6,8 +6,11 @@ onImportWizard -> if $('#import-wizard-main').length > 0
   match = window.location.toString().match(/\/collections\/(\d+)\/import_wizard/)
   collectionId = parseInt(match[1])
 
-  $.get "/collections/#{collectionId}/import_wizard_sample.json", {}, (columns) =>
-    window.model = new MainViewModel(collectionId, columns)
-    ko.applyBindings window.model
+  $.get "/collections/#{collectionId}/fields.json", {}, (layers) =>
+    $.get "/collections/#{collectionId}/import_wizard_sample.json", {}, (columns) =>
+      window.model = new MainViewModel
+      window.model.initialize collectionId, layers, columns
 
-    $('.hidden-until-loaded').show()
+      ko.applyBindings window.model
+
+      $('.hidden-until-loaded').show()

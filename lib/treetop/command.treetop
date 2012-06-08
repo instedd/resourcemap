@@ -12,7 +12,7 @@ grammar Command
 	end
 	
 	rule query_command
-		('q' / 'Q') space layer_id:number space conditional_expression space? new_line <QueryCommandNode>
+		('q' / 'Q') space collection_id:number space conditional_expression space? new_line <QueryCommandNode>
 	end	
 	
 	rule update_command

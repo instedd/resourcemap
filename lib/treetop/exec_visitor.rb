@@ -11,7 +11,7 @@ def initialize(context={})
   end
   
   def visit_query_command(node)
-    if collection = Collection.find_by_id(node.layer_id.value)
+    if collection = Collection.find_by_id(node.collection_id.value)
       #raise MSG[:can_not_use_gateway] unless can_use_gateway?(collection)
       raise MSG[:can_not_query]       unless can_view?(node.conditional_expression.to_options, node.sender, collection)
       if reply = collection.query_sites(node.conditional_expression.to_options)

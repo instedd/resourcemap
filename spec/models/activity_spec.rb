@@ -143,34 +143,6 @@ describe Activity do
       'description' => "Layer '#{layer.name}' was deleted"
   end
 
-  it "creates one after running the import wizard" do
-    Activity.delete_all
-
-    csv_string = CSV.generate do |csv|
-      csv << ['Name', 'Lat', 'Lon', 'Beds']
-      csv << ['Foo', '1.2', '3.4', '10']
-      csv << ['Bar', '5.6', '7.8', '20']
-      csv << ['', '', '', '']
-    end
-
-    specs = [
-      {name: 'Name', kind: 'name'},
-      {name: 'Lat', kind: 'lat'},
-      {name: 'Lon', kind: 'lng'},
-      {name: 'Beds', kind: 'numeric', code: 'beds', label: 'The beds'},
-      ]
-
-    ImportWizard.import user, collection, csv_string
-    ImportWizard.execute user, collection, specs
-
-    assert_activity 'collection_imported',
-      'collection_id' => collection.id,
-      'user_id' => user.id,
-      'layer_id' => collection.layers.first.id,
-      'data' => {'sites' => 2},
-      'description' => 'Import wizard: 2 sites were imported'
-  end
-
   it "creates one after creating a site" do
     layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'beds', name: 'Beds', ord: 1}]
     field = layer.fields.first
