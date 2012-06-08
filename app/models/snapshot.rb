@@ -23,7 +23,11 @@ class Snapshot < ActiveRecord::Base
     Tire::Index.new index_name
   end
 
+  def fields
+    collection.field_histories.at_date(date)
+  end
+
   def site_mapping
-    Site::IndexUtils.site_mapping collection.field_histories.at_date(date).all
+    Site::IndexUtils.site_mapping fields
   end
 end
