@@ -15,6 +15,11 @@ class Snapshot < ActiveRecord::Base
     index.refresh
   end
 
+  after_destroy :destroy_index
+  def destroy_index
+    index.delete
+  end
+
   def index_name
     collection.index_name snapshot: name
   end

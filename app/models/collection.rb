@@ -6,15 +6,15 @@ class Collection < ActiveRecord::Base
   validates_presence_of :name
 
   has_many :memberships, :dependent => :destroy
-  has_many :layer_memberships
+  has_many :layer_memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
   has_many :layers, order: 'ord', dependent: :destroy
   has_many :fields, order: 'ord'
-  has_many :thresholds
-  has_many :reminders
-  has_many :activities
-  has_many :snapshots
+  has_many :thresholds, dependent: :destroy
+  has_many :reminders, dependent: :destroy
+  has_many :activities, dependent: :destroy
+  has_many :snapshots, dependent: :destroy
   has_many :site_histories, dependent: :destroy
   has_many :layer_histories, dependent: :destroy
   has_many :field_histories, dependent: :destroy
