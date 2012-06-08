@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   expose(:activities) { current_user.activities }
   expose(:thresholds) { collection.thresholds.order :ord }
   expose(:threshold)
-  expose(:reminders) { collection.reminders}
+  expose(:reminders) { collection.reminders }
   expose(:reminder)
 
   def after_sign_in_path_for(resource)
