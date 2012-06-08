@@ -6,4 +6,8 @@ class FieldHistory < ActiveRecord::Base
   belongs_to :collection
 
   serialize :config
+
+  def es_code
+    field_id.to_s
+  end
 end

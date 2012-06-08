@@ -6,7 +6,7 @@ class Snapshot < ActiveRecord::Base
   after_create :create_index
   def create_index
     index = Tire::Index.new index_name
-    index.create
+    index.create mappings: { site: site_mapping }
 
     collection.site_histories.at_date(date).each do |history|
       history.store_in index
@@ -17,5 +17,13 @@ class Snapshot < ActiveRecord::Base
 
   def index_name
     collection.index_name snapshot: name
+  end
+
+  def index
+    Tire::Index.new index_name
+  end
+
+  def site_mapping
+    Site::IndexUtils.site_mapping collection.field_histories.at_date(date).all
   end
 end

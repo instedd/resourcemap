@@ -23,4 +23,20 @@ module Site::IndexUtils
 
     index.refresh unless options[:refresh] == false
   end
+
+  def site_mapping(fields)
+    {
+      properties: {
+        name: { type: :string, index: :not_analyzed },
+        location: { type: :geo_point },
+        created_at: { type: :date, format: :basic_date_time },
+        updated_at: { type: :date, format: :basic_date_time },
+        properties: { properties: fields_mapping(fields) },
+      }
+    }
+  end
+
+  def fields_mapping(fields)
+    fields.each_with_object({}) { |field, hash| hash[field.es_code] = field.index_mapping }
+  end
 end
