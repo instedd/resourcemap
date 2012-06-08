@@ -1,6 +1,8 @@
 ResourceMap::Application.routes.draw do
   devise_for :users
-  match 'messaging' => 'messaging#index'
+  # match 'messaging' => 'messaging#index'
+  match 'nuntium' => 'nuntium#receive', :via => :post
+  
   resources :repeats
   resources :collections do
     resources :sites
