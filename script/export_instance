@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+ENV['RAILS_ENV'] ||= 'production'
+
+puts `bundle exec rake instance:export`
