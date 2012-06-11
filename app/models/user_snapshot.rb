@@ -8,4 +8,8 @@ class UserSnapshot < ActiveRecord::Base
     UserSnapshot.destroy_all user_id: self.user_id
   end
 
+  def self.get_for(user, collection)
+    self.joins(:snapshot).where user_id: user.id, :snapshots => { :collection_id => collection.id}
+  end
+
 end
