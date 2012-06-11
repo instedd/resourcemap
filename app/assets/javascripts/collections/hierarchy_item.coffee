@@ -24,7 +24,7 @@ onCollections ->
                           []
 
     sitesUrl: =>
-      "/collections/#{window.model.currentCollection().id()}/search.json?#{$.param @queryParams()}"
+      "/collections/#{window.model.currentCollection().id}/search.json?#{$.param @queryParams()}"
 
     queryParams: =>
       hierarchy_code: @field.esCode

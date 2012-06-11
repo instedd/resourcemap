@@ -14,7 +14,7 @@ onCollections ->
     isSearch: => false
 
     sitesUrl: =>
-      "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
+      "/collections/#{@id}/search.json?#{$.param @queryParams()}"
 
     queryParams: =>
       @setQueryParams {}

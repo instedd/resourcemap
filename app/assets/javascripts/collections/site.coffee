@@ -40,7 +40,7 @@ onCollections ->
       window.model.highlightSearch(@propertyValue(field))
 
     fetchLocation: =>
-      $.get "/collections/#{@collection.id()}/sites/#{@id()}.json", {}, (data) =>
+      $.get "/collections/#{@collection.id}/sites/#{@id()}.json", {}, (data) =>
         @position(data)
         @updatedAt(data.updated_at)
       @collection.fetchLocation()
@@ -89,9 +89,9 @@ onCollections ->
       data = {site: json}
       if @id()
         data._method = 'put'
-        $.post "/collections/#{@collection.id()}/sites/#{@id()}.json", data, callback_with_updated_at
+        $.post "/collections/#{@collection.id}/sites/#{@id()}.json", data, callback_with_updated_at
       else
-        $.post "/collections/#{@collection.id()}/sites", data, callback_with_updated_at
+        $.post "/collections/#{@collection.id}/sites", data, callback_with_updated_at
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
@@ -185,7 +185,7 @@ onCollections ->
         @marker.setPosition(position)
         @panToPosition()
 
-    fullName: => "#{@collection.name()}, #{@name()}"
+    fullName: => "#{@collection.name}, #{@name()}"
 
     parseLocation: (options) =>
       text = options.text || @locationTextTemp

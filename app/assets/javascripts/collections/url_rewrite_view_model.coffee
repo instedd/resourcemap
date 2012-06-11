@@ -10,7 +10,7 @@ onCollections ->
       query = {}
 
       if @currentCollection()
-        hash = "##{@currentCollection().id()}"
+        hash = "##{@currentCollection().id}"
       else
         hash = "#/"
 
@@ -20,10 +20,10 @@ onCollections ->
       # Append selected site or editing site, if any
       if @editingSite()
         query.editing_site = @editingSite().id()
-        query.editing_collection = @editingSite().collection.id()
+        query.editing_collection = @editingSite().collection.id
       else if @selectedSite()
         query.selected_site = @selectedSite().id()
-        query.selected_collection = @selectedSite().collection.id()
+        query.selected_collection = @selectedSite().collection.id
 
       # Append map center and zoom
       if @map

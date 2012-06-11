@@ -82,7 +82,7 @@
                 %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
-              <!-- ko foreach: fields() -->
+              <!-- ko foreach: fields -->
               %div
                 = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
                 <!-- ko if: kind == 'text' -->
@@ -151,11 +151,11 @@
               %div{style: 'margin-bottom:14px'}
                 %label ID With Prefix:
                 %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
-              <!-- ko foreach: collection.layers() -->
+              <!-- ko foreach: collection.layers -->
               %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
-              <!-- ko foreach: fields() -->
+              <!-- ko foreach: fields -->
               %div{style: 'margin-bottom:14px'}
                 %label{ko(text: "name + ':'")}
                 <!-- ko if: hasValue() -->

@@ -2,8 +2,8 @@ onCollections ->
 
   class @Layer
     constructor: (data) ->
-      @name = ko.observable data?.name
-      @fields = ko.observableArray($.map(data.fields, (x) => new Field(x)))
+      @name = data?.name
+      @fields = $.map data.fields, (x) => new Field x
       @expanded = ko.observable(true)
 
     toggleExpand: =>

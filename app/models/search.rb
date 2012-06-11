@@ -87,7 +87,7 @@ class Search
   end
 
   # Returns the results from ElasticSearch but with the location field
-  # returned as lat/lng fields.
+  # returned as lat/lng fields, and the date as a date object
   def ui_results
     items = results()
     items.each do |item|
@@ -96,6 +96,8 @@ class Search
         item['_source']['lng'] = item['_source']['location']['lon']
         item['_source'].delete 'location'
       end
+      item['_source']['created_at'] = Site.parse_date item['_source']['created_at']
+      item['_source']['updated_at'] = Site.parse_date item['_source']['updated_at']
     end
     items
   end
