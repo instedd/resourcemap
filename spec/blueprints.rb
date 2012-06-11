@@ -80,3 +80,8 @@ Snapshot.blueprint do
   name { Sham.username }
 end
 
+UserSnapshot.blueprint do
+  snapshot
+  user
+end
+

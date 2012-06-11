@@ -70,10 +70,23 @@ describe Snapshot do
   end
 
   it "should delete snapshots when collection is destroyed" do
-    snapshot = collection.snapshots.create! date: Time.now, name: 'last_year'
+    collection.snapshots.create! date: Time.now, name: 'last_year'
+    collection.snapshots.count.should eq(1)
 
     collection.destroy
 
     collection.snapshots.count.should eq(0)
   end
+
+  it "should delete userSnapshot if collection is destroyed" do
+    snapshot = collection.snapshots.create! date: Time.now, name: 'last_year'
+    user = User.make
+    UserSnapshot.create! user: user, snapshot: snapshot
+    snapshot.user_snapshot.should be
+
+    collection.destroy
+
+    UserSnapshot.where(user_id: user.id, snapshot_id: snapshot.id).count.should eq(0)
+  end
+
 end

@@ -1,5 +1,6 @@
 class Snapshot < ActiveRecord::Base
   belongs_to :collection
+  has_one :user_snapshot, dependent: :destroy
 
   validates_uniqueness_of :name, :scope => :collection_id
 
@@ -16,6 +17,7 @@ class Snapshot < ActiveRecord::Base
   end
 
   after_destroy :destroy_index
+
   def destroy_index
     index.delete
   end
