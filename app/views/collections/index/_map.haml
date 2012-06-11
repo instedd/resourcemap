@@ -165,9 +165,6 @@
                 <!-- ko if: !writeable() -->
                 %span.value{ko(text: :valueUI)}
                 <!-- /ko -->
-                <!-- ko if: !editing() && kind() == 'numeric' -->
-                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
-                <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: !hasValue() -->
                 <!-- ko if: writeable() -->
@@ -175,9 +172,6 @@
                 <!-- /ko -->
                 <!-- ko if: !writeable() -->
                 %span.value{style: 'color:grey'} (no value)
-                <!-- /ko -->
-                <!-- ko if: !editing() && kind() == 'numeric' -->
-                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: editing() && kind() == 'text' -->

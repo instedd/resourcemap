@@ -12,9 +12,6 @@
     <!-- ko if: $parent.properties()[$data.esCode()] -->
     %td.l
       %span{ko(html: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
-      <!-- ko if: kind() == 'numeric' -->
-      = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline'
-      <!-- /ko -->
     <!-- /ko -->
     <!-- ko if: !$parent.properties()[$data.esCode()] -->
     %td.l
