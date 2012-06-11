@@ -33,6 +33,6 @@ namespace :instance do
     `#{cmd}`
 
     puts "SQL dump file created: #{filename}"
-    puts "Now copy this file on the other server and run: ./script/import_instance"
+    puts "Now copy this file on the other server at the root of the project and run: ./script/import_instance"
   end
 end
