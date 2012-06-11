@@ -12,6 +12,7 @@ onThresholds -> if $('#thresholds-main').length > 0
   $.get "/collections/#{collectionId}/fields.json", (layers) ->
     fields = $.map(layers, (layer) -> layer.fields)
     window.model.fields $.map fields, (field) -> new Field field unless field.kind == 'hierarchy'
+    window.model.compareFields $.map fields, (field) -> new Field field unless field.kind == 'hierarchy'
 
     $.get "/collections/#{collectionId}/thresholds.json", (thresholds) ->
       thresholds = $.map thresholds, (threshold) -> new Threshold threshold

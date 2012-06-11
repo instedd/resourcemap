@@ -3,6 +3,8 @@ onThresholds ->
     constructor: (data) ->
       @id = ko.observable data?.id
       @collectionId = data?.collection_id
+      @isSomeSites = ko.observable("true")
+      @isAllOfConditions = ko.observable("true") 
       @ord = ko.observable data?.ord
       @color = ko.observable(data?.color ? '#ff0000')
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
@@ -19,9 +21,6 @@ onThresholds ->
 
     removeCondition: (condition) =>
       @conditions.remove condition
-
-    isFirstCondition: (condition) ->
-      0 == @conditions().indexOf condition
 
     isLastCondition: (condition) ->
       @conditions().length - 1 == @conditions().indexOf condition

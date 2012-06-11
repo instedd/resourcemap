@@ -2,6 +2,7 @@ onThresholds ->
   class @MainViewModel
     constructor: (@collectionId) ->
       @fields = ko.observableArray()
+      @compareFields = ko.observableArray()
       @thresholds = ko.observableArray([])
       @sites = ko.observableArray([])
       @currentThreshold = ko.observable()

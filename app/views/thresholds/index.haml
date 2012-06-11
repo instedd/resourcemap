@@ -45,45 +45,50 @@
         %br   
         Apply this alert to
         %br 
-        %input#GroupB_1{:name => "GroupB", :type => "radio"}/
-        %label{:for => "GroupB_1"} All sites
-        %input#GroupB_2{:name => "GroupB", :type => "radio"}/
-        %label{:for => "GroupB_2"} Some sites
-        %br 
-        %input.sites{ko(superblyTagField: '$root.sites'), type: :text}
+        %input{"data-bind" => "checked: isSomeSites", :value => "false", :name => "site", :type => "radio"}
+        %label All sites
+        %input{"data-bind" => "checked: isSomeSites", :value => "true", :name => "site", :type => "radio"} 
+        %label Some sites
+        %br
+        .middlebuttons{ko(visible: 'isSomeSites() == "true"' )}
+          %input{ko(superblyTagField: '$root.sites'), type: :text}
       %br
       %label Conditions
       .middlebuttons
-        %br 
-        %input#GroupB_1{:name => "GroupB", :type => "radio"}/
-        %label{:for => "GroupB_1"} All of following conditions
-        %input#GroupB_2{:name => "GroupB", :type => "radio"}/
-        %label{:for => "GroupB_2"} Any of the following conditions
-        %br 
-        %span
-        <!-- ko foreach :conditions -->
-        <!--    ko if: $parent.isFirstCondition($data) -->
-        When
-        <!--    /ko -->
-        <!--    ko if: !$parent.isFirstCondition($data) -->
+        %input{"data-bind" => "checked: isAllOfConditions", :value => "true", :name => "condition", :type => "radio"}
+        %label All of following conditions
+        %input{"data-bind" => "checked: isAllOfConditions", :value => "false", :name => "condition", :type => "radio"} 
+        %label Any of the following conditions
         %br
-        And
-        <!--    /ko -->
+        <!-- ko foreach :conditions -->
         %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
-        <!--    ko if: field().operators().length == 1 -->
+          
+        <!--  ko if: field().operators().length == 1 -->
         %span{ ko(text: 'field().operators()[0].label') }
         %select{ ko(options: 'field().options', optionsText: "'label'", optionsValue:"'id'", value: :value) }
-        <!--    /ko -->
+        <!--  /ko -->
+        
         <!--    ko if: field().operators().length > 1 -->
         %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
-        <!--    ko if: !(field().kind() == 'text') -->
+          
+        <!--  ko if: !(field().kind() == 'text') -->
         %select{ ko(options: 'ValueType.ALL', optionsText: "'label'", value: :valueType) }
-        <!--    /ko -->
+        <!--  /ko -->
+        
         %label{ ko(css: { error: '!valid()' }) }
         %span.w06
           %input{ ko(value: :value, valueUpdate: :afterkeydown, css: { error: '!valid()' }), type: :text, style: 'width:60px' }
+            
+        <!--    ko if: !(field().kind() == 'text') -->
+        <!--      ko if: (valueType().label() == 'a percentage of' -->
+        compared to    
+        %select{ ko(options: '$root.compareFields', optionsText: "'name'", value: :field, hasfocus: true) }
+        <!--      /ko -->
         <!--    /ko -->
+        <!--  /ko -->
+        
         %button.premove{ ko(click: '$parent.removeCondition') }
+        %br   
         <!-- /ko -->
       %button.fadd{ko(click: :addNewCondition) }
         Add another condition
