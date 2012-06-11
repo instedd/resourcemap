@@ -81,8 +81,8 @@ describe Snapshot do
   it "should delete userSnapshot if collection is destroyed" do
     snapshot = collection.snapshots.create! date: Time.now, name: 'last_year'
     user = User.make
-    UserSnapshot.create! user: user, snapshot: snapshot
-    snapshot.user_snapshot.should be
+    snapshot.user_snapshots.create! user: user
+    snapshot.user_snapshots.count.should eq(1)
 
     collection.destroy
 
