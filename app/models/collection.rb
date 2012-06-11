@@ -15,6 +15,7 @@ class Collection < ActiveRecord::Base
   has_many :reminders, dependent: :destroy
   has_many :activities, dependent: :destroy
   has_many :snapshots, dependent: :destroy
+  has_many :user_snapshots, :through => :snapshots
   has_many :site_histories, dependent: :destroy
   has_many :layer_histories, dependent: :destroy
   has_many :field_histories, dependent: :destroy
@@ -27,6 +28,10 @@ class Collection < ActiveRecord::Base
     search.size 2000
     results = search.perform.results
     results.first['_source']['properties'][es_code] rescue 0
+  end
+
+  def snapshot_name(user)
+    user_snapshots.where(user_id: user.id).first.try(:snapshot).try(:name)
   end
 
   def visible_fields_for(user)

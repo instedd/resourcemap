@@ -21,16 +21,4 @@ describe UserSnapshot do
 
   end
 
-  it "should get current snapshot per user" do
-    user = User.make
-    snapshot1 = collection.snapshots.create! date: Date.yesterday, name: 'snp1'
-    UserSnapshot.make user: user, snapshot: snapshot1
-
-    snapshots = UserSnapshot.get_for(user, collection)
-    snapshots.count.should eq(1)
-    snapshots.first.user_id.should eq(user.id)
-    snapshots.first.snapshot.collection_id.should eq(collection.id)
-
-  end
-
 end
