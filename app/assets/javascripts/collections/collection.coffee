@@ -14,13 +14,13 @@ onCollections ->
       @checked = ko.observable true
       @fieldsInitialized = false
 
-      @groupByOptions = ko.computed => [window.model.defaultGroupBy].concat(@fields().filter((f) -> f.kind() == 'hierarchy'))
+      @groupByOptions = ko.computed => [window.model.defaultGroupBy].concat(@fields().filter((f) -> f.showInGroupBy))
 
     isSearch: => false
 
-    sitesUrl: -> "/collections/#{@id()}/sites.json"
+    sitesUrl: -> "/collections/#{@id}/sites.json"
 
-    fetchLocation: => $.get "/collections/#{@id()}.json", {}, (data) =>
+    fetchLocation: => $.get "/collections/#{@id}.json", {}, (data) =>
       @position(data)
       @updatedAt(data.updated_at)
 

@@ -13,8 +13,8 @@ onCollections ->
       @constructorLocatable(data)
       @constructorSitesContainer()
 
-      @id = ko.observable data?.id
-      @name = ko.observable data?.name
+      @id = data?.id
+      @name = data?.name
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
 
@@ -24,18 +24,18 @@ onCollections ->
         return
 
       @fieldsInitialized = true
-      $.get "/collections/#{@id()}/fields", {}, (data) =>
+      $.get "/collections/#{@id}/fields", {}, (data) =>
         @layers($.map(data, (x) => new Layer(x)))
 
         fields = []
         for layer in @layers()
-          for field in layer.fields()
+          for field in layer.fields
             fields.push(field)
 
         @fields(fields)
         callback() if callback && typeof(callback) == 'function'
 
-    findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode() == esCode)[0]
+    findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 
     clearFieldValues: =>
       field.value(null) for field in @fields()
@@ -43,7 +43,7 @@ onCollections ->
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
 
-    link: (format) => "/api/collections/#{@id()}.#{format}"
+    link: (format) => "/api/collections/#{@id}.#{format}"
 
     level: => -1
 

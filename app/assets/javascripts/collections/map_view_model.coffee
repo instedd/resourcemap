@@ -108,7 +108,7 @@ onCollections ->
       ne = bounds.getNorthEast()
       sw = bounds.getSouthWest()
       collection_ids = if @currentCollection()
-                         [@currentCollection().id()]
+                         [@currentCollection().id]
                        else
                           c.id for c in @collections() when c.checked()
       query =

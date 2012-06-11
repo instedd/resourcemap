@@ -59,7 +59,7 @@
         <!-- ko foreach: $root.currentCollection().fields() -->
         %th{ko(click: '$root.sortBy', style: {maxWidth: 'suggestedWidth()', minWidth: 'suggestedWidth()'}), style: 'overflow:hidden;cursor:pointer'}
           %span{ko(text: :name), style: 'display:inline'}
-          <!-- ko if: $root.sort() == esCode() -->
+          <!-- ko if: $root.sort() == esCode -->
           %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
           <!-- /ko -->
         <!-- /ko -->
@@ -70,7 +70,7 @@
           <!-- /ko -->
         %th
     %tbody
-      <!-- ko if: !isSearch() && $root.groupBy().esCode() != '' -->
+      <!-- ko if: !isSearch() && $root.groupBy().esCode != '' -->
       <!--   ko template: {name: 'table-hierarchy-items-template', with: $data} -->
       <!--   /ko -->
       <!-- /ko -->

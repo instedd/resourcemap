@@ -10,8 +10,8 @@ onCollections ->
 
       @collection = collection
 
-      @id = ko.observable collection.id()
-      @name = ko.observable collection.name()
+      @id = collection.id
+      @name = collection.name
       @layers = collection.layers
       @fields = collection.fields
       @fieldsInitialized = collection.fieldsInitialized

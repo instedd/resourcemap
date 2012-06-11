@@ -46,8 +46,10 @@ Layer.blueprint do
 end
 
 Field.blueprint do
-  collection
+  # First specify the layer, then the collection must always be that of the layer
   layer
+  collection { layer.collection }
+
   name
   code { Sham.name }
   kind {'text' }
@@ -58,7 +60,7 @@ Activity.blueprint do
 end
 
 SiteHistory.blueprint do
-  #collection No sham defined for collection
+  collection
   name
   lat { rand(180) - 90 }
   lng { rand(360) - 180 }
@@ -75,6 +77,11 @@ end
 Snapshot.blueprint do
   collection
   date {rand_time(2.days.ago, Time.now)}
-  name
+  name { Sham.username }
+end
+
+UserSnapshot.blueprint do
+  snapshot
+  user
 end
 

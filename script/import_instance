@@ -46,4 +46,4 @@ else
 end
 
 `bundle exec rake db:setup`
-`bundle exec rake instance:import[#{filename}]`
+puts `bundle exec rake instance:import[#{filename}]`

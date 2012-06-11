@@ -14,20 +14,20 @@ onCollections ->
 
       collection.hierarchyItemsMap[data.id] = @
 
-      @id = ko.observable(data.id)
-      @name = ko.observable(data.name)
-      @level = ko.observable(level)
+      @id = data.id
+      @name = data.name ? data.label
+      @level = level
       @selected = ko.observable(false)
       @hierarchyItems = if data.sub?
-                          ko.observableArray($.map(data.sub, (x) => new HierarchyItem(collection, @field, x, level + 1)))
+                          $.map data.sub, (x) => new HierarchyItem(collection, @field, x, level + 1)
                         else
-                          ko.observableArray()
+                          []
 
     sitesUrl: =>
-      "/collections/#{window.model.currentCollection().id()}/search.json?#{$.param @queryParams()}"
+      "/collections/#{window.model.currentCollection().id}/search.json?#{$.param @queryParams()}"
 
     queryParams: =>
-      hierarchy_code: @field.esCode()
-      hierarchy_value: @id()
+      hierarchy_code: @field.esCode
+      hierarchy_value: @id
 
     createSite: (site) => new Site(window.model.currentCollection().collection, site)

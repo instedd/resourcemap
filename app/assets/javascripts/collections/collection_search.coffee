@@ -23,7 +23,7 @@ onCollections ->
       super(site)
 
     sitesUrl: =>
-      "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
+      "/collections/#{@id}/search.json?#{$.param @queryParams()}"
 
     queryParams: (api = false) =>
       @setQueryParams {}, api
@@ -40,4 +40,4 @@ onCollections ->
       filter.setQueryParams(q, api) for filter in @filters
       q
 
-    link: (format) => "/api/collections/#{@id()}.#{format}?#{$.param @queryParams(true)}"
+    link: (format) => "/api/collections/#{@id}.#{format}?#{$.param @queryParams(true)}"

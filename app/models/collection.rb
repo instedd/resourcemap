@@ -6,15 +6,18 @@ class Collection < ActiveRecord::Base
   validates_presence_of :name
 
   has_many :memberships, :dependent => :destroy
-  has_many :layer_memberships
+  has_many :layer_memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
   has_many :layers, order: 'ord', dependent: :destroy
   has_many :fields, order: 'ord'
-  has_many :thresholds
-  has_many :reminders
-  has_many :activities
-  has_many :snapshots
+  has_many :thresholds, dependent: :destroy
+  has_many :reminders, dependent: :destroy
+  has_many :activities, dependent: :destroy
+  has_many :snapshots, dependent: :destroy
+  has_many :site_histories, dependent: :destroy
+  has_many :layer_histories, dependent: :destroy
+  has_many :field_histories, dependent: :destroy
 
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
@@ -24,18 +27,6 @@ class Collection < ActiveRecord::Base
     search.size 2000
     results = search.perform.results
     results.first['_source']['properties'][es_code] rescue 0
-  end
-
-  def create_snapshot(name, date)
-    snapshots.create!(name: name, date: date)
-    snapshot_sites = Site.get_history_for(date)
-
-    index = Tire::Index.new Collection.index_name id, snapshot: name
-    index.create
-
-    snapshot_sites.each do |site_history|
-      site_history.store_in index
-    end
   end
 
   def visible_fields_for(user)

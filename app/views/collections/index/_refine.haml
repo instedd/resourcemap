@@ -1,7 +1,7 @@
 <!-- ko if: !inSearch() && currentCollection() && currentCollection().groupByOptions().length > 1 -->
 .left{ko(with: :currentCollection), style: 'margin-right:8px'}
   Group by
-  %select{ko(value: '$root.groupBy', options: :groupByOptions, optionsText: 'function(o){return o.name();}')}
+  %select{ko(value: '$root.groupBy', options: :groupByOptions, optionsText: "'name'")}
 <!-- /ko -->
 .left.superblyTagItems
   <!-- ko foreach: filters() -->
@@ -40,17 +40,17 @@
     <!-- /ko -->
     <!-- /ko -->
     <!-- ko foreach: currentCollection().fields() -->
-    #div{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.esCode()) }'), style: 'cursor:pointer;padding-top:6px'}
-      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == esCode() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+    #div{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.esCode) }'), style: 'cursor:pointer;padding-top:6px'}
+      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == esCode ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
       %span{ko(text: :name)}
-    <!-- ko if: $root.expandedRefineProperty() == esCode() -->
+    <!-- ko if: $root.expandedRefineProperty() == esCode -->
     #div{style: 'padding:10px;margin-left:10px'}
-      <!-- ko if: kind() == 'text' -->
+      <!-- ko if: kind == 'text' -->
       equals:
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
       %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
       <!-- /ko -->
-      <!-- ko if: kind() == 'numeric' -->
+      <!-- ko if: kind == 'numeric' -->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
         %option{value: '='} equals
         %option{value: '<'} is less than
@@ -60,7 +60,7 @@
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true), type: :number}
       %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
       <!-- /ko -->
-      <!-- ko if: kind() == 'select_one' || kind() == 'select_many' -->
+      <!-- ko if: kind == 'select_one' || kind == 'select_many' -->
       is:
       %select{ko(value: '$root.expandedRefinePropertyValue', options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
       %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}

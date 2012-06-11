@@ -33,21 +33,21 @@ onCollections ->
     hasName: => $.trim(@name()).length > 0
 
     propertyValue: (field) =>
-      value = @properties()[field.esCode()]
+      value = @properties()[field.esCode]
       field.valueUIFor(value)
 
     highlightedPropertyValue: (field) =>
       window.model.highlightSearch(@propertyValue(field))
 
     fetchLocation: =>
-      $.get "/collections/#{@collection.id()}/sites/#{@id()}.json", {}, (data) =>
+      $.get "/collections/#{@collection.id}/sites/#{@id()}.json", {}, (data) =>
         @position(data)
         @updatedAt(data.updated_at)
       @collection.fetchLocation()
 
     updateProperty: (esCode, value) =>
       field = @collection.findFieldByEsCode(esCode)
-      if field.kind() == 'hierarchy' && window.model.currentCollection()
+      if field.showInGroupBy && window.model.currentCollection()
         window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[esCode], newValue: value}])
 
       @properties()[esCode] = value
@@ -62,13 +62,13 @@ onCollections ->
 
       @properties({})
       for field in collection.fields()
-        if field.kind() == 'hierarchy' && @id()
-          hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode()], newValue: field.value()})
+        if field.kind == 'hierarchy' && @id()
+          hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode], newValue: field.value()})
 
         if field.value()
-          @properties()[field.esCode()] = field.value()
+          @properties()[field.esCode] = field.value()
         else
-          delete @properties()[field.esCode()]
+          delete @properties()[field.esCode]
 
       if window.model.currentCollection()
         window.model.currentCollection().performHierarchyChanges(@, hierarchyChanges)
@@ -78,7 +78,7 @@ onCollections ->
         collection.clearFieldValues()
         if @properties()
           for field in collection.fields()
-            value = @properties()[field.esCode()]
+            value = @properties()[field.esCode]
             field.value(value)
 
     post: (json, callback) =>
@@ -89,9 +89,9 @@ onCollections ->
       data = {site: json}
       if @id()
         data._method = 'put'
-        $.post "/collections/#{@collection.id()}/sites/#{@id()}.json", data, callback_with_updated_at
+        $.post "/collections/#{@collection.id}/sites/#{@id()}.json", data, callback_with_updated_at
       else
-        $.post "/collections/#{@collection.id()}/sites", data, callback_with_updated_at
+        $.post "/collections/#{@collection.id}/sites", data, callback_with_updated_at
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
@@ -185,7 +185,7 @@ onCollections ->
         @marker.setPosition(position)
         @panToPosition()
 
-    fullName: => "#{@collection.name()}, #{@name()}"
+    fullName: => "#{@collection.name}, #{@name()}"
 
     parseLocation: (options) =>
       text = options.text || @locationTextTemp

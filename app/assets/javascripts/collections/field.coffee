@@ -3,35 +3,38 @@ onCollections ->
   # A Layer field
   class @Field
     constructor: (data) ->
-      @esCode = ko.observable "#{data.id}"
-      @code = ko.observable data.code
-      @name = ko.observable data.name
-      @kind = ko.observable data.kind
-      @writeable = ko.observable data?.writeable
+      @esCode = "#{data.id}"
+      @code = data.code
+      @name = data.name
+      @kind = data.kind
+      @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
+      @writeable = data?.writeable
 
       @value = ko.observable()
-      @hasValue = ko.computed => @value() && (if @kind() == 'select_many' then @value().length > 0 else @value())
+      @hasValue = ko.computed => @value() && (if @kind == 'select_many' then @value().length > 0 else @value())
       @valueUI = ko.computed => @valueUIFor(@value())
 
-      if @kind() == 'select_one' || @kind() == 'select_many'
+      if @kind in ['select_one', 'select_many']
         @options = if data.config?.options?
-                     ko.observableArray($.map(data.config.options, (x) => new Option(x)))
+                     $.map data.config.options, (x) => new Option x
                    else
-                     ko.observableArray()
-        @optionsIds = ko.computed => $.map(@options(), (x) => x.id())
+                     []
+        @optionsIds = $.map @options, (x) => x.id
+        @hierarchy = @options
 
-      if @kind() == 'hierarchy'
-        @hierarchy = ko.observable data.config?.hierarchy
-        @buildHierarchyItems() if @hierarchy()
+      if @kind == 'hierarchy'
+        @hierarchy = data.config?.hierarchy
 
-      if @kind() == 'select_many'
+      @buildHierarchyItems() if @hierarchy?
+
+      if @kind == 'select_many'
         @filter = ko.observable('') # The text for filtering options in a select_many
         @remainingOptions = ko.computed =>
-          option.selected(false) for option in @options()
+          option.selected(false) for option in @options
           remaining = if @value()
-            @options().filter((x) => @value().indexOf(x.id()) == -1 && x.label().toLowerCase().indexOf(@filter().toLowerCase()) == 0)
+            @options.filter((x) => @value().indexOf(x.id) == -1 && x.label.toLowerCase().indexOf(@filter().toLowerCase()) == 0)
           else
-            @options()
+            @options
           remaining[0].selected(true) if remaining.length > 0
           remaining
       else
@@ -41,23 +44,23 @@ onCollections ->
       @expanded = ko.observable false # For select_many
 
     codeForLink: (api = false) =>
-      if api then @code() else @esCode()
+      if api then @code else @esCode
 
     # The value of the UI.
     # If it's a select one or many, we need to get the label from the option code.
     valueUIFor: (value) =>
-      if @kind() == 'select_one'
+      if @kind == 'select_one'
         if value then @labelFor(value) else ''
-      else if @kind() == 'select_many'
+      else if @kind == 'select_many'
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
-      else if @kind() == 'hierarchy'
+      else if @kind == 'hierarchy'
         if value then @fieldHierarchyItemsMap[value] else ''
       else
         value
 
     buildHierarchyItems: =>
       @fieldHierarchyItemsMap = {}
-      @fieldHierarchyItems = ko.observableArray $.map(@hierarchy(), (x) => new FieldHierarchyItem(@, x))
+      @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@, x))
 
     edit: =>
       @originalValue = @value()
@@ -78,18 +81,18 @@ onCollections ->
     save: =>
       @editing(false)
       @filter('')
-      window.model.editingSite().updateProperty(@esCode(), @value())
+      window.model.editingSite().updateProperty(@esCode, @value())
       delete @originalValue
 
     selectOption: (option) =>
       @value([]) unless @value()
-      @value().push(option.id())
+      @value().push(option.id)
       @value.valueHasMutated()
       @filter('')
 
     removeOption: (optionId) =>
       @value([]) unless @value()
-      @value(arrayDiff(@value(), [optionCode]))
+      @value(arrayDiff(@value(), [optionId]))
       @value.valueHasMutated()
 
     expand: => @expanded(true)
@@ -120,15 +123,15 @@ onCollections ->
           true
 
     labelFor: (id) =>
-      for option in @options()
-        if option.id() == id
-          return option.label()
+      for option in @options
+        if option.id == id
+          return option.label
       null
 
     # In the table view, use a fixed size width for each property column,
     # which depends on the length of the name.
     suggestedWidth: =>
-      if @name().length < 10
+      if @name.length < 10
         '100px'
       else
-        "#{20 + @name().length * 8}px"
+        "#{20 + @name.length * 8}px"

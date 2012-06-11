@@ -9,11 +9,6 @@ class Layer < ActiveRecord::Base
 
   validates_presence_of :ord
 
-  after_create :update_collection_mapping
-  def update_collection_mapping
-    collection.update_mapping
-  end
-
   # I'd move this code to a concern, but it works differntly (the fields don't
   # have an id). Must probably be a bug in Active Record.
   after_create :create_created_activity, :unless => :mute_activities

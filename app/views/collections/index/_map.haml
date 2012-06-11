@@ -33,7 +33,7 @@
   .tablescroll
     %table.GralTable.CleanTable
       %tbody
-        <!-- ko if: !isSearch() && $root.groupBy().esCode() != '' -->
+        <!-- ko if: !isSearch() && $root.groupBy().esCode != '' -->
         <!-- ko template: {name: 'map-hierarchy-items-template', with: $data} -->
         <!-- /ko -->
         <!-- /ko -->
@@ -82,20 +82,20 @@
                 %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
-              <!-- ko foreach: fields() -->
+              <!-- ko foreach: fields -->
               %div
-                = label_tag '', '', ko(attr: {:for => :esCode}, text: "name() + ':'")
-                <!-- ko if: kind() == 'text' -->
+                = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
+                <!-- ko if: kind == 'text' -->
                 = ko_text_field_tag :value
                 <!-- /ko -->
-                <!-- ko if: kind() == 'numeric' -->
+                <!-- ko if: kind == 'numeric' -->
                 = ko_number_field_tag :value
                 = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
                 <!-- /ko -->
-                <!-- ko if: kind() == 'select_one' -->
+                <!-- ko if: kind == 'select_one' -->
                 %select{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
                 <!-- /ko -->
-                <!-- ko if: kind() == 'select_many' -->
+                <!-- ko if: kind == 'select_many' -->
                 %ul.superblyTagItems{ko(foreach: :value)}
                   %li.superblyTagItem{ko(click: '$parent.removeOption')}
                     %span{ko(text: '$parent.labelFor($data)')}
@@ -111,7 +111,7 @@
                     %a{ko(text: :label, click: '$parent.selectOption')}
                 <!-- /ko -->
                 <!-- /ko -->
-                <!-- ko if: kind() == 'hierarchy' -->
+                <!-- ko if: kind == 'hierarchy' -->
                 .hierarchy-container
                   <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
                   <!-- /ko -->
@@ -151,45 +151,39 @@
               %div{style: 'margin-bottom:14px'}
                 %label ID With Prefix:
                 %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
-              <!-- ko foreach: collection.layers() -->
+              <!-- ko foreach: collection.layers -->
               %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
-              <!-- ko foreach: fields() -->
+              <!-- ko foreach: fields -->
               %div{style: 'margin-bottom:14px'}
-                %label{ko(text: "name() + ':'")}
+                %label{ko(text: "name + ':'")}
                 <!-- ko if: hasValue() -->
-                <!-- ko if: writeable() -->
+                <!-- ko if: writeable -->
                 %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer'}
                 <!-- /ko -->
-                <!-- ko if: !writeable() -->
+                <!-- ko if: !writeable -->
                 %span.value{ko(text: :valueUI)}
-                <!-- /ko -->
-                <!-- ko if: !editing() && kind() == 'numeric' -->
-                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: !hasValue() -->
-                <!-- ko if: writeable() -->
+                <!-- ko if: writeable -->
                 %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no value)
                 <!-- /ko -->
-                <!-- ko if: !writeable() -->
+                <!-- ko if: !writeable -->
                 %span.value{style: 'color:grey'} (no value)
                 <!-- /ko -->
-                <!-- ko if: !editing() && kind() == 'numeric' -->
-                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
                 <!-- /ko -->
-                <!-- /ko -->
-                <!-- ko if: editing() && kind() == 'text' -->
+                <!-- ko if: editing() && kind == 'text' -->
                 = ko_text_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
                 <!-- /ko -->
-                <!-- ko if: editing() && kind() == 'numeric' -->
+                <!-- ko if: editing() && kind == 'numeric' -->
                 = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
                 <!-- /ko -->
-                <!-- ko if: editing() && kind() == 'select_one' -->
+                <!-- ko if: editing() && kind == 'select_one' -->
                 %select{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}', hasfocus: true, event: {change: :save, blur: :save})}
                 <!-- /ko -->
-                <!-- ko if: editing() && kind() == 'select_many' -->
+                <!-- ko if: editing() && kind == 'select_many' -->
                 %ul.superblyTagItems{ko(foreach: :value)}
                   %li.superblyTagItem{ko(click: '$parent.removeOption')}
                     %span{ko(text: '$parent.labelFor($data)')}
@@ -203,7 +197,7 @@
                 %button{ko(click: :exit), style: 'float:right'} Cancel
                 .clear
                 <!-- /ko -->
-                <!-- ko if: editing() && kind() == 'hierarchy' -->
+                <!-- ko if: editing() && kind == 'hierarchy' -->
                 .hierarchy-container
                   <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
                   <!-- /ko -->

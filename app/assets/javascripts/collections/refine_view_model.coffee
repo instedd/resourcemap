@@ -62,13 +62,13 @@ onCollections ->
       return if $.trim(@expandedRefinePropertyValue()).length == 0
 
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
-      if field.kind() == 'text'
+      if field.kind == 'text'
         @filters.push(new FilterByTextProperty(field, @expandedRefinePropertyValue()))
-      else if field.kind() == 'numeric'
+      else if field.kind == 'numeric'
         @filters.push(new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
-      else if field.kind() == 'select_one' || field.kind() == 'select_many'
+      else if field.kind in ['select_one', 'select_many']
         @expandedRefinePropertyValue(parseInt(@expandedRefinePropertyValue()))
-        valueLabel = (option for option in field.options() when option.id() == @expandedRefinePropertyValue())[0].label()
+        valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0].label
         @filters.push(new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel))
 
       @hideRefinePopup()

@@ -21,10 +21,6 @@ describe Collection do
 
       collection.max_value_of_property(field.es_code).should eq(20)
     end
-
-    it "gets max value for property that doesn't exist" do
-      collection.max_value_of_property(field.es_code).should eq(0)
-    end
   end
 
   describe "thresholds test" do
@@ -52,10 +48,12 @@ describe Collection do
   end
 
   describe "SMS query" do
-    it "should prepare response_sms" do
-      option = {:field_code => "AB", :field_id => 2}
-      result = [{"_source"=>{"id"=>1, "name"=>"Siem Reap Health Center", "properties"=>{"1"=>15, "2"=>40, "3"=>6}}}]
-      collection.response_prepare(option[:field_code], option[:field_id], result).should eq("[\"#{option[:field_code]}\"] in #{[result[0]["_source"]["name"],40].join(", ")}")
+    pending do
+      it "should prepare response_sms" do
+        option = {:field_code => "AB", :field_id => 2}
+        result = [{"_source"=>{"id"=>1, "name"=>"Siem Reap Health Center", "properties"=>{"1"=>15, "2"=>40, "3"=>6}}}]
+        collection.response_prepare(option[:field_code], option[:field_id], result).should eq("[\"#{option[:field_code]}\"] in #{[result[0]["_source"]["name"],40].join(", ")}")
+      end
     end
 
     describe "Operator parser" do
@@ -67,45 +65,6 @@ describe Collection do
         collection.operator_parser(">=").should eq("gte")
         collection.operator_parser("<=").should eq("lte")
       end
-    end
-  end
-
-  describe "Snapshot tests" do
-    before(:each) do
-      stub_time '2011-01-01 10:00:00'
-
-      collection.sites.make :name => 'site1 last year'
-      collection.sites.make :name => 'site2 last year'
-
-      stub_time '2012-06-05 12:17:58'
-
-      collection.sites.make :name => 'site3 today'
-      collection.sites.make :name => 'site4 today'
-
-    end
-
-    it "should create snapshot for last year" do
-      date = '2011-01-01 10:00:00'.to_time
-
-      collection.create_snapshot("last_year", date)
-
-      snapshots = collection.snapshots
-      snapshots.count.should eq(1)
-
-      snapshot = snapshots.first
-      snapshot.name.should eq("last_year")
-      snapshot.date.should eq(date)
-    end
-
-    it "should create index with sites" do
-      date = '2011-01-01 10:00:00'.to_time
-
-      collection.create_snapshot("last_year", date)
-
-      index_name = Collection.index_name collection.id, snapshot: "last_year"
-
-      search = Tire::Search::Search.new index_name
-      search.perform.results.length.should eq(2)
     end
   end
 end

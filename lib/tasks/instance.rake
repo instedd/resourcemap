@@ -21,4 +21,18 @@ namespace :instance do
 
     Rake.application.invoke_task 'index:recreate'
   end
+
+  task :export => :environment do
+    filename = "resource_map_#{Time.now.strftime '%Y%m%d%H%M%S'}.sql"
+    db_config = Rails.configuration.database_configuration[Rails.env]
+    cmd = "mysqldump -u#{db_config['username']} "
+    cmd << " -p#{db_config['password']} " if db_config['password'].present?
+    cmd << db_config['database']
+    cmd << " > #{filename}"
+
+    `#{cmd}`
+
+    puts "SQL dump file created: #{filename}"
+    puts "Now copy this file on the other server at the root of the project and run: ./script/import_instance"
+  end
 end

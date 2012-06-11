@@ -5,12 +5,12 @@ describe Search do
   let!(:layer) { collection.layers.make }
 
   context "search by property" do
-    let!(:beds) { layer.fields.make :code => 'beds' }
-    let!(:tables) { layer.fields.make :code => 'tables' }
+    let!(:beds) { layer.fields.make code: 'beds', kind: 'numeric' }
+    let!(:tables) { layer.fields.make code: 'tables', kind: 'numeric' }
 
-    let!(:site1) { collection.sites.make :properties => {beds.es_code => 5, tables.es_code => 1} }
-    let!(:site2) { collection.sites.make :properties => {beds.es_code => 10, tables.es_code => 2} }
-    let!(:site3) { collection.sites.make :properties => {beds.es_code => 20, tables.es_code => 3} }
+    let!(:site1) { collection.sites.make properties: {beds.es_code => 5, tables.es_code => 1} }
+    let!(:site2) { collection.sites.make properties: {beds.es_code => 10, tables.es_code => 2} }
+    let!(:site3) { collection.sites.make properties: {beds.es_code => 20, tables.es_code => 3} }
 
     it "searches by equality" do
       search = collection.new_search

@@ -2,7 +2,7 @@
 %script{type: "text/html", id: "field-hierarchy-items-template"}
   <!-- ko foreach: fieldHierarchyItems -->
   .hierarchy{ko(css: {active: 'selected()'})}
-    %a{ko(style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
+    %a{ko(style: {marginLeft: "'' + (level * 20) + 'px'"}), href: 'javascript:void(0)'}
       %img{ko(click: :toggleExpand, attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"}), style: 'position:relative;top:2px'}
       %span{ko(click: :select, text: :name)}
   <!-- ko if: expanded -->

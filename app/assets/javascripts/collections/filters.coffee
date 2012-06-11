@@ -39,7 +39,7 @@ onCollections ->
     setQueryParams: (options, api = false) =>
       options[@field.codeForLink(api)] = @value
 
-    description: => "where #{@field.name()} contains \"#{@value}\""
+    description: => "where #{@field.name} contains \"#{@value}\""
 
   class @FilterByNumericProperty extends Filter
     constructor: (field, operator, value) ->
@@ -51,7 +51,7 @@ onCollections ->
       options[@field.codeForLink(api)] = "#{@operator}#{@value}"
 
     description: =>
-      str = "where #{@field.name()} "
+      str = "where #{@field.name} "
       switch @operator
         when '=' then str += " equals "
         when '<' then str += " is less than "
@@ -70,4 +70,4 @@ onCollections ->
       options[@field.codeForLink(api)] = @value
 
     description: =>
-      "where #{@field.name()} is \"#{@valueLabel}\""
+      "where #{@field.name} is \"#{@valueLabel}\""

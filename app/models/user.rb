@@ -6,10 +6,11 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
   validates_uniqueness_of :phone_number
-  validates_presence_of :phone_number 
+  validates_presence_of :phone_number
   validates_numericality_of :phone_number
   has_many :memberships
   has_many :collections, through: :memberships
+  has_one :user_snapshot
 
   def create_collection(collection)
     return false unless collection.save
@@ -54,25 +55,25 @@ class User < ActiveRecord::Base
     membership = self.memberships.where(:collection_id => collection.id).first
     return false unless membership
     return membership.admin if membership.admin
-    
+
     return true if(validate_layer_read_permission(collection, option))
     false
   end
-  
+
   def can_update?(site, properties)
     membership = self.memberships.where(:collection_id => site.collection_id).first
-    return false unless membership 
-    return membership.admin if membership.admin?    
-    return true if(validate_layer_write_permission(site, properties)) 
+    return false unless membership
+    return membership.admin if membership.admin?
+    return true if(validate_layer_write_permission(site, properties))
     false
   end
 
   def validate_layer_write_permission(site, properties)
     properties.each do |prop|
-      field = Field.find_by_code(prop.values[0].to_s)  
+      field = Field.find_by_code(prop.values[0].to_s)
       return false if field.nil?
       lm = LayerMembership.where(user_id: self.id, collection_id: site.collection_id, layer_id: field.layer_id).first
-      return false if lm.nil? 
+      return false if lm.nil?
       return false if(!lm && lm.write)
     end
     return true
@@ -82,7 +83,7 @@ class User < ActiveRecord::Base
     field = Field.find_by_code field_code
     return false if field.nil?
     lm = LayerMembership.where(user_id: self.id, collection_id: collection.id, layer_id: field.layer_id).first
-    return false if lm.nil? 
+    return false if lm.nil?
     return false if(!lm && lm.read)
     return true
   end

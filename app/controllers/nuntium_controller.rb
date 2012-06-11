@@ -1,16 +1,38 @@
 require 'treetop_dependencies'
 require 'digest'
 
-class MessagingController < ApplicationController
+class NuntiumController < ApplicationController
   helper_method :save_message
-  protect_from_forgery :except => :index
+  protect_from_forgery :except => :receive
 
   USER_NAME, PASSWORD = 'iLab', '1c4989610bce6c4879c01bb65a45ad43'
 
   # POST /messaging
-  def index
-    raise HttpVerbNotSupported.new unless request.post?
-    message = save_message
+  # def index
+    # raise HttpVerbNotSupported.new unless request.post?
+    # message = save_message
+    # begin
+      # message.process! params
+    # rescue => err
+      # message.reply = err.message
+    # ensure
+    # if (message.reply != "Invalid command")
+      # message[:collection_id] = get_collection_id(params[:body])
+    # end
+    # message.save
+    # render :text => message.reply, :content_type => "text/plain"
+    # end
+  # end
+  
+  # POST /nuntium
+  def receive
+    begin
+      message = save_message
+    rescue => err
+      render :text => err.message, :status => 400
+      return
+    end
+    
     begin
       message.process! params
     rescue => err

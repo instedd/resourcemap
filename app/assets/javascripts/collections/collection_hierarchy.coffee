@@ -9,18 +9,18 @@ onCollections ->
 
       @field = field
       @hierarchyItemsMap = {}
-      @hierarchyItems = ko.observableArray $.map(field.hierarchy(), (x) => new HierarchyItem(@, field, x))
+      @hierarchyItems = $.map field.hierarchy, (x) => new HierarchyItem(@, field, x)
 
     isSearch: => false
 
     sitesUrl: =>
-      "/collections/#{@id()}/search.json?#{$.param @queryParams()}"
+      "/collections/#{@id}/search.json?#{$.param @queryParams()}"
 
     queryParams: =>
       @setQueryParams {}
 
     setQueryParams: (q) =>
-      q.hierarchy_code = @field.esCode()
+      q.hierarchy_code = @field.esCode
       q
 
     addSite: (site, isNew = false) =>
@@ -29,8 +29,8 @@ onCollections ->
       if isNew
         @collection.addSite site
 
-        if site.properties()[@field.esCode()]
-          item = @hierarchyItemsMap[site.properties()[@field.esCode()]]
+        if site.properties()[@field.esCode]
+          item = @hierarchyItemsMap[site.properties()[@field.esCode]]
           item.addSite site if item && item.sitesPage > 1
         else
           super(site)
@@ -41,7 +41,7 @@ onCollections ->
     # value: we need to move it from the old node to the new node.
     performHierarchyChanges: (site, changes) =>
       for change in changes
-        if change.field.esCode() == @field.esCode()
+        if change.field.esCode == @field.esCode
           @performHierarchyChange(site, change)
 
     performHierarchyChange: (site, change) =>

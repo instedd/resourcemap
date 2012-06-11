@@ -71,20 +71,20 @@ shared_examples "it includes History::Concern" do
   end
 
   it "should not get new elements in history for date" do
+    collection = Collection.make
 
     stub_time '2011-01-01 10:00:00'
 
-    described_class.make :name => '1 last year'
-    described_class.make :name => '2 last year'
+    described_class.make name: '1 last year', collection_id: collection.id
+    described_class.make name: '2 last year', collection_id: collection.id
 
     stub_time '2012-06-05 12:17:58'
 
-    described_class.make :name => '3 today'
-    described_class.make :name => '4 today'
+    described_class.make name: '3 today', collection_id: collection.id
+    described_class.make name: '4 today', collection_id: collection.id
 
     date = '2011-01-01 10:00:00'.to_time
-
-    histories = described_class.get_history_for(date)
+    histories = collection.send("#{described_class}_histories".downcase).at_date(date)
     histories.count.should eq(2)
   end
 
