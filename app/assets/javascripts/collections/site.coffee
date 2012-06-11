@@ -47,7 +47,7 @@ onCollections ->
 
     updateProperty: (esCode, value) =>
       field = @collection.findFieldByEsCode(esCode)
-      if field.kind() == 'hierarchy' && window.model.currentCollection()
+      if field.showInGroupBy && window.model.currentCollection()
         window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[esCode], newValue: value}])
 
       @properties()[esCode] = value

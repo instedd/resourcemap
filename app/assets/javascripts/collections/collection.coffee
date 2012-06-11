@@ -14,7 +14,7 @@ onCollections ->
       @checked = ko.observable true
       @fieldsInitialized = false
 
-      @groupByOptions = ko.computed => [window.model.defaultGroupBy].concat(@fields().filter((f) -> f.kind() == 'hierarchy'))
+      @groupByOptions = ko.computed => [window.model.defaultGroupBy].concat(@fields().filter((f) -> f.showInGroupBy))
 
     isSearch: => false
 

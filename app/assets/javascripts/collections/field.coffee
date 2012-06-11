@@ -7,6 +7,7 @@ onCollections ->
       @code = ko.observable data.code
       @name = ko.observable data.name
       @kind = ko.observable data.kind
+      @showInGroupBy = @kind() in ['select_one', 'select_many', 'hierarchy']
       @writeable = ko.observable data?.writeable
 
       @value = ko.observable()
@@ -19,10 +20,12 @@ onCollections ->
                    else
                      ko.observableArray()
         @optionsIds = ko.computed => $.map(@options(), (x) => x.id())
+        @hierarchy = @options
 
       if @kind() == 'hierarchy'
         @hierarchy = ko.observable data.config?.hierarchy
-        @buildHierarchyItems() if @hierarchy()
+
+      @buildHierarchyItems() if @hierarchy?()
 
       if @kind() == 'select_many'
         @filter = ko.observable('') # The text for filtering options in a select_many
