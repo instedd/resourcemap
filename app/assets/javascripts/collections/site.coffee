@@ -33,7 +33,7 @@ onCollections ->
     hasName: => $.trim(@name()).length > 0
 
     propertyValue: (field) =>
-      value = @properties()[field.esCode()]
+      value = @properties()[field.esCode]
       field.valueUIFor(value)
 
     highlightedPropertyValue: (field) =>
@@ -62,13 +62,13 @@ onCollections ->
 
       @properties({})
       for field in collection.fields()
-        if field.kind() == 'hierarchy' && @id()
-          hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode()], newValue: field.value()})
+        if field.kind == 'hierarchy' && @id()
+          hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode], newValue: field.value()})
 
         if field.value()
-          @properties()[field.esCode()] = field.value()
+          @properties()[field.esCode] = field.value()
         else
-          delete @properties()[field.esCode()]
+          delete @properties()[field.esCode]
 
       if window.model.currentCollection()
         window.model.currentCollection().performHierarchyChanges(@, hierarchyChanges)
@@ -78,7 +78,7 @@ onCollections ->
         collection.clearFieldValues()
         if @properties()
           for field in collection.fields()
-            value = @properties()[field.esCode()]
+            value = @properties()[field.esCode]
             field.value(value)
 
     post: (json, callback) =>

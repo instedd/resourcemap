@@ -8,15 +8,15 @@ onCollections ->
       @field = field
       @parent = parent
 
-      @id = ko.observable(data.id)
-      @name = ko.observable(data.name)
-      @level = ko.observable(level)
+      @id = data.id
+      @name = data.name
+      @level = level
       @expanded = ko.observable(false)
-      @selected = ko.computed => @field.value() == @id()
+      @selected = ko.computed => @field.value() == @id
       @fieldHierarchyItems = if data.sub?
-                          ko.observableArray($.map(data.sub, (x) => new FieldHierarchyItem(@field, x, @, level + 1)))
+                          $.map data.sub, (x) => new FieldHierarchyItem(@field, x, @, level + 1)
                         else
-                          ko.observableArray()
+                          []
       @selected.subscribe (newValue) =>
         @toggleParentsExpand() if newValue
 
@@ -24,7 +24,7 @@ onCollections ->
       @expanded(!@expanded())
 
     toggleParentsExpand: =>
-      @expanded(true) if @field.value() != @id()
+      @expanded(true) if @field.value() != @id
       @parent.toggleParentsExpand() if @parent
 
-    select: => @field.value(@id())
+    select: => @field.value(@id)

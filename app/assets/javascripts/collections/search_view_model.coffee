@@ -15,7 +15,7 @@ onCollections ->
       @unselectSite()
 
       if $.trim(@search()).length == 0 && @filters().length == 0 && !@sort()
-        if @groupBy().esCode() == ''
+        if @groupBy().esCode == ''
           @currentCollection(rootCollection)
         else
           @currentCollection(new CollectionHierarchy(rootCollection, @groupBy()))

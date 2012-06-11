@@ -35,7 +35,7 @@ onCollections ->
         @fields(fields)
         callback() if callback && typeof(callback) == 'function'
 
-    findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode() == esCode)[0]
+    findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 
     clearFieldValues: =>
       field.value(null) for field in @fields()

@@ -46,7 +46,7 @@ onCollections ->
       # with the view.
       @[k] = v.bind(@) for k, v of @ when v.bind? && !ko.isObservable(v)
 
-    defaultGroupBy: {esCode: (-> ''), name: (-> 'None')}
+    defaultGroupBy: {esCode: '', name: 'None'}
 
     showPopupWithMaxValueOfProperty: (field, event) =>
       # Create a popup that first says "Loading...", then loads the content via ajax.
