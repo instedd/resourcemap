@@ -5,6 +5,7 @@ onThresholds ->
   class @Condition
     constructor: (data) ->
       @field = ko.observable window.model.findField data?.field
+      @compareField = ko.observable "Gasoline"
       @op = ko.observable Operator.findByCode data?.op
       @value = ko.observable data?.value
       @valueType = ko.observable ValueType.findByCode data?.type ? 'value'

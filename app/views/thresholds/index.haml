@@ -68,28 +68,28 @@
         %select{ ko(options: 'field().options', optionsText: "'label'", optionsValue:"'id'", value: :value) }
         <!--  /ko -->
         
-        <!--    ko if: field().operators().length > 1 -->
+        <!--  ko if: field().operators().length > 1 -->
         %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
           
-        <!--  ko if: !(field().kind() == 'text') -->
+        <!--    ko if: !(field().kind() == 'text') -->
         %select{ ko(options: 'ValueType.ALL', optionsText: "'label'", value: :valueType) }
-        <!--  /ko -->
+        <!--    /ko -->
         
         %label{ ko(css: { error: '!valid()' }) }
         %span.w06
           %input{ ko(value: :value, valueUpdate: :afterkeydown, css: { error: '!valid()' }), type: :text, style: 'width:60px' }
             
         <!--    ko if: !(field().kind() == 'text') -->
-        <!--      ko if: (valueType().label() == 'a percentage of' -->
-        compared to    
-        %select{ ko(options: '$root.compareFields', optionsText: "'name'", value: :field, hasfocus: true) }
+        <!--      ko if: valueType().label() == 'a percentage of' -->
+        \% compared to    
+        %select{ ko(options: '$root.compareFields', optionsText: "'name'", value: :compareField, hasfocus: true) }
         <!--      /ko -->
         <!--    /ko -->
+  
         <!--  /ko -->
-        
         %button.premove{ ko(click: '$parent.removeCondition') }
         %br   
-        <!-- /ko -->
+        <!--/ko -->
       %button.fadd{ko(click: :addNewCondition) }
         Add another condition
       %hr
@@ -97,28 +97,6 @@
       %br
       %input{ ko(colorPicker: '$parent.color'), type: :text }
       %hr
-      %br
-      %label Notifications
-      %br 
-      %input#GroupB_1{:name => "GroupB", :type => "radio"}/
-      %label{:for => "GroupB_1"} Do not send notifications
-      %input#GroupB_2{:name => "GroupB", :type => "radio"}/
-      %label{:for => "GroupB_2"} Notify this people
-      %br 
-      Send emails to:
-      %ul
-        %li site owner
-        %li nurse email
-      %ul
-        %li site owner
-        %li doctor mobile phone
-
-
-      Message
-      %br 
-      %label.smalltext site's owner will receive this reminder 
-      %br
-      %textarea.ux-wajbar.w30{ko(value: :reminder_message, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
       .bottom-actions
         %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
         %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
