@@ -35,23 +35,23 @@
       .middlebuttons 
         Name 
         %br
-        %input{type: :text, style: 'width:120px'} 
+        %input{ko(value: :propertyName),type: :text, style: 'width:240px'} 
         %br   
         Apply this alert to
         %br 
-        %input{"data-bind" => "checked: isSomeSites", :value => "false", :name => "site", :type => "radio"}
+        %input{"data-bind" => "checked: isAllSite", :value => "true", :name => "site", :type => "radio"}
         %label All sites
-        %input{"data-bind" => "checked: isSomeSites", :value => "true", :name => "site", :type => "radio"} 
+        %input{"data-bind" => "checked: isAllSite", :value => "false", :name => "site", :type => "radio"} 
         %label Some sites
         %br
-        .middlebuttons{ko(visible: 'isSomeSites() == "true"' )}
-          %input{ko(superblyTagField: '$root.sites'), type: :text}
+        .middlebuttons{ko(visible: 'isAllSite() == "false"' )}
+          %input{ko(superblyTagField: 'alertSites'), type: :text}
       %br
       %label Conditions
       .middlebuttons
-        %input{"data-bind" => "checked: isAllOfConditions", :value => "true", :name => "condition", :type => "radio"}
+        %input{"data-bind" => "checked: isAllCondition", :value => "true", :name => "condition", :type => "radio"}
         %label All of following conditions
-        %input{"data-bind" => "checked: isAllOfConditions", :value => "false", :name => "condition", :type => "radio"} 
+        %input{"data-bind" => "checked: isAllCondition", :value => "false", :name => "condition", :type => "radio"} 
         %label Any of the following conditions
         %br
         <!-- ko foreach :conditions -->

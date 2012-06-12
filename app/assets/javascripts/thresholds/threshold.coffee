@@ -3,8 +3,10 @@ onThresholds ->
     constructor: (data) ->
       @id = ko.observable data?.id
       @collectionId = data?.collection_id
-      @isSomeSites = ko.observable("true")
-      @isAllOfConditions = ko.observable("true") 
+      @isAllSite = ko.observable("true")
+      @isAllCondition = ko.observable("true") 
+      @alertSites = ko.observable() 
+      @propertyName = ko.observable data?.property_name 
       @ord = ko.observable data?.ord
       @color = ko.observable(data?.color ? '#ff0000')
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
@@ -32,5 +34,9 @@ onThresholds ->
     toJSON: =>
       id: @id()
       color: @color()
+      property_name: @propertyName()
+      is_all_site: @isAllSite()
+      is_all_condition: @isAllCondition()
+      sites: @alertSites()
       conditions: $.map(@conditions(), (condition) -> condition.toJSON())
       ord: @ord()
