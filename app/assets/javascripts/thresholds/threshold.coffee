@@ -3,9 +3,9 @@ onThresholds ->
     constructor: (data) ->
       @id = ko.observable data?.id
       @collectionId = data?.collection_id
-      @isAllSite = ko.observable("true")
-      @isAllCondition = ko.observable("true") 
-      @alertSites = ko.observable() 
+      @isAllSite = ko.observable data?.is_all_site
+      @isAllCondition = ko.observable data?.is_all_condition
+      @alertSites = ko.observable data?.sites
       @propertyName = ko.observable data?.property_name 
       @ord = ko.observable data?.ord
       @color = ko.observable(data?.color ? '#ff0000')
@@ -23,6 +23,9 @@ onThresholds ->
 
     removeCondition: (condition) =>
       @conditions.remove condition
+
+    isFirstCondition: (condition) ->
+      0 == @conditions().indexOf condition
 
     isLastCondition: (condition) ->
       @conditions().length - 1 == @conditions().indexOf condition

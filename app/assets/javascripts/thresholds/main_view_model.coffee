@@ -10,7 +10,7 @@ onThresholds ->
       @isReady = ko.observable(false)
 
     addThreshold: =>
-      threshold = new Threshold ord: @nextOrd()
+      threshold = new Threshold ord: @nextOrd(), is_all_site: "true", is_all_condition: "true"
       threshold.addNewCondition()
       @currentThreshold threshold
       @thresholds.push threshold

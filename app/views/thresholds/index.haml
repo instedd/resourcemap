@@ -12,12 +12,31 @@
           %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
           %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
         %span
+          %span{ ko(text: :propertyName) }
+          &rarr; in
+          <!-- ko if: isAllSite() -->
+          all sites 
+          <!-- /ko -->
+          <!-- ko if: !(isAllSite()) -->
+          %span{ ko(text: :alertSites) }
+          <!-- /ko -->
           <!-- ko foreach :conditions -->
+          <!-- ko if: $parent.isFirstCondition($data) -->
+          When
+          <!-- /ko -->
+          <!-- ko if: !$parent.isFirstCondition($data) -->
+          <!-- ko if: $parent.isAllCondition() -->
+          and
+          <!-- /ko -->
+          <!-- ko if: !$parent.isAllCondition() -->
+          or
+          <!-- /ko -->
+          <!-- /ko -->
           %span{ ko(text: 'field().name()') }
           %span{ ko(text: 'op().label()') }
           %span{ ko(text: 'formattedValue') }
           <!-- /ko -->
-          &rarr; set color
+          ,change color to
           %span.stat{"data-bind" => "style: { backgroundColor:color }" }
 
       .rightbuttons
