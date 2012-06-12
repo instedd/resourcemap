@@ -13,12 +13,6 @@
           %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
         %span
           <!-- ko foreach :conditions -->
-          <!-- ko if: $parent.isFirstCondition($data) -->
-          When
-          <!-- /ko -->
-          <!-- ko if: !$parent.isFirstCondition($data) -->
-          and
-          <!-- /ko -->
           %span{ ko(text: 'field().name()') }
           %span{ ko(text: 'op().label()') }
           %span{ ko(text: 'formattedValue') }
