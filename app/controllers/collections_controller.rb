@@ -7,7 +7,7 @@ class CollectionsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: collections.all }
+      format.json {render json: collections.all}
     end
   end
 
@@ -34,7 +34,7 @@ class CollectionsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render json: collection }
+      format.json { render json: collection.attributes.store("snapshot_name", collection.snapshot_name(current_user)) }
     end
   end
 
@@ -73,6 +73,25 @@ class CollectionsController < ApplicationController
     if collection.snapshots.create date: Time.now, name: params[:name]
       redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} created"
     end
+  end
+
+  def unload_current_snapshot
+    puts "estoy aca"
+    if(current_snapshot.user_snapshots.where(user_id: current_user.id).first.destroy)
+      puts "adentro del if"
+      redirect_to collection_path(collection), notice: "Snapshot #{current_snapshot.name} unloaded"
+    end
+    puts "afuera del if"
+
+  end
+
+  def load_snapshot
+    puts params
+    snp_to_load = collection.snapshots.where(name: params[:name]).first
+    if snp_to_load.user_snapshots.create user: current_user
+      redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} loaded"
+    end
+
   end
 
   def max_value_of_property

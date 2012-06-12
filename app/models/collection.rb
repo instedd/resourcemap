@@ -30,8 +30,8 @@ class Collection < ActiveRecord::Base
     results.first['_source']['properties'][es_code] rescue 0
   end
 
-  def snapshot_name(user)
-    user_snapshots.where(user_id: user.id).first.try(:snapshot).try(:name)
+  def snapshot_for(user)
+    user_snapshots.where(user_id: user.id).first.try(:snapshot)
   end
 
   def visible_fields_for(user)

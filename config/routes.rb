@@ -2,7 +2,7 @@ ResourceMap::Application.routes.draw do
   devise_for :users
   # match 'messaging' => 'messaging#index'
   match 'nuntium' => 'nuntium#receive', :via => :post
-  
+
   resources :repeats
   resources :collections do
     resources :sites
@@ -35,7 +35,10 @@ ResourceMap::Application.routes.draw do
     get 'max_value_of_property'
 
     post 'upload_csv'
+
     post 'create_snapshot'
+    post 'load_snapshot'
+    post 'unload_current_snapshot'
 
     get 'import_wizard'
     post 'import_wizard_upload_csv'
