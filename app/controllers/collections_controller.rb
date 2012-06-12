@@ -7,7 +7,13 @@ class CollectionsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json {render json: collections.all}
+      collections_with_snapshot = []
+      collections.all.each do |collection|
+        attrs = collection.attributes
+        attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
+        collections_with_snapshot = collections_with_snapshot + [attrs]
+      end
+      format.json {render json: collections_with_snapshot }
     end
   end
 
@@ -34,7 +40,7 @@ class CollectionsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render json: collection.attributes.store("snapshot_name", collection.snapshot_name(current_user)) }
+      format.json { render json: collection }
     end
   end
 
