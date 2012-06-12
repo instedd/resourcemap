@@ -81,7 +81,7 @@ describe Collection do
       collection.user_snapshots.last.snapshot.name.should eq('snp2')
     end
 
-    it "should obtain snapshot_name for user if user_snapshot exists" do
+    it "should obtain snapshot for user if user_snapshot exists" do
       user = User.make
       snp_1 = collection.snapshots.create! date: Time.now, name: 'snp1'
       snp_1.user_snapshots.create! user: user
@@ -89,8 +89,8 @@ describe Collection do
       snp_2 = collection.snapshots.create! date: Time.now, name: 'snp2'
       snp_2.user_snapshots.create! user: User.make
 
-      snapshot_name = collection.snapshot_name(user)
-      snapshot_name.should eq('snp1')
+      snapshot = collection.snapshot_for(user)
+      snapshot.name.should eq('snp1')
     end
 
     it "should obtain nil snapshot_name for user if user_snapshot does not exists" do
@@ -98,8 +98,8 @@ describe Collection do
       snp_1.user_snapshots.create! user: User.make
 
       user = User.make
-      snapshot_name = collection.snapshot_name(user)
-      snapshot_name.should be_nil
+      snapshot = collection.snapshot_for(user)
+      snapshot.should be_nil
     end
 
 

@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   expose(:threshold)
   expose(:reminders) { collection.reminders }
   expose(:reminder)
-  expose(:current_snapshot_name) { collection.snapshot_name(current_user) }
+  expose(:current_snapshot) { collection.snapshot_for(current_user) }
 
   def after_sign_in_path_for(resource)
     stored_location_for(resource) || collections_path
