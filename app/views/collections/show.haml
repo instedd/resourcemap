@@ -1,6 +1,6 @@
 = render 'tabs'
 
-- sites_count = collection.sites.count
+- sites_count = if current_snapshot then collection.site_histories.at_date(current_snapshot.date).count else collection.sites.count end
 
 .tabsline
   %h2 Status
