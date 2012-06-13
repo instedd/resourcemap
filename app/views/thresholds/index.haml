@@ -14,10 +14,10 @@
         %span
           %span{ ko(text: :propertyName) }
           &rarr; in
-          <!-- ko if: isAllSite() -->
+          <!-- ko if: isAllSite() == "true" -->
           all sites 
           <!-- /ko -->
-          <!-- ko if: !(isAllSite()) -->
+          <!-- ko if: !(isAllSite() == "true") -->
           %span{ ko(text: :alertSites) }
           <!-- /ko -->
           <!-- ko foreach :conditions -->
@@ -25,10 +25,10 @@
           When
           <!-- /ko -->
           <!-- ko if: !$parent.isFirstCondition($data) -->
-          <!-- ko if: $parent.isAllCondition() -->
+          <!-- ko if: $parent.isAllCondition() == "true" -->
           and
           <!-- /ko -->
-          <!-- ko if: !$parent.isAllCondition() -->
+          <!-- ko if: !($parent.isAllCondition() == "true") -->
           or
           <!-- /ko -->
           <!-- /ko -->
@@ -114,7 +114,7 @@
       %hr
       %label Change site display on map
       %br
-      %input{ ko(colorPicker: '$parent.color'), type: :text }
+      %input{ ko(colorPicker: :color), type: :text }
       %hr
       .bottom-actions
         %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
