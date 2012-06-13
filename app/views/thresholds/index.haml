@@ -35,6 +35,12 @@
           %span{ ko(text: 'field().name()') }
           %span{ ko(text: 'op().label()') }
           %span{ ko(text: 'formattedValue') }
+            
+          <!-- ko if: valueType().label() == 'a percentage of' -->
+          of 
+          %span{ ko(text: 'compareField().name()') }
+          <!-- /ko -->
+          
           <!-- /ko -->
           ,change color to
           %span.stat{"data-bind" => "style: { backgroundColor:color }" }
