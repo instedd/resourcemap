@@ -6,7 +6,7 @@ describe 'Threshold', ->
     window.model = new MainViewModel @collectionId
     @field_beds = new Field id: '1', code: 'beds'
     window.model.fields [@field_beds]
-    @threshold = new Threshold { id: 1, collection_id: @collectionId, ord: 1, color: '#ff0000', conditions: [{ field: '1', op: 'lt', type: 'value', value: 10 }] }
+    @threshold = new Threshold { id: 1, collection_id: @collectionId, ord: 1, color: '#ff0000', property_name: "bed", sites: "siemreap hc", is_all_site: true, is_all_condition: true, conditions: [{ field: '1', op: 'lt', type: 'value', value: 10, compare_field: '1' }] }
 
   it 'should have 1 condition', ->
     expect(@threshold.conditions().length).toEqual 1
@@ -21,9 +21,13 @@ describe 'Threshold', ->
   it 'should convert to json', ->
     expect(@threshold.toJSON()).toEqual {
       id: 1
-      color: '#ff0000'
       ord: 1
-      conditions: [{field: '1', op: 'lt', value: 10, type: 'value'}]
+      color: '#ff0000'
+      property_name: "bed"
+      is_all_site: true
+      is_all_condition: true
+      sites: "siemreap hc"
+      conditions: [{field: '1', op: 'lt', value: 10, type: 'value', compare_field: '1'}]
     }
 
   describe 'without data', ->

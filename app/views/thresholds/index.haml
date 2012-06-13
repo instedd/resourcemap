@@ -12,6 +12,7 @@
           %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
           %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
         %span
+          
           %span{ ko(text: :propertyName) }
           &rarr; in
           <!-- ko if: isAllSite() == "true" -->
@@ -20,6 +21,8 @@
           <!-- ko if: !(isAllSite() == "true") -->
           %span{ ko(text: :alertSites) }
           <!-- /ko -->
+          
+          -# list all conditions 
           <!-- ko foreach :conditions -->
           <!-- ko if: $parent.isFirstCondition($data) -->
           When
