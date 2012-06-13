@@ -6,7 +6,7 @@
   = tab "Overview", collection_path(collection)
   = tab "Members", collection_members_path(collection)
   = tab "Layers", collection_layers_path(collection)
-  = tab "Alert", collection_thresholds_path(collection)
+  = tab "Alert", collection_thresholds_path(collection) if Settings.is_on? :threshold
   = tab "Reminders", collection_reminders_path(collection)
   = tab "Import wizard", collection_import_wizard_path(collection)
   = tab "Settings", collection_settings_path(collection)

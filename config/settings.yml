@@ -1,0 +1,5 @@
+settings:
+  mobile_id: off
+
+  plugins:
+    threshold: on
