@@ -4,10 +4,14 @@ module Settings
   CONFIG = YAML.load_file(File.expand_path('../../../config/settings.yml', __FILE__))['settings']
 
   def is_on?(plugin)
-    unless status = CONFIG['plugins'][plugin.to_s]
-      false
+    CONFIG['plugins'][plugin.to_s] == true
+  end
+
+  def method_missing(method_name)
+    if matches = method_name.to_s.match(/(\w+)\?$/)
+      CONFIG[matches[1]] == true
     else
-      status
+      super
     end
   end
 end
