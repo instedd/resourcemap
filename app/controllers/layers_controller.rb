@@ -8,7 +8,12 @@ class LayersController < ApplicationController
         show_collection_breadcrumb
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
-      format.json { render json: layers.includes(:fields).all.as_json(include: :fields) }
+      if current_snapshot
+        layers = collection.layer_histories.at_date(current_snapshot.date).includes(:fields).all.as_json(include: :fields)
+      else
+        layers = layers.includes(:fields).all.as_json(include: :fields)
+      end
+      format.json { render json: layers}
     end
   end
 

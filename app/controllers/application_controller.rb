@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
+  expose(:current_snapshot) { collection.snapshot_for(current_user) }
   expose(:collections) { current_user.collections }
   expose(:collection)
   expose(:collection_memberships) { collection.memberships.includes(:user) }
@@ -12,7 +13,6 @@ class ApplicationController < ActionController::Base
   expose(:threshold)
   expose(:reminders) { collection.reminders }
   expose(:reminder)
-  expose(:current_snapshot) { collection.snapshot_for(current_user) }
 
   def after_sign_in_path_for(resource)
     stored_location_for(resource) || collections_path

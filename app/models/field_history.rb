@@ -4,6 +4,7 @@ class FieldHistory < ActiveRecord::Base
 
   belongs_to :field
   belongs_to :collection
+  belongs_to :layer
 
   serialize :config
 

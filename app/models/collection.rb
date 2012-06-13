@@ -34,11 +34,16 @@ class Collection < ActiveRecord::Base
     user_snapshots.where(user_id: user.id).first.try(:snapshot)
   end
 
-  def visible_fields_for(user)
+  def visible_fields_for(user, options = {})
     membership = user.membership_in self
     return [] unless membership
 
-    target_fields = fields.includes(:layer)
+    if options[:snapshot]
+      date = Snapshot.where(name: options[:snapshot]).first.date
+      target_fields = field_histories.at_date(date).includes(:layer)
+    else
+      target_fields = fields.includes(:layer)
+    end
 
     if membership.admin?
       target_fields = target_fields.all

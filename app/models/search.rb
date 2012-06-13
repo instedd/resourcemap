@@ -8,9 +8,9 @@ class Search
 
   attr_accessor :collection
 
-  def initialize(collection)
+  def initialize(collection, options)
     @collection = collection
-    @search = collection.new_tire_search
+    @search = collection.new_tire_search(options)
     @from = 0
   end
 
