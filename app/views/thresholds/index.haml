@@ -122,7 +122,58 @@
       %br
       %label Notifications
       %br 
-      Send emails to:
+      %input{:name => "notification", :type => "radio"}
+      %label Do not send notifications
+      %input{:name => "notification", :type => "radio"} 
+      %label Notify this people
+      %br
+      .middlebuttons{:style => "height: 180px;"}
+        .middlebuttons.w30{:style => "float: left;"}
+          Send emails to:
+          %p.list-box
+            %input{:type => "checkbox"}
+              Best Practices
+            %br
+            %input{:type => "checkbox"}
+              Client Relationships
+            %br
+            %br
+            %input{:checked => "checked", :type => "checkbox"}
+              Communications
+            %br
+            %input{:type => "checkbox"}
+              Compensation
+            %br 
+            %input{:type => "checkbox"}
+              Contracts and Negotiations
+            %br
+        .middlebuttons.w30{:style => "float: left;"}
+          Send text messages to:   
+          %p.list-box
+            %input{:type => "checkbox"}
+              Best Practices
+            %br
+            %input{:type => "checkbox"}
+              Client Relationships
+            %br
+            %br
+            %input{:checked => "checked", :type => "checkbox"}
+              Communications
+            %br
+            %input{:type => "checkbox"}
+              Compensation
+            %br 
+            %input{:type => "checkbox"}
+              Contracts and Negotiations
+            %br
+      
+      %label{ko(css: {error: 'reminderMessageError'})} Message
+      %br/
+      %label.smalltext Use the following expressions to fill your message with sites data [site name], [occupation], [beds], [location], [aspirin], [band aids]
+      %textarea.ux-wajbar.w60{ko(value: :reminder_message, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
+      .clear
+      %hr/
+      
       .bottom-actions
         %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
         %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
