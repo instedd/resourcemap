@@ -119,6 +119,10 @@
       %br
       %input{ ko(colorPicker: :color), type: :text }
       %hr
+      %br
+      %label Notifications
+      %br 
+      Send emails to:
       .bottom-actions
         %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
         %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
