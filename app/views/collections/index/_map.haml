@@ -148,9 +148,10 @@
                 <!-- ko if: editingLocation() -->
                 = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}
                 <!-- /ko -->
-              %div{style: 'margin-bottom:14px'}
-                %label ID With Prefix:
-                %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
+              - if Settings.mobile_id?
+                %div{style: 'margin-bottom:14px'}
+                  %label ID With Prefix:
+                  %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
               <!-- ko foreach: collection.layers -->
               %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
