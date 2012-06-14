@@ -1,9 +1,9 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  expose(:current_snapshot) { collection.snapshot_for(current_user) }
   expose(:collections) { current_user.collections }
   expose(:collection)
+  expose(:current_snapshot) { collection.snapshot_for(current_user) }
   expose(:collection_memberships) { collection.memberships.includes(:user) }
   expose(:layers) { collection.layers }
   expose(:layer)

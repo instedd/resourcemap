@@ -16,7 +16,6 @@ onCollections ->
       @id = data?.id
       @name = data?.name
       @currentSnapshot = if data?.snapshot_name then data?.snapshot_name else ''
-      @currentSnapshotText = if @currentSnapshot != '' then " from snapshot name: " + @currentSnapshot else ''
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
 
