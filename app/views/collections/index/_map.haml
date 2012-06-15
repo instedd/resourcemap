@@ -50,7 +50,9 @@
           %td.loadmore Loading...
         <!-- /ko -->
   .tablebottom
+    <!-- ko if: !currentSnapshot-->
     %button.flocation{ko(click: '$root.createSite')} Create Site
+    <!-- /ko -->
 
   <!-- /ko -->
   <!-- /ko -->
@@ -210,9 +212,12 @@
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
+    <!-- ko if: !$root.currentCollection().currentSnapshot -->
     .tablebottom
       = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
       = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
+    <!-- /ko -->
+
   <!-- /ko -->
   <!-- /ko -->
 

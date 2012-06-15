@@ -7,9 +7,7 @@
         %p{ko(style: {marginLeft: "'' + (($parent.level + 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
           %span.stat-r
           %span{ko(html: :highlightedName)}
-      <!-- ko if: !$root.currentCollection().currentSnapshot -->
       %button.farrow{ko(click: '$root.editSite'), type: :button}
-      <!-- /ko -->
     <!-- ko foreach: $root.currentCollection().fields() -->
     <!-- ko if: $parent.properties()[$data.esCode] -->
     %td.l
