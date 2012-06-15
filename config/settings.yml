@@ -3,3 +3,4 @@ settings:
 
   plugins:
     threshold: on
+    snapshot: off
