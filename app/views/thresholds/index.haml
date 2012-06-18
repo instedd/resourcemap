@@ -122,55 +122,47 @@
       %br
       %label Notifications
       %br 
-      %input{:name => "notification", :type => "radio"}
+      
+      %input{"data-bind" => "checked: $root.isSendNotification", :value => "true", :name => "notification", :type => "radio"}
       %label Do not send notifications
-      %input{:name => "notification", :type => "radio"} 
+      %input{"data-bind" => "checked: $root.isSendNotification", :value => "false", :name => "notification", :type => "radio"} 
       %label Notify this people
       %br
-      .middlebuttons{:style => "height: 180px;"}
+      .middlebuttons{ko(visible: '$root.isSendNotification() == "false"' ), :style => "height: 180px;"}
         .middlebuttons.w30{:style => "float: left;"}
           Send emails to:
           %p.list-box
             %input{:type => "checkbox"}
-              Best Practices
+              Sites owner
             %br
             %input{:type => "checkbox"}
-              Client Relationships
+              Nurse email
             %br
             %br
-            %input{:checked => "checked", :type => "checkbox"}
-              Communications
+            <!-- ko foreach: $root.emailMembers -->
+            %input{ko(checked: '$root.selectedEmailMembersId', value: :id), type: "checkbox"}
+              %span{ ko(text: :email)}
             %br
-            %input{:type => "checkbox"}
-              Compensation
-            %br 
-            %input{:type => "checkbox"}
-              Contracts and Negotiations
-            %br
+            <!-- /ko -->
         .middlebuttons.w30{:style => "float: left;"}
           Send text messages to:   
           %p.list-box
             %input{:type => "checkbox"}
-              Best Practices
+              Site mobile phone
             %br
             %input{:type => "checkbox"}
-              Client Relationships
+              Doctor mobile phone
             %br
             %br
-            %input{:checked => "checked", :type => "checkbox"}
-              Communications
+            <!-- ko foreach: $root.messageMembers -->
+            %input{ko(checked: '$root.selectedMessageMembersId', value: :id), type: "checkbox"}
+              %span{ ko(text: :email)}
             %br
-            %input{:type => "checkbox"}
-              Compensation
-            %br 
-            %input{:type => "checkbox"}
-              Contracts and Negotiations
-            %br
-      
-      %label{ko(css: {error: 'reminderMessageError'})} Message
+            <!-- /ko -->
+      %label{} Message
       %br/
       %label.smalltext Use the following expressions to fill your message with sites data [site name], [occupation], [beds], [location], [aspirin], [band aids]
-      %textarea.ux-wajbar.w60{ko(value: :reminder_message, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
+      %textarea.ux-wajbar.w60{placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
       .clear
       %hr/
       

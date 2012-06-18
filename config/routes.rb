@@ -11,7 +11,8 @@ ResourceMap::Application.routes.draw do
         put :set_order
       end
     end
-    resources :fields
+    resources :members
+    resources :fields 
     resources :thresholds do
       member do
         post :set_order

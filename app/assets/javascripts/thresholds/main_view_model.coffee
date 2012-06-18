@@ -2,13 +2,18 @@ onThresholds ->
   class @MainViewModel
     constructor: (@collectionId) ->
       @fields = ko.observableArray()
+      @emailMembers = ko.observableArray() 
+      @messageMembers  = ko.observableArray()
+      @selectedEmailMembersId = ko.observableArray()
+      @selectedMessageMembersId = ko.observableArray()
       @compareFields = ko.observableArray()
       @thresholds = ko.observableArray([])
       @sites = ko.observableArray([])
       @currentThreshold = ko.observable()
       @saving = ko.observable(false)
       @isReady = ko.observable(false)
-
+      @isSendNotification = ko.observable("false")
+    
     addThreshold: =>
       threshold = new Threshold ord: @nextOrd(), is_all_site: "true", is_all_condition: "true"
       threshold.addNewCondition()
