@@ -82,17 +82,12 @@ class CollectionsController < ApplicationController
   end
 
   def unload_current_snapshot
-    puts "estoy aca"
     if(current_snapshot.user_snapshots.where(user_id: current_user.id).first.destroy)
-      puts "adentro del if"
       redirect_to collection_path(collection), notice: "Snapshot #{current_snapshot.name} unloaded"
     end
-    puts "afuera del if"
-
   end
 
   def load_snapshot
-    puts params
     snp_to_load = collection.snapshots.where(name: params[:name]).first
     if snp_to_load.user_snapshots.create user: current_user
       redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} loaded"
@@ -129,7 +124,11 @@ class CollectionsController < ApplicationController
   end
 
   def search
-    search = collection.new_search
+    if current_snapshot
+      search = collection.new_search snapshot: current_snapshot.name
+    else
+      search = collection.new_search
+    end
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search]
     search.offset params[:offset]

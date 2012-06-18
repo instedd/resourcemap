@@ -5,6 +5,7 @@ class Snapshot < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => :collection_id
 
   after_create :create_index
+
   def create_index
     index = Tire::Index.new index_name
     index.create mappings: { site: site_mapping }
