@@ -54,7 +54,7 @@ onReminders ->
       siteLabel = ""
       if @sites().length > 0 
         for i in [0...@sites().length-1]
-          siteLabel = siteLabel + @sites()[i].name() + " and "
+          siteLabel = siteLabel + @sites()[i].name + " and "
 
-        siteLabel = @repeat().name() + " for " + siteLabel + @sites()[@sites().length-1].name()
+        siteLabel = @repeat().name() + " for " + siteLabel + @sites()[@sites().length-1].name
 
