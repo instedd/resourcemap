@@ -61,7 +61,7 @@
         -#%button.fdelete{ ko(visible: '!isNewRecord') }
       %label Properties 
       .middlebuttons 
-        Name 
+        %label{ko(css: {error: 'propertyNameError'})} Name
         %br
         %input{ko(value: :propertyName),type: :text, style: 'width:240px'} 
         %br   
@@ -123,12 +123,12 @@
       %label Notifications
       %br 
       
-      %input{"data-bind" => "checked: $root.isSendNotification", :value => "true", :name => "notification", :type => "radio"}
+      %input{"data-bind" => "checked: isNotify", :value => "false", :name => "notification", :type => "radio"}
       %label Do not send notifications
-      %input{"data-bind" => "checked: $root.isSendNotification", :value => "false", :name => "notification", :type => "radio"} 
+      %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"} 
       %label Notify this people
       %br
-      .middlebuttons{ko(visible: '$root.isSendNotification() == "false"' ), :style => "height: 180px;"}
+      .middlebuttons{ko(visible: 'isNotify() == "true"' ), :style => "height: 180px;"}
         .middlebuttons.w30{:style => "float: left;"}
           Send emails to:
           %p.list-box
@@ -139,11 +139,9 @@
               Nurse email
             %br
             %br
-            <!-- ko foreach: $root.emailMembers -->
-            %input{ko(checked: '$root.selectedEmailMembersId', value: :id), type: "checkbox"}
-              %span{ ko(text: :email)}
-            %br
-            <!-- /ko -->
+            - collection.users.each do |user|
+              %input{ko(checked: 'emailNotification'), value: user.id, type: "checkbox"}= user.email
+              %br
         .middlebuttons.w30{:style => "float: left;"}
           Send text messages to:   
           %p.list-box
@@ -154,15 +152,13 @@
               Doctor mobile phone
             %br
             %br
-            <!-- ko foreach: $root.messageMembers -->
-            %input{ko(checked: '$root.selectedMessageMembersId', value: :id), type: "checkbox"}
-              %span{ ko(text: :email)}
-            %br
-            <!-- /ko -->
-      %label{} Message
+            - collection.users.each do |user|
+              %input{ko(checked: 'phoneNotification'), value: user.id, type: "checkbox"}= user.email
+              %br
+      %label{ko(css: {error: 'notificationMessageError'})} Message
       %br/
       %label.smalltext Use the following expressions to fill your message with sites data [site name], [occupation], [beds], [location], [aspirin], [band aids]
-      %textarea.ux-wajbar.w60{placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
+      %textarea.ux-wajbar.w60{ko(value: :messageNotification), placeholder: 'This alert is about [site name]. Occupation is now at [occupation]', maxlength: 140, rows: 4 }
       .clear
       %hr/
       

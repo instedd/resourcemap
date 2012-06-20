@@ -6,7 +6,9 @@ class Threshold < ActiveRecord::Base
   validates :color, :presence => true
 
   serialize :conditions, Array
-
+  serialize :phone_notification, Array
+  serialize :email_notification, Array
+  
   before_save :strongly_type_conditions
   def strongly_type_conditions
     fields = collection.fields.index_by(&:es_code)

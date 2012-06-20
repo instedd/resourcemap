@@ -3,17 +3,34 @@ onThresholds ->
     constructor: (data) ->
       @id = ko.observable data?.id
       @collectionId = data?.collection_id
-      @isAllSite = ko.observable data?.is_all_site
-      @isAllCondition = ko.observable data?.is_all_condition
+      @isAllSite = ko.observable data?.is_all_site.toString()
+      @isAllCondition = ko.observable data?.is_all_condition.toString()
+      @isNotify = ko.observable data?.is_notify.toString()
+      @messageNotification = ko.observable data?.message_notification
+      @phoneNotification = ko.observableArray data?.phone_notification ? []
+      @emailNotification = ko.observableArray data?.email_notification ? []
       @alertSites = ko.observable data?.sites
       @propertyName = ko.observable data?.property_name 
       @ord = ko.observable data?.ord
       @color = ko.observable(data?.color ? '#ff0000')
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
+      @propertyNameError = ko.computed =>
+        if $.trim(@propertyName()).length > 0 
+          return null
+        else
+          return "Alert property's name is missing"
+      @notificationMessageError = ko.computed =>
+        if $.trim(@messageNotification()).length > 0
+          return null
+        else
+          return "Notification's message is missing"
       @error = ko.computed =>
+        return "Can't save: " + @propertyNameError() if @propertyNameError()
         return "the threshold must have at least one condition" if @conditions().length is 0
         for condition, i in @conditions()
           return "condition ##{i+1} #{condition.error()}" unless condition.valid()
+        return "Can't save: " + @notificationMessageError() if @notificationMessageError()
+
       @valid = ko.computed => not @error()?
 
     addNewCondition: =>
@@ -40,6 +57,10 @@ onThresholds ->
       property_name: @propertyName()
       is_all_site: @isAllSite()
       is_all_condition: @isAllCondition()
+      is_notify: @isNotify() 
+      phone_notification: @phoneNotification()
+      email_notification: @emailNotification()
+      message_notification: @messageNotification()
       sites: @alertSites()
       conditions: $.map(@conditions(), (condition) -> condition.toJSON())
       ord: @ord()

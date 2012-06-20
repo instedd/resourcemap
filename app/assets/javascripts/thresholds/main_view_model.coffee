@@ -4,18 +4,15 @@ onThresholds ->
       @fields = ko.observableArray()
       @emailMembers = ko.observableArray() 
       @messageMembers  = ko.observableArray()
-      @selectedEmailMembersId = ko.observableArray()
-      @selectedMessageMembersId = ko.observableArray()
       @compareFields = ko.observableArray()
       @thresholds = ko.observableArray([])
       @sites = ko.observableArray([])
       @currentThreshold = ko.observable()
       @saving = ko.observable(false)
       @isReady = ko.observable(false)
-      @isSendNotification = ko.observable("false")
     
     addThreshold: =>
-      threshold = new Threshold ord: @nextOrd(), is_all_site: "true", is_all_condition: "true"
+      threshold = new Threshold ord: @nextOrd(), is_all_site: "true", is_all_condition: "true", is_notify: "false"
       threshold.addNewCondition()
       @currentThreshold threshold
       @thresholds.push threshold
@@ -23,7 +20,7 @@ onThresholds ->
     editThreshold: (threshold) =>
       @originalThreshold = new Threshold(threshold.toJSON())
       @currentThreshold threshold
-
+    
     loadSites: (callback) ->
       $.get "/collections/#{@collectionId}/sites", (sites) ->
         callback $.map sites, (site) => site.name
