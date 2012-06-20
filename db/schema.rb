@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120618085213) do
+ActiveRecord::Schema.define(:version => 20120620030244) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -133,7 +133,7 @@ ActiveRecord::Schema.define(:version => 20120618085213) do
 
   create_table "reminders", :force => true do |t|
     t.string   "name"
-    t.date     "reminder_date"
+    t.datetime "reminder_date"
     t.text     "reminder_message"
     t.integer  "repeat_id"
     t.integer  "collection_id"
@@ -146,13 +146,13 @@ ActiveRecord::Schema.define(:version => 20120618085213) do
 
   create_table "reminders_sites", :force => true do |t|
     t.integer  "reminder_id"
-    t.integer  "repeat_id"
+    t.integer  "site_id"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
 
   add_index "reminders_sites", ["reminder_id"], :name => "index_reminders_sites_on_reminder_id"
-  add_index "reminders_sites", ["repeat_id"], :name => "index_reminders_sites_on_repeat_id"
+  add_index "reminders_sites", ["site_id"], :name => "index_reminders_sites_on_site_id"
 
   create_table "repeats", :force => true do |t|
     t.string   "name"

@@ -9,7 +9,7 @@ onThresholds ->
       @messageNotification = ko.observable data?.message_notification
       @phoneNotification = ko.observableArray data?.phone_notification ? []
       @emailNotification = ko.observableArray data?.email_notification ? []
-      @alertSites = ko.observable data?.sites
+      @alertSites = ko.observable $.map(data?.sites ? [], (site) -> new Site(site))
       @propertyName = ko.observable data?.property_name 
       @ord = ko.observable data?.ord
       @color = ko.observable(data?.color ? '#ff0000')
@@ -61,6 +61,6 @@ onThresholds ->
       phone_notification: @phoneNotification()
       email_notification: @emailNotification()
       message_notification: @messageNotification()
-      sites: @alertSites()
+      sites: $.map(@alertSites(), (site) -> site.id)
       conditions: $.map(@conditions(), (condition) -> condition.toJSON())
       ord: @ord()

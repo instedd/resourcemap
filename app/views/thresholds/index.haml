@@ -19,7 +19,9 @@
           all sites 
           <!-- /ko -->
           <!-- ko if: !(isAllSite() == "true") -->
-          %span{ ko(text: :alertSites) }
+          <!-- ko foreach: alertSites --> 
+          %span{ ko(text: :name) }
+          <!-- /ko -->   
           <!-- /ko -->
           
           -# list all conditions 
@@ -73,7 +75,7 @@
         %label Some sites
         %br
         .middlebuttons{ko(visible: 'isAllSite() == "false"' )}
-          %input{ko(superblyTagField: 'alertSites'), type: :text}
+          %input.sites{ko(autocompleteTagField: 'alertSites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
       %br
       %label Conditions
       .middlebuttons

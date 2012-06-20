@@ -14,7 +14,8 @@ class ThresholdsController < ApplicationController
   end
 
   def create
-    threshold = thresholds.new params[:threshold]
+    threshold = thresholds.new params[:threshold].except(:sites) 
+    threshold.sites = Site.select("id, name").find(params[:threshold][:sites]) if params[:threshold][:sites]  #select only id and name
     threshold.save!
     render json: threshold
   end
@@ -26,7 +27,11 @@ class ThresholdsController < ApplicationController
   end
 
   def update
-    threshold.update_attributes params[:threshold]
+    threshold.update_attributes! params[:threshold].except(:sites)
+    if params[:threshold][:sites]
+      threshold.sites = Site.select("id, name").find(params[:threshold][:sites])  #select only id and name
+      threshold.save 
+    end 
     render json: threshold
   end
 
