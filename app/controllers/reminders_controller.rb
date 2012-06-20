@@ -10,8 +10,28 @@ class RemindersController < ApplicationController
   end
 
   def create
-    reminder = reminders.new params[:reminder]
+    reminder = reminders.new params[:reminder].except(:sites)
+    
+    # site references
+    reminder.sites = Site.find params[:reminder][:sites]
+    
     reminder.save!
+    render json: reminder
+  end
+  
+  def update
+    reminder = reminders.find params[:id]
+    reminder.update_attributes! params[:reminder].except(:sites)
+    
+    # site references
+    reminder.sites = Site.find params[:reminder][:sites]
+    
+    render json: reminder
+  end
+  
+  def destroy
+    reminder.destroy
+
     render json: reminder
   end
 

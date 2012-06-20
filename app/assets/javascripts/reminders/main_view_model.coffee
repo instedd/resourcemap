@@ -1,23 +1,20 @@
 onReminders -> 
   class @MainViewModel
-    @State =
-      LISTING: 'listing',
-      ADDING_NEW: 'adding_new',
-      EDITING: 'editing'
-
     constructor: (collectionId) ->
       @reminders= ko.observableArray()
       @repeats = ko.observableArray()
       @sites = ko.observableArray()
-      @currentState = ko.observable MainViewModel.State.LISTING
       @currentReminder = ko.observable()
       @collectionId = ko.observable collectionId
-      #      @isVisibleFormEntry = ko.computed =>
-      #        return @currentState() != MainViewModel.State.LISTING
+      @isSaving = ko.observable false
 
     showAddReminder: =>
-      @currentState MainViewModel.State.ADDING_NEW
-      @currentReminder new Reminder({collection_id: @collectionId()})
+      reminder = new Reminder({collection_id: @collectionId()})
+      @currentReminder reminder
+      @reminders.push reminder
+      
+    editReminder: (reminder) =>
+      @currentReminder reminder
  
     getTimes: =>
       times = []
@@ -27,18 +24,33 @@ onReminders ->
       times
 
     saveReminder: =>
-      param = {reminder: @currentReminder().toJSON()}
-      $.post "/collections/#{@collectionId()}/reminders.json", param, @saveReminderCallback
-
+      @isSaving true
+      json = reminder: @currentReminder().toJSON()
+      if @currentReminder().id()
+        json._method = 'put'
+        $.post "/collections/#{@collectionId()}/reminders/#{@currentReminder().id()}.json", json, @saveReminderCallback
+      else
+        $.post "/collections/#{@collectionId()}/reminders.json", json, @saveReminderCallback
+    
     saveReminderCallback: (data) =>
       @currentReminder().id(data.id)
-      @reminders.push @currentReminder()
       @currentReminder(null)
+      @isSaving false
 
-    loadSites: (callback) ->
-      $.get "/collections/#{@collectionId()}/sites", (sites) ->
-        callback $.map sites, (site) => new Site site
+    # loadSites: (callback) ->
+      # $.get "/collections/#{@collectionId()}/sites", (sites) ->
+        # callback $.map sites, (site) => new Site site
 
     cancelReminder: =>
+      if !@currentReminder().id()?
+        @reminders.remove @currentReminder()
       @currentReminder(null)
-      @currentState(MainViewModel.State.LISTING)
+      
+    deleteReminder: (reminder) =>
+      if window.confirm 'Are you sure to delete reminder'
+        @deletedReminder = reminder
+        $.post "/collections/#{@collectionId()}/reminders/#{reminder.id()}.json", { _method: 'delete' }, @deleteReminderCallback
+
+    deleteReminderCallback: =>
+      @reminders.remove @deletedReminder
+      delete @deletedReminder

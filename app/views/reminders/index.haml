@@ -12,21 +12,25 @@
 .tabsline
   #reminders-main.hidden-until-loaded
     %h2 Reminders
+    
+    -# Reminders
     <!-- ko foreach: reminders -->
+    <!-- ko if: $data != $root.currentReminder() -->
     .box.grey.w60
       .toptitle
-        %span{ko(text: 'name')} 
+        %span{ko(text: 'name')}
         &rarr;
         %em{ko(text: 'getSitesRepeatLabel()')}
       .rightbuttons
-        %button.fdelete
+        %button.fdelete{ ko(click: '$root.deleteReminder') }
       .message
         %span{ko(text: 'reminder_message')} 
-      %button.farrow Edit
-    %br/
-    <!-- /ko-->
-    <!-- ko with: currentReminder -->
-    .box.w60      
+      %button.farrow{ko(click: '$root.editReminder')} Edit    
+    <!-- /ko -->
+    -# Form editor
+    <!-- ko if: $data == $root.currentReminder() -->
+    -# <!-- ko with: currentReminder -->
+    .box.w60     
       %label{ko(css: {error: 'nameError'})} Name
       %br/
       %input.w30{ko(value: 'name', valueUpdate: :afterkeydown), type: :text}
@@ -36,7 +40,7 @@
       %br/
       %label.smalltext site's owner will receive this reminder 
       %br/
-      %input.sites{ko(autocompleteTagField: 'sites',objectType: "Site", valueUpdate: :afterkeydown), proxy: 'http://localhost:3000/collections/2/sites', valueField: 'id', displayField: 'name', type: :text}
+      %input.sites{ko(autocompleteTagField: 'sites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
       %br/
       %label{ko(css: {error: 'reminderDateError'})} Date
       %br/
@@ -54,10 +58,19 @@
 
       %hr/
       .bottom-actions
+        <!-- ko if: $root.isSaving() -->
+        Saving reminder, please wait...
+        <!-- /ko -->
+        <!-- ko if: !$root.isSaving() -->
         %button.white{ko(click: '$root.saveReminder', enable: :valid)} Save
         %a.tgrey{ko(click: '$root.cancelReminder'), href: 'javascript:void(0)' } Cancel
+        <!-- /ko -->
+        <!-- ko if: !valid() -->
         %span{ko(text: "error()"), style: 'color:red;margin-left:20px'}
+        <!-- /ko -->
     <!-- /ko -->
+    %br/
+    <!-- /ko-->
     -# Add new reminder link
     .box.grey.add{ ko(visible: '!currentReminder()', click: 'showAddReminder'), style: 'display:none'}
       %span Add Reminder

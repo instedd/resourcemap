@@ -85,3 +85,7 @@ UserSnapshot.blueprint do
   user
 end
 
+Reminder.blueprint do
+  
+end
+
