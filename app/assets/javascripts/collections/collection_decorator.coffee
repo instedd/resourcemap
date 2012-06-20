@@ -9,6 +9,7 @@ onCollections ->
       @constructorSitesContainer()
 
       @collection = collection
+      @currentSnapshot = collection.currentSnapshot
 
       @id = collection.id
       @name = collection.name

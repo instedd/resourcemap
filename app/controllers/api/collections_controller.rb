@@ -37,7 +37,11 @@ class Api::CollectionsController < ApplicationController
   def perform_search(*options)
     except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius]
 
-    search = collection.new_search
+    if current_snapshot
+      search = collection.new_search snapshot: current_snapshot.name
+    else
+      search = collection.new_search
+    end
     search.use_codes_instead_of_es_codes
 
     if options.include? :page

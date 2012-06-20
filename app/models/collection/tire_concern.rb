@@ -50,16 +50,16 @@ module Collection::TireConcern
     self.class.index_name id, options
   end
 
-  def new_search
-    Search.new self
+  def new_search(options = {})
+    Search.new(self, options)
   end
 
   def new_map_search
     MapSearch.new id
   end
 
-  def new_tire_search
-    self.class.new_tire_search(id)
+  def new_tire_search(options = {})
+    self.class.new_tire_search(id, options)
   end
 
   module ClassMethods
@@ -78,8 +78,8 @@ module Collection::TireConcern
       ::Tire::Index.new index_name(id)
     end
 
-    def new_tire_search(*ids)
-      search = Tire::Search::Search.new ids.map{|id| index_name(id)}
+    def new_tire_search(*ids, options)
+      search = Tire::Search::Search.new ids.map{|id| index_name(id, options)}
       search.filter :type, value: :site
       search
     end

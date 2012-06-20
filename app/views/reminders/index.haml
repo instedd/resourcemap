@@ -17,7 +17,7 @@
       .toptitle
         %span{ko(text: 'name')} 
         &rarr;
-        %em Montly for all sites
+        %em{ko(text: 'getSitesRepeatLabel()')}
       .rightbuttons
         %button.fdelete
       .message
@@ -36,7 +36,7 @@
       %br/
       %label.smalltext site's owner will receive this reminder 
       %br/
-      %input.sites{ko(superblyTagField: 'sites', valueUpdate: :afterkeydown), type: :text}
+      %input.sites{ko(autocompleteTagField: 'sites',objectType: "Site", valueUpdate: :afterkeydown), proxy: 'http://localhost:3000/collections/2/sites', valueField: 'id', displayField: 'name', type: :text}
       %br/
       %label{ko(css: {error: 'reminderDateError'})} Date
       %br/

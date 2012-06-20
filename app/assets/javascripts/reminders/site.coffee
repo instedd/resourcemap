@@ -1,5 +1,5 @@
 onReminders ->
   class @Site
     constructor: (data) ->
-      @id = ko.observable data?.id
-      @name = ko.observable data?.name
+      @id = data?.id
+      @name = data?.name

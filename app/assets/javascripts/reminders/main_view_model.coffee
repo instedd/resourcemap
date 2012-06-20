@@ -37,7 +37,7 @@ onReminders ->
 
     loadSites: (callback) ->
       $.get "/collections/#{@collectionId()}/sites", (sites) ->
-        callback $.map sites, (site) => site.name
+        callback $.map sites, (site) => new Site site
 
     cancelReminder: =>
       @currentReminder(null)

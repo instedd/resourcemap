@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
 
   expose(:collections) { current_user.collections }
   expose(:collection)
+  expose(:current_snapshot) { collection.snapshot_for(current_user) }
   expose(:collection_memberships) { collection.memberships.includes(:user) }
   expose(:layers) { collection.layers }
   expose(:layer)
@@ -12,7 +13,6 @@ class ApplicationController < ActionController::Base
   expose(:threshold)
   expose(:reminders) { collection.reminders }
   expose(:reminder)
-  expose(:current_snapshot) { collection.snapshot_for(current_user) }
 
   def after_sign_in_path_for(resource)
     stored_location_for(resource) || collections_path

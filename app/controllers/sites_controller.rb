@@ -5,14 +5,22 @@ class SitesController < ApplicationController
   expose(:site)
 
   def index
-    search = collection.new_search
+    if current_snapshot
+      search = collection.new_search snapshot: current_snapshot.name
+    else
+      search = collection.new_search
+    end
     search.offset params[:offset]
     search.limit params[:limit]
     render json: search.ui_results.map { |x| x['_source'] }
   end
 
   def show
-    search = collection.new_search
+    if current_snapshot
+      search = collection.new_search snapshot: current_snapshot.name
+    else
+      search = collection.new_search
+    end
     search.id params[:id]
     render json: search.ui_results.first['_source']
   end

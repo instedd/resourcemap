@@ -63,8 +63,9 @@ onCollections ->
       @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@, x))
 
     edit: =>
-      @originalValue = @value()
-      @editing(true)
+      if !window.model.currentCollection().currentSnapshot
+        @originalValue = @value()
+        @editing(true)
 
     keyPress: (field, event) =>
       switch event.keyCode

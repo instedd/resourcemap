@@ -98,8 +98,9 @@ onCollections ->
       @collection.propagateUpdatedAt(value)
 
     editName: =>
-      @originalName = @name()
-      @editingName(true)
+      if !@collection.currentSnapshot
+        @originalName = @name()
+        @editingName(true)
 
     nameKeyPress: (site, event) =>
       switch event.keyCode
@@ -120,8 +121,9 @@ onCollections ->
       delete @originalName
 
     editLocation: =>
-      @editingLocation(true)
-      @startEditLocationInMap()
+      if !@collection.currentSnapshot
+        @editingLocation(true)
+        @startEditLocationInMap()
 
     startEditLocationInMap: =>
       @originalLocation = @position()

@@ -11,14 +11,17 @@ onReminders ->
       @repeat_id = ko.observable data?.repeat_id
       @repeat = ko.observable new Repeat(data?.repeat)
       @collection_id = ko.observable data?.collection_id
-      @sites = ko.observable()
+      if data?.sites
+        @sites = ko.observableArray $.map(data.sites, (site) -> new Site(site))
+      else 
+        @sites = ko.observableArray([])
       @nameError = ko.computed =>
         if $.trim(@name()).length > 0 
           return null
         else
           return "Reminder's name is missing"
       @sitesError = ko.computed =>
-        if $.trim(@sites()).length > 0
+        if @sites().length > 0
           return null
         else
           return "Sites is missing"
@@ -46,4 +49,12 @@ onReminders ->
       reminder_message: @reminder_message()
       repeat_id: @repeat_id()
       collection_id: @collection_id()
+
+    getSitesRepeatLabel: =>
+      siteLabel = ""
+      if @sites().length > 0 
+        for i in [0...@sites().length-1]
+          siteLabel = siteLabel + @sites()[i].name + " and "
+
+        siteLabel = @repeat().name() + " for " + siteLabel + @sites()[@sites().length-1].name
 
