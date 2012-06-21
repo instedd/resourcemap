@@ -1,7 +1,7 @@
 class SitesController < ApplicationController
   before_filter :authenticate_user!
 
-  expose(:sites)
+  expose(:sites) {if current_snapshot && collection then collection.site_histories.at_date(current_snapshot.date) else collection.sites end}
   expose(:site)
 
   def index
@@ -50,7 +50,8 @@ class SitesController < ApplicationController
   def search
     zoom = params[:z].to_i
 
-    search = MapSearch.new params[:collection_ids]
+    search = MapSearch.new params[:collection_ids], user: current_user
+
     search.zoom = zoom
     search.bounds = params if zoom >= 2
     search.exclude_id params[:exclude_id].to_i if params[:exclude_id].present?

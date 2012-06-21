@@ -66,6 +66,14 @@ module Collection::TireConcern
     INDEX_NAME_PREFIX = Rails.env == 'test' ? "collection_test" : "collection"
 
     def index_name(id, options = {})
+
+      if options[:user]
+        snapshot = Collection.find(id).snapshot_for(options[:user])
+        if snapshot
+          return "#{INDEX_NAME_PREFIX}_#{id}_#{snapshot.name}"
+        end
+      end
+
       if options[:snapshot]
         "#{INDEX_NAME_PREFIX}_#{id}_#{options[:snapshot]}"
       else

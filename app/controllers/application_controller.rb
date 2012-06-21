@@ -5,9 +5,9 @@ class ApplicationController < ActionController::Base
   expose(:collection)
   expose(:current_snapshot) { collection.snapshot_for(current_user) }
   expose(:collection_memberships) { collection.memberships.includes(:user) }
-  expose(:layers) { collection.layers }
+  expose(:layers) {if current_snapshot && collection then collection.layer_histories.at_date(current_snapshot.date) else collection.layers end}
   expose(:layer)
-  expose(:fields) { collection.fields }
+  expose(:fields) {if current_snapshot && collection then collection.field_histories.at_date(current_snapshot.date) else collection.fields end}
   expose(:activities) { current_user.activities }
   expose(:thresholds) { collection.thresholds.order :ord }
   expose(:threshold)

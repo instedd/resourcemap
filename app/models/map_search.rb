@@ -1,9 +1,9 @@
 class MapSearch
   include SearchBase
 
-  def initialize(collection_ids)
+  def initialize(collection_ids, options = {})
     @collection_ids = Array(collection_ids)
-    @search = Collection.new_tire_search(*@collection_ids, {})
+    @search = Collection.new_tire_search(*@collection_ids, options)
     @search.size 100000
     @bounds = {s: -90, n: 90, w: -180, e: 180}
   end
