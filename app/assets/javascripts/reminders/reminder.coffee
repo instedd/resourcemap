@@ -10,20 +10,24 @@ onReminders ->
       @reminder_message = ko.observable data?.reminder_message
       @repeat = ko.observable new Repeat(data?.repeat)
       @collection_id = ko.observable data?.collection_id
-      if data?.sites
-        @sites = ko.observableArray $.map(data.sites, (site) -> new Site(site))
-      else 
-        @sites = ko.observableArray([])
+      @is_all_site = ko.observable data?.is_all_site?.toString() ? "true"
+      
+      if @is_all_site() == "true"
+        @sites = ko.observableArray []
+      else
+        @sites = ko.observableArray data?.sites ? [], $.map(data.sites, (site) -> new Site(site))
+      
       @nameError = ko.computed =>
         if $.trim(@name()).length > 0 
           return null
         else
           return "Reminder's name is missing"
       @sitesError = ko.computed =>
-        if @sites().length > 0
-          return null
-        else
-          return "Sites is missing"
+        return if @is_all_site() == "false" and @sites().length == 0 then "Sites is missing" else null
+        # if @sites().length > 0
+          # return null
+        # else
+          # return "Sites is missing"
       @reminderDateError =ko.computed =>
         if $.trim(@reminder_date()).length > 0
           return null
@@ -38,6 +42,7 @@ onReminders ->
 
       @error = ko.computed =>
         errorMessage = @nameError() || @sitesError() || @reminderDateError() || @reminderMessageError()
+        # errorMessage = @nameError() || @reminderDateError() || @reminderMessageError()
         if errorMessage then "Can't save: " + errorMessage else ""
 
       @valid = ko.computed => !@error()
@@ -49,13 +54,10 @@ onReminders ->
       reminder_message: @reminder_message()
       repeat_id: @repeat().id()
       collection_id: @collection_id()
-      sites: $.map(@sites(), (x) -> x.id)
+      is_all_site: @is_all_site()
+      sites: $.map(@sites(), (x) -> x.id) if @is_all_site() == "false"
 
     getSitesRepeatLabel: =>
-      siteLabel = ""
-      if @sites().length > 0 
-        for i in [0...@sites().length-1]
-          siteLabel = siteLabel + @sites()[i].name + " and "
-
-        siteLabel = @repeat().name() + " for " + siteLabel + @sites()[@sites().length-1].name
+      sites = if @is_all_site() == "true" then ["all sites"] else $.map @sites(), (site) => site.name
+      detail = @repeat().name() + " for " + sites.join(",")
         

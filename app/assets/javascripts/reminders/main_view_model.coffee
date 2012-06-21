@@ -14,6 +14,7 @@ onReminders ->
       @reminders.push reminder
       
     editReminder: (reminder) =>
+      reminder?.sites([])? if reminder.is_all_site() == "true"
       @currentReminder reminder
  
     getTimes: =>
@@ -37,10 +38,6 @@ onReminders ->
       @currentReminder().id(data.id)
       @currentReminder(null)
       @isSaving false
-
-    # loadSites: (callback) ->
-      # $.get "/collections/#{@collectionId()}/sites", (sites) ->
-        # callback $.map sites, (site) => new Site site
 
     cancelReminder: =>
       if !@currentReminder().id()?

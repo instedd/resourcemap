@@ -35,12 +35,17 @@
       %br/
       %input.w30{ko(value: 'name', valueUpdate: :afterkeydown), type: :text}
       %br/
-
       %label{ko(css: {error: 'sitesError'})} Sites
       %br/
-      %label.smalltext site's owner will receive this reminder 
-      %br/
-      %input.sites{ko(autocompleteTagField: 'sites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
+      %label.smalltext site's owner will receive this reminder
+      %br   
+      %input{"data-bind" => "checked: is_all_site", :value => "true", :name => "site", :type => "radio"}
+      %label All sites
+      %input{"data-bind" => "checked: is_all_site", :value => "false", :name => "site", :type => "radio"} 
+      %label Some sites
+      %br
+      .middlebuttons{ko(visible: 'is_all_site() == "false"' )}
+        %input.sites{ko(autocompleteTagField: 'sites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
       %br/
       %label{ko(css: {error: 'reminderDateError'})} Date
       %br/

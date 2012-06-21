@@ -13,7 +13,7 @@ class RemindersController < ApplicationController
     reminder = reminders.new params[:reminder].except(:sites)
     
     # site references
-    reminder.sites = Site.find params[:reminder][:sites]
+    reminder.sites = Site.find params[:reminder][:sites] if params[:reminder][:sites].present?
     
     reminder.save!
     render json: reminder
@@ -24,7 +24,7 @@ class RemindersController < ApplicationController
     reminder.update_attributes! params[:reminder].except(:sites)
     
     # site references
-    reminder.sites = Site.find params[:reminder][:sites]
+    reminder.sites = params[:reminder][:sites].present? ? Site.find(params[:reminder][:sites]) : []
     
     render json: reminder
   end
