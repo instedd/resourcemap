@@ -74,7 +74,7 @@ module Collection::TireConcern
       if options[:user]
         snapshot = Collection.find(id).snapshot_for(options[:user])
         if snapshot
-           return "#{INDEX_NAME_PREFIX}_#{id}_#{snapshot.name}"
+          return "#{INDEX_NAME_PREFIX}_#{id}_#{snapshot.name}"
         end
       end
 

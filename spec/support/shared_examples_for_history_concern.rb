@@ -30,7 +30,7 @@ shared_examples "it includes History::Concern" do
     model.histories.count.should == 1
     model.histories.last.valid_to.should be_nil
 
-    stub_time '2020-01-01 10:00:00'
+    stub_time '2020-01-01 10:00:00 -0500'
 
     model.destroy
     histories = model.histories.all
@@ -56,10 +56,10 @@ shared_examples "it includes History::Concern" do
   end
 
   it "should get current history for updated model" do
-    stub_time '2010-01-01 09:00:00'
+    stub_time '2010-01-01 09:00:00 -0500'
     model = described_class.make
 
-    stub_time '2010-02-02 09:00:00'
+    stub_time '2010-02-02 09:00:00 -0500'
     model.name = "new name"
     model.save!
 
@@ -73,17 +73,17 @@ shared_examples "it includes History::Concern" do
   it "should not get new elements in history for date" do
     collection = Collection.make
 
-    stub_time '2011-01-01 10:00:00'
+    stub_time '2011-01-01 10:00:00 -0500'
 
     described_class.make name: '1 last year', collection_id: collection.id
     described_class.make name: '2 last year', collection_id: collection.id
 
-    stub_time '2012-06-05 12:17:58'
+    stub_time '2012-06-05 12:17:58 -0500'
 
     described_class.make name: '3 today', collection_id: collection.id
     described_class.make name: '4 today', collection_id: collection.id
 
-    date = '2011-01-01 10:00:00'.to_time
+    date = '2011-01-01 10:00:00 -0500'.to_time
     histories = collection.send("#{described_class}_histories".downcase).at_date(date)
     histories.count.should eq(2)
   end

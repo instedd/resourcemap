@@ -10,7 +10,7 @@ describe Snapshot do
   let!(:collection) { Collection.make }
 
   before(:each) do
-    stub_time '2011-01-01 10:00:00'
+    stub_time '2011-01-01 10:00:00 -0500'
 
     layer = collection.layers.make
     @field = layer.fields.make code: 'beds', kind: 'numeric'
@@ -18,7 +18,7 @@ describe Snapshot do
     @site1 = collection.sites.make name: 'site1 last year'
     @site2 = collection.sites.make name: 'site2 last year'
 
-    stub_time '2012-06-05 12:17:58'
+    stub_time '2012-06-05 12:17:58 -0500'
 
     @field2 = layer.fields.make code: 'beds', kind: 'numeric'
 
@@ -27,11 +27,12 @@ describe Snapshot do
   end
 
   it "should create index with sites" do
-    date = '2011-01-01 10:00:00'.to_time
+    date = '2011-01-01 10:00:00 -0500'.to_time
     snapshot = collection.snapshots.create! date: date, name: 'last_year'
 
     index_name = Collection.index_name collection.id, snapshot: "last_year"
     search = Tire::Search::Search.new index_name
+
     search.perform.results.map { |x| x['_source']['id'] }.sort.should eq([@site1.id, @site2.id])
 
     # Also check mapping
@@ -39,7 +40,7 @@ describe Snapshot do
   end
 
   it "should destroy index on destroy" do
-    date = '2011-01-01 10:00:00'.to_time
+    date = '2011-01-01 10:00:00 -0500'.to_time
 
     snapshot = collection.snapshots.create! date: date, name: 'last_year'
     snapshot.destroy
