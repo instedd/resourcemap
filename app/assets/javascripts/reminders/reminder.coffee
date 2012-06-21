@@ -8,7 +8,6 @@ onReminders ->
       @reminder_datetime = ko.computed =>
         @reminder_date() + " " + @reminder_time()
       @reminder_message = ko.observable data?.reminder_message
-      @repeat_id = ko.observable data?.repeat_id
       @repeat = ko.observable new Repeat(data?.repeat)
       @collection_id = ko.observable data?.collection_id
       if data?.sites
@@ -48,7 +47,7 @@ onReminders ->
       name: @name()
       reminder_date: @reminder_datetime()
       reminder_message: @reminder_message()
-      repeat_id: @repeat_id()
+      repeat_id: @repeat().id()
       collection_id: @collection_id()
       sites: $.map(@sites(), (x) -> x.id)
 
