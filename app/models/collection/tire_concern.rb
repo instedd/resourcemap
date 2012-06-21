@@ -67,19 +67,18 @@ module Collection::TireConcern
 
     def index_name(id, options = {})
 
+      if options[:snapshot]
+        return "#{INDEX_NAME_PREFIX}_#{id}_#{options[:snapshot]}"
+      end
+
       if options[:user]
         snapshot = Collection.find(id).snapshot_for(options[:user])
         if snapshot
-          return "#{INDEX_NAME_PREFIX}_#{id}_#{snapshot.name}"
+           return "#{INDEX_NAME_PREFIX}_#{id}_#{snapshot.name}"
         end
       end
 
-      if options[:snapshot]
-        "#{INDEX_NAME_PREFIX}_#{id}_#{options[:snapshot]}"
-      else
-        "#{INDEX_NAME_PREFIX}_#{id}"
-      end
-
+      "#{INDEX_NAME_PREFIX}_#{id}"
     end
 
     def index(id)
