@@ -4,5 +4,5 @@ ko.bindingHandlers.bindDatePicker =
       $(".ux-datepicker:not([readonly])")
         .click ->
           $(element).datepicker "show"
-        .datepicker()
+        .datepicker({"dateFormat": "yy-mm-dd" })
 

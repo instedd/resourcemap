@@ -3,8 +3,8 @@ onReminders ->
     constructor: (data) ->
       @id = ko.observable data?.id
       @name = ko.observable data?.name
-      @reminder_date = ko.observable data?.reminder_date
-      @reminder_time = ko.observable data?.reminder_date
+      @reminder_date = ko.observable data?.reminder_date?.substring(0,data.reminder_date.indexOf("T"))
+      @reminder_time = ko.observable data?.reminder_date?.substring(data.reminder_date.indexOf("T")+1,data.reminder_date.indexOf("T")+1 + 5)
       @reminder_datetime = ko.computed =>
         @reminder_date() + " " + @reminder_time()
       @reminder_message = ko.observable data?.reminder_message

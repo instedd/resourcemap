@@ -20,7 +20,8 @@ onReminders ->
       times = []
       for i in [0...24]
         do ->
-        times = times.concat ["#{i}:00","#{i}:30"]
+        hour = if i < 10 then "0#{i}" else i
+        times = times.concat ["#{hour}:00","#{hour}:30"]
       times
 
     saveReminder: =>
