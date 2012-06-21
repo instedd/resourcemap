@@ -30,7 +30,7 @@ describe Snapshot do
     date = '2011-01-01 10:00:00 -0500'.to_time
     snapshot = collection.snapshots.create! date: date, name: 'last_year'
 
-    index_name = Collection.index_name collection.id, snapshot: "last_year"
+    index_name = Collection.index_name collection.id, snapshot_id: snapshot.id
     search = Tire::Search::Search.new index_name
 
     search.perform.results.map { |x| x['_source']['id'] }.sort.should eq([@site1.id, @site2.id])
@@ -45,7 +45,7 @@ describe Snapshot do
     snapshot = collection.snapshots.create! date: date, name: 'last_year'
     snapshot.destroy
 
-    index_name = Collection.index_name collection.id, snapshot: "last_year"
+    index_name = Collection.index_name collection.id, snapshot_id: snapshot.id
     Tire::Index.new(index_name).exists?.should be_false
   end
 

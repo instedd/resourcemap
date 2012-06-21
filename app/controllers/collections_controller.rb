@@ -125,7 +125,7 @@ class CollectionsController < ApplicationController
 
   def search
     if current_snapshot
-      search = collection.new_search snapshot: current_snapshot.name
+      search = collection.new_search snapshot_id: current_snapshot.id
     else
       search = collection.new_search
     end

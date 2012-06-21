@@ -24,7 +24,7 @@ class Snapshot < ActiveRecord::Base
   end
 
   def index_name
-    collection.index_name snapshot: name
+    collection.index_name snapshot_id: id
   end
 
   def index

@@ -3,7 +3,7 @@ class FieldsController < ApplicationController
 
   def index
     if current_snapshot
-      render json: collection.visible_fields_for(current_user, snapshot: current_snapshot.name)
+      render json: collection.visible_fields_for(current_user, snapshot_id: current_snapshot.id)
     else
       render json: collection.visible_fields_for(current_user)
     end

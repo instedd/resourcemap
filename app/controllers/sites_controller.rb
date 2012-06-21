@@ -6,7 +6,7 @@ class SitesController < ApplicationController
 
   def index
     if current_snapshot
-      search = collection.new_search snapshot: current_snapshot.name
+      search = collection.new_search snapshot_id: current_snapshot.id
     else
       search = collection.new_search
     end
@@ -17,7 +17,7 @@ class SitesController < ApplicationController
 
   def show
     if current_snapshot
-      search = collection.new_search snapshot: current_snapshot.name
+      search = collection.new_search snapshot_id: current_snapshot.id
     else
       search = collection.new_search
     end
