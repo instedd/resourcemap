@@ -7,7 +7,6 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
   validates_uniqueness_of :phone_number
   validates_presence_of :phone_number
-  validates_numericality_of :phone_number
   has_many :memberships
   has_many :collections, through: :memberships
   has_one :user_snapshot
