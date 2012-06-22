@@ -160,7 +160,7 @@
       %label{ko(css: {error: 'notificationMessageError'})} Message
       %br/
       %label.smalltext Use the following expressions to fill your message with sites data [site name], [occupation], [beds], [location], [aspirin], [band aids]
-      %textarea.ux-wajbar.w60{ko(value: :messageNotification), placeholder: 'This alert is about [site name]. Occupation is now at [occupation]', maxlength: 140, rows: 4 }
+      %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: 'This alert is about [site name]. Occupation is now at [occupation]', maxlength: 140, rows: 4 }
       .clear
       %hr/
       
