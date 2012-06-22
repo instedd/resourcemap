@@ -6,4 +6,4 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-Repeat.create([{ name: "from Monday to Friday", order: 1}])
+Repeat.find_or_create_by_name(name: "from Monday to Friday", order: 1)
