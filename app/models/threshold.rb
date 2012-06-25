@@ -22,12 +22,12 @@ class Threshold < ActiveRecord::Base
   def test(properties)
     throw :threshold, true if conditions.all? do |hash|
       if value = properties[hash[:field]]
-        true if condition(hash).evaluate(value)
+        true if condition(hash, properties).evaluate(value)
       end
     end
   end
 
-  def condition(hash)
-    Threshold::Condition.new hash
+  def condition(hash, properties)
+    Threshold::Condition.new hash, properties
   end
 end
