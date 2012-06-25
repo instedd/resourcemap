@@ -32,13 +32,13 @@
       %hr.clear/
       %h2 Take data snapshot
       %p This will allow you to browse data in the future as it is looking right now.
-      .field.w60
-        = form_for(@snapshot, :url => create_snapshot_collection_path(collection)) do |f|
+      = form_for(@snapshot, :url => create_snapshot_collection_path(collection)) do |f|
+        .field.w60
           = f.label :name, "Enter snapshot name"
           = f.text_field :name
           - if f.object.errors[:name].present?
             %label.error= "Name #{f.object.errors[:name].join(', ')}"
-          = f.button 'Create new Snapshot', :class => 'white'
+        = f.button 'Create new Snapshot', :class => 'white'
       %br/
       %br/
 
