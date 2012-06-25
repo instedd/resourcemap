@@ -33,7 +33,7 @@
       %h2 Take data snapshot
       %p This will allow you to browse data in the future as it is looking right now.
       .field.w60
-        = form_for(@snapshot, :url => collection_create_snapshot_path(collection)) do |f|
+        = form_for(@snapshot, :url => create_snapshot_collection_path(collection)) do |f|
           = f.label :name, "Enter snapshot name"
           = f.text_field :name
           - if f.object.errors[:name].present?
@@ -61,7 +61,7 @@
     .field.w60
       - collection.snapshots.each do |snapshot|
         %p
-          = form_tag(collection_load_snapshot_path(collection)) do
+          = form_tag(load_snapshot_collection_path(collection)) do
             = label_tag :name, snapshot.name
             = hidden_field_tag :name, snapshot.name
             = label_tag :date, snapshot.date
