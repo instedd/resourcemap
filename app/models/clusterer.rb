@@ -4,7 +4,7 @@ class Clusterer
   def initialize(zoom)
     @zoom = zoom
     @width, @height = self.class.cell_size_for zoom
-    @clusters = Hash.new { |h, k| h[k] = {lat_sum: 0, lng_sum: 0, count: 0, min_lat: 90, max_lat: -90, min_lng: 180, max_lng: -180} }
+    @clusters = Hash.new { |h, k| h[k] = {lat_sum: 0, lng_sum: 0, count: 0, alert_count: 0, min_lat: 90, max_lat: -90, min_lng: 180, max_lng: -180} }
     @sites = []
     @clustering_enabled = @zoom < 20
   end
@@ -29,20 +29,21 @@ class Clusterer
       cluster[:name] = site[:name]
       cluster[:collection_id] = site[:collection_id]
       cluster[:count] += 1
+      cluster[:alert_count] += 1 if site[:alert] == "true"
       cluster[:min_lat] = lat if lat < cluster[:min_lat]
       cluster[:min_lng] = lng if lng < cluster[:min_lng]
       cluster[:max_lat] = lat if lat > cluster[:max_lat]
       cluster[:max_lng] = lng if lng > cluster[:max_lng]
       cluster[:lat_sum] += lat
       cluster[:lng_sum] += lng
+      cluster[:alert] = site[:alert]
     else
-      @sites.push id: site[:id], name: site[:name], lat: lat, lng: lng, collection_id: site[:collection_id]
+      @sites.push id: site[:id], name: site[:name], lat: lat, lng: lng, collection_id: site[:collection_id], alert: site[:alert]
     end
   end
 
   def clusters
     result = {}
-
     if @clustering_enabled
       clusters_to_return = []
       sites_to_return = []
@@ -50,7 +51,7 @@ class Clusterer
       @clusters.each_value do |cluster|
         count = cluster[:count]
         if count == 1
-          sites_to_return.push id: cluster[:site_id], name: cluster[:name], lat: cluster[:lat_sum], lng: cluster[:lng_sum], collection_id: cluster[:collection_id]
+          sites_to_return.push id: cluster[:site_id], name: cluster[:name], lat: cluster[:lat_sum], lng: cluster[:lng_sum], collection_id: cluster[:collection_id], alert: cluster[:alert]
         else
           hash = {
             id: cluster[:id],
@@ -60,7 +61,8 @@ class Clusterer
             min_lng: cluster[:min_lng],
             max_lat: cluster[:max_lat],
             max_lng: cluster[:max_lng],
-            count: count
+            count: count,
+            alert_count: cluster[:alert_count]
           }
           hash[:site_ids] = cluster[:site_ids] if cluster[:site_ids]
           clusters_to_return.push hash
