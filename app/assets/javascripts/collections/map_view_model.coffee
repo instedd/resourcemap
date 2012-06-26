@@ -3,8 +3,19 @@ onCollections ->
   class @MapViewModel
     @constructorMapViewModel: ->
       @showingMap = ko.observable(true)
+      @sitesWithAlert = ko.observable 0
       @sitesCount = ko.observable(0)
       @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site on map' else "#{@sitesCount()} sites on map"
+      @sitesWithAlertText = ko.computed => 
+        sitesWithAlertText = ""
+        if @sitesWithAlert() == 1
+          sitesWithAlertText = "with #{@sitesWithAlert()} alert"
+        else if @sitesWithAlert() > 1
+          sitesWithAlertText = "with #{@sitesWithAlert()} alerts"
+        sitesWithAlertText
+      
+      @sitesCountTextWithAlert = ko.computed => 
+        @sitesCountText() + " " + @sitesWithAlertText()
 
       @reloadMapSitesAutomatically = true
       @clusters = {}
@@ -177,6 +188,7 @@ onCollections ->
 
             newMarker = new google.maps.Marker markerOptions
             newMarker.name = site.name
+            newMarker.alert = site.alert
             newMarker.collectionId = site.collection_id
 
             @markers[site.id] = newMarker
@@ -297,12 +309,19 @@ onCollections ->
 
     @updateSitesCount: ->
       count = 0
+      alertCount = 0
       bounds = @map.getBounds()
       for siteId, marker of @markers
-        count += 1 if bounds.contains marker.getPosition()
+        if bounds.contains marker.getPosition()
+          count += 1
+          alertCount += 1 if marker.alert == "true"
       for clusterId, cluster of @clusters
-        count += cluster.count if bounds.contains cluster.position
+        if bounds.contains cluster.position
+          count += cluster.count
+          alertCount += cluster.alertCount
       count += 1 if @selectedSite()
+      alertCount += 1 if @selectedSite()?.alert()
+      @sitesWithAlert alertCount
       @sitesCount count
 
     @showTable: ->
