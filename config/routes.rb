@@ -11,7 +11,7 @@ ResourceMap::Application.routes.draw do
         put :set_order
       end
     end
-    resources :fields 
+    resources :fields
     resources :thresholds do
       member do
         post :set_order
@@ -36,9 +36,11 @@ ResourceMap::Application.routes.draw do
 
     post 'upload_csv'
 
-    post 'create_snapshot'
-    post 'load_snapshot'
-    post 'unload_current_snapshot'
+    member do
+      post 'create_snapshot'
+      post 'load_snapshot'
+      post 'unload_current_snapshot'
+    end
 
     get 'import_wizard'
     post 'import_wizard_upload_csv'

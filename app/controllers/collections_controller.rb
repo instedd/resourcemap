@@ -38,6 +38,7 @@ class CollectionsController < ApplicationController
   end
 
   def show
+    @snapshot = Snapshot.new
     respond_to do |format|
       format.html
       format.json { render json: collection }
@@ -76,8 +77,12 @@ class CollectionsController < ApplicationController
   end
 
   def create_snapshot
-    if collection.snapshots.create date: Time.now, name: params[:name]
+    @snapshot = Snapshot.create(date: Time.now, name: params[:snapshot][:name], collection: collection)
+    if @snapshot.valid?
       redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} created"
+    else
+      flash.now[:error] = "Snapshot could not be created"
+      render :show
     end
   end
 

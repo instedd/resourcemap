@@ -24,6 +24,7 @@ User.blueprint do
   email
   password
   phone_number
+  confirmed_at { Time.now }
 end
 
 Collection.blueprint do
@@ -86,6 +87,6 @@ UserSnapshot.blueprint do
 end
 
 Reminder.blueprint do
-  
+
 end
 
