@@ -14,7 +14,7 @@ module Site::IndexUtils
     }
 
     hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f} if site.lat? && site.lng?
-    hash[:alert] = site.collection.thresholds_test site.properties unless site.is_a? SiteHistory
+    hash[:alert] = site.collection.thresholds_test site.properties, site.id unless site.is_a? SiteHistory
     result = index.store hash
 
     if result['error']

@@ -97,10 +97,15 @@ class Collection < ActiveRecord::Base
     end
   end
 
-  def thresholds_test(properties)
+  def thresholds_test(site_properties, site_id)
     catch(:threshold) {
+      exists = false 
       thresholds.each do |threshold|
-        threshold.test properties
+        threshold.sites.each do |site|
+          exists = true if site["id"] == site_id
+        end
+        return false unless exists
+        threshold.test site_properties
       end
       false
     }
