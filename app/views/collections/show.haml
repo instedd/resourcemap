@@ -51,7 +51,7 @@
         %h3
           = "Snapshot name: #{current_snapshot.name}"
         %h3
-          = button_to "Go back to present time", collection_unload_current_snapshot_path(collection)
+          = button_to "Go back to present time", unload_current_snapshot_collection_path(collection), :class => 'white'
         %br/
         %br/
 
@@ -62,10 +62,12 @@
       - collection.snapshots.each do |snapshot|
         %p
           = form_tag(load_snapshot_collection_path(collection)) do
-            = label_tag :name, snapshot.name
+            .field.w60
+              = label_tag :name, snapshot.name
             = hidden_field_tag :name, snapshot.name
-            = label_tag :date, snapshot.date
-            = submit_tag "Load snapshot", class: 'white'
+            .field.w60
+              = label_tag :date, snapshot.date
+            = submit_tag "Load snapshot", :class => 'white'
     %br/
     %br/
 

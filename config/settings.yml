@@ -2,6 +2,6 @@ settings:
   mobile_id: off
 
   plugins:
-    threshold: on
+    threshold: off
     snapshot: on
-    reminder: on
+    reminder: off
