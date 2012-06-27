@@ -108,6 +108,9 @@ GEM
       jruby-pageant (>= 1.0.2)
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
+    nuntium_api (0.20)
+      json
+      rest-client
     orm_adapter (0.0.7)
     polyglot (0.3.3)
     rack (1.4.1)
@@ -220,6 +223,7 @@ DEPENDENCIES
   jquery-rails
   machinist (= 1.0.6)
   mysql2
+  nuntium_api (~> 0.13)
   rails (= 3.2.1)
   resque
   rspec

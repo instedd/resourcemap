@@ -10,6 +10,7 @@ gem "breadcrumbs_on_rails"
 gem "tire"
 gem "valium"
 gem "resque"
+gem "nuntium_api", "~> 0.13", :require => "nuntium"
 
 # Gems used only for assets and not required
 # in production environments by default.
