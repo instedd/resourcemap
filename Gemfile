@@ -9,6 +9,7 @@ gem "instedd-rails", '0.0.17'
 gem "breadcrumbs_on_rails"
 gem "tire"
 gem "valium"
+gem "resque"
 
 # Gems used only for assets and not required
 # in production environments by default.
