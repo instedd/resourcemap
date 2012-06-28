@@ -21,7 +21,7 @@ class Collection < ActiveRecord::Base
   has_many :field_histories, dependent: :destroy
 
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
-
+  
   def max_value_of_property(es_code)
     search = new_tire_search
     search.sort { by es_code, 'desc' }
@@ -101,9 +101,11 @@ class Collection < ActiveRecord::Base
     catch(:threshold) {
       exists = false 
       thresholds.each do |threshold|
-        threshold.sites.each do |site|
-          exists = true if site["id"] == site_id
-        end
+        if(!threshold.is_all_site)
+          threshold.sites.each do |site|
+            exists = true if site["id"] == site_id
+          end
+        end 
         return false unless exists
         threshold.test site_properties
       end
