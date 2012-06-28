@@ -9,6 +9,7 @@ describe ImportWizard do
   let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
   let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy',  config: {hierarchy: [{"0"=>{"id"=>"60", "name"=>"papa"}, sub: [{"0"=> {"id"=>"100", "name"=>"uno"}, "1"=>{"id"=>"101", "name"=>"dos"}}.with_indifferent_access]}]}.with_indifferent_access}
 
   it "imports with name, lat, lon and one new numeric property" do
     csv_string = CSV.generate do |csv|
@@ -389,4 +390,31 @@ describe ImportWizard do
     sites[1].name.should eq('Bar')
     sites[1].properties.should eq({select_many.es_code => [2, 4]})
   end
+
+  it "should update hierarchy fields in bulk update" do
+     csv_string = CSV.generate do |csv|
+        csv << ['Name', 'Column']
+        csv << ['Foo', 101]
+        csv << ['Bar', 100]
+      end
+
+      specs = [
+        {name: 'Name', usage: 'name'},
+        {name: 'Column', usage: 'existing_field', field_id: hierarchy.id},
+        ]
+
+      ImportWizard.import user, collection, csv_string
+      ImportWizard.execute user, collection, specs
+
+      collection.layers.all.should eq([layer])
+      sites = collection.sites.all
+
+      sites[0].name.should eq('Foo')
+      sites[0].properties.should eq({hierarchy.es_code => "101"})
+
+      sites[1].name.should eq('Bar')
+      sites[1].properties.should eq({hierarchy.es_code => "100"})
+
+  end
+
 end
