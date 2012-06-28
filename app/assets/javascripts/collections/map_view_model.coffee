@@ -35,6 +35,12 @@ onCollections ->
       @markerImageTargetShadow = new google.maps.MarkerImage(
         "/assets/marker_target.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
       )
+      @markerImageAlert = new google.maps.MarkerImage(
+        "/assets/tristate_checkbox.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
+      )
+      @markerImageAlertShadow = new google.maps.MarkerImage(
+        "/assets/tristate_checkbox.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
+      )
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
@@ -168,7 +174,7 @@ onCollections ->
           if site.id == oldSelectedSiteId
             @markers[site.id] = @oldSelectedSite.marker
             @deleteMarkerListeners site.id
-            @setMarkerIcon @markers[site.id], 'active'
+            @setMarkerIcon @markers[site.id], if site.alert == "true" then 'alert' else 'active'
             @oldSelectedSite.deleteMarker false
             delete @oldSelectedSite
           else
@@ -189,6 +195,7 @@ onCollections ->
             newMarker = new google.maps.Marker markerOptions
             newMarker.name = site.name
             newMarker.alert = site.alert
+            @setMarkerIcon newMarker, 'alert' if site.alert == "true"
             newMarker.collectionId = site.collection_id
 
             @markers[site.id] = newMarker
@@ -258,10 +265,15 @@ onCollections ->
     @setAllMarkersActive: ->
       selectedSiteId = @selectedSite()?.id()?.toString()
       for siteId, marker of @markers
-        @setMarkerIcon marker, (if selectedSiteId == siteId then 'target' else 'active')
+        if selectedSiteId == siteId
+          @setMarkerIcon marker, 'target'
+        else if marker.alert == "true"
+          @setMarkerIcon marker, 'alert'
+        else
+          @setMarkerIcon marker, 'active'
       for clusterId, cluster of @clusters
         cluster.setActive()
-
+        
     @setMarkerIcon: (marker, icon) ->
       switch icon
         when 'active'
@@ -273,6 +285,9 @@ onCollections ->
         when 'target'
           marker.setIcon @markerImageTarget
           marker.setShadow @markerImageTargetShadow
+        when 'alert'
+          marker.setIcon @markerImageAlert
+          marker.setShadow @markerImageAlertShadow
 
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
