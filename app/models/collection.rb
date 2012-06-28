@@ -101,15 +101,17 @@ class Collection < ActiveRecord::Base
     catch(:threshold) {
       exists = false 
       thresholds.each do |threshold|
-        if(!threshold.is_all_site)
+        if(threshold.is_all_site)
+          exists = true
+        else
           threshold.sites.each do |site|
             exists = true if site["id"] == site_id
           end
         end 
-        return false unless exists
+        return nil unless exists
         threshold.test site_properties
       end
-      false
+      nil
     }
   end
 

@@ -19,7 +19,7 @@ module Site::IndexUtils
     
     if(alert_threshold != nil)
       hash[:alert] = true 
-      Resque.enqueue SmsQueue
+      Resque.enqueue SmsQueue, threshold
     end
     
     result = index.store hash

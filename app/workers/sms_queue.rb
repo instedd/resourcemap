@@ -1,6 +1,7 @@
 class SmsQueue
   @queue = :sms_queue
-  def self.perform
+  def self.perform threshold
+    
     @from = "85512220270" 
     @to   = "nuntium"
     @body = "it just the first test"
