@@ -1,7 +1,7 @@
-settings:
-  mobile_id: off
+mobile_id: off
+host: localhost:3000
 
-  plugins:
-    threshold: on
-    snapshot: on
-    reminder: off
+plugins:
+  threshold: on
+  snapshot: on
+  reminder: off
