@@ -58,7 +58,7 @@ onCollections ->
         element.remove()
         $(event.target).unbind 'mouseout', mouseoutHandler
       event = $(event.target).bind 'mouseout', mouseoutHandler
-      $.get "/collections/#{@currentCollection().id()}/max_value_of_property.json", {property: field.esCode()}, (data) =>
-        element.text "Maximum #{field.name()}: #{data}"
+      $.get "/collections/#{@currentCollection().id}/max_value_of_property.json", {property: field.esCode}, (data) =>
+        element.text "Maximum #{field.name}: #{data}"
 
     refreshTimeago: -> $('.timeago').timeago()
