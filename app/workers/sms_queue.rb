@@ -1,12 +1,17 @@
 class SmsQueue
   @queue = :sms_queue
-  def self.perform threshold
-    
-    @from = "85512220270" 
-    @to   = "nuntium"
-    @body = "it just the first test"
-    
+  def self.perform users, message_notification
+    messages = []
+    users.each do |user|
+      message = {
+        :from =>"resourcemap", 
+        :to => "sms://#{user["phone_number"]}", 
+        :body => message_notification, 
+        :suggested_channel => "testing"
+      }
+      messages.push message 
+    end
     nuntium = Nuntium.new_from_config
-    nuntium.send_ao(:from => @from, :to => "sms://#{@to}", :body => @body)
+    nuntium.send_ao messages
   end
 end

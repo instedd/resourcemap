@@ -52,7 +52,7 @@ onThresholds ->
       $.post "/collections/#{@collectionId}/thresholds/#{@id()}/set_order.json", { ord: ord }, callback
 
     toJSON: =>
-      id: @id()
+      id: @id() if @id()
       color: @color()
       property_name: @propertyName()
       is_all_site: @isAllSite()

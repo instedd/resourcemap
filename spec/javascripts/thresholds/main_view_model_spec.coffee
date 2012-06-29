@@ -6,13 +6,14 @@ describe 'MainViewModel', ->
     @model = new MainViewModel @collectionId
     @field = new Field id: '1', kind: 'numeric'
     @model.fields [@field]
+    window.model = @model
 
   it 'should find field', ->
     expect(@model.findField('1')).toBe @field
 
   describe 'cancel threshold', ->
     beforeEach ->
-      @threshold = new Threshold conditions: [], color: 'red'
+      @threshold = new Threshold conditions: [], color: 'red', is_all_site: true, is_all_condition: true, is_notify: true
       @model.thresholds.push @threshold
       @model.currentThreshold @threshold
       @model.editThreshold(@threshold)
@@ -30,19 +31,19 @@ describe 'MainViewModel', ->
 
   describe 'save threshold', ->
     beforeEach ->
-      @threshold = new Threshold conditions: [], color: 'red', ord: 1
+      @threshold = new Threshold conditions: [], color: 'red', ord: 1, is_all_site: true, is_all_condition: true, is_notify: true, message_notification: "alert_01", property_name: "beds"
       @model.thresholds.push @threshold
       @model.currentThreshold @threshold
       spyOn($, 'post')
 
     it "should post the threshold's json", ->
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], color: 'red', ord: 1}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], color: 'red', ord: 1, property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
 
     it "should put the threshold's json if it has an id", ->
       @threshold.id(1)
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {id: 1, conditions: [], color: 'red', ord: 1}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {color : 'red', property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
 
     it 'should be saving', ->
       @model.saveThreshold()
@@ -82,7 +83,7 @@ describe 'MainViewModel', ->
 
   describe 'edit threshold', ->
     beforeEach ->
-      @threshold = new Threshold id: 1, conditions: [], color: 'red'
+      @threshold = new Threshold id: 1, conditions: [], color: 'red', is_all_site: true, is_all_condition: true, is_notify: true
       @model.thresholds.push @threshold
       @model.editThreshold @threshold
 
@@ -99,7 +100,9 @@ describe 'MainViewModel', ->
 
   describe 'delete threshold', ->
     beforeEach ->
-      @threshold = new Threshold id: 1, conditions: [], color: 'red'
+      @threshold = new Threshold id: 1, conditions: [], color: 'red', is_all_site: true, is_all_condition: true, is_notify: true
+
+
       @model.thresholds.push @threshold
 
     it 'should show confirm dialog', ->
@@ -115,8 +118,8 @@ describe 'MainViewModel', ->
 
   describe 'move threshold', ->
     beforeEach ->
-      @threshold_1 = new Threshold id: 1, ord: 1, collection_id: @collectionId
-      @threshold_2 = new Threshold id: 2, ord: 2, collection_id: @collectionId
+      @threshold_1 = new Threshold id: 1, ord: 1, collection_id: @collectionId, is_all_site: true, is_all_condition: true, is_notify: true
+      @threshold_2 = new Threshold id: 2, ord: 2, collection_id: @collectionId, is_all_site: true, is_all_condition: true, is_notify: true
       @model.thresholds [ @threshold_1, @threshold_2 ]
       spyOn($, 'post')
 

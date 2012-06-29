@@ -14,14 +14,12 @@ module Site::IndexUtils
     }
 
     hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f} if site.lat? && site.lng?
-     
     alert_threshold = site.collection.thresholds_test site.properties, site.id unless site.is_a? SiteHistory
-    
     if(alert_threshold != nil)
       hash[:alert] = true 
-      Resque.enqueue SmsQueue, threshold
+      users = User.find alert_threshold.phone_notification
+      Resque.enqueue SmsQueue, users, alert_threshold.message_notification
     end
-    
     result = index.store hash
 
     if result['error']
