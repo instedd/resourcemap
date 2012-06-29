@@ -14,6 +14,10 @@ class ApplicationController < ActionController::Base
   expose(:reminders) { collection.reminders }
   expose(:reminder)
 
+  rescue_from ActiveRecord::RecordNotFound do |x|
+    render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true
+  end
+
   def after_sign_in_path_for(resource)
     stored_location_for(resource) || collections_path
   end
