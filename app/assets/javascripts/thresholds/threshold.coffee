@@ -12,7 +12,10 @@ onThresholds ->
       @alertSites = ko.observable $.map(data?.sites ? [], (site) -> new Site(site))
       @propertyName = ko.observable data?.property_name 
       @ord = ko.observable data?.ord
-      @color = ko.observable(data?.color ? '#ff0000')
+      # @color = ko.observable(data?.color ? '#ff0000')
+      @icon = ko.observable(data?.icon ? "marker_red.png")
+      @iconURL = ko.computed =>
+        "/assets/alert/#{@icon()}"
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
       @propertyNameError = ko.computed =>
         if $.trim(@propertyName()).length > 0 
@@ -50,10 +53,13 @@ onThresholds ->
     setOrder: (ord, callback) ->
       @ord ord
       $.post "/collections/#{@collectionId}/thresholds/#{@id()}/set_order.json", { ord: ord }, callback
-
+    
+    setIcon: (icon) ->
+      @icon icon
+      
     toJSON: =>
       id: @id() if @id()
-      color: @color()
+      icon: @icon()
       property_name: @propertyName()
       is_all_site: @isAllSite()
       is_all_condition: @isAllCondition()

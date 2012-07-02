@@ -47,8 +47,9 @@
           <!-- /ko -->
           
           <!-- /ko -->
-          ,change color to
-          %span.stat{"data-bind" => "style: { backgroundColor:color }" }
+          ,change icon to
+          %img{"data-bind" => "attr: { src:iconURL }" }
+          -# %span.stat{"data-bind" => "style: { backgroundColor:icon }" }
 
       .rightbuttons
         %button.fdelete{ ko(click: '$root.deleteThreshold') }
@@ -117,9 +118,29 @@
       %button.fadd{ko(click: :addNewCondition) }
         Add another condition
       %hr
+      %br
+      %img{"data-bind" => "attr: { src:iconURL }" }
+      %br
       %label Change site display on map
       %br
-      %input{ ko(colorPicker: :color), type: :text }
+      %button.fred.fsize{ ko( style: { border: icon = 'marker_red.png' ? '10' : '0' }, click: "function(data, event) { setIcon('marker_red.png') }") }
+      %button.forange.fsize{ ko(click: "function(data, event) { setIcon('marker_orange.png') }") }
+      %button.fyellow.fsize{ ko(click: "function(data, event) { setIcon('marker_yellow.png') }") }
+      %button.fgreen.fsize{ ko(click: "function(data, event) { setIcon('marker_green.png') }") }
+      %button.fcyan.fsize{ ko(click: "function(data, event) { setIcon('marker_cyan.png') }") }
+      %button.fblue.fsize{ ko(click: "function(data, event) { setIcon('marker_blue.png') }") }
+      %button.fpurple.fsize{ ko(click: "function(data, event) { setIcon('marker_purple.png') }") }
+      %button.fblack.fsize{ ko(click: "function(data, event) { setIcon('marker_black.png') }") }
+      %button.fgrey.fsize{ ko(click: "function(data, event) { setIcon('marker_grey.png') }") }
+      -# %button{ ko(click: "function(data, event) { setIcon('marker_red.png') }") } reset
+      -# %br
+      -# %input{ ko(colorPicker: :color), type: :text }
+      %br
+      %button.faccept.fsize{ ko(click: "function(data, event) { setIcon('accept.png') }") }
+      %button.fclose.fsize{ ko(click: "function(data, event) { setIcon('close.png') }") }
+      %button.fblock.fsize{ ko(click: "function(data, event) { setIcon('block.png') }") }
+      %button.fexport.fsize{ ko(click: "function(data, event) { setIcon('export.png') }") }
+      %button.fimport.fsize{ ko(click: "function(data, event) { setIcon('import.png') }") }
       %hr
       %br
       %label Notifications
