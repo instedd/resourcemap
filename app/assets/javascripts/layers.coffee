@@ -1,7 +1,8 @@
 #= require layers/on_layers
 #= require_tree ./layers/.
 
-onLayers ->
+# We do the check again so tests don't trigger this initialization
+onLayers -> if $('#layers-main').length > 0
   match = window.location.toString().match(/\/collections\/(\d+)\/layers/)
   collectionId = parseInt(match[1])
 

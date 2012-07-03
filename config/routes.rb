@@ -22,6 +22,7 @@ ResourceMap::Application.routes.draw do
     resources :memberships do
       collection do
         get 'invitable'
+        get 'search'
       end
       member do
         post 'set_layer_access'

@@ -119,6 +119,9 @@
                   <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
                   <!-- /ko -->
                 <!-- /ko -->
+                <!-- ko if: kind == 'user' -->
+                %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()'), type: :text }
+                <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->

@@ -36,6 +36,14 @@ class MembershipsController < ApplicationController
     render json: users.pluck(:email)
   end
 
+  def search
+    users = User.
+      where('email LIKE ?', "#{params[:term]}%").
+      where("id in (?)", collection.memberships.value_of(:user_id)).
+      order('email')
+    render json: users.pluck(:email)
+  end
+
   def destroy
     membership = collection.memberships.find_by_user_id params[:id]
     if membership.user_id != current_user.id

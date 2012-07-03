@@ -1,7 +1,7 @@
 module Field::Base
   extend ActiveSupport::Concern
 
-  Kinds = %w(text numeric select_one select_many hierarchy)
+  Kinds = %w(text numeric select_one select_many hierarchy user)
 
   Kinds.each do |kind|
     class_eval %Q(def #{kind}?; kind == '#{kind}'; end)
