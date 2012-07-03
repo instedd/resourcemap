@@ -86,7 +86,7 @@ describe 'MainViewModel', ->
       @threshold = new Threshold id: 1, conditions: [], color: 'red', is_all_site: true, is_all_condition: true, is_notify: true
       @model.thresholds.push @threshold
       @model.editThreshold @threshold
-
+        
     it 'should restore the color when canceling', ->
       @threshold.color('blue')
       @model.cancelThreshold()
@@ -152,3 +152,12 @@ describe 'MainViewModel', ->
       it 'should not change order when it is the last threshold', ->
         @model.moveThresholdUp @threshold_1
         expect(@threshold_1.ord()).toEqual 1
+  
+  describe 'clear threshold', ->
+    beforeEach ->
+      @threshold = new Threshold conditions: [], color: 'red', is_all_site: true, is_all_condition: true, is_notify: true
+      @model.thresholds.push @threshold
+
+    it 'should clear unsaved threshold', ->
+      @model.clearUnsavedThreshold(@threshold)
+      expect(@model.thresholds().length).toEqual 0

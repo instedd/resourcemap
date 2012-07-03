@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120622153849) do
+ActiveRecord::Schema.define(:version => 20120629073122) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -215,7 +215,7 @@ ActiveRecord::Schema.define(:version => 20120622153849) do
 
   create_table "thresholds", :force => true do |t|
     t.integer  "ord"
-    t.string   "color"
+    t.string   "icon"
     t.text     "conditions"
     t.integer  "collection_id"
     t.datetime "created_at",           :null => false
