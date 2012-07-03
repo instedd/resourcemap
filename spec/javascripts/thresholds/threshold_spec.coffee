@@ -21,7 +21,7 @@ describe 'Threshold', ->
   it 'should convert to json', ->
     expect(@threshold.toJSON()).toEqual {
       ord: 1
-      color: '#ff0000'
+      icon: 'marker_red.png'
       phone_notification : [ ]
       email_notification : [ ]
       message_notification : 'alert_01'

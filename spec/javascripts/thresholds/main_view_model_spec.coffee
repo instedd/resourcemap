@@ -13,11 +13,11 @@ describe 'MainViewModel', ->
 
   describe 'cancel threshold', ->
     beforeEach ->
-      @threshold = new Threshold conditions: [], color: 'red', is_all_site: true, is_all_condition: true, is_notify: true
+      @threshold = new Threshold conditions: [], is_all_site: true, is_all_condition: true, is_notify: true
       @model.thresholds.push @threshold
       @model.currentThreshold @threshold
-      @model.editThreshold(@threshold)
-
+      #@model.editThreshold(@threshold) commented this line because off add clearUnsavedThreshold method in threshold_main_view_model.editThreshold
+    
     it 'should remove if new', ->
       @model.cancelThreshold()
       expect(@model.thresholds().length).toBe 0
@@ -28,22 +28,31 @@ describe 'MainViewModel', ->
       @model.cancelThreshold()
       expect(@model.thresholds().length).toBe 1
       expect(@model.currentThreshold()).toBeNull()
+  
+  describe 'clear threshold', ->
+    beforeEach ->
+      @threshold = new Threshold conditions: [], is_all_site: true, is_all_condition: true, is_notify: true
+      @model.thresholds.push @threshold
+    
+    it 'should clear unsaved threshold', ->
+      @model.clearUnsavedThreshold(@threshold)
+      expect(@model.thresholds().length).toEqual 0
 
   describe 'save threshold', ->
     beforeEach ->
-      @threshold = new Threshold conditions: [], color: 'red', ord: 1, is_all_site: true, is_all_condition: true, is_notify: true, message_notification: "alert_01", property_name: "beds"
+      @threshold = new Threshold conditions: [], ord: 1, is_all_site: true, is_all_condition: true, is_notify: true, message_notification: "alert_01", property_name: "beds"
       @model.thresholds.push @threshold
       @model.currentThreshold @threshold
       spyOn($, 'post')
 
     it "should post the threshold's json", ->
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], color: 'red', ord: 1, property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], icon : 'marker_red.png', ord: 1, property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
 
     it "should put the threshold's json if it has an id", ->
       @threshold.id(1)
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {color : 'red', property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {icon : 'marker_red.png', property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
 
     it 'should be saving', ->
       @model.saveThreshold()
@@ -83,14 +92,14 @@ describe 'MainViewModel', ->
 
   describe 'edit threshold', ->
     beforeEach ->
-      @threshold = new Threshold id: 1, conditions: [], color: 'red', is_all_site: true, is_all_condition: true, is_notify: true
+      @threshold = new Threshold id: 1, conditions: [], icon : 'marker_red.png', is_all_site: true, is_all_condition: true, is_notify: true
       @model.thresholds.push @threshold
       @model.editThreshold @threshold
         
-    it 'should restore the color when canceling', ->
-      @threshold.color('blue')
+    it 'should restore the icon when canceling', ->
+      @threshold.icon()
       @model.cancelThreshold()
-      expect(@model.thresholds()[0].color()).toBe 'red'
+      expect(@model.thresholds()[0].icon()).toBe 'marker_red.png'
 
     it 'should restore the conditions when canceling', ->
       spyOn(window.model, 'findField').andReturn @field
@@ -100,7 +109,7 @@ describe 'MainViewModel', ->
 
   describe 'delete threshold', ->
     beforeEach ->
-      @threshold = new Threshold id: 1, conditions: [], color: 'red', is_all_site: true, is_all_condition: true, is_notify: true
+      @threshold = new Threshold id: 1, conditions: [], is_all_site: true, is_all_condition: true, is_notify: true
 
 
       @model.thresholds.push @threshold
@@ -152,12 +161,3 @@ describe 'MainViewModel', ->
       it 'should not change order when it is the last threshold', ->
         @model.moveThresholdUp @threshold_1
         expect(@threshold_1.ord()).toEqual 1
-  
-  describe 'clear threshold', ->
-    beforeEach ->
-      @threshold = new Threshold conditions: [], color: 'red', is_all_site: true, is_all_condition: true, is_notify: true
-      @model.thresholds.push @threshold
-
-    it 'should clear unsaved threshold', ->
-      @model.clearUnsavedThreshold(@threshold)
-      expect(@model.thresholds().length).toEqual 0
