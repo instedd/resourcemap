@@ -16,6 +16,7 @@ onThresholds ->
       @thresholds.push threshold
 
     editThreshold: (threshold) =>
+      @clearUnsavedThreshold(@currentThreshold())
       @originalThreshold = new Threshold(threshold.toJSON())
       @currentThreshold threshold
     
@@ -69,6 +70,10 @@ onThresholds ->
     moveThresholdDown: (threshold) =>
       index = @thresholds.indexOf(threshold)
       @swapThresholdsOrder threshold, @thresholds()[index+1] if index < @thresholds().length - 1
+
+    clearUnsavedThreshold: (threshold) =>
+      if(threshold)
+        @thresholds.remove(threshold) if(!threshold.id())
 
     moveThresholdUp: (threshold) =>
      index = @thresholds.indexOf(threshold)

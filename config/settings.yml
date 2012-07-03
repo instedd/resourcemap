@@ -2,6 +2,6 @@ mobile_id: off
 host: localhost:3000
 
 plugins:
-  threshold: on
-  snapshot: on
+  threshold: off
+  snapshot: off
   reminder: off
