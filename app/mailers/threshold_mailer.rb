@@ -5,7 +5,7 @@ class ThresholdMailer < ActionMailer::Base
     users = User.find(user_ids)
     emails = users.map {|user| user.email}
     
-    mail(:to => ["dnnddane@yahoo.com"], :subject => "for testing purpose") do |format|
+    mail(:to => emails, :subject => "[ResourceMap] Alert Notification") do |format|
       format.text {render :text => message}
     end
   end
