@@ -35,13 +35,7 @@ onCollections ->
       @markerImageTargetShadow = new google.maps.MarkerImage(
         "/assets/marker_target.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
       )
-      @markerImageAlert = new google.maps.MarkerImage(
-        "/assets/tristate_checkbox.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
-      )
-      @markerImageAlertShadow = new google.maps.MarkerImage(
-        "/assets/tristate_checkbox.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
-      )
-
+      
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
           @reloadMapSites()
@@ -195,7 +189,8 @@ onCollections ->
             newMarker = new google.maps.Marker markerOptions
             newMarker.name = site.name
             newMarker.alert = site.alert
-            @setMarkerIcon newMarker, 'alert' if site.alert == "true"
+            newMarker.icon = site.icon
+            @setMarkerIcon newMarker, if site.alert == "true" then 'alert' else 'active'
             newMarker.collectionId = site.collection_id
 
             @markers[site.id] = newMarker
@@ -286,8 +281,7 @@ onCollections ->
           marker.setIcon @markerImageTarget
           marker.setShadow @markerImageTargetShadow
         when 'alert'
-          marker.setIcon @markerImageAlert
-          marker.setShadow @markerImageAlertShadow
+          marker.setIcon @markerImageThreshold marker.icon
 
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
@@ -361,3 +355,7 @@ onCollections ->
           $('.tablescroll').scrollLeft oldScrollLeft
           window.adjustContainerSize()
         ), 20)
+        
+    @markerImageThreshold: (icon) ->
+      new google.maps.MarkerImage("/assets/alert/#{icon}", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34))
+        

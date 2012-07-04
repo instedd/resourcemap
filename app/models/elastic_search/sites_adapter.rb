@@ -28,6 +28,7 @@ class ElasticSearch::SitesAdapter < Psych::Handler
         when 'lon' then @site[:lng] = value.to_f
         when 'name' then @site[:name] = value.to_s
         when 'alert' then @site[:alert] = value.to_s
+        when 'icon' then @site[:icon] = value.to_s
         end
         @current_property = nil
       else
