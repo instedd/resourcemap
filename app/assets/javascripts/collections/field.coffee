@@ -63,7 +63,7 @@ onCollections ->
       @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@, x))
 
     edit: =>
-      if !window.model.currentCollection().currentSnapshot
+      if !window.model.currentCollection()?.currentSnapshot
         @originalValue = @value()
         @editing(true)
 
