@@ -1,7 +1,8 @@
 describe 'Collection', ->
   beforeEach ->
     window.runOnCallbacks 'collections'
-    window.model = new MainViewModel []
+    window.model = new MainViewModel
+    window.model.initialize []
 
   describe 'collection', ->
     beforeEach ->

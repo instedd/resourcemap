@@ -40,11 +40,12 @@ describe Site::TireConcern do
 
   it "should stores alert in index" do
     collection = Collection.make
-    threshold = collection.thresholds.make conditions: [ field: beds_field.es_code, op: 'lt', value: 10 ]
+    threshold = collection.thresholds.make is_all_site: true, conditions: [ {field: beds_field.es_code, op: 'lt', value: 10} ], icon: "marker.png"
     site = collection.sites.make properties: { beds_field.es_code => 9 }
-
+    
     search = Tire::Search::Search.new collection.index_name
     search.query { string 'alert:true' }
+    search.query { string "icon:marker.png" }
     result = search.perform.results
     result.count.should eq(1)
   end

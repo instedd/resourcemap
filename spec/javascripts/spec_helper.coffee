@@ -15,3 +15,7 @@ window.runOnCallbacks = (page) -> callback() for callback in window["#{page}Call
 window.google = {}
 window.google.maps = {}
 class window.google.maps.OverlayView
+class window.google.maps.Geocoder
+class window.google.maps.Size
+class window.google.maps.Point
+class window.google.maps.MarkerImage

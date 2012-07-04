@@ -2,7 +2,7 @@ class SitesController < ApplicationController
   before_filter :authenticate_user!
 
   expose(:sites) {if current_snapshot && collection then collection.site_histories.at_date(current_snapshot.date) else collection.sites end}
-  expose(:site)
+  expose(:site) { Site.find(params[:site_id] || params[:id]) }
 
   def index
     if current_snapshot

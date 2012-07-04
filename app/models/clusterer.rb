@@ -37,8 +37,9 @@ class Clusterer
       cluster[:lat_sum] += lat
       cluster[:lng_sum] += lng
       cluster[:alert] = site[:alert]
+      cluster[:icon] = site[:icon]
     else
-      @sites.push id: site[:id], name: site[:name], lat: lat, lng: lng, collection_id: site[:collection_id], alert: site[:alert]
+      @sites.push id: site[:id], name: site[:name], lat: lat, lng: lng, collection_id: site[:collection_id], alert: site[:alert], icon: site[:icon]
     end
   end
 
@@ -51,7 +52,7 @@ class Clusterer
       @clusters.each_value do |cluster|
         count = cluster[:count]
         if count == 1
-          sites_to_return.push id: cluster[:site_id], name: cluster[:name], lat: cluster[:lat_sum], lng: cluster[:lng_sum], collection_id: cluster[:collection_id], alert: cluster[:alert]
+          sites_to_return.push id: cluster[:site_id], name: cluster[:name], lat: cluster[:lat_sum], lng: cluster[:lng_sum], collection_id: cluster[:collection_id], alert: cluster[:alert], icon: cluster[:icon]
         else
           hash = {
             id: cluster[:id],

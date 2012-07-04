@@ -17,6 +17,7 @@ Sham.define do
   password { Faker::Name.name }
   username { Faker::Internet.user_name }
   color { "##{rand(255**3).to_s(16)}" }
+  icon { Faker::Name.name }
   sn { |i| i }
 end
 
@@ -72,7 +73,7 @@ end
 Threshold.blueprint do
   collection
   ord { Sham.sn }
-  color { Sham.color }
+  icon { Sham.icon }
 end
 
 Snapshot.blueprint do

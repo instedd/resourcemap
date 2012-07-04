@@ -14,19 +14,23 @@ module Site::IndexUtils
     }
 
     hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f} if site.lat? && site.lng?
-    alert_threshold = site.collection.thresholds_test site.properties, site.id unless site.is_a? SiteHistory
-    if(alert_threshold != nil)
-      hash[:alert] = true 
-      users = User.find alert_threshold.phone_notification
-      Resque.enqueue SmsQueue, users, alert_threshold.message_notification
-      Resque.enqueue EmailQueue, alert_threshold.id, site.id
+    alert = site.collection.thresholds_test site.properties, site.id unless site.is_a? SiteHistory
+    if(alert != nil)
+      hash[:alert] = true
+      hash[:icon] = alert.icon
+      users = User.find alert.phone_notification
+      Resque.enqueue SmsQueue, users, alert.message_notification
+      Resque.enqueue EmailQueue, alert.id, site.id
+    else
+      hash[:alert] = false
+      hash[:icon] = nil
     end
     result = index.store hash
-
+    
     if result['error']
       raise "Can't store site in index: #{result['error']}"
     end
-
+    
     index.refresh unless options[:refresh] == false
   end
 

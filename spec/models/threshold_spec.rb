@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Threshold do
   it { should belong_to :collection }
   it { should validate_presence_of(:ord) }
-  it { should validate_presence_of(:color) }
+  it { should validate_presence_of(:icon) }
   its(:conditions) { should eq([]) }
 
   let!(:collection) { Collection.make }
@@ -26,24 +26,34 @@ describe Threshold do
   ].each do |hash|
     it "should throw :threshold with #{hash[:op].to_s} condition" do
       threshold = collection.thresholds.make conditions: [ hash ]
-      expect { threshold.test({ hash[:field] => hash[:property_value] }) }.to throw_symbol :threshold, true
+      expect { threshold.test({ hash[:field] => hash[:property_value] }) }.to throw_symbol :threshold, threshold
     end
   end
 
   describe "multiple conditions" do
-    let!(:threshold) { collection.thresholds.make conditions: [ {field: beds.es_code, op: :gt, value: '10'}, {field: doctors.es_code, op: :lte, value: '2'} ] }
+    describe "all conditions" do 
+      let!(:threshold) { collection.thresholds.make is_all_condition: true, conditions: [ {field: beds.es_code, op: :gt, value: '10'}, {field: doctors.es_code, op: :lte, value: '2'} ] }
 
-    it "should throw :threshold when all conditions are matched" do
-      expect { threshold.test({beds.es_code => 11, doctors.es_code => 2}) }.to throw_symbol :threshold, true
+      it "should throw :threshold when all conditions are matched" do
+        expect { threshold.test({beds.es_code => 11, doctors.es_code => 2}) }.to throw_symbol :threshold, threshold
+      end
+
+      it "should not throw when one condition is not matched" do
+        expect { threshold.test({beds.es_code => 9, doctors.es_code => 2}) }.to_not throw_symbol
+        expect { threshold.test({beds.es_code => 11, doctors.es_code => 3}) }.to_not throw_symbol
+      end
+
+      it "should not throw when no condition is matched" do
+        expect { threshold.test({beds.es_code => 9, doctors.es_code => 3}) }.to_not throw_symbol
+      end
     end
 
-    it "should not throw when one condition is not matched" do
-      expect { threshold.test({beds.es_code => 9, doctors.es_code => 2}) }.to_not throw_symbol
-      expect { threshold.test({beds.es_code => 11, doctors.es_code => 3}) }.to_not throw_symbol
-    end
-
-    it "should not throw when no condition is matched" do
-      expect { threshold.test({beds.es_code => 9, doctors.es_code => 3}) }.to_not throw_symbol
+    describe "any conditions" do
+      let!(:threshold) { collection.thresholds.make is_all_condition: false, conditions: [ {field: beds.es_code, op: :gt, value: '10'}, {field: doctors.es_code, op: :lte, value: '2'} ] }
+      it "should throw when one condition is not matched" do
+        expect { threshold.test({beds.es_code => 9, doctors.es_code => 2}) }.to throw_symbol :threshold, threshold
+        expect { threshold.test({beds.es_code => 11, doctors.es_code => 3}) }.to throw_symbol :threshold, threshold
+      end
     end
   end
 
@@ -51,29 +61,29 @@ describe Threshold do
     let!(:field) { layer.fields.make code: 'txt', kind: 'text' }
 
     it "for equality" do
-      threshold = collection.thresholds.make conditions: [{field: field.es_code, op: :eq, value: 'hello'}]
-      expect { threshold.test({field.es_code => 'hello'}) }.to throw_symbol :threshold, true
+      threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 'hello'}]
+      expect { threshold.test({field.es_code => 'hello'}) }.to throw_symbol :threshold, threshold
     end
 
     it "for inclusion" do
-      threshold = collection.thresholds.make conditions: [{field: field.es_code, op: :con, value: 'hello'}]
-      expect { threshold.test({field.es_code => 'This is hello world.'}) }.to throw_symbol :threshold, true
+      threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :con, value: 'hello'}]
+      expect { threshold.test({field.es_code => 'This is hello world.'}) }.to throw_symbol :threshold, threshold
     end
   end
 
   it "should test select_one field for equality" do
     field = layer.fields.make code: 'one', kind: 'select_one', config: {options: options}
-    threshold = collection.thresholds.make conditions: [{field: field.es_code, op: :eq, value: 1}]
+    threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 1}]
 
-    expect { threshold.test({field.es_code => 1}) }.to throw_symbol :threshold, true
+    expect { threshold.test({field.es_code => 1}) }.to throw_symbol :threshold, threshold
     expect { threshold.test({field.es_code => 2}) }.to_not throw_symbol
   end
 
   it "should test select_many field for equality" do
     field = layer.fields.make code: 'many', kind: 'select_many', config: {options: options}
-    threshold = collection.thresholds.make conditions: [{field: field.es_code, op: :eq, value: 2}]
+    threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 2}]
 
     expect { threshold.test({field.es_code => 1}) }.to_not throw_symbol
-    expect { threshold.test({field.es_code => 2}) }.to throw_symbol :threshold, true
+    expect { threshold.test({field.es_code => 2}) }.to throw_symbol :threshold, threshold
   end
 end
