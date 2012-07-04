@@ -19,7 +19,7 @@ module Site::IndexUtils
       hash[:alert] = true 
       users = User.find alert_threshold.phone_notification
       Resque.enqueue SmsQueue, users, alert_threshold.message_notification
-      Resque.enqueue EmailQueue, alert_threshold 
+      Resque.enqueue EmailQueue, alert_threshold.id, site.id
     end
     result = index.store hash
 
