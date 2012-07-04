@@ -10,15 +10,26 @@ class EmailQueue
   end
 
   def self.render_message(message, site) 
-    message.gsub(/\[[\w\s]+\]/) { |template|
+
+    message =  message.gsub(/\[[\w\s]+\]/) do |template|
       if template.match(/site\s?name/i) 
-        template = site.name
+        site.name
       else
-        site.properties.map do |property|
-          field = Field.find(property[0])
-          template = property[1] if template == '[' + field.name + ']'
-        end
+        getfieldvalue(template, site)
       end
-    }
+    end
+    
   end
+
+  def self.getfieldvalue(template, site)
+    site.properties.each do |property|
+      field = Field.find(property[0])
+      if template == '[' + field.name + ']'
+        template = property[1] 
+        break
+      end
+    end
+    template
+  end
+
 end
