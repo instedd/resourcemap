@@ -15,7 +15,6 @@ module Site::IndexUtils
 
     hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f} if site.lat? && site.lng?
     alert = site.collection.thresholds_test site.properties, site.id unless site.is_a? SiteHistory
-    
     if(alert != nil)
       hash[:alert] = true
       hash[:icon] = alert.icon
