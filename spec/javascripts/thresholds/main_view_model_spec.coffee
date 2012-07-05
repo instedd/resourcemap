@@ -52,7 +52,7 @@ describe 'MainViewModel', ->
     it "should put the threshold's json if it has an id", ->
       @threshold.id(1)
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {icon : 'marker_red.png', property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {id: 1, icon : 'marker_red.png', property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
 
     it 'should be saving', ->
       @model.saveThreshold()
