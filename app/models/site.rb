@@ -46,4 +46,13 @@ class Site < ActiveRecord::Base
     end
     sites_with_id_and_name
   end
+
+  def get_field_value_hash
+    field_hash = Hash.new
+    self.properties.each do |id, value|
+      field = Field.find(id)
+      field_hash[field.name] = value
+    end
+    field_hash
+  end
 end

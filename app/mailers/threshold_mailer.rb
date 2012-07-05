@@ -9,16 +9,4 @@ class ThresholdMailer < ActionMailer::Base
       format.text {render :text => message}
     end
   end
-  def render_message(message) 
-    message.gsub(/\[[\w\s]+\]/) do |template|
-
-      if template.match(/site\s?name/i) 
-        
-
-      else
-
-      end
-      
-    end
-  end
 end

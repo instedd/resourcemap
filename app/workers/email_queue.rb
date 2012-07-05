@@ -5,31 +5,11 @@ class EmailQueue
     threshold = Threshold.find(threshold_id)
     site = Site.find(site_id)
     if threshold.is_notify
-      ThresholdMailer.notify_email(render_message(threshold.message_notification, site), threshold.email_notification).deliver
+      option_hash = site.get_field_value_hash
+      option_hash["site name"] = site.name
+      ThresholdMailer.notify_email(
+        threshold.message_notification.render_template_string(option_hash),
+        threshold.email_notification).deliver
     end
   end
-
-  def self.render_message(message, site) 
-
-    message =  message.gsub(/\[[\w\s]+\]/) do |template|
-      if template.match(/site\s?name/i) 
-        site.name
-      else
-        getfieldvalue(template, site)
-      end
-    end
-    
-  end
-
-  def self.getfieldvalue(template, site)
-    site.properties.each do |property|
-      field = Field.find(property[0])
-      if template == '[' + field.name + ']'
-        template = property[1] 
-        break
-      end
-    end
-    template
-  end
-
 end
