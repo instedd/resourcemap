@@ -19,8 +19,9 @@ module Site::IndexUtils
       hash[:alert] = true
       hash[:icon] = alert.icon
       users = User.find alert.phone_notification
-      Resque.enqueue SmsQueue, users, alert.message_notification
-      Resque.enqueue EmailQueue, alert.id, site.id
+      message_notification = alert.message_notification.render_template_string(site.get_template_value_hash)
+      Resque.enqueue SmsQueue, users, message_notification
+      Resque.enqueue EmailQueue, alert.id, message_notification
     else
       hash[:alert] = false
       hash[:icon] = nil

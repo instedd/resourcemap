@@ -55,4 +55,9 @@ class Site < ActiveRecord::Base
     end
     field_hash
   end
+  def get_template_value_hash
+    template_value = get_field_value_hash
+    template_value["site name"] = self.name
+    template_value
+  end
 end
