@@ -6,7 +6,7 @@ describe Clusterer do
   it "leaves single site alone" do
     clusterer.add id: 1, name: 'foo',lat: 30, lng: 40, collection_id: 12, alert: false
     clusters = clusterer.clusters
-    clusters[:sites].should eq([{id: 1, name: 'foo', lat: 30, lng: 40, collection_id: 12, alert: false}])
+    clusters[:sites].should eq([{id: 1, name: 'foo', lat: 30, lng: 40, collection_id: 12, alert: false, icon: nil}])
     clusters[:clusters].should be_nil
   end
 
