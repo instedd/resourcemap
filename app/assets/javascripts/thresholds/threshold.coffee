@@ -58,7 +58,7 @@ onThresholds ->
       @icon icon
       
     toJSON: =>
-      id: @id() if @id()
+      id: @id()
       icon: @icon()
       property_name: @propertyName()
       is_all_site: @isAllSite()
@@ -67,6 +67,6 @@ onThresholds ->
       phone_notification: @phoneNotification()
       email_notification: @emailNotification()
       message_notification: @messageNotification()
-      sites: $.map(@alertSites(), (site) -> site.id)
+      sites: $.map(@alertSites(), (site) -> site.toJSON())
       conditions: $.map(@conditions(), (condition) -> condition.toJSON())
       ord: @ord()
