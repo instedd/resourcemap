@@ -5,18 +5,16 @@ onCollections ->
       @showingMap = ko.observable(true)
       @sitesWithAlert = ko.observable 0
       @sitesCount = ko.observable(0)
-      @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site on map' else "#{@sitesCount()} sites on map"
+      @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site' else "#{@sitesCount()} sites"
       @sitesWithAlertText = ko.computed => 
         sitesWithAlertText = ""
         if @sitesWithAlert() == 1
-          sitesWithAlertText = "with #{@sitesWithAlert()} alert"
+          sitesWithAlertText = "#{@sitesWithAlert()} alert"
         else if @sitesWithAlert() > 1
-          sitesWithAlertText = "with #{@sitesWithAlert()} alerts"
+          sitesWithAlertText = "#{@sitesWithAlert()} alerts"
         sitesWithAlertText
+      @isSitesWithAlert = ko.computed => if @sitesWithAlert() == 0 then false else true
       
-      @sitesCountTextWithAlert = ko.computed => 
-        @sitesCountText() + " " + @sitesWithAlertText()
-
       @reloadMapSitesAutomatically = true
       @clusters = {}
       @siteIds = {}
