@@ -245,7 +245,14 @@
         or
         %span{ko(click: :exportInCSV), style: 'text-decoration:underline;cursor:pointer;margin:0'} CSV
     <!-- /ko -->
-    %span{ko(text: :sitesCountTextWithAlert)}
+    %span{ko(text: :sitesCountText)}
+    <!-- ko if: isSitesWithAlert -->
+    on map,
+    <!-- /ko -->
+    <!-- ko if: !isSitesWithAlert() -->
+    on map
+    <!-- /ko -->
+    %span.alert{ko(text: :sitesWithAlertText)}
     -#%span.alert 5 alerts
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}

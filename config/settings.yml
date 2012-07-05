@@ -4,4 +4,4 @@ host: localhost:3000
 plugins:
   threshold: on
   snapshot: off
-  reminder: off
+  reminder: on
