@@ -33,4 +33,17 @@ class Site < ActiveRecord::Base
     end
     props
   end
+
+  def self.get_site_id_and_name sites
+    sites = Site.select("id, name").find(sites)
+    sites_with_id_and_name = []  
+    sites.each do |site| 
+      site_with_id_and_name = {
+        "id" => site.id, 
+        "name" => site.name
+      }
+      sites_with_id_and_name.push site_with_id_and_name
+    end
+    sites_with_id_and_name
+  end
 end
