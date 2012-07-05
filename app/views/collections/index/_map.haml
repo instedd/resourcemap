@@ -213,7 +213,7 @@
                 .clear
                 <!-- /ko -->
                 <!-- ko if: editing() && kind == 'user' -->
-                %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()', event: { blur: :save }), type: :text }
+                %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()', event: { keydown: :keyPress, blur: :save }), type: :text }
                 <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
