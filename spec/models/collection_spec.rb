@@ -25,25 +25,25 @@ describe Collection do
 
   describe "thresholds test" do
     let!(:properties) { { field.es_code => 9 } }
-
+    let!(:site) { collection.sites.make}
     it "should return false when there is no threshold" do
-      collection.thresholds_test(properties).should be_false
+      collection.thresholds_test(properties, site.id).should be_false
     end
 
     it "should return false when no threshold is hit" do
-      collection.thresholds.make conditions: [ field: field.es_code, op: :gt, value: 10 ]
-      collection.thresholds_test(properties).should be_false
+      collection.thresholds.make is_all_site: false, conditions: [ field: 1, op: :gt, value: 10 ]
+      collection.thresholds_test(properties, site.id).should be_false
     end
 
     it "should return true when threshold 1 is hit" do
-      collection.thresholds.make conditions: [ field: field.es_code, op: :lt, value: 10 ]
-      collection.thresholds_test(properties).should be_true
+      collection.thresholds.make is_all_site: false, sites: [{"id" => site.id}], conditions: [ field: field.es_code, op: :lt, value: 10 ]
+      collection.thresholds_test(properties, site.id).should be_true
     end
 
     it "should return true when threshold 2 is hit" do
-      collection.thresholds.make conditions: [ field: field.es_code, op: :gt, value: 10 ]
-      collection.thresholds.make conditions: [ field: field.es_code, op: :eq, value: 9 ]
-      collection.thresholds_test(properties).should be_true
+      collection.thresholds.make sites: [{"id" => site.id}], conditions: [ field: field.es_code, op: :gt, value: 10 ]
+      collection.thresholds.make sites: [{"id" => site.id}], conditions: [ field: field.es_code, op: :eq, value: 9 ]
+      collection.thresholds_test(properties, site.id).should be_true
     end
   end
 
