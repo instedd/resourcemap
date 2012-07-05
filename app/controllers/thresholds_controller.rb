@@ -14,7 +14,7 @@ class ThresholdsController < ApplicationController
   end
 
   def create
-    params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]}
+    params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]} if params[:threshold][:sites]
     threshold = thresholds.new params[:threshold].except(:sites) 
     threshold.sites = Site.get_site_id_and_name params[:threshold][:sites] if params[:threshold][:sites]#select only id and name
     threshold.save!
@@ -28,7 +28,7 @@ class ThresholdsController < ApplicationController
   end
 
   def update
-    params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]}
+    params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]} if params[:threshold][:sites]
     threshold.update_attributes! params[:threshold].except(:sites)
     if params[:threshold][:sites]
       threshold.sites = Site.get_site_id_and_name params[:threshold][:sites]
