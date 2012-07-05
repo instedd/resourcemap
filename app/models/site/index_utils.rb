@@ -20,7 +20,7 @@ module Site::IndexUtils
       hash[:icon] = alert.icon
       users = User.find alert.phone_notification
       Resque.enqueue SmsQueue, users, alert.message_notification
-      Resque.enqueue EmailQueue, alert
+      Resque.enqueue EmailQueue, alert.id, site.id
     else
       hash[:alert] = false
       hash[:icon] = nil
