@@ -35,8 +35,8 @@ RSpec.configure do |config|
     time = Time.parse time
     Time.stub(:now) { time }
   end
-  # Delete all test indexes after running all specs
-  config.after(:suite) do
+  # Delete all test indexes after running each spec
+  config.after(:each) do
     Tire.delete_indices_that_match /^collection_test_\d+/
   end
 end
