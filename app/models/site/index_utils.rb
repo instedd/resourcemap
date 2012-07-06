@@ -41,7 +41,7 @@ module Site::IndexUtils
   def site_mapping(fields)
     {
       properties: {
-        name: { type: :string, index: :not_analyzed },
+        name: { type: :string },
         location: { type: :geo_point },
         created_at: { type: :date, format: :basic_date_time },
         updated_at: { type: :date, format: :basic_date_time },

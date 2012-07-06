@@ -15,6 +15,10 @@ module SearchBase
     @search.filter :term, id: id
     self
   end
+  
+  def name_start_with(name)
+    @search.filter :prefix, name: name.downcase
+  end
 
   def eq(es_code, value)
     check_field_exists es_code
