@@ -3,17 +3,10 @@ onCollections ->
   class @MapViewModel
     @constructorMapViewModel: ->
       @showingMap = ko.observable(true)
-      @sitesWithAlert = ko.observable 0
+      @alertsCount = ko.observable(0)
       @sitesCount = ko.observable(0)
       @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site' else "#{@sitesCount()} sites"
-      @sitesWithAlertText = ko.computed => 
-        sitesWithAlertText = ""
-        if @sitesWithAlert() == 1
-          sitesWithAlertText = "#{@sitesWithAlert()} alert"
-        else if @sitesWithAlert() > 1
-          sitesWithAlertText = "#{@sitesWithAlert()} alerts"
-        sitesWithAlertText
-      @isSitesWithAlert = ko.computed => if @sitesWithAlert() == 0 then false else true
+      @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
       
       @reloadMapSitesAutomatically = true
       @clusters = {}
@@ -316,19 +309,19 @@ onCollections ->
 
     @updateSitesCount: ->
       count = 0
-      alertCount = 0
+      alertsCount = 0
       bounds = @map.getBounds()
       for siteId, marker of @markers
         if bounds.contains marker.getPosition()
           count += 1
-          alertCount += 1 if marker.alert == "true"
+          alertsCount += 1 if marker.alert == "true"
       for clusterId, cluster of @clusters
         if bounds.contains cluster.position
           count += cluster.count
-          alertCount += cluster.alertCount
+          alertsCount += cluster.alertCount
       count += 1 if @selectedSite()
-      alertCount += 1 if @selectedSite()?.alert()
-      @sitesWithAlert alertCount
+      alertsCount += 1 if @selectedSite()?.alert()
+      @alertsCount alertsCount
       @sitesCount count
 
     @showTable: ->
