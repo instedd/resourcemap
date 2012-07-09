@@ -218,7 +218,7 @@
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
-    <!-- ko if: !$root.currentCollection().currentSnapshot -->
+    <!-- ko if: !$root.currentSnapshot() -->
     .tablebottom
       = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
       = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
