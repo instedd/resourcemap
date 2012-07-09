@@ -62,7 +62,7 @@
     .box.w90
       .rightbuttons
         -#%button.fdelete{ ko(visible: '!isNewRecord') }
-      %label Properties 
+      %h1{:style => "margin-bottom: 5px; font-size: 18px;"} Properties 
       .middlebuttons 
         %label{ko(css: {error: 'propertyNameError'})} Name
         %br
@@ -78,7 +78,7 @@
         .middlebuttons{ko(visible: 'isAllSite() == "false"' )}
           %input.sites{ko(autocompleteTagField: 'alertSites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
       %br
-      %label Conditions
+      %h1{:style => "margin-bottom: 5px; font-size: 18px;"}Conditions
       .middlebuttons
         %input{"data-bind" => "checked: isAllCondition", :value => "true", :name => "condition", :type => "radio"}
         %label All of following conditions
@@ -143,8 +143,7 @@
       %button.fimport.fsize{ ko(click: "function(data, event) { setIcon('import.png') }") }
       %hr
       %br
-      %label Notifications
-      %br 
+      %h1{:style => "margin-bottom: 5px; font-size: 18px;"} Notifications
       
       %input{"data-bind" => "checked: isNotify", :value => "false", :name => "notification", :type => "radio"}
       %label Do not send notifications
