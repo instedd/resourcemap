@@ -41,6 +41,7 @@ end
 group :test do
   gem 'shoulda-matchers'
   gem 'ci_reporter'
+  gem 'resque_spec'
 end
 
 # To use ActiveModel has_secure_password

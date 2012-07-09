@@ -40,7 +40,7 @@ describe Site::TireConcern do
 
   it "should stores alert in index" do
     collection = Collection.make
-    threshold = collection.thresholds.make is_all_site: true, conditions: [ {field: beds_field.es_code, op: 'lt', value: 10} ], icon: "marker.png"
+    threshold = collection.thresholds.make is_all_site: true, message_notification: "alert",conditions: [ {field: beds_field.es_code, op: 'lt', value: 10} ], icon: "marker.png"
     site = collection.sites.make properties: { beds_field.es_code => 9 }
     
     search = Tire::Search::Search.new collection.index_name
@@ -48,5 +48,37 @@ describe Site::TireConcern do
     search.query { string "icon:marker.png" }
     result = search.perform.results
     result.count.should eq(1)
+  end
+  
+  describe "adding queue when hit alert threshold" do 
+    let!(:users) { [User.make(:email => 'user@instedd.org', :password => '1234567', :phone_number => '855123456789')]}
+    let!(:site1){collection.sites.make :properties => {beds_field.es_code => 15}}
+    let!(:threshold){ collection.thresholds.make is_notify: true, is_all_site: true, email_notification: [users[0].id], phone_notification: [users[0].id], message_notification: "alert sms", conditions: [ field: beds_field.es_code, op: :lt, value: 10 ]}
+    let!(:message_notification) { "alert sms"} 
+     
+    describe "add new site" do
+      let!(:site){collection.sites.make :properties => {beds_field.es_code => 5}}
+      it "should add sms_que into Resque.enqueue with users and message_notification" do 
+        SmsQueue.should have_queued(users, message_notification).in(:sms_queue)
+      end
+
+      it "should add email_que into Resque.enqueue with threshold and message_notification" do 
+        EmailQueue.should have_queued(users, message_notification).in(:email_queue)
+      end
+    end
+
+    describe "edit site" do
+      it "should add sms_que into Resque.enqueue with users and message_notification" do 
+        site1.properties = {beds_field.es_code => 5}
+        site1.save 
+        SmsQueue.should have_queued(users, message_notification).in(:sms_queue)
+      end
+
+      it "should add email_que into Resque.enqueue with threshold and message_notification" do 
+        site1.properties = {beds_field.es_code => 5}
+        site1.save 
+        EmailQueue.should have_queued(users, message_notification).in(:email_queue)
+      end
+    end
   end
 end
