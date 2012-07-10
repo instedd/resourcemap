@@ -32,6 +32,7 @@ onCollections ->
         else
           @selectSite(site)
         @editingSite(site)
+        @currentCollection(site.collection)
         @rewriteUrl()
 
     @selectSiteFromId: (siteId, collectionId) ->

@@ -20,3 +20,6 @@ class window.google.maps.Size
 class window.google.maps.Point
 class window.google.maps.MarkerImage
 class window.google.maps.LatLng
+class window.google.maps.Marker
+  setIcon: -> 'setIcon'
+  setShadow: -> 'setShadow'

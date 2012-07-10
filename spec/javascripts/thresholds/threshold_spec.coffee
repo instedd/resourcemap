@@ -18,9 +18,12 @@ describe 'Threshold', ->
     @threshold.conditions()[0].value null
     expect(@threshold.valid()).toBeFalsy()
 
+  it 'should have default icon', ->
+    expect(@threshold.icon()).toEqual 'marker_red.png'
+
   it 'should convert to json', ->
     expect(@threshold.toJSON()).toEqual {
-      id: 1 
+      id: 1
       ord: 1
       icon: 'marker_red.png'
       phone_notification : [ ]
@@ -33,6 +36,9 @@ describe 'Threshold', ->
       sites : []
       conditions: [{field: '1', op: 'lt', value: 10, type: 'value', compare_field: '1'}]
     }
+
+  it 'should icon url point to assets directory', ->
+    expect(@threshold.iconUrl()).toEqual '/assets/marker_red.png'
 
   describe 'without data', ->
     beforeEach ->
