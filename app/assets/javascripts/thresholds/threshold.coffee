@@ -69,3 +69,10 @@ onThresholds ->
       sites: $.map(@alertSites(), (site) -> site.toJSON())
       conditions: $.map(@conditions(), (condition) -> condition.toJSON())
       ord: @ord()
+
+   
+    addSiteNameToMessageNotification: =>
+      @messageNotification(@messageNotification() + ' [Site Name]')
+    
+    addFieldNameToMessageNotification:(field) =>
+      @messageNotification(@messageNotification() + ' [' + field.name() + ']')

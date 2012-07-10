@@ -87,11 +87,15 @@
                   %button.luser
                   %br/
                   User
+                %span{ko(click: '$root.newEmailField')}
+                  %button.lemail
+                  %br/
+                  Email
 
         .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField', style: {marginTop: '$root.currentFieldMarginTop'}), style: 'position:relative'}
           %p.title Type
           %p.smalltext The data type to fill in this field.
-          = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'select_one'], ['Select many', 'select_many'], ['Hierarchy', 'hierarchy'], ['User', 'user']]), 'data-bind' => kov(value: :kind)
+          = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'select_one'], ['Select many', 'select_many'], ['Hierarchy', 'hierarchy'], ['User', 'user'], ['Email','email']]), 'data-bind' => kov(value: :kind)
           %hr/
           %label{ko(css: {error: :nameError})} Name
           %p.smalltext The name of this field as it is presented.

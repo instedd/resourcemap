@@ -43,4 +43,8 @@ describe Field do
   it "should have kind 'user'" do
     Field.make(kind: 'user').should be_valid
   end
+
+  it "should have kind 'email'" do 
+    Field.make(kind: 'email').should be_valid
+  end
 end
