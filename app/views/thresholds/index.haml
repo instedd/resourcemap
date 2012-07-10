@@ -150,7 +150,7 @@
       %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"} 
       %label Notify this people
       %br
-      .middlebuttons{ko(visible: 'isNotify() == "true"' ), :style => "height: 180px;"}
+      .middlebuttons{ko(visible: 'isNotify() == "true"' ), :style => "height: 320px;"}
         .middlebuttons.w30{:style => "float: left;"}
           Send emails to:
           %p.list-box
@@ -177,21 +177,22 @@
             - collection.users.each do |user|
               %input{ko(checked: 'phoneNotification'), value: user.id, type: "checkbox"}= user.email
               %br
-      %label{ko(css: {error: 'notificationMessageError'})} Message
-      %br/
-      %label.smalltext 
-        Use the following expressions to fill your message with sites data 
-        .template_text 
-          [ 
-          %span{ko(click: 'addSiteNameToMessageNotification')}Site Name
-          ]
-          <!-- ko foreach: $root.fields -->
-          [ 
-          %span{ ko(text: :name, click: '$parent.addFieldNameToMessageNotification') }
-          ]   
-          <!-- /ko --> 
-      %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: 'This alert is about [site name]. Occupation is now at [occupation]', maxlength: 140, rows: 4 }
-      .clear
+        .clear
+        %label{ko(css: {error: 'notificationMessageError'})} Message
+        %br/
+        %label.smalltext 
+          Use the following expressions to fill your message with sites data 
+          .template_text 
+            [ 
+            %span{ko(click: 'addSiteNameToMessageNotification')}Site Name
+            ]
+            <!-- ko foreach: $root.fields -->
+            [ 
+            %span{ ko(text: :name, click: '$parent.addFieldNameToMessageNotification') }
+            ]   
+            <!-- /ko --> 
+        %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: 'This alert is about [site name]. Occupation is now at [occupation]', maxlength: 140, rows: 4 }
+        .clear
       %hr/
       
       .bottom-actions
