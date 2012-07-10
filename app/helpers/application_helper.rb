@@ -9,4 +9,14 @@ module ApplicationHelper
     @collection_admin = current_user.admins?(collection) if @collection_admin.nil?
     @collection_admin
   end
+
+  def render_hook(name, args = {})
+  	result = ''
+    Plugin.all.each do |plugin|
+      plugin.hooks[name].each do |view|
+        result << render(view, args)
+      end
+  	end
+  	result.html_safe
+  end
 end

@@ -74,6 +74,14 @@ ResourceMap::Application.routes.draw do
     get 'activity' => 'activities#index', as: :activity
   end
 
+  scope '/plugin' do
+    Plugin.all.each do |plugin|
+      scope plugin.name do
+        instance_eval &plugin.routes_block
+      end
+    end
+  end
+
   root :to => 'home#index'
   mount Resque::Server, :at => "/resque"
 end
