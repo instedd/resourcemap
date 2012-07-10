@@ -12,4 +12,13 @@
  *= require fixedheadertable
  *= require colorPicker
  *= require_tree .
+ *= requiere_fullscreen
 */
+
+#collections-main, #container {
+  height:100%;
+}
+
+#footer-span {
+  position:relative;
+}
