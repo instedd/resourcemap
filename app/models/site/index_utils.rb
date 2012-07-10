@@ -22,8 +22,8 @@ module Site::IndexUtils
         users_sms = User.find alert.phone_notification
         users_email = User.find alert.email_notification 
         message_notification = alert.message_notification.render_template_string(site.get_template_value_hash)
-        Resque.enqueue SmsQueue, users_sms, message_notification
-        Resque.enqueue EmailQueue, users_email, message_notification
+        Resque.enqueue SmsQueue, users_sms, message_notification if(!users_sms.empty?)
+        Resque.enqueue EmailQueue, users_email, message_notification if(!users_email.empty?)
       end
     else
       hash[:alert] = false
