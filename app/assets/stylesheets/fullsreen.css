@@ -19,3 +19,17 @@
 .fullscreen #toolbar, .fullscreen #header, .fullscreen #footer-span {
   display:none;
 }
+
+.fullscreen .orightexpand {
+  display:block;
+  left: -20px;
+}
+
+.fullscreen .expand-collapse_button {
+  position: absolute;
+  z-index:1;
+}
+
+.mapcontainer {
+  position: relative;
+}
