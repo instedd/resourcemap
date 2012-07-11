@@ -6,8 +6,10 @@ ActionDispatch::Reloader.to_prepare do
     ActionController::Base.append_view_path "#{plugin_dir}/views"
     Dir["#{plugin_dir}/assets/*"].each do |assets_dir|
       Rails.configuration.assets.paths << assets_dir
+      Rails.configuration.assets.precompile << "#{plugin_name}.js"
+      Rails.configuration.assets.precompile << "#{plugin_name}.css"
     end
-    
+
 
     Dir["#{plugin_dir}/controllers/**.rb"].each do |controller_file|
       controller_class_name = File.basename controller_file, '.*'
