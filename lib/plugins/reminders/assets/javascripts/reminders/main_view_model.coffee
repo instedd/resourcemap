@@ -30,9 +30,9 @@ onReminders ->
       json = reminder: @currentReminder().toJSON()
       if @currentReminder().id()
         json._method = 'put'
-        $.post "/collections/#{@collectionId()}/reminders/#{@currentReminder().id()}.json", json, @saveReminderCallback
+        $.post "/plugin/reminders/collections/#{@collectionId()}/reminders/#{@currentReminder().id()}.json", json, @saveReminderCallback
       else
-        $.post "/collections/#{@collectionId()}/reminders.json", json, @saveReminderCallback
+        $.post "/plugin/reminders/collections/#{@collectionId()}/reminders.json", json, @saveReminderCallback
     
     saveReminderCallback: (data) =>
       @currentReminder().id(data.id)
@@ -47,7 +47,7 @@ onReminders ->
     deleteReminder: (reminder) =>
       if window.confirm 'Are you sure to delete reminder'
         @deletedReminder = reminder
-        $.post "/collections/#{@collectionId()}/reminders/#{reminder.id()}.json", { _method: 'delete' }, @deleteReminderCallback
+        $.post "/plugin/reminders/collections/#{@collectionId()}/reminders/#{reminder.id()}.json", { _method: 'delete' }, @deleteReminderCallback
 
     deleteReminderCallback: =>
       @reminders.remove @deletedReminder

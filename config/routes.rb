@@ -17,7 +17,6 @@ ResourceMap::Application.routes.draw do
         post :set_order
       end
     end
-    resources :reminders
 
     resources :memberships do
       collection do

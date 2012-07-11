@@ -4,6 +4,10 @@ ActionDispatch::Reloader.to_prepare do
     plugin_name.camelize.constantize::Plugin.instance
 
     ActionController::Base.append_view_path "#{plugin_dir}/views"
+    Dir["#{plugin_dir}/assets/*"].each do |assets_dir|
+      Rails.configuration.assets.paths << assets_dir
+    end
+    
 
     Dir["#{plugin_dir}/controllers/**.rb"].each do |controller_file|
       controller_class_name = File.basename controller_file, '.*'
