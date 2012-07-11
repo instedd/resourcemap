@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120629073122) do
+ActiveRecord::Schema.define(:version => 20120710043920) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(:version => 20120629073122) do
     t.decimal  "min_lng",     :precision => 10, :scale => 6
     t.decimal  "max_lat",     :precision => 10, :scale => 6
     t.decimal  "max_lng",     :precision => 10, :scale => 6
+    t.text     "plugins"
   end
 
   create_table "field_histories", :force => true do |t|

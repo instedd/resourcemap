@@ -10,9 +10,9 @@ module ApplicationHelper
     @collection_admin
   end
 
-  def render_hook(name, args = {})
+  def render_hook(collection, name, args = {})
   	result = ''
-    Plugin.all.each do |plugin|
+    collection.each_plugin do |plugin|
       plugin.hooks[name].each do |view|
         result << render(view, args)
       end

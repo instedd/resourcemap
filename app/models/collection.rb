@@ -2,6 +2,7 @@ class Collection < ActiveRecord::Base
   include Collection::CsvConcern
   include Collection::GeomConcern
   include Collection::TireConcern
+  include Collection::PluginsConcern
 
   validates_presence_of :name
 

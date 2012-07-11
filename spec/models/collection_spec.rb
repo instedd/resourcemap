@@ -105,4 +105,33 @@ describe Collection do
 
   end
 
+  describe "plugins" do
+
+
+    it "should set plugins by names" do
+      collection.selected_plugins = ['plugin_1', 'plugin_2']
+      collection.plugins.should eq({'plugin_1' => {}, 'plugin_2' => {}})
+    end
+
+    it "should skip blank plugin name when setting plugins" do
+      collection.selected_plugins = ["", 'plugin_1', ""]
+      collection.plugins.should eq({'plugin_1' => {}})
+    end
+
+    it "should iterate selected plugins" do
+      p_class = Struct.new(:name)
+      p1 = p_class.new 'plugin1'
+      p2 = p_class.new 'plugin2'
+      Plugin.stub(:all).and_return [p1, p2]
+
+      collection.selected_plugins = ['plugin2']
+      collection_plugins = []
+      collection.each_plugin do |plugin|
+        collection_plugins << plugin
+      end
+      collection_plugins.should eq([p2])
+    end
+
+  end
+
 end
