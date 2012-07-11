@@ -2,6 +2,8 @@ ResourceMap::Application.routes.draw do
   devise_for :users
   # match 'messaging' => 'messaging#index'
   match 'nuntium' => 'nuntium#receive', :via => :post
+  match 'authenticate' => 'nuntium#authenticate', :via => :post
+
 
   resources :repeats
   resources :collections do
@@ -11,13 +13,13 @@ ResourceMap::Application.routes.draw do
         put :set_order
       end
     end
+    resources :reminders
     resources :fields
     resources :thresholds do
       member do
         post :set_order
       end
     end
-    resources :reminders
 
     resources :memberships do
       collection do
