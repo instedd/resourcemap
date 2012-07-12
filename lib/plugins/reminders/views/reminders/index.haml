@@ -1,13 +1,6 @@
 - content_for :head do
   = javascript_include_tag 'reminders'
-  :javascript 
-    $(function(){
-      if ($.fn.datepicker) {
-        $(".ux-datepicker:not([readonly])")
-          .click(function(){ $(this).datepicker("show"); })
-          .datepicker();
-      }
-    });
+
 = render 'collections/tabs'
 
 .tabsline
@@ -50,7 +43,7 @@
       %br/
       %label{ko(css: {error: 'reminderDateError'})} Date
       %br/
-      %input.ux-datepicker.w20{ko(value: :reminder_date,valueUpdate: :afterkeydown, bindDatePicker: true), type: :text }
+      %input.ux-datepicker.w20{ko(datePicker: :reminder_date), type: :text }
       %select{ko(options: '$root.getTimes()', value: :reminder_time)}
       %label repeat
       %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat)}
