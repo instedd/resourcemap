@@ -27,13 +27,16 @@ onCollections -> if $('#collections-main').length > 0
     $('#right-panel').width(containerWidth - 404)
     $('.tableheader.expanded').width(containerWidth)
     $('#map').width(containerWidth - 420)
-    #$('#collections-main').height(500)
+    $('.h50').height(500)
+    $('#map').height($('#collections-main').height() - $('.mapheader').height())
 
     if(window.model.fullscreen())
       $('#container').width(width)
       $('.tableheader.expanded').width("100%")
       $('#right-panel').width(width - 404)
       $('#map').width("100%");
+      $('#collections-main').height("100%")
+      $('#collections-main .h50').height("100%")
       $('#map').height($('#collections-main').height() - $('.mapheader').height())
       $('.expand-collapse_button').css("top", (($('#map').height())/2 ) + "px");
       if(window.model.fullscreenExpanded())

@@ -23,9 +23,13 @@ onCollections ->
         $("body").addClass("fullscreen")
         $(".ffullscreen").addClass("frestore")
         $(".ffullscreen").removeClass("ffullscreen")
+        $('.expand-collapse_button').show()
+        $(".expand-collapse_button").addClass("orightexpand")
+        $(".expand-collapse_button").removeClass("oleftexpand")
         window.adjustContainerSize()
       else
         @fullscreen(false)
+        @fullscreenExpanded(false)
         $("body").removeClass("fullscreen")
         $(".frestore").addClass("ffullscreen")
         $(".frestore").removeClass("frestore")
