@@ -3,8 +3,15 @@ require 'spec_helper'
 describe ImportWizard do
   let!(:user) { User.make }
   let!(:collection) { user.create_collection Collection.make_unsaved }
+  let!(:layer) { collection.layers.make }
 
-  it "imports with name, lat, lon and one numeric property" do
+  let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
+  let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+  let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy',  config: {hierarchy: [{"0"=>{"id"=>"60", "name"=>"papa"}, sub: [{"0"=> {"id"=>"100", "name"=>"uno"}, "1"=>{"id"=>"101", "name"=>"dos"}}.with_indifferent_access]}]}.with_indifferent_access}
+
+  it "imports with name, lat, lon and one new numeric property" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Lat', 'Lon', 'Beds']
       csv << ['Foo', '1.2', '3.4', '10']
@@ -13,20 +20,20 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', kind: 'name'},
-      {name: 'Lat', kind: 'lat'},
-      {name: 'Lon', kind: 'lng'},
-      {name: 'Beds', kind: 'numeric', code: 'beds', label: 'The beds'},
+      {name: 'Name', usage: 'name'},
+      {name: 'Lat', usage: 'lat'},
+      {name: 'Lon', usage: 'lng'},
+      {name: 'Beds', usage: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
     ImportWizard.import user, collection, csv_string
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
-    layers.length.should eq(1)
-    layers[0].name.should eq(collection.name)
+    layers.length.should eq(2)
+    layers[1].name.should eq('Import wizard')
 
-    fields = layers[0].fields.all
+    fields = layers[1].fields.all
     fields.length.should eq(1)
     fields[0].name.should eq('The beds')
     fields[0].code.should eq('beds')
@@ -36,13 +43,92 @@ describe ImportWizard do
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({'beds' => 10})
+    sites[0].properties.should eq({fields[0].es_code => 10})
 
     sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({'beds' => 20})
+    sites[1].properties.should eq({fields[0].es_code => 20})
   end
 
-  it "imports with select one mapped to both code and label" do
+  it "imports with name, lat, lon and one new numeric property and existing ID" do
+    site1 = collection.sites.make name: 'Foo old', properties: {text.es_code => 'coco'}
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}
+
+    csv_string = CSV.generate do |csv|
+      csv << ['ID', 'Name', 'Lat', 'Lon', 'Beds']
+      csv << ["#{site1.id}", 'Foo', '1.2', '3.4', '10']
+      csv << ["#{site2.id}", 'Bar', '5.6', '7.8', '20']
+      csv << ['', '', '', '']
+    end
+
+    specs = [
+      {name: 'ID', usage: 'id'},
+      {name: 'Name', usage: 'name'},
+      {name: 'Lat', usage: 'lat'},
+      {name: 'Lon', usage: 'lng'},
+      {name: 'Beds', usage: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    layers = collection.layers.all
+    layers.length.should eq(2)
+    layers[1].name.should eq('Import wizard')
+
+    fields = layers[1].fields.all
+    fields.length.should eq(1)
+    fields[0].name.should eq('The beds')
+    fields[0].code.should eq('beds')
+    fields[0].kind.should eq('numeric')
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    site1.reload
+    site1.name.should eq('Foo')
+    site1.properties.should eq({fields[0].es_code => 10, text.es_code => 'coco'})
+
+    site2.reload
+    site2.name.should eq('Bar')
+    site2.properties.should eq({fields[0].es_code => 20, text.es_code => 'lala'})
+  end
+
+  it "imports with name, lat, lon and one new numeric property and existing ID empty" do
+    csv_string = CSV.generate do |csv|
+      csv << ['ID', 'Name', 'Lat', 'Lon', 'Beds']
+      csv << ["", 'Foo', '1.2', '3.4', '10']
+      csv << ['', '', '', '']
+    end
+
+    specs = [
+      {name: 'ID', usage: 'id'},
+      {name: 'Name', usage: 'name'},
+      {name: 'Lat', usage: 'lat'},
+      {name: 'Lon', usage: 'lng'},
+      {name: 'Beds', usage: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    layers = collection.layers.all
+    layers.length.should eq(2)
+    layers[1].name.should eq('Import wizard')
+
+    fields = layers[1].fields.all
+    fields.length.should eq(1)
+    fields[0].name.should eq('The beds')
+    fields[0].code.should eq('beds')
+    fields[0].kind.should eq('numeric')
+
+    sites = collection.sites.all
+    sites.length.should eq(1)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({fields[0].es_code => 10})
+  end
+
+  it "imports with new select one mapped to both code and label" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Visibility']
       csv << ['Foo', 'public']
@@ -52,33 +138,33 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', kind: 'name'},
-      {name: 'Visibility', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'both'},
+      {name: 'Name', usage: 'name'},
+      {name: 'Visibility', usage: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'both'},
       ]
 
     ImportWizard.import user, collection, csv_string
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
-    layers.length.should eq(1)
-    layers[0].name.should eq(collection.name)
+    layers.length.should eq(2)
+    layers[1].name.should eq('Import wizard')
 
-    fields = layers[0].fields.all
+    fields = layers[1].fields.all
     fields.length.should eq(1)
     fields[0].name.should eq('The visibility')
     fields[0].code.should eq('visibility')
     fields[0].kind.should eq('select_one')
-    fields[0].config.should eq(options: [{code: 'public', label: 'public'}, {code: 'private', label: 'private'}])
+    fields[0].config.should eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => 'public', 'label' => 'public'}, {'id' => 2, 'code' => 'private', 'label' => 'private'}])
 
     sites = collection.sites.all
     sites.length.should eq(3)
 
-    sites[0].properties.should eq({'visibility' => 'public'})
-    sites[1].properties.should eq({'visibility' => 'private'})
-    sites[2].properties.should eq({'visibility' => 'private'})
+    sites[0].properties.should eq({fields[0].es_code => 1})
+    sites[1].properties.should eq({fields[0].es_code => 2})
+    sites[2].properties.should eq({fields[0].es_code => 2})
   end
 
-  it "imports with two select ones mapped to code and label" do
+  it "imports with two new select ones mapped to code and label" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Visibility', 'Visibility Code']
       csv << ['Foo', 'public', '1']
@@ -88,153 +174,247 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', kind: 'name'},
-      {name: 'Visibility', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'label'},
-      {name: 'Visibility Code', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'code'},
+      {name: 'Name', usage: 'name'},
+      {name: 'Visibility', usage: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'label'},
+      {name: 'Visibility Code', usage: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'code'},
       ]
 
     ImportWizard.import user, collection, csv_string
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
-    layers.length.should eq(1)
-    layers[0].name.should eq(collection.name)
+    layers.length.should eq(2)
+    layers[1].name.should eq('Import wizard')
 
-    fields = layers[0].fields.all
+    fields = layers[1].fields.all
     fields.length.should eq(1)
     fields[0].name.should eq('The visibility')
     fields[0].code.should eq('visibility')
     fields[0].kind.should eq('select_one')
-    fields[0].config.should eq(options: [{code: '1', label: 'public'}, {code: '0', label: 'private'}])
+    fields[0].config.should eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => '1', 'label' => 'public'}, {'id' => 2, 'code' => '0', 'label' => 'private'}])
 
     sites = collection.sites.all
     sites.length.should eq(3)
 
-    sites[0].properties.should eq({'visibility' => '1'})
-    sites[1].properties.should eq({'visibility' => '0'})
-    sites[2].properties.should eq({'visibility' => '0'})
+    sites[0].properties.should eq({fields[0].es_code => 1})
+    sites[1].properties.should eq({fields[0].es_code => 2})
+    sites[2].properties.should eq({fields[0].es_code => 2})
   end
 
-  it "imports with groups" do
+  it "imports with name and existing text property" do
     csv_string = CSV.generate do |csv|
-      csv << ['Name', 'Country', 'Province']
-      csv << ['Foo1', 'Argentina', 'Buenos Aires']
-      csv << ['Foo2', 'Argentina', 'Buenos Aires']
-      csv << ['Bar', 'Argentina', 'Cordoba']
-      csv << ['Baz', 'Cambodia', 'Phnom Penh']
-      csv << ['', '', '']
+      csv << ['Name', 'Column']
+      csv << ['Foo', 'hi']
+      csv << ['Bar', 'bye']
+      csv << ['', '', '', '']
     end
 
     specs = [
-      {name: 'Name', kind: 'name'},
-      {name: 'Province', kind: 'group', level: 2},
-      {name: 'Country', kind: 'group', level: 1},
+      {name: 'Name', usage: 'name'},
+      {name: 'Column', usage: 'existing_field', field_id: text.id},
       ]
 
     ImportWizard.import user, collection, csv_string
     ImportWizard.execute user, collection, specs
 
-    root_sites = collection.root_sites.all
-    root_sites.length.should eq(2)
-    root_sites[0].name.should eq('Argentina')
-    root_sites[0].should be_group
+    collection.layers.all.should eq([layer])
 
-      argentina_sites = root_sites[0].sites.all
-      argentina_sites.length.should eq(2)
-      argentina_sites[0].name.should eq('Buenos Aires')
-      argentina_sites[0].should be_group
+    sites = collection.sites.all
+    sites.length.should eq(2)
 
-        buenos_aires_sites = argentina_sites[0].sites.all
-        buenos_aires_sites.length.should eq(2)
-        buenos_aires_sites[0].name.should eq('Foo1')
-        buenos_aires_sites[0].should_not be_group
-        buenos_aires_sites[1].name.should eq('Foo2')
-        buenos_aires_sites[1].should_not be_group
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({text.es_code => 'hi'})
 
-      argentina_sites[1].name.should eq('Cordoba')
-      argentina_sites[1].should be_group
-
-        cordoba_sites = argentina_sites[1].sites.all
-        cordoba_sites.length.should eq(1)
-        cordoba_sites[0].name.should eq('Bar')
-        cordoba_sites[0].should_not be_group
-
-    root_sites[1].name.should eq('Cambodia')
-    root_sites[1].should be_group
-
-      cambodia_sites = root_sites[1].sites.all
-      cambodia_sites.length.should eq(1)
-      cambodia_sites[0].name.should eq('Phnom Penh')
-      cambodia_sites[0].should be_group
-
-        phnom_penh_sites = cambodia_sites[0].sites.all
-        phnom_penh_sites.length.should eq(1)
-        phnom_penh_sites[0].name.should eq('Baz')
-        phnom_penh_sites[0].should_not be_group
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({text.es_code => 'bye'})
   end
 
-  it "imports with groups computes geometry in memory" do
+  it "imports with name and existing numeric property" do
     csv_string = CSV.generate do |csv|
-      csv << ['Name', 'Country', 'Province', 'Lat', 'Lon']
-      csv << ['Foo1', 'Argentina', 'Buenos Aires', '10.0', '30.0']
-      csv << ['Foo2', 'Argentina', 'Buenos Aires', '20.0', '40.0']
-      csv << ['Bar', 'Argentina', 'Cordoba', '0', '50']
-      csv << ['Baz', 'Cambodia', 'Phnom Penh', '1', '2']
-      csv << ['', '', '']
+      csv << ['Name', 'Column']
+      csv << ['Foo', '10']
+      csv << ['Bar', '20']
+      csv << ['', '', '', '']
     end
 
     specs = [
-      {name: 'Name', kind: 'name'},
-      {name: 'Province', kind: 'group', level: 2},
-      {name: 'Country', kind: 'group', level: 1},
-      {name: 'Lat', kind: 'lat'},
-      {name: 'Lon', kind: 'lng'},
+      {name: 'Name', usage: 'name'},
+      {name: 'Column', usage: 'existing_field', field_id: numeric.id},
       ]
 
     ImportWizard.import user, collection, csv_string
     ImportWizard.execute user, collection, specs
 
-    collection.reload
-    assert_in_location collection, ((1 + 7.5) / 2), ((2 + 42.5) / 2)
+    collection.layers.all.should eq([layer])
 
-    root_sites = collection.root_sites.all
-    root_sites.length.should eq(2)
-    root_sites[0].name.should eq('Argentina')
-    assert_in_bounds root_sites[0], 0, 20, 30, 50
-    assert_in_location root_sites[0], 7.5, 42.5
+    sites = collection.sites.all
+    sites.length.should eq(2)
 
-      argentina_sites = root_sites[0].sites.all
-      argentina_sites.length.should eq(2)
-      argentina_sites[0].name.should eq('Buenos Aires')
-      assert_in_bounds argentina_sites[0], 10, 20, 30, 40
-      assert_in_location argentina_sites[0], 15, 35
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({numeric.es_code => 10})
 
-        buenos_aires_sites = argentina_sites[0].sites.all
-        buenos_aires_sites.length.should eq(2)
-        buenos_aires_sites[0].name.should eq('Foo1')
-        assert_in_bounds buenos_aires_sites[0], 10, 10, 30, 30
-
-        buenos_aires_sites[1].name.should eq('Foo2')
-        assert_in_bounds buenos_aires_sites[1], 20, 20, 40, 40
-
-      argentina_sites[1].name.should eq('Cordoba')
-      assert_in_bounds argentina_sites[1], 0, 0, 50, 50
-
-        cordoba_sites = argentina_sites[1].sites.all
-        cordoba_sites.length.should eq(1)
-        cordoba_sites[0].name.should eq('Bar')
-        assert_in_bounds cordoba_sites[0], 0, 0, 50, 50
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({numeric.es_code => 20})
   end
 
-  def assert_in_bounds(site, min_lat, max_lat, min_lng, max_lng)
-    site.min_lat.to_f.should eq(min_lat.to_f)
-    site.max_lat.to_f.should eq(max_lat.to_f)
-    site.min_lng.to_f.should eq(min_lng.to_f)
-    site.max_lng.to_f.should eq(max_lng.to_f)
+  it "imports with name and existing select_one property" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Column']
+      csv << ['Foo', 'one']
+      csv << ['Bar', 'two']
+      csv << ['', '', '', '']
+    end
+
+    specs = [
+      {name: 'Name', usage: 'name'},
+      {name: 'Column', usage: 'existing_field', field_id: select_one.id},
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    collection.layers.all.should eq([layer])
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({select_one.es_code => 1})
+
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({select_one.es_code => 2})
   end
 
-  def assert_in_location(site, lat, lng)
-    site.lat.to_f.should eq(lat.to_f)
-    site.lng.to_f.should eq(lng.to_f)
+  it "imports with name and existing select_one property but creates new option" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Column']
+      csv << ['Foo', 'three']
+      csv << ['Bar', 'four']
+      csv << ['', '', '', '']
+    end
+
+    specs = [
+      {name: 'Name', usage: 'name'},
+      {name: 'Column', usage: 'existing_field', field_id: select_one.id},
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    collection.layers.all.should eq([layer])
+
+    select_one.reload
+    select_one.config['options'].length.should eq(4)
+
+    select_one.config['options'][2]['id'].should eq(3)
+    select_one.config['options'][2]['code'].should eq('three')
+    select_one.config['options'][2]['label'].should eq('three')
+
+    select_one.config['options'][3]['id'].should eq(4)
+    select_one.config['options'][3]['code'].should eq('four')
+    select_one.config['options'][3]['label'].should eq('four')
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({select_one.es_code => 3})
+
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({select_one.es_code => 4})
   end
+
+  it "imports with name and existing select_many property" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Column']
+      csv << ['Foo', 'one']
+      csv << ['Bar', 'one, two']
+      csv << ['', '', '', '']
+    end
+
+    specs = [
+      {name: 'Name', usage: 'name'},
+      {name: 'Column', usage: 'existing_field', field_id: select_many.id},
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    collection.layers.all.should eq([layer])
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({select_many.es_code => [1]})
+
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({select_many.es_code => [1, 2]})
+  end
+
+  it "imports with name and existing select_many property creates new options" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Column']
+      csv << ['Foo', 'one, three']
+      csv << ['Bar', 'two, four']
+      csv << ['', '', '', '']
+    end
+
+    specs = [
+      {name: 'Name', usage: 'name'},
+      {name: 'Column', usage: 'existing_field', field_id: select_many.id},
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    collection.layers.all.should eq([layer])
+
+    select_many.reload
+    select_many.config['options'].length.should eq(4)
+
+    select_many.config['options'][2]['id'].should eq(3)
+    select_many.config['options'][2]['code'].should eq('three')
+    select_many.config['options'][2]['label'].should eq('three')
+
+    select_many.config['options'][3]['id'].should eq(4)
+    select_many.config['options'][3]['code'].should eq('four')
+    select_many.config['options'][3]['label'].should eq('four')
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({select_many.es_code => [1, 3]})
+
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({select_many.es_code => [2, 4]})
+  end
+
+  it "should update hierarchy fields in bulk update" do
+     csv_string = CSV.generate do |csv|
+        csv << ['Name', 'Column']
+        csv << ['Foo', 101]
+        csv << ['Bar', 100]
+      end
+
+      specs = [
+        {name: 'Name', usage: 'name'},
+        {name: 'Column', usage: 'existing_field', field_id: hierarchy.id},
+        ]
+
+      ImportWizard.import user, collection, csv_string
+      ImportWizard.execute user, collection, specs
+
+      collection.layers.all.should eq([layer])
+      sites = collection.sites.all
+
+      sites[0].name.should eq('Foo')
+      sites[0].properties.should eq({hierarchy.es_code => "101"})
+
+      sites[1].name.should eq('Bar')
+      sites[1].properties.should eq({hierarchy.es_code => "100"})
+
+  end
+
 end

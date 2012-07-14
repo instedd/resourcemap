@@ -1,0 +1,74 @@
+.fmoveup, .fmovedown {
+  background-color: transparent;
+  background-position: left top;
+  background-repeat: no-repeat;
+  height: 12px;
+  min-width: 24px;
+  margin: -8px;
+  cursor: pointer;
+  border: none;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+}
+
+.fmoveup:hover, .fmovedown:hover {
+  background-position: 0px -30px;
+}
+
+.fmoveup:active, .fmovedown:active {
+  background-position: 0px -60px;
+}
+
+.fmoveup.disabled, .fmovedown.disabled {
+  background-position: 0px -90px;
+}
+
+.fmoveup {
+  background-image: url(/assets/moveUp.png);
+}
+
+.fmovedown {
+  background-image: url(/assets/moveDown.png);
+}
+
+.fred {
+	background-color: #ff0000;
+}
+
+.forange {
+	background-color: #ff9900;
+}
+
+.fyellow {
+	background-color: #ffcc00;
+}
+
+.fgreen {
+	background-color: #00ff00;
+}
+
+.fcyan {
+	background-color: #00ffff;
+}
+
+.fblue {
+	background-color: #0000ff;
+}
+
+.fpurple {
+	background-color: #800080;
+}
+
+.fblack {
+	background-color: #000000;
+}
+
+.fgrey {
+	background-color: #c0c0c0;
+}
+
+.fsize {
+	width: 24px;
+	height: 24px;
+}

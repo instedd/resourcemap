@@ -8,7 +8,7 @@ class Api::SitesController < ApplicationController
 
   def show
     search = site.collection.new_search.id(site.id)
-    @result = search.results[0]
+    @result = search.api_results[0]
 
     respond_to do |format|
       format.rss

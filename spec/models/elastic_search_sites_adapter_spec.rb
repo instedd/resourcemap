@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe ElasticSearchSitesAdapter do
+describe ElasticSearch::SitesAdapter do
   it "adapts one site" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :parent_ids => [10, 20, 30]
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63
 
-    adapter = ElasticSearchSitesAdapter.new listener
+    adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
       {
         "took" : 20,
@@ -22,7 +22,7 @@ describe ElasticSearchSitesAdapter do
             "_index" : "collection_63",
             "_type" : "site",
             "_id" : "181984",
-            "_score" : 1.0, "_source" : {"id":181984,"type":"site","location":{"lat":-37.55442222700955,"lon":136.5797882218185},"properties":{"beds":84,"vaccines":75,"patients":61},"parent_ids":[10,20,30]}
+            "_score" : 1.0, "_source" : {"id":181984,"type":"site","location":{"lat":-37.55442222700955,"lon":136.5797882218185},"properties":{"beds":84,"vaccines":75,"patients":61}}
           } ]
         }
       }
@@ -31,9 +31,9 @@ describe ElasticSearchSitesAdapter do
 
   it "adapts one site without conflicting on properties" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :parent_ids => []
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63
 
-    adapter = ElasticSearchSitesAdapter.new listener
+    adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
       {
         "took" : 20,
@@ -59,10 +59,10 @@ describe ElasticSearchSitesAdapter do
 
   it "adapts two sites" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :parent_ids => []
-    listener.should_receive(:add).with :id => 181985, :lat => -47.55442222700955, :lng => 137.5797882218185, :parent_ids => []
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63
+    listener.should_receive(:add).with :id => 181985, :lat => -47.55442222700955, :lng => 137.5797882218185, :collection_id => 63
 
-    adapter = ElasticSearchSitesAdapter.new listener
+    adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
       {
         "took" : 20,
@@ -91,18 +91,18 @@ describe ElasticSearchSitesAdapter do
     )
   end
 
-  context ElasticSearchSitesAdapter::SkipIdListener do
+  context ElasticSearch::SitesAdapter::SkipIdListener do
     it "skips id" do
       listener = mock('listener')
       listener.should_not_receive(:add)
-      skip = ElasticSearchSitesAdapter::SkipIdListener.new listener, 1
+      skip = ElasticSearch::SitesAdapter::SkipIdListener.new listener, 1
       skip.add :id => 1
     end
 
     it "doesn't skip id" do
       listener = mock('listener')
       listener.should_receive(:add).with :id => 2
-      skip = ElasticSearchSitesAdapter::SkipIdListener.new listener, 1
+      skip = ElasticSearch::SitesAdapter::SkipIdListener.new listener, 1
       skip.add :id => 2
     end
   end

@@ -1,0 +1,105 @@
+grammar Command
+	rule dyrm_command
+		dyrm space command
+	end
+	
+	rule dyrm
+		('d' / 'D') ('y' / 'Y') ('r' / 'R') ('m' / 'M')
+	end
+	
+	rule command
+		query_command / update_command
+	end
+	
+	rule query_command
+		('q' / 'Q') space collection_id:number space conditional_expression space? new_line <QueryCommandNode>
+	end	
+	
+	rule update_command
+		('u' / 'U') space resource_id:resource space property_list space? comma* new_line <UpdateCommandNode>
+	end
+	
+	rule property_list
+		assignment_expression space? ',' space? next:property_list 
+    /
+    assignment_expression
+	end
+	
+	rule assignment_expression
+		name:property space? '=' space? value <AssignmentExpressionNode>
+	end
+	
+	rule conditional_expression
+		name:property space? operator:comparison_operator space? value <ConditionalExpressionNode>
+	end
+	
+	rule resource
+	  alpha_numeric+
+	end
+
+  rule property
+    phrase
+  end
+	
+	rule value
+		number / string
+	end
+	
+	rule string
+		phrase space?
+	end
+	
+	rule phrase
+		word space phrase
+		/
+		word
+	end
+	
+	rule number
+		digit* !word <NumberNode> 
+	end
+	
+	rule word
+		character+ symbol* character*
+		/
+		symbol
+	end
+
+  rule unicode
+    . !{ |s| s.first.text_value.ascii_only? }
+  end
+	
+	rule character  
+    unicode
+    /
+    alpha_numeric
+	end
+
+  rule digit
+    [\d]
+  end
+
+  rule alpha_numeric
+    [\w]
+  end
+
+	rule symbol
+		[\.\?:;\-_+\!@\$%&*|\\/(){}\[\]"']
+	end	
+	
+	rule comparison_operator
+    [\<\>]? '=' ..2
+	end	
+	
+	rule space
+		[\s]+
+	end
+
+  rule comma
+    ','
+  end
+	
+	rule new_line
+		[\n\r]*
+	end
+end

@@ -1,0 +1,7 @@
+mobile_id: off
+host: localhost:3000
+
+plugins:
+  threshold: off
+  snapshot: on
+  reminder: off

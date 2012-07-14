@@ -1,0 +1,89 @@
+- content_for :head do
+  :javascript
+    $(function() { initActivities(); });
+
+%h1 Activity
+
+.hidden-until-loaded
+  .tabsline
+
+    %p{style: 'margin-top:0px'}
+      View as
+      %a{ko(click: 'viewAsRSS'), href: 'javascript:void(0)'} RSS
+
+    %table{width: '100%'}
+      %tr
+        %td{width: '50%'}
+          %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
+            %legend Collections
+            %div{style: 'height:80px;overflow:auto'}
+              %table
+                - collections.sort_by(&:name).each do |collection|
+                  %tr
+                    %td
+                      %input.collection_id{ko(checked: 'selectedCollectionIds'), type: 'checkbox', checked: 'checked', value: collection.id}= collection.name
+        %td{width: '50%'}
+          %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
+            %legend Events
+            %div{style: 'height:80px;overflow:auto'}
+              %table
+                %tr
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'collection_created', type: 'checkbox', checked: 'checked'} Collection created
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'site_created', type: 'checkbox', checked: 'checked'} Site created
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'layer_created', type: 'checkbox', checked: 'checked'} Layer created
+                %tr
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'collection_imported', type: 'checkbox', checked: 'checked'} Collection imported
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'site_changed', type: 'checkbox', checked: 'checked'} Site changed
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'layer_changed', type: 'checkbox', checked: 'checked'} Layer changed
+                %tr
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'collection_csv_imported', type: 'checkbox', checked: 'checked'} Collection CSV imported
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'site_deleted', type: 'checkbox', checked: 'checked'} Site deleted
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'layer_deleted', type: 'checkbox', checked: 'checked'} Layer deleted
+      %tr
+        %td
+          %span{ko(click: 'checkAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'} check all
+          |
+          %span{ko(click: 'uncheckAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer'} uncheck all
+        %td
+          %span{ko(click: 'checkAllKinds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'} check all
+          |
+          %span{ko(click: 'uncheckAllKinds'), style: 'text-decoration:underline;cursor:pointer'} uncheck all
+    %br/
+
+    .tablewrapp
+      %table.GralTable
+        %tr
+          %th Collection
+          %th User
+          %th Activity
+          %th Time
+        <!-- ko foreach: activities -->
+        %tr{style: 'height:32px'}
+          %td{ko(text: :collection), style: 'min-width:120px'}
+          %td{ko(text: :user)}
+          %td
+            %span{ko(text: :displayedDescription), style: 'display:inline'}
+            <!-- ko if: !expanded() && canBeExpanded() -->
+            %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'} show more
+            <!-- /ko -->
+          %td.timeago{ko(attr: {title: :createdAt}, text: :createdAt), style: 'min-width:150px'}
+        <!-- /ko -->
+        <!-- ko if: hasMore() && !loading() -->
+        %tr{style: 'height:32px'}
+          %td{ko(click: :loadMore), colspan: 4, align: :center, style: 'text-decoration:underline;cursor:pointer'}
+            Load more
+        <!-- /ko -->
+        <!-- ko if: loading() -->
+        %tr{style: 'height:32px'}
+          %td{colspan: 4, align: :center}
+            Loading...
+        <!-- /ko -->

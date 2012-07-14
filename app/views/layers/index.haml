@@ -1,125 +1,198 @@
 - content_for :head do
-  :javascript
-    $(function() { initLayers(); });
+
+  :css
+    .error { color: red; }
 = render 'collections/tabs'
 
-.tabsline
-
-  -# Layers
-  <!-- ko foreach: layers -->
-  .box.w80{ko(visible: '$data == $root.currentLayer()'), style: 'display:none'}
-    %p
-      = label_tag :name
-      %br/
-      = ko_text_field_tag :name, hasfocus: :hasFocus
-      = ko_check_box_tag :public
-      = label_tag :public, 'Public layer'
-
-    %label Fields
-    %br/
-    %br/
-
-    -# Fields
-    #form-editor
-      .left
-        <!-- ko foreach: fields -->
-        .feditor{ko(css: {first: '$data == $parent.fields()[0]'}, click: '$root.selectField')}
-          .feditor-top
-          .feditor-container
-            .rightbuttons
-              %button.fdelete{ko(click: "$root.deleteField")}
-            .feditor-button
-              %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
-            .feditor-content
-              %h1{ko(text: :name)}
-              %span.hint{ko(text: "'Code: ' + (code() ? code() : '(none)')")}
-          .feditor-bottom
-        <!-- /ko -->
-
-        .feditor-add
-          .feditor-add-top{ko(css: {empty: 'fields().length == 0'})}
-          .feditor-add-container
-            .feditor-add-content
-              %h1 Add form field
-              %span{ko(click: '$root.newTextField')}
-                %button.ltext
-                %br/
-                Text
-              %span{ko(click: '$root.newNumericField')}
-                %button.lnumber
-                %br/
-                Numeric
-              %span{ko(click: '$root.newSelectOneField')}
-                %button.lsingleoption
-                %br/
-                Select one
-              %span{ko(click: '$root.newSelectManyField')}
-                %button.lmultipleoptions
-                %br/
-                Select many
-
-      .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField')}
-        %p.title Type
-        %p.smalltext The data type to fill in this field.
-        = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'select_one'], ['Select many', 'select_many']]), 'data-bind' => kov(value: :kind)
-        %hr/
-        %p.title Name
-        %p.smalltext The name of this field as it is presented.
-        = ko_text_field_tag :name, hasfocus: :hasFocus
-        %hr/
-        %p.title Code
-        %p.smalltext The abbreviation used to report via SMS.
-        = ko_text_field_tag :code
-        <!-- ko if: isOptionsKind -->
-        %hr/
-        %p.title Options
-        %p.smalltext Possible values for this field.
-        %ul.mclist.w40{style: 'width: 282px !important'}
-          <!-- ko foreach: options -->
-          %li
-            %input.arrowinput{ko(visible: :editing, hasfocus: true, value: :code, valueUpdate: :afterkeydown, event: {keypress: :keyPress, blur: '$root.optionBlur'}), type: :text, style: 'position:relative;top:1px'}
-            %span.arrowgrey{ko(visible: '!editing()', click: :edit, text: :code), style: 'cursor:pointer;position:relative;top:-1px'}
-            %input.ux-clist{ko(value: :label, valueUpdate: :afterkeydown, event: {blur: '$root.optionBlur'}), type: :text, style: 'width: 150px !important'}
-            %button.clist-remove{ko(click: '$root.removeOption')}
-          <!-- /ko -->
-          %li{ko(with: '$root.newOption()')}
-            %input.arrowinput{ko(value: :code, hasfocus: :hasFocus, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Code", style: 'position:relative;top:2px'}
-            %input.ux-text{ko(value: :label, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Label", style: 'width: 150px !important'}
-            %button.clist-add{ko(click: '$root.addOption', enable: '$root.optionValid')}
-        <!-- /ko -->
-        %br/
-        %br/
-
-      .clear
-
-    %hr/
-    .bottom-actions
-      %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button} Save
-      %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'} Cancel
-
-  .box.grey.w60{ko(visible: '$data != $root.currentLayer()'), style: 'display:none'}
-    .toptitle
+-# Hierarchy item template
+%script{type: "text/html", id: "hierarchy-items-template"}
+  <!-- ko foreach: hierarchyItems -->
+  %div
+    %a{ko(click: :toggleExpand, style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
+      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"}), style: 'position:relative;top:2px'}
       %span{ko(text: :name)}
-      &rarr;
-      %em{ko(visible: :public)} Public layer
-      %em{ko(visible: '!public()')} Private layer
-
-    .rightbuttons
-      %button.fbranch
-      %button.fdelete{ko(click: '$root.deleteLayer')}
-
-    .middlebuttons
-      <!-- ko foreach: fields -->
-      %button.faccept{ko(text: :name)}
-      <!-- /ko -->
-
-    %button.farrow{ko(click: '$root.editLayer')} Edit
-
-  %br/
+    <!-- ko if: expanded -->
+    <!-- ko template: {name: 'hierarchy-items-template', with: hierarchyItems} -->
+    <!-- /ko -->
+    <!-- /ko -->
   <!-- /ko -->
 
-  -# New layer link
-  .box.grey.addlayer{ko(visible: '!currentLayer()', click: '$root.newLayer'), style: 'display:none'}
-    %span Add layer
-    %button.cadd.right{type: :button}
-    %br{clear: :all}
+.tabsline
+  #layers-main.hidden-until-loaded
+    %h2 Layers
+    %p Manage layers and fields of this collection's sites
+    %br/
+
+    -# Layers
+    <!-- ko foreach: layers -->
+    <!-- ko if: $data == $root.currentLayer() -->
+    .box.w80
+      %p
+        %label{ko(css: {error: :nameError}), :for => :name} Name
+        %br/
+        = ko_text_field_tag :name, hasfocus: :hasFocus, css: {error: :nameError}
+        = ko_check_box_tag :public
+        -#= label_tag :public, 'Public layer'
+
+      %label{ko(css: {error: :fieldsError})} Fields
+      %br/
+      %br/
+
+      -# Fields
+      #form-editor
+        .left
+          <!-- ko foreach: fields -->
+          .feditor{ko(css: {first: '$data == $parent.fields()[0]'}, click: '$root.selectField')}
+            .feditor-top
+            .feditor-container
+              .rightbuttons
+                .btupdn{style: 'vertical-align:bottom'}
+                  %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'margin-top:0'}
+                  %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'})}
+                %button.fdelete{ko(click: "$root.deleteField")}
+              .feditor-button
+                %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
+              .feditor-content
+                %h1{ko(text: :name)}
+                %span.hint{ko(text: "'Code: ' + (code() ? code() : '(none)')")}
+            .feditor-bottom
+          <!-- /ko -->
+
+          .feditor-add
+            .feditor-add-top{ko(css: {empty: 'fields().length == 0'})}
+            .feditor-add-container
+              .feditor-add-content
+                %h1 Add form field
+                %span{ko(click: '$root.newTextField')}
+                  %button.ltext
+                  %br/
+                  Text
+                %span{ko(click: '$root.newNumericField')}
+                  %button.lnumber
+                  %br/
+                  Numeric
+                %span{ko(click: '$root.newSelectOneField')}
+                  %button.lsingleoption
+                  %br/
+                  Select one
+                %span{ko(click: '$root.newSelectManyField')}
+                  %button.lmultipleoptions
+                  %br/
+                  Select many
+                %span{ko(click: '$root.newHierarchyField')}
+                  %button.lmultipleoptions
+                  %br/
+                  Hierarchy
+                %span{ko(click: '$root.newUserField')}
+                  %button.luser
+                  %br/
+                  User
+                %span{ko(click: '$root.newEmailField')}
+                  %button.lemail
+                  %br/
+                  Email
+
+        .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField', style: {marginTop: '$root.currentFieldMarginTop'}), style: 'position:relative'}
+          %p.title Type
+          %p.smalltext The data type to fill in this field.
+          = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'select_one'], ['Select many', 'select_many'], ['Hierarchy', 'hierarchy'], ['User', 'user'], ['Email','email']]), 'data-bind' => kov(value: :kind)
+          %hr/
+          %label{ko(css: {error: :nameError})} Name
+          %p.smalltext The name of this field as it is presented.
+          = ko_text_field_tag :name, hasfocus: :hasFocus, css: {error: :nameError}
+          %hr/
+          %label{ko(css: {error: :codeError})} Code
+          %p.smalltext The abbreviation used to report via SMS.
+          = ko_text_field_tag :code, css: {error: :codeError}
+          <!-- ko if: isOptionsKind -->
+          %hr/
+          %label{ko(css: {error: :optionsError})} Options
+          %p.smalltext Possible values for this field.
+          %ul.mclist.w40{style: 'width: 282px !important'}
+            <!-- ko foreach: options -->
+            %li
+              %input.arrowinput{ko(visible: :editing, hasfocus: true, value: :code, valueUpdate: :afterkeydown, event: {keypress: :keyPress, blur: '$root.optionBlur'}), type: :text, style: 'position:relative;top:1px'}
+              %span.arrowgrey{ko(visible: '!editing()', click: :edit, text: :code), style: 'cursor:pointer;position:relative;top:-1px'}
+              %input.ux-clist{ko(value: :label, valueUpdate: :afterkeydown, event: {blur: '$root.optionBlur'}), type: :text, style: 'width: 150px !important'}
+              %button.clist-remove{ko(click: '$root.removeOption')}
+            <!-- /ko -->
+            %li{ko(with: '$root.newOption()')}
+              %input.arrowinput{ko(value: :code, hasfocus: :hasFocus, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Code", style: 'position:relative;top:2px'}
+              %input.ux-text{ko(value: :label, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Label", style: 'width: 150px !important'}
+              %button.clist-add{ko(click: '$root.addOption', enable: '$root.optionValid')}
+          <!-- /ko -->
+          <!-- ko if: kind() == 'hierarchy' -->
+          %hr/
+          %label{ko(css: {error: :hierarchyError})} Hierarchy
+          %p.smalltext Upload a CSV: ID, ParentID, ItemName
+          %form.hierarchy_form{action: collection_decode_hierarchy_csv_path(collection), method: :post, enctype: 'multipart/form-data', target: 'hierarchy_iframe', style: 'margin-top:6px;margin-bottom:10px'}
+            %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
+            %input.hierarchy_upload{type: :file, name: :file}
+          %iframe#hierarchy_iframe{name: 'hierarchy_iframe', style: 'display:none'}
+          <!-- ko if: uploadingHierarchy() -->
+          Uploading, please wait...
+          <!-- /ko -->
+          <!-- ko if: !uploadingHierarchy() && hierarchy() -->
+          .hierarchy-container
+            <!-- ko template: {name: 'hierarchy-items-template', with: hierarchyItems} -->
+            <!-- /ko -->
+          <!-- /ko -->
+          <!-- /ko -->
+          %br/
+          %br/
+
+        .clear
+
+      %hr/
+      .bottom-actions
+        <!-- ko if: $root.savingLayer() -->
+        Saving layer, please wait...
+        <!-- /ko -->
+        <!-- ko if: !$root.savingLayer() -->
+        %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button} Save
+        %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'} Cancel
+        <!-- /ko -->
+        <!-- ko if: !valid() -->
+        %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
+        <!-- /ko -->
+    <!-- /ko -->
+
+    <!-- ko if: $data != $root.currentLayer() -->
+    .box.grey.w60
+      .toptitle
+        %span{ko(text: :name)}
+        -#&rarr;
+        -#%em{ko(visible: :public)} Public layer
+        -#%em{ko(visible: '!public()')} Private layer
+
+      .rightbuttons
+        <!-- ko if: !$root.savingLayer() && !$root.currentLayer() -->
+        .btupdn
+          %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'})}
+          %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'})}
+        <!-- /ko -->
+        %button.fbranch
+        <!-- ko if: !$root.savingLayer() && !$root.currentLayer() -->
+        %button.fdelete{ko(click: '$root.deleteLayer')}
+        <!-- /ko -->
+
+      .middlebuttons
+        <!-- ko foreach: fields -->
+        %button.faccept{ko(text: :name)}
+        <!-- /ko -->
+
+      <!-- ko if: !$root.savingLayer() -->
+      %button.farrow{ko(click: '$root.editLayer')} Edit
+      <!-- /ko -->
+    <!-- /ko -->
+
+    %br/
+    <!-- /ko -->
+
+    <!-- ko if: !savingLayer() -->
+    -# New layer link
+    .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none'}
+      %span Add layer
+      %button.cadd.right{type: :button}
+      %br{clear: :all}
+    <!-- /ko -->

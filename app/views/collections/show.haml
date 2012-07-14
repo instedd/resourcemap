@@ -1,9 +1,6 @@
 = render 'tabs'
 
-:javascript
-  $(function() { $('#upload').change(function() { $('#upload_form').submit() }); });
-
-- sites_count = collection.sites.count
+- sites_count = if current_snapshot then collection.site_histories.at_date(current_snapshot.date).count else collection.sites.count end
 
 .tabsline
   %h2 Status
@@ -11,25 +8,77 @@
     .sbox.grey.w30.sitesBox
       .left.sitesDescription
         .sitesCount= sites_count
-        groups and sites
+        sites
       %button.csvDownload.white.right{type: "button", class: sites_count == 0 ? "disabled" : nil}
-        = link_to_if sites_count > 0, 'download as csv', collection_download_as_csv_path(collection)
+        = link_to_if sites_count > 0, 'download as csv', api_collection_path(collection, format: "csv")
     %div
-      = link_to 'Download a sample CSV file', collection_csv_template_path(collection), class: 'icon fimport black'
-      and fill it with the status of multiple sites
-      %br/
-      = link_to_function 'Upload it for bulk sites updates', "$('#upload').click()", class: 'icon fexport black'
-      %form#upload_form{action: collection_upload_csv_path(collection), method: :post, enctype: 'multipart/form-data'}
-        %input#upload{type: :file, name: :file, style: 'visibility:hidden'}
-        %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
+      = link_to'Upload it for bulk sites updates', collection_import_wizard_path(collection), class: 'icon fexport black'
   %hr.clear/
   %h2 API access
   %p{style: 'margin:-8px 0 8px 0'}
     Access the API in
-    #{link_to 'RSS', api_collection_path(collection, format: :rss), target: :_blank}
-    or
+    #{link_to 'RSS', api_collection_path(collection, format: :rss), target: :_blank},
     #{link_to 'JSON', api_collection_path(collection, format: :json), target: :_blank}.
+    or
+    #{link_to 'CSV', api_collection_path(collection, format: :csv), target: :_blank}.
+    Check the
+    #{link_to 'API documentation', 'https://bitbucket.org/instedd/resource_map/wiki/REST_API', target: :_blank}
+    %br/
+    %br/
+
+  - if Settings.is_on? :snapshot
+
+    - if collection_admin?
+      %hr.clear/
+      %h2 Take data snapshot
+      %p This will allow you to browse data in the future as it is looking right now.
+      = form_for(@snapshot, :url => create_snapshot_collection_path(collection)) do |f|
+        .field.w60
+          = f.label :name, "Enter snapshot name"
+          = f.text_field :name
+          - if f.object.errors[:name].present?
+            %label.error= "Name #{f.object.errors[:name].join(', ')}"
+        = f.button 'Create new Snapshot', :class => 'white'
+      %br/
+      %br/
+
+    - if current_snapshot
+      %hr.clear/
+      %h2
+        Current snapshot
+        %h3
+          = "Snapshot of the system as it was in: #{current_snapshot.date}"
+        %h3
+          = "Snapshot name: #{current_snapshot.name}"
+        %h3
+          = button_to "Go back to present time", unload_current_snapshot_collection_path(collection), :class => 'white'
+        %br/
+        %br/
+
+    %hr.clear/
+    %h2 Load snapshot
+    %p This will allow you to load data as it was in the past. The data is read-only
+    .field.w60
+      - collection.snapshots.each do |snapshot|
+        %p
+          = form_tag(load_snapshot_collection_path(collection)) do
+            .field.w60
+              = label_tag :name, snapshot.name
+            = hidden_field_tag :name, snapshot.name
+            .field.w60
+              = label_tag :date, snapshot.date
+            = submit_tag "Load snapshot", :class => 'white'
+    %br/
+    %br/
+
   - if collection_admin?
     %hr.clear/
-    %h2 Properties
+    %h2 Delete sites
+    %p Delete this collection's sites and activities but preserve layers, fields and memberships.
+    = link_to "delete this collection's sites", collection_path(only_sites: true), class: 'icon fdelete black', method: :delete, confirm: "Are you sure you want to delete collection #{collection.name}'s sites?"
+    %br/
+    %br/
+    %hr.clear/
+    %h2 Delete
+    %p Delete this collection. All sites, layers, fields, memberships and activities will be forever gone.
     = link_to 'delete this collection', collection, class: 'icon fdelete black', method: :delete, confirm: "Are you sure you want to delete the collection #{collection.name}?"

@@ -1,8 +1,12 @@
+%h1= collection.name
+- if collection.description.present?
+  %p{style: 'font-size:12px'}= collection.description
+
 %ul.tabs.top
   = tab "Overview", collection_path(collection)
   = tab "Members", collection_members_path(collection)
   = tab "Layers", collection_layers_path(collection)
-  = tab "Thresholds", collection_thresholds_path(collection)
-  = tab "Reminders", collection_reminders_path(collection)
-  = tab "Import Wizard", collection_import_wizard_path(collection)
+  = tab "Alert", collection_thresholds_path(collection) if Settings.is_on? :threshold
+  = tab "Reminders", collection_reminders_path(collection) if Settings.is_on? :reminder
+  = tab "Import wizard", collection_import_wizard_path(collection)
   = tab "Settings", collection_settings_path(collection)

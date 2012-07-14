@@ -1,0 +1,232 @@
+= render 'collections/tabs'
+
+.tabsline
+  #thresholds-main.hidden-until-loaded{ ko(css: { ready: :isReady }) }
+    %h2 Alert
+    <!-- ko foreach :thresholds -->
+    <!-- ko if: $data != $root.currentThreshold() -->
+    .box.grey.w60
+      .toptitle
+        .ord-buttons
+          %input{ ko(value: :ord) }
+          %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
+          %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
+        %span
+          
+          %span{ ko(text: :propertyName) }
+          &rarr; in
+          <!-- ko if: isAllSite() == "true" -->
+          all sites 
+          <!-- /ko -->
+          <!-- ko if: !(isAllSite() == "true") -->
+          <!-- ko foreach: alertSites --> 
+          %span{ ko(text: :name) }
+          <!-- /ko -->   
+          <!-- /ko -->
+          
+          -# list all conditions 
+          <!-- ko foreach :conditions -->
+          <!-- ko if: $parent.isFirstCondition($data) -->
+          When
+          <!-- /ko -->
+          <!-- ko if: !$parent.isFirstCondition($data) -->
+          <!-- ko if: $parent.isAllCondition() == "true" -->
+          and
+          <!-- /ko -->
+          <!-- ko if: !($parent.isAllCondition() == "true") -->
+          or
+          <!-- /ko -->
+          <!-- /ko -->
+          %span{ ko(text: 'field().name()') }
+          %span{ ko(text: 'op().label()') }
+          %span{ ko(text: 'formattedValue') }
+            
+          <!-- ko if: valueType().label() == 'a percentage of' -->
+          of 
+          %span{ ko(text: 'compareField().name()') }
+          <!-- /ko -->
+          
+          <!-- /ko -->
+          ,change icon to
+          %img{"data-bind" => "attr: { src:iconUrl }" }
+          -# %span.stat{"data-bind" => "style: { backgroundColor:icon }" }
+
+      .rightbuttons
+        %button.fdelete{ ko(click: '$root.deleteThreshold') }
+
+      %button.farrow{ ko(click: '$root.editThreshold') } Edit
+    <!-- /ko -->
+
+    -# Form editor
+    <!-- ko if: $data == $root.currentThreshold() -->
+    .box.w90
+      .rightbuttons
+        -#%button.fdelete{ ko(visible: '!isNewRecord') }
+      %h1.header_text Properties 
+      .middlebuttons 
+        %label{ko(css: {error: 'propertyNameError'})} Name
+        %br
+        %input{ko(value: :propertyName),type: :text, style: 'width:240px'} 
+        %br   
+        Apply this alert to
+        %br 
+        %input{"data-bind" => "checked: isAllSite", :value => "true", :name => "site", :type => "radio"}
+        %label All sites
+        %input{"data-bind" => "checked: isAllSite", :value => "false", :name => "site", :type => "radio"} 
+        %label Some sites
+        %br
+        .middlebuttons{ko(visible: 'isAllSite() == "false"' )}
+          %input.sites{ko(autocompleteTagField: 'alertSites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
+      %br
+      %h1.header_text Conditions
+      .middlebuttons
+        %input{"data-bind" => "checked: isAllCondition", :value => "true", :name => "condition", :type => "radio"}
+        %label All of following conditions
+        %input{"data-bind" => "checked: isAllCondition", :value => "false", :name => "condition", :type => "radio"} 
+        %label Any of the following conditions
+        %br
+        <!-- ko foreach :conditions -->
+        %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
+          
+        <!--  ko if: field().operators().length == 1 -->
+        %span{ ko(text: 'field().operators()[0].label') }
+        %select{ ko(options: 'field().options', optionsText: "'label'", optionsValue:"'id'", value: :value) }
+        <!--  /ko -->
+        
+        <!--  ko if: field().operators().length > 1 -->
+        %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
+          
+        <!--    ko if: !(field().kind() == 'text') -->
+        %select{ ko(options: 'ValueType.ALL', optionsText: "'label'", value: :valueType) }
+        <!--    /ko -->
+        
+        %label{ ko(css: { error: '!valid()' }) }
+        %span.w06
+          %input{ ko(value: :value, valueUpdate: :afterkeydown, css: { error: '!valid()' }), type: :text, style: 'width:60px' }
+            
+        <!--    ko if: !(field().kind() == 'text') -->
+        <!--      ko if: valueType().label() == 'a percentage of' -->
+        \% compared to    
+        %select{ ko(options: '$root.compareFields', optionsText: "'name'", value: :compareField, hasfocus: true) }
+        <!--      /ko -->
+        <!--    /ko -->
+  
+        <!--  /ko -->
+        %button.premove{ ko(click: '$parent.removeCondition') }
+        %br   
+        <!--/ko -->
+      %button.fadd{ko(click: :addNewCondition) }
+        Add another condition
+      %hr
+      %br
+      %img{"data-bind" => "attr: { src:iconUrl }" }
+      %br
+      %label Change site display on map
+      %br
+      %button.fred.fsize{ ko( style: { border: icon = 'marker_red.png' ? '10' : '0' }, click: "function(data, event) { setIcon('marker_red.png') }") }
+      %button.forange.fsize{ ko(click: "function(data, event) { setIcon('marker_orange.png') }") }
+      %button.fyellow.fsize{ ko(click: "function(data, event) { setIcon('marker_yellow.png') }") }
+      %button.fgreen.fsize{ ko(click: "function(data, event) { setIcon('marker_green.png') }") }
+      %button.fcyan.fsize{ ko(click: "function(data, event) { setIcon('marker_cyan.png') }") }
+      %button.fblue.fsize{ ko(click: "function(data, event) { setIcon('marker_blue.png') }") }
+      %button.fpurple.fsize{ ko(click: "function(data, event) { setIcon('marker_purple.png') }") }
+      %button.fblack.fsize{ ko(click: "function(data, event) { setIcon('marker_black.png') }") }
+      %button.fgrey.fsize{ ko(click: "function(data, event) { setIcon('marker_grey.png') }") }
+      -# %button{ ko(click: "function(data, event) { setIcon('marker_red.png') }") } reset
+      -# %br
+      -# %input{ ko(colorPicker: :color), type: :text }
+      %br
+      %button.faccept{ ko(click: "function(data, event) { setIcon('accept.png') }") }
+      %button.fclose{ ko(click: "function(data, event) { setIcon('close.png') }") }
+      %button.fblock{ ko(click: "function(data, event) { setIcon('block.png') }") }
+      %button.fexport{ ko(click: "function(data, event) { setIcon('export.png') }") }
+      %button.fimport{ ko(click: "function(data, event) { setIcon('import.png') }") }
+      %hr
+      %br
+      %h1.header_text Notifications
+      
+      %input{"data-bind" => "checked: isNotify", :value => "false", :name => "notification", :type => "radio"}
+      %label Do not send notifications
+      %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"} 
+      %label Notify this people
+      %br
+      .middlebuttons{ko(visible: 'isNotify() == "true"' ), :style => "height: 320px;"}
+        .middlebuttons.w30{:style => "float: left;"}
+          Send emails to:
+          %p.list-box
+            %input{:type => "checkbox"}
+              Sites owner
+            %br
+            %input{:type => "checkbox"}
+              Nurse email
+            %br
+            %br
+            - collection.users.each do |user|
+              %input{ko(checked: 'emailNotification'), value: user.id, type: "checkbox"}= user.email
+              %br
+        .middlebuttons.w30{:style => "float: left;"}
+          Send text messages to:   
+          %p.list-box
+            %input{:type => "checkbox"}
+              Site mobile phone
+            %br
+            %input{:type => "checkbox"}
+              Doctor mobile phone
+            %br
+            %br
+            - collection.users.each do |user|
+              %input{ko(checked: 'phoneNotification'), value: user.id, type: "checkbox"}= user.email
+              %br
+        .clear
+        %label{ko(css: {error: 'notificationMessageError'})} Message
+        %br/
+        %label.smalltext 
+          Use the following expressions to fill your message with sites data 
+          .template_text 
+            [ 
+            %span{ko(click: 'addSiteNameToMessageNotification')}Site Name
+            ]
+            <!-- ko foreach: $root.fields -->
+            [ 
+            %span{ ko(text: :name, click: '$parent.addFieldNameToMessageNotification') }
+            ]   
+            <!-- /ko --> 
+        %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: 'This alert is about [site name]. Occupation is now at [occupation]', maxlength: 140, rows: 4 }
+        .clear
+      %hr/
+      
+      .bottom-actions
+        %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
+        %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
+        <!-- ko if: !valid() -->
+        %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
+        <!-- /ko -->
+    <!-- /ko -->
+
+    %br/
+    <!-- /ko -->
+
+    <!-- ko if: fields().length == 0 -->
+    Please
+    %strong add Layers
+    first before managing your thresholds.
+    <!-- /ko -->
+
+    -# New threshold link
+    <!-- ko if: fields().length -->
+    .box.grey.add{ ko(visible: '!currentThreshold()', click: 'addThreshold'), style: 'display:none'}
+      %span
+        Add Alert
+      %button.cadd.right
+      %br{clear: :all}
+    <!-- /ko -->
+    <!-- /ko -->
+
+    -# New threshold link
+    <!-- ko if: fields().length -->
+    .box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
+      %span
+        Add Alert
+      %button.cadd.right
+      %br{clear: :all}
+    <!-- /ko -->

@@ -1,12 +1,16 @@
 class Search
+  include SearchBase
+
   class << self
     attr_accessor :page_size
   end
   Search.page_size = 50
 
-  def initialize(collection_id)
-    @search = Collection.new_tire_search(collection_id)
-    @search.size self.class.page_size
+  attr_accessor :collection
+
+  def initialize(collection, options)
+    @collection = collection
+    @search = collection.new_tire_search(options)
     @from = 0
   end
 
@@ -15,88 +19,86 @@ class Search
     self
   end
 
-  def id(id)
-    @search.filter :term, id: id
+  def offset(offset)
+    @offset = offset
     self
   end
 
-  def eq(property, value)
-    @search.filter :term, Site.encode_elastic_search_keyword(property) => value
+  def limit(limit)
+    @limit = limit
     self
   end
 
-  ['lt', 'lte', 'gt', 'gte'].each do |op|
-    class_eval %Q(
-      def #{op}(property, value)
-        @search.filter :range, Site.encode_elastic_search_keyword(property) => {#{op}: value}
-        self
-      end
-    )
-  end
-
-  def op(property, op, value)
-    case op.to_s.downcase
-    when '<', 'l' then lt(property, value)
-    when '<=', 'lte' then lte(property, value)
-    when '>', 'gt' then gt(property, value)
-    when '>=', 'gte' then gte(property, value)
-    when '=', '==', 'eq' then eq(property, value)
-    else raise "Invalid operation: #{op}"
+  def sort(es_code, ascendent = true)
+    if es_code == 'id' || es_code == 'name'
+      @sort = es_code
+    else
+      @sort = decode(es_code)
     end
+    @sort_ascendent = ascendent ? nil : 'desc'
     self
   end
 
-  def where(properties = {})
-    properties.each do |property, value|
-      if value.is_a? String
-        case
-        when value[0 .. 1] == '<=' then lte(property, value[2 .. -1].strip)
-        when value[0] == '<' then lt(property, value[1 .. -1].strip)
-        when value[0 .. 1] == '>=' then gte(property, value[2 .. -1].strip)
-        when value[0] == '>' then gt(property, value[1 .. -1].strip)
-        when value[0] == '=' then eq(property, value[1 .. -1].strip)
-        else eq(property, value)
-        end
-      else
-        eq(property, value)
-      end
-    end
+  def unlimited
+    @unlimited = true
     self
   end
 
-  def before(time)
-    time = Time.parse time if time.is_a? String
-    @search.filter :range, updated_at: {lte: Site.format_date(time)}
-    self
-  end
-
-  def after(time)
-    time = Time.parse time if time.is_a? String
-    @search.filter :range, updated_at: {gte: Site.format_date(time)}
-    self
-  end
-
-  def in_group(site)
-    site = Site.find(site) unless site.is_a? Site
-    parent_ids = (site.hierarchy || '').split(',').map(&:to_i)
-    parent_ids << site.id
-    parent_ids.each do |parent_id|
-      @search.filter :term, parent_ids: parent_id
-    end
-    self
-  end
-
+  # Returns the results from ElasticSearch without modifications. Keys are ids
+  # and so are values (when applicable).
   def results
-    @search.sort { by '_uid' }
-    decode_elastic_search_results @search.perform.results
+    apply_queries
+
+    if @sort
+      sort = @sort
+      sort_ascendent = @sort_ascendent
+      @search.sort { by sort, sort_ascendent }
+    else
+      @search.sort { by '_uid' }
+    end
+
+    if @offset && @limit
+      @search.from @offset
+      @search.size @limit
+    elsif @unlimited
+      @search.size 1_000_000
+    else
+      @search.size self.class.page_size
+    end
+
+    @search.perform.results
   end
 
-  private
+  # Returns the results from ElasticSearch but with codes as keys and codes as
+  # values (when applicable).
+  def api_results
+    fields_by_es_code = fields.index_by &:es_code
 
-  def decode_elastic_search_results(results)
-    results.each do |result|
-      result['_source']['properties'] = Site.decode_elastic_search_keywords(result['_source']['properties'])
+    items = results()
+    items.each do |item|
+      item['_source']['properties'] = Hash[
+        item['_source']['properties'].map do |es_code, value|
+          field = fields_by_es_code[es_code]
+          field ? [field.code, field.api_value(value)] : [es_code, value]
+        end
+      ]
     end
-    results
+    items
+  end
+
+  # Returns the results from ElasticSearch but with the location field
+  # returned as lat/lng fields, and the date as a date object
+  def ui_results
+    items = results()
+    items.each do |item|
+      if item['_source']['location']
+        item['_source']['lat'] = item['_source']['location']['lat']
+        item['_source']['lng'] = item['_source']['location']['lon']
+        item['_source'].delete 'location'
+      end
+      item['_source']['created_at'] = Site.parse_date item['_source']['created_at']
+      item['_source']['updated_at'] = Site.parse_date item['_source']['updated_at']
+    end
+    items
   end
 end

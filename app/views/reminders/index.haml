@@ -1,0 +1,75 @@
+-# content_for :head do
+= render 'collections/tabs'
+
+.tabsline
+  #reminders-main.hidden-until-loaded
+    %h2 Reminders
+    
+    -# Reminders
+    <!-- ko foreach: reminders -->
+    <!-- ko if: $data != $root.currentReminder() -->
+    .box.grey.w60
+      .toptitle
+        %span{ko(text: 'name')}
+        &rarr;
+        %em{ko(text: 'getSitesRepeatLabel()')}
+      .rightbuttons
+        %button.fdelete{ ko(click: '$root.deleteReminder') }
+      .message
+        %span{ko(text: 'reminder_message')} 
+      %button.farrow{ko(click: '$root.editReminder')} Edit    
+    <!-- /ko -->
+    -# Form editor
+    <!-- ko if: $data == $root.currentReminder() -->
+    -# <!-- ko with: currentReminder -->
+    .box.w60     
+      %label{ko(css: {error: 'nameError'})} Name
+      %br/
+      %input.w30{ko(value: 'name', valueUpdate: :afterkeydown), type: :text}
+      %br/
+      %label{ko(css: {error: 'sitesError'})} Sites
+      %br/
+      %label.smalltext site's owner will receive this reminder
+      %br   
+      %input{"data-bind" => "checked: is_all_site", :value => "true", :name => "site", :type => "radio"}
+      %label All sites
+      %input{"data-bind" => "checked: is_all_site", :value => "false", :name => "site", :type => "radio"} 
+      %label Some sites
+      %br
+      .middlebuttons{ko(visible: 'is_all_site() == "false"' )}
+        %input.sites{ko(autocompleteTagField: 'sites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
+      %br/
+      %label{ko(css: {error: 'reminderDateError'})} Date
+      %br/
+      %input.ux-datepicker.w20{ko(datePicker: :reminder_date), type: :text }
+      %select{ko(options: '$root.getTimes()', value: :reminder_time)}
+      %label repeat
+      %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat)}
+      %br/
+
+      %label{ko(css: {error: 'reminderMessageError'})} Message
+      %br/
+      %textarea.ux-wajbar.w30{ko(value: :reminder_message, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
+
+      .clear
+
+      %hr/
+      .bottom-actions
+        <!-- ko if: $root.isSaving() -->
+        Saving reminder, please wait...
+        <!-- /ko -->
+        <!-- ko if: !$root.isSaving() -->
+        %button.white{ko(click: '$root.saveReminder', enable: :valid)} Save
+        %a.tgrey{ko(click: '$root.cancelReminder'), href: 'javascript:void(0)' } Cancel
+        <!-- /ko -->
+        <!-- ko if: !valid() -->
+        %span{ko(text: "error()"), style: 'color:red;margin-left:20px'}
+        <!-- /ko -->
+    <!-- /ko -->
+    %br/
+    <!-- /ko-->
+    -# Add new reminder link
+    .box.grey.add{ ko(visible: '!currentReminder()', click: 'showAddReminder'), style: 'display:none'}
+      %span Add Reminder
+      %button.cadd.right{type: :button}
+      %br{clear: :all}

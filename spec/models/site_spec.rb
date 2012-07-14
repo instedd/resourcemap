@@ -1,43 +1,14 @@
 require 'spec_helper'
 
 describe Site do
+  let!(:site) { Site.make properties: {'1' => '50', '2' => 'bla bla'}}
+  let!(:fields) { [Field.make(id: '1', name: 'room'), Field.make(id: '2', name: 'des')] }
+
   it { should belong_to :collection }
-  it { should belong_to :parent }
-  its(:group) { should be_false }
 
-  context "hierarchy" do
-    it "stores nil hierarchy for root" do
-      site = Site.make
-      site.hierarchy.should be_nil
-    end
+  it_behaves_like "it includes History::Concern"
 
-    it "stores hierarchy" do
-      collection = Collection.make
-      site1 = collection.sites.make
-      site2 = collection.sites.make :parent_id => site1.id
-      site3 = collection.sites.make :parent_id => site2.id
-
-      site1.reload
-      site1.hierarchy.should be_nil
-
-      site2.reload
-      site2.hierarchy.should eq("#{site1.id}")
-
-      site3.reload
-      site3.hierarchy.should eq("#{site1.id},#{site2.id}")
-    end
-  end
-
-  context "level" do
-    it "gets level for groups and sites" do
-      collection = Collection.make
-      site1 = collection.sites.make
-      site2 = collection.sites.make :parent_id => site1.id
-      site3 = collection.sites.make :parent_id => site2.id
-
-      site1.level.should eq(1)
-      site2.level.should eq(2)
-      site3.level.should eq(3)
-    end
+  it "return as a hash of field_name and its value" do
+    site.get_field_value_hash.should eq({'room' => '50', 'des' => 'bla bla'})
   end
 end

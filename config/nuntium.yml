@@ -1,0 +1,17 @@
+production:
+  url: http://nuntium.instedd.org
+  account: dyrm.dev
+  application: dyrm.dev
+  password: dev c0der
+
+development:
+  url: http://nuntium.instedd.org
+  account: rm.instedd
+  application: rm.instedd
+  password: 123456
+
+testing:
+  url: http://nuntium.instedd.org
+  account: dyrm.testing
+  application: dyrm.testing
+  password: dev c0der
