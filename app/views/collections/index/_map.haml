@@ -122,6 +122,10 @@
                 <!-- ko if: kind == 'user' -->
                 %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()'), type: :text }
                 <!-- /ko -->
+                <!-- ko if: kind == 'email' -->
+                %input{ ko(value: :value), type: :email }
+                <!-- /ko -->
+
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
@@ -214,6 +218,9 @@
                 <!-- /ko -->
                 <!-- ko if: editing() && kind == 'user' -->
                 %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()', event: { keydown: :keyPress }), type: :text }
+                <!-- /ko -->
+                <!-- ko if: editing() && kind == 'email' -->
+                %input{ ko(value: :value, valueUpdate: :afterkeydown, event: {keydown: :keyPress, blur: :save}), type: :email }
                 <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
