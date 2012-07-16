@@ -1,2 +1,2 @@
-#= require thresholds
-#= require_tree ./thresholds
+#= require alerts
+#= require_tree

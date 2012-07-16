@@ -1,4 +1,6 @@
 #= require spec_helper
 #= require application
 #= require_tree .
-#= require alerts_spec
+<% Plugin.all.each do |plugin|
+  require_asset "#{plugin.name}_spec" rescue nil
+end %>
