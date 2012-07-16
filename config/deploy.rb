@@ -9,7 +9,7 @@ set :scm, :mercurial
 set :user, 'ubuntu'
 set :group, 'ubuntu'
 set :deploy_via, :remote_cache
-set :branch, 'plain_coffee'
+set :branch, 'rwanda'
 default_run_options[:pty] = true
 default_environment['TERM'] = ENV['TERM']
 

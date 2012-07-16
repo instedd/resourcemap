@@ -8,7 +8,7 @@ onCollections ->
 
     constructor: (collection, data) ->
       @constructorLocatable(data)
-      
+
       @collection = collection
       @selected = ko.observable()
       @id = ko.observable data?.id
@@ -22,7 +22,11 @@ onCollections ->
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
       @locationText = ko.computed
-        read: => (Math.round(@lat() * 100000) / 100000) + ', ' + (Math.round(@lng() * 100000) / 100000)
+        read: =>
+          if @hasLocation()
+            (Math.round(@lat() * 100000) / 100000) + ', ' + (Math.round(@lng() * 100000) / 100000)
+          else
+            ''
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
@@ -30,7 +34,7 @@ onCollections ->
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
 
-    hasLocation: => @position()
+    hasLocation: => @position() != null
 
     hasName: => $.trim(@name()).length > 0
 
