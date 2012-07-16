@@ -1,32 +1,42 @@
 class Plugin
-	include Singleton
+  include Singleton
 
-	attr_accessor :routes_block
+  attr_accessor :routes_block
 
-	class << self
-		def inherited(plugin)
-			super
-			all << plugin.instance
-		end
+  class << self
+    def inherited(plugin)
+      super
+      all << plugin.instance
+    end
 
-		def all
-			@plugins ||= []
-		end
+    def all
+      @plugins ||= []
+    end
 
-		def routes &block
-			instance.routes_block = block
-		end
+    def routes &block
+      instance.routes_block = block
+    end
 
-		def method_missing name, *args
-			instance.hooks[name] << args.first
-		end
-	end
+    def method_missing name, *args, &block
+      if block_given?
+        instance.hooks[name] << block
+      else
+        instance.hooks[name] << args.first
+      end
+    end
+  end
 
-	def name
-		self.class.parent_name.underscore
-	end
+  def name
+    self.class.parent_name.underscore
+  end
 
-	def hooks
-		@hooks ||= Hash.new { |h, k| h[k] = [] }
-	end
+  def hooks
+    @hooks ||= Hash.new { |h, k| h[k] = [] }
+  end
+
+  def call_hook name, *args
+    @hooks[name].each do |proc|
+      proc.call *args
+    end
+  end
 end

@@ -25,4 +25,10 @@ module Collection::PluginsConcern
       end
     end
   end
+
+  def call_hooks name, *args
+    each_plugin do |plugin|
+      plugin.call_hook name, *args
+    end
+  end
 end
