@@ -1,3 +1,6 @@
+- content_for :head do
+  = javascript_include_tag 'thresholds'
+  = stylesheet_link_tag 'alerts-style'
 = render 'collections/tabs'
 
 .tabsline
@@ -12,19 +15,19 @@
           %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
           %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
         %span
-          
+
           %span{ ko(text: :propertyName) }
           &rarr; in
           <!-- ko if: isAllSite() == "true" -->
-          all sites 
+          all sites
           <!-- /ko -->
           <!-- ko if: !(isAllSite() == "true") -->
-          <!-- ko foreach: alertSites --> 
+          <!-- ko foreach: alertSites -->
           %span{ ko(text: :name) }
-          <!-- /ko -->   
           <!-- /ko -->
-          
-          -# list all conditions 
+          <!-- /ko -->
+
+          -# list all conditions
           <!-- ko foreach :conditions -->
           <!-- ko if: $parent.isFirstCondition($data) -->
           When
@@ -40,12 +43,12 @@
           %span{ ko(text: 'field().name()') }
           %span{ ko(text: 'op().label()') }
           %span{ ko(text: 'formattedValue') }
-            
+
           <!-- ko if: valueType().label() == 'a percentage of' -->
-          of 
+          of
           %span{ ko(text: 'compareField().name()') }
           <!-- /ko -->
-          
+
           <!-- /ko -->
           ,change icon to
           %img{"data-bind" => "attr: { src:iconUrl }" }
@@ -62,17 +65,17 @@
     .box.w90
       .rightbuttons
         -#%button.fdelete{ ko(visible: '!isNewRecord') }
-      %h1.header_text Properties 
-      .middlebuttons 
+      %h1.header_text Properties
+      .middlebuttons
         %label{ko(css: {error: 'propertyNameError'})} Name
         %br
-        %input{ko(value: :propertyName),type: :text, style: 'width:240px'} 
-        %br   
+        %input{ko(value: :propertyName),type: :text, style: 'width:240px'}
+        %br
         Apply this alert to
-        %br 
+        %br
         %input{"data-bind" => "checked: isAllSite", :value => "true", :name => "site", :type => "radio"}
         %label All sites
-        %input{"data-bind" => "checked: isAllSite", :value => "false", :name => "site", :type => "radio"} 
+        %input{"data-bind" => "checked: isAllSite", :value => "false", :name => "site", :type => "radio"}
         %label Some sites
         %br
         .middlebuttons{ko(visible: 'isAllSite() == "false"' )}
@@ -82,38 +85,38 @@
       .middlebuttons
         %input{"data-bind" => "checked: isAllCondition", :value => "true", :name => "condition", :type => "radio"}
         %label All of following conditions
-        %input{"data-bind" => "checked: isAllCondition", :value => "false", :name => "condition", :type => "radio"} 
+        %input{"data-bind" => "checked: isAllCondition", :value => "false", :name => "condition", :type => "radio"}
         %label Any of the following conditions
         %br
         <!-- ko foreach :conditions -->
         %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
-          
+
         <!--  ko if: field().operators().length == 1 -->
         %span{ ko(text: 'field().operators()[0].label') }
         %select{ ko(options: 'field().options', optionsText: "'label'", optionsValue:"'id'", value: :value) }
         <!--  /ko -->
-        
+
         <!--  ko if: field().operators().length > 1 -->
         %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
-          
+
         <!--    ko if: !(field().kind() == 'text') -->
         %select{ ko(options: 'ValueType.ALL', optionsText: "'label'", value: :valueType) }
         <!--    /ko -->
-        
+
         %label{ ko(css: { error: '!valid()' }) }
         %span.w06
           %input{ ko(value: :value, valueUpdate: :afterkeydown, css: { error: '!valid()' }), type: :text, style: 'width:60px' }
-            
+
         <!--    ko if: !(field().kind() == 'text') -->
         <!--      ko if: valueType().label() == 'a percentage of' -->
-        \% compared to    
+        \% compared to
         %select{ ko(options: '$root.compareFields', optionsText: "'name'", value: :compareField, hasfocus: true) }
         <!--      /ko -->
         <!--    /ko -->
-  
+
         <!--  /ko -->
         %button.premove{ ko(click: '$parent.removeCondition') }
-        %br   
+        %br
         <!--/ko -->
       %button.fadd{ko(click: :addNewCondition) }
         Add another condition
@@ -144,10 +147,10 @@
       %hr
       %br
       %h1.header_text Notifications
-      
+
       %input{"data-bind" => "checked: isNotify", :value => "false", :name => "notification", :type => "radio"}
       %label Do not send notifications
-      %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"} 
+      %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"}
       %label Notify this people
       %br
       .middlebuttons{ko(visible: 'isNotify() == "true"' ), :style => "height: 320px;"}
@@ -165,7 +168,7 @@
               %input{ko(checked: 'emailNotification'), value: user.id, type: "checkbox"}= user.email
               %br
         .middlebuttons.w30{:style => "float: left;"}
-          Send text messages to:   
+          Send text messages to:
           %p.list-box
             %input{:type => "checkbox"}
               Site mobile phone
@@ -180,21 +183,21 @@
         .clear
         %label{ko(css: {error: 'notificationMessageError'})} Message
         %br/
-        %label.smalltext 
-          Use the following expressions to fill your message with sites data 
-          .template_text 
-            [ 
+        %label.smalltext
+          Use the following expressions to fill your message with sites data
+          .template_text
+            [
             %span{ko(click: 'addSiteNameToMessageNotification')}Site Name
             ]
             <!-- ko foreach: $root.fields -->
-            [ 
+            [
             %span{ ko(text: :name, click: '$parent.addFieldNameToMessageNotification') }
-            ]   
-            <!-- /ko --> 
+            ]
+            <!-- /ko -->
         %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: 'This alert is about [site name]. Occupation is now at [occupation]', maxlength: 140, rows: 4 }
         .clear
       %hr/
-      
+
       .bottom-actions
         %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
         %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel

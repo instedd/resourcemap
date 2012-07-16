@@ -51,18 +51,18 @@ onThresholds ->
 
     setOrder: (ord, callback) ->
       @ord ord
-      $.post "/collections/#{@collectionId}/thresholds/#{@id()}/set_order.json", { ord: ord }, callback
-    
+      $.post "/plugin/alerts/collections/#{@collectionId}/thresholds/#{@id()}/set_order.json", { ord: ord }, callback
+
     setIcon: (icon) ->
       @icon icon
-      
+
     toJSON: =>
       id: @id()
       icon: @icon()
       property_name: @propertyName()
       is_all_site: @isAllSite()
       is_all_condition: @isAllCondition()
-      is_notify: @isNotify() 
+      is_notify: @isNotify()
       phone_notification: @phoneNotification()
       email_notification: @emailNotification()
       message_notification: @messageNotification()
@@ -70,9 +70,9 @@ onThresholds ->
       conditions: $.map(@conditions(), (condition) -> condition.toJSON())
       ord: @ord()
 
-   
+
     addSiteNameToMessageNotification: =>
       @messageNotification(@messageNotification() + ' [Site Name]')
-    
+
     addFieldNameToMessageNotification:(field) =>
       @messageNotification(@messageNotification() + ' [' + field.name() + ']')

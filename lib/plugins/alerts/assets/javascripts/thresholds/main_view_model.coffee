@@ -8,7 +8,7 @@ onThresholds ->
       @currentThreshold = ko.observable()
       @saving = ko.observable(false)
       @isReady = ko.observable(false)
-    
+
     addThreshold: =>
       threshold = new Threshold ord: @nextOrd(), is_all_site: "true", is_all_condition: "true", is_notify: "false"
       threshold.addNewCondition()
@@ -19,21 +19,21 @@ onThresholds ->
       @clearUnsavedThreshold(@currentThreshold())
       @originalThreshold = new Threshold(threshold.toJSON())
       @currentThreshold threshold
-    
+
     loadSites: (callback) ->
       $.get "/collections/#{@collectionId}/sites", (sites) ->
         callback $.map sites, (site) => site.name
 
-      
+
     saveThreshold: =>
       @saving(true)
 
       json = threshold: @currentThreshold().toJSON()
       if @currentThreshold().id()
         json._method = 'put'
-        $.post "/collections/#{@collectionId}/thresholds/#{@currentThreshold().id()}.json", json, @saveThresholdCallback
+        $.post "/plugin/alerts/collections/#{@collectionId}/thresholds/#{@currentThreshold().id()}.json", json, @saveThresholdCallback
       else
-        $.post "/collections/#{@collectionId}/thresholds.json", json, @saveThresholdCallback
+        $.post "/plugin/alerts/collections/#{@collectionId}/thresholds.json", json, @saveThresholdCallback
 
     saveThresholdCallback: (data) =>
       @currentThreshold().id(data?.id)
@@ -52,7 +52,7 @@ onThresholds ->
     deleteThreshold: (threshold) =>
       if window.confirm 'Are you sure to delete threshold?'
         @deletedThreshold = threshold
-        $.post "/collections/#{@collectionId}/thresholds/#{threshold.id()}.json", { _method: 'delete' }, @deleteThresholdCallback
+        $.post "/plugin/alerts/collections/#{@collectionId}/thresholds/#{threshold.id()}.json", { _method: 'delete' }, @deleteThresholdCallback
 
     deleteThresholdCallback: =>
       @thresholds.remove @deletedThreshold

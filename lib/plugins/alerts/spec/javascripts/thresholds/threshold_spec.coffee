@@ -69,4 +69,4 @@ describe 'Threshold', ->
     spyOn($, 'post')
     callback = (data) ->
     @threshold.setOrder 89, callback
-    expect($.post).toHaveBeenCalledWith "/collections/#{@collectionId}/thresholds/#{@threshold.id()}/set_order.json", { ord: 89 }, callback
+    expect($.post).toHaveBeenCalledWith "/plugin/alerts/collections/#{@collectionId}/thresholds/#{@threshold.id()}/set_order.json", { ord: 89 }, callback

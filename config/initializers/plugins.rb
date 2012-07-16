@@ -10,6 +10,9 @@ ActionDispatch::Reloader.to_prepare do
       Rails.configuration.assets.precompile << "#{plugin_name}.css"
     end
 
+    if Rails.env == "development"
+      Rails.configuration.assets.paths << "#{plugin_dir}/spec/javascripts"
+    end
 
     Dir["#{plugin_dir}/controllers/**.rb"].each do |controller_file|
       controller_class_name = File.basename controller_file, '.*'

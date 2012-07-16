@@ -17,7 +17,7 @@ describe 'MainViewModel', ->
       @model.thresholds.push @threshold
       @model.currentThreshold @threshold
       #@model.editThreshold(@threshold) commented this line because off add clearUnsavedThreshold method in threshold_main_view_model.editThreshold
-    
+
     it 'should remove if new', ->
       @model.cancelThreshold()
       expect(@model.thresholds().length).toBe 0
@@ -28,12 +28,12 @@ describe 'MainViewModel', ->
       @model.cancelThreshold()
       expect(@model.thresholds().length).toBe 1
       expect(@model.currentThreshold()).toBeNull()
-  
+
   describe 'clear threshold', ->
     beforeEach ->
       @threshold = new Threshold conditions: [], is_all_site: true, is_all_condition: true, is_notify: true
       @model.thresholds.push @threshold
-    
+
     it 'should clear unsaved threshold', ->
       @model.clearUnsavedThreshold(@threshold)
       expect(@model.thresholds().length).toEqual 0
@@ -47,12 +47,12 @@ describe 'MainViewModel', ->
 
     it "should post the threshold's json", ->
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], icon : 'marker_red.png', ord: 1, property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], icon : 'marker_red.png', ord: 1, property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
 
     it "should put the threshold's json if it has an id", ->
       @threshold.id(1)
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {id: 1, icon : 'marker_red.png', property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {id: 1, icon : 'marker_red.png', property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', phone_notification : [ ], email_notification : [ ], message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
 
     it 'should be saving', ->
       @model.saveThreshold()
@@ -95,7 +95,7 @@ describe 'MainViewModel', ->
       @threshold = new Threshold id: 1, conditions: [], icon : 'marker_red.png', is_all_site: true, is_all_condition: true, is_notify: true
       @model.thresholds.push @threshold
       @model.editThreshold @threshold
-        
+
     it 'should restore the icon when canceling', ->
       @threshold.icon()
       @model.cancelThreshold()
@@ -123,7 +123,7 @@ describe 'MainViewModel', ->
       spyOn(window, 'confirm').andReturn true
       spyOn($, 'post').andReturn true
       @model.deleteThreshold @threshold
-      @expect($.post).toHaveBeenCalledWith "/collections/#{@collectionId}/thresholds/#{@threshold.id()}.json", { _method: 'delete' }, @model.deleteThresholdCallback
+      @expect($.post).toHaveBeenCalledWith "/plugin/alerts/collections/#{@collectionId}/thresholds/#{@threshold.id()}.json", { _method: 'delete' }, @model.deleteThresholdCallback
 
   describe 'move threshold', ->
     beforeEach ->
@@ -140,8 +140,8 @@ describe 'MainViewModel', ->
 
       it "should post set threshold order's json", ->
         @model.moveThresholdDown @threshold_1
-        expect($.post).toHaveBeenCalledWith("/collections/#{@model.collectionId}/thresholds/#{@threshold_1.id()}/set_order.json", { ord: 2 }, @model.setThresholdOrderCallback)
-        expect($.post).toHaveBeenCalledWith("/collections/#{@model.collectionId}/thresholds/#{@threshold_2.id()}/set_order.json", { ord: 1 }, @model.setThresholdOrderCallback)
+        expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@model.collectionId}/thresholds/#{@threshold_1.id()}/set_order.json", { ord: 2 }, @model.setThresholdOrderCallback)
+        expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@model.collectionId}/thresholds/#{@threshold_2.id()}/set_order.json", { ord: 1 }, @model.setThresholdOrderCallback)
 
       it 'should not change order when it is the last threshold', ->
         @model.moveThresholdDown @threshold_2
@@ -155,8 +155,8 @@ describe 'MainViewModel', ->
 
       it "should post set threshold order's json", ->
         @model.moveThresholdUp @threshold_2
-        expect($.post).toHaveBeenCalledWith("/collections/#{@model.collectionId}/thresholds/#{@threshold_1.id()}/set_order.json", { ord: 2 }, @model.setThresholdOrderCallback)
-        expect($.post).toHaveBeenCalledWith("/collections/#{@model.collectionId}/thresholds/#{@threshold_2.id()}/set_order.json", { ord: 1 }, @model.setThresholdOrderCallback)
+        expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@model.collectionId}/thresholds/#{@threshold_1.id()}/set_order.json", { ord: 2 }, @model.setThresholdOrderCallback)
+        expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@model.collectionId}/thresholds/#{@threshold_2.id()}/set_order.json", { ord: 1 }, @model.setThresholdOrderCallback)
 
       it 'should not change order when it is the last threshold', ->
         @model.moveThresholdUp @threshold_1

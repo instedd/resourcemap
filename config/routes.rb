@@ -15,11 +15,6 @@ ResourceMap::Application.routes.draw do
     end
     resources :reminders
     resources :fields
-    resources :thresholds do
-      member do
-        post :set_order
-      end
-    end
 
     resources :memberships do
       collection do
