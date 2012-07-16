@@ -56,7 +56,7 @@ onLayers ->
         when 'select_one' then 'lsingleoption'
         when 'select_many' then 'lmultipleoptions'
         when 'hierarchy' then 'lmultipleoptions'
-        when 'user' then 'user'
+        when 'user' then 'luser'
 
     setHierarchy: (hierarchy) =>
       @hierarchy(hierarchy)
