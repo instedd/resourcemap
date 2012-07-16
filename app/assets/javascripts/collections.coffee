@@ -27,7 +27,15 @@ onCollections -> if $('#collections-main').length > 0
     $('#right-panel').width(containerWidth - 404)
     $('.tableheader.expanded').width(containerWidth)
     $('#map').width(containerWidth - 420)
+
+    if(window.model.fullscreen())
+      $('#container').width($(window).width())
+      $('.tableheader.expanded').width("100%")
+      $('#right-panel').width($(window).width() - 404)
+      $('#map').width("100%");
+      $('#map').height($('#container').height() - $('.mapheader').height())
     false
+
 
   $(window).resize adjustContainerSize
   setTimeout(adjustContainerSize, 100)

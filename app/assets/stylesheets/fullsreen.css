@@ -1,0 +1,21 @@
+.fullscreen #wrapper,.fullscreen #collections-main, .fullscreen .h50 {
+  height:100%;
+}
+
+.fullscreen #container {
+  margin-left:0px;
+  margin-right:0px;
+  padding-top: 0px;
+}
+
+.fullscreen .tableheader {
+  width:100%;
+}
+
+.fullscreen .tablescroll {
+  height:83%;
+}
+
+.fullscreen #toolbar, .fullscreen #header, .fullscreen #footer-span {
+  display:none;
+}

@@ -3,17 +3,10 @@ onCollections ->
   class @MapViewModel
     @constructorMapViewModel: ->
       @showingMap = ko.observable(true)
-      @sitesWithAlert = ko.observable 0
+      @alertsCount = ko.observable(0)
       @sitesCount = ko.observable(0)
       @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site' else "#{@sitesCount()} sites"
-      @sitesWithAlertText = ko.computed => 
-        sitesWithAlertText = ""
-        if @sitesWithAlert() == 1
-          sitesWithAlertText = "#{@sitesWithAlert()} alert"
-        else if @sitesWithAlert() > 1
-          sitesWithAlertText = "#{@sitesWithAlert()} alerts"
-        sitesWithAlertText
-      @isSitesWithAlert = ko.computed => if @sitesWithAlert() == 0 then false else true
+      @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
       
       @reloadMapSitesAutomatically = true
       @clusters = {}
@@ -21,18 +14,10 @@ onCollections ->
       @mapRequestNumber = 0
       @geocoder = new google.maps.Geocoder()
 
-      @markerImageInactive = new google.maps.MarkerImage(
-        "/assets/marker_inactive.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
-      )
-      @markerImageInactiveShadow = new google.maps.MarkerImage(
-        "/assets/marker_inactive.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
-      )
-      @markerImageTarget = new google.maps.MarkerImage(
-        "/assets/marker_target.png", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
-      )
-      @markerImageTargetShadow = new google.maps.MarkerImage(
-        "/assets/marker_target.png", new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
-      )
+      @markerImageInactive = @markerImage 'marker_inactive.png'
+      @markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
+      @markerImageTarget = @markerImage 'marker_target.png'
+      @markerImageTargetShadow = @markerImageShadow 'marker_target.png'
       
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
@@ -166,7 +151,7 @@ onCollections ->
           if site.id == oldSelectedSiteId
             @markers[site.id] = @oldSelectedSite.marker
             @deleteMarkerListeners site.id
-            @setMarkerIcon @markers[site.id], if site.alert == "true" then 'alert' else 'active'
+            @setMarkerIcon @markers[site.id], site.icon ? 'active'
             @oldSelectedSite.deleteMarker false
             delete @oldSelectedSite
           else
@@ -187,8 +172,7 @@ onCollections ->
             newMarker = new google.maps.Marker markerOptions
             newMarker.name = site.name
             newMarker.alert = site.alert
-            newMarker.icon = site.icon
-            @setMarkerIcon newMarker, if site.alert == "true" then 'alert' else 'active'
+            @setMarkerIcon newMarker, site.icon ? 'active'
             newMarker.collectionId = site.collection_id
 
             @markers[site.id] = newMarker
@@ -261,7 +245,7 @@ onCollections ->
         if selectedSiteId == siteId
           @setMarkerIcon marker, 'target'
         else if marker.alert == "true"
-          @setMarkerIcon marker, 'alert'
+          @setMarkerIcon marker, marker.icon
         else
           @setMarkerIcon marker, 'active'
       for clusterId, cluster of @clusters
@@ -269,7 +253,7 @@ onCollections ->
         
     @setMarkerIcon: (marker, icon) ->
       switch icon
-        when 'active'
+        when 'active', 'null'
           marker.setIcon null
           marker.setShadow null
         when 'inactive'
@@ -278,8 +262,9 @@ onCollections ->
         when 'target'
           marker.setIcon @markerImageTarget
           marker.setShadow @markerImageTargetShadow
-        when 'alert'
-          marker.setIcon @markerImageThreshold marker.icon
+        else
+          marker.setIcon @markerImage icon
+          marker.setShadow null
 
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
@@ -316,19 +301,19 @@ onCollections ->
 
     @updateSitesCount: ->
       count = 0
-      alertCount = 0
+      alertsCount = 0
       bounds = @map.getBounds()
       for siteId, marker of @markers
         if bounds.contains marker.getPosition()
           count += 1
-          alertCount += 1 if marker.alert == "true"
+          alertsCount += 1 if marker.alert == "true"
       for clusterId, cluster of @clusters
         if bounds.contains cluster.position
           count += cluster.count
-          alertCount += cluster.alertCount
+          alertsCount += cluster.alertCount
       count += 1 if @selectedSite()
-      alertCount += 1 if @selectedSite()?.alert()
-      @sitesWithAlert alertCount
+      alertsCount += 1 if @selectedSite()?.alert()
+      @alertsCount alertsCount
       @sitesCount count
 
     @showTable: ->
@@ -354,6 +339,14 @@ onCollections ->
           window.adjustContainerSize()
         ), 20)
         
-    @markerImageThreshold: (icon) ->
-      new google.maps.MarkerImage("/assets/alert/#{icon}", new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34))
-        
+    @markerImage: (icon) ->
+      new google.maps.MarkerImage(
+        @iconUrl(icon), new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
+      )
+
+    @markerImageShadow: (icon) ->
+      new google.maps.MarkerImage(
+        @iconUrl(icon), new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
+      )
+
+    @iconUrl: (icon) -> icon.url ? "/assets/#{icon}"

@@ -18,10 +18,13 @@ module Site::IndexUtils
     if(alert != nil)
       hash[:alert] = true
       hash[:icon] = alert.icon
-      users = User.find alert.phone_notification
-      message_notification = alert.message_notification.render_template_string(site.get_template_value_hash)
-      Resque.enqueue SmsQueue, users, message_notification
-      Resque.enqueue EmailQueue, alert.id, message_notification
+      if  alert.is_notify
+        users_sms = User.find alert.phone_notification
+        users_email = User.find alert.email_notification 
+        message_notification = alert.message_notification.render_template_string(site.get_template_value_hash)
+        Resque.enqueue SmsQueue, users_sms, message_notification if(!users_sms.empty?)
+        Resque.enqueue EmailQueue, users_email, message_notification if(!users_email.empty?)
+      end
     else
       hash[:alert] = false
       hash[:icon] = nil
@@ -38,7 +41,7 @@ module Site::IndexUtils
   def site_mapping(fields)
     {
       properties: {
-        name: { type: :string, index: :not_analyzed },
+        name: { type: :string },
         location: { type: :geo_point },
         created_at: { type: :date, format: :basic_date_time },
         updated_at: { type: :date, format: :basic_date_time },

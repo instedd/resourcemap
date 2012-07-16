@@ -10,6 +10,7 @@ class SitesController < ApplicationController
     else
       search = collection.new_search
     end
+    search.name_start_with params[:name] if params[:name].present?
     search.offset params[:offset]
     search.limit params[:limit]
     render json: search.ui_results.map { |x| x['_source'] }

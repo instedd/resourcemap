@@ -10,15 +10,14 @@ onThresholds ->
       @phoneNotification = ko.observableArray data?.phone_notification ? []
       @emailNotification = ko.observableArray data?.email_notification ? []
       @alertSites = ko.observable $.map(data?.sites ? [], (site) -> new Site(site))
-      @propertyName = ko.observable data?.property_name 
+      @propertyName = ko.observable data?.property_name
       @ord = ko.observable data?.ord
       # @color = ko.observable(data?.color ? '#ff0000')
-      @icon = ko.observable(data?.icon ? "marker_red.png")
-      @iconURL = ko.computed =>
-        "/assets/alert/#{@icon()}"
+      @icon = ko.observable(data.icon ? "marker_red.png")
+      @iconUrl = ko.computed => "/assets/#{@icon()}"
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
       @propertyNameError = ko.computed =>
-        if $.trim(@propertyName()).length > 0 
+        if $.trim(@propertyName()).length > 0
           return null
         else
           return "Alert property's name is missing"
@@ -70,3 +69,10 @@ onThresholds ->
       sites: $.map(@alertSites(), (site) -> site.toJSON())
       conditions: $.map(@conditions(), (condition) -> condition.toJSON())
       ord: @ord()
+
+   
+    addSiteNameToMessageNotification: =>
+      @messageNotification(@messageNotification() + ' [Site Name]')
+    
+    addFieldNameToMessageNotification:(field) =>
+      @messageNotification(@messageNotification() + ' [' + field.name() + ']')

@@ -1,12 +1,11 @@
 - content_for :head do
   = javascript_include_tag 'reminders'
-
 = render 'collections/tabs'
 
 .tabsline
   #reminders-main.hidden-until-loaded
     %h2 Reminders
-    
+
     -# Reminders
     <!-- ko foreach: reminders -->
     <!-- ko if: $data != $root.currentReminder() -->
@@ -18,13 +17,13 @@
       .rightbuttons
         %button.fdelete{ ko(click: '$root.deleteReminder') }
       .message
-        %span{ko(text: 'reminder_message')} 
-      %button.farrow{ko(click: '$root.editReminder')} Edit    
+        %span{ko(text: 'reminder_message')}
+      %button.farrow{ko(click: '$root.editReminder')} Edit
     <!-- /ko -->
     -# Form editor
     <!-- ko if: $data == $root.currentReminder() -->
     -# <!-- ko with: currentReminder -->
-    .box.w60     
+    .box.w60
       %label{ko(css: {error: 'nameError'})} Name
       %br/
       %input.w30{ko(value: 'name', valueUpdate: :afterkeydown), type: :text}
@@ -32,10 +31,10 @@
       %label{ko(css: {error: 'sitesError'})} Sites
       %br/
       %label.smalltext site's owner will receive this reminder
-      %br   
+      %br
       %input{"data-bind" => "checked: is_all_site", :value => "true", :name => "site", :type => "radio"}
       %label All sites
-      %input{"data-bind" => "checked: is_all_site", :value => "false", :name => "site", :type => "radio"} 
+      %input{"data-bind" => "checked: is_all_site", :value => "false", :name => "site", :type => "radio"}
       %label Some sites
       %br
       .middlebuttons{ko(visible: 'is_all_site() == "false"' )}
