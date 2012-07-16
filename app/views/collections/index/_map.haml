@@ -225,7 +225,7 @@
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
-    <!-- ko if: !$root.currentCollection().currentSnapshot -->
+    <!-- ko if: !$root.currentSnapshot() -->
     .tablebottom
       = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
       = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
@@ -253,15 +253,20 @@
         %span{ko(click: :exportInCSV), style: 'text-decoration:underline;cursor:pointer;margin:0'} CSV
     <!-- /ko -->
     %span{ko(text: :sitesCountText)}
-    <!-- ko if: isSitesWithAlert -->
+    <!-- ko if: alertsCount() > 0 -->
     on map,
     <!-- /ko -->
-    <!-- ko if: !isSitesWithAlert() -->
+    <!-- ko if: alertsCount() == 0 -->
     on map
     <!-- /ko -->
-    %span.alert{ko(text: :sitesWithAlertText)}
+    %span.alert{ko(text: :alertsCountText)}
     -#%span.alert 5 alerts
+    %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}
     %br{clear: :all}
-  #map
+  %div.mapcontainer
+    %button.icon_button.expand-collapse_button.orightexpand{ko(click: '$root.toogleExpandFullScreen')}
+    #map
+
+

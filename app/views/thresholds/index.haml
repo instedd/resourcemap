@@ -48,7 +48,7 @@
           
           <!-- /ko -->
           ,change icon to
-          %img{"data-bind" => "attr: { src:iconURL }" }
+          %img{"data-bind" => "attr: { src:iconUrl }" }
           -# %span.stat{"data-bind" => "style: { backgroundColor:icon }" }
 
       .rightbuttons
@@ -119,7 +119,7 @@
         Add another condition
       %hr
       %br
-      %img{"data-bind" => "attr: { src:iconURL }" }
+      %img{"data-bind" => "attr: { src:iconUrl }" }
       %br
       %label Change site display on map
       %br
@@ -136,11 +136,11 @@
       -# %br
       -# %input{ ko(colorPicker: :color), type: :text }
       %br
-      %button.faccept.fsize{ ko(click: "function(data, event) { setIcon('accept.png') }") }
-      %button.fclose.fsize{ ko(click: "function(data, event) { setIcon('close.png') }") }
-      %button.fblock.fsize{ ko(click: "function(data, event) { setIcon('block.png') }") }
-      %button.fexport.fsize{ ko(click: "function(data, event) { setIcon('export.png') }") }
-      %button.fimport.fsize{ ko(click: "function(data, event) { setIcon('import.png') }") }
+      %button.faccept{ ko(click: "function(data, event) { setIcon('accept.png') }") }
+      %button.fclose{ ko(click: "function(data, event) { setIcon('close.png') }") }
+      %button.fblock{ ko(click: "function(data, event) { setIcon('block.png') }") }
+      %button.fexport{ ko(click: "function(data, event) { setIcon('export.png') }") }
+      %button.fimport{ ko(click: "function(data, event) { setIcon('import.png') }") }
       %hr
       %br
       %h1.header_text Notifications

@@ -68,26 +68,6 @@
 	background-color: #c0c0c0;
 }
 
-.faccept {
-  background-image: url(/assets/alert/faccept.png);
-}
-
-.fclose {
-  background-image: url(/assets/alert/fclose.png);
-}
-
-.fblock {
-  background-image: url(/assets/alert/fblock.png);
-}
-
-.fexport {
-  background-image: url(/assets/alert/fexport.png);
-}
-
-.fimport {
-  background-image: url(/assets/alert/fimport.png);
-}
-
 .fsize {
 	width: 24px;
 	height: 24px;

@@ -9,4 +9,4 @@ describe 'Layer', ->
         @field = new Field @layer, kind: 'user'
 
       it 'should have buttonClass "user"', ->
-        expect(@field.buttonClass()).toEqual 'user'
+        expect(@field.buttonClass()).toEqual 'luser'
