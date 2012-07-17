@@ -15,7 +15,7 @@ module SearchBase
     @search.filter :term, id: id
     self
   end
-  
+
   def name_start_with(name)
     @search.filter :prefix, name: name.downcase
   end
@@ -112,6 +112,11 @@ module SearchBase
 
   def require_location
     @search.filter :exists, field: :location
+    self
+  end
+
+  def location_missing
+    @search.filter :not, {exists: {field: :location}}
     self
   end
 

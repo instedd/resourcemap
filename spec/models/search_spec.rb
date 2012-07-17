@@ -347,6 +347,17 @@ describe Search do
     end
   end
 
+  context "location missing" do
+    let!(:site1) { collection.sites.make :name => 'b', :lat => "", :lng => "" }
+    let!(:site2) { collection.sites.make :name => 'a' }
+
+    it "should filter sites without location" do
+      result = collection.new_search.location_missing.results
+      result.map { |x| x['_id'].to_i } .should eq([site2.id])
+    end
+
+  end
+
   def assert_results(search, *sites)
     search.results.map{|r| r['_id'].to_i}.sort.should =~ sites.map(&:id)
   end

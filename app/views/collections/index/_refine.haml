@@ -67,6 +67,9 @@
       <!-- /ko -->
     <!-- /ko -->
     <!-- /ko -->
+    #div{ko(click: '$root.filterByLocationMissing'), style: 'cursor:pointer;padding-top:6px'}
+      %span Location missing
+      %input{ko(click: '$root.filterByLocationMissing'), type: :button, value: 'OK'}
   <!-- /ko -->
 .right
   %form{ko(submit: 'performSearchOrHierarchy'), action: '#/null', method: :post}

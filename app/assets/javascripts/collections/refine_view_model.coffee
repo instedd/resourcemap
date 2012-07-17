@@ -58,6 +58,10 @@ onCollections ->
       @filters.push(new FilterByLastMonth())
       @hideRefinePopup()
 
+    @filterByLocationMissing: ->
+      @filters.push(new FilterByLocationMissing())
+      @hideRefinePopup()
+
     @filterByProperty: ->
       return if $.trim(@expandedRefinePropertyValue()).length == 0
 
