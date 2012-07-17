@@ -9,4 +9,4 @@ describe 'Collection', ->
       @collection = new Collection id: 1
 
     it 'should get searchUsersUrl', ->
-      expect(@collection.searchUsersUrl()).toEqual '/collections/1/memberships/search.json'
+      expect(@collection.searchUsersUrl()).toEqual '/collections/1/memberships/search.json1'
