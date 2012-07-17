@@ -122,6 +122,10 @@
                 <!-- ko if: kind == 'user' -->
                 %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()'), type: :text }
                 <!-- /ko -->
+                <!-- ko if: kind == 'email' -->
+                %input{ ko(value: :value), type: :email }
+                <!-- /ko -->
+
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
@@ -215,6 +219,9 @@
                 <!-- ko if: editing() && kind == 'user' -->
                 %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()', event: { keydown: :keyPress }), type: :text }
                 <!-- /ko -->
+                <!-- ko if: editing() && kind == 'email' -->
+                %input{ ko(value: :value, valueUpdate: :afterkeydown, event: {keydown: :keyPress, blur: :save}), type: :email }
+                <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
@@ -258,4 +265,8 @@
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}
     %br{clear: :all}
-  #map
+  %div.mapcontainer
+    %button.icon_button.expand-collapse_button.orightexpand{ko(click: '$root.toogleExpandFullScreen')}
+    #map
+
+

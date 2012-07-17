@@ -5,6 +5,7 @@ onCollections ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
       @fullscreen = ko.observable(false)
+      @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
         @currentCollection()?.currentSnapshot
 
@@ -22,12 +23,33 @@ onCollections ->
         $("body").addClass("fullscreen")
         $(".ffullscreen").addClass("frestore")
         $(".ffullscreen").removeClass("ffullscreen")
+        $('.expand-collapse_button').show()
+        $(".expand-collapse_button").addClass("orightexpand")
+        $(".expand-collapse_button").removeClass("oleftexpand")
         window.adjustContainerSize()
       else
         @fullscreen(false)
+        @fullscreenExpanded(false)
         $("body").removeClass("fullscreen")
         $(".frestore").addClass("ffullscreen")
         $(".frestore").removeClass("frestore")
+        $('#collections-main .left').show()
+        $('.expand-collapse_button').hide()
         window.adjustContainerSize()
+
+    @toogleExpandFullScreen: ->
+      if @fullscreen() && !@fullscreenExpanded()
+        @fullscreenExpanded(true)
+        $('#collections-main .left').hide()
+        window.adjustContainerSize()
+        $(".orightexpand").addClass("oleftexpand")
+        $(".orightexpand").removeClass("orightexpand")
+      else
+        if @fullscreen() && @fullscreenExpanded()
+          @fullscreenExpanded(false)
+          $('#collections-main .left').show()
+          window.adjustContainerSize()
+          $(".oleftexpand").addClass("orightexpand")
+          $(".oleftexpand").removeClass("oleftexpand")
 
     @createCollection: -> window.location = "/collections/new"
