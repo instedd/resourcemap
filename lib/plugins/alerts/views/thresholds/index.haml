@@ -157,12 +157,9 @@
         .middlebuttons.w30{:style => "float: left;"}
           Send emails to:
           %p.list-box
-            %input{:type => "checkbox"}
-              Sites owner
-            %br
-            %input{:type => "checkbox"}
-              Nurse email
-            %br
+            - collection.fields.find_all_by_kind('email').each do |field| 
+              %input{value: field.id, type: "checkbox"}= field.name
+              %br
             %br
             - collection.users.each do |user|
               %input{ko(checked: 'emailNotification'), value: user.id, type: "checkbox"}= user.email
