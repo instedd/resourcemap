@@ -20,6 +20,14 @@ class Alerts::Plugin < Plugin
     end
   end
 
+  field_type \
+    name: 'user',
+    css_class: 'luser'
+
+  field_type \
+    name: 'email',
+    css_class: 'lmessage'
+
   routes {
     resources :collections do
       resources :thresholds do

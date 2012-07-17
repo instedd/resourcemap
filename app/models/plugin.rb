@@ -17,6 +17,12 @@ class Plugin
       instance.routes_block = block
     end
 
+    def hooks(name)
+      all.map do |plugin|
+        plugin.hooks[name]
+      end.flatten
+    end
+
     def method_missing name, *args, &block
       if block_given?
         instance.hooks[name] << block

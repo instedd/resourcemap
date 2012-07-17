@@ -57,6 +57,7 @@ onLayers ->
         when 'select_many' then 'lmultipleoptions'
         when 'hierarchy' then 'lmultipleoptions'
         when 'user' then 'luser'
+        when 'email' then 'lmessage'
 
     setHierarchy: (hierarchy) =>
       @hierarchy(hierarchy)
