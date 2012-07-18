@@ -30,6 +30,11 @@ class Alerts::Plugin < Plugin
     css_class: 'lmessage',
     edit_view: 'fields/email_edit_view'
 
+  field_type \
+    name: 'phone',
+    css_class: 'lphone',
+    edit_view: 'fields/phone_edit_view'
+
   routes {
     resources :collections do
       resources :thresholds do
