@@ -80,6 +80,7 @@ GEM
     highline (1.6.13)
     hike (1.2.1)
     i18n (0.6.0)
+    ice_cube (0.8.0)
     instedd-rails (0.0.17)
       breadcrumbs_on_rails (>= 2.2.0)
       rails (>= 3.0)
@@ -235,6 +236,7 @@ DEPENDENCIES
   faker
   guard-jasmine
   haml-rails
+  ice_cube
   instedd-rails (= 0.0.17)
   jasminerice
   jquery-rails

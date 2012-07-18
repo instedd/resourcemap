@@ -7,7 +7,7 @@ class RemindersController < ApplicationController
         show_collection_breadcrumb
         add_breadcrumb "Reminders", collection_reminders_path(collection)
       end
-      format.json { render json: reminders.all.as_json(include: [:repeat,:sites])}
+      format.json { render json: reminders.all.as_json(include: [:repeat,:sites], methods: [:reminder_date], except: [:schedule])}
     end
   end
 

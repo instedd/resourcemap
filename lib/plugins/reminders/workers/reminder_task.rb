@@ -1,7 +1,9 @@
 class ReminderTask
   def self.perform    
-    r = Reminder.first
-    r.reminder_message = r.reminder_message + "1"
-    r.save
+    Reminder.where("next_run <= ?", Time.now).each do |reminder|
+      puts reminder.reminder_message  
+      reminder.save! 
+      # adding reminder into que
+    end
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120710043920) do
+ActiveRecord::Schema.define(:version => 20120718071945) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -134,13 +134,14 @@ ActiveRecord::Schema.define(:version => 20120710043920) do
 
   create_table "reminders", :force => true do |t|
     t.string   "name"
-    t.datetime "reminder_date"
     t.text     "reminder_message"
     t.integer  "repeat_id"
     t.integer  "collection_id"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
     t.boolean  "is_all_site"
+    t.text     "schedule"
+    t.datetime "next_run"
   end
 
   add_index "reminders", ["collection_id"], :name => "index_reminders_on_collection_id"
@@ -161,6 +162,7 @@ ActiveRecord::Schema.define(:version => 20120710043920) do
     t.integer  "order"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.text     "rule"
   end
 
   create_table "site_histories", :force => true do |t|
@@ -239,18 +241,18 @@ ActiveRecord::Schema.define(:version => 20120710043920) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                  :default => "", :null => false
-    t.string   "encrypted_password",     :default => "", :null => false
+    t.string   "email",                                 :default => "", :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          :default => 0
+    t.integer  "sign_in_count",                         :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
     t.string   "phone_number"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
