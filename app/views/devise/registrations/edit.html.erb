@@ -4,6 +4,11 @@
 
 <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
 
+
+  <h2>Edit Account</h2>
+
+  <hr class="shadow" />
+
   <div class="field w30">
     <%= f.label :email %>
     <%= f.email_field :email %>
