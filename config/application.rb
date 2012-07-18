@@ -18,8 +18,7 @@ module ResourceMap
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += Dir["#{config.root}/lib/plugins"]
-    config.autoload_paths += Dir["#{config.root}/lib/plugins/*/controllers"]
-    config.autoload_paths += Dir["#{config.root}/lib/plugins/*/models"]
+    config.autoload_paths += Dir["#{config.root}/lib/plugins/*/{controllers,models,workers}"]
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
