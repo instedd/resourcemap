@@ -1,33 +1,41 @@
 <%= devise_error_messages! :class => 'centered w30' %>
+
 <div class="box centered w30">
- <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
-  <%= devise_error_messages! %>
 
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email %></div>
+<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
 
-  <div><%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-  <%= f.password_field :password, :autocomplete => "off" %></div>
+  <div class="field w30">
+    <%= f.label :email %>
+    <%= f.email_field :email %>
+  </div>
 
-  <div><%= f.label :password_confirmation %><br />
-  <%= f.password_field :password_confirmation %></div>
+  <div class="field w30">
+    <%= f.label :password %> <p>leave blank if you don't want to change it</p>
+    <%= f.password_field :password, :autocomplete => "off" %>
+  </div>
 
-  <div><%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-  <%= f.password_field :current_password %></div>
+  <div class="field w30">
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation %>
+  </div>
 
-  <div><%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-  <%= f.password_field :current_password %></div>
-  
-    <%= f.label :phone_number %> <i>(85512345678)</i>
-    <%= f.telephone_field :phone_number %>
-  <div><%= f.submit "Update" %></div>
+  <div class="field w30">
+    <%= f.label :current_password %> <p>we need your current password to confirm your changes</p>
+    <%= f.password_field :current_password %>
+  </div>
+
+  <div class="field w30">
+    <%= f.label :phone_number %> <p>85512345678</p>
+    <%= f.telephone_field :phone_number, :type => 'text' %></div>
+
+  <div class="actions">
+    <button type="submit" class="white">Update</button>
+  </div>
 
 <% end %>
 
-<h3>Cancel my account</h3>
+<hr>
 
 <p>Unhappy? <%= link_to "Cancel my account", registration_path(resource_name), :confirm => "Are you sure?", :method => :delete %>.</p>
-
-<%= link_to "Back", :back %>
 
 </div>

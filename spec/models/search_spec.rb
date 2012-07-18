@@ -353,7 +353,7 @@ describe Search do
 
     it "should filter sites without location" do
       result = collection.new_search.location_missing.results
-      result.map { |x| x['_id'].to_i } .should eq([site2.id])
+      result.map { |x| x['_id'].to_i } .should eq([site1.id])
     end
 
   end
