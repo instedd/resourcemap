@@ -36,10 +36,10 @@ class Site < ActiveRecord::Base
 
   def self.get_site_id_and_name sites
     sites = Site.select("id, name").find(sites)
-    sites_with_id_and_name = []  
-    sites.each do |site| 
+    sites_with_id_and_name = []
+    sites.each do |site|
       site_with_id_and_name = {
-        "id" => site.id, 
+        "id" => site.id,
         "name" => site.name
       }
       sites_with_id_and_name.push site_with_id_and_name
@@ -47,16 +47,8 @@ class Site < ActiveRecord::Base
     sites_with_id_and_name
   end
 
-  def get_field_value_hash
-    field_hash = Hash.new
-    self.properties.each do |id, value|
-      field = Field.find(id)
-      field_hash[field.name] = value
-    end
-    field_hash
-  end
   def get_template_value_hash
-    template_value = get_field_value_hash
+    template_value = human_properties
     template_value["site name"] = self.name
     template_value
   end
