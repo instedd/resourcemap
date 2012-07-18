@@ -1,0 +1,4 @@
+- if single_editing_mode
+  %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()', event: { keydown: :keyPress }), type: :text }
+- else
+  %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()'), type: :text }

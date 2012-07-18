@@ -1,0 +1,4 @@
+- if single_editing_mode
+  = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
+- else
+  = ko_number_field_tag :value

@@ -19,4 +19,8 @@ module ApplicationHelper
   	end
   	result.html_safe
   end
+
+  def field_edit_view(kind)
+    Field::PluginKinds.has_key?(kind) ? Field::PluginKinds[kind][:edit_view] : "collections/fields/#{kind}_edit_view"
+  end
 end

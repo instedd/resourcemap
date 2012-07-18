@@ -88,44 +88,10 @@
               <!-- ko foreach: fields -->
               %div
                 = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
-                <!-- ko if: kind == 'text' -->
-                = ko_text_field_tag :value
-                <!-- /ko -->
-                <!-- ko if: kind == 'numeric' -->
-                = ko_number_field_tag :value
-                = ko_link_to_root '?', :showPopupWithMaxValueOfProperty, style: 'text-decoration:underline', tabindex: -1
-                <!-- /ko -->
-                <!-- ko if: kind == 'select_one' -->
-                %select{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
-                <!-- /ko -->
-                <!-- ko if: kind == 'select_many' -->
-                %ul.superblyTagItems{ko(foreach: :value)}
-                  %li.superblyTagItem{ko(click: '$parent.removeOption')}
-                    %span{ko(text: '$parent.labelFor($data)')}
-                    %a x
-                <!-- ko if: !expanded() -->
-                %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer'} Add more...
-                <!-- /ko -->
-                .superblyTagfieldClearer
-                <!-- ko if: expanded() -->
-                %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
-                %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px'}
-                  %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
-                    %a{ko(text: :label, click: '$parent.selectOption')}
-                <!-- /ko -->
-                <!-- /ko -->
-                <!-- ko if: kind == 'hierarchy' -->
-                .hierarchy-container
-                  <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
+                - Field::Kinds.each do |kind|
+                  <!-- ko if: kind == '#{kind}' -->
+                  = render partial: field_edit_view(kind), locals: { single_editing_mode: false }
                   <!-- /ko -->
-                <!-- /ko -->
-                <!-- ko if: kind == 'user' -->
-                %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()'), type: :text }
-                <!-- /ko -->
-                <!-- ko if: kind == 'email' -->
-                %input{ ko(value: :value), type: :email }
-                <!-- /ko -->
-
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
@@ -185,42 +151,11 @@
                 %span.value{style: 'color:grey'} (no value)
                 <!-- /ko -->
                 <!-- /ko -->
-                <!-- ko if: editing() && kind == 'text' -->
-                = ko_text_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
-                <!-- /ko -->
-                <!-- ko if: editing() && kind == 'numeric' -->
-                = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
-                <!-- /ko -->
-                <!-- ko if: editing() && kind == 'select_one' -->
-                %select{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}', hasfocus: true, event: {change: :save, blur: :save})}
-                <!-- /ko -->
-                <!-- ko if: editing() && kind == 'select_many' -->
-                %ul.superblyTagItems{ko(foreach: :value)}
-                  %li.superblyTagItem{ko(click: '$parent.removeOption')}
-                    %span{ko(text: '$parent.labelFor($data)')}
-                    %a x
-                .superblyTagfieldClearer
-                %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
-                %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
-                  %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
-                    %a{ko(text: :label, click: '$parent.selectOption')}
-                %button{ko(click: :save), style: 'float:right'} Update options
-                %button{ko(click: :exit), style: 'float:right'} Cancel
-                .clear
-                <!-- /ko -->
-                <!-- ko if: editing() && kind == 'hierarchy' -->
-                .hierarchy-container
-                  <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
+                <!-- ko if: editing() -->
+                - Field::Kinds.each do |kind|
+                  <!-- ko if: kind == '#{kind}' -->
+                  = render partial: field_edit_view(kind), locals: { single_editing_mode: true }
                   <!-- /ko -->
-                %button{ko(click: :save), style: 'float:right'} Update hierarchy
-                %button{ko(click: :exit), style: 'float:right'} Cancel
-                .clear
-                <!-- /ko -->
-                <!-- ko if: editing() && kind == 'user' -->
-                %input{ ko(autocomplete: :value, source: '$root.currentCollection().searchUsersUrl()', event: { keydown: :keyPress }), type: :text }
-                <!-- /ko -->
-                <!-- ko if: editing() && kind == 'email' -->
-                %input{ ko(value: :value, valueUpdate: :afterkeydown, event: {keydown: :keyPress, blur: :save}), type: :email }
                 <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
