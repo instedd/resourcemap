@@ -212,6 +212,24 @@ describe Activity do
         'description' => "Site '#{site.name}' changed: location changed from (10.0, 20.0) to (15.123457, 20.0)"
     end
 
+    it "creates one after adding location in site without location" do
+      site = collection.sites.create! name: 'Foo', properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lat = 15.1234567
+      site.lng = 34.1234567
+
+      site.save!
+
+      assert_activity 'site_changed',
+        'collection_id' => collection.id,
+        'user_id' => user.id,
+        'site_id' => site.id,
+        'data' => {'name' => site.name, 'changes' => {'lat' => [ nil, 15.1234567], 'lng' => [nil, 34.1234567]}},
+        'description' => "Site '#{site.name}' changed: location changed from (none, none) to (15.123457, 34.1234567)"
+    end
+
     it "creates one after adding one site's property" do
       site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {}, user: user
 

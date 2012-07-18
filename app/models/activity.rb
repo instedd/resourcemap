@@ -170,6 +170,10 @@ class Activity < ActiveRecord::Base
   end
 
   def format_location(value)
-    ((value || 0) * 1e6).round / 1e6.to_f
+    if value
+      ((value) * 1e6).round / 1e6.to_f
+    else
+      'none'
+    end
   end
 end
