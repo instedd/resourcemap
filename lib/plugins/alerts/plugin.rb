@@ -20,6 +20,10 @@ class Alerts::Plugin < Plugin
     end
   end
 
+  extend_model \
+    class: Site,
+    with: Site::TemplateConcerns
+
   field_type \
     name: 'user',
     css_class: 'luser',

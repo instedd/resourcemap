@@ -46,10 +46,4 @@ class Site < ActiveRecord::Base
     end
     sites_with_id_and_name
   end
-
-  def get_template_value_hash
-    template_value = human_properties
-    template_value["site name"] = self.name
-    template_value
-  end
 end
