@@ -5,8 +5,7 @@ module Field::Base
   #   { :name => 'user', :css_class => 'luser' },
   #   { :name => 'email', :css_class => 'lmessage' }
   # ]
-  PluginKinds = Hash[*Plugin.hooks(:field_type).map { |h| [h[:name], h] }.flatten]
-
+  PluginKinds = Plugin.hooks(:field_type).index_by { |h| h[:name] }
   Kinds = %w(text numeric select_one select_many hierarchy) | PluginKinds.keys
 
   Kinds.each do |kind|
