@@ -28,9 +28,8 @@ onCollections ->
         site.copyPropertiesToCollection(site.collection)
         if @selectedSite() && @selectedSite().id() == site.id()
           @unselectSite()
-          @selectSite(site)
-        else
-          @selectSite(site)
+
+        @selectSite(site)
         @editingSite(site)
         @currentCollection(site.collection)
         @rewriteUrl()
