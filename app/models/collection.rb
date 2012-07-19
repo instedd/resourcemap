@@ -138,6 +138,10 @@ class Collection < ActiveRecord::Base
     result
   end
 
+  def is_plugin_enabled?(key)
+      plugins.has_key? key 
+  end
+  
   def operator_parser(op)
     OPERATOR[op]
   end

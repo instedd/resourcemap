@@ -28,4 +28,12 @@ class Reminder < ActiveRecord::Base
   def set_next_run
     self.next_run = schedule.next_occurrence
   end
+
+  def target_sites
+    if is_all_site
+      collection.sites 
+    else
+      sites
+    end
+  end
 end
