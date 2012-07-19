@@ -59,11 +59,11 @@ describe Site::TireConcern do
     describe "add new site" do
       let!(:site){collection.sites.make :properties => {beds_field.es_code => 5}}
       it "should add sms_que into Resque.enqueue with users and message_notification" do 
-        SmsQueue.should have_queued(users, message_notification).in(:sms_queue)
+        SmsTask.should have_queued([users[0].phone_number], message_notification).in(:sms_queue)
       end
 
       it "should add email_que into Resque.enqueue with threshold and message_notification" do 
-        EmailQueue.should have_queued(users, message_notification).in(:email_queue)
+        EmailTask.should have_queued([users[0].email], message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
       end
     end
 
@@ -71,13 +71,13 @@ describe Site::TireConcern do
       it "should add sms_que into Resque.enqueue with users and message_notification" do 
         site1.properties = {beds_field.es_code => 5}
         site1.save 
-        SmsQueue.should have_queued(users, message_notification).in(:sms_queue)
+        SmsTask.should have_queued([users[0].phone_number], message_notification).in(:sms_queue)
       end
 
       it "should add email_que into Resque.enqueue with threshold and message_notification" do 
         site1.properties = {beds_field.es_code => 5}
         site1.save 
-        EmailQueue.should have_queued(users, message_notification).in(:email_queue)
+        EmailTask.should have_queued([users[0].email], message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
       end
     end
   end
