@@ -11,6 +11,10 @@ class Site < ActiveRecord::Base
 
   serialize :properties, Hash
 
+  def extended_properties
+    @extended_properties ||= Hash.new
+  end
+
   def update_properties(site, user, props)
     props.each do |p|
       field = Field.find_by_code(p.values[0])

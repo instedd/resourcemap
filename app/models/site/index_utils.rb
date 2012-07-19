@@ -14,11 +14,7 @@ module Site::IndexUtils
     }
 
     hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f} if site.lat? && site.lng?
-
-    # Give the oportunity to enabled plugins to add more
-    # data to elasticsearch index
-    site.collection.call_hooks :site_index, site, hash
-
+    hash.merge! site.extended_properties
     result = index.store hash
 
     if result['error']
