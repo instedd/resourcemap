@@ -146,8 +146,9 @@ onCollections ->
     endEditLocationInMap: (position) =>
       @editingLocation(false)
       @position(position)
-      @marker.setPosition(@position())
+      @marker.setPosition(@position()) if position
       @marker.setDraggable false
+      @deleteMarker() if !@position()
       window.model.setAllMarkersActive()
       @panToPosition()
 
@@ -223,6 +224,7 @@ onCollections ->
 
     exitEditMode: (saved) =>
       @inEditMode(false)
+
       @endEditLocationInMap(if saved then @position() else @originalLocation)
 
       # Restore original name and position if not saved

@@ -8,10 +8,10 @@ onCollections ->
       @position = ko.computed
         read: => if @lat() && @lng() then new google.maps.LatLng(@lat(), @lng()) else null
         write: (latLng) =>
-          if typeof(latLng.lat) == 'function'
+          if typeof(latLng?.lat) == 'function'
             @lat(latLng.lat()); @lng(latLng.lng())
           else
-            @lat(latLng.lat); @lng(latLng.lng)
+            @lat(latLng?.lat); @lng(latLng?.lng)
         owner: @
 
     # Pans the map to this object's location, and the reload the map's sites and clusters.
