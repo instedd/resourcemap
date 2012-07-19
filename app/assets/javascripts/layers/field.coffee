@@ -50,14 +50,7 @@ onLayers ->
       @nextId += 1
 
     buttonClass: =>
-      switch @kind()
-        when 'text' then 'ltext'
-        when 'numeric' then 'lnumber'
-        when 'select_one' then 'lsingleoption'
-        when 'select_many' then 'lmultipleoptions'
-        when 'hierarchy' then 'lmultipleoptions'
-        when 'user' then 'luser'
-        when 'email' then 'lmessage'
+      FIELD_TYPES[@kind()]
 
     setHierarchy: (hierarchy) =>
       @hierarchy(hierarchy)

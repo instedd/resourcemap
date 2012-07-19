@@ -1,0 +1,9 @@
+@FIELD_TYPES =
+  'text': 'ltext'
+  'numeric': 'lnumber'
+  'select_one': 'lsingleoption'
+  'select_many': 'lmultipleoptions'
+  'hierarchy': 'lmultipleoptions'
+<% Field::PluginKinds.each do |name, kind| %>
+  '<%= name %>': '<%= kind[:css_class] %>'
+<% end %>
