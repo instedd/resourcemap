@@ -218,7 +218,7 @@ describe Activity do
       Activity.delete_all
 
       site.lat = 15.1234567
-      site.lng = 34.1234567
+      site.lng = 34.123456
 
       site.save!
 
@@ -226,8 +226,8 @@ describe Activity do
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'lat' => [ nil, 15.1234567], 'lng' => [nil, 34.1234567]}},
-        'description' => "Site '#{site.name}' changed: location changed from (none, none) to (15.123457, 34.1234567)"
+        'data' => {'name' => site.name, 'changes' => {'lat' => [ nil, 15.1234567], 'lng' => [nil, 34.123456]}},
+        'description' => "Site '#{site.name}' changed: location changed from (none, none) to (15.123457, 34.123456)"
     end
 
     it "creates one after adding one site's property" do
