@@ -87,7 +87,10 @@ UserSnapshot.blueprint do
   user
 end
 
-Reminder.blueprint do
-
+Repeat.blueprint do
+  rule { IceCube::Rule.weekly }
 end
 
+Reminder.blueprint do
+  repeat
+end

@@ -5,6 +5,9 @@ describe RemindersController do
 
   let!(:user) { User.make }
   let!(:collection) { user.create_collection(Collection.make_unsaved) }
+  let!(:site) { collection.sites.make }
+  let!(:repeat) { repeat = Repeat.make }
+  let!(:reminder) { collection.reminders.make }
 
   before(:each) { sign_in user }
 
@@ -15,43 +18,20 @@ describe RemindersController do
     end
   end
 
-  describe 'create reminder' do
-    before(:each) do
-      @site = collection.sites.make
-    end
-
-    it "should create reminder" do
-      Reminder.count.should == 0
-      post :create, :collection_id => collection.id, :reminder => {"name"=>"foo", "reminder_date"=>"2012-05-06T00:30:00Z 0:00", "reminder_message"=>"foo", "repeat_id"=>"1", "collection_id"=>"1", "sites"=>[@site.id]}
-      Reminder.count.should == 1
-      assert_response :success
-    end
+  it "should create reminder" do
+    expect {
+      post :create, collection_id: collection.id, reminder: { name: "foo", reminder_date: "2012-05-06T00:30:00Z 0:00", reminder_message: "foo", repeat_id: repeat.id, collection_id: 1, sites: [site.id] }
+    }.to change { Reminder.count }.by 1
   end
 
-  describe 'update reminder' do
-    before(:each) do
-      @site = collection.sites.make
-      @reminder = collection.reminders.make
-    end
-
-    it "should update reminder" do
-      put :update, :id => @reminder.id, :collection_id => collection.id, :reminder => {"name"=>"foo", "reminder_date"=>"2012-05-06T00:30:00Z 0:00", "reminder_message"=>"foo", "repeat_id"=>"1", "collection_id"=>collection.id, "sites"=>[@site.id]}
-      assert_response :success
-    end
-
+  it "should update reminder" do
+    put :update, :id => reminder.id, :collection_id => collection.id, :reminder => { name: "foo" }
+    Reminder.find(reminder).name.should == "foo"
   end
 
-  describe 'destroy reminder' do
-    before(:each) do
-      @reminder = collection.reminders.make
-    end
-
-    it "should destroy reminder" do
-      Reminder.count.should == 1
-      delete :destroy, :id => @reminder.id, :collection_id => collection.id
-      Reminder.count.should == 0
-      assert_response :success
-    end
+  it "should destroy reminder" do
+    expect {
+      delete :destroy, :id => reminder.id, :collection_id => collection.id
+    }.to change { Reminder.count }.by -1
   end
-
 end
