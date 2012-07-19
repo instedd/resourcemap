@@ -110,8 +110,6 @@ onLayers ->
     newSelectOneField: => @newField 'select_one'
     newSelectManyField: => @newField 'select_many'
     newHierarchyField: => @newField 'hierarchy'
-    newUserField: => @newField 'user'
-    newEmailField: => @newField 'email'
 
     newField: (kind) =>
       @currentField(new Field(@currentLayer(), kind: kind, ord: @currentLayer().fields().length + 1))
