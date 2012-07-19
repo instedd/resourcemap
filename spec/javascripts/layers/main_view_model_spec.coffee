@@ -11,6 +11,6 @@ describe 'Layer', ->
       beforeEach ->
         @model.newLayer()
 
-      it 'should create new user field', ->
-        @model.newUserField()
-        expect(@model.currentField().kind()).toEqual 'user'
+      it 'should create new field', ->
+        @model.newField 'kind'
+        expect(@model.currentField().kind()).toEqual 'kind'
