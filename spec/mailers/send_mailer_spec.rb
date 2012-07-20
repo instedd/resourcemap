@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe ThresholdMailer do
+describe SendMailer do
   let!(:users) { [User.make, User.make]}
   let!(:message) {"testing"}
-  let!(:mail) { ThresholdMailer.notify_email(users, message) }
+  let!(:mail) { SendMailer.notify_email([users[0].email, users[1].email], message, "email from resourcemap") }
   it "has email in queue" do 
     mail.deliver
     ActionMailer::Base.deliveries.empty?.should_not be_true
