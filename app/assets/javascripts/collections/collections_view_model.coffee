@@ -24,7 +24,7 @@ onCollections ->
         $(".ffullscreen").addClass("frestore")
         $(".ffullscreen").removeClass("ffullscreen")
         $('.expand-collapse_button').show()
-        $(".expand-collapse_button").addClass("orightexpand")
+        $(".expand-collapse_button").addClass("oleftcollapse")
         $(".expand-collapse_button").removeClass("oleftexpand")
         window.adjustContainerSize()
       else
@@ -42,14 +42,14 @@ onCollections ->
         @fullscreenExpanded(true)
         $('#collections-main .left').hide()
         window.adjustContainerSize()
-        $(".orightexpand").addClass("oleftexpand")
-        $(".orightexpand").removeClass("orightexpand")
+        $(".oleftcollapse").addClass("oleftexpand")
+        $(".oleftcollapse").removeClass("oleftcollapse")
       else
         if @fullscreen() && @fullscreenExpanded()
           @fullscreenExpanded(false)
           $('#collections-main .left').show()
           window.adjustContainerSize()
-          $(".oleftexpand").addClass("orightexpand")
+          $(".oleftexpand").addClass("oleftcollapse")
           $(".oleftexpand").removeClass("oleftexpand")
 
     @createCollection: -> window.location = "/collections/new"

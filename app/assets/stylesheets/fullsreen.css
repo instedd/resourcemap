@@ -24,9 +24,9 @@
   display:none;
 }
 
-.fullscreen .orightexpand {
+.fullscreen .oleftcollapse {
   display:block;
-  left: -20px;
+  left: -2px;
 }
 
 .fullscreen .expand-collapse_button {
