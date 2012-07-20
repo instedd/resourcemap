@@ -13,7 +13,6 @@ ResourceMap::Application.routes.draw do
         put :set_order
       end
     end
-    resources :reminders
     resources :fields
 
     resources :memberships do

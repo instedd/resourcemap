@@ -13,6 +13,10 @@ class Plugin
       @plugins ||= []
     end
 
+    def find_by_names(*plugins)
+      all.select { |plugin| plugins.include? plugin.name }
+    end
+
     def routes &block
       instance.routes_block = block
     end
@@ -23,11 +27,12 @@ class Plugin
       end.flatten
     end
 
-    def method_missing name, *args, &block
+    # FIXME: currently only else block is being used
+    def method_missing(method_name, *args, &block)
       if block_given?
-        instance.hooks[name] << block
+        instance.hooks[method_name] << block
       else
-        instance.hooks[name] << args.first
+        instance.hooks[method_name] << args.first
       end
     end
   end
@@ -40,6 +45,7 @@ class Plugin
     @hooks ||= Hash.new { |h, k| h[k] = [] }
   end
 
+  # FIXME: not being used
   def call_hook name, *args
     @hooks[name].each do |proc|
       proc.call *args

@@ -7,9 +7,9 @@ module Collection::PluginsConcern
 
   def selected_plugins=(plugin_names)
     self.plugins = {}
-    plugin_names.each do |plugin_name|
-      next unless plugin_name.present?
-      plugins[plugin_name] = {}
+    plugin_names.each do |name|
+      next unless name.present?
+      plugins[name] = {}
     end
   end
 
@@ -21,14 +21,12 @@ module Collection::PluginsConcern
     plugins.keys
   end
 
-  def each_plugin
-    Plugin.all.each do |plugin|
-      if plugins.keys.include? plugin.name
-        yield plugin
-      end
-    end
+  def each_plugin(&block)
+    Plugin.find_by_names(*selected_plugins).
+      each &block
   end
 
+  # FIXME: not being used
   def call_hooks name, *args
     each_plugin do |plugin|
       plugin.call_hook name, *args
