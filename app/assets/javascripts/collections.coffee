@@ -30,7 +30,7 @@ onCollections -> if $('#collections-main').length > 0
     $('.h50').height(500)
     $('#map').height($('#collections-main').height() - $('.mapheader').height())
 
-    if(window.model.fullscreen())
+    if(window.model && window.model.fullscreen())
       $('#container').width(width)
       $('.tableheader.expanded').width("100%")
       $('#right-panel').width(width - 404)
