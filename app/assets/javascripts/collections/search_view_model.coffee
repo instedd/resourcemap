@@ -1,7 +1,7 @@
 onCollections ->
 
   class @SearchViewModel
-    @constructorSearchViewModel: ->
+    @constructor: ->
       @search = ko.observable('')
       @lastSearch = ko.observable(null)
 

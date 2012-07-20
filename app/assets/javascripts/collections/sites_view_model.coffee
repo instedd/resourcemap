@@ -1,7 +1,7 @@
 onCollections ->
 
   class @SitesViewModel
-    @constructorSitesViewModel: ->
+    @constructor: ->
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
       @loadingSite = ko.observable(false)

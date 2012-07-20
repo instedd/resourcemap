@@ -21,3 +21,4 @@
 //= require sammy
 //= require autocomplete-tagfield
 //= require_tree
+//= require plugins

@@ -1,5 +1,5 @@
 #= require thresholds/on_thresholds
-#= require_tree ./thresholds/.
+#= require_tree
 
 # We do the check again so tests don't trigger this initialization
 onThresholds -> if $('#thresholds-main').length > 0
@@ -18,3 +18,6 @@ onThresholds -> if $('#thresholds-main').length > 0
       thresholds = $.map thresholds, (threshold) -> new Threshold threshold
       window.model.thresholds thresholds
       window.model.isReady(true)
+
+
+

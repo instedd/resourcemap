@@ -1,7 +1,7 @@
 onCollections ->
 
   class @RefineViewModel
-    @constructorRefineViewModel: ->
+    @constructor: ->
       @showingRefinePopup = ko.observable(false)
       @expandedRefineProperty = ko.observable()
       @expandedRefinePropertyOperator = ko.observable()

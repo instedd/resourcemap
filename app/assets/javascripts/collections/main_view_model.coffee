@@ -26,12 +26,7 @@ onCollections ->
     @include UrlRewriteViewModel
 
     initialize: (collections) ->
-      @constructorCollectionsViewModel(collections)
-      @constructorSitesViewModel()
-      @constructorMapViewModel()
-      @constructorRefineViewModel()
-      @constructorSearchViewModel()
-      @constructorSortViewModel()
+      @callModuleConstructors(arguments)
 
       @groupBy = ko.observable(@defaultGroupBy)
 

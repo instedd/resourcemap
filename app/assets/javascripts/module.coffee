@@ -4,6 +4,12 @@ moduleKeywords = ['extended', 'included']
 class window.Module
   @include: (obj) ->
     for key, value of obj when key not in moduleKeywords
-      # Assign properties to the prototype
-      @::[key] = value
+      if key == 'constructor'
+        (@::moduleConstructors ||= []).push value
+      else
+        # Assign properties to the prototype
+        @::[key] = value
     this
+
+  callModuleConstructors: (args) ->
+    ctor.apply this, args for ctor in @moduleConstructors if @moduleConstructors

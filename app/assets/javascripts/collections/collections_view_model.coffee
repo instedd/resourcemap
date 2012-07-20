@@ -1,7 +1,7 @@
 onCollections ->
 
   class @CollectionsViewModel
-    @constructorCollectionsViewModel: (collections) ->
+    @constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
       @fullscreen = ko.observable(false)

@@ -1,13 +1,12 @@
 onCollections ->
 
   class @MapViewModel
-    @constructorMapViewModel: ->
+    @constructor: ->
       @showingMap = ko.observable(true)
-      @alertsCount = ko.observable(0)
       @sitesCount = ko.observable(0)
       @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site' else "#{@sitesCount()} sites"
-      @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
-      
+      @sitesChangedListeners = []
+
       @reloadMapSitesAutomatically = true
       @clusters = {}
       @siteIds = {}
@@ -18,7 +17,7 @@ onCollections ->
       @markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
       @markerImageTarget = @markerImage 'marker_target.png'
       @markerImageTargetShadow = @markerImageShadow 'marker_target.png'
-      
+
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
           @reloadMapSites()
@@ -129,6 +128,7 @@ onCollections ->
           @reloadMapSitesAutomatically = true
           @adjustZIndexes()
           @updateSitesCount()
+          @notifySitesChanged()
 
         callback() if callback && typeof(callback) == 'function'
 
@@ -137,6 +137,13 @@ onCollections ->
         getCallback()
       else
         $.get "/sites/search.json", query, getCallback
+
+    @onSitesChanged: (listener) ->
+      @sitesChangedListeners.push listener
+
+    @notifySitesChanged: ->
+      for listener in @sitesChangedListeners
+        listener()
 
     @drawSitesInMap: (sites = []) ->
       dataSiteIds = {}
@@ -250,7 +257,7 @@ onCollections ->
           @setMarkerIcon marker, 'active'
       for clusterId, cluster of @clusters
         cluster.setActive()
-        
+
     @setMarkerIcon: (marker, icon) ->
       switch icon
         when 'active', 'null'
@@ -301,19 +308,14 @@ onCollections ->
 
     @updateSitesCount: ->
       count = 0
-      alertsCount = 0
       bounds = @map.getBounds()
       for siteId, marker of @markers
         if bounds.contains marker.getPosition()
           count += 1
-          alertsCount += 1 if marker.alert == "true"
       for clusterId, cluster of @clusters
         if bounds.contains cluster.position
           count += cluster.count
-          alertsCount += cluster.alertCount
       count += 1 if @selectedSite()
-      alertsCount += 1 if @selectedSite()?.alert()
-      @alertsCount alertsCount
       @sitesCount count
 
     @showTable: ->
@@ -338,7 +340,7 @@ onCollections ->
           $('.tablescroll').scrollLeft oldScrollLeft
           window.adjustContainerSize()
         ), 20)
-        
+
     @markerImage: (icon) ->
       new google.maps.MarkerImage(
         @iconUrl(icon), new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)

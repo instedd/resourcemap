@@ -1,7 +1,7 @@
 onCollections ->
 
   class @SortViewModel
-    @constructorSortViewModel: ->
+    @constructor: ->
       @sort = ko.observable()
       @sortDirection = ko.observable()
 
