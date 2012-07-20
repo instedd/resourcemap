@@ -7,8 +7,8 @@ class Threshold < ActiveRecord::Base
   validates :icon, :presence => true
 
   serialize :conditions, Array
-  serialize :phone_notification, Array
-  serialize :email_notification, Array
+  serialize :phone_notification
+  serialize :email_notification
   serialize :sites, Array
 
   before_save :strongly_type_conditions

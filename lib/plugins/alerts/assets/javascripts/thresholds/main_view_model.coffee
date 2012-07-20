@@ -10,12 +10,13 @@ onThresholds ->
       @isReady = ko.observable(false)
 
     addThreshold: =>
-      threshold = new Threshold ord: @nextOrd(), is_all_site: "true", is_all_condition: "true", is_notify: "false"
+      threshold = new Threshold ord: @nextOrd(), phone_notification: {fields: [], users: [], members: []}, email_notification: {fields: [], users: [], members: []}, is_all_site: "true", is_all_condition: "true", is_notify: "false"
       threshold.addNewCondition()
       @currentThreshold threshold
       @thresholds.push threshold
 
     editThreshold: (threshold) =>
+      console.log threshold 
       @clearUnsavedThreshold(@currentThreshold())
       @originalThreshold = new Threshold(threshold.toJSON())
       @currentThreshold threshold
@@ -29,6 +30,7 @@ onThresholds ->
       @saving(true)
 
       json = threshold: @currentThreshold().toJSON()
+      console.log json 
       if @currentThreshold().id()
         json._method = 'put'
         $.post "/plugin/alerts/collections/#{@collectionId}/thresholds/#{@currentThreshold().id()}.json", json, @saveThresholdCallback

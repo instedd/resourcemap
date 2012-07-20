@@ -7,8 +7,15 @@ onThresholds ->
       @isAllCondition = ko.observable data?.is_all_condition.toString()
       @isNotify = ko.observable data?.is_notify.toString()
       @messageNotification = ko.observable data?.message_notification
-      @phoneNotification = ko.observableArray data?.phone_notification ? []
-      @emailNotification = ko.observableArray data?.email_notification ? []
+    
+      @fieldsEmail  = ko.observableArray data?.email_notification["fields"] ? []
+      @usersEmail   = ko.observableArray data?.email_notification["users"] ? []
+      @membersEmail = ko.observableArray data?.email_notification["members"] ? []
+
+      @fieldsPhone  = ko.observableArray data?.phone_notification["fields"] ? []
+      @usersPhone   = ko.observableArray data?.phone_notification["users"] ? []
+      @membersPhone = ko.observableArray data?.phone_notification["members"] ? []
+
       @alertSites = ko.observable $.map(data?.sites ? [], (site) -> new Site(site))
       @propertyName = ko.observable data?.property_name
       @ord = ko.observable data?.ord
@@ -63,8 +70,15 @@ onThresholds ->
       is_all_site: @isAllSite()
       is_all_condition: @isAllCondition()
       is_notify: @isNotify()
-      phone_notification: @phoneNotification()
-      email_notification: @emailNotification()
+      email_notification:
+        users: @usersEmail()
+        fields: @fieldsEmail()
+        members: @membersEmail()
+      phone_notification: 
+        users: @usersPhone()
+        fields: @fieldsPhone()
+        members: @membersPhone()
+      
       message_notification: @messageNotification()
       sites: $.map(@alertSites(), (site) -> site.toJSON())
       conditions: $.map(@conditions(), (condition) -> condition.toJSON())

@@ -156,22 +156,28 @@
         .middlebuttons.w30{:style => "float: left;"}
           Send emails to:
           %p.list-box
+            - collection.fields.find_all_by_kind('user').each  do |field|
+              %input{ko(checked: 'usersEmail'), value: field.id, type: "checkbox"}= field.name
+              %br
             - collection.fields.find_all_by_kind('email').each do |field|
-              %input{value: field.id, type: "checkbox"}= field.name
+              %input{ko(checked: 'fieldsEmail'), value: field.id, type: "checkbox"}= field.name
               %br
             %br
             - collection.users.each do |user|
-              %input{ko(checked: 'emailNotification'), value: user.id, type: "checkbox"}= user.email
+              %input{ko(checked: 'membersEmail'), value: user.id, type: "checkbox"}= user.email
               %br
         .middlebuttons.w30{:style => "float: left;"}
           Send text messages to:
           %p.list-box
+            - collection.fields.find_all_by_kind('user').each  do |field|
+              %input{ko(checked: 'usersPhone'), value: field.id, type: "checkbox"}= field.name
+              %br
             - collection.fields.find_all_by_kind('phone').each do |field|
-              %input{value: field.id, type: "checkbox"}= field.name
+              %input{ko(checked: 'fieldsPhone'), value: field.id, type: "checkbox"}= field.name
               %br
             %br
             - collection.users.each do |user|
-              %input{ko(checked: 'phoneNotification'), value: user.id, type: "checkbox"}= user.email
+              %input{ko(checked: 'membersPhone'), value: user.id, type: "checkbox"}= user.email
               %br
         .clear
         %label{ko(css: {error: 'notificationMessageError'})} Message
