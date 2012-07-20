@@ -154,7 +154,12 @@
                 <!-- /ko -->
               %div{style: 'margin-bottom:14px'}
                 %label Location:
+                <!-- ko if: !hasLocation() -->
+                %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'} (no value)
+                <!-- /ko -->
+                <!-- ko if: hasLocation() && !editingLocation() -->
                 %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
+                <!-- /ko -->
                 <!-- ko if: editingLocation() -->
                 = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}
                 <!-- /ko -->
