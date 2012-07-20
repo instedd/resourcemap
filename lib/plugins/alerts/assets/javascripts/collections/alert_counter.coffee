@@ -15,3 +15,11 @@ onCollections ->
             alertsCount += cluster.alertCount
         alertsCount += 1 if @selectedSite()?.alert()
         @alertsCount alertsCount
+      @aliasMethodChain "setMarkerIcon", "Alerts"
+
+    @setMarkerIconWithAlerts: (marker, icon) ->
+      if marker.site && marker.site.alert == 'true' && icon == 'active'
+        marker.setIcon @markerImage marker.site.icon
+        marker.setShadow null
+      else
+        @setMarkerIconWithoutAlerts(marker, icon)

@@ -13,3 +13,7 @@ class window.Module
 
   callModuleConstructors: (args) ->
     ctor.apply this, args for ctor in @moduleConstructors if @moduleConstructors
+
+  aliasMethodChain: (method, feature) ->
+    @[method + "Without" + feature] = @[method]
+    @[method] = @[method + "With" + feature]

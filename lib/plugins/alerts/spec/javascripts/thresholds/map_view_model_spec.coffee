@@ -1,4 +1,4 @@
-describe 'Collection', ->
+describe 'Thresholds', ->
   beforeEach ->
     window.runOnCallbacks 'collections'
     window.model = new MainViewModel
@@ -11,7 +11,8 @@ describe 'Collection', ->
       spyOn(@marker, 'setShadow')
       @model = window.model
 
-    it 'should set marker icon to null', ->
-      @model.setMarkerIcon @marker, 'null'
-      expect(@marker.setIcon).toHaveBeenCalledWith(null)
+    it 'should set marker custom icon', ->
+      @marker.site = {'alert': 'true', 'icon': 'icon.png'}
+      @model.setMarkerIcon @marker, 'active'
+      expect(@marker.setIcon).toHaveBeenCalledWith(@model.markerImage('icon.png'))
       expect(@marker.setShadow).toHaveBeenCalledWith(null)

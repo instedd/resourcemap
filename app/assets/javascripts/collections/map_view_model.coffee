@@ -158,7 +158,7 @@ onCollections ->
           if site.id == oldSelectedSiteId
             @markers[site.id] = @oldSelectedSite.marker
             @deleteMarkerListeners site.id
-            @setMarkerIcon @markers[site.id], site.icon ? 'active'
+            @setMarkerIcon @markers[site.id], 'active'
             @oldSelectedSite.deleteMarker false
             delete @oldSelectedSite
           else
@@ -178,8 +178,8 @@ onCollections ->
 
             newMarker = new google.maps.Marker markerOptions
             newMarker.name = site.name
-            newMarker.alert = site.alert
-            @setMarkerIcon newMarker, site.icon ? 'active'
+            newMarker.site = site
+            @setMarkerIcon newMarker, 'active'
             newMarker.collectionId = site.collection_id
 
             @markers[site.id] = newMarker
@@ -251,8 +251,6 @@ onCollections ->
       for siteId, marker of @markers
         if selectedSiteId == siteId
           @setMarkerIcon marker, 'target'
-        else if marker.alert == "true"
-          @setMarkerIcon marker, marker.icon
         else
           @setMarkerIcon marker, 'active'
       for clusterId, cluster of @clusters
@@ -269,9 +267,6 @@ onCollections ->
         when 'target'
           marker.setIcon @markerImageTarget
           marker.setShadow @markerImageTargetShadow
-        else
-          marker.setIcon @markerImage icon
-          marker.setShadow null
 
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
