@@ -1,5 +1,5 @@
 ActionDispatch::Reloader.to_prepare do
-  Dir["#{Rails.root}/lib/plugins/*"].each do |plugin_dir|
+  Dir["#{Rails.root}/plugins/*"].each do |plugin_dir|
     plugin_name = File.basename plugin_dir
     plugin_name.camelize.constantize::Plugin.instance
 
@@ -40,7 +40,7 @@ class ActiveRecord::Migrator
 
     def migrations_paths_with_plugins
       if current_plugin
-        ["lib/plugins/#{current_plugin}/db/migrate"]
+        ["plugins/#{current_plugin}/db/migrate"]
       else
         migrations_paths_without_plugins
       end
