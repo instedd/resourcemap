@@ -14,7 +14,7 @@ module Site::IndexUtils
     }
 
     hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f} if site.lat? && site.lng?
-    hash.merge! site.extended_properties
+    hash.merge! site.extended_properties if site.is_a? Site
     result = index.store hash
 
     if result['error']
