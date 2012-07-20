@@ -9,7 +9,7 @@ onCollections ->
         bounds = @map.getBounds()
         for siteId, marker of @markers
           if bounds.contains marker.getPosition()
-            alertsCount += 1 if marker.alert == "true"
+            alertsCount += 1 if marker.site?.alert == "true"
         for clusterId, cluster of @clusters
           if bounds.contains cluster.position
             alertsCount += cluster.alertCount
