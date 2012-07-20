@@ -8,6 +8,7 @@
     - if f.object.errors[:name].present?
       %label.error= "Name #{f.object.errors[:name].join(', ')}"
     %button.icon_button.fsnapshot
+      Take new Snapshot
 
 = form_tag(unload_current_snapshot_collection_path(collection)) do
   = label_tag :name, "Present time"
