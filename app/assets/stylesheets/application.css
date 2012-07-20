@@ -22,3 +22,7 @@
 #footer-span {
   position:relative;
 }
+
+#snapshot_name {
+  font-style:italic
+}

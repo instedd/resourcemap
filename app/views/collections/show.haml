@@ -27,49 +27,7 @@
     %br/
 
   - if Settings.is_on? :snapshot
-
-    - if collection_admin?
-      %hr.clear/
-      %h2 Take data snapshot
-      %p This will allow you to browse data in the future as it is looking right now.
-      = form_for(@snapshot, :url => create_snapshot_collection_path(collection)) do |f|
-        .field.w60
-          = f.label :name, "Enter snapshot name"
-          = f.text_field :name
-          - if f.object.errors[:name].present?
-            %label.error= "Name #{f.object.errors[:name].join(', ')}"
-        = f.button 'Create new Snapshot', :class => 'white'
-      %br/
-      %br/
-
-    - if current_snapshot
-      %hr.clear/
-      %h2
-        Current snapshot
-        %h3
-          = "Snapshot of the system as it was in: #{current_snapshot.date}"
-        %h3
-          = "Snapshot name: #{current_snapshot.name}"
-        %h3
-          = button_to "Go back to present time", unload_current_snapshot_collection_path(collection), :class => 'white'
-        %br/
-        %br/
-
-    %hr.clear/
-    %h2 Load snapshot
-    %p This will allow you to load data as it was in the past. The data is read-only
-    .field.w60
-      - collection.snapshots.each do |snapshot|
-        %p
-          = form_tag(load_snapshot_collection_path(collection)) do
-            .field.w60
-              = label_tag :name, snapshot.name
-            = hidden_field_tag :name, snapshot.name
-            .field.w60
-              = label_tag :date, snapshot.date
-            = submit_tag "Load snapshot", :class => 'white'
-    %br/
-    %br/
+    = render 'snapshot'
 
   - if collection_admin?
     %hr.clear/
