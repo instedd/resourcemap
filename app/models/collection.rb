@@ -22,7 +22,7 @@ class Collection < ActiveRecord::Base
   has_many :field_histories, dependent: :destroy
 
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
-  
+
   def max_value_of_property(es_code)
     search = new_tire_search
     search.sort { by es_code, 'desc' }
@@ -100,7 +100,7 @@ class Collection < ActiveRecord::Base
 
   def thresholds_test(site_properties, site_id)
     catch(:threshold) {
-      exists = false 
+      exists = false
       thresholds.each do |threshold|
         if(threshold.is_all_site)
           exists = true
@@ -108,7 +108,7 @@ class Collection < ActiveRecord::Base
           threshold.sites.each do |site|
             exists = true if site["id"] == site_id
           end
-        end 
+        end
         return nil unless exists
         threshold.test site_properties
       end
@@ -138,10 +138,6 @@ class Collection < ActiveRecord::Base
     result
   end
 
-  def is_plugin_enabled?(key)
-      plugins.has_key? key 
-  end
-  
   def operator_parser(op)
     OPERATOR[op]
   end

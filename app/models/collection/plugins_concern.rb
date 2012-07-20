@@ -11,7 +11,10 @@ module Collection::PluginsConcern
       next unless plugin_name.present?
       plugins[plugin_name] = {}
     end
-    # plugins.delete_if { |name, _| not plugin_names.include? name }
+  end
+
+  def plugin_enabled?(key)
+    plugins.has_key? key
   end
 
   def selected_plugins
