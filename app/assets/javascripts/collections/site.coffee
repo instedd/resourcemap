@@ -22,7 +22,11 @@ onCollections ->
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
       @locationText = ko.computed
-        read: => (Math.round(@lat() * 100000) / 100000) + ', ' + (Math.round(@lng() * 100000) / 100000)
+        read: =>
+          if @hasLocation()
+            (Math.round(@lat() * 100000) / 100000) + ', ' + (Math.round(@lng() * 100000) / 100000)
+          else
+            ''
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
@@ -30,7 +34,7 @@ onCollections ->
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
 
-    hasLocation: => @position()
+    hasLocation: => @position() != null
 
     hasName: => $.trim(@name()).length > 0
 
@@ -142,8 +146,9 @@ onCollections ->
     endEditLocationInMap: (position) =>
       @editingLocation(false)
       @position(position)
-      @marker.setPosition(@position())
+      @marker.setPosition(@position()) if position
       @marker.setDraggable false
+      @deleteMarker() if !@position()
       window.model.setAllMarkersActive()
       @panToPosition()
 
@@ -219,6 +224,7 @@ onCollections ->
 
     exitEditMode: (saved) =>
       @inEditMode(false)
+
       @endEditLocationInMap(if saved then @position() else @originalLocation)
 
       # Restore original name and position if not saved
@@ -241,11 +247,13 @@ onCollections ->
     createMarker: (drop = false) =>
       @deleteMarker()
 
+      position =  @position() || window.model.map.getCenter()
+
       draggable = @editingLocation() || !@id()
       @marker = new google.maps.Marker
         map: window.model.map
-        position: @position()
-        animation: if drop || !@id() then google.maps.Animation.DROP else null
+        position: position
+        animation: if drop || !@id() || !@position() then google.maps.Animation.DROP else null
         draggable: draggable
         icon: window.model.markerImageTarget
         shadow: window.model.markerImageTargetShadow

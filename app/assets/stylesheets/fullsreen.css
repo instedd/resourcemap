@@ -1,3 +1,7 @@
+.fullscreen {
+  background: none;
+}
+
 .fullscreen #wrapper,.fullscreen #collections-main, .fullscreen .h50 {
   height:100%;
 }

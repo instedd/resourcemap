@@ -51,3 +51,7 @@ onCollections ->
     setQueryParams: (q) -> q
 
     performHierarchyChanges: (site, changes) =>
+
+    sitesWithoutLocation: ->
+      res = (site for site in this.sites() when !site.hasLocation())
+      res

@@ -12,7 +12,6 @@ onCollections ->
 
     description: => "updated within the last hour"
 
-
   class @FilterByLastDay extends FilterByDate
     setQueryParams: (options, api = false) =>
       options.updated_since = 'last_day'
@@ -30,6 +29,12 @@ onCollections ->
       options.updated_since = 'last_month'
 
     description: => "updated within the last month"
+
+  class @FilterByLocationMissing extends Filter
+    setQueryParams: (options, api = false) =>
+        options.location_missing = true
+
+    description: => "with location missing"
 
   class @FilterByTextProperty extends Filter
     constructor: (field, value) ->
