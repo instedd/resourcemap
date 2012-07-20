@@ -7,7 +7,7 @@ onCollections ->
       @sitesCount = ko.observable(0)
       @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site' else "#{@sitesCount()} sites"
       @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
-      
+
       @reloadMapSitesAutomatically = true
       @clusters = {}
       @siteIds = {}
@@ -18,7 +18,7 @@ onCollections ->
       @markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
       @markerImageTarget = @markerImage 'marker_target.png'
       @markerImageTargetShadow = @markerImageShadow 'marker_target.png'
-      
+
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
           @reloadMapSites()
@@ -79,6 +79,8 @@ onCollections ->
       @markers = {}
       @clusters = {}
       @showingMap(true)
+      @fullscreenExpanded(false) if @fullscreen()
+
       showMap = =>
         if $('#map').length == 0
           setTimeout(showMap, 10)
@@ -250,7 +252,7 @@ onCollections ->
           @setMarkerIcon marker, 'active'
       for clusterId, cluster of @clusters
         cluster.setActive()
-        
+
     @setMarkerIcon: (marker, icon) ->
       switch icon
         when 'active', 'null'
@@ -338,7 +340,7 @@ onCollections ->
           $('.tablescroll').scrollLeft oldScrollLeft
           window.adjustContainerSize()
         ), 20)
-        
+
     @markerImage: (icon) ->
       new google.maps.MarkerImage(
         @iconUrl(icon), new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
