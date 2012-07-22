@@ -5,11 +5,14 @@ gem 'mysql2'
 gem 'devise'
 gem 'haml-rails'
 gem 'decent_exposure'
-gem "instedd-rails", '0.0.15'
+gem "instedd-rails", '0.0.17'
 gem "breadcrumbs_on_rails"
 gem "tire"
 gem "valium"
-
+gem "resque", :require => "resque/server"
+gem 'resque-scheduler', :require => 'resque_scheduler'
+gem "nuntium_api", "~> 0.13", :require => "nuntium"
+gem 'ice_cube'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -31,6 +34,7 @@ group :test, :development do
   gem 'machinist', '1.0.6'
   gem 'capistrano'
   gem 'rvm'
+  gem 'rvm-capistrano', '1.2.2'
   gem 'jasminerice'
   gem 'guard-jasmine'
 end
@@ -38,6 +42,7 @@ end
 group :test do
   gem 'shoulda-matchers'
   gem 'ci_reporter'
+  gem 'resque_spec'
 end
 
 # To use ActiveModel has_secure_password

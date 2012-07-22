@@ -1,0 +1,29 @@
+- if single_editing_mode
+  %ul.superblyTagItems{ko(foreach: :value)}
+    %li.superblyTagItem{ko(click: '$parent.removeOption')}
+      %span{ko(text: '$parent.labelFor($data)')}
+      %a x
+  .superblyTagfieldClearer
+  %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
+  %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
+    %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
+      %a{ko(text: :label, click: '$parent.selectOption')}
+  %button{ko(click: :save), style: 'float:right'} Update options
+  %button{ko(click: :exit), style: 'float:right'} Cancel
+  .clear
+
+- else
+  %ul.superblyTagItems{ko(foreach: :value)}
+    %li.superblyTagItem{ko(click: '$parent.removeOption')}
+      %span{ko(text: '$parent.labelFor($data)')}
+      %a x
+  <!-- ko if: !expanded() -->
+  %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer'} Add more...
+  <!-- /ko -->
+  .superblyTagfieldClearer
+  <!-- ko if: expanded() -->
+  %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
+  %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px'}
+    %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
+      %a{ko(text: :label, click: '$parent.selectOption')}
+  <!-- /ko -->

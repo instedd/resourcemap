@@ -16,10 +16,9 @@
 //= require jquery.fixedheadertable.min
 //= require jquery.tablescroll
 //= require jquery.timeago
+//= require jquery.colorPicker.min
 //= require knockout-2.0.0
 //= require sammy
-//= require module
-//= require event_dispatcher
-//= require bootstrap
-//= require events/system_event
-//= require events/threshold_event
+//= require autocomplete-tagfield
+//= require_tree
+//= require plugins

@@ -1,32 +1,31 @@
 - content_for :head do
   = google_maps_javascript_include_tag
-  = javascript_include_tag 'collections'
 
-  :javascript
-    $(function() { initCollections(); });
-
-<!-- ko if: currentCollection() -->
-.right
-  %form{ko(submit: 'performSearch', attr: {action: 'formAction()'})}
-    <!-- ko if: lastSearch() -->
-    %p{style: 'display:inline'}
-      = ko_link_to 'clear search', :clearSearch
-    <!-- /ko -->
-    = ko_text_field_tag :search
-    %input{type: :submit, value: 'Search'}
+<!-- ko if: !fullscreen() -->
+%h1 Collections
 <!-- /ko -->
 
-%h1 Collections
+= render 'collections/index/field_hierarchy_items_template'
+= render 'collections/index/map_sites_template'
+= render 'collections/index/map_hierarchy_items_template'
+= render 'collections/index/table_sites_template'
+= render 'collections/index/table_hierarchy_items_template'
+
+#refine-container{style: 'display:none'}
+  <!-- ko if: currentCollection() -->
+  = render 'collections/index/refine'
+  <!-- /ko -->
+
 
 #collections-dummy{style: 'height:600px'}
 #collections-main.box.nopadd.h50{style: 'display:none'}
 
   <!-- ko if: showingMap() -->
-  = render 'map'
+  = render 'collections/index/map'
   <!-- /ko -->
 
   <!-- ko if: !showingMap() -->
-  = render 'table'
+  = render 'collections/index/table'
   <!-- /ko -->
 
   .clear

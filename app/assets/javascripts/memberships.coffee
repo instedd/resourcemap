@@ -7,6 +7,45 @@
 
     toggleExpanded: => @expanded(!@expanded())
 
+    initializeAllReadAllWrite: =>
+      @allRead = ko.computed => @allReadOrWrite((x) -> x.canRead())
+      @allWrite = ko.computed => @allReadOrWrite((x) -> x.canWrite())
+
+      @allReadUI = ko.computed => @allReadOrWriteUI(=> @allRead())
+      @allWriteUI = ko.computed => @allReadOrWriteUI(=> @allWrite())
+
+    allReadOrWrite: (func) =>
+      foundFalse = false
+      foundTrue = false
+      allAdmin = true
+      for link in @membershipLayerLinks()
+        continue if link.membership.admin()
+        allAdmin = false
+        foundTrue = true if func(link)
+        foundFalse = true unless func(link)
+      return 'tristate-checked' if allAdmin
+      if foundTrue && foundFalse then "tristate-partial" else if foundTrue then "tristate-checked" else "tristate-unchecked"
+
+    allReadOrWriteUI: (func) =>
+      switch func()
+        when 'tristate-partial' then '---'
+        when 'tristate-checked' then 'Yes'
+        when 'tristate-unchecked' then 'No'
+
+    toggleAllRead: =>
+      switch @allRead()
+        when 'tristate-partial', 'tristate-unchecked'
+          link.canRead(true) for link in @membershipLayerLinks()
+        else
+          link.canRead(false) for link in @membershipLayerLinks()
+
+    toggleAllWrite: =>
+      switch @allWrite()
+        when 'tristate-partial', 'tristate-unchecked'
+          link.canWrite(true) for link in @membershipLayerLinks()
+        else
+          link.canWrite(false) for link in @membershipLayerLinks()
+
   class LayerMembership
     constructor: (data) ->
       @layerId = ko.observable data.layer_id
@@ -21,6 +60,7 @@
 
     initializeLinks: =>
       @membershipLayerLinks = ko.observableArray $.map(window.model.memberships(), (x) => new MembershipLayerLink(x, @))
+      @initializeAllReadAllWrite()
 
   class MembershipLayerLink
     constructor: (membership, layer) ->
@@ -34,6 +74,8 @@
           else
             @membership.findLayerMembership(@layer)?.read()
         write: (value) =>
+          return if @membership.admin() || value == @canRead()
+
           $.post "/collections/#{collectionId}/memberships/#{@membership.userId()}/set_layer_access.json", {layer_id: @layer.id(), verb: 'read', access: value}, =>
             lm = @membership.findLayerMembership(@layer)
             if lm
@@ -50,6 +92,8 @@
           else
             @membership.findLayerMembership(@layer)?.write()
         write: (value) =>
+          return if @membership.admin() || value == @canWrite()
+
           $.post "/collections/#{collectionId}/memberships/#{@membership.userId()}/set_layer_access.json", {layer_id: @layer.id(), verb: 'write', access: value}, =>
             lm = @membership.findLayerMembership(@layer)
             if lm
@@ -73,8 +117,12 @@
       @adminUI = ko.computed => if @admin() then "<b>Yes</b>" else "No"
       @isCurrentUser = ko.computed => window.userId == @userId()
 
+      @admin.subscribe (newValue) =>
+        $.post "/collections/#{collectionId}/memberships/#{@userId()}/#{if newValue then 'set' else 'unset'}_admin.json"
+
     initializeLinks: =>
       @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
+      @initializeAllReadAllWrite()
 
     findLayerMembership: (layer) =>
       lm = @layers().filter((x) -> x.layerId() == layer.id())

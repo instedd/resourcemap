@@ -1,0 +1,22 @@
+-# Sites template
+%script{type: "text/html", id: "table-sites-template"}
+  <!-- ko foreach: sites -->
+  %tr{ko(css: "{active: $data == $root.selectedSite()}")}
+    %td.w39{style: 'overflow:auto'}
+      %div{style: 'margin-top:2px'}
+        %p{ko(style: {marginLeft: "'' + (($parent.level + 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
+          %span.stat-r
+          %span{ko(html: :highlightedName)}
+      %button.farrow{ko(click: '$root.editSite'), type: :button}
+    <!-- ko foreach: $root.currentCollection().fields() -->
+    <!-- ko if: $parent.properties()[$data.esCode] -->
+    %td.l
+      %span{ko(html: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
+    <!-- /ko -->
+    <!-- ko if: !$parent.properties()[$data.esCode] -->
+    %td.l
+    <!-- /ko -->
+    <!-- /ko -->
+    %td.l.timeago{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
+    %td.l
+  <!-- /ko -->

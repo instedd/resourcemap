@@ -31,15 +31,12 @@ RSpec.configure do |config|
   # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = false
 
-  def Collection.index_name(id)
-    "collection_test_#{id}"
+  def stub_time(time)
+    time = Time.parse time
+    Time.stub(:now) { time }
   end
-
-  # Delete all test indexes after running all specs
-  config.after(:suite) do
-    indexes = JSON.parse Tire::Configuration.client.get("#{Tire::Configuration.url}/_status").body
-    indexes['indices'].each do |name, index|
-      Tire::Index.new(name).delete if name =~ /^collection_test_(\d+)$/
-    end
+  # Delete all test indexes after running each spec
+  config.after(:each) do
+    Tire.delete_indices_that_match /^collection_test_\d+/
   end
 end

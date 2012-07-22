@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+
+puts "Loading Rails..."
+APP_PATH = File.expand_path('../../config/application',  __FILE__)
+require File.expand_path('../../config/boot',  __FILE__)
+require File.expand_path('../../config/environment',  __FILE__)
+
+def reporting_progress(models, text)
+  count = models.count
+  i = 0.0
+  models.find_each do |model|
+    i += 1
+    percentage = (100 * (i / count)).round
+    print "\r#{text} #{i.to_i}/#{count}: %#{percentage}"
+    yield model
+  end
+end
+
+reporting_progress(Field, "Migrating field") do |field|
+  if field.kind == 'select_one' || field.kind == 'select_many'
+    if field.config.is_a? Hash
+      field.config['options'].each_with_index do |option, i|
+        option['id'] = i + 1
+        option['ord'] ||= i + 1
+      end
+      field.config['next_id'] = field.config['options'].length + 1
+      field.save!
+    end
+  end
+end
+
+print "\r#{' ' * 80}"
+
+reporting_progress(Site.includes(:collection), "Migrating site") do |site|
+  fields_by_code = site.collection.fields.index_by(&:code)
+  fields_by_es_code = site.collection.fields.index_by(&:es_code)
+
+  if site.properties.present?
+    props = {}
+    site.properties.each do |key, value|
+      field = fields_by_code[key] || fields_by_es_code[key]
+      if field
+        if field.kind == 'select_one' && field.config['options'].respond_to?(:find)
+          option = field.config['options'].find { |o| o['code'] == value }
+          props[field.es_code] = option ? option['id'] : value
+        elsif field.kind == 'select_many' && field.config['options'].respond_to?(:find)
+          if value.respond_to? :map!
+            value.map! do |code|
+              option = field.config['options'].find { |o| o['code'] == code }
+              option ? option['id'] : code
+            end
+          end
+          props[field.es_code] = value
+        else
+          props[field.es_code] = value
+        end
+      else
+        props[key] = value
+      end
+    end
+
+    site.properties = props
+  end
+
+  site.mute_activities = true
+  site.save!
+end
+
+print "\r#{' ' * 80}"
+print "\rDone!"
+

@@ -1,0 +1,11 @@
+- if single_editing_mode
+  .hierarchy-container
+    <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
+    <!-- /ko -->
+  %button{ko(click: :save), style: 'float:right'} Update hierarchy
+  %button{ko(click: :exit), style: 'float:right'} Cancel
+  .clear
+- else
+  .hierarchy-container
+    <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
+    <!-- /ko -->

@@ -10,6 +10,15 @@
  *
  *= require_self
  *= require fixedheadertable
-//= require jquery-ui
+ *= require colorPicker
  *= require_tree .
+ *= requiere_fullscreen
 */
+
+#container {
+  height:100%;
+}
+
+#footer-span {
+  position:relative;
+}

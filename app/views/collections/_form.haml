@@ -7,4 +7,12 @@
   .field.w60
     = f.label :description
     = f.text_area :description, rows: 3
+
+  = f.label :plugins
+  %br
+  = hidden_field_tag 'collection[selected_plugins][]', nil
+  - Plugin.all.each do |plugin|
+    = check_box_tag 'collection[selected_plugins][]', plugin.name, collection.plugins.has_key?(plugin.name), id: "plugin_#{plugin.object_id}"
+    = label_tag "plugin_#{plugin.object_id}", plugin.name
+    %br
   = f.button 'Save', :class => 'white'

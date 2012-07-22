@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+
+ENV['RAILS_ENV'] ||= 'production'
+
+if ARGV.length == 1
+  filename = ARGV[0]
+  unless File.exists? filename
+    puts "File '#{filename}' does not exist"
+    exit
+  end
+
+  if File.directory? filename
+    puts "File '#{filename}' must not be a directory"
+    exit
+  end
+else
+  dump_files = Dir['./*.sql']
+  if dump_files.length == 0
+    puts "Please put the dump file in your current directory or else specify it as an argument"
+    exit
+  elsif dump_files.length == 1
+    filename = dump_files[0]
+    print "About to import from '#{filename}', OK? [y/N] "
+    answer = gets.strip.downcase
+    if answer != 'y' && answer != 'yes'
+      puts "Aborting..."
+      exit
+    end
+  else
+    answer = 0
+
+    while answer < 1 || answer > dump_files.length
+      puts "Select a file from which to import:"
+      i = 1
+      dump_files.each do |file|
+        puts "#{i}. #{file}"
+        i += 1
+      end
+      answer = gets.to_i
+    end
+
+    filename = dump_files[answer - 1]
+
+    puts "Importing from '#{filename}'"
+  end
+end
+
+`bundle exec rake db:setup`
+puts `bundle exec rake instance:import[#{filename}]`
