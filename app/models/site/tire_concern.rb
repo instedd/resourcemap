@@ -6,12 +6,14 @@ module Site::TireConcern
   included do
     after_save :store_in_index
     after_destroy :remove_from_index
-
+    define_model_callbacks :index
     delegate :index_name, :index, to: :collection
   end
 
   def store_in_index(options = {})
-    Site::IndexUtils.store self, id, index, options
+    run_callbacks :index do
+      Site::IndexUtils.store self, id, index, options
+    end
   end
 
   def from_index

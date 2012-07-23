@@ -32,4 +32,8 @@ module Collection::PluginsConcern
       plugin.call_hook name, *args
     end
   end
+
+  def method_missing(method_name, *args, &block)
+    (method_name =~ /(\w+)_plugin_enabled?/).zero? ? self.plugin_enabled?($1) : super
+  end
 end

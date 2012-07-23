@@ -2,7 +2,7 @@ module Site::AlertConcerns
   extend ActiveSupport::Concern
 
   included do
-    before_save :set_alert
+    before_index :set_alert, if: ->(site) { site.collection.alerts_plugin_enabled? }
   end
 
   def set_alert
