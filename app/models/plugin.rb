@@ -1,8 +1,6 @@
 class Plugin
   include Singleton
 
-  attr_accessor :routes_block
-
   class << self
     def inherited(plugin)
       super
@@ -17,17 +15,12 @@ class Plugin
       all.select { |plugin| plugins.include? plugin.name }
     end
 
-    def routes &block
-      instance.routes_block = block
-    end
-
     def hooks(name)
       all.map do |plugin|
         plugin.hooks[name]
       end.flatten
     end
 
-    # FIXME: currently only else block is being used
     def method_missing(method_name, *args, &block)
       if block_given?
         instance.hooks[method_name] << block

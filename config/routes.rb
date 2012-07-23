@@ -73,7 +73,7 @@ ResourceMap::Application.routes.draw do
   scope '/plugin' do
     Plugin.all.each do |plugin|
       scope plugin.name do
-        instance_eval &plugin.routes_block
+        plugin.hooks[:routes].each { |plugin_routes_block| instance_eval &plugin_routes_block }
       end
     end
   end
