@@ -1,4 +1,6 @@
 class ElasticSearch::SitesAdapter < Psych::Handler
+  IGNORE_FIELDS = %w(type created_at updated_at)
+
   def initialize(listener)
     @listener = listener
     @source_mappings = 0
@@ -27,7 +29,7 @@ class ElasticSearch::SitesAdapter < Psych::Handler
         when 'lat' then @site[:lat] = value.to_f
         when 'lon' then @site[:lng] = value.to_f
         when 'name' then @site[:name] = value.to_s
-        else @site[@current_property.to_sym] = value.to_s
+        else @site[@current_property.to_sym] = value.to_s unless IGNORE_FIELDS.include? @current_property
         end
         @current_property = nil
       else
