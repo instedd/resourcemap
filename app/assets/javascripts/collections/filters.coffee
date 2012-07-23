@@ -2,6 +2,7 @@ onCollections ->
 
   class @Filter
     isDateFilter: => false
+    isLocationMissingFilter: => false
 
   class @FilterByDate
     isDateFilter: => true
@@ -33,6 +34,7 @@ onCollections ->
   class @FilterByLocationMissing extends Filter
     setQueryParams: (options, api = false) =>
         options.location_missing = true
+    isLocationMissingFilter: => true
 
     description: => "with location missing"
 

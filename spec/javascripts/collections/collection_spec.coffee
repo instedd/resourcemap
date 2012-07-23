@@ -20,8 +20,6 @@ describe 'Collection', ->
       @collection.addSite(siteLoc)
       @collection.addSite(siteNoLoc)
 
-      console.log(@collection.sites())
-
       sitesNoLoc = @collection.sitesWithoutLocation()
 
       expect(sitesNoLoc.length).toEqual 1

@@ -1,0 +1,25 @@
+%hr.clear/
+%h2 Snapshots
+%p This will allow you to browse data in the future as it is looking right now.
+- if collection_admin?
+
+  = form_for(@snapshot, :url => create_snapshot_collection_path(collection)) do |f|
+    = f.text_field :name, :placeholder => "Enter Snapshot name"
+    - if f.object.errors[:name].present?
+      %label.error= "Name #{f.object.errors[:name].join(', ')}"
+    %button.icon_button.fsnapshot
+      Take new Snapshot
+
+= form_tag(unload_current_snapshot_collection_path(collection)) do
+  = label_tag :name, "Present time"
+  = radio_button_tag(:name, "", !current_snapshot, :onclick => "this.parentNode.submit();")
+
+- collection.snapshots.each do |snapshot|
+  = form_tag(load_snapshot_collection_path(collection)) do
+    = label_tag :name, snapshot.name
+    - is_current_snapshot = current_snapshot && current_snapshot.name == snapshot.name
+    = radio_button_tag(:name, snapshot.name, is_current_snapshot, :onclick => "this.parentNode.submit();")
+    = label_tag :date, snapshot.date.rfc822
+
+%br/
+%br/

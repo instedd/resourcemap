@@ -200,8 +200,8 @@
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}
     %br{clear: :all}
   %div.mapcontainer
-    %button.icon_button.expand-collapse_button.orightexpand{ko(click: '$root.toogleExpandFullScreen')}
-    <!-- ko if: $root.currentCollection() && $root.currentCollection().sitesWithoutLocation().length > 0 -->
+    %button.icon_button.expand-collapse_button.oleftexpand{ko(click: '$root.toogleExpandFullScreen')}
+    <!-- ko if: $root.shouldShowLocationMissingAlert() -->
     %span#sites_whitout_location_alert.box.flash_error.drop_shadow
       %span There are several sites that cannot be displayed on the map
       %span.right
