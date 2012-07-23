@@ -87,8 +87,11 @@ class CollectionsController < ApplicationController
   end
 
   def unload_current_snapshot
-    if(current_snapshot.user_snapshots.where(user_id: current_user.id).first.destroy)
-      redirect_to collection_path(collection), notice: "Snapshot #{current_snapshot.name} unloaded"
+    current_snapshot && current_snapshot.user_snapshots.where(user_id: current_user.id).first.destroy
+
+    respond_to do |format|
+      format.html { redirect_to collection_path(collection), notice: "Snapshot #{current_snapshot.name} unloaded" }
+      format.json { render json: :ok }
     end
   end
 

@@ -2,7 +2,17 @@
   = google_maps_javascript_include_tag
 
 <!-- ko if: !fullscreen() -->
-%h1 Collections
+%h1
+  Collections
+  <!-- ko if: currentCollection() && currentCollection().currentSnapshot -->
+  <!-- ko with: currentCollection -->
+  %p.snapshot_loaded_message
+    %span.i18g-snapshot
+    %span{ko(text: :viewingCurrentSnapshotMessage )}
+    %a{ko(click: :unloadCurrentSnapshot)}
+      Go back to present
+  <!-- /ko -->
+  <!-- /ko -->
 <!-- /ko -->
 
 = render 'collections/index/field_hierarchy_items_template'
