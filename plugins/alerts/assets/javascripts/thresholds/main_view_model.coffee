@@ -16,7 +16,6 @@ onThresholds ->
       @thresholds.push threshold
 
     editThreshold: (threshold) =>
-      console.log threshold 
       @clearUnsavedThreshold(@currentThreshold())
       @originalThreshold = new Threshold(threshold.toJSON())
       @currentThreshold threshold
@@ -30,7 +29,6 @@ onThresholds ->
       @saving(true)
 
       json = threshold: @currentThreshold().toJSON()
-      console.log json 
       if @currentThreshold().id()
         json._method = 'put'
         $.post "/plugin/alerts/collections/#{@collectionId}/thresholds/#{@currentThreshold().id()}.json", json, @saveThresholdCallback
