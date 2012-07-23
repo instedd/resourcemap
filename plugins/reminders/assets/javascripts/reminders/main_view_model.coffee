@@ -15,6 +15,7 @@ onReminders ->
       
     editReminder: (reminder) =>
       reminder?.sites([])? if reminder.is_all_site() == "true"
+      @originalReminder = new Reminder(reminder.toReminderJSON())
       @currentReminder reminder
  
     getTimes: =>
@@ -40,7 +41,9 @@ onReminders ->
       @isSaving false
 
     cancelReminder: =>
-      if !@currentReminder().id()?
+      if @currentReminder().id()?
+        @reminders.replace @currentReminder(), @originalReminder
+      else
         @reminders.remove @currentReminder()
       @currentReminder(null)
       

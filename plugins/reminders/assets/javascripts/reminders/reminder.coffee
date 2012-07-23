@@ -3,8 +3,13 @@ onReminders ->
     constructor: (data) ->
       @id = ko.observable data?.id
       @name = ko.observable data?.name
-      @reminder_date = ko.observable data?.reminder_date?.substring(0,data.reminder_date.indexOf("T"))
-      @reminder_time = ko.observable data?.reminder_date?.substring(data.reminder_date.indexOf("T")+1,data.reminder_date.indexOf("T")+1 + 5)
+      seperator = ''
+      if data.reminder_date?.indexOf("T") > 0
+        seperator = 'T'
+      else
+        seperator = ' '
+      @reminder_date = ko.observable data?.reminder_date?.split(seperator)[0]
+      @reminder_time = ko.observable data?.reminder_date?.split(seperator)[1].substring(0,5)
       @reminder_datetime = ko.computed =>
         @reminder_date() + " " + @reminder_time()
       @reminder_message = ko.observable data?.reminder_message
@@ -15,7 +20,7 @@ onReminders ->
       if @is_all_site() == "true"
         @sites = ko.observableArray []
       else
-        @sites = ko.observableArray data?.sites ? [], $.map(data.sites, (site) -> new Site(site))
+        @sites = ko.observableArray $.map(data?.sites ? [], (site) -> new Site(site))
       
       @nameError = ko.computed =>
         if $.trim(@name()).length > 0 
@@ -56,6 +61,17 @@ onReminders ->
       collection_id: @collection_id()
       is_all_site: @is_all_site()
       sites: $.map(@sites(), (x) -> x.id) if @is_all_site() == "false"
+
+    toReminderJSON: =>
+      id: @id()
+      name: @name()
+      reminder_date: @reminder_datetime()
+      reminder_message: @reminder_message()
+      repeat_id: @repeat().id()
+      repeat: @repeat().toJSON()
+      collection_id: @collection_id()
+      is_all_site: @is_all_site()
+      sites: $.map(@sites(), (site) -> site.toJSON()) if @is_all_site() == "false"
 
     getSitesRepeatLabel: =>
       sites = if @is_all_site() == "true" then ["all sites"] else $.map @sites(), (site) => site.name
