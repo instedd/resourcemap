@@ -5,6 +5,7 @@ describe Site::TireConcern do
   let!(:layer) { collection.layers.make }
   let!(:beds_field) { layer.fields.make :code => 'beds' }
   let!(:tables_field) { layer.fields.make :code => 'tables' }
+  let!(:threshold) { collection.thresholds.make is_all_site: true, message_notification: "alert", conditions: [ {field: beds_field.es_code, op: 'lt', value: 10} ], icon: 'icon.png' }
 
   it "stores in index after create" do
     site = collection.sites.make :properties => {beds_field.es_code => 10, tables_field.es_code => 20}
@@ -39,14 +40,13 @@ describe Site::TireConcern do
   end
 
   it "should stores alert in index" do
-    collection = Collection.make
-    threshold = collection.thresholds.make is_all_site: true, message_notification: "alert",conditions: [ {field: beds_field.es_code, op: 'lt', value: 10} ], icon: "marker.png"
+    collection.selected_plugins = ['alerts']
+    collection.save
     site = collection.sites.make properties: { beds_field.es_code => 9 }
-    
-    search = Tire::Search::Search.new collection.index_name
-    search.query { string 'alert:true' }
-    search.query { string "icon:marker.png" }
+
+    search = collection.new_tire_search
+    search.filter :term, alert: true
     result = search.perform.results
-    result.count.should eq(1)
+    result.length.should eq(1)
   end
  end
