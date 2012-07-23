@@ -4,9 +4,9 @@ describe Clusterer do
   let(:clusterer) { Clusterer.new 1 }
 
   it "leaves single site alone" do
-    clusterer.add id: 1, name: 'foo',lat: 30, lng: 40, collection_id: 12, alert: false
+    clusterer.add id: 1, name: 'foo',lat: 30, lng: 40, collection_id: 12
     clusters = clusterer.clusters
-    clusters[:sites].should eq([{id: 1, name: 'foo', lat: 30, lng: 40, collection_id: 12, alert: false, icon: nil}])
+    clusters[:sites].should eq([{id: 1, name: 'foo', lat: 30, lng: 40, collection_id: 12}])
     clusters[:clusters].should be_nil
   end
 
@@ -32,7 +32,7 @@ describe Clusterer do
       {:id => "1:3:4", :lat => 65.5, :lng => 120.5, :count => 2, :alert_count => 0, :min_lat => 65, :max_lat => 66, :min_lng => 120, :max_lng => 121}
     ])
   end
-  
+
   it "puts four sites in two different clusters with two sites alert" do
     clusterer.add :id => 1, :lat => 20, :lng => 30, :alert => "true"
     clusterer.add :id => 2, :lat => 21, :lng => 31

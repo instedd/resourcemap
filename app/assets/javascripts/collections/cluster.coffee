@@ -16,7 +16,6 @@ onCollections ->
       @countDiv = document.createElement 'DIV'
       @countDiv.className = 'cluster-count'
       @setCount @count
-      @setAlertCount @alertCount
 
       @divClick = document.createElement 'DIV'
       @divClick.className = 'cluster-click'
@@ -85,15 +84,12 @@ onCollections ->
         new google.maps.LatLng(cluster.max_lat, cluster.max_lng)
       )
       @setCount cluster.count
-      @setAlertCount cluster.alert_count
+      @data = cluster
       @draw() if draw
 
     setCount: (count) =>
       @count = count
       @countDiv.innerHTML = (@count).toString() if @countDiv
-
-    setAlertCount: (alertCount) =>
-      @alertCount = alertCount
 
     setActive: (draw = true) =>
       if @div

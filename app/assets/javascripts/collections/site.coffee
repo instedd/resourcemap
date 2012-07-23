@@ -13,7 +13,6 @@ onCollections ->
       @selected = ko.observable()
       @id = ko.observable data?.id
       @name = ko.observable data?.name
-      @alert = ko.observable data?.alert
       @icon = ko.observable data?.icon
       @idWithPrefix = ko.observable data?.id_with_prefix
       @properties = ko.observable data?.properties

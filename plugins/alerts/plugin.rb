@@ -25,6 +25,13 @@ class Alerts::Plugin < Plugin
     css_class: 'lphone',
     edit_view: 'fields/phone_edit_view'
 
+  clusterer \
+    map: ->(site, tmp) do
+      tmp[:alert_count] ||= 0
+      tmp[:alert_count] += (site[:alert] == 'true' ? 1 : 0)
+    end,
+    reduce: ->(tmp, cluster) { cluster[:alert_count] = tmp[:alert_count] }
+
   routes {
     resources :collections do
       resources :thresholds do
