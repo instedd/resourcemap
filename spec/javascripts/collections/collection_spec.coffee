@@ -11,9 +11,6 @@ describe 'Collection', ->
     it 'should get searchUsersUrl', ->
       expect(@collection.searchUsersUrl()).toEqual '/collections/1/memberships/search.json'
 
-    it 'should get unloadCurrentSnapshotUrl', ->
-      expect(@collection.unloadCurrentSnapshotUrl()).toEqual '/collections/1/unload_current_snapshot'
-
   describe 'collection sites', ->
     it 'should get sites without location', ->
       @collection = new Collection id: 2
