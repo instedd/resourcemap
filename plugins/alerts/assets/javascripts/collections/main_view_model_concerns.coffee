@@ -13,7 +13,7 @@ onCollections ->
         for clusterId, cluster of @clusters
           if bounds.contains cluster.position
             alertsCount += cluster.data.alert_count
-        alertsCount += 1 if @selectedSite()?.alert()
+        alertsCount += 1 if @selectedSite()?.alert?()
         @alertsCount alertsCount
       @aliasMethodChain "setMarkerIcon", "Alerts"
 
