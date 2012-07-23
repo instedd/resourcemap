@@ -193,13 +193,8 @@
         %span{ko(click: :exportInCSV), style: 'text-decoration:underline;cursor:pointer;margin:0'} CSV
     <!-- /ko -->
     %span{ko(text: :sitesCountText)}
-    <!-- ko if: alertsCount() > 0 -->
-    on map,
-    <!-- /ko -->
-    <!-- ko if: alertsCount() == 0 -->
-    on map
-    <!-- /ko -->
-    %span.alert{ko(text: :alertsCountText)}
+    - Plugin.all.each do |plugin|
+      = render_plugin_hook plugin, :map_header
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}

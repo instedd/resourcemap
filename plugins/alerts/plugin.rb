@@ -1,6 +1,7 @@
 class Alerts::Plugin < Plugin
 
   collection_tab '/alerts_tab'
+  map_header '/alerts_map_header'
 
   extend_model \
     class: Site,

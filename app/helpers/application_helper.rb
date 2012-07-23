@@ -10,14 +10,20 @@ module ApplicationHelper
     @collection_admin
   end
 
+  def render_plugin_hook(plugin, name, args = {})
+    result = ''
+    plugin.hooks[name].each do |view|
+      result << render(view, args)
+    end
+    result.html_safe
+  end
+
   def render_hook(collection, name, args = {})
-  	result = ''
+    result = ''
     collection.each_plugin do |plugin|
-      plugin.hooks[name].each do |view|
-        result << render(view, args)
-      end
-  	end
-  	result.html_safe
+      result << render_plugin_hook(plugin, name, args)
+    end
+    result.html_safe
   end
 
   def field_edit_view(kind)
