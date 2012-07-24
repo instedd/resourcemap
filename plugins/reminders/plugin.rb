@@ -3,7 +3,7 @@ class Reminders::Plugin < Plugin
 	collection_tab '/reminder_tab'
 
   schedule \
-    every: "30s",
+    every: "5m",
     class: "ReminderTask",
     queue: 'reminder_queue'
 
