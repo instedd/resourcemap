@@ -10,7 +10,7 @@ ActionDispatch::Reloader.to_prepare do
       Rails.configuration.assets.precompile << "#{plugin_name}.css"
     end
 
-    if Rails.env == "development"
+    if Rails.env == "development" || Rails.env == "test"
       Rails.configuration.assets.paths << "#{plugin_dir}/spec/javascripts"
     end
 
