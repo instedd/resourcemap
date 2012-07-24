@@ -35,11 +35,11 @@ module HistoryConcern
   end
 
   def expire_current_history_and_create_new_one
-    expire_current_history
+    expire_current_history updated_at
     create_history
   end
 
-  def expire_current_history
-    current_history.try :update_attributes!, valid_to: Time.now
+  def expire_current_history(valid_to = Time.now)
+    current_history.try :update_attributes!, valid_to: valid_to
   end
 end
