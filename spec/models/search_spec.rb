@@ -244,7 +244,7 @@ describe Search do
       assert_results collection.new_search.full_text_search("Buenos Aires"), site2
     end
 
-    it "searches by name property" do
+    pending "searches by name property" do
       assert_results collection.new_search.full_text_search('name:"Buenos Aires"'), site2
     end
 
