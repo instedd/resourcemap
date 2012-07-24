@@ -15,7 +15,7 @@
               %input{ko(checked: :checked), type: :checkbox, style: 'position:relative;top:3px'}
               %span{ko(text: :name)}
             <!-- ko if: currentSnapshot -->
-            .right{style: 'padding-right:0'}
+            .snapshot_on.right{style: 'padding-right:0'}
               .i18g-snapshot
               %button.farrow{ko(click: '$root.enterCollection'), type: :button,  style: 'float:none'}
             .clear
