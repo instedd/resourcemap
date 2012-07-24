@@ -29,6 +29,8 @@ onThresholds ->
         else
           return "Alert property's name is missing"
       @notificationMessageError = ko.computed =>
+        return null if @isNotify() == "false"
+        return null if(!@isNotify())
         if $.trim(@messageNotification()).length > 0
           return null
         else
