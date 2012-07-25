@@ -39,7 +39,7 @@ onCollections ->
       @groupBy.subscribe => @performSearchOrHierarchy()
 
       @shouldShowLocationMissingAlert = ko.computed =>
-        !@filteringByLocationMissing() && @currentCollection()?.sitesWithoutLocation().length > 0
+        !@filteringByProperty(FilterByLocationMissing) && @currentCollection()?.sitesWithoutLocation().length > 0
 
       location.hash = '#/' unless location.hash
 
@@ -49,9 +49,6 @@ onCollections ->
       # with the view.
       @[k] = v.bind(@) for k, v of @ when v.bind? && !ko.isObservable(v)
 
-    filteringByLocationMissing: =>
-      @filters().any (f) -> f.isLocationMissingFilter()
-      
     defaultGroupBy: {esCode: '', name: 'None'}
 
     showPopupWithMaxValueOfProperty: (field, event) =>
