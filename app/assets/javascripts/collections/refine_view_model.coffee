@@ -59,7 +59,8 @@ onCollections ->
       @hideRefinePopup()
 
     @filterByLocationMissing: ->
-      @filters.push(new FilterByLocationMissing())
+      if(!@filteringByLocationMissing())
+        @filters.push(new FilterByLocationMissing())
       @hideRefinePopup()
 
     @filterByProperty: ->
