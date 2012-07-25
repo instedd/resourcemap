@@ -27,7 +27,9 @@ onCollections ->
         $(".expand-collapse_button").addClass("oleftcollapse")
         $(".expand-collapse_button").removeClass("oleftexpand")
         window.adjustContainerSize()
+        @initMap()
         @reloadMapSites()
+
       else
         @fullscreen(false)
         @fullscreenExpanded(false)
@@ -37,7 +39,9 @@ onCollections ->
         $('#collections-main .left').show()
         $('.expand-collapse_button').hide()
         window.adjustContainerSize()
+        @initMap()
         @reloadMapSites()
+
 
     @toogleExpandFullScreen: ->
       if @fullscreen() && !@fullscreenExpanded()
@@ -46,7 +50,9 @@ onCollections ->
         window.adjustContainerSize()
         $(".oleftcollapse").addClass("oleftexpand")
         $(".oleftcollapse").removeClass("oleftcollapse")
+        @initMap()
         @reloadMapSites()
+
       else
         if @fullscreen() && @fullscreenExpanded()
           @fullscreenExpanded(false)
@@ -54,6 +60,7 @@ onCollections ->
           window.adjustContainerSize()
           $(".oleftexpand").addClass("oleftcollapse")
           $(".oleftexpand").removeClass("oleftexpand")
-        @reloadMapSites()
+          @initMap()
+          @reloadMapSites()
 
     @createCollection: -> window.location = "/collections/new"

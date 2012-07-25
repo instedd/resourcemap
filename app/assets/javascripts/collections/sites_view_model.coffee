@@ -91,9 +91,12 @@ onCollections ->
       @editingSite().post @editingSite().toJSON(), callback
 
     @exitSite: ->
+      @performSearchOrHierarchy()
+
       field.editing(false) for field in @currentCollection().fields()
       if @editingSite().inEditMode()
         @editingSite().exitEditMode()
+
       else
         # Unselect site if it's not on the tree
         @editingSite().editingLocation(false)
