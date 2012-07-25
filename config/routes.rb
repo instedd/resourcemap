@@ -79,5 +79,11 @@ ResourceMap::Application.routes.draw do
   end
 
   root :to => 'home#index'
-  mount Resque::Server, :at => "/resque"
+  resque_constraint = lambda do |request|
+    request.env['warden'].authenticate? and request.env['warden'].user.is_super_user?
+  end
+
+  constraints resque_constraint do
+    mount Resque::Server, :at => "/admin/resque"
+  end
 end
