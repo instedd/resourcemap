@@ -81,10 +81,11 @@ onCollections ->
       @showingMap(true)
 
       # This fixes problems when changing from fullscreen expanded to table view and then going back to map view
-      @fullscreenExpanded(false) if @fullscreen()
-      $('.expand-collapse_button').show()
-      $(".expand-collapse_button").addClass("oleftcollapse")
-      $(".expand-collapse_button").removeClass("oleftexpand")
+      if @fullscreen()
+        @fullscreenExpanded(false)
+        $('.expand-collapse_button').show()
+        $(".expand-collapse_button").addClass("oleftcollapse")
+        $(".expand-collapse_button").removeClass("oleftexpand")
 
 
       showMap = =>
