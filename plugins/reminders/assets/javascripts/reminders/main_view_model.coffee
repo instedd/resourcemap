@@ -14,7 +14,7 @@ onReminders ->
       @reminders.push reminder
       
     editReminder: (reminder) =>
-      reminder?.sites([])? if reminder.is_all_site() == "true"
+      reminder.sites([]) if reminder.is_all_site() == "true"
       @originalReminder = new Reminder(reminder.toReminderJSON())
       @currentReminder reminder
  
@@ -36,7 +36,7 @@ onReminders ->
         $.post "/plugin/reminders/collections/#{@collectionId()}/reminders.json", json, @saveReminderCallback
     
     saveReminderCallback: (data) =>
-      @currentReminder().id(data.id)
+      @currentReminder().id(data?.id)
       @currentReminder(null)
       @isSaving false
 
@@ -55,3 +55,6 @@ onReminders ->
     deleteReminderCallback: =>
       @reminders.remove @deletedReminder
       delete @deletedReminder
+
+    findRepeat: (id) =>
+      return repeat for repeat in @repeats() when repeat.id() == id

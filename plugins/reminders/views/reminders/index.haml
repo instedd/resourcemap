@@ -44,7 +44,7 @@
       %input.ux-datepicker.w20{ko(datePicker: :reminder_date), type: :text }
       %select{ko(options: '$root.getTimes()', value: :reminder_time)}
       %label repeat
-      %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat)}
+      %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat, hasfocus: true)}
       %br/
 
       %label{ko(css: {error: 'reminderMessageError'})} Message

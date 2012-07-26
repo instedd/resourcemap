@@ -13,7 +13,8 @@ onReminders ->
       @reminder_datetime = ko.computed =>
         @reminder_date() + " " + @reminder_time()
       @reminder_message = ko.observable data?.reminder_message
-      @repeat = ko.observable new Repeat(data?.repeat)
+      @repeat = ko.observable window.model.findRepeat(data?.repeat_id)
+
       @collection_id = ko.observable data?.collection_id
       @is_all_site = ko.observable data?.is_all_site?.toString() ? "true"
       
