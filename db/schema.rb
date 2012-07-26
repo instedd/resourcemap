@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120725073303) do
+ActiveRecord::Schema.define(:version => 20120726080424) do
 
   create_table "activities", :force => true do |t|
     t.string   "kind"
@@ -142,6 +142,7 @@ ActiveRecord::Schema.define(:version => 20120725073303) do
     t.boolean  "is_all_site"
     t.text     "schedule"
     t.datetime "next_run"
+    t.text     "sites"
   end
 
   add_index "reminders", ["collection_id"], :name => "index_reminders_on_collection_id"

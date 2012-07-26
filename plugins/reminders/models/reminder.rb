@@ -1,8 +1,8 @@
 class Reminder < ActiveRecord::Base
   belongs_to :collection
   belongs_to :repeat
-  has_and_belongs_to_many :sites
   serialize :schedule, IceCube::Schedule
+  serialize :sites, Array 
   before_save :set_schedule_rule
   before_save :set_next_run
 
