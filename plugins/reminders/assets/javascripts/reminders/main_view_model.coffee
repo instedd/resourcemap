@@ -14,7 +14,6 @@ onReminders ->
       @reminders.push reminder
       
     editReminder: (reminder) =>
-      reminder.sites([]) if reminder.is_all_site() == "true"
       @originalReminder = new Reminder(reminder.toReminderJSON())
       @currentReminder reminder
  
