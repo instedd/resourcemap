@@ -3,6 +3,16 @@ onReminders ->
     constructor: (data) ->
       @id = ko.observable data?.id
       @name = ko.observable data?.name
+      @isAllSites = ko.observable data.is_all_site ? true
+      @targetFor = ko.computed
+        read: -> if @isAllSites() then 'all_sites' else 'some_sites'
+        write: (value) -> 
+          @isAllSites switch value
+            when 'all_sites' then true
+            when 'some_sites' then false
+            else true
+        owner: @
+
       seperator = ''
       if data.reminder_date?.indexOf("T") > 0
         seperator = 'T'
@@ -16,9 +26,8 @@ onReminders ->
       @repeat = ko.observable window.model.findRepeat(data?.repeat_id)
 
       @collection_id = ko.observable data?.collection_id
-      @is_all_site = ko.observable data?.is_all_site?.toString() ? "true"
       
-      if @is_all_site() == "true"
+      if @isAllSites()
         @sites = ko.observableArray []
       else
         @sites = ko.observableArray $.map(data?.sites ? [], (site) -> new Site(site))
@@ -29,11 +38,8 @@ onReminders ->
         else
           return "Reminder's name is missing"
       @sitesError = ko.computed =>
-        return if @is_all_site() == "false" and @sites().length == 0 then "Sites is missing" else null
-        # if @sites().length > 0
-          # return null
-        # else
-          # return "Sites is missing"
+        if !@isAllSites() and @sites().length == 0 then 'Sites is missing' else null
+
       @reminderDateError =ko.computed =>
         if $.trim(@reminder_date()).length > 0
           return null
@@ -60,8 +66,8 @@ onReminders ->
       reminder_message: @reminder_message()
       repeat_id: @repeat().id()
       collection_id: @collection_id()
-      is_all_site: @is_all_site()
-      sites: $.map(@sites(), (x) -> x.id) if @is_all_site() == "false"
+      is_all_site: @isAllSites()
+      sites: $.map(@sites(), (x) -> x.id) unless @isAllSites()
 
     toReminderJSON: =>
       id: @id()
@@ -71,10 +77,10 @@ onReminders ->
       repeat_id: @repeat().id()
       repeat: @repeat().toJSON()
       collection_id: @collection_id()
-      is_all_site: @is_all_site()
-      sites: $.map(@sites(), (site) -> site.toJSON()) if @is_all_site() == "false"
+      is_all_site: @isAllSites()
+      sites: $.map(@sites(), (site) -> site.toJSON()) unless @isAllSites()
 
     getSitesRepeatLabel: =>
-      sites = if @is_all_site() == "true" then ["all sites"] else $.map @sites(), (site) => site.name
+      sites = if @isAllSites() then ["all sites"] else $.map @sites(), (site) => site.name
       detail = @repeat().name() + " for " + sites.join(",")
         

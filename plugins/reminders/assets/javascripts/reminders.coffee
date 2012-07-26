@@ -1,8 +1,8 @@
 #= require reminders/on_reminders
 #= require_tree ./reminders/.
 
-onReminders ->
-
+# We do the check again so tests don't trigger this initialization
+onReminders -> if $('#reminders-main').length > 0
   match = window.location.toString().match(/\/collections\/(\d+)\/reminders/)
   collectionId = parseInt(match[1])
   
@@ -15,10 +15,6 @@ onReminders ->
     window.model.repeats repeats
 
     $.get "/plugin/reminders/collections/#{collectionId}/reminders.json", (data) ->
-      reminders = $.map data, (reminder) ->
-        new Reminder reminder
-      window.model.reminders reminders
+      window.model.reminders $.map data, (reminder) -> new Reminder reminder
   
   $('.hidden-until-loaded').show()
-
-
