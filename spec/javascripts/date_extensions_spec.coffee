@@ -23,7 +23,7 @@ describe "Date extensions", ->
 
   describe "strftime", ->
     beforeEach ->
-      @date = new Date('2012-08-02T05:30:00')
+      @date = new Date(2012, 7, 2, 5, 30, 0)
 
     it 'should format year', ->
       expect(@date.strftime '%Y').toEqual '2012'
