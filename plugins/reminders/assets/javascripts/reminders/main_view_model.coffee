@@ -27,7 +27,7 @@ onReminders ->
 
     saveReminder: =>
       @isSaving true
-      json = reminder: @currentReminder().toJSON()
+      json = reminder: @currentReminder().toJson()
       if @currentReminder().id()
         json._method = 'put'
         $.post "/plugin/reminders/collections/#{@collectionId()}/reminders/#{@currentReminder().id()}.json", json, @saveReminderCallback

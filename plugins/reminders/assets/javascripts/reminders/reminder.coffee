@@ -12,16 +12,9 @@ onReminders ->
             when 'some_sites' then false
             else true
         owner: @
-
-      seperator = ''
-      if data.reminder_date?.indexOf("T") > 0
-        seperator = 'T'
-      else
-        seperator = ' '
-      @reminder_date = ko.observable data?.reminder_date?.split(seperator)[0]
-      @reminder_time = ko.observable data?.reminder_date?.split(seperator)[1].substring(0,5)
-      @reminder_datetime = ko.computed =>
-        @reminder_date() + " " + @reminder_time()
+      @reminderDateTime = new ReminderDateTime data.reminder_date
+      @reminderDate = ko.observable @reminderDateTime.getDate()
+      @reminderTime = ko.observable @reminderDateTime.getTime()
       @reminder_message = ko.observable data?.reminder_message
       @repeat = ko.observable window.model.findRepeat(data?.repeat_id)
 
@@ -40,8 +33,9 @@ onReminders ->
       @sitesError = ko.computed =>
         if !@isAllSites() and @sites().length == 0 then 'Sites is missing' else null
 
-      @reminderDateError =ko.computed =>
-        if $.trim(@reminder_date()).length > 0
+      # FIXME: reminderDate is not set when user type in invalid date into datepicker
+      @reminderDateError = ko.computed =>
+        if @reminderDate().isDate()
           return null
         else
           return "Reminder's date is missing"
@@ -58,13 +52,16 @@ onReminders ->
         if errorMessage then "Can't save: " + errorMessage else ""
 
       @valid = ko.computed => !@error()
+
+    updateReminderDate: ->
+      @reminderDateTime.setDate(@reminderDate()).setTime(@reminderTime())
       
-    toJSON: =>
+    toJson: =>
       id: @id()
       name: @name()
-      reminder_date: @reminder_datetime()
+      reminder_date: @updateReminderDate().toString()
       reminder_message: @reminder_message()
-      repeat_id: @repeat().id()
+      repeat_id: @repeat()?.id()
       collection_id: @collection_id()
       is_all_site: @isAllSites()
       sites: $.map(@sites(), (x) -> x.id) unless @isAllSites()
@@ -72,7 +69,7 @@ onReminders ->
     toReminderJSON: =>
       id: @id()
       name: @name()
-      reminder_date: @reminder_datetime()
+      reminder_date: @updateReminderDate().toString()
       reminder_message: @reminder_message()
       repeat_id: @repeat().id()
       repeat: @repeat().toJSON()
