@@ -43,6 +43,14 @@ describe Api::CollectionsController do
     end
   end
 
+  describe "GET JSON collection with query parameters" do
+    before(:each) do
+      get :show, id: collection.id, format: 'json', select_one: 'one'
+    end
+
+    it { response.should be_success }
+  end
+
   describe "GET RSS collection" do
     before(:each) do
       get :show, id: collection.id, format: 'rss'

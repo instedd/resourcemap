@@ -98,6 +98,8 @@ class Api::CollectionsController < ApplicationController
   def rescue_with_check_api_docs
     yield
   rescue => ex
+    puts ex.message
+    puts ex.backtrace
     render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
   end
 end
