@@ -16,7 +16,7 @@
 //= require jquery.fixedheadertable.min
 //= require jquery.tablescroll
 //= require jquery.timeago
-//= require knockout-2.0.0
+//= require knockout-2.1.0
 //= require sammy
 //= require autocomplete-tagfield
 //= require_tree
