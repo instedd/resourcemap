@@ -1,6 +1,6 @@
 describe "String extensions", ->
   it 'should check for valid date', ->
-    expect('2012-07-27'.isDate()).toBeTruthy()
+    expect('2012/07/27'.isDate()).toBeTruthy()
 
   it 'should check for invalid date', ->
     expect('foo'.isDate()).toBeFalsy()
