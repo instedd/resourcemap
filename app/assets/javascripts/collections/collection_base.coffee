@@ -18,6 +18,7 @@ onCollections ->
       @currentSnapshot = if data?.snapshot_name then data?.snapshot_name else ''
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
+      @viewingCurrentSnapshotMessage = ko.computed => "You are currently viewing this collection's data as it was on snapshot " + @currentSnapshot + "."
 
     fetchFields: (callback) =>
       if @fieldsInitialized

@@ -35,3 +35,7 @@ onCollections ->
 
     searchUsersUrl: -> "/collections/#{@id}/memberships/search.json"
 
+    unloadCurrentSnapshot: ->
+      $.post "/collections/#{@id}/unload_current_snapshot.json", ->
+        window.location.reload()
+

@@ -11,6 +11,18 @@ onCollections ->
     @hideRefinePopup: ->
       @showingRefinePopup(false)
 
+    @filteringByProperty: (filterClass) ->
+      @filters().any (f) -> f instanceof filterClass
+
+    @filteringByPropertyAndValue: (filterClass, value) ->
+      @filters().any (f) -> f instanceof filterClass && f.value == value
+
+    @filteringByPropertyAndValueAndOperator: (filterClass, operator, value) ->
+      @filters().any (f) -> f instanceof filterClass && f.value == value && f.operator == operator
+
+    @filteringByPropertyAndSelectProperty: (filterClass, value, label) ->
+      @filters().any (f) -> f instanceof filterClass && f.value == value && f.valueLabel == label
+
     @toggleRefinePopup: (model, event) ->
       @showingRefinePopup(!@showingRefinePopup())
       if @showingRefinePopup()
@@ -43,23 +55,28 @@ onCollections ->
       @filters.remove filter
 
     @filterByLastHour: ->
-      @filters.push(new FilterByLastHour())
+      if(!@filteringByProperty(FilterByLastHour))
+        @filters.push(new FilterByLastHour())
       @hideRefinePopup()
 
     @filterByLastDay: ->
-      @filters.push(new FilterByLastDay())
+      if(!@filteringByProperty(FilterByLastDay))
+        @filters.push(new FilterByLastDay())
       @hideRefinePopup()
 
     @filterByLastWeek: ->
-      @filters.push(new FilterByLastWeek())
+      if(!@filteringByProperty(FilterByLastWeek))
+        @filters.push(new FilterByLastWeek())
       @hideRefinePopup()
 
     @filterByLastMonth: ->
-      @filters.push(new FilterByLastMonth())
+      if(!@filteringByProperty(FilterByLastMonth))
+        @filters.push(new FilterByLastMonth())
       @hideRefinePopup()
 
     @filterByLocationMissing: ->
-      @filters.push(new FilterByLocationMissing())
+      if(!@filteringByProperty(FilterByLocationMissing))
+        @filters.push(new FilterByLocationMissing())
       @hideRefinePopup()
 
     @filterByProperty: ->
@@ -67,13 +84,16 @@ onCollections ->
 
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
       if field.kind == 'text'
-        @filters.push(new FilterByTextProperty(field, @expandedRefinePropertyValue()))
+        if(!@filteringByPropertyAndValue(FilterByTextProperty, @expandedRefinePropertyValue()))
+          @filters.push(new FilterByTextProperty(field, @expandedRefinePropertyValue()))
       else if field.kind == 'numeric'
-        @filters.push(new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
+        if(!@filteringByPropertyAndValueAndOperator(FilterByNumericProperty, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
+          @filters.push(new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
       else if field.kind in ['select_one', 'select_many']
         @expandedRefinePropertyValue(parseInt(@expandedRefinePropertyValue()))
         valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0].label
-        @filters.push(new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel))
+        if(!@filteringByPropertyAndSelectProperty(FilterBySelectProperty, @expandedRefinePropertyValue(), valueLabel))
+          @filters.push(new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel))
 
       @hideRefinePopup()
 
