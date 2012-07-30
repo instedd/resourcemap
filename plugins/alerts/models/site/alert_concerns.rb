@@ -6,7 +6,7 @@ module Site::AlertConcerns
   end
 
   def set_alert
-    alert = collection.thresholds_test properties, id unless self.is_a? SiteHistory
+    alert = collection.thresholds_test self unless self.is_a? SiteHistory
     if alert != nil
       extended_properties[:alert] = true
       extended_properties[:icon] = alert.icon

@@ -24,26 +24,35 @@ describe Collection do
   end
 
   describe "thresholds test" do
-    let!(:properties) { { field.es_code => 9 } }
-    let!(:site) { collection.sites.make}
+    let!(:site) { collection.sites.make properties: {field.es_code => 9}}
     it "should return false when there is no threshold" do
-      collection.thresholds_test(properties, site.id).should be_false
+      collection.thresholds_test(site).should be_false
     end
 
     it "should return false when no threshold is hit" do
-      collection.thresholds.make is_all_site: false, conditions: [ field: 1, op: :gt, value: 10 ]
-      collection.thresholds_test(properties, site.id).should be_false
+      collection.thresholds.make is_all_site: true, conditions: [ field: 1, op: :gt, value: 10 ]
+      collection.thresholds_test(site).should be_false
     end
 
     it "should return true when threshold 1 is hit" do
       collection.thresholds.make is_all_site: false, sites: [{"id" => site.id}], conditions: [ field: field.es_code, op: :lt, value: 10 ]
-      collection.thresholds_test(properties, site.id).should be_true
+      collection.thresholds_test(site).should be_true
     end
 
     it "should return true when threshold 2 is hit" do
       collection.thresholds.make sites: [{"id" => site.id}], conditions: [ field: field.es_code, op: :gt, value: 10 ]
       collection.thresholds.make sites: [{"id" => site.id}], conditions: [ field: field.es_code, op: :eq, value: 9 ]
-      collection.thresholds_test(properties, site.id).should be_true
+      collection.thresholds_test(site).should be_true
+    end
+
+    describe "multiple thresholds test" do
+      let!(:site_2) { collection.sites.make properties: {field.es_code => 25}}
+
+      it "should evaluate second threshold" do
+        collection.thresholds.make is_all_site: false, conditions: [ {field: field.es_code, op: :gt, value: 10} ], sites: [{ "id" => site.id }]
+        collection.thresholds.make is_all_site: false, conditions: [ {field: field.es_code, op: :gt, value: 20} ], sites: [{ "id" => site_2.id }]
+        collection.thresholds_test(site_2).should be_true
+      end
     end
   end
 
