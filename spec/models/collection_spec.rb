@@ -57,14 +57,6 @@ describe Collection do
   end
 
   describe "SMS query" do
-    pending do
-      it "should prepare response_sms" do
-        option = {:field_code => "AB", :field_id => 2}
-        result = [{"_source"=>{"id"=>1, "name"=>"Siem Reap Health Center", "properties"=>{"1"=>15, "2"=>40, "3"=>6}}}]
-        collection.response_prepare(option[:field_code], option[:field_id], result).should eq("[\"#{option[:field_code]}\"] in #{[result[0]["_source"]["name"],40].join(", ")}")
-      end
-    end
-
     describe "Operator parser" do
       it "should return operator for search class" do
         collection.operator_parser(">").should eq("gt")

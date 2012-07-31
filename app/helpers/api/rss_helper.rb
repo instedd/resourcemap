@@ -30,8 +30,15 @@ module Api::RssHelper
 
       xml.rm :properties do
         source['properties'].each do |code, values|
-          Array(values).each do |value|
-            property_rss xml, code, value
+          values = Array(values)
+          if(values.count == 1)
+            property_rss xml, code, values.first
+          else
+            xml.rm code.to_sym do
+              values.each do |value|
+                xml.rm :option, code: value
+              end
+            end
           end
         end
       end

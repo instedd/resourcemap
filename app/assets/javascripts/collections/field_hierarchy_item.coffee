@@ -27,4 +27,5 @@ onCollections ->
       @expanded(true) if @field.value() != @id
       @parent.toggleParentsExpand() if @parent
 
+
     select: => @field.value(@id)

@@ -43,6 +43,14 @@ describe Api::CollectionsController do
     end
   end
 
+  describe "GET JSON collection with query parameters" do
+    before(:each) do
+      get :show, id: collection.id, format: 'json', select_one: 'one'
+    end
+
+    it { response.should be_success }
+  end
+
   describe "GET RSS collection" do
     before(:each) do
       get :show, id: collection.id, format: 'rss'
@@ -65,7 +73,10 @@ describe Api::CollectionsController do
       rss["rss"]["channel"]["item"]["properties"][text.code].should eq(site.properties[text.es_code])
       rss["rss"]["channel"]["item"]["properties"][numeric.code].should eq(site.properties[numeric.es_code].to_s)
       rss["rss"]["channel"]["item"]["properties"][select_one.code].should eq('one')
-      rss["rss"]["channel"]["item"]["properties"][select_many.code].should eq(['one', 'two'])
+      rss["rss"]["channel"]["item"]["properties"][select_many.code].length.should eq(1)
+      rss["rss"]["channel"]["item"]["properties"][select_many.code]['option'].length.should eq(2)
+      rss["rss"]["channel"]["item"]["properties"][select_many.code]['option'][0]['code'].should eq('one')
+      rss["rss"]["channel"]["item"]["properties"][select_many.code]['option'][1]['code'].should eq('two')
     end
   end
 

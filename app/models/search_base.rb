@@ -24,7 +24,7 @@ module SearchBase
     check_field_exists es_code
 
     query_key = decode(es_code)
-    query_value = es_code_value(es_code, value)
+    query_value = decode_option(query_key, value)
     @search.filter :term, query_key => query_value
     self
   end
@@ -148,11 +148,11 @@ module SearchBase
     code.start_with?('@') ? code[1 .. -1] : code
   end
 
-  def es_code_value(es_code, value)
+  def decode_option(es_code, value)
     field = fields.find { |x| x.es_code == es_code }
     if field && field.config && field.config['options']
       field.config['options'].each do |option|
-        return option['id'] if option['label'] == value
+        return option['id'] if option['label'] == value || option['code'] == value
       end
     end
     value
