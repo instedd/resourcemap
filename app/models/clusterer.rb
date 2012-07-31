@@ -41,7 +41,8 @@ class Clusterer
       cluster[:max_lng] = lng if lng > cluster[:max_lng]
       cluster[:lat_sum] += lat
       cluster[:lng_sum] += lng
-      cluster[:highlighted] ||= !site[:property].nil? && !@highlight[:hierachy_selected].nil? && (site[:property] == @highlight[:hierachy_selected])
+      cluster[:highlighted] ||= !site[:property].nil? && !@highlight[:hierachy_selected].nil? &&
+                                  (site[:property] == @highlight[:hierachy_selected] || site[:property].include?(@highlight[:hierachy_selected]) )
 
       Plugin.hooks(:clusterer).each do |clusterer|
         clusterer[:map].call site, cluster
