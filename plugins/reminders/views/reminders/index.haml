@@ -9,13 +9,20 @@
     <!-- ko if: $data != $root.currentReminder() -->
     .box.grey.w60
       .toptitle
-        %span{ko(text: 'name')}
+        %span{ko(text: :name)}
         &rarr;
-        %em{ko(text: 'getSitesRepeatLabel()')}
+        %em{ko(text: :repeatName)}
+        %em for
+        <!-- ko if: isAllSites -->
+        %em all sites
+        <!-- /ko -->
+        <!-- ko if: !isAllSites() -->
+        %em{ko(text: :sitesName)}
+        <!-- /ko -->
       .rightbuttons
         %button.fdelete{ ko(click: '$root.deleteReminder') }
       .message
-        %span{ko(text: 'reminder_message')}
+        %span{ko(text: :reminderMessage)}
       %button.farrow{ko(click: '$root.editReminder')} Edit
     <!-- /ko -->
     
@@ -23,11 +30,11 @@
     <!-- ko if: $data == $root.currentReminder() -->
     -# <!-- ko with: currentReminder -->
     .box.w60
-      %label{ko(css: {error: 'nameError'})} Name
+      %label{ko(css: {error: :nameError})} Name
       %br/
-      %input.w30{ko(value: 'name', valueUpdate: :afterkeydown), type: :text}
+      %input.w30{ko(value: :name, valueUpdate: :afterkeydown), type: :text}
       %br/
-      %label{ko(css: {error: 'sitesError'})} Sites
+      %label{ko(css: {error: :sitesError})} Sites
       %br/
       %label.smalltext site's owner will receive this reminder
       %br
@@ -37,20 +44,20 @@
       %label Some sites
       %br
       .middlebuttons{ko(visible: '!isAllSites()' )}
-        %input.sites{ko(autocompleteTagField: 'sites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
+        %input.sites{ko(autocompleteTagField: :sites, objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: :id, displayField: :name, type: :text}
       %br/
-      %label{ko(css: {error: 'reminderDateError'})} Date
+      %label{ko(css: {error: :reminderDateError})} Date
       %br/
 
       %input.ux-datepicker.w20{ko(datePicker: :reminderDate), type: :text }
       %select{ko(options: :TIMES, value: :reminderTime)}
       %label repeat
-      %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat, hasfocus: true)}
+      %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat)}
       %br/
 
-      %label{ko(css: {error: 'reminderMessageError'})} Message
+      %label{ko(css: {error: :reminderMessageError})} Message
       %br/
-      %textarea.ux-wajbar.w30{ko(value: :reminder_message, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
+      %textarea.ux-wajbar.w30{ko(value: :reminderMessage, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
 
       .clear
 
@@ -64,7 +71,7 @@
         %a.tgrey{ko(click: '$root.cancelReminder'), href: 'javascript:void(0)' } Cancel
         <!-- /ko -->
         <!-- ko if: !valid() -->
-        %span{ko(text: "error()"), style: 'color:red;margin-left:20px'}
+        %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red; margin-left:20px'}
         <!-- /ko -->
     <!-- /ko -->
     %br/

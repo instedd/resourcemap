@@ -1,10 +1,11 @@
 onReminders ->
   class @Reminder 
     constructor: (data) ->
-      @id = ko.observable data?.id
-      @name = ko.observable data?.name
-      @isAllSites = ko.observable data.is_all_site ? true
-      @targetFor = ko.computed
+      @id           = data?.id
+      @collectionId = data?.collection_id
+      @name         = ko.observable data?.name
+      @isAllSites   = ko.observable data.is_all_site ? true
+      @targetFor    = ko.computed
         read: -> if @isAllSites() then 'all_sites' else 'some_sites'
         write: (value) -> 
           @isAllSites switch value
@@ -12,72 +13,47 @@ onReminders ->
             when 'some_sites' then false
             else true
         owner: @
+      @sites            = ko.observableArray $.map data.sites ? [], (site) -> new Site site
+      @sitesName        = ko.computed => $.map(@sites(), (site) -> site.name).join ', '
       @reminderDateTime = new ReminderDateTime data.reminder_date
-      @reminderDate = ko.observable @reminderDateTime.getDate()
-      @reminderTime = ko.observable @reminderDateTime.getTime()
-      @reminder_message = ko.observable data?.reminder_message
-      @repeat = ko.observable window.model.findRepeat(data?.repeat_id)
+      @reminderDate     = ko.observable @reminderDateTime.getDate()
+      @reminderTime     = ko.observable @reminderDateTime.getTime()
+      @repeat           = ko.observable data?.repeat
+      @repeatName       = ko.computed => @repeat()?.name()
+      @reminderMessage  = ko.observable data?.reminder_message
 
-      @collection_id = ko.observable data?.collection_id
-      
-      if @isAllSites()
-        @sites = ko.observableArray []
-      else
-        @sites = ko.observableArray $.map(data?.sites ? [], (site) -> new Site(site))
-      
-      @nameError = ko.computed =>
-        if $.trim(@name()).length > 0 
-          return null
-        else
-          return "Reminder's name is missing"
-      @sitesError = ko.computed =>
-        if !@isAllSites() and @sites().length == 0 then 'Sites is missing' else null
-
+      @nameError            = ko.computed => "Reminder's name is missing" if $.trim(@name()).length == 0
+      @sitesError           = ko.computed => "Sites is missing" if !@isAllSites() and @sites().length == 0
       # FIXME: reminderDate is not set when user type in invalid date into datepicker
-      @reminderDateError = ko.computed =>
-        if @reminderDate().isDate()
-          return null
-        else
-          return "Reminder's date is missing"
+      @reminderDateError    = ko.computed => "Reminder's date is invalid" unless @reminderDate().isDate()
+      @reminderMessageError = ko.computed => "Reminder's message is missing" if $.trim(@reminderMessage()).length == 0
 
-      @reminderMessageError = ko.computed =>
-        if $.trim(@reminder_message()).length > 0
-          return null
-        else
-          return "Reminder's message is missing"
-
-      @error = ko.computed =>
-        errorMessage = @nameError() || @sitesError() || @reminderDateError() || @reminderMessageError()
-        # errorMessage = @nameError() || @reminderDateError() || @reminderMessageError()
-        if errorMessage then "Can't save: " + errorMessage else ""
-
+      @error = ko.computed => @nameError() ? @sitesError() ? @reminderDateError() ? @reminderMessageError()
       @valid = ko.computed => !@error()
 
     updateReminderDate: ->
       @reminderDateTime.setDate(@reminderDate()).setTime(@reminderTime())
-      
+
+    clone: =>
+      new Reminder
+        id                : @id
+        name              : @name()
+        is_all_site       : @isAllSites()
+        reminder_date     : @reminderDate.toString()
+        repeat            : @repeat()
+        reminder_message  : @reminderMessage()
+        collection_id     : @collectionId
+
     toJson: =>
-      id: @id()
+      id: @id
       name: @name()
       reminder_date: @updateReminderDate().toString()
-      reminder_message: @reminder_message()
-      repeat_id: @repeat()?.id()
-      collection_id: @collection_id()
+      reminder_message: @reminderMessage()
+      repeat_id: @repeat().id()
+      collection_id: @collectionId
       is_all_site: @isAllSites()
       sites: $.map(@sites(), (x) -> x.id) unless @isAllSites()
-
-    toReminderJSON: =>
-      id: @id()
-      name: @name()
-      reminder_date: @updateReminderDate().toString()
-      reminder_message: @reminder_message()
-      repeat_id: @repeat().id()
-      repeat: @repeat().toJSON()
-      collection_id: @collection_id()
-      is_all_site: @isAllSites()
-      sites: $.map(@sites(), (site) -> site.toJSON()) unless @isAllSites()
-
+   
     getSitesRepeatLabel: =>
       sites = if @isAllSites() then ["all sites"] else $.map @sites(), (site) => site.name
       detail = @repeat().name() + " for " + sites.join(",")
-        

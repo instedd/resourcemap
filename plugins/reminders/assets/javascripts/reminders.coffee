@@ -10,11 +10,11 @@ onReminders -> if $('#reminders-main').length > 0
   ko.applyBindings(window.model)
   
   $.get '/repeats.json', (data) ->
-    repeats = $.map data, (repeat) ->
-      new Repeat repeat
-    window.model.repeats repeats
+    window.model.repeats $.map data, (repeat) -> new Repeat repeat
 
     $.get "/plugin/reminders/collections/#{collectionId}/reminders.json", (data) ->
-      window.model.reminders $.map data, (reminder) -> new Reminder reminder
+      window.model.reminders $.map data, (reminder) ->
+        reminder.repeat = window.model.findRepeat repeatId if repeatId = reminder.repeat_id
+        new Reminder reminder
   
   $('.hidden-until-loaded').show()

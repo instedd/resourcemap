@@ -1,13 +1,13 @@
 describe 'Reminders plugin', ->
   beforeEach ->
     window.runOnCallbacks 'reminders'
-
-    @collectionId = 1
-    window.model = new MainViewModel @collectionId
+    @repeat = new Repeat name: 'Every Monday'
 
   describe 'Reminder', ->
     beforeEach ->
-      @reminder = new Reminder name: 'Foo'
+      @site_a = new Site name: 'Site A'
+      @site_b = new Site name: 'Site B'
+      @reminder = new Reminder name: 'Foo', collection_id: 1, repeat: @repeat
 
     it 'should have name', ->
       expect(@reminder.name()).toEqual('Foo')
@@ -16,7 +16,7 @@ describe 'Reminders plugin', ->
       expect(@reminder.targetFor()).toEqual('all_sites')
 
     it 'should not have sites error', ->
-      expect(@reminder.sitesError()).toBeNull()
+      expect(@reminder.sitesError()).toBeUndefined()
 
     it 'should have reminder date', ->
       expect(@reminder.reminderDate()).not.toBeNull()
@@ -29,6 +29,13 @@ describe 'Reminders plugin', ->
       json = @reminder.toJson()
       expect(json.reminder_date).toContain 'Jul 25 2012'
 
+    it 'should get repeat name', ->
+      expect(@reminder.repeatName()).toEqual 'Every Monday'
+
+    it 'should get sites name', ->
+      @reminder.sites [@site_a, @site_b]
+      expect(@reminder.sitesName()).toEqual 'Site A, Site B'
+
     describe 'target for some sites', ->
       beforeEach ->
         @reminder.targetFor 'some_sites'
@@ -38,3 +45,30 @@ describe 'Reminders plugin', ->
 
       it 'should have sites error', ->
         expect(@reminder.sitesError()).toEqual 'Sites is missing'
+
+    describe '#errors', ->
+      it 'should check name error', ->
+        @reminder.name ''
+        expect(@reminder.error()).toEqual "Reminder's name is missing"
+
+      describe 'sites error', ->
+        beforeEach ->
+          @reminder.isAllSites false
+          @reminder.reminderMessage 'Hello'
+
+        it 'should have sites error', ->
+          expect(@reminder.error()).toEqual "Sites is missing"
+
+        it 'should not have sites error', ->
+          @reminder.sites [@site_a]
+          expect(@reminder.error()).toBeUndefined()
+
+      it 'should check reminder date error', ->
+        @reminder.reminderDate 'not-a-date'
+        expect(@reminder.error()).toEqual "Reminder's date is invalid"
+
+      it 'should check reminder message error', ->
+        expect(@reminder.error()).toEqual "Reminder's message is missing"
+
+    it 'should clone reminder', ->
+      expect(@reminder.clone()).not.toBe @reminder
