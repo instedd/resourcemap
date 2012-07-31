@@ -59,7 +59,10 @@ class SitesController < ApplicationController
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search] if params[:search].present?
     search.location_missing if params[:location_missing].present?
-    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing)
+    if params[:selected_hierarchy].present?
+      search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchy]
+    end
+    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :selected_hierarchy, :hierarchy_code)
 
     render json: search.results
   end

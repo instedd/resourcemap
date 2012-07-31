@@ -7,6 +7,10 @@ class Clusterer
     @clusters = Hash.new { |h, k| h[k] = {lat_sum: 0, lng_sum: 0, count: 0, min_lat: 90, max_lat: -90, min_lng: 180, max_lng: -180} }
     @sites = []
     @clustering_enabled = @zoom < 20
+    @highlight = {}
+
+    @hierarchy_code = nil
+    @hierachy_selected_name = nil
   end
 
   def self.cell_size_for(zoom)
@@ -17,6 +21,11 @@ class Clusterer
 
   def self.zoom_for(size)
     Math.log2(CellSize / size).floor
+  end
+
+  def highlight(hierarchy_info)
+    @highlight[:hierarchy_code] = hierarchy_info[:code]
+    @highlight[:hierachy_selected_name] = hierarchy_info[:selected_name]
   end
 
   def add(site)
@@ -32,6 +41,10 @@ class Clusterer
       cluster[:max_lng] = lng if lng > cluster[:max_lng]
       cluster[:lat_sum] += lat
       cluster[:lng_sum] += lng
+
+      if !@highlight.empty?
+        #cluster[:highlighted] = cluster[:highlighted] || site.
+      end
 
       Plugin.hooks(:clusterer).each do |clusterer|
         clusterer[:map].call site, cluster

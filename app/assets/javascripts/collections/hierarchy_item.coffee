@@ -15,6 +15,7 @@ onCollections ->
       collection.hierarchyItemsMap[data.id] = @
 
       @id = data.id
+
       @name = data.name ? data.label
       @level = level
       @selected = ko.observable(false)

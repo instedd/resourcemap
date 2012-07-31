@@ -12,6 +12,11 @@ class ElasticSearch::SitesAdapter < Psych::Handler
     Psych::Parser.new(self).parse reader
   end
 
+  def return_property(property)
+    @return_property = property
+    @site[:property] = ""
+  end
+
   def scalar(value, anchor, tag, plain, quoted, style)
     if value == '_source'
       @in_source = true
@@ -22,23 +27,47 @@ class ElasticSearch::SitesAdapter < Psych::Handler
       @site[:collection_id] = $1.to_i
       @in_index = false
     elsif @in_source
-      return if @in_properties
-      if @current_property
-        case @current_property
-        when 'id' then @site[:id] = value.to_i
-        when 'lat' then @site[:lat] = value.to_f
-        when 'lon' then @site[:lng] = value.to_f
-        when 'name' then @site[:name] = value.to_s
-        else @site[@current_property.to_sym] = value.to_s unless IGNORE_FIELDS.include? @current_property
+      if @in_properties
+        return unless @return_property
+        if @current_property
+          if @current_property == @return_property
+             @site[:property] << value.to_s
+          end
+          @current_property = nil if !@in_sequence
+        else
+          @current_property = value
         end
-        @current_property = nil
       else
-        case value
-        when 'properties' then @in_properties = true
-        else @current_property = value
+        if @current_property
+          case @current_property
+          when 'id' then @site[:id] = value.to_i
+          when 'lat' then @site[:lat] = value.to_f
+          when 'lon' then @site[:lng] = value.to_f
+          when 'name' then @site[:name] = value.to_s
+          else
+            @site[@current_property.to_sym] = value.to_s unless IGNORE_FIELDS.include? @current_property
+          end
+          @current_property = nil
+        else
+          case value
+          when 'properties' then @in_properties = true
+          else @current_property = value
+          end
         end
       end
     end
+  end
+
+  def start_sequence(anchor, tag, implicit, style)
+    if  @return_property && @current_property == @return_property
+      @in_sequence = true
+      @site[:property] = []
+    end
+  end
+
+  def end_sequence
+    @current_property = nil
+     @in_sequence = false
   end
 
   def start_mapping(anchor, tag, implicit, style)

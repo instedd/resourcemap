@@ -6,6 +6,7 @@ class MapSearch
     @search = Collection.new_tire_search(*@collection_ids, options)
     @search.size 100000
     @bounds = {s: -90, n: 90, w: -180, e: 180}
+    @hierarchy = {}
   end
 
   def zoom=(zoom)
@@ -21,16 +22,23 @@ class MapSearch
     @exclude_id = id
   end
 
+  def selected_hierarchy(hierarchy_code, selected_hierarchy_name)
+    @hierarchy[:code] = hierarchy_code
+    @hierarchy[:selected_name] = selected_hierarchy_name
+  end
+
   def results
     return {} if @collection_ids.empty?
 
     listener = clusterer = Clusterer.new(@zoom)
+    clusterer.highlight @hierarchy if @hierarchy
     listener = ElasticSearch::SitesAdapter::SkipIdListener.new(listener, @exclude_id) if @exclude_id
 
     set_bounds_filter
     apply_queries
 
     adapter = ElasticSearch::SitesAdapter.new listener
+    adapter.return_property @hierarchy[:code] if @hierarchy
     adapter.parse @search.stream
     clusterer.clusters
   end

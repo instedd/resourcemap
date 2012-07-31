@@ -57,6 +57,8 @@ onCollections ->
       # Load more sites when we expand, but only the first time
       if !@expanded() && @hasMoreSites() && @sitesPage == 1
         @loadMoreSites()
+      window.model.selectHierarchy(this) if !@expanded()
       @expanded(!@expanded())
+      window.model.reloadMapSites()
 
     @createSite: (site) -> new Site(@, site)

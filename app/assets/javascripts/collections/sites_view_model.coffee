@@ -4,6 +4,7 @@ onCollections ->
     @constructor: ->
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
+      @selectedHierarchy = ko.observable()
       @loadingSite = ko.observable(false)
       @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
       @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
@@ -121,6 +122,9 @@ onCollections ->
           @reloadMapSites() if @showingMap()
 
     @selectSite: (site) ->
+      if @selectedHierarchy()
+          @selectedHierarchy(null)
+
       if @showingMap()
         if @selectedSite()
           if @selectedSite().marker
@@ -158,6 +162,11 @@ onCollections ->
           @selectedSite(site)
 
       @rewriteUrl()
+
+    @selectHierarchy: (hierarchy) ->
+      if @selectedSite()
+        @selectedSite(null)
+      @selectedHierarchy(hierarchy)
 
     @unselectSite: ->
       @selectSite(@selectedSite()) if @selectedSite()
