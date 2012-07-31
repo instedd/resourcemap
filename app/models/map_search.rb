@@ -22,9 +22,9 @@ class MapSearch
     @exclude_id = id
   end
 
-  def selected_hierarchy(hierarchy_code, selected_hierarchy_name)
+  def selected_hierarchy(hierarchy_code, selected_hierarchy)
     @hierarchy[:code] = hierarchy_code
-    @hierarchy[:selected_name] = selected_hierarchy_name
+    @hierarchy[:selected] = selected_hierarchy
   end
 
   def results
@@ -38,7 +38,7 @@ class MapSearch
     apply_queries
 
     adapter = ElasticSearch::SitesAdapter.new listener
-    adapter.return_property @hierarchy[:code] if @hierarchy
+    adapter.return_property @hierarchy[:code] if @hierarchy[:code]
     adapter.parse @search.stream
     clusterer.clusters
   end
