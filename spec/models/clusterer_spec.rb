@@ -59,4 +59,16 @@ describe Clusterer do
      ])
    end
 
+   it "should not highlight cluster when it not contains sites under certain hierarchy" do
+      clusterer.highlight(code: "beds", selected: "2")
+      clusterer.add :id => 1, :lat => 20, :lng => 30, :property => "7"
+      clusterer.add :id => 2, :lat => 21, :lng => 31, :property => "1"
+
+      clusters = clusterer.clusters
+      clusters[:sites].should be_nil
+      clusters[:clusters].should eq([
+        {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 0, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted => false}
+      ])
+    end
+
 end
