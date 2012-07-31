@@ -13,7 +13,7 @@ module Site::ActivityConcern
     site_data['lat'] = lat if lat
     site_data['lng'] = lng if lng
     site_data['properties'] = properties if properties.present?
-    Activity.create! kind: 'site_created', collection_id: collection.id, site_id: id, user_id: user.id, data: site_data
+    Activity.create! item_type: 'site', action: 'created', collection_id: collection.id, site_id: id, user_id: user.id, data: site_data
   end
 
   def record_name_was
@@ -45,11 +45,11 @@ module Site::ActivityConcern
     end
 
     if site_changes.present?
-      Activity.create! kind: 'site_changed', collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => @name_was || name, 'changes' => site_changes}
+      Activity.create! item_type: 'site', action: 'changed', collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => @name_was || name, 'changes' => site_changes}
     end
   end
 
   def create_deleted_activity
-    Activity.create! kind: 'site_deleted', collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => name}
+    Activity.create! item_type: 'site', action: 'deleted', collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => name}
   end
 end

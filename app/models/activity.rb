@@ -1,5 +1,10 @@
 class Activity < ActiveRecord::Base
-  Kinds = %W(collection_created collection_imported collection_csv_imported layer_created layer_changed layer_deleted site_created site_changed site_deleted)
+  ItemTypesAndActions = {
+    'collection' => %w(created imported csv_imported),
+    'layer' => %w(created changed deleted),
+    'site' => %w(created changed deleted)
+  }
+  Kinds = Activity::ItemTypesAndActions.map { |item_type, actions| actions.map { |action| "#{item_type},#{action}" } }.flatten
 
   belongs_to :collection
   belongs_to :user
@@ -9,29 +14,40 @@ class Activity < ActiveRecord::Base
 
   serialize :data
 
-  validates_inclusion_of :kind, :in => Kinds
+  validates_inclusion_of :item_type, :in => ItemTypesAndActions.keys
 
   def description
-    case kind
-    when 'collection_created'
+    case [item_type, action]
+    when ['collection', 'created']
       "Collection '#{data['name']}' was created"
     when 'collection_imported'
       "Import wizard: #{sites_were_imported_text}"
-    when 'collection_csv_imported'
+    when ['collection', 'csv_imported']
       "Import CSV: #{sites_were_imported_text}"
-    when 'layer_created'
+    when ['layer', 'created']
       fields_str = data['fields'].map { |f| "#{f['name']} (#{f['code']})" }.join ', '
       str = "Layer '#{data['name']}' was created with fields: #{fields_str}"
-    when 'layer_changed'
+    when ['layer', 'changed']
       layer_changed_text
-    when 'layer_deleted'
+    when ['layer', 'deleted']
       str = "Layer '#{data['name']}' was deleted"
-    when 'site_created'
+    when ['site', 'created']
       "Site '#{data['name']}' was created"
-    when 'site_changed'
+    when ['site', 'changed']
       site_changed_text
-    when 'site_deleted'
+    when ['site', 'deleted']
       "Site '#{data['name']}' was deleted"
+    end
+  end
+
+  def item_id
+    case item_type
+    when 'collection'
+      collection_id
+    when 'layer'
+      layer_id
+    when 'site'
+      site_id
     end
   end
 

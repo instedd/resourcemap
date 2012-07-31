@@ -11,10 +11,9 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120726080424) do
+ActiveRecord::Schema.define(:version => 20120731200609) do
 
   create_table "activities", :force => true do |t|
-    t.string   "kind"
     t.integer  "user_id"
     t.integer  "collection_id"
     t.integer  "layer_id"
@@ -23,6 +22,8 @@ ActiveRecord::Schema.define(:version => 20120726080424) do
     t.text     "data"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.string   "item_type"
+    t.string   "action"
   end
 
   create_table "collections", :force => true do |t|

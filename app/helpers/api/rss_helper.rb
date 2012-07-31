@@ -65,6 +65,11 @@ module Api::RssHelper
       xml.title "[In collection '#{activity.collection.name}' by user '#{activity.user.display_name}'] #{activity.description} "
       xml.pubDate activity.created_at.rfc822
       xml.guid activity.id
+      xml.rm :collection, activity.collection.name
+      xml.rm :itemtype, activity.item_type
+      xml.rm :itemid, activity.item_id
+      xml.rm :action, activity.action
+      xml.rm :user, activity.user.display_name
     end
   end
 

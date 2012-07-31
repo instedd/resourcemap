@@ -5,7 +5,7 @@ describe Activity do
   let!(:collection) { user.create_collection Collection.make_unsaved }
 
   it "creates one when collection is created" do
-    assert_activity 'collection_created',
+    assert_activity 'collection', 'created',
       'collection_id' => collection.id,
       'user_id' => user.id,
       'data' => {'name' => collection.name},
@@ -17,7 +17,7 @@ describe Activity do
 
     layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
 
-    assert_activity 'layer_created',
+    assert_activity 'layer', 'created',
       'collection_id' => collection.id,
       'layer_id' => layer.id,
       'user_id' => user.id,
@@ -34,7 +34,7 @@ describe Activity do
       layer.name = 'Layer2'
       layer.save!
 
-      assert_activity 'layer_changed',
+      assert_activity 'layer', 'changed',
         'collection_id' => collection.id,
         'layer_id' => layer.id,
         'user_id' => user.id,
@@ -51,7 +51,7 @@ describe Activity do
 
       field = layer.fields.last
 
-      assert_activity 'layer_changed',
+      assert_activity 'layer', 'changed',
         'collection_id' => collection.id,
         'layer_id' => layer.id,
         'user_id' => user.id,
@@ -68,7 +68,7 @@ describe Activity do
 
       layer.update_attributes! fields_attributes: [{id: field.id, code: 'one1', name: 'One', ord: 1}]
 
-      assert_activity 'layer_changed',
+      assert_activity 'layer', 'changed',
         'collection_id' => collection.id,
         'layer_id' => layer.id,
         'user_id' => user.id,
@@ -85,7 +85,7 @@ describe Activity do
 
       layer.update_attributes! fields_attributes: [{id: field.id, code: 'one', name: 'One1', ord: 1}]
 
-      assert_activity 'layer_changed',
+      assert_activity 'layer', 'changed',
         'collection_id' => collection.id,
         'layer_id' => layer.id,
         'user_id' => user.id,
@@ -102,7 +102,7 @@ describe Activity do
 
       layer.update_attributes! fields_attributes: [{id: field.id, code: 'one', name: 'One', kind: 'select_one', config: {'options' => [{'code' => '2', 'label' => 'Two'}]}, ord: 1}]
 
-      assert_activity 'layer_changed',
+      assert_activity 'layer', 'changed',
         'collection_id' => collection.id,
         'layer_id' => layer.id,
         'user_id' => user.id,
@@ -119,7 +119,7 @@ describe Activity do
 
       layer.update_attributes! fields_attributes: [{id: field.id, _destroy: true}]
 
-      assert_activity 'layer_changed',
+      assert_activity 'layer', 'changed',
         'collection_id' => collection.id,
         'layer_id' => layer.id,
         'user_id' => user.id,
@@ -135,7 +135,7 @@ describe Activity do
 
     layer.destroy
 
-    assert_activity 'layer_deleted',
+    assert_activity 'layer', 'deleted',
       'collection_id' => collection.id,
       'layer_id' => layer.id,
       'user_id' => user.id,
@@ -151,7 +151,7 @@ describe Activity do
 
     site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {field.es_code => 20}, user: user
 
-    assert_activity 'site_created',
+    assert_activity 'site', 'created',
       'collection_id' => collection.id,
       'user_id' => user.id,
       'site_id' => site.id,
@@ -167,7 +167,7 @@ describe Activity do
       1, Site 1, 30, 40
     ).strip
 
-    assert_activity 'collection_csv_imported',
+    assert_activity 'collection', 'csv_imported',
       'collection_id' => collection.id,
       'user_id' => user.id,
       'data' => {'sites' => 1},
@@ -188,7 +188,7 @@ describe Activity do
       site.name = 'Bar'
       site.save!
 
-      assert_activity 'site_changed',
+      assert_activity 'site', 'changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
@@ -204,7 +204,7 @@ describe Activity do
       site.lat = 15.1234567
       site.save!
 
-      assert_activity 'site_changed',
+      assert_activity 'site', 'changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
@@ -222,7 +222,7 @@ describe Activity do
 
       site.save!
 
-      assert_activity 'site_changed',
+      assert_activity 'site', 'changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
@@ -239,7 +239,7 @@ describe Activity do
       site.properties[beds.es_code] = 30
       site.save!
 
-      assert_activity 'site_changed',
+      assert_activity 'site', 'changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
@@ -256,7 +256,7 @@ describe Activity do
       site.properties[beds.es_code] = 30
       site.save!
 
-      assert_activity 'site_changed',
+      assert_activity 'site', 'changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
@@ -274,7 +274,7 @@ describe Activity do
       site.properties[text.es_code] = 'bar'
       site.save!
 
-      assert_activity 'site_changed',
+      assert_activity 'site', 'changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
@@ -313,7 +313,7 @@ describe Activity do
 
     site.destroy
 
-    assert_activity 'site_deleted',
+    assert_activity 'site', 'deleted',
       'collection_id' => collection.id,
       'user_id' => user.id,
       'site_id' => site.id,
@@ -321,11 +321,12 @@ describe Activity do
       'description' => "Site '#{site.name}' was deleted"
   end
 
-  def assert_activity(kind, options = {})
+  def assert_activity(item_type, action, options = {})
     activities = Activity.all
     activities.length.should eq(1)
 
-    activities[0].kind.should eq(kind)
+    activities[0].item_type.should eq(item_type)
+    activities[0].action.should eq(action)
     options.each do |key, value|
       activities[0].send(key).should eq(value)
     end

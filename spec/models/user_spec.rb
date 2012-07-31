@@ -55,7 +55,7 @@ describe User do
     end
 
     it "returns activities for user membership" do
-      Activity.make collection_id: collection.id, user_id: user.id, kind: 'collection_created'
+      Activity.make collection_id: collection.id, user_id: user.id, item_type: 'collection', action: 'created'
 
       user.activities.length.should eq(1)
     end
@@ -63,7 +63,7 @@ describe User do
     it "doesn't return activities for user membership" do
       user2 = User.make
 
-      Activity.make collection_id: collection.id, user_id: user.id, kind: 'collection_created'
+      Activity.make collection_id: collection.id, user_id: user.id, item_type: 'collection', action: 'created'
 
       user2.activities.length.should eq(0)
     end

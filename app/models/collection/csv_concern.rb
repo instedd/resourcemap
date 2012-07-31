@@ -48,7 +48,7 @@ module Collection::CsvConcern
 
       new_sites.each &:save!
 
-      Activity.create! kind: 'collection_csv_imported', collection_id: id, user_id: user.id, 'data' => {'sites' => new_sites.length}
+      Activity.create! item_type: 'collection', action: 'csv_imported', collection_id: id, user_id: user.id, 'data' => {'sites' => new_sites.length}
     end
   end
 

@@ -18,7 +18,7 @@ class Layer < ActiveRecord::Base
       hash['config'] = field.config if field.config
       hash
     end
-    Activity.create! kind: 'layer_created', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name, 'fields' => fields_data}
+    Activity.create! item_type: 'layer', action: 'created', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name, 'fields' => fields_data}
   end
 
   before_update :record_status_before_update, :unless => :mute_activities
@@ -66,12 +66,12 @@ class Layer < ActiveRecord::Base
     layer_changes['changed'] = changed if changed.present?
     layer_changes['deleted'] = deleted if deleted.present?
 
-    Activity.create! kind: 'layer_changed', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => @name_was || name, 'changes' => layer_changes}
+    Activity.create! item_type: 'layer', action: 'changed', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => @name_was || name, 'changes' => layer_changes}
   end
 
   after_destroy :create_deleted_activity, :unless => :mute_activities, :if => :user
   def create_deleted_activity
-    Activity.create! kind: 'layer_deleted', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name}
+    Activity.create! item_type: 'layer', action: 'deleted', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name}
   end
 
   # Returns the next ord value for a field that is going to be created

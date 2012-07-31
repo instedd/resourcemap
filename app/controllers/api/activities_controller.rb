@@ -16,7 +16,7 @@ class Api::ActivitiesController < ApplicationController
     end
 
     if params[:kinds]
-      @activities = @activities.where(kind: params[:kinds])
+      @activities = @activities.where("CONCAT(item_type, ',', action) IN (?)", params[:kinds])
     end
 
     @activities = @activities.all

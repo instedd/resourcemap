@@ -14,7 +14,7 @@ class ActivitiesController < ApplicationController
         end
 
         if params[:kinds]
-          acts = acts.where(kind: params[:kinds])
+          acts = acts.where("CONCAT(item_type, ',', action) IN (?)", params[:kinds])
         end
 
         activities_json = acts.map do |activity|
