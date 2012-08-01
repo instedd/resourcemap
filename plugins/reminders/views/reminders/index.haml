@@ -44,7 +44,7 @@
       %label Some sites
       %br
       .middlebuttons{ko(visible: '!isAllSites()' )}
-        %input.sites{ko(autocompleteTagField: :sites, objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: :id, displayField: :name, type: :text}
+        %input.sites{ko(autocompleteTagField: :sites, objectType: "Site"), proxy: collection_sites_path(collection), valueField: :id, displayField: :name, type: :text}
       %br/
       %label{ko(css: {error: :reminderDateError})} Date
       %br/

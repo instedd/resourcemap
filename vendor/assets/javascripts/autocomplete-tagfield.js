@@ -72,7 +72,7 @@
 		var tagList = inputItem.parent();
 
 		// set presets
-		for (i in preset) {
+		for(i=0; i<preset.length; i++) {
 			addItem(preset[i]);
 		}
 
@@ -142,10 +142,10 @@
 		
 		function toJSON(){
 		  var items = new Array();
-		  for(key in inserted){
+		  for(i=0; i<inserted.length; i++){
 		    item = new Object();
-		    item[valueField] = inserted[key][valueField];
-		    item[displayField] = inserted[key][displayField];
+		    item[valueField] = inserted[i][valueField];
+		    item[displayField] = inserted[i][displayField];
 		    items.push(item);
 		  }
 		  return items;
@@ -209,18 +209,18 @@
 		}
 		
 		function lookupInserted(value){
-		  for(key in inserted){
-		    if(inserted[key][displayField] == value){
-		      return inserted[key];
+		  for(i=0; i<inserted.length; i++){
+		    if(inserted[i][displayField] == value){
+		      return inserted[i];
 		    }
 		  }
 		  return null;
 		}
 
 		function lookup(value) {
-			for (key in suggestionList) {
-				if (suggestionList[key][displayField] == value) {
-					return suggestionList[key];
+			for (i=0; i<suggestionList.length; i++) {
+				if (suggestionList[i][displayField] == value) {
+					return suggestionList[i];
 				}
 			}
 			return null;
