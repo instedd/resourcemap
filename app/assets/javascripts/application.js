@@ -19,6 +19,6 @@
 //= require knockout-2.1.0
 //= require sammy
 //= require autocomplete-tagfield
-//= require_tree
 //= require knockout
+//= require_tree .
 
