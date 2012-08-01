@@ -94,6 +94,8 @@ GEM
       railties (>= 3.2.0, < 5.0)
       thor (~> 0.14)
     json (1.7.3)
+    knockoutjs-rails (2.1.0)
+      railties (~> 3.1)
     libv8 (3.3.10.4)
     listen (0.4.7)
       rb-fchange (~> 0.0.5)
@@ -243,6 +245,7 @@ DEPENDENCIES
   instedd-rails (= 0.0.17)
   jasminerice
   jquery-rails
+  knockoutjs-rails
   machinist (= 1.0.6)
   mysql2
   nuntium_api (~> 0.13)
