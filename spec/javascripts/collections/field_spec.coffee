@@ -169,3 +169,22 @@ describe 'Collection', ->
         @field.removeOption(3)
         expect(@field.value()).toEqual([1])
         expect(@field.remainingOptions()).toEqual([@field.options[1], @field.options[2]])
+
+    describe 'Plugin field', ->
+      beforeEach ->
+        @user_field = new Field id: 1, code: 'owner', name: 'Owner', kind: 'user'
+        @email_field = new Field id: 2, code: 'email', name: 'Email', kind: 'email'
+        @phone_field = new Field id: 3, code: 'phone', name: 'Phone', kind: 'phone'
+        @text_field = new Field id: 4, code: 'text', name: 'Text', kind: 'text'
+
+      it 'user field should be plugin kind', ->
+        expect(@user_field.isPluginKind()).toBeTruthy()
+
+      it 'email field should be plugin kind', ->
+        expect(@email_field.isPluginKind()).toBeTruthy()
+
+      it 'phone field should be plugin kind', ->
+        expect(@phone_field.isPluginKind()).toBeTruthy()
+
+      it 'text field should not be plugin kind', ->
+        expect(@text_field.isPluginKind()).toBeFalsy()

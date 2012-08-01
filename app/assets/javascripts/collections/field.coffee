@@ -136,3 +136,5 @@ onCollections ->
         '100px'
       else
         "#{20 + @name.length * 8}px"
+
+    isPluginKind: => -1 isnt PLUGIN_FIELDS.indexOf @kind
