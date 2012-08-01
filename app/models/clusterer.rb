@@ -67,7 +67,12 @@ class Clusterer
       @clusters.each_value do |cluster|
         count = cluster[:count]
         if count == 1
-          sites_to_return.push cluster[:site]
+          site = cluster[:site]
+          site[:highlighted] = !site[:property].nil? && !@highlight[:hierachy_selected].nil? &&
+                              (site[:property] == @highlight[:hierachy_selected] || site[:property].include?(@highlight[:hierachy_selected]) )
+          site.delete(:property)
+
+          sites_to_return.push site
         else
           hash = {
             id: cluster[:id],

@@ -6,7 +6,7 @@ describe Clusterer do
   it "leaves single site alone" do
     clusterer.add id: 1, name: 'foo',lat: 30, lng: 40, collection_id: 12
     clusters = clusterer.clusters
-    clusters[:sites].should eq([{id: 1, name: 'foo', lat: 30, lng: 40, collection_id: 12}])
+    clusters[:sites].should eq([{id: 1, name: 'foo', lat: 30, lng: 40, collection_id: 12, highlighted: false}])
     clusters[:clusters].should be_nil
   end
 
@@ -75,9 +75,11 @@ describe Clusterer do
         clusterer.highlight(code: "beds", selected: "2")
         clusterer.add :id => 1, :lat => 20, :lng => 30, :property => ["7", "2"]
         clusterer.add :id => 2, :lat => 21, :lng => 31, :property => ["1", "4", "3"]
+        clusterer.add :id => 3, :lat => 34, :lng => 0, :property => ["1", "2", "3"]
 
         clusters = clusterer.clusters
-        clusters[:sites].should be_nil
+
+        clusters[:sites].should eq([{:id => 3, :lat => 34, :lng => 0, :highlighted => true}])
         clusters[:clusters].should eq([
           {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 0, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted => true}
         ])

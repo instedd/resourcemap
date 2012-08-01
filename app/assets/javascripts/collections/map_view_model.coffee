@@ -167,7 +167,14 @@ onCollections ->
       # Add markers if they are not already on the map
       for site in sites
         dataSiteIds[site.id] = site.id
-        unless @markers[site.id]
+
+        if @markers[site.id]
+          if site.highlighted
+            @setMarkerIcon @markers[site.id], 'target'
+          else
+            @setMarkerIcon @markers[site.id], 'active'
+
+        else
           if site.id == oldSelectedSiteId
             @markers[site.id] = @oldSelectedSite.marker
             @deleteMarkerListeners site.id

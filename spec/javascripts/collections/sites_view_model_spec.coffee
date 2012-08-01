@@ -9,6 +9,7 @@ describe 'Collection', ->
       @model = window.model
       @model.initialize [@collection]
 
+
     describe 'selected hierarchy', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'admu', name: 'Admin Unit', kind: 'select_one', writeable: true }
@@ -20,6 +21,9 @@ describe 'Collection', ->
         expect(@model.selectedHierarchy()).toBe(@hierarchyItem)
 
       it 'should unselect selectedField when selecting hierarchy', ->
+        # reloadMapSites calls @map.getBounds() and map is undefined in this context
+        window.model.reloadMapSites = ->
+
         site = new Site(@col_hierarchy, { name: "site 1"})
         @model.selectedSite(site)
         expect(@model.selectedSite()).toBe(site)

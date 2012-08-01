@@ -1,7 +1,7 @@
 -# Hierarchy item template (used when grouping results by hierarchy item)
 %script{type: "text/html", id: "map-hierarchy-items-template"}
   <!-- ko foreach: hierarchyItems -->
-  %tr{ko(css: {active: :selected})}
+  %tr{ko(css: {active: "$data == $root.selectedHierarchy()"})}
     %td{ko(click: :toggleExpand), style: 'height:30px;cursor:pointer'}
       %div
         %a{ko(style: {marginLeft: "'' + (level * 20) + 'px'"}), href: 'javascript:void(0)'}

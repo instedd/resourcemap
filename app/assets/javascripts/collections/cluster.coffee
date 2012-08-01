@@ -83,6 +83,12 @@ onCollections ->
         new google.maps.LatLng(cluster.min_lat, cluster.min_lng),
         new google.maps.LatLng(cluster.max_lat, cluster.max_lng)
       )
+
+      if cluster.highlighted
+        @setTarget()
+      else
+        @setActive()
+
       @setCount cluster.count
       @data = cluster
       @draw() if draw

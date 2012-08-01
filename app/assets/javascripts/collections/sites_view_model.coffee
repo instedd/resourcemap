@@ -165,7 +165,7 @@ onCollections ->
 
     @selectHierarchy: (hierarchy) ->
       if @selectedSite()
-        @selectedSite(null)
+        @unselectSite()
       @selectedHierarchy(hierarchy)
 
     @unselectSite: ->

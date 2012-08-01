@@ -57,7 +57,14 @@ onCollections ->
       # Load more sites when we expand, but only the first time
       if !@expanded() && @hasMoreSites() && @sitesPage == 1
         @loadMoreSites()
-      window.model.selectHierarchy(this) if !@expanded()
+
+
+      # Toogle select folder
+      if !@expanded()
+        window.model.selectHierarchy(this)
+      else
+        window.model.selectHierarchy(null)
+
       @expanded(!@expanded())
       window.model.reloadMapSites()
 
