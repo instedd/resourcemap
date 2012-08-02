@@ -6,6 +6,7 @@ class ElasticSearch::SitesAdapter < Psych::Handler
     @source_mappings = 0
     @properties_mappings = 0
     @site = {}
+    @site[:property] = []
   end
 
   def parse(reader)
@@ -14,7 +15,7 @@ class ElasticSearch::SitesAdapter < Psych::Handler
 
   def return_property(property)
     @return_property = property
-    @site[:property] = ""
+    @site[:property] = []
   end
 
   def scalar(value, anchor, tag, plain, quoted, style)
@@ -86,6 +87,7 @@ class ElasticSearch::SitesAdapter < Psych::Handler
       if @source_mappings == 0
         @in_source = false
         @listener.add @site
+        @site[:property] = []
       end
 
       if @in_properties

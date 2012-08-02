@@ -40,6 +40,7 @@ class MapSearch
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.return_property @hierarchy[:code] if @hierarchy[:code]
     adapter.parse @search.stream
+
     clusterer.clusters
   end
 
