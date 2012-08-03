@@ -177,6 +177,7 @@ onCollections ->
         else
           if site.id == oldSelectedSiteId
             @markers[site.id] = @oldSelectedSite.marker
+            @markers[site.id].site = site 
             @deleteMarkerListeners site.id
             @setMarkerIcon @markers[site.id], 'active'
             @oldSelectedSite.deleteMarker false
