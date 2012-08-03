@@ -42,7 +42,7 @@ class Clusterer
       cluster[:lat_sum] += lat
       cluster[:lng_sum] += lng
       cluster[:highlighted] ||= !site[:property].nil? && !@highlight[:hierachy_selected].nil? &&
-                                  (site[:property] == @highlight[:hierachy_selected] || site[:property].include?(@highlight[:hierachy_selected]) )
+                                  (site[:property].include?(@highlight[:hierachy_selected]) )
 
       Plugin.hooks(:clusterer).each do |clusterer|
         clusterer[:map].call site, cluster
@@ -69,7 +69,7 @@ class Clusterer
         if count == 1
           site = cluster[:site]
           site[:highlighted] = !site[:property].nil? && !@highlight[:hierachy_selected].nil? &&
-                              (site[:property] == @highlight[:hierachy_selected] || site[:property].include?(@highlight[:hierachy_selected]) )
+                              (site[:property].include?(@highlight[:hierachy_selected]) )
           site.delete(:property)
 
           sites_to_return.push site

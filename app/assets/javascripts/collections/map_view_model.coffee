@@ -107,27 +107,13 @@ onCollections ->
         setTimeout(( => @reloadMapSites(callback)), 100)
         return
 
-      ne = bounds.getNorthEast()
-      sw = bounds.getSouthWest()
       collection_ids = if @currentCollection()
                          [@currentCollection().id]
                        else
                           c.id for c in @collections() when c.checked()
-      query =
-        n: ne.lat()
-        s: sw.lat()
-        e: ne.lng()
-        w: sw.lng()
-        z: @map.getZoom()
-        collection_ids: collection_ids
 
-      query.selected_hierarchy = @selectedHierarchy().name if @selectedHierarchy()
-      query.hierarchy_code = window.model.groupBy().esCode if @selectedHierarchy() && window.model.groupBy().esCode
-
-      query.exclude_id = @selectedSite().id() if @selectedSite()?.id()
-      query.search = @lastSearch() if @lastSearch()
-
-      filter.setQueryParams(query) for filter in @filters()
+      zoom = @map.getZoom()
+      query = @generateQueryParams(bounds, collection_ids, zoom)
 
       @mapRequestNumber += 1
       currentMapRequestNumber = @mapRequestNumber
@@ -150,6 +136,28 @@ onCollections ->
         getCallback()
       else
         $.get "/sites/search.json", query, getCallback
+
+    @generateQueryParams: (bounds, collection_ids, zoom) ->
+      ne = bounds.getNorthEast()
+      sw = bounds.getSouthWest()
+
+      query =
+        n: ne.lat()
+        s: sw.lat()
+        e: ne.lng()
+        w: sw.lng()
+        z: zoom
+        collection_ids: collection_ids
+
+      query.selected_hierarchy = @selectedHierarchy().id if @selectedHierarchy()
+      query.hierarchy_code = window.model.groupBy().esCode if @selectedHierarchy() && window.model.groupBy().esCode
+
+      query.exclude_id = @selectedSite().id() if @selectedSite()?.id()
+      query.search = @lastSearch() if @lastSearch()
+
+      filter.setQueryParams(query) for filter in @filters()
+
+      query
 
     @onSitesChanged: (listener) ->
       @sitesChangedListeners.push listener

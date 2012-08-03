@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ElasticSearch::SitesAdapter do
   it "adapts one site" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => []
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
@@ -31,7 +31,7 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts one site without conflicting on properties" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => []
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
@@ -59,8 +59,8 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts two sites" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63
-    listener.should_receive(:add).with :id => 181985, :lat => -47.55442222700955, :lng => 137.5797882218185, :collection_id => 63
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => []
+    listener.should_receive(:add).with :id => 181985, :lat => -47.55442222700955, :lng => 137.5797882218185, :collection_id => 63, :property => []
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
@@ -93,7 +93,7 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts one site with numeric property on demand" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => "75"
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75"]
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.return_property 'vaccines'
@@ -122,7 +122,7 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts one site with numeric property on demand works ok with array in other property" do
     listener = mock('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => "75"
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75"]
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.return_property 'vaccines'
@@ -202,6 +202,46 @@ describe ElasticSearch::SitesAdapter do
             "_id" : "181984",
             "_score" : 1.0, "_source" : {"id":181984,"type":"site","location":{"lat":-37.55442222700955,"lon":136.5797882218185},"properties":{"beds":84,"vaccines":[75, 76],"patients":61}}
           } ]
+        }
+      }
+    )
+  end
+
+
+  it "should not repeat when parsing more than one site" do
+    listener = mock('listener')
+    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75", "76"]
+    listener.should_receive(:add).with :id => 181985, :lat => -35.55442222700955, :lng => 124.5797882218185, :collection_id => 63, :property => ["75"]
+
+    adapter = ElasticSearch::SitesAdapter.new listener
+    adapter.return_property 'vaccines'
+    adapter.parse %(
+      {
+        "took" : 20,
+        "timed_out" : false,
+        "_shards" : {
+          "total" : 55,
+          "successful" : 55,
+          "failed" : 0
+        },
+        "hits" : {
+          "total" : 4,
+          "max_score" : 1.0,
+          "hits" : [ {
+            "_index" : "collection_63",
+            "_type" : "site",
+            "_id" : "181984",
+            "_score" : 1.0, "_source" :
+            {"id":181984,"type":"site","location":{"lat":-37.55442222700955,"lon":136.5797882218185},"properties":{"beds":84,"vaccines":[75, 76],"patients":61}}
+
+          }, {
+            "_index" : "collection_63",
+            "_type" : "site",
+            "_id" : "181985",
+            "_score" : 1.0, "_source" :
+            {"id":181985,"type":"site","location":{"lat":-35.55442222700955,"lon":124.5797882218185},"properties":{"beds":84,"vaccines":[75],"patients":61}}
+          } ]
+
         }
       }
     )

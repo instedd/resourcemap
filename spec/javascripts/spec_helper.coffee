@@ -20,6 +20,22 @@ class window.google.maps.Size
 class window.google.maps.Point
 class window.google.maps.MarkerImage
 class window.google.maps.LatLng
+  constructor: (@lati, @long, @noWrap) ->
+
+  lat: ->
+    @lati
+
+  lng: ->
+    @long
+
+class window.google.maps.LatLngBounds
+  constructor: (@sw, @ne) ->
+
+  getNorthEast: ->
+    @ne
+  getSouthWest: ->
+    @sw
+
 class window.google.maps.Marker
   setIcon: -> 'setIcon'
   setShadow: -> 'setShadow'
