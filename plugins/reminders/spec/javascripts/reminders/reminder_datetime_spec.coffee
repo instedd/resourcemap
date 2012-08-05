@@ -4,22 +4,22 @@ describe 'Reminders plugin', ->
 
   describe 'Reminder datetime', ->
     beforeEach ->
-      @datetime = new ReminderDateTime ''
-      @now = new Date()
+      @date = new Date(2012, 7, 5, 5, 0)
+      @reminderDateTime = new ReminderDateTime @date
 
     it 'should get date', ->
-      expect(@datetime.getDate()).toEqual @now.strftime '%Y-%m-%d'
+      expect(@reminderDateTime.getDate()).toEqual '2012-08-05'
 
     it 'should get time', ->
-      expect(@datetime.getTime()).toEqual '00:00'
+      expect(@reminderDateTime.getTime()).toEqual '05:00'
 
     it 'should convert to string', ->
-      expect(@datetime.toString().isDate()).toBeTruthy()
+      expect(@reminderDateTime.toString()).toEqual '2012-08-05T05:00'
 
     it 'should set date', ->
-      @datetime.setDate '2012-08-01'
-      expect(@datetime.getDate()).toEqual '2012-08-01'
+      @reminderDateTime.setDate '2012-08-01'
+      expect(@reminderDateTime.getDate()).toEqual '2012-08-01'
 
     it 'should set time', ->
-      @datetime.setTime '14:00'
-      expect(@datetime.getTime()).toEqual '14:00'
+      @reminderDateTime.setTime '14:00'
+      expect(@reminderDateTime.getTime()).toEqual '14:00'

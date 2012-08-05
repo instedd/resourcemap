@@ -27,19 +27,18 @@ onReminders ->
   ]
 
   class @ReminderDateTime
-    constructor: (dateStr) ->
-      @datetime = if dateStr?.isDate() then new Date dateStr else Date.today()
+    constructor: (@datetime) ->
 
     getDate: -> @datetime.strftime '%Y-%m-%d'
-    setDate: (dateStr) ->
-      [year, month, d] = dateStr.split '-'
-      @datetime.setFullYear year; @datetime.setMonth month-1; @datetime.setDate d
+    setDate: (dateString) ->
+      [year, month, date] = dateString.split '-'
+      @datetime.setFullYear year; @datetime.setMonth month-1; @datetime.setDate date
       @
 
     getTime: -> @datetime.strftime '%H:%M'
-    setTime: (time) ->
-      [hour, minute] = time.split ':'
+    setTime: (timeString) ->
+      [hour, minute] = timeString.split ':'
       @datetime.setHours hour; @datetime.setMinutes minute
       @
 
-    toString: -> @datetime.toString()
+    toString: -> @datetime.strftime '%Y-%m-%dT%H:%M'

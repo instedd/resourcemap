@@ -15,7 +15,7 @@ onReminders ->
         owner: @
       @sites            = ko.observableArray $.map data.sites ? [], (site) -> new Site site
       @sitesName        = ko.computed => $.map(@sites(), (site) -> site.name).join ', '
-      @reminderDateTime = new ReminderDateTime data.reminder_date
+      @reminderDateTime = new ReminderDateTime data.reminder_date?.toDate() ? Date.today()
       @reminderDate     = ko.observable @reminderDateTime.getDate()
       @reminderTime     = ko.observable @reminderDateTime.getTime()
       @repeat           = ko.observable data?.repeat
@@ -24,8 +24,11 @@ onReminders ->
 
       @nameError            = ko.computed => "Reminder's name is missing" if $.trim(@name()).length == 0
       @sitesError           = ko.computed => "Sites is missing" if !@isAllSites() and @sites().length == 0
-      # FIXME: reminderDate is not set when user type in invalid date into datepicker
-      @reminderDateError    = ko.computed => "Reminder's date is invalid" unless @reminderDate().isDate()
+      @reminderDateError    = ko.computed =>
+        if @reminderDate().length == 0 then "Reminder's date is missing" 
+        ## FIXME: To check for invalid reminderDate uncomment below line, but Phantomjs used in Jenkins consider 'YYYY-MM-DD' to be invalid date
+        # else unless @reminderDate().toDate() then "Reminder's date is invalid"
+
       @reminderMessageError = ko.computed => "Reminder's message is missing" if $.trim(@reminderMessage()).length == 0
 
       @error = ko.computed => @nameError() ? @sitesError() ? @reminderDateError() ? @reminderMessageError()

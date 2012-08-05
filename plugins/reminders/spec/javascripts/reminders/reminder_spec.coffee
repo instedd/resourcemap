@@ -27,7 +27,7 @@ describe 'Reminders plugin', ->
     it 'should update reminder datetime when converting to json', ->
       @reminder.reminderDate '2012-07-25'
       json = @reminder.toJson()
-      expect(json.reminder_date).toContain 'Jul 25 2012'
+      expect(json.reminder_date).toContain '2012-07-25'
 
     it 'should get repeat name', ->
       expect(@reminder.repeatName()).toEqual 'Every Monday'
@@ -63,7 +63,11 @@ describe 'Reminders plugin', ->
           @reminder.sites [@site_a]
           expect(@reminder.error()).toBeUndefined()
 
-      it 'should check reminder date error', ->
+      it 'should check for missing reminder date', ->
+        @reminder.reminderDate ''
+        expect(@reminder.error()).toEqual "Reminder's date is missing"
+
+      xit 'should check for invalid reminder date', ->
         @reminder.reminderDate 'not-a-date'
         expect(@reminder.error()).toEqual "Reminder's date is invalid"
 
