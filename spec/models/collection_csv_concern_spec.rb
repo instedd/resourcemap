@@ -6,7 +6,7 @@ describe Collection::CsvConcern do
 
   it "imports csv" do
     collection.import_csv user, %(
-      id, name, lat, lng
+      resmap-id, name, lat, lng
       1, Site 1, 10, 20
       2, Site 2, 30, 40
     ).strip

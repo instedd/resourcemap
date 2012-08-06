@@ -163,7 +163,7 @@ describe Activity do
     Activity.delete_all
 
     collection.import_csv user, %(
-      id, name, lat, lng
+      resmap-id, name, lat, lng
       1, Site 1, 30, 40
     ).strip
 

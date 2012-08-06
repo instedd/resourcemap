@@ -28,7 +28,7 @@ onImportWizard ->
 
       # The usage ID is not selectable by the user
       @selectableUsages = @usages.slice(0)
-      @usages.push(new Usage('ID', 'id'))
+      @usages.push(new Usage('resmap-id', 'id'))
 
     findLayer: (id) =>
       (layer for layer in @layers when layer.id == id)[0]

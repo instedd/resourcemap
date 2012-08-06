@@ -54,14 +54,14 @@ describe ImportWizard do
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}
 
     csv_string = CSV.generate do |csv|
-      csv << ['ID', 'Name', 'Lat', 'Lon', 'Beds']
+      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Beds']
       csv << ["#{site1.id}", 'Foo', '1.2', '3.4', '10']
       csv << ["#{site2.id}", 'Bar', '5.6', '7.8', '20']
       csv << ['', '', '', '']
     end
 
     specs = [
-      {name: 'ID', usage: 'id'},
+      {name: 'resmap-id', usage: 'id'},
       {name: 'Name', usage: 'name'},
       {name: 'Lat', usage: 'lat'},
       {name: 'Lon', usage: 'lng'},
@@ -95,13 +95,13 @@ describe ImportWizard do
 
   it "imports with name, lat, lon and one new numeric property and existing ID empty" do
     csv_string = CSV.generate do |csv|
-      csv << ['ID', 'Name', 'Lat', 'Lon', 'Beds']
+      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Beds']
       csv << ["", 'Foo', '1.2', '3.4', '10']
       csv << ['', '', '', '']
     end
 
     specs = [
-      {name: 'ID', usage: 'id'},
+      {name: 'resmap-id', usage: 'id'},
       {name: 'Name', usage: 'name'},
       {name: 'Lat', usage: 'lat'},
       {name: 'Lon', usage: 'lng'},

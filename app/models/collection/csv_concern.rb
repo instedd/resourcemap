@@ -13,7 +13,7 @@ module Collection::CsvConcern
     fields = self.fields.all
 
     CSV.generate do |csv|
-      header = ['id', 'name', 'lat', 'long']
+      header = ['resmap-id', 'name', 'lat', 'long']
       fields.each { |field| header << field.code }
       header << 'last updated'
       csv << header
@@ -37,7 +37,7 @@ module Collection::CsvConcern
 
       new_sites = []
       csv.each do |row|
-        next unless row[0].present? && row[0] != 'id'
+        next unless row[0].present? && row[0] != 'resmap-id'
 
         site = sites.new name: row[1].strip
         site.mute_activities = true

@@ -38,6 +38,7 @@ class ImportWizard
         row = row.strip
         spec = columns_spec.find{|x| x[:name].strip == row}
         spec[:index] = i if spec
+
       end
 
       # Get the id spec
@@ -245,7 +246,7 @@ class ImportWizard
         return
       end
 
-      if column[:name] =~ /^id$/i
+      if column[:name] =~ /^resmap-id$/i
         column[:usage] = :id
         return
       end
