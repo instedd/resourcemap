@@ -1,6 +1,6 @@
-String::toDate = ->
-	date = new Date @toString()
-	if date and date.toString() isnt 'Invalid Date' then date else null
+string::todate = ->
+  date = new date @tostring()
+  if date and date.tostring() isnt 'invalid date' then date else null
 
 String.format = (value, formatLength, leadingChar = '0') ->
   result = value.toString()
