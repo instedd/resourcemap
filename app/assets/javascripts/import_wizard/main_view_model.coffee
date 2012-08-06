@@ -8,20 +8,27 @@ onImportWizard ->
       @layers = $.map(layers, (x) -> new Layer(x))
       @columns = ko.observableArray $.map(columns, (x) -> new Column(x))
 
-      @usages = [new Usage('New field', 'new_field')]
-      if @layers.length > 0
-        @usages.push(new Usage('Existing field', 'existing_field'))
-        @usages.push(new Usage('ID', 'id'))
-      @usages.push(new Usage('Name', 'name'))
-      @usages.push(new Usage('Latitude', 'lat'))
-      @usages.push(new Usage('Longitude', 'lng'))
-      @usages.push(new Usage('Ignore', 'ignore'))
+      @loadUsages()
 
+      @hasId = ko.observable false
       @site = ko.computed => @computeSite()
       @error = ko.computed => @site().error()
       @valid = ko.computed => @site().valid()
       @importing = ko.observable false
       @importError = ko.observable false
+
+    loadUsages: =>
+      @usages = [new Usage('New field', 'new_field')]
+      if @layers.length > 0
+        @usages.push(new Usage('Existing field', 'existing_field'))
+      @usages.push(new Usage('Name', 'name'))
+      @usages.push(new Usage('Latitude', 'lat'))
+      @usages.push(new Usage('Longitude', 'lng'))
+      @usages.push(new Usage('Ignore', 'ignore'))
+
+      # The usage ID is not selectable by the user
+      @selectableUsages = @usages.slice(0)
+      @usages.push(new Usage('ID', 'id'))
 
     findLayer: (id) =>
       (layer for layer in @layers when layer.id == id)[0]
@@ -40,6 +47,7 @@ onImportWizard ->
           if data.id
             data.hasMoreThanOneId = true
           data.id = column.value()
+          @hasId(true)
           continue
 
         if column.usage() == 'name'

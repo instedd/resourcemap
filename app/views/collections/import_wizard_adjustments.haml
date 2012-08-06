@@ -15,7 +15,7 @@
         %td{valign: :top}
           %div{style: 'height: 400px;overflow:auto'}
             %ul{ko(foreach: :columns)}
-              %li{ko(css: {ignored: "usage() == 'ignore'"})}
+              %li{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
                 %div
                   %strong{ko(text: :name)}
                   %ul
@@ -24,7 +24,12 @@
                       %span{ko(text: :sample)}
                     %li
                       Use as:
-                      %select{ko(options: '$root.usages', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
+                      /ko if: usage() == 'id'
+                      Internal ResourceMap ID
+                      //ko
+                      /ko if: usage() != 'id'
+                      %select{ko(options: '$root.selectableUsages', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
+                      //ko
                       /ko if: usage() == 'existing_field'
                       %select{ko(options: '$root.layers', optionsText: "'name'", value: 'layer')}
                       %select{ko(options: 'layer().fields', optionsText: "'name'", value: 'field')}

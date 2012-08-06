@@ -1,6 +1,6 @@
 # Each of the pages that have tests need to be defined here.
 # You must invoked runOnCallbacks(pageName) in the beforeEach of the spec.
-window.pages = ['collections', 'thresholds', 'layers', 'reminders']
+window.pages = ['collections', 'thresholds', 'layers', 'reminders', 'importWizard']
 
 String::capitalize = -> "#{@[0].toUpperCase()}#{@.substring(1)}"
 
