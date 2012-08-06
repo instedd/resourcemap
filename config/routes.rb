@@ -3,6 +3,7 @@ ResourceMap::Application.routes.draw do
   # match 'messaging' => 'messaging#index'
   match 'nuntium' => 'nuntium#receive', :via => :post
   match 'authenticate' => 'nuntium#authenticate', :via => :post
+  match 'android/collections' => 'android#collections_json', :via => :get
 
 
   resources :repeats

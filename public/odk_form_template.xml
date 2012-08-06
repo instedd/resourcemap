@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+	<h:head>
+		<h:title>%(:title)</h:title>
+		<model>
+			<instance>
+				<resource>
+					<id type="integer">%(:collection_id)</id>
+					<name />
+					<lat type="float" />
+					<lng type="float" />
+					<existing-fields>
+					  %(:existing_fields)
+					</existing-fields>
+				</resource>
+			</instance>
+			<bind nodeset="/resource/name" type="string" required="true()" />
+			<bind nodeset="/resource/lat" type="decimal" required="true()" constraint=". &gt; -90 and . &lt; 90" jr:constraintMsg="Latitude must be between -90 and 90." />
+			<bind nodeset="/resource/lng" type="decimal" required="true()" constraint=". &gt; -180 and . &lt; 180" jr:constraintMsg="Longitude must be between -180 and 180." />
+			%(:existing_fields_binding)
+		</model>
+	</h:head>
+
+	<h:body>
+		<input ref="name">
+			<label>What is the %(:title)'s name?</label>
+		</input>
+		<input ref="lat">
+			<label>Latitude</label>
+		</input>
+		<input ref="lng">
+			<label>Longitude</label>
+		</input>
+		
+		%(:existing_fields_ui)
+		
+	</h:body>
+</h:html>
