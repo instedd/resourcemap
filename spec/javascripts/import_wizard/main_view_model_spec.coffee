@@ -15,15 +15,16 @@ describe 'ImportWizard', ->
     it 'should load existing field in usages if layer exists', ->
       @model.initialize(1, @layers, @columns)
       expect(@model.usages.any( (x) -> (x.name == 'Existing field' && x.code == 'existing_field'))).toBe(true)
+      expect(@model.usages.any( (x) -> (x.name == 'resmap-id' && x.code == 'id'))).toBe(true)
       expect(@model.selectableUsages.any( (x) -> (x.name == 'Existing field' && x.code == 'existing_field'))).toBe(true)
 
     it 'should not include id field in selectable usages', ->
       @model.initialize(1, @layers, @columns)
-      expect(@model.selectableUsages.any( (x) -> (x.name == 'ID' && x.code == 'id'))).toBe(false)
+      expect(@model.selectableUsages.any( (x) -> (x.name == 'resmap-id' && x.code == 'id'))).toBe(false)
 
     it 'should not include id field in selectable usages', ->
       @model.initialize(1, @layers, @columns)
-      expect(@model.selectableUsages.any( (x) -> (x.name == 'ID' && x.code == 'id'))).toBe(false)
+      expect(@model.selectableUsages.any( (x) -> (x.name == 'resmap-id' && x.code == 'id'))).toBe(false)
 
     it 'imported sites should not have id when the import wizard is created', ->
       @model.initialize(1, [], @columns)
@@ -32,7 +33,7 @@ describe 'ImportWizard', ->
     it 'imported sites should have id when site is computed if site has a column id', ->
       @model.initialize(1, @layers, @columns)
       expect(@model.hasId()).toBe(false)
-      @columns =[{name: "id", usage: "id", sample: "1", value: "1"}]
+      @columns =[{name: "resmap-id", usage: "id", sample: "1", value: "1"}]
       @model.initialize(1, @layers, @columns)
       expect(@model.hasId()).toBe(true)
 
