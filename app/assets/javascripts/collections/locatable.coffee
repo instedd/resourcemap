@@ -8,6 +8,7 @@ onCollections ->
       @position = ko.computed
         read: => if @lat() && @lng() then new google.maps.LatLng(@lat(), @lng()) else null
         write: (latLng) =>
+          if latLng == null then @lat(null); @lng(null); return
           if typeof(latLng?.lat) == 'function'
             @lat(latLng.lat()); @lng(latLng.lng())
           else

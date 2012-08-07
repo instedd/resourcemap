@@ -91,10 +91,10 @@ onCollections ->
         @propagateUpdatedAt(data.updated_at)
         callback(data) if callback && typeof(callback) == 'function'
 
-      data = {site: json}
+      data = {site: JSON.stringify json}
       if @id()
         data._method = 'put'
-        $.post "/collections/#{@collection.id}/sites/#{@id()}.json", data, callback_with_updated_at
+        $.post "/collections/#{@collection.id}/sites/#{@id()}.json", data, callback_with_updated_at, 'json'
       else
         $.post "/collections/#{@collection.id}/sites", data, callback_with_updated_at
 
@@ -163,11 +163,14 @@ onCollections ->
       save = =>
         @post lat: @lat(), lng: @lng(), (data) =>
           @collection.fetchLocation()
-          @endEditLocationInMap(data)
+          @endEditLocationInMap(@extractPosition data)
 
       @parseLocation
         success: (position) => @position(position); save()
         failure: (position) => @position(position); @endEditLocationInMap(position)
+
+    extractPosition: (from) ->
+      if from.lat || from.lng then { lat: from.lat, lng: from.lng } else null
 
     newLocationKeyPress: (site, event) =>
       switch event.keyCode
@@ -179,9 +182,8 @@ onCollections ->
     moveLocation: =>
       callback = (position) =>
         @position(position)
-        @marker.setPosition(position)
+        if position then @marker.setPosition(position)
         @panToPosition()
-
       @parseLocation success: callback, failure: callback
 
     tryGeolocateName: =>
@@ -197,14 +199,19 @@ onCollections ->
 
     parseLocation: (options) =>
       text = options.text || @locationTextTemp
+      # Is text of the form 'num1.num1,num2.num2' after trimming whitespace?
+      # If so, give me num1.num1 and num2.num2
       if match = text.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
         options.success(new google.maps.LatLng(parseFloat(match[1]), parseFloat(match[2])))
       else
-        window.model.geocoder.geocode { 'address': text}, (results, status) =>
-          if results.length > 0
-            options.success(results[0].geometry.location)
-          else
-            options.failure(@originalLocation) if options.failure?
+        if text == ''
+          options.success(null)
+        else
+          window.model.geocoder.geocode { 'address': text}, (results, status) =>
+            if results.length > 0
+              options.success(results[0].geometry.location)
+            else
+              options.failure(@originalLocation) if options.failure?
 
     exitLocation: =>
       @endEditLocationInMap(@originalLocation)

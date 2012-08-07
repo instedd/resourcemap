@@ -34,7 +34,7 @@ class SitesController < ApplicationController
   def update
     site.user = current_user
     site.properties_will_change!
-    site.update_attributes! params[:site]
+    site.update_attributes! JSON.parse(params[:site])
     render json: site
   end
 
