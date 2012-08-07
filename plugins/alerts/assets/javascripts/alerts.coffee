@@ -11,8 +11,9 @@ onThresholds -> if $('#thresholds-main').length > 0
 
   $.get "/collections/#{collectionId}/fields.json", (layers) ->
     fields = $.map(layers, (layer) -> layer.fields)
-    window.model.compareFields $.map fields, (field) -> new Field field unless field.kind == 'hierarchy' || field.kind == 'user' || field.kind == 'email' || field.kind == 'phone'
-    window.model.fields $.map fields, (field) -> new Field field unless field.kind == 'hierarchy' || field.kind == 'user' || field.kind == 'email' || field.kind == 'phone'
+    window.model.compareFields $.map fields, (field) -> new Field field unless field.kind == 'hierarchy' || field.kind == 'user' || field.kind == 'email' || field.kind == 'phone' || field.kind == 'select_many'
+    window.model.fields $.map fields, (field) -> new Field field unless field.kind == 'hierarchy' || field.kind == 'user' || field.kind == 'email' || field.kind == 'phone' || field.kind == 'select_many'
+
 
     $.get "/plugin/alerts/collections/#{collectionId}/thresholds.json", (thresholds) ->
       thresholds = $.map thresholds, (threshold) -> new Threshold threshold
