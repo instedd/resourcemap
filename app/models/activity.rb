@@ -79,7 +79,7 @@ class Activity < ActiveRecord::Base
     end
 
     if (lat_change = data['changes']['lat']) && (lng_change = data['changes']['lng'])
-      text_changes << "location changed from (#{format_location lat_change[0]}, #{format_location lng_change[0]}) to (#{format_location lat_change[1]}, #{format_location lng_change[1]})"
+      text_changes << "location changed from #{format_location data['changes'], :from} to #{format_location data['changes'], :to}"
       only_name_changed = false
     end
 
@@ -185,11 +185,14 @@ class Activity < ActiveRecord::Base
     options.map { |option| "#{option['label']} (#{option['code']})" }
   end
 
-  def format_location(value)
-    if value
-      ((value) * 1e6).round / 1e6.to_f
+  def format_location(changes, dir)
+    idx = dir == :from ? 0 : 1
+    lat = changes['lat'][idx]
+    lng = changes['lng'][idx]
+    if lat
+      "(#{((lat) * 1e6).round / 1e6.to_f}, #{((lng) * 1e6).round / 1e6.to_f})"
     else
-      'none'
+      '(nothing)'
     end
   end
 end
