@@ -27,7 +27,7 @@ class SitesController < ApplicationController
   end
 
   def create
-    site = collection.sites.create(params[:site].merge(user: current_user))
+    site = collection.sites.create(JSON.parse(params[:site]).merge(user: current_user))
     render json: site
   end
 
