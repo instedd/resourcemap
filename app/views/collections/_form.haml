@@ -1,8 +1,12 @@
 = form_for collection do |f|
   :javascript
     $(document).ready(function(){
-      $("#focus_icon").val($('#select_icon').val());
-      $('.' + $('#select_icon').val()).css('backgroundPosition', '0 -120px');
+      var select_icon = $('#select_icon');
+      if(select_icon.val() == "")
+        select_icon.val('llocation');
+      $("#focus_icon").val(select_icon.val());
+      $('.' + select_icon.val()).css('backgroundPosition', '0 -120px');
+      
       $("button").click(function(){
         if (this != $('.white')[0]){
           $('.' + $('#focus_icon').val()).css('backgroundPosition', '0 0');
@@ -30,7 +34,7 @@
     = f.hidden_field :icon, id: 'select_icon'
     %input#focus_icon{:type =>"hidden"}
       
-    %button.lalert{:type => "button"}
+    %button.llocation{:type => "button"}
     %button.lalertandreport{:type => "button"}
     %button.lbookmark{:type => "button"}
     %button.lcallback{:type => "button"}
@@ -38,7 +42,6 @@
     %button.ldirections{:type => "button"}
     %button.lforwardcall{:type => "button"}
     %button.lgroupchat{:type => "button"}
-    %button.llocation{:type => "button"}
     %button.lmessage{:type => "button"}
     %button.lmicrophone{:type => "button"}
     %button.lmultipleoptions{:type => "button"}
