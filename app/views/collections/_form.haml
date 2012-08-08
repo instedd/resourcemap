@@ -1,4 +1,19 @@
 = form_for collection do |f|
+  :javascript
+    $(document).ready(function(){
+      $("#focus_icon").val($('#select_icon').val());
+      $('.' + $('#select_icon').val()).css('backgroundPosition', '0 -120px');
+      $("button").click(function(){
+        if (this != $('.white')[0]){
+          $('.' + $('#focus_icon').val()).css('backgroundPosition', '0 0');
+          this.style.backgroundPosition="0 -120px"; 
+          $("#focus_icon").val(this.classList["0"]);
+        }else{
+          $('#select_icon').val($("#focus_icon").val());
+        }
+      });
+    });
+  
   .field.w60
     = f.label :name
     = f.text_field :name
@@ -7,7 +22,29 @@
   .field.w60
     = f.label :description
     = f.text_area :description, rows: 3
-
+  
+  .field.w60
+    %label
+      User an icon from our library
+    %br/
+    = f.hidden_field :icon, id: 'select_icon'
+    %input#focus_icon{:type =>"hidden"}
+      
+    %button.lalert{:type => "button"}
+    %button.lalertandreport{:type => "button"}
+    %button.lbookmark{:type => "button"}
+    %button.lcallback{:type => "button"}
+    %button.ldate{:type => "button"}
+    %button.ldirections{:type => "button"}
+    %button.lforwardcall{:type => "button"}
+    %button.lgroupchat{:type => "button"}
+    %button.llocation{:type => "button"}
+    %button.lmessage{:type => "button"}
+    %button.lmicrophone{:type => "button"}
+    %button.lmultipleoptions{:type => "button"}
+    %button.lnumber{:type => "button"}
+    %button.lnumeral{:type => "button"}
+    %button.lparagraph{:type => "button"}
   = f.label :plugins
   %br
   = hidden_field_tag 'collection[selected_plugins][]', nil
