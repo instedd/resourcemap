@@ -34,6 +34,6 @@ module Collection::PluginsConcern
   end
 
   def method_missing(method_name, *args, &block)
-    (method_name =~ /(\w+)_plugin_enabled?/).zero? ? self.plugin_enabled?($1) : super
+    (method_name =~ /(\w+)_plugin_enabled?/).try(:zero?)? self.plugin_enabled?($1) : super
   end
 end
