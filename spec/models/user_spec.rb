@@ -4,7 +4,7 @@ describe User do
   it { should have_many :memberships }
   it { should have_many :collections }
 
-  it "shold be confirmed" do
+  it "should be confirmed" do
     user = User.make confirmed_at: nil
     user.confirmed?.should be_false
     user.confirm!
@@ -109,32 +109,5 @@ describe User do
         @user.validate_layer_read_permission(@site, @properties[0][:code]).should be_false
       end
     end
-#    context "can_view" d
-#      before(:each) do
-#        @layer.memberships.create(:user => @user, :role => 'User', :access_rights => AccessRights::VIEW)
-#      end
-#
-#      it "should be able to view layer" do
-#        @user.can_view?(@collection).should be_true
-#      end
-#
-#      it "should not be able to update layer" do
-#        @user.can_update?(@site).should be_false
-#      end
-#    end
-#
-#    context "can_update" do
-#      before(:each) do
-#        @collection.memberships.create(:user => @user, :role => 'User', :access_rights => AccessRights::UPDATE)
-#      end
-#
-#      it "should not be able to view layer" do
-#        @user.can_view?(@collection).should be_false
-#      end
-#
-#      it "should be able to update layer" do
-#        @user.can_update?(@site).should be_true
-#      end
-#    end
   end
 end
