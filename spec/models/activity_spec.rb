@@ -227,7 +227,7 @@ describe Activity do
         'user_id' => user.id,
         'site_id' => site.id,
         'data' => {'name' => site.name, 'changes' => {'lat' => [ nil, 15.1234567], 'lng' => [nil, 34.123456]}},
-        'description' => "Site '#{site.name}' changed: location changed from (none, none) to (15.123457, 34.123456)"
+        'description' => "Site '#{site.name}' changed: location changed from (nothing) to (15.123457, 34.123456)"
     end
 
     it "creates one after adding one site's property" do
