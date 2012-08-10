@@ -11,9 +11,8 @@ module Site::AlertConcerns
       extended_properties[:alert] = true
       extended_properties[:icon] = alert.icon
       if alert.is_notify
-        users_phone_number = []
+        users_phone_number = alert.phone_notification_numbers
         users_email = []
-        users_phone_number << User.find(alert.phone_notification[:members]).map { |user| user.phone_number} if alert.phone_notification[:members]
         users_email << User.find(alert.email_notification[:members]).map { |user| user.email} if alert.email_notification[:members]
         
         alert.email_notification.except(:members).values.flatten.each do |field|
