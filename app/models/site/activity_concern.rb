@@ -23,6 +23,11 @@ module Site::ActivityConcern
   def create_updated_activity
     site_changes = changes.except('updated_at', 'min_lat', 'max_lat', 'min_lng', 'max_lng', 'min_zoom', 'max_zoom').to_hash
 
+    # If either lat or lng change we want to singal a change in both, as in "location changed" and
+    # we can show what the location was before and was it now without consulting the site's properties
+    site_changes['lat'] = [lat, lat] if !site_changes['lat'] && site_changes['lng']
+    site_changes['lng'] = [lng, lng] if site_changes['lat'] && !site_changes['lng']
+
     unless location_changed(site_changes)
       site_changes.delete 'lat'
       site_changes.delete 'lng'
