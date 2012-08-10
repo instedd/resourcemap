@@ -15,6 +15,9 @@ onCollections ->
         for filter in @filters
           return true if filter.isDateFilter()
         false
+      @viewingCurrentSnapshotMessage = ko.observable()
+      @loadCurrentSnapshotMessage()
+
 
     isSearch: => true
 
