@@ -158,3 +158,7 @@ onLayers ->
 
     hierarchyUploaded: (hierarchy) =>
       @currentField().setHierarchy(hierarchy)
+
+    errorUploadingHierarchy: =>
+      @currentField().uploadingHierarchy(false)
+      @currentField().errorUploadingHierarchy(true)

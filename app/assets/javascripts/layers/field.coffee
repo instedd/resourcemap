@@ -17,6 +17,7 @@ onLayers ->
       @hasFocus = ko.observable(false)
       @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
       @uploadingHierarchy = ko.observable(false)
+      @errorUploadingHierarchy = ko.observable(false)
       @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer.fields().indexOf(@) + 1}"
       @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
       @codeError = ko.computed => if @hasCode() then null else "the field #{@fieldErrorDescription()} is missing a Code"
@@ -56,6 +57,7 @@ onLayers ->
       @hierarchy(hierarchy)
       @initHierarchyItems()
       @uploadingHierarchy(false)
+      @errorUploadingHierarchy(false)
 
     initHierarchyItems: =>
       @hierarchyItems = ko.observableArray $.map(@hierarchy(), (x) -> new HierarchyItem(x))
