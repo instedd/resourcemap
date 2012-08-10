@@ -1,5 +1,7 @@
 ResourceMap::Application.routes.draw do
-  devise_for :users
+
+  devise_for :users, :controllers => {:registrations => "registrations"}
+
   # match 'messaging' => 'messaging#index'
   match 'nuntium' => 'nuntium#receive', :via => :post
   match 'authenticate' => 'nuntium#authenticate', :via => :post

@@ -5,10 +5,11 @@
 <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
 
 
+
   <h2>Sign up</h2>
-  
+
   <hr class="shadow" />
-  
+
   <div class="field w30">
     <%= f.label :email %>
     <%= f.email_field :email %>
@@ -24,16 +25,16 @@
     <%= f.password_field :password_confirmation %>
   </div>
 
-  <div class="field w30"> 
+  <div class="field w30">
     <%= f.label :phone_number %> <i>(85512345678)</i>
     <%= f.telephone_field :phone_number %>
   </div>
-  
+
   <div class="actions">
     <button type="submit" class="white">Create account</button>
   </div>
 
-  
+
   <%= render :partial => "devise/shared/links" %>
 <% end -%>
 
