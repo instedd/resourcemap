@@ -185,7 +185,7 @@ onCollections ->
         else
           if site.id == oldSelectedSiteId
             @markers[site.id] = @oldSelectedSite.marker
-            @markers[site.id].site = site 
+            @markers[site.id].site = site
             @deleteMarkerListeners site.id
             @setMarkerIcon @markers[site.id], 'active'
             @oldSelectedSite.deleteMarker false
@@ -202,6 +202,7 @@ onCollections ->
               markerOptions.icon = @markerImageInactive
               markerOptions.shadow = @markerImageInactiveShadow
             else if (selectedSiteId && selectedSiteId == site.id)
+               
               markerOptions.icon = @markerImageTarget
               markerOptions.shadow = @markerImageTargetShadow
 
@@ -288,7 +289,10 @@ onCollections ->
     @setMarkerIcon: (marker, icon) ->
       switch icon
         when 'active', 'null'
-          marker.setIcon null
+          if marker.site && marker.site.icon != 'null'
+            marker.setIcon @markerImage marker.site.icon
+          else
+            marker.setIcon null
           marker.setShadow null
         when 'inactive'
           marker.setIcon @markerImageInactive
