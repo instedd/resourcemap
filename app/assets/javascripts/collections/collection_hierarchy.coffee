@@ -11,6 +11,9 @@ onCollections ->
       @hierarchyItemsMap = {}
       @hierarchyItems = $.map field.hierarchy, (x) => new HierarchyItem(@, field, x)
 
+      @viewingCurrentSnapshotMessage = ko.observable()
+      @loadCurrentSnapshotMessage()
+
     isSearch: => false
 
     sitesUrl: =>
