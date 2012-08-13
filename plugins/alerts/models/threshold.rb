@@ -39,4 +39,8 @@ class Threshold < ActiveRecord::Base
   def condition(hash, properties)
     Threshold::Condition.new hash, properties
   end
+
+  def phone_notification_numbers
+    phone_numbers = collection.users.where(id: phone_notification[:members]).map(&:phone_number).reject &:blank?
+  end
 end

@@ -31,8 +31,6 @@
         %label{ko(css: {error: :nameError}), :for => :name} Name
         %br/
         = ko_text_field_tag :name, hasfocus: :hasFocus, css: {error: :nameError}
-        = ko_check_box_tag :public
-        -#= label_tag :public, 'Public layer'
 
       %label{ko(css: {error: :fieldsError})} Fields
       %br/
@@ -126,6 +124,9 @@
             %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
             %input.hierarchy_upload{type: :file, name: :file}
           %iframe#hierarchy_iframe{name: 'hierarchy_iframe', style: 'display:none'}
+          <!-- ko if: errorUploadingHierarchy() -->
+          There was an error processing the hierarchy file
+          <!-- /ko -->
           <!-- ko if: uploadingHierarchy() -->
           Uploading, please wait...
           <!-- /ko -->
