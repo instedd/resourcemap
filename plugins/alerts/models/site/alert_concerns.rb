@@ -12,16 +12,11 @@ module Site::AlertConcerns
       extended_properties[:icon] = alert.icon
       if alert.is_notify
         phone_numbers = notification_numbers alert
-        users_email = []
-        users_email << User.find(alert.email_notification[:members]).map { |user| user.email} if alert.email_notification[:members]
-        
-        alert.email_notification.except(:members).values.flatten.each do |field|
-          users_email << properties[field] 
-        end
-        
+        emails = notification_emails alert
         message_notification = alert.message_notification.render_template_string(get_template_value_hash)
+
         Resque.enqueue SmsTask, phone_numbers, message_notification unless phone_numbers.empty?
-        Resque.enqueue EmailTask, users_email.flatten.compact, message_notification, "[ResourceMap] Alert Notification" unless users_email.empty?
+        Resque.enqueue EmailTask, emails, message_notification, "[ResourceMap] Alert Notification" unless emails.empty?
       end
     else
       extended_properties[:alert] = false
@@ -34,5 +29,11 @@ module Site::AlertConcerns
     phone_numbers |= alert.phone_notification[:fields].to_a.map{|field| properties[field] }.reject &:blank?
     users = alert.phone_notification[:users].to_a.map{|field| properties[field] }.reject(&:blank?)
     phone_numbers |= User.where(email: users).map(&:phone_number).reject(&:blank?)
+  end
+
+  def notification_emails(alert)
+    emails = collection.users.where(id: alert.email_notification[:members]).map(&:email).reject &:blank?
+    emails |= alert.email_notification[:fields].to_a.map{|field| properties[field] }.reject &:blank?
+    emails |= alert.email_notification[:users].to_a.map{|field| properties[field] }.reject(&:blank?)
   end
 end

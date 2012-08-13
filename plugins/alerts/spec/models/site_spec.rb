@@ -42,7 +42,7 @@ describe Site do
       site.notification_numbers(alert).should_not include user.phone_number
     end
 
-    context "when alert phone notification is empty hash" do
+    context "when alert phone notification is empty" do
       before(:each) do
         alert.update_attributes phone_notification: {}
       end
@@ -73,6 +73,45 @@ describe Site do
       it "should not include nil in" do
         site.notification_numbers(alert).should_not include nil
       end
+    end
+  end
+
+  describe "get notification emails" do
+    let!(:email) { layer.fields.make code: 'email', kind: 'email' }
+    let!(:owner) { layer.fields.make code: 'owner', kind: 'user' }
+    let!(:user_2) { User.make }
+    let!(:alert) { collection.thresholds.make email_notification: {members: [user.id], fields: [email.es_code], users: [owner.es_code]} }
+    let!(:site) { collection.sites.make properties: {email.es_code => 'info@example.com', owner.es_code => user_2.email} }
+
+    it "should include member email" do
+      site.notification_emails(alert).should include user.email
+    end
+
+    it "should not include other member email" do
+      site.notification_emails(alert).should_not include User.make.email
+    end
+
+    context "when alert email notification is empty" do
+      before(:each) do
+        alert.update_attributes email_notification: {}
+      end
+
+      it "should return empty email list" do
+        site.notification_emails(alert).should == []
+      end
+    end
+
+    it "should include site property" do
+      site.notification_emails(alert).should include 'info@example.com'
+    end
+
+    it "should not include blank string site property" do
+      site.update_attributes properties: {email.es_code => ''}
+      site.notification_emails(alert).should_not include ''
+    end
+
+    it "should include user field email" do
+      site.notification_emails(alert).should include user_2.email
     end
   end
 end
