@@ -29,7 +29,7 @@ module Site::AlertConcerns
       end
     else
       extended_properties[:alert] = false
-      extended_properties[:icon] = nil
     end
+    true
   end
 end

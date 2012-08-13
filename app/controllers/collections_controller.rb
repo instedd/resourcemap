@@ -31,6 +31,7 @@ class CollectionsController < ApplicationController
 
   def update
     if collection.update_attributes params[:collection]
+      collection.recreate_index 
       redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
     else
       render :settings

@@ -11,6 +11,7 @@ module Site::IndexUtils
       properties: site.properties,
       created_at: site.created_at.strftime(DateFormat),
       updated_at: site.updated_at.strftime(DateFormat),
+      icon: site.collection.icon,
     }
 
     hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f} if site.lat? && site.lng?
