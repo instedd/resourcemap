@@ -290,7 +290,9 @@ onCollections ->
       switch icon
         when 'active', 'null'
           if marker.site && marker.site.icon != 'null'
-            marker.setIcon @markerImage marker.site.icon
+            # temporary comment this line, will change soon 
+            marker.setIcon null
+            #marker.setIcon @markerImage marker.site.icon
           else
             marker.setIcon null
           marker.setShadow null
