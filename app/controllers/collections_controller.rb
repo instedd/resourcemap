@@ -31,7 +31,7 @@ class CollectionsController < ApplicationController
 
   def update
     if collection.update_attributes params[:collection]
-      collection.recreate_index 
+      collection.recreate_index
       redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
     else
       render :settings
@@ -147,6 +147,8 @@ class CollectionsController < ApplicationController
     search.hierarchy params[:hierarchy_code], params[:hierarchy_value] if params[:hierarchy_code]
     search.location_missing if params[:location_missing].present?
     search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing)
+
+    search.apply_queries
 
     results = search.results.map do |result|
       source = result['_source']

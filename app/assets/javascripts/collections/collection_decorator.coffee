@@ -4,9 +4,10 @@ onCollections ->
 
   class @CollectionDecorator extends CollectionBase
     constructor: (collection) ->
-      # These two are because we are not calling super
+      # These three are because we are not calling super
       @constructorLocatable(lat: collection.lat(), lng: collection.lng())
       @constructorSitesContainer()
+      @loadCurrentSnapshotMessage()
 
       @collection = collection
       @currentSnapshot = collection.currentSnapshot
@@ -17,6 +18,7 @@ onCollections ->
       @fields = collection.fields
       @fieldsInitialized = collection.fieldsInitialized
       @groupByOptions = collection.groupByOptions
+
 
     createSite: (site) => new Site(@collection, site)
 

@@ -39,6 +39,9 @@ class MapSearch
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.return_property @hierarchy[:code] if @hierarchy[:code]
+
+    Rails.logger.debug @search.to_curl if Rails.logger.level <= Logger::DEBUG
+
     adapter.parse @search.stream
 
     clusterer.clusters

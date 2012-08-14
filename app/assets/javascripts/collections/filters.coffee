@@ -43,7 +43,7 @@ onCollections ->
       @value = value
 
     setQueryParams: (options, api = false) =>
-      options[@field.codeForLink(api)] = @value
+      options[@field.codeForLink(api)] = "~=#{@value}"
 
     description: => "where #{@field.name} contains \"#{@value}\""
 

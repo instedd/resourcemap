@@ -25,7 +25,18 @@ module SearchBase
 
     query_key = decode(es_code)
     query_value = decode_option(query_key, value)
+
     @search.filter :term, query_key => query_value
+    self
+  end
+
+  def contains(es_code, value)
+    check_field_exists es_code
+
+    query_key = decode(es_code)
+    query_value = decode_option(query_key, value)
+
+    add_query "#{query_key}:*#{query_value}*"
     self
   end
 
@@ -61,6 +72,7 @@ module SearchBase
         when value[0 .. 1] == '>=' then gte(es_code, value[2 .. -1].strip)
         when value[0] == '>' then gt(es_code, value[1 .. -1].strip)
         when value[0] == '=' then eq(es_code, value[1 .. -1].strip)
+        when value[0 .. 1] == '~=' then contains(es_code, value[2 .. -1].strip)
         else eq(es_code, value)
         end
       else

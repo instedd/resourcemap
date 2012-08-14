@@ -64,6 +64,8 @@ class SitesController < ApplicationController
     end
     search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :selected_hierarchy, :hierarchy_code)
 
+    search.apply_queries
+
     render json: search.results
   end
 

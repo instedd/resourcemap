@@ -85,10 +85,10 @@ onCollections ->
           else
             @expandedRefineProperty(key)
 
-            if value.length >= 2 && (value[0] == '>' || value[0] == '<') && value[1] == '='
+            if value.length >= 2 && value[0] in ['>', '<', '~'] && value[1] == '='
               @expandedRefinePropertyOperator(value.substring(0, 2))
               @expandedRefinePropertyValue(value.substring(2))
-            else if value[0] == '=' || value[0] == '>' || value[0] == '<'
+            else if value[0] in ['=', '>', '<']
               @expandedRefinePropertyOperator(value[0])
               @expandedRefinePropertyValue(value.substring(1))
             else

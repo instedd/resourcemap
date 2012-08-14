@@ -44,6 +44,7 @@ describe Search do
       search.results.length.should eq(0)
     end
 
+
     context "full text search" do
       let!(:population_source) { layer.fields.make :code => 'population_source', :kind => 'text' }
 

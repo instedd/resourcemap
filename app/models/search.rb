@@ -66,6 +66,8 @@ class Search
       @search.size self.class.page_size
     end
 
+    Rails.logger.debug @search.to_curl if Rails.logger.level <= Logger::DEBUG
+
     @search.perform.results
   end
 
