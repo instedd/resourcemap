@@ -21,7 +21,7 @@ class RemindersController < ApplicationController
   def update
     reminder = reminders.find params[:id]
     reminder.update_attributes! params[:reminder].except(:sites)
-    reminder.sites = Site.select("id, name, properties").find params[:reminder][:sites] if params[:reminder][:sites]
+    reminder.sites = Site.select("id, collection_id, name, properties").find params[:reminder][:sites] if params[:reminder][:sites]
     
     reminder.save! 
     render json: reminder
