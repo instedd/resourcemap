@@ -87,27 +87,4 @@ describe Threshold do
     expect { threshold.test({field.es_code => 1}) }.to_not throw_symbol
     expect { threshold.test({field.es_code => 2}) }.to throw_symbol :threshold, threshold
   end
-
-  describe "get alert phone numbers" do
-    let!(:telelphone) { layer.fields.make id: 11, code: 'tel', kind: 'phone' }
-    let!(:threshold) { collection.thresholds.make phone_notification: { members: [user.id]} }
-
-    it "should include member phone number" do
-      threshold.phone_notification_numbers.should include user.phone_number
-    end
-
-    it "should not include other member phone number" do
-      threshold.phone_notification_numbers.should_not include User.make.phone_number
-    end
-
-    it "should not include nil phone_number" do
-      user.update_attributes phone_number: nil
-      threshold.phone_notification_numbers.should_not include user.phone_number
-    end
-
-    it "should skip members phone number" do
-      threshold.update_attributes phone_notification: {}
-      threshold.phone_notification_numbers.should == []
-    end
-  end
 end
