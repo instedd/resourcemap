@@ -169,6 +169,7 @@ onCollections ->
 
       @rewriteUrl()
 
+
     @selectHierarchy: (hierarchy) ->
       if @selectedSite()
         @unselectSite()

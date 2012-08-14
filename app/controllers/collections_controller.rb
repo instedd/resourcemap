@@ -19,9 +19,9 @@ class CollectionsController < ApplicationController
   end
 
   def render_breadcrumbs
-    add_breadcrumb "Collections", collections_path
+    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
     if params.has_key? :collection_id
-      add_breadcrumb collection.name, collection_path(collection)
+      add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
         add_breadcrumb params[:site_name], site_path(params[:site_id])
       end

@@ -12,6 +12,7 @@ onCollections ->
     @findCollectionById: (id) -> (x for x in @collections() when x.id == id)[0]
 
     @goToRoot: ->
+      @exitSite() if @editingSite()
       location.hash = '/'
       $('.BreadCrumb').load("collections/breadcrumbs", {})
 
