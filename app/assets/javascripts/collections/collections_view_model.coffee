@@ -11,9 +11,13 @@ onCollections ->
 
     @findCollectionById: (id) -> (x for x in @collections() when x.id == id)[0]
 
-    @goToRoot: -> location.hash = '/'
+    @goToRoot: ->
+      location.hash = '/'
+      $('.BreadCrumb').load("collections/breadcrumbs", {})
 
-    @enterCollection: (collection) -> location.hash = "#{collection.id}"
+    @enterCollection: (collection) ->
+      location.hash = "#{collection.id}"
+      $('.BreadCrumb').load("collections/breadcrumbs", { collection_id: collection.id })
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 

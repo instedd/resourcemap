@@ -53,7 +53,6 @@ module Collection::CsvConcern
   end
 
   def decode_hierarchy_csv(string_or_io)
-    begin
     csv = CSV.new string_or_io, return_headers: false
 
     # First read all items into a hash
@@ -88,9 +87,8 @@ module Collection::CsvConcern
 
     items.values
 
-    rescue Exception
-      return nil
-    end
+  rescue Exception
+    return nil
   end
 
   private

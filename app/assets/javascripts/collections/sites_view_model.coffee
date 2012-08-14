@@ -25,6 +25,11 @@ onCollections ->
 
     @editSite: (site) ->
       @goBackToTable = true unless @showingMap()
+      $('.BreadCrumb').load("collections/breadcrumbs",
+          site_name: site.name(), # send the site's name to avoid having to make a server side query for it
+          site_id: site.id(),
+          collection_id: site.collection.id
+      )
       @showMap =>
         site.copyPropertiesToCollection(site.collection)
         if @selectedSite() && @selectedSite().id() == site.id()
@@ -92,6 +97,7 @@ onCollections ->
       @editingSite().post @editingSite().toJSON(), callback
 
     @exitSite: ->
+      $('.BreadCrumb').load("collections/breadcrumbs", { collection_id: @editingSite().collection.id })
       @performSearchOrHierarchy()
 
       field.editing(false) for field in @currentCollection().fields()
