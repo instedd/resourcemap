@@ -1,5 +1,2 @@
 :javascript
-  if(#{@hierarchy ? @hierarchy : false})
-    parent.window.model.hierarchyUploaded(#{@hierarchy});
-  else
-    parent.window.model.errorUploadingHierarchy();
+  #{@hierarchy ? "parent.window.model.hierarchyUploaded(#{@hierarchy.to_json});" : "parent.window.model.errorUploadingHierarchy();"}
