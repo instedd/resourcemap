@@ -7,10 +7,12 @@ describe Search do
   context "search by property" do
     let!(:beds) { layer.fields.make code: 'beds', kind: 'numeric' }
     let!(:tables) { layer.fields.make code: 'tables', kind: 'numeric' }
+    let!(:first_name) { layer.fields.make code: 'first_name', kind: 'text' }
 
-    let!(:site1) { collection.sites.make properties: {beds.es_code => 5, tables.es_code => 1} }
-    let!(:site2) { collection.sites.make properties: {beds.es_code => 10, tables.es_code => 2} }
-    let!(:site3) { collection.sites.make properties: {beds.es_code => 20, tables.es_code => 3} }
+
+    let!(:site1) { collection.sites.make properties: {beds.es_code => 5, tables.es_code => 1, first_name.es_code => "peter"} }
+    let!(:site2) { collection.sites.make properties: {beds.es_code => 10, tables.es_code => 2, first_name.es_code => "peterpan"}  }
+    let!(:site3) { collection.sites.make properties: {beds.es_code => 20, tables.es_code => 3, first_name.es_code => "pirate"}  }
 
     it "searches by equality" do
       search = collection.new_search
@@ -42,6 +44,13 @@ describe Search do
       search = collection.new_search
       search.where beds.es_code => 10, tables.es_code => 1
       search.results.length.should eq(0)
+    end
+
+    it "searches by contains" do
+      search = collection.new_search
+      search.where first_name.es_code => "~=peter"
+      search.apply_queries
+      search.results.length.should eq(2)
     end
 
 
