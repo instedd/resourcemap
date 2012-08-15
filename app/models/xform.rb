@@ -1,8 +1,8 @@
 class Xform
   FORMAT = {
     :model    => "<field-%1$d><field-id>%1$d</field-id><value /></field-%1$d>",
-    :binding  => "<bind nodeset=\"/resource/existing-fields/field-%s/value\" />",
-    :ui       => "<input ref=\"/resource/existing-fields/field-%1$d/value\"><label>%2$s</label></input>"
+    :binding  => "<bind nodeset=\"/site/existing-fields/field-%s/value\" />",
+    :ui       => "<input ref=\"/site/existing-fields/field-%1$d/value\"><label>%2$s</label></input>"
   }
   
   attr_reader :template

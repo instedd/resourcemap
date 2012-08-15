@@ -4,19 +4,19 @@
 		<h:title>%(:title)</h:title>
 		<model>
 			<instance>
-				<resource>
-					<id type="integer">%(:collection_id)</id>
+				<site>
+					<collection-id type="integer">%(:collection_id)</collection-id>
 					<name />
 					<lat type="float" />
 					<lng type="float" />
 					<existing-fields>
 					  %(:existing_fields)
 					</existing-fields>
-				</resource>
+				</site>
 			</instance>
-			<bind nodeset="/resource/name" type="string" required="true()" />
-			<bind nodeset="/resource/lat" type="decimal" required="true()" constraint=". &gt; -90 and . &lt; 90" jr:constraintMsg="Latitude must be between -90 and 90." />
-			<bind nodeset="/resource/lng" type="decimal" required="true()" constraint=". &gt; -180 and . &lt; 180" jr:constraintMsg="Longitude must be between -180 and 180." />
+			<bind nodeset="/site/name" type="string" required="true()" />
+			<bind nodeset="/site/lat" type="decimal" required="true()" constraint=". &gt; -90 and . &lt; 90" jr:constraintMsg="Latitude must be between -90 and 90." />
+			<bind nodeset="/site/lng" type="decimal" required="true()" constraint=". &gt; -180 and . &lt; 180" jr:constraintMsg="Longitude must be between -180 and 180." />
 			%(:existing_fields_binding)
 		</model>
 	</h:head>

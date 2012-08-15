@@ -50,4 +50,24 @@ class Site < ActiveRecord::Base
     end
     sites_with_id_and_name
   end
+
+  def self.create_or_update_from_hash! hash
+    site = Site.where(:id => hash["site_id"]).first_or_initialize
+    site.prepare_attributes_from_hash!(hash)
+    site.save ? site : nil
+  end
+
+  def prepare_attributes_from_hash!(hash)
+    self.collection_id = hash["collection_id"]
+    self.name = hash["name"]
+    self.lat = hash["lat"]
+    self.lng = hash["lng"]
+    self.user = hash["current_user"]
+    properties = {}
+    hash["existing_fields"].each_value do |field|
+      properties[field["field_id"].to_s] = field["value"]
+    end
+    self.properties = properties
+  end
+
 end

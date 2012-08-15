@@ -6,6 +6,7 @@ ResourceMap::Application.routes.draw do
   match 'nuntium' => 'nuntium#receive', :via => :post
   match 'authenticate' => 'nuntium#authenticate', :via => :post
   match 'android/collections' => 'android#collections_json', :via => :get
+  match 'android/submission' => 'android#submission', :via => :post
   match 'collections/breadcrumbs' => 'collections#render_breadcrumbs', :via => :post
 
   resources :repeats

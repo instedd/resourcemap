@@ -94,3 +94,9 @@ end
 Reminder.blueprint do
   repeat
 end
+
+Membership.blueprint do
+  user
+  collection
+  admin { true }
+end
