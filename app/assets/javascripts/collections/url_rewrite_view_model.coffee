@@ -44,6 +44,9 @@ onCollections ->
       else
         window.location.hash = hash
 
+      @reloadMapSites()
+
+
     @processQueryParams: ->
       @ignorePerformSearchOrHierarchy = true
       selectedSiteId = null
