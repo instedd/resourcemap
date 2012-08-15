@@ -149,7 +149,7 @@ onCollections ->
         z: zoom
         collection_ids: collection_ids
 
-      query.selected_hierarchy = @selectedHierarchy().id if @selectedHierarchy()
+      query.selected_hierarchies = @selectedHierarchy().hierarchyIds() if @selectedHierarchy()
       query.hierarchy_code = window.model.groupBy().esCode if @selectedHierarchy() && window.model.groupBy().esCode
 
       query.exclude_id = @selectedSite().id() if @selectedSite()?.id()
@@ -202,7 +202,7 @@ onCollections ->
               markerOptions.icon = @markerImageInactive
               markerOptions.shadow = @markerImageInactiveShadow
             else if (selectedSiteId && selectedSiteId == site.id)
-               
+
               markerOptions.icon = @markerImageTarget
               markerOptions.shadow = @markerImageTargetShadow
 
@@ -290,7 +290,7 @@ onCollections ->
       switch icon
         when 'active', 'null'
           if marker.site && marker.site.icon != 'null'
-            # temporary comment this line, will change soon 
+            # temporary comment this line, will change soon
             marker.setIcon null
             #marker.setIcon @markerImage marker.site.icon
           else

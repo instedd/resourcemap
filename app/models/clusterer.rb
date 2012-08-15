@@ -8,9 +8,6 @@ class Clusterer
     @sites = []
     @clustering_enabled = @zoom < 20
     @highlight = {}
-
-    @hierarchy_code = nil
-    @hierachy_selected = nil
   end
 
   def self.cell_size_for(zoom)
@@ -25,7 +22,7 @@ class Clusterer
 
   def highlight(hierarchy_info)
     @highlight[:hierarchy_code] = hierarchy_info[:code]
-    @highlight[:hierachy_selected] = hierarchy_info[:selected]
+    @highlight[:hierachies_selected] = hierarchy_info[:selected]
   end
 
   def add(site)
@@ -41,8 +38,8 @@ class Clusterer
       cluster[:max_lng] = lng if lng > cluster[:max_lng]
       cluster[:lat_sum] += lat
       cluster[:lng_sum] += lng
-      cluster[:highlighted] ||= !site[:property].nil? && !@highlight[:hierachy_selected].nil? &&
-                                  (site[:property].include?(@highlight[:hierachy_selected]) )
+      cluster[:highlighted] ||= !site[:property].nil? && !@highlight[:hierachies_selected].nil? &&
+                                  (site[:property] & @highlight[:hierachies_selected]).present?
 
       Plugin.hooks(:clusterer).each do |clusterer|
         clusterer[:map].call site, cluster
@@ -68,8 +65,8 @@ class Clusterer
         count = cluster[:count]
         if count == 1
           site = cluster[:site]
-          site[:highlighted] = !site[:property].nil? && !@highlight[:hierachy_selected].nil? &&
-                              (site[:property].include?(@highlight[:hierachy_selected]) )
+          site[:highlighted] = !site[:property].nil? && !@highlight[:hierachies_selected].nil? &&
+                               (site[:property] & @highlight[:hierachies_selected]).present?
           site.delete(:property)
 
           sites_to_return.push site

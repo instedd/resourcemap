@@ -24,6 +24,14 @@ onCollections ->
                         else
                           []
 
+      @hierarchyIds = ko.observable([@id])
+      $.map @hierarchyItems, (item) => @loadItemToHierarchyIds(item)
+
+
+    loadItemToHierarchyIds: (item) =>
+      @hierarchyIds().push(item.id)
+      $.map item.hierarchyItems, (item) => @loadItemToHierarchyIds(item)
+
     sitesUrl: =>
       "/collections/#{window.model.currentCollection().id}/search.json?#{$.param @queryParams()}"
 
