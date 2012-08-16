@@ -24,7 +24,7 @@ class CollectionsController < ApplicationController
     if params.has_key? :collection_id
       add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
-        add_breadcrumb params[:site_name], site_path(params[:site_id])
+        add_breadcrumb params[:site_name], 'javascript:window.model.editSite()'
       end
     end
     render :layout => false
