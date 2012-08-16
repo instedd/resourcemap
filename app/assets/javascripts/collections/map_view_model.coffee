@@ -98,7 +98,7 @@ onCollections ->
       setTimeout(window.adjustContainerSize, 10)
 
     @reloadMapSites: (callback) ->
-      return unless @showingMap()
+      return unless @map
 
       bounds = @map.getBounds()
 
