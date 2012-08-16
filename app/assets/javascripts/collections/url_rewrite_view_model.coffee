@@ -44,7 +44,7 @@ onCollections ->
       else
         window.location.hash = hash
 
-      @reloadMapSites()
+      @reloadMapSites() if @map
 
 
     @processQueryParams: ->
