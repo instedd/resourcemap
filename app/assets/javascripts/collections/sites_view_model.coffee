@@ -24,7 +24,7 @@ onCollections ->
         @editingSite().startEditLocationInMap()
 
     @editSite: (site) ->
-      site = site || @selectedSite()
+      site or= @selectedSite()
       @goBackToTable = true unless @showingMap()
       $('.BreadCrumb').load("collections/breadcrumbs",
           site_name: site.name(), # send the site's name to avoid having to make a server side query for it
