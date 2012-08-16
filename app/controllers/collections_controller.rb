@@ -6,6 +6,7 @@ class CollectionsController < ApplicationController
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
 
   def index
+    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
     respond_to do |format|
       format.html
       collections_with_snapshot = []
@@ -30,6 +31,7 @@ class CollectionsController < ApplicationController
   end
 
   def new
+    add_breadcrumb "Collections", collections_path
     add_breadcrumb "Create new collection", nil
   end
 
