@@ -17,7 +17,7 @@ onThresholds ->
       @membersPhone = ko.observableArray data?.phone_notification["members"] ? []
 
       @alertSites = ko.observable $.map(data?.sites ? [], (site) -> new Site(site))
-      @propertyName = ko.observable data?.property_name
+      @propertyName = ko.observable data?.name
       @ord = ko.observable data?.ord
       # @color = ko.observable(data?.color ? '#ff0000')
       @icon = ko.observable(data.icon ? "marker_red.png")
@@ -68,7 +68,7 @@ onThresholds ->
     toJSON: =>
       id: @id()
       icon: @icon()
-      property_name: @propertyName()
+      name: @propertyName()
       is_all_site: @isAllSite()
       is_all_condition: @isAllCondition()
       is_notify: @isNotify()

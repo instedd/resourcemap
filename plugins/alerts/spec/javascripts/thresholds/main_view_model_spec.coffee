@@ -40,19 +40,19 @@ describe 'MainViewModel', ->
 
   describe 'save threshold', ->
     beforeEach ->
-      @threshold = new Threshold email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], ord: 1, is_all_site: true, is_all_condition: true, is_notify: true, message_notification: "alert_01", property_name: "beds"
+      @threshold = new Threshold email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], ord: 1, is_all_site: true, is_all_condition: true, is_notify: true, message_notification: "alert_01", name: "beds"
       @model.thresholds.push @threshold
       @model.currentThreshold @threshold
       spyOn($, 'post')
 
     it "should post the threshold's json", ->
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], icon : 'marker_red.png', ord: 1, property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], icon : 'marker_red.png', ord: 1, name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
 
     it "should put the threshold's json if it has an id", ->
       @threshold.id(1)
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {id: 1, icon : 'marker_red.png', property_name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {id: 1, icon : 'marker_red.png', name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
 
     it 'should be saving', ->
       @model.saveThreshold()
