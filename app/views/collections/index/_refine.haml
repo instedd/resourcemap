@@ -39,7 +39,7 @@
       %br/
     <!-- /ko -->
     <!-- /ko -->
-    <!-- ko foreach: currentCollection().fields() -->
+    <!-- ko foreach: currentCollection().refineFields() -->
     #div{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.esCode) }'), style: 'cursor:pointer;padding-top:6px'}
       %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == esCode ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
       %span{ko(text: :name)}
