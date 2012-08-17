@@ -145,6 +145,7 @@ ActiveRecord::Schema.define(:version => 20120817032623) do
     t.text     "schedule"
     t.datetime "next_run"
     t.text     "sites"
+    t.boolean  "status"
   end
 
   add_index "reminders", ["collection_id"], :name => "index_reminders_on_collection_id"

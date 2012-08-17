@@ -6,6 +6,7 @@ class CollectionsController < ApplicationController
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
 
   def index
+    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
     respond_to do |format|
       format.html
       collections_with_snapshot = []
@@ -23,13 +24,14 @@ class CollectionsController < ApplicationController
     if params.has_key? :collection_id
       add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
-        add_breadcrumb params[:site_name], site_path(params[:site_id])
+        add_breadcrumb params[:site_name], 'javascript:window.model.editSite()'
       end
     end
     render :layout => false
   end
 
   def new
+    add_breadcrumb "Collections", collections_path
     add_breadcrumb "Create new collection", nil
   end
 

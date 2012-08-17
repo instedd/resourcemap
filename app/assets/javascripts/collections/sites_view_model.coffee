@@ -24,6 +24,7 @@ onCollections ->
         @editingSite().startEditLocationInMap()
 
     @editSite: (site) ->
+      site or= @selectedSite()
       @goBackToTable = true unless @showingMap()
       $('.BreadCrumb').load("collections/breadcrumbs",
           site_name: site.name(), # send the site's name to avoid having to make a server side query for it
@@ -97,24 +98,25 @@ onCollections ->
       @editingSite().post @editingSite().toJSON(), callback
 
     @exitSite: ->
-      $('.BreadCrumb').load("collections/breadcrumbs", { collection_id: @editingSite().collection.id })
+      $('.BreadCrumb').load("collections/breadcrumbs", { collection_id: @currentCollection().id })
       @performSearchOrHierarchy()
 
       field.editing(false) for field in @currentCollection().fields()
-      if @editingSite().inEditMode()
+      if @editingSite()?.inEditMode()
         @editingSite().exitEditMode()
 
       else
-        # Unselect site if it's not on the tree
-        @editingSite().editingLocation(false)
-        @editingSite().deleteMarker() unless @editingSite().id()
-        @editingSite(null)
-        window.model.setAllMarkersActive()
-        if @goBackToTable
-          @showTable()
-          delete @goBackToTable
-        else
-          @reloadMapSites()
+        if @editingSite()
+          # Unselect site if it's not on the tree
+          @editingSite().editingLocation(false)
+          @editingSite().deleteMarker() unless @editingSite().id()
+          @editingSite(null)
+          window.model.setAllMarkersActive()
+          if @goBackToTable
+            @showTable()
+            delete @goBackToTable
+          else
+            @reloadMapSites()
       @rewriteUrl()
 
     @deleteSite: ->
