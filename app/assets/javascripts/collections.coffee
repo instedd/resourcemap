@@ -14,6 +14,7 @@ onCollections -> if $('#collections-main').length > 0
     $('#collections-dummy').remove()
     $('#collections-main').show()
     $('#refine-container').show()
+    $('#snapshot_loaded_message').show()
 
   # Adjust width to window
   window.adjustContainerSize = ->

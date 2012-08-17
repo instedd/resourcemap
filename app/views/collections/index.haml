@@ -4,15 +4,15 @@
 <!-- ko if: !fullscreen() -->
 %h1
   Collections
-  <!-- ko if: currentCollection() && currentCollection().currentSnapshot -->
-  <!-- ko with: currentCollection -->
-  %p.snapshot_loaded_message
+  %p#snapshot_loaded_message{style: 'display:none'}
+    <!-- ko if: currentSnapshot() -->
+    <!-- ko with: currentCollection -->
     %span.i18g-snapshot
     %span{ko(text: :viewingCurrentSnapshotMessage )}
     %a{ko(click: :unloadCurrentSnapshot)}
       Go back to present
-  <!-- /ko -->
-  <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
 <!-- /ko -->
 
 = render 'collections/index/field_hierarchy_items_template'
