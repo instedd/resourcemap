@@ -10,6 +10,15 @@ onCollections ->
       @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       window.markers = @markers = {}
 
+    @loadBreadCrumb: ->
+      params = {}
+      if @selectedSite()
+        params["site_name"] = @selectedSite().name() # send the site's name to avoid having to make a server side query for it
+        params["site_id"] = @selectedSite().id()
+      params["collection_id"] = @currentCollection().id if @currentCollection()
+
+      $('.BreadCrumb').load("collections/breadcrumbs", params)
+
     @editingSiteLocation: ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
@@ -24,13 +33,8 @@ onCollections ->
         @editingSite().startEditLocationInMap()
 
     @editSite: (site) ->
-      site or= @selectedSite()
       @goBackToTable = true unless @showingMap()
-      $('.BreadCrumb').load("collections/breadcrumbs",
-          site_name: site.name(), # send the site's name to avoid having to make a server side query for it
-          site_id: site.id(),
-          collection_id: site.collection.id
-      )
+
       @showMap =>
         site.copyPropertiesToCollection(site.collection)
         if @selectedSite() && @selectedSite().id() == site.id()
@@ -40,6 +44,8 @@ onCollections ->
         @editingSite(site)
         @currentCollection(site.collection)
         @rewriteUrl()
+
+        @loadBreadCrumb()
 
     @selectSiteFromId: (siteId, collectionId) ->
       site = @siteIds[siteId]
@@ -98,7 +104,6 @@ onCollections ->
       @editingSite().post @editingSite().toJSON(), callback
 
     @exitSite: ->
-      $('.BreadCrumb').load("collections/breadcrumbs", { collection_id: @currentCollection().id })
       @performSearchOrHierarchy()
 
       field.editing(false) for field in @currentCollection().fields()
@@ -117,7 +122,8 @@ onCollections ->
             delete @goBackToTable
           else
             @reloadMapSites()
-      @rewriteUrl()
+
+      @loadBreadCrumb()
 
     @deleteSite: ->
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")

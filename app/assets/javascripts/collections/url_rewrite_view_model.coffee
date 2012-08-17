@@ -106,10 +106,4 @@ onCollections ->
       @editSiteFromMarker(editingSiteId, editingCollectionId) if editingSiteId
       @groupBy(@currentCollection().findFieldByEsCode(groupBy)) if groupBy && @currentCollection()
 
-      params = {}
-      if @selectedSite()
-        params["site_name"] = @selectedSite().name()
-        params["site_id"] = @selectedSite().id()
-      params["collection_id"] = @currentCollection().id if @currentCollection()
-
-      $('.BreadCrumb').load("collections/breadcrumbs", params)
+      @loadBreadCrumb()
