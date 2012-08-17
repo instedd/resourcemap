@@ -24,7 +24,6 @@ onCollections ->
       @viewingCurrentSnapshotMessage = ko.observable()
       @viewingCurrentSnapshotMessage("You are currently viewing this collection's data as it was on snapshot " + @currentSnapshot + ".")
 
-
     fetchFields: (callback) =>
       if @fieldsInitialized
         callback() if callback && typeof(callback) == 'function'
