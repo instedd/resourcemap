@@ -16,6 +16,12 @@ namespace :data do
     end
   end
 
+  def reset_reminder_occurance
+    Reminder.all.each do |reminder|
+      reminder.save!
+    end
+  end
+
   desc "Migrate data from sql files"
   task :migrate, [:directory] => :environment do |task, args|
     unless args[:directory]
@@ -25,5 +31,6 @@ namespace :data do
 
     execute_sql args[:directory]
     encrypt_users_password
+    reset_reminder_occurance
   end
 end
