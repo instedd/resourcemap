@@ -9,7 +9,6 @@
 #= require collections/map_view_model
 #= require collections/refine_view_model
 #= require collections/search_view_model
-#= require collections/sammy_view_model
 #= require collections/sort_view_model
 #= require collections/url_rewrite_view_model
 onCollections ->
@@ -21,7 +20,6 @@ onCollections ->
     @include MapViewModel
     @include RefineViewModel
     @include SearchViewModel
-    @include SammyViewModel
     @include SortViewModel
     @include UrlRewriteViewModel
 
@@ -35,8 +33,6 @@ onCollections ->
 
       @shouldShowLocationMissingAlert = ko.computed =>
         !@filteringByProperty(FilterByLocationMissing) && @currentCollection()?.sitesWithoutLocation().length > 0
-
-      location.hash = '#/' unless location.hash
 
       # We make sure all the methods in this model are correctly bound to "this".
       # Using Module and @include makes the methods in the included class not bound

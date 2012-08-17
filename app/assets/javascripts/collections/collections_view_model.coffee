@@ -13,11 +13,41 @@ onCollections ->
 
     @goToRoot: ->
       @exitSite() if @editingSite()
-      location.hash = '/'
+      @currentCollection(null)
+      @unselectSite() if @selectedSite()
+      @search('')
+      @lastSearch(null)
+      @filters([])
+      @sort(null)
+      @sortDirection(null)
+      @groupBy(@defaultGroupBy)
+
+      initialized = @initMap()
+      @reloadMapSites() unless initialized
+      @refreshTimeago()
+      @makeFixedHeaderTable()
+
+      @rewriteUrl()
+
       $('.BreadCrumb').load("collections/breadcrumbs", {})
 
     @enterCollection: (collection) ->
-      location.hash = "#{collection.id}"
+      @queryParams = $.url().param()
+
+      @findCollectionById parseInt(collection.id)
+      @currentCollection collection
+      @unselectSite() if @selectedSite()
+      @exitSite() if @editingSite()
+
+      initialized = @initMap()
+      collection.panToPosition(true) unless initialized
+
+      collection.fetchFields =>
+        @processQueryParams()
+        @refreshTimeago()
+        @makeFixedHeaderTable()
+
+        @rewriteUrl()
       $('.BreadCrumb').load("collections/breadcrumbs", { collection_id: collection.id })
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"

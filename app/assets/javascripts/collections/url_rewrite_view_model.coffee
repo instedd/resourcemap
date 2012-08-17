@@ -2,10 +2,6 @@ onCollections ->
 
   class @UrlRewriteViewModel
     @rewriteUrl: ->
-      return if @rewritingUrl
-
-      @rewritingUrl = true
-
       hash = ""
       query = {}
 
@@ -39,10 +35,10 @@ onCollections ->
       params = $.param query
       hash += "?#{params}" if params.length > 0
 
-      if window.location.hash == hash
-        @rewritingUrl = false
-      else
-        window.location.hash = hash
+      old_location = document.createElement 'a'
+      old_location.href = window.location
+      old_location.hash = hash
+      window.location.replace old_location
 
       @reloadMapSites()
 
@@ -56,7 +52,7 @@ onCollections ->
       showTable = false
       groupBy = null
 
-      for key in @queryParams.keys(true)
+      for key in @queryParams
         value = @queryParams[key]
         switch key
           when 'collection', 'lat', 'lng', 'z'

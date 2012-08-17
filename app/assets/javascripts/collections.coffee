@@ -9,7 +9,6 @@ onCollections -> if $('#collections-main').length > 0
     window.model = new MainViewModel
     window.model.initialize(collections)
     ko.applyBindings window.model
-    window.model.initSammy()
 
     $('#collections-dummy').remove()
     $('#collections-main').show()
