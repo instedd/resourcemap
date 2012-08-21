@@ -12,6 +12,8 @@ onCollections ->
     @findCollectionById: (id) -> (x for x in @collections() when x.id == id)[0]
 
     @goToRoot: ->
+      @queryParams = $.url().param()
+
       @exitSite() if @editingSite()
       @currentCollection(null)
       @unselectSite() if @selectedSite()

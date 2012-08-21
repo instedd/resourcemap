@@ -10,6 +10,8 @@ onCollections -> if $('#collections-main').length > 0
     window.model.initialize(collections)
     ko.applyBindings window.model
 
+    window.model.goToRoot()
+
     $('#collections-dummy').remove()
     $('#collections-main').show()
     $('#refine-container').show()
