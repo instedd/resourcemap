@@ -41,6 +41,8 @@ onCollections -> if $('#collections-main').length > 0
       $('.expand-collapse_button').css("top", (($('#map').height())/2 ) + "px");
       if(window.model.fullscreenExpanded())
         $('#right-panel').width(width)
+
+    google.maps.event.trigger(map, "resize") if window.model && window.model.showingMap()
     false
 
 

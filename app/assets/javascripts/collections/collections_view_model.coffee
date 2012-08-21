@@ -62,7 +62,6 @@ onCollections ->
         $(".expand-collapse_button").addClass("oleftcollapse")
         $(".expand-collapse_button").removeClass("oleftexpand")
         window.adjustContainerSize()
-        google.maps.event.trigger(map, "resize");
         @reloadMapSites()
       else
         @fullscreen(false)
@@ -73,7 +72,6 @@ onCollections ->
         $('#collections-main .left').show()
         $('.expand-collapse_button').hide()
         window.adjustContainerSize()
-        google.maps.event.trigger(map, "resize");
         @reloadMapSites()
 
     @toogleExpandFullScreen: ->
@@ -83,7 +81,6 @@ onCollections ->
         window.adjustContainerSize()
         $(".oleftcollapse").addClass("oleftexpand")
         $(".oleftcollapse").removeClass("oleftcollapse")
-        google.maps.event.trigger(map, "resize");
         @reloadMapSites()
 
       else
@@ -93,7 +90,6 @@ onCollections ->
           window.adjustContainerSize()
           $(".oleftexpand").addClass("oleftcollapse")
           $(".oleftexpand").removeClass("oleftexpand")
-          google.maps.event.trigger(map, "resize");
           @reloadMapSites()
 
 
