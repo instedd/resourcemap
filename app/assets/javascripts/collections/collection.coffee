@@ -16,9 +16,6 @@ onCollections ->
 
       @groupByOptions = ko.computed => [window.model.defaultGroupBy].concat(@fields().filter((f) -> f.showInGroupBy))
 
-      # Waiting for definitions of refine by hierarchy requirements
-      @refineFields = ko.computed => @fields().filter((f) -> f.kind != 'hierarchy')
-
     isSearch: => false
 
     sitesUrl: -> "/collections/#{@id}/sites.json"
