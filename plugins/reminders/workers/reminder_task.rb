@@ -1,6 +1,6 @@
 class ReminderTask
   def self.perform
-    Reminder.where("next_run <= ?", Time.now).includes(:collection).each do |reminder|
+    Reminder.where("next_run <= ? && status = true", Time.now).includes(:collection).each do |reminder|
       reminder.save!
       next unless reminder.collection.plugin_enabled? 'reminders'
       users_email = []
