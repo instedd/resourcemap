@@ -4,6 +4,10 @@
 # We do the check again so tests don't trigger this initialization
 onCollections -> if $('#collections-main').length > 0
 
+  History.Adapter.bind window, 'statechange', (e) ->
+      State = History.getState()
+      History.log(State.data, State.title, State.url)
+
   # Get collections and start the view model
   $.get "/collections.json", {}, (collections) =>
     window.model = new MainViewModel

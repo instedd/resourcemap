@@ -35,10 +35,10 @@ onCollections ->
       params = $.param query
       hash += "?#{params}" if params.length > 0
 
-      old_location = document.createElement 'a'
-      old_location.href = window.location
-      old_location.hash = hash
-      window.location.replace old_location
+      location = document.createElement 'a'
+      location.href = window.location
+      location.hash = hash
+      History.pushState null, null, location
 
       @reloadMapSites()
 

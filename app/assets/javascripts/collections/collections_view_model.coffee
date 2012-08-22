@@ -36,7 +36,6 @@ onCollections ->
     @enterCollection: (collection) ->
       @queryParams = $.url().param()
 
-      @findCollectionById parseInt(collection.id)
       @currentCollection collection
       @unselectSite() if @selectedSite()
       @exitSite() if @editingSite()
