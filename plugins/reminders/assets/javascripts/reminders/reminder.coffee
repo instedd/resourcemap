@@ -1,9 +1,11 @@
 onReminders ->
   class @Reminder 
     constructor: (data) ->
-      @id           = data?.id
-      @collectionId = data?.collection_id
+      @id           = data?.id 
+      @collectionId = data?.collection_id 
       @name         = ko.observable data?.name
+      @enableCss    = ko.observable 'cb-enable'
+      @disableCss   = ko.observable 'cb-disalbe'
       @isAllSites   = ko.observable data.is_all_site ? true
       @targetFor    = ko.computed
         read: -> if @isAllSites() then 'all_sites' else 'some_sites'
@@ -21,7 +23,14 @@ onReminders ->
       @repeat           = ko.observable data?.repeat
       @repeatName       = ko.computed => @repeat()?.name()
       @reminderMessage  = ko.observable data?.reminder_message
-
+      @status           = ko.observable data?.status
+      @statusInit       = ko.computed =>
+        if @status()
+          @enableCss 'cb-enable selected'
+          @disableCss 'cb-disable'
+        else
+          @enableCss 'cb-enable'
+          @disableCss 'cb-disable selected'
       @nameError            = ko.computed => "Reminder's name is missing" if $.trim(@name()).length == 0
       @sitesError           = ko.computed => "Sites is missing" if !@isAllSites() and @sites().length == 0
       @reminderDateError    = ko.computed =>
@@ -60,3 +69,7 @@ onReminders ->
     getSitesRepeatLabel: =>
       sites = if @isAllSites() then ["all sites"] else $.map @sites(), (site) => site.name
       detail = @repeat().name() + " for " + sites.join(",")
+
+    setStatus: (status, callback) ->
+      @status status
+      $.post "/plugin/reminders/collections/#{@collectionId}/reminders/#{@id}/set_status.json", {status: status}, callback

@@ -34,4 +34,9 @@ describe RemindersController do
       delete :destroy, :id => reminder.id, :collection_id => collection.id
     }.to change { Reminder.count }.by -1
   end
+
+  it 'should update status' do 
+    post :set_status, :id => reminder.id, :collection_id => collection.id, :status => true
+    Reminder.find(reminder).status.should == true
+  end
 end

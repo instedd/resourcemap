@@ -46,5 +46,13 @@ onReminders ->
       @reminders.remove @deletedReminder
       delete @deletedReminder
 
+    onOffEnable: (reminder) =>
+      reminder.setStatus true, @reminderStatusCallback
+
+    onOffDisable: (reminder) =>
+      reminder.setStatus false, @reminderStatusCallback
+
+    reminderStatusCallback: (data) =>
+    
     findRepeat: (id) =>
       return repeat for repeat in @repeats() when repeat.id() == id

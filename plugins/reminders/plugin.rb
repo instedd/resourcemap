@@ -9,7 +9,9 @@ class Reminders::Plugin < Plugin
 
 	routes {
 		resources :collections do
-			resources :reminders
+			resources :reminders do
+        post :set_status, :on => :member
+      end
 		end
 	}
 end

@@ -2,8 +2,7 @@ class RemindersController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    respond_to do |format|
-      format.html do
+    respond_to do |format| format.html do
         show_collection_breadcrumb
         add_breadcrumb "Reminders", collection_reminders_path(collection)
       end
@@ -31,5 +30,9 @@ class RemindersController < ApplicationController
     reminder.destroy
     render json: reminder
   end
-
+  
+  def set_status
+    reminder.update_attribute :status, params[:status]
+    render json: reminder
+  end
 end

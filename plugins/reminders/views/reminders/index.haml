@@ -1,5 +1,6 @@
+- content_for :head do
+  = stylesheet_link_tag 'reminders'
 = render 'collections/tabs'
-
 .tabsline
   #reminders-main.hidden-until-loaded
     %h2 Reminders
@@ -20,6 +21,11 @@
         %em{ko(text: :sitesName)}
         <!-- /ko -->
       .rightbuttons
+        %p.field.switch
+          %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
+            %span 
+          %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
+            %span 
         %button.fdelete{ ko(click: '$root.deleteReminder') }
       .message
         %span{ko(text: :reminderMessage)}
@@ -80,4 +86,4 @@
     .box.grey.add{ ko(visible: '!currentReminder()', click: 'showAddReminder'), style: 'display:none'}
       %span Add Reminder
       %button.cadd.right{type: :button}
-      %br{clear: :all}
+        %br{clear: :all}
