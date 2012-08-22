@@ -1,0 +1,16 @@
+Description:
+    Create a new resource map plugin at plugins/. Pass the plugin name as an argument,
+    either CamelCased or snake_cased.
+
+Example:
+    rails generate plugin Alerts
+
+    Create 
+        plugins/alerts/assets/
+        plugins/alerts/controllers/
+        plugins/alerts/controllers/alerts_controller.rb
+        plugins/alerts/models/
+        plugins/alerts/views/
+        plugins/alerts/views/alerts/
+        plugins/alerts/views/alerts/index.html
+        plugins/alerts/plugin.rb

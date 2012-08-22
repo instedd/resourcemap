@@ -17,8 +17,8 @@ onCollections ->
       @layers = collection.layers
       @fields = collection.fields
       @fieldsInitialized = collection.fieldsInitialized
+      @loadRefineFields()
       @groupByOptions = collection.groupByOptions
-
 
     createSite: (site) => new Site(@collection, site)
 
