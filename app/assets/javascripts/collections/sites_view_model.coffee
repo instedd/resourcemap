@@ -40,10 +40,9 @@ onCollections ->
         if @selectedSite() && @selectedSite().id() == site.id()
           @unselectSite()
 
-        @selectSite(site)
         @editingSite(site)
+        @selectSite(site)
         @currentCollection(site.collection)
-        @rewriteUrl()
 
         @loadBreadCrumb()
 
