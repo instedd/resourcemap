@@ -2,13 +2,7 @@ onCollections ->
 
   class @UrlRewriteViewModel
     @rewriteUrl: ->
-      hash = ""
       query = {}
-
-      if @currentCollection()
-        hash = "##{@currentCollection().id}"
-      else
-        hash = "#/"
 
       # Append collection parameters (search, filters, hierarchy, etc.)
       @currentCollection().setQueryParams(query) if @currentCollection()
@@ -20,6 +14,8 @@ onCollections ->
       else if @selectedSite()
         query.selected_site = @selectedSite().id()
         query.selected_collection = @selectedSite().collection.id
+      else if @currentCollection()
+        query.collection = @currentCollection().id
 
       # Append map center and zoom
       if @map
@@ -32,13 +28,10 @@ onCollections ->
       # Append map/table view mode
       query._table = true unless @showingMap()
 
-      params = $.param query
-      hash += "?#{params}" if params.length > 0
-
-      old_location = document.createElement 'a'
-      old_location.href = window.location
-      old_location.hash = hash
-      window.location.replace old_location
+      location = document.createElement 'a'
+      location.href = window.location
+      location.search = $.param query
+      History.pushState null, null, location
 
       @reloadMapSites()
 
