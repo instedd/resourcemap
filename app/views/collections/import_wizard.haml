@@ -10,9 +10,8 @@
   - if current_snapshot
     %p 
       You are currently browsing a snapshot.
-      To make updates to the current version, 
-      please go back to
-      = link_to '[present time]', collection_path(collection, :anchor => 'snapshots')
+      To make updates to the current version, please 
+      = ( link_to 'go back to present time', unload_current_snapshot_collection_path(collection), :method => :post ) + '.'
   - else
     - if collection.sites.exists?
       %p
