@@ -69,8 +69,8 @@ module Collection::CsvConcern
         item[:order] = i
 
         if row.length != 3
-          item[:error] = "wrong format"
-          item[:error_description] = "invalid column number"
+          item[:error] = "Wrong format."
+          item[:error_description] = "Invalid column number"
         else
           item[:id] = row[0].strip
           item[:parent] = row[1].strip if row[1].present?

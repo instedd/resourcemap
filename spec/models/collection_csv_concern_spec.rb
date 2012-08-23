@@ -74,7 +74,7 @@ describe Collection::CsvConcern do
       json.should eq([
         {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}, {order: 6, id: '6', name: 'Site 1.3'}]},
         {order: 2, id: '2', name: 'Site 2'},
-        {order: 3, error: 'wrong format', error_description: 'invalid column number'}
+        {order: 3, error: 'Wrong format.', error_description: 'Invalid column number'}
       ])
     end
 
@@ -92,7 +92,7 @@ describe Collection::CsvConcern do
         {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}]},
         {order: 2, id: '2', name: 'Site 2'},
         {order: 3, id: '3', name: 'Site 3'},
-        {order: 6, error: 'wrong format', error_description: 'invalid column number'}
+        {order: 6, error: 'Wrong format.', error_description: 'Invalid column number'}
       ])
     end
 
