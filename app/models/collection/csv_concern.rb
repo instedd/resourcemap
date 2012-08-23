@@ -53,21 +53,40 @@ module Collection::CsvConcern
   end
 
   def decode_hierarchy_csv(string_or_io)
+
     csv = CSV.new string_or_io, return_headers: false
 
     # First read all items into a hash
     items = {}
+    i = 0
+
     csv.each do |row|
-      next unless row.length == 3 && row[0].present? && row[0] != 'ID'
-      item = {id: row[0].strip, name: row[2].strip}
-      item[:parent] = row[1].strip if row[1].present?
-      items[item[:id]] = item
+      item = {}
+      if row[0] == 'ID'
+        next
+      else
+        i = i+1
+        item[:order] = i
+
+        if row.length != 3
+          item[:error] = "wrong format"
+          item[:error_description] = "invalid column number"
+        else
+          item[:id] = row[0].strip
+          item[:parent] = row[1].strip if row[1].present?
+          item[:name] = row[2].strip
+        end
+
+        items[item[:order]] = item
+      end
+
     end
 
     # Add to parents
-    items.each do |id, item|
-      if item[:parent].present?
-        parent = items[item[:parent]]
+    items.each do |order, item|
+      if item[:parent].present? && !item[:error].present?
+        parent = items.first{|key, hash| hash[:id] == item[:parent]}[1]
+
         if parent
           parent[:sub] ||= []
           parent[:sub] << item
@@ -75,9 +94,10 @@ module Collection::CsvConcern
       end
     end
 
+
     # Remove those that have parents, and at the same time delete their parent key
-    items = items.reject do |id, item|
-      if item[:parent]
+    items = items.reject do |order, item|
+      if item[:parent] && !item[:error].present?
         item.delete :parent
         true
       else
@@ -85,10 +105,12 @@ module Collection::CsvConcern
       end
     end
 
+
     items.values
 
-  rescue Exception
-    return nil
+    rescue Exception => ex
+      return [{error: ex.message}]
+
   end
 
   private
