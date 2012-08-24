@@ -72,6 +72,8 @@ ResourceMap::Application.routes.draw do
     get 'collections/:id/geo' => 'collections#geo_json',as: :geojson
     get 'sites/:id' => 'sites#show', as: :site
     get 'activity' => 'activities#index', as: :activity
+    resources :tokens, :only => [:index, :destroy]
+
   end
 
   scope '/plugin' do

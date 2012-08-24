@@ -3,7 +3,7 @@ class <%= class_name %>::Plugin < Plugin
   #   collection_tab "/<%= plugin_name %>_tab"
 
   # Sample map header view injection
-  #   map_header "/alerts_map_header"
+  #   map_header "/<%= plugin_name %>_map_header"
 
   # Sample site clusterer extension
   #   clusterer \
