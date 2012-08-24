@@ -157,8 +157,7 @@ class CollectionsController < ApplicationController
     search.full_text_search params[:search]
     search.offset params[:offset]
     search.limit params[:limit]
-#    search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
-    search.sort 'name', 'asc'
+    search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
     search.hierarchy params[:hierarchy_code], params[:hierarchy_value] if params[:hierarchy_code]
     search.location_missing if params[:location_missing].present?
     search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing)

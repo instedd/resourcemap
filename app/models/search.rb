@@ -54,7 +54,7 @@ class Search
       sort_ascendent = @sort_ascendent
       @search.sort { by sort, sort_ascendent }
     else
-      @search.sort { by '_uid' }
+      @search.sort { by 'name' }
     end
 
     if @offset && @limit

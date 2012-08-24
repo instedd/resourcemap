@@ -63,6 +63,7 @@ onLayers ->
       @hierarchyItems = ko.observableArray $.map(@hierarchy(), (x) -> new HierarchyItem(x))
 
     toJSON: =>
+      @code(@code().trim())
       json =
         id: @id()
         name: @name()

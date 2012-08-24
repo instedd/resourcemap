@@ -225,7 +225,7 @@ class ImportWizard
     def to_columns(collection, rows)
       fields = collection.fields.index_by &:code
 
-      columns = rows[0].select(&:present?).map{|x| {:name => x, :sample => "", :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
+      columns = rows[0].select(&:present?).map{|x| {:name => x.strip, :sample => "", :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
       columns.each_with_index do |column, i|
         rows[1 .. 4].each do |row|
           if row[i]
