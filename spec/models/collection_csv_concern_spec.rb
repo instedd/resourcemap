@@ -24,21 +24,104 @@ describe Collection::CsvConcern do
     roots[1].lng.to_f.should eq(40.0)
   end
 
-  it "decodes hierarchy csv" do
-    json = collection.decode_hierarchy_csv %(
-      ID, ParentID, ItemName
-      1,,Site 1
-      2,,Site 2
-      3,,Site 3
-      4,1,Site 1.1
-      5,1,Site 1.2
-      6,1,Site 1.3
-    ).strip
+  describe "decode hierarchy csv test" do
 
-    json.should eq([
-      {id: '1', name: 'Site 1', sub: [{id: '4', name: 'Site 1.1'}, {id: '5', name: 'Site 1.2'}, {id: '6', name: 'Site 1.3'}]},
-      {id: '2', name: 'Site 2'},
-      {id: '3', name: 'Site 3'}
-    ])
+    it "decodes hierarchy csv" do
+      json = collection.decode_hierarchy_csv %(
+        ID, ParentID, ItemName
+        1,,Site 1
+        2,,Site 2
+        3,,Site 3
+        4,1,Site 1.1
+        5,1,Site 1.2
+        6,1,Site 1.3
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}, {order: 6, id: '6', name: 'Site 1.3'}]},
+        {order: 2, id: '2', name: 'Site 2'},
+        {order: 3, id: '3', name: 'Site 3'}
+      ])
+    end
+
+    it "without header" do
+      json = collection.decode_hierarchy_csv %(
+        1,,Site 1
+        2,,Site 2
+        3,,Site 3
+        4,1,Site 1.1
+        5,1,Site 1.2
+        6,1,Site 1.3
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}, {order: 6, id: '6', name: 'Site 1.3'}]},
+        {order: 2, id: '2', name: 'Site 2'},
+        {order: 3, id: '3', name: 'Site 3'}
+      ])
+    end
+
+    it "gets an error if has >3 columns in a row" do
+      json = collection.decode_hierarchy_csv %(
+        1,,Site 1
+        2,,Site 2
+        3,,Site 3,
+        4,1,Site 1.1
+        5,1,Site 1.2
+        6,1,Site 1.3
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}, {order: 6, id: '6', name: 'Site 1.3'}]},
+        {order: 2, id: '2', name: 'Site 2'},
+        {order: 3, error: 'wrong format', error_description: 'invalid column number'}
+      ])
+    end
+
+    it "gets an error if has <3 columns in a row" do
+      json = collection.decode_hierarchy_csv %(
+        1,,Site 1
+        2,,Site 2
+        3,,Site 3
+        4,1,Site 1.1
+        5,1,Site 1.2
+        6,
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}]},
+        {order: 2, id: '2', name: 'Site 2'},
+        {order: 3, id: '3', name: 'Site 3'},
+        {order: 6, error: 'wrong format', error_description: 'invalid column number'}
+      ])
+    end
+
+
+    pending "works ok with quotes" do
+      json = collection.decode_hierarchy_csv %(
+        "1","","Site 1"
+        "2","1","Site 2"
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Site 1'},
+        {order: 2, id: '2', name: 'Site 2'}
+      ])
+    end
+
+    it "gets an error if there is wrong quotes (when creating file in excel without export it to csv)" do
+      json = collection.decode_hierarchy_csv %(
+        1,,Site 1
+        2,,Site 2
+        3,,Site 3
+        "4,,Site 4"
+
+      ).strip
+
+      json.should eq([
+        {error: "Illegal quoting in line 4."}
+      ])
+    end
   end
+
 end
