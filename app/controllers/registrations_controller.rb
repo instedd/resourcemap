@@ -6,7 +6,6 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     super
-  current_user.reset_authentication_token!
   end
 
   def update
