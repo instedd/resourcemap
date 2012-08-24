@@ -95,6 +95,10 @@ Reminder.blueprint do
   repeat
 end
 
+Channel.blueprint do
+  collection
+end
+
 Membership.blueprint do
   user
   collection

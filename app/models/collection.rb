@@ -14,6 +14,8 @@ class Collection < ActiveRecord::Base
   has_many :fields, order: 'ord'
   has_many :thresholds, dependent: :destroy
   has_many :reminders, dependent: :destroy
+  has_many :share_channels, dependent: :destroy 
+  has_many :channels, :through => :share_channels
   has_many :activities, dependent: :destroy
   has_many :snapshots, dependent: :destroy
   has_many :user_snapshots, :through => :snapshots

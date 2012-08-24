@@ -1,3 +1,12 @@
 = render 'collections/tabs'
 .tabsline
-  %h2 Channels
+  #channels-main.hidden-until-loaded 
+    %h2 Channels
+
+    .box.grey.w60
+      .toptitle
+        %span Regional(Mobitel)
+        &rarr;
+        %em Hospital Facilities, Health Center
+      .rightbuttons
+        %button.fdelete 

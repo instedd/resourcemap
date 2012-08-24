@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120817032623) do
+ActiveRecord::Schema.define(:version => 20120824041906) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -24,6 +24,19 @@ ActiveRecord::Schema.define(:version => 20120817032623) do
     t.datetime "updated_at",    :null => false
     t.string   "item_type"
     t.string   "action"
+  end
+
+  create_table "channels", :force => true do |t|
+    t.string   "name"
+    t.boolean  "is_enable"
+    t.string   "password"
+    t.integer  "collection_id"
+    t.string   "nuntium_channel_name"
+    t.boolean  "is_manual_configuration"
+    t.boolean  "is_share"
+    t.text     "share_collections"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   create_table "collections", :force => true do |t|
@@ -169,6 +182,14 @@ ActiveRecord::Schema.define(:version => 20120817032623) do
     t.text     "rule"
   end
 
+  create_table "share_channels", :force => true do |t|
+    t.integer  "channel_id"
+    t.integer  "collection_id"
+    t.boolean  "status"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "site_histories", :force => true do |t|
     t.integer  "collection_id"
     t.string   "name"
@@ -245,18 +266,18 @@ ActiveRecord::Schema.define(:version => 20120817032623) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                  :default => "", :null => false
-    t.string   "encrypted_password",     :default => "", :null => false
+    t.string   "email",                                 :default => "", :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          :default => 0
+    t.integer  "sign_in_count",                         :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
     t.string   "phone_number"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"

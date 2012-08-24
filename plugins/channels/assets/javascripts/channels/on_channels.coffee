@@ -1,1 +1,1 @@
-window.onChannels ? = (callback) ->  $(-> callback() if $('#channels-main').length > 0)
+window.onChannels ?= (callback) ->  $(-> callback() if $('#channels-main').length > 0)
