@@ -2,6 +2,7 @@
 
   :css
     .error { color: red; }
+
 = render 'collections/tabs'
 
 -# Hierarchy item template
@@ -125,7 +126,10 @@
             %input.hierarchy_upload{type: :file, name: :file}
           %iframe#hierarchy_iframe{name: 'hierarchy_iframe', style: 'display:none'}
           <!-- ko if: errorUploadingHierarchy() -->
-          There was an error processing the hierarchy file
+          %p
+            There was
+            = link_to "an error", "#", :class => 'error_description_bubble'
+            processing the hierarchy file
           <!-- /ko -->
           <!-- ko if: uploadingHierarchy() -->
           Uploading, please wait...

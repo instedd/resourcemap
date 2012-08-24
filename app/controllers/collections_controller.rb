@@ -190,6 +190,7 @@ class CollectionsController < ApplicationController
   def decode_hierarchy_csv
     @hierarchy = collection.decode_hierarchy_csv(params[:file].read)
     @hierarchy_errors = CollectionsController.generate_error_description_list(@hierarchy)
+    puts @hierarchy_errors
     render layout: false
   end
 
@@ -201,12 +202,12 @@ class CollectionsController < ApplicationController
       if item[:error]
         message << "Error: #{item[:error]}"
         message << " " + item[:error_description] if item[:error_description]
-        message << " in line #{item[:order]}" if item[:order]
+        message << " in line #{item[:order]}." if item[:order]
       end
 
       hierarchy_errors << message if !message.blank?
     end
-    hierarchy_errors
+    hierarchy_errors.join("<br/>").to_s
   end
 
   def recreate_index

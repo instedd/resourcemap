@@ -96,7 +96,7 @@ describe Collection::CsvConcern do
       ])
     end
 
-
+    # works ok in the app but the test is not working
     pending "works ok with quotes" do
       json = collection.decode_hierarchy_csv %(
         "1","","Site 1"
@@ -114,12 +114,30 @@ describe Collection::CsvConcern do
         1,,Site 1
         2,,Site 2
         3,,Site 3
-        "4,,Site 4"
+        "4,,Site 4
 
       ).strip
 
       json.should eq([
         {error: "Illegal quoting in line 4."}
+      ])
+    end
+
+    it ">1 column number errors" do
+      json = collection.decode_hierarchy_csv %(
+        1,,Site 1
+        2,,Site 2,
+        3,,Site 3,
+        4,,Site 4
+
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Site 1'},
+        {order: 2, error: 'Wrong format.', error_description: 'Invalid column number'},
+        {order: 3, error: 'Wrong format.', error_description: 'Invalid column number'},
+        {order: 4, id: '4', name: 'Site 4'}
+
       ])
     end
   end

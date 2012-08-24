@@ -159,6 +159,19 @@ onLayers ->
     hierarchyUploaded: (hierarchy) =>
       @currentField().setHierarchy(hierarchy)
 
-    errorUploadingHierarchy: =>
+    errorUploadingHierarchy: (hierarchy_errors) =>
       @currentField().uploadingHierarchy(false)
       @currentField().errorUploadingHierarchy(true)
+
+      $('.error_description_bubble').CreateBubblePopup({
+        selectable: true,
+        position : 'top',
+        innerHtml: hierarchy_errors,
+        innerHtmlStyle: {
+            color:'#000000',
+            'background-color' :'white'
+            },
+        themeName:  'bubble',
+        themePath:  '<%= InsteddRails.url %>/theme/images/'
+
+      });
