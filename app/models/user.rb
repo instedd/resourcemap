@@ -85,4 +85,8 @@ class User < ActiveRecord::Base
     return false if(!lm && lm.read)
     return true
   end
+
+  def self.encrypt_users_password
+    all.each { |user| user.update_attributes password: user.encrypted_password }
+  end
 end
