@@ -18,7 +18,7 @@ onLayers ->
       @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
       @uploadingHierarchy = ko.observable(false)
       @errorUploadingHierarchy = ko.observable(false)
-      @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer.fields().indexOf(@) + 1}"
+      @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer().fields().indexOf(@) + 1}"
       @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
       @codeError = ko.computed => if @hasCode() then null else "the field #{@fieldErrorDescription()} is missing a Code"
       @optionsError = ko.computed =>
