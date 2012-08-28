@@ -56,9 +56,17 @@ onLayers ->
 
     saveLayerCallback: (data) =>
       @currentLayer().id(data.id)
+      layersToReloadOrder = [@currentLayer()]
 
       for field, i in @currentLayer().fields()
-        field.id(data.fields[i].id) if data.fields[i]
+        if data.fields[i]
+          field.id(data.fields[i].id)
+        else
+          field.layer().fields.push(field)
+          layersToReloadOrder.push(field.layer())
+          @currentLayer().fields.remove(field)
+
+      @reloadOrder(layer) for layer in layersToReloadOrder
 
       @currentLayer(null)
       @currentField(null)
@@ -121,6 +129,12 @@ onLayers ->
     selectField: (field) =>
       @currentField(field)
       @currentField().hasFocus(true)
+
+    reloadOrder: (layer) =>
+      i = 1
+      for field in layer.fields()
+        field.ord(i)
+        i = i+1
 
     deleteField: (field) =>
       idx = @currentLayer().fields().indexOf(field)

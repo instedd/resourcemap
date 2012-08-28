@@ -104,7 +104,7 @@
           = ko_text_field_tag :code, css: {error: :codeError}
           .change_layer
             = link_to "Move to Layer...", "#", :id => "move_to_layer"
-            = select_tag :layer, nil, 'data-bind' => kov(options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', optionsCaption: "'Choose...'")
+            = select_tag :layer, nil, 'data-bind' => kov(options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer')
 
           <!-- ko if: isOptionsKind -->
           %hr/
