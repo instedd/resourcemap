@@ -36,4 +36,8 @@ class Reminder < ActiveRecord::Base
       sites
     end
   end
+
+  def self.reset_reminders_recurrence_rule
+    all.each { |reminder| reminder.update_attributes reminder_date: reminder.reminder_date }
+  end
 end
