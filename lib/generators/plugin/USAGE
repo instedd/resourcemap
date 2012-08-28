@@ -13,4 +13,7 @@ Example:
         plugins/alerts/views/
         plugins/alerts/views/alerts/
         plugins/alerts/views/alerts/index.html
+        plugins/alerts/spec/
+        plugins/alerts/spec/spec_helper.rb
         plugins/alerts/plugin.rb
+
