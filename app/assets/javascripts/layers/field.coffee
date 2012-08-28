@@ -1,7 +1,7 @@
 onLayers ->
   class @Field
     constructor: (layer, data) ->
-      @layer = layer
+      @layer = ko.observable layer
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @code = ko.observable data?.code
@@ -70,6 +70,7 @@ onLayers ->
         code: @code()
         kind: @kind()
         ord: @ord()
+        layer_id: @layer().id()
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId} if @isOptionsKind()
       json.config = {hierarchy: @hierarchy()} if @kind() == 'hierarchy'
       json

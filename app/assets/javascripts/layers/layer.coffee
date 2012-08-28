@@ -6,7 +6,7 @@ onLayers ->
       @public = ko.observable data?.public
       @ord = ko.observable data?.ord
       if data?.fields
-        @fields = ko.observableArray($.map(data.fields, (x) -> new Field(@, x)))
+        @fields = ko.observableArray($.map(data.fields, (x) => new Field(@, x)))
       else
         @fields = ko.observableArray([])
       @hasFocus = ko.observable(false)

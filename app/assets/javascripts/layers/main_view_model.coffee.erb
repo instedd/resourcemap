@@ -9,6 +9,8 @@ onLayers ->
       @optionValid = ko.computed =>
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
+      @optionsLayers = ko.observableArray $.map(@layers(), (l) -> [[l.name(), l.id()]])
+
       @currentFieldMarginTop = ko.computed =>
         if @currentLayer()
           idx = @currentLayer().fields().indexOf(@currentField())
@@ -56,7 +58,7 @@ onLayers ->
       @currentLayer().id(data.id)
 
       for field, i in @currentLayer().fields()
-        field.id(data.fields[i].id)
+        field.id(data.fields[i].id) if data.fields[i]
 
       @currentLayer(null)
       @currentField(null)
