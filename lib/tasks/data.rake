@@ -9,7 +9,7 @@ namespace :data do
     end
 
     Repeat.destroy_all
-    Dir.glob("#{args[:directory]}/*.sql").each do |filename|
+    Dir["#{args[:directory]}/*.sql"].each do |filename|
       execute_sql filename
     end
     User.encrypt_users_password
