@@ -54,6 +54,9 @@
               .feditor-content
                 %h1{ko(text: :name)}
                 %span.hint{ko(text: "'Code: ' + (code() ? code() : '(none)')")}
+                .change_layer
+                  %a{ko(click: '$root.selectingLayer'), id: "select_layer_link"} Move to Layer
+                  = select_tag :layer, nil, 'data-bind' => kov(options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer'), :id => "layer_select"
 
             .feditor-bottom
 
@@ -102,9 +105,6 @@
           %label{ko(css: {error: :codeError})} Code
           %p.smalltext The abbreviation used to report via SMS.
           = ko_text_field_tag :code, css: {error: :codeError}
-          .change_layer
-            = link_to "Move to Layer...", "#", :id => "move_to_layer"
-            = select_tag :layer, nil, 'data-bind' => kov(options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer')
 
           <!-- ko if: isOptionsKind -->
           %hr/

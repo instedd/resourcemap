@@ -22,6 +22,8 @@ onLayers ->
 
       @savingLayer = ko.observable(false)
 
+    selectingLayer: () ->
+
     newLayer: =>
       layer = new Layer ord: (@layers().length + 1)
       @layers.push(layer)
