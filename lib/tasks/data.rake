@@ -1,10 +1,10 @@
 task :environment
 
 namespace :data do
-  desc "Migrate data from sql files"
-  task :migrate, [:directory] => :environment do |task, args|
+  desc "Restore data from sql files"
+  task :restore, [:directory] => :environment do |task, args|
     unless args[:directory]
-      puts "Usage: $> rake data:migrate[{sql_file_directory}] RAILS_ENV={env}"
+      puts "Usage: $> rake data:restore[{sql_file_directory}] RAILS_ENV={env}"
       exit
     end
 
