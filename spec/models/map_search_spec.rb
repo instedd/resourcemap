@@ -16,7 +16,12 @@ describe MapSearch do
 
     search = MapSearch.new site.collection_id
     search.zoom = 1
-    search.results[:sites].should eq([id: site.id, lat: site.lat.to_f, lng: site.lng.to_f, name: site.name, collection_id: site.collection_id, highlighted: false, icon: 'null'])
+    search.results[:sites].should eq([
+      id: site.id, lat: site.lat.to_f, lng: site.lng.to_f,
+      name: site.name, name_not_analyzed: site.name,
+      collection_id: site.collection_id,
+      highlighted: false, icon: 'null'
+    ])
   end
 
   it "searches with excluded id" do
