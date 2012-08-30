@@ -40,7 +40,7 @@ onCollections -> if $('#collections-main').length > 0
       $('#container').width(width)
       $('.tableheader.expanded').width("100%")
       $('#right-panel').width(width - 404)
-      $('#map').width("100%");
+      $('#map').width("100%")
       $('#collections-main').height("100%")
       $('#collections-main .h50').height("100%")
       $('#map').height($('#collections-main').height() - $('.mapheader').height())
