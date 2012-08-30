@@ -69,7 +69,7 @@ class Collection < ActiveRecord::Base
       layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
       layer[:fields].map! do |field|
         {
-          id: field.id,
+          id: field.es_code,
           name: field.name,
           code: field.code,
           kind: field.kind,
