@@ -19,7 +19,7 @@ describe "layer access" do
 
       fields = layers[0][:fields]
       fields.length.should eq(1)
-      fields[0][:id].should eq(field1.id)
+      fields[0][:id].should eq(field1.es_code)
       fields[0][:writeable].should be_false
     end
 
@@ -34,12 +34,12 @@ describe "layer access" do
 
       fields = layers[0][:fields]
       fields.length.should eq(1)
-      fields[0][:id].should eq(field1.id)
+      fields[0][:id].should eq(field1.es_code)
       fields[0][:writeable].should be_true
 
       fields = layers[1][:fields]
       fields.length.should eq(1)
-      fields[0][:id].should eq(field2.id)
+      fields[0][:id].should eq(field2.es_code)
       fields[0][:writeable].should be_true
     end
   end
