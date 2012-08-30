@@ -39,8 +39,8 @@ class Collection < ActiveRecord::Base
     membership = user.membership_in self
     return [] unless membership
 
-    if options[:snapshot]
-      date = Snapshot.where(name: options[:snapshot]).first.date
+    if options[:snapshot_id]
+      date = Snapshot.where(id: options[:snapshot_id]).first.date
       target_fields = field_histories.at_date(date).includes(:layer)
     else
       target_fields = fields.includes(:layer)
