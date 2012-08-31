@@ -160,17 +160,18 @@
         .clear
 
       %hr/
-      .bottom-actions
-        <!-- ko if: $root.savingLayer() -->
-        Saving layer, please wait...
-        <!-- /ko -->
-        <!-- ko if: !$root.savingLayer() -->
-        %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button} Save
-        %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'} Cancel
-        <!-- /ko -->
-        <!-- ko if: !valid() -->
-        %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
-        <!-- /ko -->
+      - if !current_snapshot
+        .bottom-actions
+          // ko if: $root.savingLayer()
+          Saving layer, please wait...
+          // /ko
+          // ko if: !$root.savingLayer()
+          %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button} Save
+          %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'} Cancel
+          // /ko
+          // ko if: !valid()
+          %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
+          // /ko
     <!-- /ko -->
 
     <!-- ko if: $data != $root.currentLayer() -->
@@ -181,34 +182,37 @@
         -#%em{ko(visible: :public)} Public layer
         -#%em{ko(visible: '!public()')} Private layer
 
-      .rightbuttons
-        <!-- ko if: !$root.savingLayer() && !$root.currentLayer() -->
-        .btupdn
-          %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'})}
-          %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'})}
-        <!-- /ko -->
-        %button.fbranch
-        <!-- ko if: !$root.savingLayer() && !$root.currentLayer() -->
-        %button.fdelete{ko(click: '$root.deleteLayer')}
-        <!-- /ko -->
+      - if !current_snapshot
+        .rightbuttons
+          // ko if: !$root.savingLayer() && !$root.currentLayer()
+          .btupdn
+            %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'})}
+            %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'})}
+          // /ko
+          %button.fbranch
+          // ko if: !$root.savingLayer() && !$root.currentLayer()
+          %button.fdelete{ko(click: '$root.deleteLayer')}
+          // /ko
 
       .middlebuttons
         <!-- ko foreach: fields -->
         %button.faccept{ko(text: :name)}
         <!-- /ko -->
 
-      <!-- ko if: !$root.savingLayer() -->
-      %button.farrow{ko(click: '$root.editLayer')} Edit
-      <!-- /ko -->
+      - if !current_snapshot
+        // ko if: !$root.savingLayer()
+        %button.farrow{ko(click: '$root.editLayer')} Edit
+        // /ko
     <!-- /ko -->
 
     %br/
     <!-- /ko -->
 
-    <!-- ko if: !savingLayer() -->
-    -# New layer link
-    .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none'}
-      %span Add layer
-      %button.cadd.right{type: :button}
-      %br{clear: :all}
-    <!-- /ko -->
+    - if !current_snapshot
+      // ko if: !savingLayer()
+      -# New layer link
+      .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none'}
+        %span Add layer
+        %button.cadd.right{type: :button}
+        %br{clear: :all}
+      // /ko
