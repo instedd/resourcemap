@@ -22,8 +22,11 @@
   #layers-main.hidden-until-loaded
     %h2 Layers
     %p Manage layers and fields of this collection's sites
-    %br/
 
+    - if current_snapshot
+      = render '/current_snapshot_message'
+
+    %br/
     -# Layers
     <!-- ko foreach: layers -->
     <!-- ko if: $data == $root.currentLayer() -->

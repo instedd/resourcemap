@@ -8,10 +8,7 @@
   %p First, upload your CSV file
 
   - if current_snapshot
-    %p 
-      You are currently browsing a snapshot.
-      To make updates to the current version, please 
-      = ( link_to 'go back to present time', unload_current_snapshot_collection_path(collection), :method => :post ) + '.'
+    = render '/current_snapshot_message'
   - else
     - if collection.sites.exists?
       %p
