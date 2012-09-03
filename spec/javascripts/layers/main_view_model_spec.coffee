@@ -4,13 +4,16 @@ describe 'Layer', ->
 
   describe 'MainViewModel', ->
     beforeEach ->
-      @collectionId = 1
-      @model = new MainViewModel @collectionId, []
+      @model = new MainViewModel 1, []
 
-    describe 'add new layer', ->
+    describe 'new layer', ->
       beforeEach ->
         @model.newLayer()
 
       it 'should create new field', ->
         @model.newField 'kind'
         expect(@model.currentField().kind()).toEqual 'kind'
+
+
+
+

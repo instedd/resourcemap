@@ -9,6 +9,8 @@ onLayers ->
       @optionValid = ko.computed =>
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
+      @optionsLayers = ko.observableArray $.map(@layers(), (l) -> [[l.name(), l.id()]])
+
       @currentFieldMarginTop = ko.computed =>
         if @currentLayer()
           idx = @currentLayer().fields().indexOf(@currentField())
@@ -19,6 +21,8 @@ onLayers ->
           0
 
       @savingLayer = ko.observable(false)
+
+    selectingLayer: () ->
 
     newLayer: =>
       layer = new Layer ord: (@layers().length + 1)
@@ -53,10 +57,25 @@ onLayers ->
         $.post "/collections/#{@collectionId}/layers.json", json, @saveLayerCallback
 
     saveLayerCallback: (data) =>
+      #if layer is new, we need to set id
       @currentLayer().id(data.id)
+      layersToReloadOrder = [@currentLayer()]
 
-      for field, i in @currentLayer().fields()
-        field.id(data.fields[i].id)
+      i = 0
+      while i < @currentLayer().fields().length
+        field = @currentLayer().fields()[i]
+        dataField = (dataField for dataField in data.fields when dataField.code is field.code())
+        if dataField.length
+          i += 1
+          #if field is new, we need to set id
+          field.id(dataField[0].id)
+        else
+          field.layer().fields().push(field)
+          layersToReloadOrder.push(field.layer())
+          @currentLayer().fields.remove(field)
+          # i does not change because we just removed an element
+
+      @reloadOrder(layer) for layer in layersToReloadOrder
 
       @currentLayer(null)
       @currentField(null)
@@ -120,6 +139,12 @@ onLayers ->
       @currentField(field)
       @currentField().hasFocus(true)
 
+    reloadOrder: (layer) =>
+      i = 1
+      for field in layer.fields()
+        field.ord(i)
+        i += 1
+
     deleteField: (field) =>
       idx = @currentLayer().fields().indexOf(field)
       nextField.ord(nextField.ord() - 1) for nextField in @currentLayer().fields().slice(idx + 1)
@@ -159,6 +184,19 @@ onLayers ->
     hierarchyUploaded: (hierarchy) =>
       @currentField().setHierarchy(hierarchy)
 
-    errorUploadingHierarchy: =>
+    errorUploadingHierarchy: (hierarchy_errors) =>
       @currentField().uploadingHierarchy(false)
       @currentField().errorUploadingHierarchy(true)
+
+      $('.error_description_bubble').CreateBubblePopup({
+        selectable: true,
+        position : 'top',
+        innerHtml: hierarchy_errors,
+        innerHtmlStyle: {
+            color:'#000000',
+            'background-color' :'white'
+            },
+        themeName:  'bubble',
+        themePath:  '<%= InsteddRails.url %>/theme/images/'
+
+      });

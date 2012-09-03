@@ -163,8 +163,19 @@
             $member_email.val('')
 
     $member_email.autocomplete
-      source: "/collections/#{collectionId}/memberships/invitable.json"
-      select: (event, ui) -> createMembership(ui.item.label)
+      source: (term, callback) ->
+        $.ajax "/collections/#{collectionId}/memberships/invitable.json?#{$.param term}",
+          success: (data) ->
+            if data.length == 0
+              callback(['No users found'])
+              $('a', $member_email.autocomplete('widget')).attr('style', 'color: red')
+            else
+              callback(data)
+      select: (event, ui) ->
+        if(ui.item.label == 'No users found')
+          event.preventDefault()
+        else
+          createMembership(ui.item.label)
 
     $member_email.keydown (event) ->
       if event.keyCode == 13

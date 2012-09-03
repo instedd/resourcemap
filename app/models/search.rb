@@ -30,8 +30,8 @@ class Search
   end
 
   def sort(es_code, ascendent = true)
-    if es_code == 'id' || es_code == 'name'
-      @sort = es_code
+    if es_code == 'id' || es_code == 'name' || es_code == 'name_not_analyzed'
+      @sort = es_code == 'name' ? 'name_not_analyzed' : es_code
     else
       @sort = decode(es_code)
     end
@@ -54,7 +54,7 @@ class Search
       sort_ascendent = @sort_ascendent
       @search.sort { by sort, sort_ascendent }
     else
-      @search.sort { by '_uid' }
+      @search.sort { by 'name_not_analyzed' }
     end
 
     if @offset && @limit

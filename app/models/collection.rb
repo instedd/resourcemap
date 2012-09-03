@@ -40,8 +40,8 @@ class Collection < ActiveRecord::Base
     membership = user.membership_in self
     return [] unless membership
 
-    if options[:snapshot]
-      date = Snapshot.where(name: options[:snapshot]).first.date
+    if options[:snapshot_id]
+      date = Snapshot.where(id: options[:snapshot_id]).first.date
       target_fields = field_histories.at_date(date).includes(:layer)
     else
       target_fields = fields.includes(:layer)
@@ -70,7 +70,7 @@ class Collection < ActiveRecord::Base
       layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
       layer[:fields].map! do |field|
         {
-          id: field.id,
+          id: field.es_code,
           name: field.name,
           code: field.code,
           kind: field.kind,

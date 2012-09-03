@@ -183,11 +183,13 @@ describe Search do
 
       it "gets first page" do
         sites = 3.times.map { collection.sites.make }
+        sites.sort! { |s1, s2| s1.name <=> s2.name }
         assert_results collection.new_search, sites[0], sites[1]
       end
 
       it "gets second page" do
         sites = 3.times.map { collection.sites.make }
+        sites.sort! { |s1, s2| s1.name <=> s2.name }
         assert_results collection.new_search.page(2), sites[2]
       end
     end
@@ -331,10 +333,15 @@ describe Search do
   context "sort" do
     let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
 
-    let!(:site1) { collection.sites.make :name => 'b', :properties => {numeric.es_code => 2} }
-    let!(:site2) { collection.sites.make :name => 'a', :properties => {numeric.es_code => 1} }
+    let!(:site1) { collection.sites.make :name => 'Brian Adams', :properties => {numeric.es_code => 2} }
+    let!(:site2) { collection.sites.make :name => 'Esther Goris', :properties => {numeric.es_code => 1} }
 
     let!(:search) { collection.new_search.use_codes_instead_of_es_codes }
+
+    it "sorts on name asc by default" do
+      result = search.results
+      result.map { |x| x['_id'].to_i } .should eq([site1.id, site2.id])
+    end
 
     it "sorts by field asc" do
       result = search.sort(numeric.code).results
@@ -348,12 +355,12 @@ describe Search do
 
     it "sorts by name asc" do
       result = search.sort('name').results
-      result.map { |x| x['_id'].to_i } .should eq([site2.id, site1.id])
+      result.map { |x| x['_id'].to_i } .should eq([site1.id, site2.id])
     end
 
     it "sorts by name desc" do
       result = search.sort('name', false).results
-      result.map { |x| x['_id'].to_i } .should eq([site1.id, site2.id])
+      result.map { |x| x['_id'].to_i } .should eq([site2.id, site1.id])
     end
   end
 

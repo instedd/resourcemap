@@ -110,4 +110,10 @@ describe User do
       end
     end
   end
+
+  it "should encrypt all users password" do
+    User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`) VALUES (22, 'foo@example.com', 'bar123')"
+    User.encrypt_users_password
+    User.first.encrypted_password.should_not == 'bar123'
+  end
 end

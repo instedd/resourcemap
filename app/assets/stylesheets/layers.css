@@ -11,3 +11,7 @@
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
 }
+
+.change_layer {
+  float: right;
+}

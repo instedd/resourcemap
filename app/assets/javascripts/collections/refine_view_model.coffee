@@ -12,16 +12,16 @@ onCollections ->
       @showingRefinePopup(false)
 
     @filteringByProperty: (filterClass) ->
-      @filters().any (f) -> f instanceof filterClass
+      window.arrayAny(@filters(), (f) -> f instanceof filterClass)
 
     @filteringByPropertyAndValue: (filterClass, value) ->
-      @filters().any (f) -> f instanceof filterClass && f.value == value
+      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.value == value)
 
     @filteringByPropertyAndValueAndOperator: (filterClass, operator, value) ->
-      @filters().any (f) -> f instanceof filterClass && f.value == value && f.operator == operator
+      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.value == value && f.operator == operator)
 
     @filteringByPropertyAndSelectProperty: (filterClass, value, label) ->
-      @filters().any (f) -> f instanceof filterClass && f.value == value && f.valueLabel == label
+      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.value == value && f.valueLabel == label)
 
     @toggleRefinePopup: (model, event) ->
       @showingRefinePopup(!@showingRefinePopup())

@@ -1,7 +1,7 @@
 onLayers ->
   class @Field
     constructor: (layer, data) ->
-      @layer = layer
+      @layer = ko.observable layer
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @code = ko.observable data?.code
@@ -18,7 +18,7 @@ onLayers ->
       @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
       @uploadingHierarchy = ko.observable(false)
       @errorUploadingHierarchy = ko.observable(false)
-      @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer.fields().indexOf(@) + 1}"
+      @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer().fields().indexOf(@) + 1}"
       @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
       @codeError = ko.computed => if @hasCode() then null else "the field #{@fieldErrorDescription()} is missing a Code"
       @optionsError = ko.computed =>
@@ -63,12 +63,14 @@ onLayers ->
       @hierarchyItems = ko.observableArray $.map(@hierarchy(), (x) -> new HierarchyItem(x))
 
     toJSON: =>
+      @code(@code().trim())
       json =
         id: @id()
         name: @name()
         code: @code()
         kind: @kind()
         ord: @ord()
+        layer_id: @layer().id()
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId} if @isOptionsKind()
       json.config = {hierarchy: @hierarchy()} if @kind() == 'hierarchy'
       json

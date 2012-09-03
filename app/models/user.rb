@@ -4,10 +4,10 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable,
          :token_authenticatable
-
+  before_create :reset_authentication_token
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
   has_many :memberships
-  has_many :collections, through: :memberships
+  has_many :collections, through: :memberships, order: 'name ASC'
   has_one :user_snapshot
 
   def create_collection(collection)
@@ -84,5 +84,9 @@ class User < ActiveRecord::Base
     return false if lm.nil?
     return false if(!lm && lm.read)
     return true
+  end
+
+  def self.encrypt_users_password
+    all.each { |user| user.update_attributes password: user.encrypted_password }
   end
 end

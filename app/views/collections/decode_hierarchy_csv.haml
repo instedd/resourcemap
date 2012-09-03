@@ -1,2 +1,2 @@
 :javascript
-  #{@hierarchy ? "parent.window.model.hierarchyUploaded(#{@hierarchy.to_json});" : "parent.window.model.errorUploadingHierarchy();"}
+  #{@hierarchy.any? do |m| m[:error] end ? "parent.window.model.errorUploadingHierarchy('#{j @hierarchy_errors}');" : "parent.window.model.hierarchyUploaded(#{@hierarchy.to_json});" }

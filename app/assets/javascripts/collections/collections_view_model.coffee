@@ -74,6 +74,7 @@ onCollections ->
         $('.expand-collapse_button').hide()
         window.adjustContainerSize()
         @reloadMapSites()
+      @makeFixedHeaderTable()
 
     @toogleExpandFullScreen: ->
       if @fullscreen() && !@fullscreenExpanded()

@@ -12,7 +12,7 @@ module HistoryConcern
 
     class << history_class_name.constantize
       def at_date(date)
-        where "valid_since <= :date && (:date < valid_to || valid_to is null)", date: date
+        where "#{table_name}.valid_since <= :date && (:date < #{table_name}.valid_to || #{table_name}.valid_to is null)", date: date
       end
     end
   end
