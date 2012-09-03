@@ -22,4 +22,3 @@
 //= require autocomplete-tagfield
 //= require knockout
 //= require_tree .
-
