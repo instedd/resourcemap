@@ -56,3 +56,4 @@ onReminders ->
     
     findRepeat: (id) =>
       return repeat for repeat in @repeats() when repeat.id() == id
+

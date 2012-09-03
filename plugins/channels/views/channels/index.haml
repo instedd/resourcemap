@@ -2,11 +2,64 @@
 .tabsline
   #channels-main.hidden-until-loaded 
     %h2 Channels
-
+    <!-- ko foreach: channels -->
+    <!-- ko if: $data != $root.currentChannel() -->
     .box.grey.w60
       .toptitle
-        %span Regional(Mobitel)
+        %span{ko(text: :name)}
         &rarr;
         %em Hospital Facilities, Health Center
       .rightbuttons
         %button.fdelete 
+      .middlebuttons
+        %label Phone number:
+        %br 
+        %label Gateway URL:
+        %br
+        %label User name:
+      %button.farrow{ko(click: '$root.editChannel')} Manual configuration
+    %br
+    <!-- /ko -->
+    
+    -# Form editor or new
+    <!-- ko if: $data == $root.currentChannel() -->
+    .box.w60
+      .middlebuttons
+        %label{ko(css: {error: 'propertyError'})} Name
+        %br
+        %input{ko(value: :name),type: :text, style: 'width:240px'}
+        %br
+        %label{ko(visible: "isManualConfiguration() == true")} Password
+        %label{ko(visible: "isManualConfiguration() == false")} Key
+        %br
+        %input{ko(visible: "isManualConfiguration() == true", value: :password), type: :password, style: 'width:240px'}
+        %input{ko(visible: "isManualConfiguration() == false", value: :password), type: :text, style: 'width:240px'}
+        %br
+        %input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
+        %br
+        %br
+        Share 
+        %br
+        %input{"data-bind" => "checked: isShare", :value => "false", :name => "collection", :type => "radio"}
+        %label Not share
+        %input{"data-bind" => "checked: isShare", :value => "true",  :name => "collection", :type => "radio"}
+        %label Share
+        %br
+        .middlebuttons{ko(visible: 'isShare() == "true"' )}
+          %input.sites{ko(autocompleteTagField: 'sharedCollections',objectType: "Collection", valueUpdate: :afterkeydown), proxy: collections_path(), valueField: 'id', displayField: 'name', type: :text}
+        .bottom-actions
+          %button.white{ ko(click: '$root.saveChannel') } Save
+          %a.tgrey{ ko(click: '$root.cancelChannel'), href: 'javascript:void(0)' } Cancel
+          <!-- ko if: !valid() -->
+          //%span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
+          <!-- /ko -->
+    %br 
+    <!-- /ko -->
+    <!-- /ko -->
+    
+    .box.grey.add{ ko(visible: 'true == true', click: 'showAddChannel'), style: 'display:none'}
+      %span
+        Add Alert
+      %button.cadd.right
+      %br{clear: :all}
+

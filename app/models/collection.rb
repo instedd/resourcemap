@@ -22,7 +22,6 @@ class Collection < ActiveRecord::Base
   has_many :site_histories, dependent: :destroy
   has_many :layer_histories, dependent: :destroy
   has_many :field_histories, dependent: :destroy
-
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
   def max_value_of_property(es_code)

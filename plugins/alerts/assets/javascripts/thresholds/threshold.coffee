@@ -1,4 +1,4 @@
-onThresholds ->
+onThresholds -
   class @Threshold
     constructor: (data) ->
       @id = ko.observable data?.id

@@ -5,6 +5,7 @@ class Channels::Plugin < Plugin
   routes {
     resources :collections do
       resources :channels do
+        get :get_shared_channels, :on => :member
       end
     end
   }

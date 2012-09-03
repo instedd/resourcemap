@@ -6,16 +6,20 @@ class CollectionsController < ApplicationController
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
 
   def index
-    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
-    respond_to do |format|
-      format.html
-      collections_with_snapshot = []
-      collections.all.each do |collection|
-        attrs = collection.attributes
-        attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
-        collections_with_snapshot = collections_with_snapshot + [attrs]
+    if params[:name].present?
+      render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
+    else
+      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
+      respond_to do |format|
+        format.html
+        collections_with_snapshot = []
+        collections.all.each do |collection|
+          attrs = collection.attributes
+          attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
+          collections_with_snapshot = collections_with_snapshot + [attrs]
+        end
+        format.json {render json: collections_with_snapshot }
       end
-      format.json {render json: collections_with_snapshot }
     end
   end
 
