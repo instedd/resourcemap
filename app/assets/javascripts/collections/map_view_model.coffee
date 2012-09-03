@@ -351,6 +351,7 @@ onCollections ->
       @sitesCount count
 
     @showTable: ->
+      @queryParams = $.url().param()
       delete @markers
       delete @clusters
       delete @map
