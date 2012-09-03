@@ -352,11 +352,12 @@ onCollections ->
 
     @showTable: ->
       @queryParams = $.url().param()
+      @exitSite() if @editingSite()
+      @editingSite(null)
+      @oldSelectedSite = null
       delete @markers
       delete @clusters
       delete @map
-      @selectedSite().deleteMarker() if @selectedSite()
-      @exitSite() if @editingSite()
       @showingMap(false)
       @refreshTimeago()
       @makeFixedHeaderTable()
