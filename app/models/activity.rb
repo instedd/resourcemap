@@ -182,7 +182,7 @@ class Activity < ActiveRecord::Base
   end
 
   def format_options(options)
-    options.map { |option| "#{option['label']} (#{option['code']})" }
+    (options || []).map { |option| "#{option['label']} (#{option['code']})" }
   end
 
   def format_location(changes, dir)
