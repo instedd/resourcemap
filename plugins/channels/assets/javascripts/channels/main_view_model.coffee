@@ -28,7 +28,13 @@ onChannels ->
       @isSaving false
 
     cancelChannel: =>
-      $.get "/plugin/channels/collections/#{@collectionId()}/channels/#{@currentChannel().id}.json", nuntium_info: true, @getNuntiumInfoCallback
+      if @currentChannel().id
+        @channels.replace @currentChannel(), @originalChannel
+      else
+        @channels.remove @currentChannel
+      @currentChannel null
+      delete @originalChannel
+      #$.get "/plugin/channels/collections/#{@collectionId()}/channels/#{@currentChannel().id}.json", nuntium_info: true, @getNuntiumInfoCallback
 
     getNuntiumInfoCallback: (data) =>
       console.log data
@@ -36,7 +42,7 @@ onChannels ->
     editChannel: (channel) =>
       @originalChannel = channel.clone()
       @currentChannel channel
-      console.log @currentChannel()
+      console.log @originalChannel
 
     deleteChannel: (channel) =>
       if window.confirm 'Are you sure to delete channel?'
