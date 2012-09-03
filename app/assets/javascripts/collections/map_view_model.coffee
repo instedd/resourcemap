@@ -33,12 +33,13 @@ onCollections ->
                  new google.maps.LatLng(@queryParams.lat, @queryParams.lng)
                else if @currentCollection()?.position()
                  @currentCollection().position()
-               else if @collections().length > 0
-                 i = 0
-                 i++ until @collections()[i].position()
-                 @collections()[i].position()
                else
-                 new google.maps.LatLng(10, 90)
+                 i = 0
+                 i++ until i >= @collections().length || @collections()[i].position()
+                 if i < @collections().length
+                    @collections()[i].position()
+                 else
+                    new google.maps.LatLng(10, 90)
       zoom = if @queryParams.z then parseInt(@queryParams.z) else 4
 
       mapOptions =
