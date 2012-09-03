@@ -1,3 +1,4 @@
+= stylesheet_link_tag 'channels'
 = render 'collections/tabs'
 .tabsline
   #channels-main.hidden-until-loaded 
@@ -10,6 +11,11 @@
         &rarr;
         %em Hospital Facilities, Health Center
       .rightbuttons
+        %p.field.switch
+          %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
+            %span 
+          %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
+            %span 
         %button.fdelete{ko(click: '$root.deleteChannel')}
       .middlebuttons
         %label Phone number:

@@ -52,3 +52,12 @@ onChannels ->
     deleteChannelCallback: =>
       @channels.remove @deletedChannel
       delete @deletedChannel
+
+    onOffEnable: (channel) =>
+      channel.setStatus true, @channelStatusCallback
+
+    onOffDisable: (channel) =>
+      channel.setStatus false, @channelStatusCallback
+
+    reminderStatusCallback: (data) =>
+

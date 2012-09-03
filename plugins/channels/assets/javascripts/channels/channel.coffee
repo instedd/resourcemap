@@ -15,9 +15,20 @@ onChannels ->
       @valid                  = ko.observable()
       @propertyError          = ko.computed =>
         return true
-      @nameError            = ko.computed => "Channel's name is missing" if $.trim(@name()).length == 0
-      @error = ko.computed => @nameError()
-
+      @nameError              = ko.computed => "Channel's name is missing" if $.trim(@name()).length == 0
+      @error                  = ko.computed => @nameError()
+      
+      @enableCss              = ko.observable 'cb-enable'
+      @disableCss             = ko.observable 'cb-disalbe'
+      @status                 = ko.observable data?.status
+      @statusInit             = ko.computed =>
+        if @status()
+          @enableCss 'cb-enable selected'
+          @disableCss 'cb-disable'
+        else
+          @enableCss 'cb-enable'
+          @disableCss 'cb-disable selected'
+      
     toJson: ->
       id                      : @id
       collection_id           : @collectionId
@@ -37,3 +48,6 @@ onChannels ->
         collections             : @sharedCollections()
         password                : @password
 
+    setStatus: (status, callback) ->
+      @status status
+      $.post "/plugin/channels/collections/#{@collectionId}/channels/#{@id}/set_status.json", {status: status}, callback 

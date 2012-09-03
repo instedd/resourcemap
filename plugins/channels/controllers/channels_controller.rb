@@ -35,11 +35,11 @@ class ChannelsController < ApplicationController
     channel.destroy
     render json: channel 
   end
- # def show
- #   channel = collection.channels.find(params[:id]) 
- #   puts '--------------' * 9 
- #   puts channel.to_json 
- #   method = if params[:nuntium_info] then Channel.nuntium_info_methods else [] end
- #   render :json => channel.to_json(:methods => method)
- # end
+
+  def set_status
+    channel = Channel.find params[:id]
+    channel.status = params[:status]
+    channel.save! 
+    render json: channel
+  end
 end

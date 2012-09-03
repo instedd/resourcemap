@@ -31,4 +31,10 @@ describe ChannelsController do
       delete :destroy, collection_id: collection.id, id: channel.id
     }.to change { Channel.count }.by -1
   end
+
+  it 'should update status' do 
+    post :set_status, :id => channel.id, :collection_id => collection.id, :status => true
+    Channel.find(channel).status.should == true
+  end
+
 end
