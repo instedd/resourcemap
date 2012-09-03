@@ -38,4 +38,11 @@ onChannels ->
       @currentChannel channel
       console.log @currentChannel()
 
-    
+    deleteChannel: (channel) =>
+      if window.confirm 'Are you sure to delete channel?'
+        @deletedChannel = channel
+        $.post "/plugin/channels/collections/#{@collectionId()}/channels/#{channel.id}.json", { _method: 'delete' }, @deleteChannelCallback 
+
+    deleteChannelCallback: =>
+      @channels.remove @deletedChannel
+      delete @deletedChannel

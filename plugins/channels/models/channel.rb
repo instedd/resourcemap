@@ -1,5 +1,5 @@
 class Channel < ActiveRecord::Base
-  has_many :share_channels
+  has_many :share_channels, :dependent => :destroy
   has_many :collections, :through => :share_channels
 
   serialize :share_collections

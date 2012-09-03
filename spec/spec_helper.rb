@@ -39,4 +39,13 @@ RSpec.configure do |config|
   config.after(:each) do
     Tire.delete_indices_that_match /^collection_test_\d+/
   end
+# Mock nuntium access and gateways management
+  config.before(:each) do
+    @nuntium = double("nuntium")
+    Nuntium.stub(:new_from_config).and_return(@nuntium)
+    @nuntium.stub(:create_channel)
+    @nuntium.stub(:update_channel)
+    @nuntium.stub(:delete_channel)
+    Channel.any_instance.stub(:handle_nuntium_channel_response).and_return(true)
+  end
 end

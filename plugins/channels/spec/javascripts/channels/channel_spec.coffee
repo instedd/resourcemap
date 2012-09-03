@@ -15,7 +15,7 @@ describe 'Channel', ->
       is_share: 'false'
       is_manual_configuration: true
       nuntium_channel_name: 'ch_01'
-      share_collections : [1,2]
+      share_collections : [2]
     }
 
 
