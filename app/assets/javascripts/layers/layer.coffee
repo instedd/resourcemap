@@ -8,10 +8,7 @@ onLayers ->
       if data?.fields
         @fields = ko.observableArray($.map(data.fields, (x) => new Field(@, x)))
       else
-        if data?.field_histories
-          @fields = ko.observableArray($.map(data.field_histories, (x) => new Field(@, x)))
-        else
-          @fields = ko.observableArray([])
+        @fields = ko.observableArray([])
       @hasFocus = ko.observable(false)
       @nameError = ko.computed => if @hasName() then null else "the layer's Name is missing"
       @fieldsError = ko.computed =>
