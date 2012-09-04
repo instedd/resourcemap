@@ -51,6 +51,7 @@ describe Field do
   describe "core field type" do
     subject { Field::Kinds - Field::PluginKinds.keys }
 
+    it { should have(6).items }
     it { should include 'text' }
     it { should include 'numeric' }
     it { should include 'select_one' }
