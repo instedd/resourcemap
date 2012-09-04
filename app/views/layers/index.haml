@@ -90,6 +90,10 @@
                   %button.lhierarchy
                   %br/
                   Hierarchy
+                %span{ko(click: '$root.newUserField')}
+                  %button.luser
+                  %br/
+                  User
                 - Field::PluginKinds.each do |name, kind|
                   %span{ko(click: "function() { $root.newField('#{name}') }")}
                     %button{ class: kind[:css_class] }
@@ -99,7 +103,7 @@
         .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField', style: {marginTop: '$root.currentFieldMarginTop'}), style: 'position:relative'}
           %p.title Type
           %p.smalltext The data type to fill in this field.
-          = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'select_one'], ['Select many', 'select_many'], ['Hierarchy', 'hierarchy']] | Field::PluginKinds.map { |name, _| [name.titleize, name] }), 'data-bind' => kov(value: :kind)
+          = select_tag :kind, options_for_select([['Text', 'text'], ['Numeric', 'numeric'], ['Select one', 'select_one'], ['Select many', 'select_many'], ['Hierarchy', 'hierarchy'], ['User', 'user']] | Field::PluginKinds.map { |name, _| [name.titleize, name] }), 'data-bind' => kov(value: :kind)
           %hr/
           %label{ko(css: {error: :nameError})} Name
           %p.smalltext The name of this field as it is presented.
@@ -162,16 +166,16 @@
       %hr/
       - if !current_snapshot
         .bottom-actions
-          // ko if: $root.savingLayer()
+          / ko if: $root.savingLayer()
           Saving layer, please wait...
-          // /ko
-          // ko if: !$root.savingLayer()
+          / /ko
+          / ko if: !$root.savingLayer()
           %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button} Save
           %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'} Cancel
-          // /ko
-          // ko if: !valid()
+          / /ko
+          / ko if: !valid()
           %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
-          // /ko
+          / /ko
     <!-- /ko -->
 
     <!-- ko if: $data != $root.currentLayer() -->
@@ -184,15 +188,15 @@
 
       - if !current_snapshot
         .rightbuttons
-          // ko if: !$root.savingLayer() && !$root.currentLayer()
+          / ko if: !$root.savingLayer() && !$root.currentLayer()
           .btupdn
             %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'})}
             %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'})}
-          // /ko
+          / /ko
           %button.fbranch
-          // ko if: !$root.savingLayer() && !$root.currentLayer()
+          / ko if: !$root.savingLayer() && !$root.currentLayer()
           %button.fdelete{ko(click: '$root.deleteLayer')}
-          // /ko
+          / /ko
 
       .middlebuttons
         <!-- ko foreach: fields -->
@@ -200,19 +204,19 @@
         <!-- /ko -->
 
       - if !current_snapshot
-        // ko if: !$root.savingLayer()
+        / ko if: !$root.savingLayer()
         %button.farrow{ko(click: '$root.editLayer')} Edit
-        // /ko
+        / /ko
     <!-- /ko -->
 
     %br/
     <!-- /ko -->
 
     - if !current_snapshot
-      // ko if: !savingLayer()
+      / ko if: !savingLayer()
       -# New layer link
       .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none'}
         %span Add layer
         %button.cadd.right{type: :button}
         %br{clear: :all}
-      // /ko
+      / /ko
