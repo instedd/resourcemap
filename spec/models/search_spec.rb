@@ -8,30 +8,36 @@ describe Search do
     let!(:beds) { layer.fields.make code: 'beds', kind: 'numeric' }
     let!(:tables) { layer.fields.make code: 'tables', kind: 'numeric' }
     let!(:first_name) { layer.fields.make code: 'first_name', kind: 'text' }
+    let!(:country) { layer.fields.make code: 'country', kind: 'text' }
 
 
-    let!(:site1) { collection.sites.make properties: {beds.es_code => 5, tables.es_code => 1, first_name.es_code => "peter"} }
-    let!(:site2) { collection.sites.make properties: {beds.es_code => 10, tables.es_code => 2, first_name.es_code => "peterpan"}  }
-    let!(:site3) { collection.sites.make properties: {beds.es_code => 20, tables.es_code => 3, first_name.es_code => "pirate"}  }
+    let!(:site1) { collection.sites.make properties:
+      {beds.es_code => 5, tables.es_code => 1, first_name.es_code => "peterin panini", country.es_code => "argentina"} }
+    let!(:site2) { collection.sites.make properties:
+      {beds.es_code => 10, tables.es_code => 2, first_name.es_code => "peter pan", country.es_code => "albania"}  }
+    let!(:site3) { collection.sites.make properties:
+      {beds.es_code => 20, tables.es_code => 3, first_name.es_code => "Alice Cooper", country.es_code => "argelia"}  }
+    let!(:site4) { collection.sites.make properties:
+      {beds.es_code => 10, tables.es_code => 4, first_name.es_code => "John Doyle", country.es_code => "south arabia"}  }
 
     it "searches by equality" do
       search = collection.new_search
       search.where beds.es_code => 10
-      assert_results search, site2
+      assert_results search, site2, site4
     end
 
     it "searches by equality with code" do
       search = collection.new_search
       search.use_codes_instead_of_es_codes
       search.where 'beds' => 10
-      assert_results search, site2
+      assert_results search, site2, site4
     end
 
     it "searches by equality with @code" do
       search = collection.new_search
       search.use_codes_instead_of_es_codes
       search.where '@beds' => 10
-      assert_results search, site2
+      assert_results search, site2, site4
     end
 
     it "searches by equality of two properties" do
@@ -46,11 +52,24 @@ describe Search do
       search.results.length.should eq(0)
     end
 
-    it "searches by contains" do
+    it "searches by starts with" do
       search = collection.new_search
       search.where first_name.es_code => "~=peter"
-      search.apply_queries
-      search.results.length.should eq(2)
+      assert_results search, site1, site2
+    end
+
+    it "searches by starts with and equality" do
+      search = collection.new_search
+      search.where first_name.es_code => "~=peter"
+      search.where beds.es_code => 5
+      assert_results search, site1
+    end
+
+    it "searches by starts with on two different fields" do
+      search = collection.new_search
+      search.where first_name.es_code => "~=peter"
+      search.where country.es_code => "~=arg"
+      assert_results search, site1
     end
 
 
@@ -58,14 +77,14 @@ describe Search do
       let!(:population_source) { layer.fields.make :code => 'population_source', :kind => 'text' }
 
       it "searches by equality with text" do
-        site4 = collection.sites.make :properties => {population_source.es_code => "National Census"}
+        a_site = collection.sites.make :properties => {population_source.es_code => "National Census"}
         search = collection.new_search
         search.where population_source.es_code => "National Census"
-        assert_results search, site4
+        assert_results search, a_site
       end
 
       it "searches by equality with text doesn't confuse name" do
-        site4 = collection.sites.make :name => "Census", :properties => {population_source.es_code => "National"}
+        a_site = collection.sites.make :name => "Census", :properties => {population_source.es_code => "National"}
         search = collection.new_search
         search.where population_source.es_code => "National Census"
         search.results.length.should eq(0)
@@ -88,7 +107,7 @@ describe Search do
     it "searches with lte" do
       search = collection.new_search
       search.lte beds.es_code, 10
-      assert_results search, site1, site2
+      assert_results search, site1, site2, site4
     end
 
     it "searches with gt" do
@@ -100,14 +119,14 @@ describe Search do
     it "searches with gte" do
       search = collection.new_search
       search.gte beds.es_code, 10
-      assert_results search, site2, site3
+      assert_results search, site2, site3, site4
     end
 
     it "searches with combined properties" do
       search = collection.new_search
-      search.lt beds.es_code, 8
-      search.gte tables.es_code, 1
-      assert_results search, site1
+      search.lt beds.es_code, 11
+      search.gte tables.es_code, 4
+      assert_results search, site4
     end
 
     it "searches with ops" do
@@ -145,7 +164,7 @@ describe Search do
       it "searches where with eq" do
         search = collection.new_search
         search.where beds.es_code => '= 10'
-        assert_results search, site2
+        assert_results search, site2, site4
       end
     end
 
@@ -376,6 +395,6 @@ describe Search do
   end
 
   def assert_results(search, *sites)
-    search.results.map{|r| r['_id'].to_i}.sort.should =~ sites.map(&:id)
+    search.results.map{|r| r['_id'].to_i}.should =~ sites.map(&:id)
   end
 end
