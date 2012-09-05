@@ -61,7 +61,6 @@ class Channel < ActiveRecord::Base
   end
 
   def update_nuntium_channel
-    puts '===============' * 10 
     handle_nuntium_channel_response Nuntium.new_from_config.update_channel(
       :name => self.nuntium_channel_name,
       :enabled => self.is_enable,
@@ -83,7 +82,7 @@ class Channel < ActiveRecord::Base
   end
   
   def self.nuntium_info_methods
-    [:client_last_activity_at, :queued_messages_count, :client_connected, :phone_number]
+    [:client_last_activity_at, :queued_messages_count, :client_connected, :phone_number, :gateway_url]
   end
 
   def client_last_activity_at
@@ -98,4 +97,16 @@ class Channel < ActiveRecord::Base
     nuntium_info['connected'] rescue nil
   end
 
+  def phone_number
+    nuntium_info['address'] rescue nil
+  end  
+  
+  def gateway_url
+    nuntium_config = YAML.load(File.read("#{Rails.root}/config/nuntium.yml"))["production"]
+    nuntium_config["url"] + '/' + nuntium_info['application'] + '/qst'
+  end
+  
+  def self.default_nuntium_name
+    'testing' 
+  end
 end

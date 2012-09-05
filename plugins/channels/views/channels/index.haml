@@ -17,13 +17,21 @@
           %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
             %span 
         %button.fdelete{ko(click: '$root.deleteChannel')}
-      .middlebuttons
+          
+      .middlebuttons{ko(visible: 'clientConnected() == false')}
+        %label.error{ko(text: :queuedMessageCount)}
+      .middlebuttons{ko(visible: 'clientConnected() == true')}
         %label Phone number:
+        %span{ko(text: :phoneNumber)} 
         %br 
         %label Gateway URL:
+        %span{ko(text: :gateWayURL)} 
         %br
         %label User name:
-      %button.farrow{ko(click: '$root.editChannel')} Manual configuration
+        %span{ko(text: :nuntiumChannelName)} 
+
+
+      %button.farrow{ko(click: '$root.editChannel')} Edit configuration
     %br
     <!-- /ko -->
     
@@ -39,7 +47,7 @@
         %label{ko(visible: "isManualConfiguration() == false")} Key
         %br
         %input{ko(visible: "isManualConfiguration() == true", value: :password), type: :password, style: 'width:240px'}
-        %input{ko(visible: "isManualConfiguration() == false", value: :password), type: :text, style: 'width:240px'}
+        %input{ko(visible: "isManualConfiguration() == false", value: :ticketCode), type: :text, style: 'width:240px'}
         %br
         %input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
         %br
@@ -65,7 +73,7 @@
     
     .box.grey.add{ ko(visible: 'true == true', click: 'showAddChannel'), style: 'display:none'}
       %span
-        Add Alert
+        Add Channel 
       %button.cadd.right
       %br{clear: :all}
 

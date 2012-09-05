@@ -5,6 +5,6 @@ describe SmsNuntium do
     nuntium = mock("Nuntium") 
     Nuntium.should_receive(:new_from_config).and_return(nuntium)
     nuntium.should_receive(:send_ao).with([{:from =>"resourcemap", :to => "sms://855123456789", :body => "alert", :suggested_channel => "testing" }])
-    SmsNuntium.notify_sms [users.phone_number], "alert"
+    SmsNuntium.notify_sms [users.phone_number], "alert", "testing"
   end
 end

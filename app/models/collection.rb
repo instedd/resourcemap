@@ -133,4 +133,11 @@ class Collection < ActiveRecord::Base
   def operator_parser(op)
     OPERATOR[op]
   end
+
+  def active_gateway
+    self.channels.each do |channel|
+      return channel if channel.client_connected && channel.status
+    end
+    nil
+  end
 end

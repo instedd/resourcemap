@@ -8,7 +8,7 @@ class ChannelsController < ApplicationController
         show_collection_breadcrumb
         add_breadcrumb "Channels", collection_channels_path(collection)
       end
-      format.json { render json: collection.channels.all.as_json(include: [:share_channels, :collections], except: [:plugins])}
+      format.json { render json: collection.channels.select('share_channels.status,channels.id,channels.collection_id,channels.name,channels.password,channels.nuntium_channel_name,is_manual_configuration, channels.is_share,channels.ticket_code').all.as_json(include: [:collections], except: [:plugins], methods: method)}
     end
   end
 
@@ -21,7 +21,7 @@ class ChannelsController < ApplicationController
   def update
     channel = Channel.find params[:id]
     channel.update_attributes params[:channel]
-    channel.collections = Collection.find params[:channel][:share_collections] if params[:channel][:is_share]
+    channel.collections = Collection.find params[:channel][:share_collections] + [collection.id] if params[:channel][:is_share]
     render json: channel
   end
   
@@ -37,9 +37,9 @@ class ChannelsController < ApplicationController
   end
 
   def set_status
-    channel = Channel.find params[:id]
-    channel.status = params[:status]
-    channel.save! 
-    render json: channel
+    share_channel = ShareChannel.where(:channel_id => params[:id], :collection_id => params[:collection_id]).first 
+    share_channel.status = params[:status]
+    share_channel.save! 
+    render json: share_channel
   end
 end
