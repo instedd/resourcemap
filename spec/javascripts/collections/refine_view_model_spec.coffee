@@ -26,16 +26,16 @@ describe 'Collection', ->
           @model.expandedRefineProperty @owner_field.esCode
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "where #{@owner_field.name} contains \"foo\""
+          expect(@model.filters()[0].description()).toEqual "where #{@owner_field.name} starts with \"foo\""
 
         it 'of email should add text filter', ->
           @model.expandedRefineProperty @email_field.esCode
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "where #{@email_field.name} contains \"foo\""
+          expect(@model.filters()[0].description()).toEqual "where #{@email_field.name} starts with \"foo\""
 
         it 'of phone should add text filter', ->
           @model.expandedRefineProperty @phone_field.esCode
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "where #{@phone_field.name} contains \"foo\""
+          expect(@model.filters()[0].description()).toEqual "where #{@phone_field.name} starts with \"foo\""
