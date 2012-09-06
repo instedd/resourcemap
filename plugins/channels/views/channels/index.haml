@@ -23,7 +23,7 @@
         %button.fdelete{ko(visible: 'isAdmin', click: '$root.deleteChannel')}
           
       .middlebuttons{ko(visible: '!clientConnected()')}
-        %label.error{ko(text: :queuedMessageCount)}
+        %label.error{ko(text: :queuedMessageText)}
       .middlebuttons{ko(visible: 'clientConnected')}
         %label Phone number:
         %span{ko(text: :phoneNumber)} 

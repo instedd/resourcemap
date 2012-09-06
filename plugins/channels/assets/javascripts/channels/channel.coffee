@@ -12,8 +12,9 @@ onChannels ->
       @isShare                = ko.observable data?.is_share.toString()
       @clientConnected        = ko.observable data?.client_connected
       @isAdmin                = data?.collection_id == currentCollectionId
-      @queuedMessageCount     = ko.computed =>
-        messageText = 'Client disconected,' + data?.queued_messages_count
+      @queuedMessageCount     = ko.observable data?.queued_messages_count
+      @queuedMessageText      = ko.computed =>
+        messageText = 'Client disconected,' + @queuedMessageCount() 
         if data?.queued_messages_count > 1
           return messageText + ' messages pending'
         else
@@ -60,13 +61,14 @@ onChannels ->
           @disableCss 'cb-disable selected'
       
       @valid                  = ko.computed => not @error()?
+    
     toJson: ->
       id                      : @id
       collection_id           : @collectionId
       name                    : @name()
       is_share                : @isShare()
       is_manual_configuration : @isManualConfiguration()
-      nuntium_channel_name    : @nuntiumChannelName()
+      #nuntium_channel_name    : @nuntiumChannelName()
       share_collections       : $.map(@sharedCollections(), (collection) -> collection.id)
       password                : @password()
       ticket_code             : @ticketCode()
@@ -81,6 +83,7 @@ onChannels ->
         collections             : @sharedCollections()
         password                : @password()
         ticket_code             : @ticketCode()
+        queued_messages_count   : @queuedMessageCount()
 
     setStatus: (status, callback) ->
       @status status

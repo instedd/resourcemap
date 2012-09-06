@@ -16,7 +16,7 @@ describe 'MainViewModel', ->
       expect(@model.channels()[0].isAdmin).toEqual true
     
     it 'should add channel to channels with property queued_messages_count = 0', ->
-      expect(@model.channels()[0].queuedMessageCount()).toMatch(/Client disconected,0 message pending/)
+      expect(@model.channels()[0].queuedMessageText()).toMatch(/Client disconected,0 message pending/)
 
     it 'should add channel to channels with is_manual_configuration = true', ->
       expect(@model.channels()[0].isManualConfiguration()).toBeTruthy
