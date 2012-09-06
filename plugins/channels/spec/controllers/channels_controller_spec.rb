@@ -17,7 +17,7 @@ describe ChannelsController do
   
   it 'should create one new channel' do
     expect { 
-      post :create, collection_id: collection.id, channel: { name: 'Mobitel', is_share: 'true', is_enable: 'true', collection_id: collection.id, is_manual_configuration: 'true', nuntium_channel_name: 'ch_02', share_collections: [1,2] } 
+      post :create, collection_id: collection.id, channel: {"collection_id"=>collection.id, "name"=>"Mobitel1", "is_share"=>"false", "is_manual_configuration"=>"true", "password"=>"12345"}  
     }.to change { Channel.count }.by 1 
   end
 
@@ -33,8 +33,9 @@ describe ChannelsController do
   end
 
   it 'should update status' do 
+    channel.collections = [collection]
     post :set_status, :id => channel.id, :collection_id => collection.id, :status => true
-    Channel.find(channel).status.should == true
+    ShareChannel.where(:channel_id => channel.id, :collection_id => collection.id).first.status.should == true
   end
 
 end

@@ -37,13 +37,10 @@ class Channel < ActiveRecord::Base
       }
     }
   
-    puts ' PPPP ' * 9
-    
     config.merge!({
       :ticket_code => self.ticket_code, 
       :ticket_essage => "This phone will be used for updates and queries on layer #{Collection.find(self.collection_id).name}.",
     }) unless is_manual_configuration
-    
     handle_nuntium_channel_response Nuntium.new_from_config.create_channel(config)
     # Use plain sql query to skip update callback execution
     Channel.update_all({:password => self.password, :nuntium_channel_name => self.nuntium_channel_name}, {:id => self.id})
