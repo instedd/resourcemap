@@ -212,9 +212,9 @@ ActiveRecord::Schema.define(:version => 20120906034432) do
   create_table "site_memberships", :force => true do |t|
     t.integer  "collection_id"
     t.integer  "field_id"
-    t.boolean  "view"
-    t.boolean  "update"
-    t.boolean  "delete"
+    t.boolean  "view_access"
+    t.boolean  "update_access"
+    t.boolean  "delete_access"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
