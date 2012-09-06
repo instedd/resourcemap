@@ -1,5 +1,5 @@
 class Collection < ActiveRecord::Base
-  include Collection::CsvConcern
+  include Collection::CsvConcern 
   include Collection::GeomConcern
   include Collection::TireConcern
   include Collection::PluginsConcern
@@ -136,7 +136,7 @@ class Collection < ActiveRecord::Base
 
   def active_gateway
     self.channels.each do |channel|
-      return channel if channel.client_connected && channel.status
+      return channel if channel.client_connected && channel.share_channels.where(:collection_id => id).first.status
     end
     nil
   end

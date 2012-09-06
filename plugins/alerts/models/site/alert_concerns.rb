@@ -18,7 +18,6 @@ module Site::AlertConcerns
         # to be refactoring 
         active_gateway = collection.active_gateway
         suggested_channel = active_gateway.nil?? Channel.default_nuntium_name : active_gateway.nuntium_channel_name
-        
         Resque.enqueue SmsTask, phone_numbers, message_notification, suggested_channel unless phone_numbers.empty?
         Resque.enqueue EmailTask, emails, message_notification, "[ResourceMap] Alert Notification" unless emails.empty?
       end

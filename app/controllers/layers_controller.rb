@@ -9,7 +9,7 @@ class LayersController < ApplicationController
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
       if current_snapshot
-        format.json { render json: layers.includes(:field_histories).where("field_histories.valid_since <= '#{current_snapshot.date}' AND ('#{current_snapshot.date}' < field_histories.valid_to OR field_histories.valid_to is null)").as_json(include: :field_histories) }
+        format.json { render json: layers.includes(:field_histories).where("field_histories.valid_since <= :date && (:date < field_histories.valid_to || field_histories.valid_to is null)", date: current_snapshot.date).as_json(include: :field_histories) }
       else
         format.json { render json: layers.includes(:fields).all.as_json(include: :fields) }
       end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120903081751) do
+ActiveRecord::Schema.define(:version => 20120906034432) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -37,8 +37,6 @@ ActiveRecord::Schema.define(:version => 20120903081751) do
     t.text     "share_collections"
     t.datetime "created_at",              :null => false
     t.datetime "updated_at",              :null => false
-    t.string   "ticket_code"
-    t.boolean  "status"
   end
 
   create_table "collections", :force => true do |t|

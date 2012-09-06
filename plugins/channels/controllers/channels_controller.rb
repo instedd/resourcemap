@@ -8,20 +8,25 @@ class ChannelsController < ApplicationController
         show_collection_breadcrumb
         add_breadcrumb "Channels", collection_channels_path(collection)
       end
-      format.json { render json: collection.channels.select('share_channels.status,channels.id,channels.collection_id,channels.name,channels.password,channels.nuntium_channel_name,is_manual_configuration, channels.is_share,channels.ticket_code').all.as_json(include: [:collections], except: [:plugins], methods: method)}
+      format.json { render json: collection.channels.select('share_channels.status,channels.id,channels.collection_id,channels.name,channels.password,channels.nuntium_channel_name,is_manual_configuration, channels.is_share').all.as_json(include: [:collections], except: [:plugins], methods: method)}
     end
   end
 
   def create
     channel = Channel.create params[:channel]
-    channel.collections = Collection.find params[:channel][:share_collections] + [collection.id] if params[:channel][:is_share]
+    share_collections = [collection.id]
+    share_collections += params[:channel][:share_collections] if params[:channel][:is_share] == 'true'
+    channel.collections = Collection.find share_collections
+    
     render json: channel
   end
  
   def update
     channel = Channel.find params[:id]
     channel.update_attributes params[:channel]
-    channel.collections = Collection.find params[:channel][:share_collections] + [collection.id] if params[:channel][:is_share]
+    share_collections = [collection.id]
+    share_collections += params[:channel][:share_collections] if params[:channel][:is_share] == 'true'
+    channel.collections = Collection.find share_collections
     render json: channel
   end
   

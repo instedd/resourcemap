@@ -1,13 +1,19 @@
 class Channel < ActiveRecord::Base
   has_many :share_channels, :dependent => :destroy
   has_many :collections, :through => :share_channels
-
+  validates :name, :presence => true, :length => {:minimum => 4, :maximum => 30}, :uniqueness => {:scope => :collection_id}
+  validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :is_manual_configuration
+  validates :ticket_code, :presence => {:on => :create}, :unless => :is_manual_configuration
+    
   serialize :share_collections
   #attr_accessible :channel_name, :collection_id, :is_enable, :is_manual_configuration, :name, :password, :share_collections
   after_create  :register_nuntium_channel
   after_update  :update_nuntium_channel
   after_destroy :delete_nuntium_channel
   
+  attr_accessor  :ticket_code
+  attr_accessor  :phone_number
+
   def generate_nuntium_name
     sprintf("#{Collection.find(collection_id).name.parameterize}-#{self.id}")
   end
@@ -21,7 +27,7 @@ class Channel < ActiveRecord::Base
       :kind => 'qst_server',
       :protocol => 'sms',
       :direction => 'bidirectional',
-      :enabled => self.is_enable,
+      :enabled => true,
       :restrictions => '',
       :priority => 50,
       :configuration => { 
@@ -30,14 +36,15 @@ class Channel < ActiveRecord::Base
         :owner_layer_id => self.collection_id
       }
     }
-
+  
+    puts ' PPPP ' * 9
+    
     config.merge!({
       :ticket_code => self.ticket_code, 
-      :ticket_message => "This phone will be used for updates and queries on layer #{Collection.find(collection_id).name}.",
+      :ticket_essage => "This phone will be used for updates and queries on layer #{Collection.find(self.collection_id).name}.",
     }) unless is_manual_configuration
-
+    
     handle_nuntium_channel_response Nuntium.new_from_config.create_channel(config)
-      
     # Use plain sql query to skip update callback execution
     Channel.update_all({:password => self.password, :nuntium_channel_name => self.nuntium_channel_name}, {:id => self.id})
    

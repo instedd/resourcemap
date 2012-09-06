@@ -9,18 +9,22 @@
       .toptitle
         %span{ko(text: :name)}
         &rarr;
-        %em Hospital Facilities, Health Center
+        <!-- ko if: isShare() == "true" -->
+        <!-- ko foreach: sharedCollections --> 
+        %span{ ko(text: :name) }
+        <!-- /ko -->
+        <!-- /ko -->
       .rightbuttons
         %p.field.switch
           %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
             %span 
           %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
             %span 
-        %button.fdelete{ko(click: '$root.deleteChannel')}
+        %button.fdelete{ko(visible: 'isAdmin', click: '$root.deleteChannel')}
           
-      .middlebuttons{ko(visible: 'clientConnected() == false')}
+      .middlebuttons{ko(visible: '!clientConnected()')}
         %label.error{ko(text: :queuedMessageCount)}
-      .middlebuttons{ko(visible: 'clientConnected() == true')}
+      .middlebuttons{ko(visible: 'clientConnected')}
         %label Phone number:
         %span{ko(text: :phoneNumber)} 
         %br 
@@ -31,7 +35,7 @@
         %span{ko(text: :nuntiumChannelName)} 
 
 
-      %button.farrow{ko(click: '$root.editChannel')} Edit configuration
+      %button.farrow{ko(visible: 'isAdmin', click: '$root.editChannel')} Edit configuration
     %br
     <!-- /ko -->
     
@@ -39,15 +43,15 @@
     <!-- ko if: $data == $root.currentChannel() -->
     .box.w60
       .middlebuttons
-        %label{ko(css: {error: 'propertyError'})} Name
+        %label{ko(css: {error: 'nameError'})} Name
         %br
         %input{ko(value: :name),type: :text, style: 'width:240px'}
         %br
-        %label{ko(visible: "isManualConfiguration() == true")} Password
-        %label{ko(visible: "isManualConfiguration() == false")} Key
+        %label{ko(visible: "isManualConfiguration", css: {error: 'passwordError'})} Password
+        %label{ko(visible: "!isManualConfiguration()", css: {error: 'ticketCodeError'})} Key
         %br
-        %input{ko(visible: "isManualConfiguration() == true", value: :password), type: :password, style: 'width:240px'}
-        %input{ko(visible: "isManualConfiguration() == false", value: :ticketCode), type: :text, style: 'width:240px'}
+        %input{ko(visible: "isManualConfiguration", value: :password), type: :password, style: 'width:240px'}
+        %input{ko(visible: "!isManualConfiguration()", value: :ticketCode), type: :text, style: 'width:240px'}
         %br
         %input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
         %br
@@ -60,12 +64,14 @@
         %label Share
         %br
         .middlebuttons{ko(visible: 'isShare() == "true"' )}
-          %input.sites{ko(autocompleteTagField: 'sharedCollections',objectType: "Collection", valueUpdate: :afterkeydown), proxy: collections_path(), valueField: 'id', displayField: 'name', type: :text}
+          
+          %input{ko(autocompleteTagField: 'sharedCollections',objectType: "Collection", valueUpdate: :afterkeydown), proxy: collections_path(), valueField: 'id', displayField: 'name', type: :text}
+            
         .bottom-actions
           %button.white{ ko(click: '$root.saveChannel') } Save
           %a.tgrey{ ko(click: '$root.cancelChannel'), href: 'javascript:void(0)' } Cancel
           <!-- ko if: !valid() -->
-          //%span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
+          %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
           <!-- /ko -->
     %br 
     <!-- /ko -->

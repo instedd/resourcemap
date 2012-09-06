@@ -2,11 +2,10 @@ module Field::Base
   extend ActiveSupport::Concern
 
   # [
-  #   { :name => 'user', :css_class => 'luser' },
   #   { :name => 'email', :css_class => 'lmessage' }
   # ]
   PluginKinds = Plugin.hooks(:field_type).index_by { |h| h[:name] }
-  Kinds = %w(text numeric select_one select_many hierarchy) | PluginKinds.keys
+  Kinds = %w(text numeric select_one select_many hierarchy user) | PluginKinds.keys
 
   Kinds.each do |kind|
     class_eval %Q(def #{kind}?; kind == '#{kind}'; end)

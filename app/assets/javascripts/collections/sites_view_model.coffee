@@ -103,7 +103,8 @@ onCollections ->
       @editingSite().post @editingSite().toJSON(), callback
 
     @exitSite: ->
-      @performSearchOrHierarchy()
+      if !@editingSite()?.inEditMode()
+        @performSearchOrHierarchy()
 
       field.editing(false) for field in @currentCollection().fields()
       if @editingSite()?.inEditMode()

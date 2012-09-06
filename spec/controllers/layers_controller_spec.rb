@@ -12,7 +12,7 @@ describe LayersController do
 
   before(:each) {sign_in user}
 
-  it "should should update field.layer_id" do
+  it "should update field.layer_id" do
 
     layer.fields.count.should eq(1)
     json_layer = {id: layer.id, name: layer.name, ord: layer.ord, public: layer.public, fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
@@ -29,7 +29,6 @@ describe LayersController do
 
     histories.first.layer_id.should eq(layer.id)
     histories.first.valid_to.should_not be_nil
-
 
     histories.last.valid_to.should be_nil
     histories.last.layer_id.should eq(layer2.id)
