@@ -1,3 +1,6 @@
+- content_for :head do
+  = stylesheet_link_tag 'site_memberships'
+
 = render 'collections/tabs'
 
 .tabsline
@@ -5,3 +8,25 @@
     %h2 Site Memberships by user field type
     %p Manage who can see/read/write/delete site
     %br/
+
+    .tablewrapp
+      %table.GralTable
+        %tr
+          %th
+          %th Field
+          %th.w90 Can View?
+          %th.w90 Can Update?
+          %th.w90 Can Delete?
+          %th
+        / ko foreach: memberships
+        %tr.h32
+          %td
+          %td{ko(text: 'field.name')}
+          %td.center
+            %input{ko(checked: :canView), type: :checkbox}
+          %td.center
+            %input{ko(checked: :canUpdate), type: :checkbox}
+          %td.center
+            %input{ko(checked: :canDelete), type: :checkbox}
+          %td 
+        / /ko

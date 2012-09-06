@@ -45,7 +45,7 @@ onCollections ->
     setQueryParams: (options, api = false) =>
       options[@field.codeForLink(api)] = "~=#{@value}"
 
-    description: => "where #{@field.name} contains \"#{@value}\""
+    description: => "where #{@field.name} starts with \"#{@value}\""
 
   class @FilterByNumericProperty extends Filter
     constructor: (field, operator, value) ->

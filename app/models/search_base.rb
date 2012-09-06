@@ -30,13 +30,13 @@ module SearchBase
     self
   end
 
-  def contains(es_code, value)
+  def starts_with(es_code, value)
     check_field_exists es_code
 
     query_key = decode(es_code)
     query_value = decode_option(query_key, value)
 
-    add_query "#{query_key}:*#{query_value}*"
+    add_prefix key: query_key, value: query_value
     self
   end
 
@@ -72,7 +72,7 @@ module SearchBase
         when value[0 .. 1] == '>=' then gte(es_code, value[2 .. -1].strip)
         when value[0] == '>' then gt(es_code, value[1 .. -1].strip)
         when value[0] == '=' then eq(es_code, value[1 .. -1].strip)
-        when value[0 .. 1] == '~=' then contains(es_code, value[2 .. -1].strip)
+        when value[0 .. 1] == '~=' then starts_with(es_code, value[2 .. -1].strip)
         else eq(es_code, value)
         end
       else
@@ -141,13 +141,36 @@ module SearchBase
   end
 
   def apply_queries
-    if @queries
-      query = @queries.join " AND "
-      @search.query { string query }
-    end
+    @search.query { |q|
+      query = @queries.join " AND " if @queries
+      case
+      when @queries && @prefixes
+        q.boolean do |bool|
+          bool.must { |q| q.string query }
+          apply_prefixes bool
+        end
+      when @queries && !@prefixes then q.string query
+      when !@queries && @prefixes then apply_prefixes q
+      else q.all
+      end
+    }
   end
 
   private
+
+  def apply_prefixes to
+    if to.is_a? Tire::Search::BooleanQuery
+      @prefixes.each do |prefix|
+        to.must { |q| q.prefix prefix[:key], prefix[:value] }
+      end
+    else
+      if @prefixes.length == 1
+        to.prefix @prefixes.first[:key], @prefixes.first[:value]
+      else
+        to.boolean { |bool| apply_prefixes bool }
+      end
+    end
+  end
 
   def decode(code)
     return code unless @use_codes_instead_of_es_codes
@@ -173,6 +196,11 @@ module SearchBase
   def add_query(query)
     @queries ||= []
     @queries.push query
+  end
+
+  def add_prefix(query)
+    @prefixes ||= []
+    @prefixes.push query
   end
 
   def parse_time(time)

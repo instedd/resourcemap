@@ -1,5 +1,17 @@
 Tire::Configuration.wrapper Hash
 
+# prefix method exists in Tire since revision 995ea29,
+# but wasn't released to the public at the time of this writing.
+class Tire::Search::Query
+  def prefix(field, value, options={})
+    if options[:boost]
+      @value = { :prefix => { field => { :prefix => value, :boost => options[:boost] } } }
+    else
+      @value = { :prefix => { field => value } }
+    end
+  end
+end
+
 class Tire::Search::Search
   def stream
     uri = URI(url)
