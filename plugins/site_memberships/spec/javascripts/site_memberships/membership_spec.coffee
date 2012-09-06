@@ -16,3 +16,11 @@ describe 'Site memberships plugin', ->
       it 'should set view access', ->
         @membership.canView(true)
         expect($.post).toHaveBeenCalledWith "/plugin/site_memberships/collections/#{@collectionId}/site_memberships/set_access", access: true, type: 'view_access', field_id: @field.id
+
+      it 'should set update access', ->
+        @membership.canUpdate(true)
+        expect($.post).toHaveBeenCalledWith "/plugin/site_memberships/collections/#{@collectionId}/site_memberships/set_access", access: true, type: 'update_access', field_id: @field.id
+
+      it 'should set delete access', ->
+        @membership.canDelete(true)
+        expect($.post).toHaveBeenCalledWith "/plugin/site_memberships/collections/#{@collectionId}/site_memberships/set_access", access: true, type: 'delete_access', field_id: @field.id
