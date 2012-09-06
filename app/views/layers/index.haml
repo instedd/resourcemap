@@ -3,13 +3,6 @@
   :css
     .error { color: red; }
 
-  :javascript
-    String.prototype.titleize = function() {
-      return (this.split('_').map(function(word) {
-        return word[0].toUpperCase() + word.slice(1).toLowerCase();
-      })).join(' ');
-    }
-
 = render 'collections/tabs'
 
 -# Hierarchy item template
@@ -97,6 +90,8 @@
                   %button.lhierarchy
                   %br/
                   Hierarchy
+                %br/
+                %br/
                 %span{ko(click: '$root.newUserField')}
                   %button.luser
                   %br/
@@ -114,7 +109,7 @@
         .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField', style: {marginTop: '$root.currentFieldMarginTop'}), style: 'position:relative'}
           %p.title Type
           %p.smalltext The data type to fill in this field.
-          = select_tag :kind, nil, 'data-bind' => kov(options: '$root.fieldKinds()', optionsText: "function(item) {  return item.titleize(); }",value: :kind), :id => "layer_select"
+          = select_tag :kind, options_for_select(Field::Kinds.map { |kind_name| [kind_name.titleize, kind_name] }), 'data-bind' => kov(value: :kind)
           %hr/
           %label{ko(css: {error: :nameError})} Name
           %p.smalltext The name of this field as it is presented.
