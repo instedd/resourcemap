@@ -24,12 +24,6 @@ onLayers ->
 
     selectingLayer: () ->
 
-    fieldKinds: =>
-      kinds = []
-      for field, klass of FIELD_TYPES
-        kinds.push("#{field}")
-      kinds
-
     newLayer: =>
       layer = new Layer ord: (@layers().length + 1)
       @layers.push(layer)
