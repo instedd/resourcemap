@@ -8,7 +8,9 @@ class SiteMemberships::Plugin < Plugin
 
   routes {
     resources :collections do
-      resources :site_memberships
+      resources :site_memberships do
+        post 'set_access', on: :collection
+      end
     end
   }
 end
