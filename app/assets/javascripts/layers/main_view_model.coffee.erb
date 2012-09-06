@@ -24,6 +24,12 @@ onLayers ->
 
     selectingLayer: () ->
 
+    fieldKinds: =>
+      kinds = []
+      for field, klass of FIELD_TYPES
+        kinds.push("#{field}")
+      kinds
+
     newLayer: =>
       layer = new Layer ord: (@layers().length + 1)
       @layers.push(layer)
@@ -130,6 +136,7 @@ onLayers ->
     newSelectManyField: => @newField 'select_many'
     newHierarchyField: => @newField 'hierarchy'
     newUserField: => @newField 'user'
+    newDateField: => @newField 'date'
 
     newField: (kind) =>
       @currentField(new Field(@currentLayer(), kind: kind, ord: @currentLayer().fields().length + 1))
