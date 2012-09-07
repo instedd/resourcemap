@@ -215,11 +215,11 @@
   %div.mapcontainer
     %button.icon_button.expand-collapse_button.oleftexpand{ko(click: '$root.toogleExpandFullScreen')}
     <!-- ko if: $root.shouldShowLocationMissingAlert() -->
-    %span#sites_whitout_location_alert.alert.box.flash_error.drop_shadow
-      %span There are several sites that cannot be displayed on the map
+    %a#sites_whitout_location_alert.alert.box.flash_error.drop_shadow(href='javascript:window.model.filterByLocationMissing()')
+      %span{ko(text: :locationMissingAlertText)}
       %span.right
         %button.fconfiguration{ko(click: '$root.filterByLocationMissing'), type: 'button', style: 'margin-left:9px'}
-        %span.black Fix
+        %span.black{ko(text: :showThemText)}
       .clear
     <!-- /ko -->
     #map

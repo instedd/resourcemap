@@ -371,6 +371,13 @@ onCollections ->
         $('table.GralTable').fixedHeaderTable 'destroy'
         $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable'
 
+        width = $('.fht-tbody table').width()
+        $('.fht-thead table').width(width)
+        $('.fht-thead table').css('table-layout', 'fixed')
+
+        $col = $('.fht-tbody colgroup').clone()
+        $('.fht-thead table').prepend($col)
+
         setTimeout((->
           $('.tablescroll').scrollLeft oldScrollLeft
           window.adjustContainerSize()

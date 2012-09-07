@@ -21,10 +21,10 @@
 }
 
 /* ------------ table ------------------- */
-.GralTable td { padding:0px 6px }
+.GralTable td { padding:0px 6px; overflow: hidden; text-overflow: ellipsis; }
 .GralTable td.add { color:#1e87c9 }
 .GralTable button { vertical-align:middle }
-.GralTable span { vertical-align:middle; display:inline-block }
+.GralTable span { vertical-align:middle; }
 .GralTable tr { clear:both }
 .GralTable .selected { background-color: #D0D0D0; border-radius: 4px; }
 .titletable { padding:4px 0 2px 2px; display:inline-block !important; margin-left:5px !important }
@@ -52,7 +52,7 @@
 .tablescroll .GralTable td button.farrow { float:right  }
 .tablescroll .GralTable th.r { text-align:right }
 .tablescroll .GralTable td.r { text-align:right }
-.tablescroll .GralTable td.l span { display:inline-block; vertical-align:middle; height:4px }
+.tablescroll .GralTable td span { white-space: nowrap; vertical-align:middle; /*height:4px*/ }
 .stat-r { background:#ff4800; background-image:none !important; border-top:1px solid #bf3602; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
 .stat-y { background:#fcbb00; background-image:none !important; border-top:1px solid #bc8b00; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
 .stat-g { background:#79e820; background-image:none !important; border-top:1px solid #5bae18; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
