@@ -66,6 +66,7 @@ onCollections ->
       if !window.model.currentCollection()?.currentSnapshot
         @originalValue = @value()
         @editing(true)
+        window.model.initDatePicker()
 
     keyPress: (field, event) =>
       switch event.keyCode

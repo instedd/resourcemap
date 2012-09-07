@@ -227,6 +227,7 @@ onCollections ->
 
       @inEditMode(true)
       @startEditLocationInMap()
+      window.model.initDatePicker()
 
     exitEditMode: (saved) =>
       @inEditMode(false)

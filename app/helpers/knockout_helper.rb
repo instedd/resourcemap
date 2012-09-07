@@ -16,8 +16,8 @@ module KnockoutHelper
   end
 
   def ko_date_field_tag(name, options = {})
-    #change me!
-    text_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: :afterkeydown))
+    html_opts = options.delete(:html)
+    text_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: :afterkeydown)).merge(html_opts || {})
   end
 
   def ko_check_box_tag(name, options = {})
