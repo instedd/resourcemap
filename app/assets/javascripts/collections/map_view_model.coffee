@@ -389,7 +389,7 @@ onCollections ->
     @iconUrl: (icon) -> icon.url ? "/assets/#{icon}"
 
     @initDatePicker: ->
-      $.instedd.init_components()
+      $.instedd.init_components() if $.instedd
       # fix dinamic DOM
       # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
       $(".ux-datepicker").removeClass('hasDatepicker').datepicker()
