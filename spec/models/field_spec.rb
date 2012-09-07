@@ -44,19 +44,21 @@ describe Field do
     Field.make(kind: 'user').should be_valid
   end
 
-  it "should have kind 'email'" do 
+  it "should have kind 'email'" do
     Field.make(kind: 'email').should be_valid
   end
 
   describe "core field type" do
     subject { Field::Kinds - Field::PluginKinds.keys }
 
-    it { should have(6).items }
+    it { should have(7).items }
     it { should include 'text' }
     it { should include 'numeric' }
     it { should include 'select_one' }
     it { should include 'select_many' }
     it { should include 'hierarchy' }
     it { should include 'user' }
+    it { should include 'date' }
+
   end
 end

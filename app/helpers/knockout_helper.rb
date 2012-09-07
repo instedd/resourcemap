@@ -15,6 +15,11 @@ module KnockoutHelper
     number_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: :afterkeydown))
   end
 
+  def ko_date_field_tag(name, options = {})
+    #change me!
+    text_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: :afterkeydown))
+  end
+
   def ko_check_box_tag(name, options = {})
     check_box_tag name, '1', false, options.reverse_merge(ko checked: name)
   end

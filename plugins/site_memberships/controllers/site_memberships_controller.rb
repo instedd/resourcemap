@@ -1,5 +1,6 @@
 class SiteMembershipsController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :authenticate_collection_admin!, :only => [:set_access]
 
   expose(:memberships) { collection.site_memberships }
 

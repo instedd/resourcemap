@@ -4,8 +4,19 @@ module Field::Base
   # [
   #   { :name => 'email', :css_class => 'lmessage' }
   # ]
+
+  BaseKinds = [
+   { name: 'text', css_class: 'ltext' },
+   { name: 'numeric', css_class: 'lnumber' },
+   { name: 'select_one', css_class: 'lsingleoption' },
+   { name: 'select_many', css_class: 'lmultipleoptions' },
+   { name: 'hierarchy', css_class: 'lhierarchy' },
+   { name: 'date', css_class: 'ldate' },
+   { name: 'user', css_class: 'luser' }]
+
   PluginKinds = Plugin.hooks(:field_type).index_by { |h| h[:name] }
-  Kinds = %w(text numeric select_one select_many hierarchy user) | PluginKinds.keys
+
+  Kinds = BaseKinds.map{|k| k[:name]} | PluginKinds.keys
 
   Kinds.each do |kind|
     class_eval %Q(def #{kind}?; kind == '#{kind}'; end)
