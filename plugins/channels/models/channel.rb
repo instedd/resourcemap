@@ -48,6 +48,8 @@ class Channel < ActiveRecord::Base
   end
   
   def handle_nuntium_channel_response(response)
+    puts '-------------------------' 
+    puts response 
     raise get_error_from_nuntium_response(response) if not response['name'] == self.nuntium_channel_name
     response
   end
@@ -67,7 +69,7 @@ class Channel < ActiveRecord::Base
   def update_nuntium_channel
     handle_nuntium_channel_response Nuntium.new_from_config.update_channel(
       :name => self.nuntium_channel_name,
-      :enabled => self.is_enable,
+      :enabled => true,
       :restrictions => '',
       :configuration => { 
         :friendly_name => self.name,

@@ -42,7 +42,12 @@ onChannels ->
           "Channel's password require at least 4 characters"
       @ticketCodeError        = ko.computed =>
         return null if @isManualConfiguration()
-        "Channel's ticket code is missing" if $.trim(@ticketCode()).length == 0
+        length = $.trim(@ticketCode()).length
+        if length < 1
+          "Channel's ticket code is missing"        
+        else if length != 4
+          "Channel's ticket code must be 4 characters"
+
       @error                  = ko.computed => 
         return @nameError() if @nameError()
         return @passwordError() if @passwordError()
