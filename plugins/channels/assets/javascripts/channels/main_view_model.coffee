@@ -42,7 +42,6 @@ onChannels ->
     editChannel: (channel) =>
       @originalChannel = channel.clone()
       @currentChannel channel
-      console.log @originalChannel
 
     deleteChannel: (channel) =>
       if window.confirm 'Are you sure to delete channel?'
