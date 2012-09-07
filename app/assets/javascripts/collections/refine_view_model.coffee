@@ -83,7 +83,7 @@ onCollections ->
       return if $.trim(@expandedRefinePropertyValue()).length == 0
 
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
-      if field.kind == 'text' or field.isPluginKind()
+      if field.kind == 'text' or field.kind == 'user' or field.isPluginKind()
         if(!@filteringByPropertyAndValue(FilterByTextProperty, @expandedRefinePropertyValue()))
           @filters.push(new FilterByTextProperty(field, @expandedRefinePropertyValue()))
       else if field.kind == 'numeric'

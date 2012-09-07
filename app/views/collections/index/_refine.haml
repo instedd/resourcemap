@@ -45,7 +45,7 @@
       %span{ko(text: :name)}
     <!-- ko if: $root.expandedRefineProperty() == esCode -->
     #div{style: 'padding:10px;margin-left:10px'}
-      <!-- ko if: kind == 'text' || isPluginKind() -->
+      <!-- ko if: kind == 'text' || kind == 'user' || isPluginKind() -->
       starts with:
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
       %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
