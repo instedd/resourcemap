@@ -5,6 +5,8 @@ module Field::TireConcern
     case
     when stored_as_number?
       { type: :long }
+    when stored_as_date?
+      { type: :date }
     else
       { type: :string, index: :not_analyzed }
     end

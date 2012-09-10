@@ -26,6 +26,10 @@ module Field::Base
     select_one? || select_many?
   end
 
+  def stored_as_date?
+    date?
+  end
+
   def stored_as_number?
     numeric? || select_one? || select_many?
   end
@@ -73,6 +77,8 @@ module Field::Base
       end
     elsif hierarchy?
       return find_hierarchy_value value
+    elsif date?
+      return value.to_time.strftime("%m/%d/%Y")
     else
       return value
     end

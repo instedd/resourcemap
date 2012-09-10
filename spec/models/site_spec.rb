@@ -11,10 +11,10 @@ describe Site do
   let(:desk) { layer.fields.make name: 'desk'  }
   let(:creation) { layer.fields.make name: 'creation', kind: 'date' }
 
-  let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '09/27/2012' } }
+  let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '2012-09-22T03:00:00.000Z' } }
 
   it "return as a hash of field_name and its value" do
-    site.human_properties.should eq({'room' => '50', 'desk' => 'bla bla', 'creation' => '09/27/2012' })
+    site.human_properties.should eq({'room' => '50', 'desk' => 'bla bla', 'creation' => '09/22/2012' })
   end
 
   describe "create or update from hash" do
