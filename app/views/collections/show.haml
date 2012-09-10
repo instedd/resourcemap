@@ -9,8 +9,9 @@
       .left.sitesDescription
         .sitesCount= sites_count
         sites
-      %button.csvDownload.white.right{type: "button", class: sites_count == 0 ? "disabled" : nil}
-        = link_to_if sites_count > 0, 'download as csv', api_collection_path(collection, format: "csv")
+      %button.csvDownload.white.right{type: "button", class: sites_count == 0 ? "disabled" : nil, |
+          onclick: "window.location = '#{api_collection_path(collection, format: 'csv')}'"}       |
+        download as csv
     %div
       = link_to'Upload it for bulk sites updates', collection_import_wizard_path(collection), class: 'icon fexport black'
   %hr.clear/
