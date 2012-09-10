@@ -377,6 +377,7 @@ onCollections ->
 
         $col = $('.fht-tbody colgroup').clone()
         $('.fht-thead table').prepend($col)
+        $('.fht-tbody table').css('table-layout', 'fixed')
 
         setTimeout((->
           $('.tablescroll').scrollLeft oldScrollLeft
