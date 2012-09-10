@@ -51,7 +51,6 @@ onCollections ->
       @collection.fetchLocation()
 
     updateProperty: (esCode, value) =>
-      debugger
       field = @collection.findFieldByEsCode(esCode)
       if field.showInGroupBy && window.model.currentCollection()
         window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[esCode], newValue: value}])

@@ -1,4 +1,4 @@
 - if single_editing_mode
-  = ko_date_field_tag :value, hasfocus: true, event: {keydown: :keyPress}, html: {class: 'ux-datepicker', id: 'date-input'}
+  = ko_date_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, html: {class: 'ux-datepicker', id: 'date-input'}
 - else
   = ko_date_field_tag :value, html: {class: 'ux-datepicker', id: 'date-input'}
