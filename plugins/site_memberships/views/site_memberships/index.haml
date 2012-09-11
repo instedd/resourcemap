@@ -22,11 +22,16 @@
         %tr.h32
           %td
           %td{ko(text: 'field.name')}
-          %td.center
-            %input{ko(checked: :canView), type: :checkbox}
-          %td.center
-            %input{ko(checked: :canUpdate), type: :checkbox}
-          %td.center
-            %input{ko(checked: :canDelete), type: :checkbox}
+          - if collection_admin?
+            %td.center
+              %input{ko(checked: :canView), type: :checkbox}
+            %td.center
+              %input{ko(checked: :canUpdate), type: :checkbox}
+            %td.center
+              %input{ko(checked: :canDelete), type: :checkbox}
+          - else
+            %td.center{ko(text: :canViewUI)}
+            %td.center{ko(text: :canUpdateUI)}
+            %td.center{ko(text: :canDeleteUI)}
           %td 
         / /ko
