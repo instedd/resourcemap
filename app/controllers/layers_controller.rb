@@ -35,6 +35,7 @@ class LayersController < ApplicationController
   end
 
   def set_order
+    layer.user = current_user
     layer.update_attributes! ord: params[:ord]
     render json: layer
   end
