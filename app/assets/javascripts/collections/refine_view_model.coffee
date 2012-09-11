@@ -44,7 +44,6 @@ onCollections ->
       else
         @expandedRefineProperty(null) # Needed because sometimes we get a stack overflow (can't find the reason to it)
         @expandedRefineProperty(property)
-        #TODO: Prevent datepicker and refinePopup to close
         window.model.initDatePicker()
 
     @filterDescription: (filter) ->
