@@ -57,11 +57,11 @@ onCollections -> if $('#collections-main').length > 0
 
   # Hide the refine popup if clicking outside it
   $(window.document).click (event) ->
+    return if $('#ui-datepicker-div:visible').length > 0
     $refine = $('.refine')
     $refinePopup = $('.refine-popup')
     unless $refine.get(0) == event.target ||
            $refinePopup.get(0) == event.target ||
            $refine.has(event.target).length > 0 ||
-           $refinePopup.has(event.target).length > 0 ||
-           $('#ui-datepicker-div:visible').length > 0
+           $refinePopup.has(event.target).length > 0
       window.model.toggleRefinePopup() if window.model.showingRefinePopup()
