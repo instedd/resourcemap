@@ -48,8 +48,6 @@ class Channel < ActiveRecord::Base
   end
   
   def handle_nuntium_channel_response(response)
-    puts '-------------------------' 
-    puts response 
     raise get_error_from_nuntium_response(response) if not response['name'] == self.nuntium_channel_name
     response
   end
@@ -108,8 +106,9 @@ class Channel < ActiveRecord::Base
   end  
   
   def gateway_url
-    nuntium_config = YAML.load(File.read("#{Rails.root}/config/nuntium.yml"))["production"]
-    nuntium_config["url"] + '/' + nuntium_info['application'] + '/qst'
+    #nuntium_config = YAML.load(File.read("#{Rails.root}/config/nuntium.yml"))["production"]
+    #nuntium_config["url"] + '/' + nuntium_info['application'] + '/qst'
+    nuntium_info['application']
   end
   
   def self.default_nuntium_name

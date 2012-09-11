@@ -46,6 +46,7 @@ RSpec.configure do |config|
     @nuntium.stub(:create_channel)
     @nuntium.stub(:update_channel)
     @nuntium.stub(:delete_channel)
+    Channel.any_instance.stub(:gateway_url).and_return(true)
     Channel.any_instance.stub(:handle_nuntium_channel_response).and_return(true)
   end
 end

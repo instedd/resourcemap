@@ -24,6 +24,8 @@ onChannels ->
 
     saveChannelCallback: (data) =>
       @currentChannel().id = data.id
+      @currentChannel().gateWayURL data.gateway_url
+      @currentChannel().nuntiumChannelName data.nuntium_channel_name
       @currentChannel null
       @isSaving false
 

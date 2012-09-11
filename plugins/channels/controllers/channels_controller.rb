@@ -17,8 +17,7 @@ class ChannelsController < ApplicationController
     share_collections = [collection.id]
     share_collections += params[:channel][:share_collections] if params[:channel][:is_share] == 'true'
     channel.collections = Collection.find share_collections
-    
-    render json: channel
+    render json: channel.as_json(methods: [:gateway_url])
   end
  
   def update

@@ -23,6 +23,12 @@
         %button.fdelete{ko(visible: 'isAdmin', click: '$root.deleteChannel')}
           
       .middlebuttons{ko(visible: '!clientConnected()')}
+        %label Gateway URL:
+        %span{ko(text: :gateWayURL)} 
+        %br
+        %label User name:
+        %span{ko(text: :nuntiumChannelName)} 
+        %br   
         %label.error{ko(text: :queuedMessageText)}
       .middlebuttons{ko(visible: 'clientConnected')}
         %label Phone number:
