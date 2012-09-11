@@ -8,9 +8,8 @@ class Channel < ActiveRecord::Base
   serialize :share_collections
   #attr_accessible :channel_name, :collection_id, :is_enable, :is_manual_configuration, :name, :password, :share_collections
   after_create  :register_nuntium_channel
-  after_update  :update_nuntium_channel
-  after_destroy :delete_nuntium_channel
-  
+  after_update  :update_nuntium_channel 
+  after_destroy :delete_nuntium_channel 
   attr_accessor  :ticket_code
   attr_accessor  :phone_number
 
@@ -106,9 +105,8 @@ class Channel < ActiveRecord::Base
   end  
   
   def gateway_url
-    #nuntium_config = YAML.load(File.read("#{Rails.root}/config/nuntium.yml"))["production"]
-    #nuntium_config["url"] + '/' + nuntium_info['application'] + '/qst'
-    nuntium_info['application']
+    config = Nuntium.config 
+    config['url'] + '/' + config['application'] + '/qst'
   end
   
   def self.default_nuntium_name
