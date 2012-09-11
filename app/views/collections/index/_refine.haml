@@ -61,13 +61,11 @@
       %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
       <!-- /ko -->
       <!-- ko if: kind == 'date'-->
-      %select{ko(value: '$root.expandedRefinePropertyOperator')}
-        %option{value: '='} equals
-        %option{value: '<'} is less than
-        %option{value: '<='} is less than or equal to
-        %option{value: '>'} is greater than
-        %option{value: '>='} is greater than or equal to
-      %input.ux-datepicker{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true), type: :text}
+      From
+      %input.ux-datepicker#range_from{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true), type: :text}
+      To
+      %input.ux-datepicker#range_to{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true), type: :text}
+
       %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
       <!-- /ko -->
       <!-- ko if: kind == 'select_one' || kind == 'select_many' -->
