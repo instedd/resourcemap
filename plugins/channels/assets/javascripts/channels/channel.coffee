@@ -85,6 +85,7 @@ onChannels ->
         is_share                : @isShare()
         is_manual_configuration : @isManualConfiguration()
         nuntium_channel_name    : @nuntiumChannelName()
+        gateway_url             : @gateWayURL() 
         collections             : @sharedCollections()
         password                : @password()
         ticket_code             : @ticketCode()
