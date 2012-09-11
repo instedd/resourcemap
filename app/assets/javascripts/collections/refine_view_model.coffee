@@ -44,7 +44,8 @@ onCollections ->
       else
         @expandedRefineProperty(null) # Needed because sometimes we get a stack overflow (can't find the reason to it)
         @expandedRefineProperty(property)
-        window.model.initDatePicker()
+        window.model.initDatePicker (p) =>
+
 
     @filterDescription: (filter) ->
       if @filters()[0] == filter
