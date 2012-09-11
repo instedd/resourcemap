@@ -12,10 +12,12 @@ describe 'Collection', ->
       @owner_field = new Field id: 2, code: 'owner', name: 'Owner', kind: 'user'
       @email_field = new Field id: 3, code: 'email', name: 'Email', kind: 'email'
       @phone_field = new Field id: 4, code: 'phone', name: 'Phone', kind: 'phone'
+      @date_field = new Field id: 5, code: 'open', name: 'Open', kind: 'date'
+
 
     describe 'filter by property', ->
       beforeEach ->
-        @collection.fields [@bed_field, @owner_field, @email_field, @phone_field]
+        @collection.fields [@bed_field, @owner_field, @email_field, @phone_field, @date_field]
         @model.currentCollection @collection
         spyOn @model, 'performSearchOrHierarchy'
 
@@ -39,3 +41,16 @@ describe 'Collection', ->
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
           expect(@model.filters()[0].description()).toEqual "where #{@phone_field.name} starts with \"foo\""
+
+      describe 'date kind', ->
+        beforeEach ->
+          @model.expandedRefineProperty @date_field.esCode
+          @model.expandedRefinePropertyValue '12/26/1988'
+          @model.expandedRefinePropertyOperator '='
+
+         it 'of date should add text filter', ->
+            @model.filterByProperty()
+            expect(@model.filters().length).toEqual 1
+            expect(@model.filters()[0].description()).toContain "where #{@date_field.name} equals 12/26/1988"
+
+

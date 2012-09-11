@@ -44,6 +44,7 @@ onCollections ->
       else
         @expandedRefineProperty(null) # Needed because sometimes we get a stack overflow (can't find the reason to it)
         @expandedRefineProperty(property)
+        window.model.initDatePicker()
 
     @filterDescription: (filter) ->
       if @filters()[0] == filter
@@ -94,6 +95,9 @@ onCollections ->
         valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0].label
         if(!@filteringByPropertyAndSelectProperty(FilterBySelectProperty, @expandedRefinePropertyValue(), valueLabel))
           @filters.push(new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel))
+      else if field.kind == 'date'
+        if(!@filteringByPropertyAndValueAndOperator(FilterByDateProperty, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
+          @filters.push(new FilterByDateProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
 
       @hideRefinePopup()
 

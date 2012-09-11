@@ -12,7 +12,14 @@ onCollections ->
 
       @value = ko.observable()
       @hasValue = ko.computed => @value() && (if @kind == 'select_many' then @value().length > 0 else @value())
-      @valueUI = ko.computed => @valueUIFor(@value())
+
+      if @kind == 'date'
+        @valueUI =  ko.computed
+         read: =>  @valueUIFor(@value())
+         write: (date) =>
+           @value(@valueFromDateUI(date))
+      else
+        @valueUI = ko.computed => @valueUIFor(@value())
 
       if @kind in ['select_one', 'select_many']
         @options = if data.config?.options?
@@ -60,6 +67,9 @@ onCollections ->
       else
         value
 
+    valueFromDateUI: (value) =>
+      (new Date(value)).toISOString()
+
     datePickerFormat: (date) =>
       date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear()
 
@@ -71,7 +81,9 @@ onCollections ->
       if !window.model.currentCollection()?.currentSnapshot
         @originalValue = @value()
         @editing(true)
-        window.model.initDatePicker()
+        window.model.initDatePicker (dateText) =>
+          @value(dateText)
+          @save()
 
     keyPress: (field, event) =>
       switch event.keyCode
@@ -90,6 +102,10 @@ onCollections ->
       @filter('')
       window.model.editingSite().updateProperty(@esCode, @value())
       delete @originalValue
+
+    closeDatePickerAndSave: =>
+      if $('#ui-datepicker-div:visible').length == 0
+        @save()
 
     selectOption: (option) =>
       @value([]) unless @value()
