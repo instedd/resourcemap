@@ -55,6 +55,9 @@ onCollections ->
       if field.showInGroupBy && window.model.currentCollection()
         window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[esCode], newValue: value}])
 
+      if field.kind == 'date'
+         value = (new Date(value)).toISOString()
+
       @properties()[esCode] = value
 
       $.post "/sites/#{@id()}/update_property.json", {es_code: esCode, value: value}, (data) =>
@@ -71,7 +74,12 @@ onCollections ->
           hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode], newValue: field.value()})
 
         if field.value()
-          @properties()[field.esCode] = field.value()
+          value = field.value()
+
+          if field.kind == 'date'
+            value = (new Date(value)).toISOString()
+
+          @properties()[field.esCode] = value
         else
           delete @properties()[field.esCode]
 
@@ -84,6 +92,10 @@ onCollections ->
         if @properties()
           for field in collection.fields()
             value = @properties()[field.esCode]
+
+            if field.kind == 'date'
+              value = (new Date(value)).toISOString()
+
             field.value(value)
 
     post: (json, callback) =>
@@ -227,6 +239,7 @@ onCollections ->
 
       @inEditMode(true)
       @startEditLocationInMap()
+      window.model.initDatePicker()
 
     exitEditMode: (saved) =>
       @inEditMode(false)

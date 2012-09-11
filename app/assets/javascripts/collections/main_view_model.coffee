@@ -34,6 +34,17 @@ onCollections ->
       @shouldShowLocationMissingAlert = ko.computed =>
         !@filteringByProperty(FilterByLocationMissing) && @currentCollection()?.sitesWithoutLocation().length > 0
 
+      @locationMissingAlertText = ko.computed =>
+        n = @currentCollection()?.sitesWithoutLocation().length
+        singular = n == 1
+        "There #{if singular then "is one site" else "are #{n} sites"} with no location set"
+
+      @showThemText = ko.computed =>
+        if @currentCollection()?.sitesWithoutLocation().length == 1
+          "Show it"
+        else
+          "Show them"
+
       # We make sure all the methods in this model are correctly bound to "this".
       # Using Module and @include makes the methods in the included class not bound
       # to this, and they don't work when being invoked by knockout when interacting

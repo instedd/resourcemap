@@ -371,6 +371,14 @@ onCollections ->
         $('table.GralTable').fixedHeaderTable 'destroy'
         $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, themeClass: 'GralTable'
 
+        width = $('.fht-tbody table').width()
+        $('.fht-thead table').width(width)
+        $('.fht-thead table').css('table-layout', 'fixed')
+
+        $col = $('.fht-tbody colgroup').clone()
+        $('.fht-thead table').prepend($col)
+        $('.fht-tbody table').css('table-layout', 'fixed')
+
         setTimeout((->
           $('.tablescroll').scrollLeft oldScrollLeft
           window.adjustContainerSize()
@@ -387,3 +395,10 @@ onCollections ->
       )
 
     @iconUrl: (icon) -> icon.url ? "/assets/#{icon}"
+
+    @initDatePicker: ->
+      $.instedd.init_components() if $.instedd
+      # fix dinamic DOM
+      # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
+      $(".ux-datepicker").removeClass('hasDatepicker').datepicker()
+

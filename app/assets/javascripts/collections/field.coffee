@@ -32,7 +32,7 @@ onCollections ->
         @remainingOptions = ko.computed =>
           option.selected(false) for option in @options
           remaining = if @value()
-            @options.filter((x) => @value().indexOf(x.id) == -1 && x.label.toLowerCase().indexOf(@filter().toLowerCase()) == 0)
+            @options.filter((x) => @value()?.indexOf(x.id) == -1 && x.label.toLowerCase().indexOf(@filter().toLowerCase()) == 0)
           else
             @options
           remaining[0].selected(true) if remaining.length > 0
@@ -55,8 +55,13 @@ onCollections ->
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
       else if @kind == 'hierarchy'
         if value then @fieldHierarchyItemsMap[value] else ''
+      else if @kind == 'date'
+        if value then @datePickerFormat(new Date(value))
       else
         value
+
+    datePickerFormat: (date) =>
+      date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear()
 
     buildHierarchyItems: =>
       @fieldHierarchyItemsMap = {}
@@ -66,6 +71,7 @@ onCollections ->
       if !window.model.currentCollection()?.currentSnapshot
         @originalValue = @value()
         @editing(true)
+        window.model.initDatePicker()
 
     keyPress: (field, event) =>
       switch event.keyCode

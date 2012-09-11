@@ -31,6 +31,7 @@ onCollections ->
         @unselectSite()
         @editingSite site
         @editingSite().startEditLocationInMap()
+        window.model.initDatePicker()
 
     @editSite: (site) ->
       @goBackToTable = true unless @showingMap()

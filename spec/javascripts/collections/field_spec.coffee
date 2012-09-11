@@ -170,6 +170,21 @@ describe 'Collection', ->
         expect(@field.value()).toEqual([1])
         expect(@field.remainingOptions()).toEqual([@field.options[1], @field.options[2]])
 
+    describe 'Date Field', ->
+      beforeEach ->
+        @field = new Field { id: 1, code: 'creation', name: 'Creation', kind: 'date' }
+        @field.value('Sat Dec 26 1012 00:00:00 GMT-0300 (ART)')
+
+      it 'should have value when set one', ->
+        expect(@field.hasValue()).toBeTruthy()
+
+      it 'should set value for in ISO format', ->
+        expect(@field.value()).toEqual('Sat Dec 26 1012 00:00:00 GMT-0300 (ART)')
+
+      it 'should get value for ui', ->
+        expect(@field.valueUI()).toEqual('12/26/1012')
+
+
     describe 'Plugin field', ->
       beforeEach ->
         @email_field = new Field id: 2, code: 'email', name: 'Email', kind: 'email'

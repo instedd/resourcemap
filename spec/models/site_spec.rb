@@ -9,16 +9,18 @@ describe Site do
   let(:layer) { collection.layers.make }
   let(:room) { layer.fields.make name: 'room'  }
   let(:desk) { layer.fields.make name: 'desk'  }
-  let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla' } }
+  let(:creation) { layer.fields.make name: 'creation', kind: 'date' }
+
+  let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '2012-09-22T03:00:00.000Z' } }
 
   it "return as a hash of field_name and its value" do
-    site.human_properties.should eq({'room' => '50', 'desk' => 'bla bla'})
+    site.human_properties.should eq({'room' => '50', 'desk' => 'bla bla', 'creation' => '09/22/2012' })
   end
 
   describe "create or update from hash" do
     before(:each) do
-      @hash = { "collection_id" => layer.collection.id, 
-        "name" => "site1", "lat" =>  "11.1", "lng" => "12.1", 
+      @hash = { "collection_id" => layer.collection.id,
+        "name" => "site1", "lat" =>  "11.1", "lng" => "12.1",
         "existing_fields" => {"field_#{room.id}" => {"field_id" => room.id, "value" => "10"},
           "field_#{desk.id}" => {"field_id" => desk.id, "value" => "test"}}}
       @hash.merge!("current_user" => user)
@@ -36,9 +38,9 @@ describe Site do
       site1.name.should eq(@hash["name"])
     end
   end
-  
+
   it "should get id and name" do
-    Site.get_id_and_name([site.id]).should eq([{'id' => site.id, 'name' => site.name}]) 
+    Site.get_id_and_name([site.id]).should eq([{'id' => site.id, 'name' => site.name}])
   end
 
 end
