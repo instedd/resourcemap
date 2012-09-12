@@ -67,23 +67,16 @@ onCollections ->
       str += "#{@value}"
 
   class @FilterByDateProperty extends Filter
-    constructor: (field, operator, value) ->
+    constructor: (field, valueFrom, valueTo) ->
       @field = field
-      @operator = operator
-      @value = value
+      @valueTo = valueTo
+      @valueFrom = valueFrom
 
     setQueryParams: (options, api = false) =>
-      options[@field.codeForLink(api)] = "#{@operator}#{@value}"
+      options[@field.codeForLink(api)] = "#{@valueFrom},#{@valueTo}"
 
     description: =>
-      str = "where #{@field.name}"
-      switch @operator
-        when '=' then str += " equals "
-        when '<' then str += " is less than "
-        when '<=' then str += " is less than or equal to "
-        when '>' then str += " is greater than "
-        when '>=' then str += " is greater than or equal to "
-      str += "#{@value}"
+      "where #{@field.name} is between #{@valueFrom} and #{@valueTo}"
 
   class @FilterBySelectProperty extends Filter
     constructor: (field, value, valueLabel) ->

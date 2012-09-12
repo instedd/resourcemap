@@ -6,6 +6,8 @@ onCollections ->
       @expandedRefineProperty = ko.observable()
       @expandedRefinePropertyOperator = ko.observable()
       @expandedRefinePropertyValue = ko.observable()
+      @expandedRefinePropertyDateTo = ko.observable()
+      @expandedRefinePropertyDateFrom = ko.observable()
       @filters = ko.observableArray([])
 
     @hideRefinePopup: ->
@@ -22,6 +24,10 @@ onCollections ->
 
     @filteringByPropertyAndSelectProperty: (filterClass, value, label) ->
       window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.value == value && f.valueLabel == label)
+
+    @filteringByDatePropertyRange: (filterClass, valueFrom, valueTo) ->
+      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.valueFrom == valueFrom && f.valueTo == valueTo)
+
 
     @toggleRefinePopup: (model, event) ->
       @showingRefinePopup(!@showingRefinePopup())
@@ -81,10 +87,13 @@ onCollections ->
         @filters.push(new FilterByLocationMissing())
       @hideRefinePopup()
 
-    @filterByProperty: ->
-      return if $.trim(@expandedRefinePropertyValue()).length == 0
+    @notValueSelected: ->
+      $.trim(@expandedRefinePropertyValue()).length == 0 && $.trim(@expandedRefinePropertyDateTo()).length == 0 && $.trim(@expandedRefinePropertyDateFrom()).length == 0
 
+    @filterByProperty: ->
+      return if @notValueSelected()
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
+      console.log(field.kind)
       if field.kind == 'text' or field.kind == 'user' or field.isPluginKind()
         if(!@filteringByPropertyAndValue(FilterByTextProperty, @expandedRefinePropertyValue()))
           @filters.push(new FilterByTextProperty(field, @expandedRefinePropertyValue()))
@@ -97,8 +106,8 @@ onCollections ->
         if(!@filteringByPropertyAndSelectProperty(FilterBySelectProperty, @expandedRefinePropertyValue(), valueLabel))
           @filters.push(new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel))
       else if field.kind == 'date'
-        if(!@filteringByPropertyAndValueAndOperator(FilterByDateProperty, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
-          @filters.push(new FilterByDateProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
+        if(!@filteringByDatePropertyRange(FilterByDateProperty, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo()))
+          @filters.push(new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo()))
 
       @hideRefinePopup()
 

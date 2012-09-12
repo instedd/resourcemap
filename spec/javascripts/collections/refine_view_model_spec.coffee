@@ -44,13 +44,22 @@ describe 'Collection', ->
 
       describe 'date kind', ->
         beforeEach ->
-          @model.expandedRefineProperty @date_field.esCode
-          @model.expandedRefinePropertyValue '12/26/1988'
-          @model.expandedRefinePropertyOperator '='
+          @model.expandedRefinePropertyDateFrom '12/26/1988'
+          @model.expandedRefinePropertyDateTo '12/28/1988'
 
          it 'of date should add text filter', ->
+            @model.expandedRefineProperty @date_field.esCode
             @model.filterByProperty()
             expect(@model.filters().length).toEqual 1
-            expect(@model.filters()[0].description()).toContain "where #{@date_field.name} equals 12/26/1988"
+            expect(@model.filters()[0].description()).toEqual "where #{@date_field.name} is between 12/26/1988 and 12/28/1988"
+
+        it 'should not add same filter twice', ->
+            model.expandedRefineProperty @date_field.esCode
+            @model.filterByProperty()
+            expect(@model.filters().length).toEqual 1
+            @model.filterByProperty()
+            expect(@model.filters().length).toEqual 1
+
+
 
 
