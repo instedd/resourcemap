@@ -52,14 +52,19 @@
                   %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'margin-top:0'}
                   %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'})}
                 %button.fdelete{ko(click: "$root.deleteField")}
+              .change_layer
+                %a{ko(click: '$root.selectingLayer'), id: "select_layer_link"} Move to Layer
+                = select_tag :layer, nil, 'data-bind' => kov(options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer'), :id => "layer_select"
               .feditor-button
                 %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
               .feditor-content
                 %h1{ko(text: :name)}
+                -# This is to make the h1 occupy the vertical space even if no name is set yet
+                <!-- ko if: !name() -->
+                %h1{style: 'visibility: hidden'}
+                  invisible
+                <!-- /ko -->
                 %span.hint{ko(text: "'Code: ' + (code() ? code() : '(none)')")}
-                .change_layer
-                  %a{ko(click: '$root.selectingLayer'), id: "select_layer_link"} Move to Layer
-                  = select_tag :layer, nil, 'data-bind' => kov(options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer'), :id => "layer_select"
 
             .feditor-bottom
 
