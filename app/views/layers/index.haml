@@ -53,8 +53,8 @@
                   %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'})}
                 %button.fdelete{ko(click: "$root.deleteField")}
               .change_layer
-                %a{ko(click: '$root.selectingLayer'), id: "select_layer_link"} Move to Layer
-                = select_tag :layer, nil, 'data-bind' => kov(options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer'), :id => "layer_select"
+                %a{ko(click: 'selectingLayerClick', attr: '{id: name}'), href: '#'} Move to layer...
+                = select_tag :layer, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', event: '{ change: selectingLayerSelect }'), :style => "display: none"
               .feditor-button
                 %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
               .feditor-content

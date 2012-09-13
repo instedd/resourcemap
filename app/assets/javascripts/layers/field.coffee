@@ -45,6 +45,23 @@ onLayers ->
 
     hasCode: => $.trim(@code()).length > 0
 
+    selectingLayerClick: =>
+      @switchMoveToLayerElements true
+
+    selectingLayerSelect: =>
+      return unless @selecting
+
+      if window.model.currentLayer() != @layer()
+        $("a##{@name()}").html("Move to layer '#{@layer().name()}' upon save")
+      else
+        $("a##{@name()}").html('Move to layer...')
+      @switchMoveToLayerElements false
+
+    switchMoveToLayerElements: (v) =>
+      $("a##{@name()}").toggle()
+      $("select##{@name()}").toggle()
+      @selecting = v
+
     addOption: (option) =>
       option.id @nextId
       @options.push option
