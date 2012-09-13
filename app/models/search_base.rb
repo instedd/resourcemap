@@ -82,6 +82,16 @@ module SearchBase
     self
   end
 
+  def date_field_range(info)
+    field = parse_field(info)
+    date_from_string = parse_date_from(info)
+    date_to_string = parse_date_to(info)
+    date_from = Time.strptime(date_from_string, '%m/%d/%Y').iso8601
+    date_to = Time.strptime(date_to_string, '%m/%d/%Y').iso8601
+    @search.filter :range, field => {gte: date_from, lte: date_to}
+    self
+  end
+
   def before(time)
     time = parse_time(time)
     @search.filter :range, updated_at: {lte: Site.format_date(time)}
@@ -201,6 +211,21 @@ module SearchBase
   def add_prefix(query)
     @prefixes ||= []
     @prefixes.push query
+  end
+
+  def parse_date_from(info)
+    date = (info.match /:(.*),/).captures
+    date[0]
+  end
+
+  def parse_date_to(info)
+     date = (info.match /,(.*)/).captures
+     date[0]
+   end
+
+  def parse_field(info)
+    fields = info.match /^[^\:]*/
+    fields[0]
   end
 
   def parse_time(time)

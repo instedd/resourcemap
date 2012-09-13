@@ -57,12 +57,13 @@ class SitesController < ApplicationController
     search.bounds = params if zoom >= 2
     search.exclude_id params[:exclude_id].to_i if params[:exclude_id].present?
     search.after params[:updated_since] if params[:updated_since]
+    search.date_field_range params[:date_field_range] if params[:date_field_range]
     search.full_text_search params[:search] if params[:search].present?
     search.location_missing if params[:location_missing].present?
     if params[:selected_hierarchies].present?
       search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
     end
-    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :selected_hierarchies, :hierarchy_code)
+    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :selected_hierarchies, :hierarchy_code, :date_field_range)
 
     search.apply_queries
 
