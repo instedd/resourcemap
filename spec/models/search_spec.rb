@@ -395,39 +395,35 @@ describe Search do
   end
 
   context "filter by date field range" do
-    let!(:site1) { collection.sites.make :name => 'b', properties: {"141"=>"2012-09-07T03:00:00.000Z", "169"=>"2012-09-23T03:00:00.000Z"} }
-    let!(:site2) { collection.sites.make :name => 'a', properties: {"141"=>"2013-09-07T03:00:00.000Z", "169"=>"2012-09-23T03:00:00.000Z"} }
+    let!(:creation) { layer.fields.make code: 'creation', kind: 'date' }
+    let!(:inaguration) { layer.fields.make code: 'inaguration', kind: 'date' }
 
-    it "should parse field" do
-      search = collection.new_search
-      parameter = "123:12/12/2012,1/1/2013"
-      field = search.send(:parse_field, parameter)
-      field.should eq("123")
-    end
+    let!(:site1) { collection.sites.make :name => 'b', properties: { creation.es_code =>"2012-09-07T03:00:00.000Z", inaguration.es_code =>"2012-09-23T03:00:00.000Z"} }
+    let!(:site2) { collection.sites.make :name => 'a', properties: { creation.es_code =>"2013-09-07T03:00:00.000Z", inaguration.es_code =>"2012-09-23T03:00:00.000Z"} }
 
     it "should parse date from" do
       search = collection.new_search
-      parameter = "123:12/12/2012,1/1/2013"
+      parameter = "12/12/2012,1/1/2013"
       field = search.send(:parse_date_from, parameter)
       field.should eq("12/12/2012")
     end
 
     it "should parse date to" do
       search = collection.new_search
-      parameter = "123:12/12/2012,1/1/2013"
+      parameter = "12/12/2012,1/1/2013"
       field = search.send(:parse_date_to, parameter)
       field.should eq("1/1/2013")
     end
 
     it "should search by range" do
       search = collection.new_search
-      results = search.date_field_range("141:09/06/2012,09/08/2012").results
+      search.where creation.es_code => "=09/06/2012,09/08/2012"
       assert_results search, site1
     end
 
     it "should serch by especific date" do
       search = collection.new_search
-      results = search.date_field_range("169:09/23/2012,09/23/2012").results
+      search.where inaguration.es_code => "=09/23/2012,09/23/2012"
       assert_results search, site1, site2
     end
 

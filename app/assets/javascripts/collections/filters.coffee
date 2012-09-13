@@ -73,7 +73,7 @@ onCollections ->
       @valueFrom = valueFrom
 
     setQueryParams: (options, api = false) =>
-      options["date_field_range"] = "#{@field.codeForLink(api)}:#{@valueFrom},#{@valueTo}"
+      options[@field.codeForLink(api)]  = "=#{@valueFrom},#{@valueTo}"
 
     description: =>
       "where #{@field.name} is between #{@valueFrom} and #{@valueTo}"
