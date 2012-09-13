@@ -50,7 +50,9 @@ onCollections ->
       else
         @expandedRefineProperty(null) # Needed because sometimes we get a stack overflow (can't find the reason to it)
         @expandedRefineProperty(property)
-        window.model.initDatePicker (p) =>
+        window.model.initDatePicker (p, inst) =>
+          id = inst.id
+          $("##{id}").change()
 
 
     @filterDescription: (filter) ->
@@ -93,7 +95,6 @@ onCollections ->
     @filterByProperty: ->
       return if @notValueSelected()
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
-      console.log(field.kind)
       if field.kind == 'text' or field.kind == 'user' or field.isPluginKind()
         if(!@filteringByPropertyAndValue(FilterByTextProperty, @expandedRefinePropertyValue()))
           @filters.push(new FilterByTextProperty(field, @expandedRefinePropertyValue()))
