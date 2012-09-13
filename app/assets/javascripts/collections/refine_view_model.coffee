@@ -25,8 +25,8 @@ onCollections ->
     @filteringByPropertyAndSelectProperty: (filterClass, value, label) ->
       window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.value == value && f.valueLabel == label)
 
-    @filteringByDatePropertyRange: (filterClass, valueFrom, valueTo) ->
-      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.valueFrom == valueFrom && f.valueTo == valueTo)
+    @filteringByDatePropertyRange: (filterClass, field, valueFrom, valueTo) ->
+      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.field == field && f.valueFrom == valueFrom && f.valueTo == valueTo)
 
 
     @toggleRefinePopup: (model, event) ->
@@ -90,7 +90,7 @@ onCollections ->
       @hideRefinePopup()
 
     @notValueSelected: ->
-      $.trim(@expandedRefinePropertyValue()).length == 0 && $.trim(@expandedRefinePropertyDateTo()).length == 0 && $.trim(@expandedRefinePropertyDateFrom()).length == 0
+      $.trim(@expandedRefinePropertyValue()).length == 0 && ($.trim(@expandedRefinePropertyDateTo()).length == 0 || $.trim(@expandedRefinePropertyDateFrom()).length == 0)
 
     @filterByProperty: ->
       return if @notValueSelected()
@@ -107,9 +107,12 @@ onCollections ->
         if(!@filteringByPropertyAndSelectProperty(FilterBySelectProperty, @expandedRefinePropertyValue(), valueLabel))
           @filters.push(new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel))
       else if field.kind == 'date'
-        if(!@filteringByDatePropertyRange(FilterByDateProperty, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo()))
+        if(!@filteringByDatePropertyRange(FilterByDateProperty, field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo()))
           @filters.push(new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo()))
+          @expandedRefinePropertyDateFrom(null)
+          @expandedRefinePropertyDateTo(null)
 
+      @expandedRefineProperty(null)
       @hideRefinePopup()
 
     @expandedRefinePropertyValueKeyPress: (model, event) ->
