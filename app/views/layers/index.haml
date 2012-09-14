@@ -75,36 +75,16 @@
             .feditor-add-container
               .feditor-add-content
                 %h1 Add form field
-                %span{ko(click: '$root.newTextField')}
-                  %button.ltext
-                  %br/
-                  Text
-                %span{ko(click: '$root.newNumericField')}
-                  %button.lnumber
-                  %br/
-                  Numeric
-                %span{ko(click: '$root.newSelectOneField')}
-                  %button.lsingleoption
-                  %br/
-                  Select one
-                %span{ko(click: '$root.newSelectManyField')}
-                  %button.lmultipleoptions
-                  %br/
-                  Select many
-                %span{ko(click: '$root.newHierarchyField')}
-                  %button.lhierarchy
-                  %br/
-                  Hierarchy
-                %br/
-                %br/
-                %span{ko(click: '$root.newUserField')}
-                  %button.luser
-                  %br/
-                  User
-                %span{ko(click: '$root.newDateField')}
-                  %button.ldate
-                  %br/
-                  Date
+                - i = 0
+                - Field::BaseKinds.each do |field|
+                  - i += 1
+                  %span{ko(click: "function() { $root.newField('#{field[:name]}') }")}
+                    %button{ class: field[:css_class] }
+                    %br/
+                    = field[:name].titleize
+                  - if i == 5
+                    %br/
+                    %br/
                 - Field::PluginKinds.each do |name, kind|
                   %span{ko(click: "function() { $root.newField('#{name}') }")}
                     %button{ class: kind[:css_class] }
