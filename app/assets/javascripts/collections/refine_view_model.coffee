@@ -89,8 +89,19 @@ onCollections ->
         @filters.push(new FilterByLocationMissing())
       @hideRefinePopup()
 
+    @anyDateParamenterAbsent: ->
+      ($.trim(@expandedRefinePropertyDateTo()).length == 0 || $.trim(@expandedRefinePropertyDateFrom()).length == 0)
+
+    @anyDateParameterWithInvalidFormat: ->
+      try
+        $.datepicker.parseDate('mm/dd/yy', @expandedRefinePropertyDateTo())
+        $.datepicker.parseDate('mm/dd/yy', @expandedRefinePropertyDateFrom())
+        false
+      catch e
+        true
+
     @notValueSelected: ->
-      $.trim(@expandedRefinePropertyValue()).length == 0 && ($.trim(@expandedRefinePropertyDateTo()).length == 0 || $.trim(@expandedRefinePropertyDateFrom()).length == 0)
+      $.trim(@expandedRefinePropertyValue()).length == 0 && (@anyDateParamenterAbsent() || @anyDateParameterWithInvalidFormat())
 
     @filterByProperty: ->
       return if @notValueSelected()

@@ -69,3 +69,24 @@ describe 'Collection', ->
             @model.expandedRefinePropertyDateTo '12/28/1988'
             @model.filterByProperty()
             expect(@model.filters().length).toEqual 2
+
+        it 'should not add filter if any date is absent', ->
+            model.expandedRefineProperty @date_field.esCode
+            @model.filterByProperty()
+            expect(@model.filters().length).toEqual 1
+            model.expandedRefineProperty @date_field_2.esCode
+            @model.expandedRefinePropertyDateFrom '12/26/1988'
+            @model.filterByProperty()
+            expect(@model.filters().length).toEqual 1
+
+        it 'should determine if dates are in correct format', ->
+            @model.expandedRefinePropertyDateFrom 'sarasa'
+            @model.expandedRefinePropertyDateTo '12/28/1988'
+            expect(@model.anyDateParameterWithInvalidFormat()).toEqual true
+
+        it 'should not add filter if any date is not in correct format', ->
+            @model.expandedRefinePropertyDateFrom '12/2'
+            @model.expandedRefinePropertyDateTo '12/28/1988'
+            model.expandedRefineProperty @date_field.esCode
+            @model.filterByProperty()
+            expect(@model.filters().length).toEqual 0
