@@ -120,7 +120,8 @@ onImportWizard ->
       $.ajax "/collections/#{@collectionId}/import_wizard_execute.json",
         type: 'POST'
         data: {columns: columns},
-        success: => window.location = '/collections'
+        success: =>
+          window.location = "/collections?collection=#{@collectionId}"
         error: =>
           @importing(false)
           @importError(true)
