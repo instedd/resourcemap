@@ -16,7 +16,7 @@ describe SiteMembershipsController do
       collection.site_memberships.first.view_access.should be true
     end
 
-    pendings "should revoke update access" do
+    pending "should revoke update access" do
       post :set_access, access: false, type: 'update_access', field_id: field.id, collection_id: collection.id
       collection.site_memberships.first.update_access.should be false
     end
