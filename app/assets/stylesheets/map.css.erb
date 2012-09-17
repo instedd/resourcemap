@@ -11,8 +11,17 @@
   background-image: url(/assets/cluster.png);
 }
 
+.threshold {
+  border :none;
+  border-width: 0px;
+  width: 32px;
+  height: 37px;
+  position: absolute;
+  background-repeat: no-repeat;
+}
+
 .cluster-click {
-  width: 26px;
+  width: 32px;
   height: 36px;
   position: absolute;
   cursor: pointer;
@@ -21,12 +30,21 @@
 .cluster-shadow {
   border: none;
   border-width: 0px;
-  width: 31px;
+  width: 32px;
   height: 36px;
   position: absolute;
   background-image: url(/assets/cluster.png);
   background-repeat: no-repeat;
   background-position: right top;
+}
+
+.threshold-click {
+  width: 32px;
+  height: 37px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  position: absolute;
+  cursor: pointer;
 }
 
 .cluster.inactive {
@@ -35,6 +53,14 @@
 
 .cluster.target {
   background-image: url(/assets/cluster_target.png);
+}
+
+.threshold.inactive {
+  background-image: url(/assets/marker_inactive.png);
+}
+
+.threshold.target {
+  background-image: url(/assets/marker_target.png);
 }
 
 .cluster-count {
@@ -98,7 +124,7 @@
   vertical-align: middle;
 }
 
-.alert .black {
+.alert.black {
   color: black;
 }
 

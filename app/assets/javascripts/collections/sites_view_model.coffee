@@ -35,7 +35,6 @@ onCollections ->
 
     @editSite: (site) ->
       @goBackToTable = true unless @showingMap()
-
       @showMap =>
         site.copyPropertiesToCollection(site.collection)
         if @selectedSite() && @selectedSite().id() == site.id()
@@ -139,7 +138,6 @@ onCollections ->
     @selectSite: (site) ->
       if @selectedHierarchy()
           @selectedHierarchy(null)
-
       if @showingMap()
         if @selectedSite()
           if @selectedSite().marker
@@ -163,6 +161,7 @@ onCollections ->
               @setMarkerIcon @selectedSite().marker, 'target'
               @deleteMarker @selectedSite().id(), false
             else
+              # this  
               @selectedSite().createMarker()
             @selectedSite().panToPosition()
           else if @oldSelectedSite

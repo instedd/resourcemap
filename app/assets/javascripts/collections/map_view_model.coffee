@@ -9,6 +9,7 @@ onCollections ->
 
       @reloadMapSitesAutomatically = true
       @clusters = {}
+      @alerts   = {}
       @siteIds = {}
       @mapRequestNumber = 0
       @geocoder = new google.maps.Geocoder()
@@ -80,6 +81,7 @@ onCollections ->
 
       @markers = {}
       @clusters = {}
+      @alerts   = {}
       @showingMap(true)
 
       # This fixes problems when changing from fullscreen expanded to table view and then going back to map view
@@ -123,7 +125,6 @@ onCollections ->
 
       getCallback = (data = {}) =>
         return unless currentMapRequestNumber == @mapRequestNumber
-
         if @showingMap()
           @drawSitesInMap data.sites
           @drawClustersInMap data.clusters
@@ -178,46 +179,51 @@ onCollections ->
       # Add markers if they are not already on the map
       for site in sites
         dataSiteIds[site.id] = site.id
-
-        if @markers[site.id]
-          if site.highlighted
-            @setMarkerIcon @markers[site.id], 'target'
+        if site.alert == 'true'
+          if @alerts[site.id]
+            @alerts[site.id].setActive() 
           else
-            @setMarkerIcon @markers[site.id], (@editingSite() ? 'inactive' : 'active')
-
+            @createAlert(site) 
         else
-          if site.id == oldSelectedSiteId
-            @markers[site.id] = @oldSelectedSite.marker
-            @markers[site.id].site = site
-            @deleteMarkerListeners site.id
-            @setMarkerIcon @markers[site.id], 'active'
-            @oldSelectedSite.deleteMarker false
-            delete @oldSelectedSite
+          if @markers[site.id]
+            if site.highlighted
+              @setMarkerIcon @markers[site.id], 'target'
+            else
+              @setMarkerIcon @markers[site.id], (@editingSite() ? 'inactive' : 'active')
+
           else
-            markerOptions =
-              map: @map
-              position: new google.maps.LatLng(site.lat, site.lng)
-              zIndex: @zIndex(site.lat)
-              optimized: false
+            if site.id == oldSelectedSiteId
+              @markers[site.id] = @oldSelectedSite.marker
+              @markers[site.id].site = site
+              @deleteMarkerListeners site.id
+              @setMarkerIcon @markers[site.id], 'active'
+              @oldSelectedSite.deleteMarker false
+              delete @oldSelectedSite
+            else
+              markerOptions =
+                map: @map
+                position: new google.maps.LatLng(site.lat, site.lng)
+                zIndex: @zIndex(site.lat)
+                optimized: false
 
-            # Show site in grey if editing a site (but not if it's the one being edited)
-            if editing
-              markerOptions.icon = @markerImageInactive
-              markerOptions.shadow = @markerImageInactiveShadow
-            else if (selectedSiteId && selectedSiteId == site.id)
+              # Show site in grey if editing a site (but not if it's the one being edited)
+              if editing
+                markerOptions.icon = @markerImageInactive
+                markerOptions.shadow = @markerImageInactiveShadow
+              else if (selectedSiteId && selectedSiteId == site.id)
 
-              markerOptions.icon = @markerImageTarget
-              markerOptions.shadow = @markerImageTargetShadow
+                markerOptions.icon = @markerImageTarget
+                markerOptions.shadow = @markerImageTargetShadow
 
-            newMarker = new google.maps.Marker markerOptions
-            newMarker.name = site.name
-            newMarker.site = site
-            @setMarkerIcon newMarker, 'active'
-            newMarker.collectionId = site.collection_id
+              newMarker = new google.maps.Marker markerOptions
+              newMarker.name = site.name
+              newMarker.site = site
+              @setMarkerIcon newMarker, 'active'
+              newMarker.collectionId = site.collection_id
 
-            @markers[site.id] = newMarker
-          localId = @markers[site.id].siteId = site.id
-          do (localId) => @setupMarkerListeners @markers[localId], localId
+              @markers[site.id] = newMarker
+            localId = @markers[site.id].siteId = site.id
+            do (localId) => @setupMarkerListeners @markers[localId], localId
 
       # Determine which markers need to be removed from the map
       toRemove = []
@@ -320,6 +326,9 @@ onCollections ->
 
     @createCluster: (cluster) ->
       @clusters[cluster.id] = new Cluster @map, cluster
+
+    @createAlert: (alert) ->
+      @alerts[alert.id] = new Alert @map, alert
 
     @deleteCluster: (id) ->
       @clusters[id].setMap null
