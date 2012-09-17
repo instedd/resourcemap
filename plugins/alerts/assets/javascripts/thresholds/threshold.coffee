@@ -1,6 +1,6 @@
 onThresholds -
   class @Threshold
-    constructor: (data) ->
+    constructor: (data, collectionIcon) ->
       @id = ko.observable data?.id
       @collectionId = data?.collection_id
       @isAllSite = ko.observable data?.is_all_site.toString()
@@ -20,7 +20,7 @@ onThresholds -
       @propertyName = ko.observable data?.name
       @ord = ko.observable data?.ord
       # @color = ko.observable(data?.color ? '#ff0000')
-      @icon = ko.observable(data.icon ? "marker_red.png")
+      @icon = ko.observable(collectionIcon ? "marker_red.png")
       @iconUrl = ko.computed => "/assets/#{@icon()}"
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
       @propertyNameError = ko.computed =>

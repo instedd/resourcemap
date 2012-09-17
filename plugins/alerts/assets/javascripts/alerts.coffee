@@ -19,7 +19,7 @@ onThresholds -> if $('#thresholds-main').length > 0
 
 
     $.get "/plugin/alerts/collections/#{collectionId}/thresholds.json", (thresholds) ->
-      thresholds = $.map thresholds, (threshold) -> new Threshold threshold
+      thresholds = $.map thresholds, (threshold) -> new Threshold threshold, window.model.collectionIcon
       window.model.thresholds thresholds
       window.model.isReady(true)
 
