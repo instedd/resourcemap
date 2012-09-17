@@ -4,7 +4,7 @@ class SiteMemberships::Plugin < Plugin
 
   extend_model \
     class: Collection,
-    with: Collection::SiteMembershipConcerns
+    with: Collection::SiteMembershipsConcern
 
   routes {
     resources :collections do
