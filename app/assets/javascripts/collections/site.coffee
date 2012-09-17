@@ -76,7 +76,7 @@ onCollections ->
         if field.value()
           value = field.value()
 
-          if field.kind == 'date'
+          if field.kind == 'date' && value
             value = (new Date(value)).toISOString()
 
           @properties()[field.esCode] = value
@@ -93,7 +93,7 @@ onCollections ->
           for field in collection.fields()
             value = @properties()[field.esCode]
 
-            if field.kind == 'date'
+            if field.kind == 'date' && value
               value = (new Date(value)).toISOString()
 
             field.value(value)

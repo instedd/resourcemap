@@ -124,14 +124,6 @@ onLayers ->
     moveFieldUp: (field) =>
       @moveFieldDown @currentLayer().fields()[field.ord() - 2]
 
-    newTextField: => @newField 'text'
-    newNumericField: => @newField 'numeric'
-    newSelectOneField: => @newField 'select_one'
-    newSelectManyField: => @newField 'select_many'
-    newHierarchyField: => @newField 'hierarchy'
-    newUserField: => @newField 'user'
-    newDateField: => @newField 'date'
-
     newField: (kind) =>
       @currentField(new Field(@currentLayer(), kind: kind, ord: @currentLayer().fields().length + 1))
       @currentLayer().fields.push(@currentField())

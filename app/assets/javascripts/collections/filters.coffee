@@ -66,6 +66,18 @@ onCollections ->
         when '>=' then str += " is greater than or equal to "
       str += "#{@value}"
 
+  class @FilterByDateProperty extends Filter
+    constructor: (field, valueFrom, valueTo) ->
+      @field = field
+      @valueTo = valueTo
+      @valueFrom = valueFrom
+
+    setQueryParams: (options, api = false) =>
+      options[@field.codeForLink(api)]  = "=#{@valueFrom},#{@valueTo}"
+
+    description: =>
+      "where #{@field.name} is between #{@valueFrom} and #{@valueTo}"
+
   class @FilterBySelectProperty extends Filter
     constructor: (field, value, valueLabel) ->
       @field = field

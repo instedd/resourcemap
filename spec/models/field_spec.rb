@@ -51,7 +51,7 @@ describe Field do
   describe "core field type" do
     subject { Field::Kinds - Field::PluginKinds.keys }
 
-    it { should have(7).items }
+    it { should have(8).items }
     it { should include 'text' }
     it { should include 'numeric' }
     it { should include 'select_one' }
@@ -59,6 +59,8 @@ describe Field do
     it { should include 'hierarchy' }
     it { should include 'user' }
     it { should include 'date' }
+    it { should include 'site' }
+
 
   end
 end

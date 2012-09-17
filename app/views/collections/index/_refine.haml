@@ -60,6 +60,14 @@
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true), type: :number}
       %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
       <!-- /ko -->
+      <!-- ko if: kind == 'date'-->
+      From
+      %input.ux-datepicker#range_from{ko(value: '$root.expandedRefinePropertyDateFrom', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
+      To
+      %input.ux-datepicker#range_to{ko(value: '$root.expandedRefinePropertyDateTo', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
+
+      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      <!-- /ko -->
       <!-- ko if: kind == 'select_one' || kind == 'select_many' -->
       is:
       %select{ko(value: '$root.expandedRefinePropertyValue', options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}

@@ -6,6 +6,8 @@ onCollections ->
       @expandedRefineProperty = ko.observable()
       @expandedRefinePropertyOperator = ko.observable()
       @expandedRefinePropertyValue = ko.observable()
+      @expandedRefinePropertyDateTo = ko.observable()
+      @expandedRefinePropertyDateFrom = ko.observable()
       @filters = ko.observableArray([])
 
     @hideRefinePopup: ->
@@ -22,6 +24,10 @@ onCollections ->
 
     @filteringByPropertyAndSelectProperty: (filterClass, value, label) ->
       window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.value == value && f.valueLabel == label)
+
+    @filteringByDatePropertyRange: (filterClass, field, valueFrom, valueTo) ->
+      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.field == field && f.valueFrom == valueFrom && f.valueTo == valueTo)
+
 
     @toggleRefinePopup: (model, event) ->
       @showingRefinePopup(!@showingRefinePopup())
@@ -44,6 +50,10 @@ onCollections ->
       else
         @expandedRefineProperty(null) # Needed because sometimes we get a stack overflow (can't find the reason to it)
         @expandedRefineProperty(property)
+        window.model.initDatePicker (p, inst) =>
+          id = inst.id
+          $("##{id}").change()
+
 
     @filterDescription: (filter) ->
       if @filters()[0] == filter
@@ -79,9 +89,22 @@ onCollections ->
         @filters.push(new FilterByLocationMissing())
       @hideRefinePopup()
 
-    @filterByProperty: ->
-      return if $.trim(@expandedRefinePropertyValue()).length == 0
+    @anyDateParamenterAbsent: ->
+      ($.trim(@expandedRefinePropertyDateTo()).length == 0 || $.trim(@expandedRefinePropertyDateFrom()).length == 0)
 
+    @anyDateParameterWithInvalidFormat: ->
+      try
+        $.datepicker.parseDate('mm/dd/yy', @expandedRefinePropertyDateTo())
+        $.datepicker.parseDate('mm/dd/yy', @expandedRefinePropertyDateFrom())
+        false
+      catch e
+        true
+
+    @notValueSelected: ->
+      $.trim(@expandedRefinePropertyValue()).length == 0 && (@anyDateParamenterAbsent() || @anyDateParameterWithInvalidFormat())
+
+    @filterByProperty: ->
+      return if @notValueSelected()
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
       if field.kind == 'text' or field.kind == 'user' or field.isPluginKind()
         if(!@filteringByPropertyAndValue(FilterByTextProperty, @expandedRefinePropertyValue()))
@@ -94,7 +117,13 @@ onCollections ->
         valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0].label
         if(!@filteringByPropertyAndSelectProperty(FilterBySelectProperty, @expandedRefinePropertyValue(), valueLabel))
           @filters.push(new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel))
+      else if field.kind == 'date'
+        if(!@filteringByDatePropertyRange(FilterByDateProperty, field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo()))
+          @filters.push(new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo()))
+          @expandedRefinePropertyDateFrom(null)
+          @expandedRefinePropertyDateTo(null)
 
+      @expandedRefineProperty(null)
       @hideRefinePopup()
 
     @expandedRefinePropertyValueKeyPress: (model, event) ->

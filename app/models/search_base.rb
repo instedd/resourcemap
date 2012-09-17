@@ -21,17 +21,21 @@ module SearchBase
   end
 
   def eq(es_code, value)
-    check_field_exists es_code
+    field = check_field_exists es_code
 
-    query_key = decode(es_code)
-    query_value = decode_option(query_key, value)
+    if field.kind == 'date'
+      date_field_range(es_code, value)
+    else
+      query_key = decode(es_code)
+      query_value = decode_option(query_key, value)
 
-    @search.filter :term, query_key => query_value
-    self
+      @search.filter :term, query_key => query_value
+      self
+    end
   end
 
   def starts_with(es_code, value)
-    check_field_exists es_code
+    field = check_field_exists es_code
 
     query_key = decode(es_code)
     query_value = decode_option(query_key, value)
@@ -79,6 +83,13 @@ module SearchBase
         eq(es_code, value)
       end
     end
+    self
+  end
+
+  def date_field_range(es_code, info)
+    date_from = Time.strptime(parse_date_from(info), '%m/%d/%Y').iso8601
+    date_to = Time.strptime(parse_date_to(info), '%m/%d/%Y').iso8601
+    @search.filter :range, es_code => {gte: date_from, lte: date_to}
     self
   end
 
@@ -203,6 +214,17 @@ module SearchBase
     @prefixes.push query
   end
 
+  def parse_date_from(info)
+    date = (info.match /(.*),/).captures
+    date[0]
+  end
+
+  def parse_date_to(info)
+     date = (info.match /,(.*)/).captures
+     date[0]
+   end
+
+
   def parse_time(time)
     if time.is_a? String
       time = case time
@@ -219,9 +241,13 @@ module SearchBase
   def check_field_exists(code)
     if @use_codes_instead_of_es_codes
       code = remove_at_from_code code
-      raise "Unknown field: #{code}" unless fields.any?{|f| f.code == code}
+      fields_with_code = fields.select{|f| f.code == code}
+      raise "Unknown field: #{code}" unless fields_with_code.length > 0
+      fields_with_code[0]
     else
-      raise "Unknown field: #{code}" unless fields.any?{|f| f.es_code == code}
+      fields_with_es_code = fields.select{|f| f.es_code == code}
+      raise "Unknown field: #{code}" unless fields_with_es_code.length > 0
+      fields_with_es_code[0]
     end
   end
 

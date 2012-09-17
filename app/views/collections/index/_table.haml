@@ -11,7 +11,7 @@
   %table.GralTable
     %thead
       %tr
-        %th.w39{style: 'overflow:auto'} Collection
+        %th.w39 Collection
         %th{style: 'width:100%'} Last update
         %th
     %tbody
@@ -61,19 +61,21 @@
         %th{ko(click: '$root.sortByName'), style: 'cursor:pointer;overflow:hidden'}
           %span{style: 'display:inline'} Site
           <!-- ko if: $root.sort() == 'name' -->
-          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+          -# Note: the cssFloat property is used to make it work on Firefox. See the note on:
+          -# https://developer.mozilla.org/en-US/docs/CSS/float
+          %button{ko(style: {background: "'transparent url(#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png) no-repeat scroll center'", height: "'11px'", cssFloat: "'right'", float: "'right'", borderStyle: "'none'", paddingLeft: "'17px'"})}
           <!-- /ko -->
         <!-- ko foreach: $root.currentCollection().fields() -->
         %th{ko(click: '$root.sortBy', style: {maxWidth: 'suggestedWidth()', minWidth: 'suggestedWidth()'}), style: 'overflow:hidden;cursor:pointer'}
           %span{ko(text: :name), style: 'display:inline'}
           <!-- ko if: $root.sort() == esCode -->
-          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+          %button{ko(style: {background: "'transparent url(#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png) no-repeat scroll center'", height: "'11px'", cssFloat: "'right'", float: "'right'", borderStyle: "'none'"})}
           <!-- /ko -->
         <!-- /ko -->
         %th{ko(click: '$root.sortByDate'), style: 'width:100%;min-width:100px;cursor:pointer'}
           %span{style: 'display:inline'} Last update
           <!-- ko if: $root.sort() == 'updated_at' -->
-          %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+          %button{ko(style: {background: "'transparent url(#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png) no-repeat scroll center'", height: "'11px'", cssFloat: "'right'", float: "'right'", borderStyle: "'none'"})}
           <!-- /ko -->
         %th
     %tbody

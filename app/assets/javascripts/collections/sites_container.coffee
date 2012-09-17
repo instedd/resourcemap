@@ -41,7 +41,18 @@ onCollections ->
       else
         site = window.model.siteIds[site.id()] if window.model.siteIds[site.id()]
 
-      @sites.push(site)
+      if isNew
+        # Insert it in the right place
+        i=0
+        for s in @sites()
+          if s.name() > site.name()
+            @sites.splice(i, 0, site)
+            break
+          i++
+        if i == @sites().length
+          @sites.push(site)
+      else
+        @sites.push(site)
 
       window.model.siteIds[site.id()] = site
       @siteIds[site.id()] = site

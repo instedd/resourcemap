@@ -13,5 +13,7 @@
 }
 
 .change_layer {
-  float: right;
+  position: absolute;
+  right: 5px;
+  bottom: 16px;
 }

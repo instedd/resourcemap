@@ -125,6 +125,11 @@ onCollections ->
       @loadBreadCrumb()
       @rewriteUrl()
 
+      # Return undefined because otherwise some browsers (i.e. Miss Firefox)
+      # would render the Object returned when called from a 'javascript:___'
+      # value in an href (and this is done in the breadcrumb links).
+      undefined
+
     @deleteSite: ->
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
         @unselectSite()

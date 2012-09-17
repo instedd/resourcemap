@@ -173,16 +173,21 @@ describe 'Collection', ->
     describe 'Date Field', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'creation', name: 'Creation', kind: 'date' }
-        @field.value('Sat Dec 26 1012 00:00:00 GMT-0300 (ART)')
+        @field.value('1012-12-26T03:00:00.000Z')
 
       it 'should have value when set one', ->
         expect(@field.hasValue()).toBeTruthy()
 
       it 'should set value for in ISO format', ->
-        expect(@field.value()).toEqual('Sat Dec 26 1012 00:00:00 GMT-0300 (ART)')
+        expect(@field.value()).toEqual('1012-12-26T03:00:00.000Z')
 
       it 'should get value for ui', ->
         expect(@field.valueUI()).toEqual('12/26/1012')
+
+      it 'should read and write valueUI and change value', ->
+        @field.valueUI('12/25/1012')
+        expect(@field.value()).toEqual('1012-12-25T03:00:00.000Z')
+        expect(@field.valueUI()).toEqual('12/25/1012')
 
 
     describe 'Plugin field', ->

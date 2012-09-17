@@ -24,3 +24,16 @@ describe 'Site memberships plugin', ->
       it 'should set delete access', ->
         @membership.canDelete(true)
         expect($.post).toHaveBeenCalledWith "/plugin/site_memberships/collections/#{@collectionId}/site_memberships/set_access", access: true, type: 'delete_access', field_id: @field.id
+
+    describe 'access permission UI', ->
+      beforeEach ->
+        @membership.canView(true)
+
+      it 'should render read access UI', ->
+        expect(@membership.canViewUI()).toEqual 'Yes'
+
+      it 'should render update access UI', ->
+        expect(@membership.canUpdateUI()).toEqual 'No'
+
+      it 'should render delete access UI', ->
+        expect(@membership.canDeleteUI()).toEqual 'No'

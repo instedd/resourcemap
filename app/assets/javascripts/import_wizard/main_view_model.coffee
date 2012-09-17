@@ -101,9 +101,9 @@ onImportWizard ->
                   propertyData.valueCode = column.value()
                   propertyData.valueLabel = column.value()
         else
-          if propertiesByField[column.field().id]
+          if propertiesByField[column.field()?.id]
             data.hasMoreThanOneField = "#{column.layer().name} - #{column.field().name}"
-          propertiesByField[column.field().id] = true
+          propertiesByField[column.field().id] = true if column.field()?.id
 
         unless existing
           property = new Property(propertyData)
@@ -120,7 +120,8 @@ onImportWizard ->
       $.ajax "/collections/#{@collectionId}/import_wizard_execute.json",
         type: 'POST'
         data: {columns: columns},
-        success: => window.location = '/collections'
+        success: =>
+          window.location = "/collections?collection=#{@collectionId}"
         error: =>
           @importing(false)
           @importError(true)
