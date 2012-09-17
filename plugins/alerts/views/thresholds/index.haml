@@ -121,27 +121,21 @@
         Add another condition
       %hr
       %br
-      %img{"data-bind" => "attr: { src:iconUrl }" }
-      %br
-      %label Change site display on map
-      %br
-      %button.fred.fsize{ ko( style: { border: icon = 'marker_red.png' ? '10' : '0' }, click: "function(data, event) { setIcon('marker_red.png') }") }
-      %button.forange.fsize{ ko(click: "function(data, event) { setIcon('marker_orange.png') }") }
-      %button.fyellow.fsize{ ko(click: "function(data, event) { setIcon('marker_yellow.png') }") }
-      %button.fgreen.fsize{ ko(click: "function(data, event) { setIcon('marker_green.png') }") }
-      %button.fcyan.fsize{ ko(click: "function(data, event) { setIcon('marker_cyan.png') }") }
-      %button.fblue.fsize{ ko(click: "function(data, event) { setIcon('marker_blue.png') }") }
-      %button.fpurple.fsize{ ko(click: "function(data, event) { setIcon('marker_purple.png') }") }
-      %button.fblack.fsize{ ko(click: "function(data, event) { setIcon('marker_black.png') }") }
-      %button.fgrey.fsize{ ko(click: "function(data, event) { setIcon('marker_grey.png') }") }
-      -# %button{ ko(click: "function(data, event) { setIcon('marker_red.png') }") } reset
-      -# %br
-      %br
-      %button.faccept{ ko(click: "function(data, event) { setIcon('accept.png') }") }
-      %button.fclose{ ko(click: "function(data, event) { setIcon('close.png') }") }
-      %button.fblock{ ko(click: "function(data, event) { setIcon('block.png') }") }
-      %button.fexport{ ko(click: "function(data, event) { setIcon('export.png') }") }
-      %button.fimport{ ko(click: "function(data, event) { setIcon('import.png') }") }
+      .alert-icon{"data-bind" => "style: { borderColor:color }"}
+        %img{"data-bind" => "attr: { src:iconUrl }" }
+      .color-palette
+        %label Change site display on map
+        %br
+        %button.fred.fsize{ ko( click: "setIcon.bind($data, '#b30b0b')") }
+        %button.forange.fsize{ ko( click: "setIcon.bind($data, '#c2720f')") }
+        %button.fyellow.fsize{ ko( click: "setIcon.bind($data, '#c2b30f')") }
+        %button.fgreen.fsize{ ko( click: "setIcon.bind($data, '#128e4e')") }      
+        %button.fcyan.fsize{ ko( click: "setIcon.bind($data, '#00baba')") }         
+        %button.fblue.fsize{ ko( click: "setIcon.bind($data, '#1c388c')") }    
+        %button.fpurple.fsize{ ko( click: "setIcon.bind($data, '#5f1c8c')") }    
+        %button.fblack.fsize{ ko( click: "setIcon.bind($data, '#000000')") }   
+        %button.fgrey.fsize{ ko( click: "setIcon.bind($data, '#9e9e9e')") } 
+      %br     
       %hr
       %br
       %h1.header_text Notifications

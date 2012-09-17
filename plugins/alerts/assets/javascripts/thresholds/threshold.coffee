@@ -19,7 +19,7 @@ onThresholds -
       @alertSites = ko.observable $.map(data?.sites ? [], (site) -> new Site(site))
       @propertyName = ko.observable data?.name
       @ord = ko.observable data?.ord
-      # @color = ko.observable(data?.color ? '#ff0000')
+      @color = ko.observable(data?.icon ? '#ff0000')
       @icon = ko.observable(collectionIcon ? "marker_red.png")
       @iconUrl = ko.computed => "/assets/#{@icon()}"
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
@@ -62,8 +62,8 @@ onThresholds -
       @ord ord
       $.post "/plugin/alerts/collections/#{@collectionId}/thresholds/#{@id()}/set_order.json", { ord: ord }, callback
 
-    setIcon: (icon) ->
-      @icon icon
+    setIcon: (colorCode) ->
+      @color colorCode
 
     toJSON: =>
       id: @id()
