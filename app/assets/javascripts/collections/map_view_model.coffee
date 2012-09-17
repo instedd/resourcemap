@@ -404,13 +404,15 @@ onCollections ->
       @initInsteddPlatform()
       source = []
       for key, value of @siteIds
-        item = id: key, label: value.name()
+        item = id: key, label: value.name(), value: value.name()
         source.push(item)
       $(".autocomplete-site-input").autocomplete
         source: source
         select: (event, ui) ->
-          console.log(ui)
-          #$("#searchval").val ui.item.id
+          # TODO: Complete this feature.
+          $(event.target).val(ui.item.value)
+          $(event.target).change()
+
 
     @initDatePicker: (callback) ->
       @initInsteddPlatform()
