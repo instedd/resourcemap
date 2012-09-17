@@ -12,8 +12,7 @@ module Field::Base
    { name: 'select_many', css_class: 'lmultipleoptions' },
    { name: 'hierarchy', css_class: 'lhierarchy' },
    { name: 'date', css_class: 'ldate' },
-   { name: 'user', css_class: 'luser' },
-   { name: 'site', css_class: 'lsite' }]
+   { name: 'user', css_class: 'luser' }]
 
   PluginKinds = Plugin.hooks(:field_type).index_by { |h| h[:name] }
 
