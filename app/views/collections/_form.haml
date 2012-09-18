@@ -3,14 +3,15 @@
     $(document).ready(function(){
       var select_icon = $('#select_icon');
       if(select_icon.val() == "")
-        select_icon.val('llocation');
+        select_icon.val('hospital-building');
       $("#focus_icon").val(select_icon.val());
-      $('.' + select_icon.val()).css('backgroundPosition', '0 -120px');
+      $('.' + select_icon.val()).css({backgroundColor: '#D2D2D2', border: '1px solid #565656'});
       
       $("button").click(function(){
         if (this != $('.white')[0]){
-          $('.' + $('#focus_icon').val()).css('backgroundPosition', '0 0');
-          this.style.backgroundPosition="0 -120px"; 
+          $('.' + $('#focus_icon').val()).css({backgroundColor: '#f5f5f5', border: '1px solid white'});
+          this.style.backgroundColor =  "#D2D2D2";
+          this.style.border =  "1px solid #565656";
           $("#focus_icon").val(this.classList["0"]);
         }else{
           $('#select_icon').val($("#focus_icon").val());
@@ -34,20 +35,20 @@
     = f.hidden_field :icon, id: 'select_icon'
     %input#focus_icon{:type =>"hidden"}
       
-    %button.llocation{:type => "button"}
-    %button.lalertandreport{:type => "button"}
-    %button.lbookmark{:type => "button"}
-    %button.lcallback{:type => "button"}
-    %button.ldate{:type => "button"}
-    %button.ldirections{:type => "button"}
-    %button.lforwardcall{:type => "button"}
-    %button.lgroupchat{:type => "button"}
-    %button.lmessage{:type => "button"}
-    %button.lmicrophone{:type => "button"}
-    %button.lmultipleoptions{:type => "button"}
-    %button.lnumber{:type => "button"}
-    %button.lnumeral{:type => "button"}
-    %button.lparagraph{:type => "button"}
+    %button.bar{:type => "button"}
+    %button.brewery{:type => "button"}
+    %button.coffee{:type => "button"}
+    %button.dentist{:type => "button"}
+    %button.drugstore{:type => "button"}
+    %button.factory{:type => "button"}
+    %button.fastfood{:type => "button"}
+    %button.golfing{:type => "button"}
+    %button.hospital{:type => "button"}
+    %button.icecream{:type => "button"}
+    %button.restaurant{:type => "button"}
+    %button.school{:type => "button"}
+  %br
+  %br
   = f.label :plugins
   %br
   = hidden_field_tag 'collection[selected_plugins][]', nil
