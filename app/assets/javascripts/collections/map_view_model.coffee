@@ -14,10 +14,14 @@ onCollections ->
       @mapRequestNumber = 0
       @geocoder = new google.maps.Geocoder()
 
-      @markerImageInactive = @markerImage 'marker_inactive.png'
-      @markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
-      @markerImageTarget = @markerImage 'marker_target.png'
-      @markerImageTargetShadow = @markerImageShadow 'marker_target.png'
+      # change to use dynamic icon from collection 
+      #@markerImageInactive = @markerImage 'marker_inactive.png'
+      #@markerImageTarget = @markerImage 'marker_target.png'
+     
+
+
+      #@markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
+      #@markerImageTargetShadow = @markerImageShadow 'marker_target.png'
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
@@ -186,6 +190,7 @@ onCollections ->
             @createAlert(site) 
         else
           if @markers[site.id]
+            console.log 'edit' 
             if site.highlighted
               @setMarkerIcon @markers[site.id], 'target'
             else
@@ -208,12 +213,12 @@ onCollections ->
 
               # Show site in grey if editing a site (but not if it's the one being edited)
               if editing
-                markerOptions.icon = @markerImageInactive
-                markerOptions.shadow = @markerImageInactiveShadow
+                markerOptions.icon = @markerImage 'resmap_' + site.icon + '_inactive.png'
+                #markerOptions.shadow = @markerImageInactiveShadow
               else if (selectedSiteId && selectedSiteId == site.id)
 
-                markerOptions.icon = @markerImageTarget
-                markerOptions.shadow = @markerImageTargetShadow
+                markerOptions.icon = @markerImage 'resmap_' + site.icon + '_focus.png'
+                #markerOptions.shadow = @markerImageTargetShadow
 
               newMarker = new google.maps.Marker markerOptions
               newMarker.name = site.name
@@ -297,20 +302,22 @@ onCollections ->
 
     @setMarkerIcon: (marker, icon) ->
       switch icon
+        
         when 'active', 'null'
           if marker.site && marker.site.icon != 'null'
             # temporary comment this line, will change soon
-            marker.setIcon null
-            #marker.setIcon @markerImage marker.site.icon
+            #marker.setIcon null
+            marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
           else
             marker.setIcon null
           marker.setShadow null
         when 'inactive'
-          marker.setIcon @markerImageInactive
-          marker.setShadow @markerImageInactiveShadow
+          marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_inactive.png'
+          #marker.setShadow @markerImageInactiveShadow
         when 'target'
-          marker.setIcon @markerImageTarget
-          marker.setShadow @markerImageTargetShadow
+          # marker target or focus 
+          marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_focus.png'
+          #marker.setShadow @markerImageTargetShadow
 
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
@@ -396,10 +403,11 @@ onCollections ->
 
     @markerImage: (icon) ->
       new google.maps.MarkerImage(
-        @iconUrl(icon), new google.maps.Size(20, 34), new google.maps.Point(0, 0), new google.maps.Point(10, 34)
+        @iconUrl(icon), new google.maps.Size(32, 37), new google.maps.Point(0, 0), new google.maps.Point(16, 37)
       )
 
     @markerImageShadow: (icon) ->
+      console.log 'shadow' 
       new google.maps.MarkerImage(
         @iconUrl(icon), new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
       )

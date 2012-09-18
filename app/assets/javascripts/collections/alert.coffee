@@ -31,7 +31,7 @@ onCollections ->
 
     draw: =>
       pos = @getProjection().fromLatLngToDivPixel @position
-      #@div.style.backgroundImage = "url(/assets/#{@site.icon})"
+      @div.style.backgroundImage = "url(/assets/resmap_#{@site.icon}.png)"
       @div.style.left = @divClick.style.left = "#{pos.x - 13}px" 
       @div.style.top  = @divClick.style.top  = "#{pos.y - 36}px"
       
@@ -51,9 +51,7 @@ onCollections ->
 
     setActive: (draw = true) =>
       if @div
-        console.log '--------------'
-        console.log @site 
-        @div.style.backgroundImage = "url(/assets/#{@site.icon})"
+        @div.style.backgroundImage = "url(/assets/resmap_#{@site.icon}.png)"
       #  $(@div).removeClass('target')
       #  $(@div).removeClass('inactive')
         @draw if draw
