@@ -32,6 +32,7 @@ onCollections ->
         @editingSite site
         @editingSite().startEditLocationInMap()
         window.model.initDatePicker()
+        window.model.initAutocomplete()
 
     @editSite: (site) ->
       @goBackToTable = true unless @showingMap()

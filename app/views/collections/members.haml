@@ -88,7 +88,8 @@
           %tr{:style => 'height:32px'}
             %td
               %button.cadd#add_member Add member
-            %td= text_field_tag :member_email, '', :size => 60, :placeholder => 'Search by email...'
+            %td#autocomplete_container{style: 'width: 470px;'}
+              = text_field_tag :member_email, '', :placeholder => 'Search by email...'
             %td
             %td
     <!-- /ko -->

@@ -1,4 +1,4 @@
 - if single_editing_mode
-  = ko_text_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
+  = ko_html_field_tag :valueUI, hasfocus: true, event: {keydown: :keyPress, blur: :save}, attr: {id: "'site-autocomplete-input-' + esCode"}, html: {class: "autocomplete-site-input"}
 - else
-  = ko_text_field_tag :value
+  = ko_html_field_tag :valueUI, attr: {id: "'site-autocomplete-input-' + esCode"}, html: {class: "autocomplete-site-input"}

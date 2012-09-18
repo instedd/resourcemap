@@ -406,12 +406,28 @@ onCollections ->
 
     @iconUrl: (icon) -> icon.url ? "/assets/#{icon}"
 
-    @initDatePicker: (callback) ->
+    @initInsteddPlatform:  ->
       $.instedd.init_components() if $.instedd
+
+    @initAutocomplete: (callback) ->
+      @initInsteddPlatform()
+      source = []
+      for key, value of @siteIds
+        item = id: key, label: value.name(), value: value.name()
+        source.push(item)
+      $(".autocomplete-site-input").autocomplete
+        source: source
+        select: (event, ui) ->
+          # TODO: Complete this feature.
+          $(event.target).val(ui.item.value)
+          $(event.target).change()
+
+
+    @initDatePicker: (callback) ->
+      @initInsteddPlatform()
 
       options = {}
       options.onSelect = callback if callback
-
       # fix dinamic DOM
       # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
       $(".ux-datepicker").removeClass('hasDatepicker').datepicker(options)

@@ -13,11 +13,11 @@ onCollections ->
       @value = ko.observable()
       @hasValue = ko.computed => @value() && (if @kind == 'select_many' then @value().length > 0 else @value())
 
-      if @kind == 'date'
+      if @kind == 'date' || @kind == 'site'
         @valueUI =  ko.computed
          read: =>  @valueUIFor(@value())
-         write: (date) =>
-           @value(@valueFromDateUI(date))
+         write: (value) =>
+           @value(@valueUIFrom(value))
       else
         @valueUI = ko.computed => @valueUIFor(@value())
 
@@ -64,6 +64,16 @@ onCollections ->
         if value then @fieldHierarchyItemsMap[value] else ''
       else if @kind == 'date'
         if value then @datePickerFormat(new Date(value))
+      else if @kind == 'site'
+        if value then value.label
+      else
+        value
+
+    valueUIFrom: (value) =>
+      if @kind == 'date'
+        @valueFromDateUI(value)
+      else if @kind == 'site'
+        value
       else
         value
 
@@ -84,6 +94,7 @@ onCollections ->
         window.model.initDatePicker (dateText) =>
           @value(dateText)
           @save()
+        window.model.initAutocomplete()
 
     keyPress: (field, event) =>
       switch event.keyCode
