@@ -49,12 +49,13 @@ onCollections ->
       initialized = @initMap()
       collection.panToPosition(true) unless initialized
 
+      collection.fetchSitesMembership()
       collection.fetchFields =>
         @processQueryParams()
         @refreshTimeago()
         @makeFixedHeaderTable()
-
         @rewriteUrl()
+
       $('.BreadCrumb').load("collections/breadcrumbs", { collection_id: collection.id })
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
