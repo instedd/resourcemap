@@ -12,7 +12,3 @@ describe 'Collection', ->
     it 'should have hierarchyIds', ->
       hierarchyItem = new HierarchyItem(@col_hierarchy, @field, {id: 1, name: "name1", sub: [{id: 2, name: "name2", sub: [{id:3, name: "name3", sub: [] }]}, {id: 4, name: "name4", sub: []}] }, 0)
       expect(hierarchyItem.hierarchyIds()).toEqual([1, 2, 3, 4])
-
-
-
-

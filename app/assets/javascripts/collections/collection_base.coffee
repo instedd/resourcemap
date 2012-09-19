@@ -26,7 +26,8 @@ onCollections ->
 
     # Waiting for definitions of refine by hierarchy requirements
     loadRefineFields: =>
-      @refineFields = ko.computed => @fields().filter((f) -> f.kind != 'hierarchy')
+#      @refineFields = ko.computed => @fields().filter((f) -> f.kind != 'hierarchy')
+      @refineFields = @fields
 
     fetchFields: (callback) =>
       if @fieldsInitialized

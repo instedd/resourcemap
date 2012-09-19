@@ -14,12 +14,58 @@ describe 'Collection', ->
       @phone_field = new Field id: 4, code: 'phone', name: 'Phone', kind: 'phone'
       @date_field = new Field id: 5, code: 'open', name: 'Open', kind: 'date'
       @date_field_2 = new Field id: 6, code: 'close', name: 'Close', kind: 'date'
+      @hierarchy = new Field { id: 7, code: 'admu', name: 'Admin unit', kind: 'hierarchy'
+      config: { hierarchy: [
+        { id: '1', name: 'Buenos Aires'
+        sub: [
+          { id: '2', name: 'Tres de Febrero' }
+          { id: '3', name: 'La Matanza' }
+        ]}
+        { id: '4', name: 'Santa Fe' }
+      ]
+      }}
 
     describe 'filter by property', ->
       beforeEach ->
-        @collection.fields [@bed_field, @owner_field, @email_field, @phone_field, @date_field, @date_field_2]
+        @collection.fields [@bed_field, @owner_field, @email_field, @phone_field, @date_field, @date_field_2, @hierarchy]
         @model.currentCollection @collection
         spyOn @model, 'performSearchOrHierarchy'
+
+      describe 'of hierarchy kind', ->
+        it 'should not have a selected value', ->
+          expect(@model.notValueSelected()).toBeTruthy()
+          @model.expandedRefineProperty @phone_field.esCode
+          expect(@model.notValueSelected()).toBeTruthy()
+          @model.expandedRefineProperty @hierarchy.esCode
+          @hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0].select()
+          @model.expandedRefineProperty @phone_field.esCode
+          expect(@model.notValueSelected()).toBeTruthy()
+          @model.expandedRefineProperty null
+          expect(@model.notValueSelected()).toBeTruthy()
+
+        it 'should have a selected value', ->
+          @model.expandedRefineProperty @hierarchy.esCode
+          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0])
+          expect(@model.notValueSelected()).toBeFalsy()
+
+        it 'should not add filter if no item is selected', ->
+          @model.expandedRefineProperty @hierarchy.esCode
+          @model.filterByProperty()
+          expect(@model.filters().length).toEqual 0
+
+        it 'should add hierarchy filter', ->
+          @model.expandedRefineProperty @hierarchy.esCode
+          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0])
+          @model.filterByProperty()
+          expect(@model.filters().length).toEqual 1
+          expect(@model.filters()[0].description()).toEqual "inside \"Tres de Febrero\" if grouped by #{@hierarchy.name}"
+
+        it 'should not add hierarchy filter twice', ->
+          @model.expandedRefineProperty @hierarchy.esCode
+          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0])
+          @model.filterByProperty()
+          @model.filterByProperty()
+          expect(@model.filters().length).toEqual 1
 
       describe 'plugin kind', ->
         beforeEach -> @model.expandedRefinePropertyValue 'foo'
