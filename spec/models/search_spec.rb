@@ -9,6 +9,7 @@ describe Search do
     let!(:tables) { layer.fields.make code: 'tables', kind: 'numeric' }
     let!(:first_name) { layer.fields.make code: 'first_name', kind: 'text' }
     let!(:country) { layer.fields.make code: 'country', kind: 'text' }
+    let!(:hierarchy) { layer.fields.make code: 'hie', kind: 'hierarchy', config: { hierarchy: [{id: 1, name: 'root'}] } }
 
 
     let!(:site1) { collection.sites.make properties:
@@ -16,9 +17,9 @@ describe Search do
     let!(:site2) { collection.sites.make properties:
       {beds.es_code => 10, tables.es_code => 2, first_name.es_code => "peter pan", country.es_code => "albania"}  }
     let!(:site3) { collection.sites.make properties:
-      {beds.es_code => 20, tables.es_code => 3, first_name.es_code => "Alice Cooper", country.es_code => "argelia"}  }
+      {beds.es_code => 20, tables.es_code => 3, first_name.es_code => "Alice Cooper", country.es_code => "argelia", hierarchy.es_code => 1}  }
     let!(:site4) { collection.sites.make properties:
-      {beds.es_code => 10, tables.es_code => 4, first_name.es_code => "John Doyle", country.es_code => "south arabia"}  }
+      {beds.es_code => 10, tables.es_code => 4, first_name.es_code => "John Doyle", country.es_code => "south arabia", hierarchy.es_code => 1}  }
 
     it "searches by equality" do
       search = collection.new_search
@@ -38,6 +39,12 @@ describe Search do
       search.use_codes_instead_of_es_codes
       search.where '@beds' => 10
       assert_results search, site2, site4
+    end
+
+    it "searches by equality on hierarchy field" do
+      search = collection.new_search
+      search.where hierarchy.es_code => 1
+      assert_results search, site3, site4
     end
 
     it "searches by equality of two properties" do
@@ -427,6 +434,28 @@ describe Search do
       assert_results search, site1, site2
     end
 
+  end
+
+  context 'filter by hierarchy' do
+    let!(:unit) { layer.fields.make code: 'unit', kind: 'hierarchy', config: {hierarchy: [{id: 1, name: 'Buenos Aires', sub: [{id: 2, name: 'Vicente Lopez'}]}, {id: 3, name: 'Formosa'}]} }
+    let!(:first_name) { layer.fields.make code: 'first_name', kind: 'text' }
+
+    let!(:site1) { collection.sites.make properties:
+      { first_name.es_code => "At Buenos Aires", unit.es_code => 1 }  }
+    let!(:site2) { collection.sites.make properties:
+      { first_name.es_code => "At Vicente Lopez", unit.es_code => 2 } }
+    let!(:site3) { collection.sites.make properties:
+      { first_name.es_code => "At Vicente Lopez 2", unit.es_code => 2 } }
+    let!(:site4) { collection.sites.make properties:
+      { first_name.es_code => "At Formosa", unit.es_code => 3 } }
+    let!(:site5) { collection.sites.make properties:
+      { first_name.es_code => "Nowhere" }  }
+
+    it 'should filter sites inside some specified items' do
+      search = collection.new_search
+      search.where unit.es_code => [1, 2]
+      assert_results search, site1, site2, site3
+    end
   end
 
   def assert_results(search, *sites)

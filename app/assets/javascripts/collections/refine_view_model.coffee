@@ -127,7 +127,7 @@ onCollections ->
           @expandedRefinePropertyDateTo(null)
       else if field.kind == 'hierarchy'
         if(!@filteringByProperty(FilterByHierarchyProperty))
-          @filters.push(new FilterByHierarchyProperty(field, @expandedRefinePropertyHierarchy().id, @expandedRefinePropertyHierarchy().name))
+          @filters.push(new FilterByHierarchyProperty(field, @expandedRefinePropertyHierarchy().hierarchyIds(), @expandedRefinePropertyHierarchy().name))
           @expandedRefinePropertyHierarchy(null)
 
       @expandedRefineProperty(null)

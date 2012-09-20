@@ -25,6 +25,9 @@ module SearchBase
 
     if field.kind == 'date'
       date_field_range(es_code, value)
+    elsif field.kind == 'hierarchy' and value.is_a? Array
+      query_key = decode(es_code)
+      @search.filter :terms, query_key => value
     else
       query_key = decode(es_code)
       query_value = decode_option(query_key, value)
