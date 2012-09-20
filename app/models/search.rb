@@ -74,6 +74,9 @@ class Search
   # Returns the results from ElasticSearch but with codes as keys and codes as
   # values (when applicable).
   def api_results
+
+    # For filtering deleted fields.
+    # Does not work for snapshots.
     fields_by_es_code = fields.index_by &:es_code
 
     items = results()
@@ -81,10 +84,13 @@ class Search
       item['_source']['properties'] = Hash[
         item['_source']['properties'].map do |es_code, value|
           field = fields_by_es_code[es_code]
-          field ? [field.code, field.api_value(value)] : [es_code, value]
+           if field
+             [field.code, field.api_value(value)]
+           end
         end
       ]
     end
+
     items
   end
 
@@ -101,6 +107,10 @@ class Search
       item['_source']['created_at'] = Site.parse_date item['_source']['created_at']
       item['_source']['updated_at'] = Site.parse_date item['_source']['updated_at']
     end
+
+    puts "ACA VIENEN LOS ITEMS"
+    puts items.inspect
+
     items
   end
 end
