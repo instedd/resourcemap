@@ -13,7 +13,7 @@ describe "layer access" do
     it "only returns fields that can be read" do
       membership.set_layer_access :verb => :read, :access => true, :layer_id => layer1.id
 
-      layers = collection.visible_fields_for user
+      layers = collection.visible_layers_for user
       layers.length.should eq(1)
       layers[0][:name].should eq(layer1.name)
 
@@ -27,7 +27,7 @@ describe "layer access" do
       membership.admin = true
       membership.save!
 
-      layers = collection.visible_fields_for user
+      layers = collection.visible_layers_for user
       layers.length.should eq(2)
       layers[0][:name].should eq(layer1.name)
       layers[1][:name].should eq(layer2.name)
@@ -68,4 +68,5 @@ describe "layer access" do
       user.can_write_field?(collection, field1.es_code).should be_true
     end
   end
+
 end

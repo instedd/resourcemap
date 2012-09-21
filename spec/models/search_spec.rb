@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Search do
-  let!(:collection) { Collection.make }
+  let!(:user) { User.make }
+  let!(:collection) { user.create_collection(Collection.make) }
   let!(:layer) { collection.layers.make }
 
   context "search by property" do
@@ -342,7 +343,31 @@ describe Search do
     end
 
     it "gets api results" do
-      result = collection.new_search.api_results[0]
+      search = collection.new_search current_user_id: user.id
+      result = search.api_results[0]
+      result['_source']['properties'][text.code].should eq('foo')
+      result['_source']['properties'][numeric.code].should eq(1)
+      result['_source']['properties'][select_one.code].should eq('one')
+      result['_source']['properties'][select_many.code].should eq(['one', 'two'])
+    end
+
+
+    it "gets api results from snapshot" do
+      snapshot = collection.snapshots.create! date: Time.now, name: 'snp1'
+      snapshot.user_snapshots.create! user: user
+
+      site1.properties = {text.es_code => 'foo2', numeric.es_code => 2, select_one.es_code => 2, select_many.es_code => [2]}
+      site1.save!
+
+      search = collection.new_search current_user_id: user.id
+      result = search.api_results[0]
+      result['_source']['properties'][text.code].should eq('foo2')
+      result['_source']['properties'][numeric.code].should eq(2)
+      result['_source']['properties'][select_one.code].should eq('two')
+      result['_source']['properties'][select_many.code].should eq(['two'])
+
+      search = collection.new_search current_user_id: user.id, snapshot_id: snapshot.id
+      result = search.api_results[0]
       result['_source']['properties'][text.code].should eq('foo')
       result['_source']['properties'][numeric.code].should eq(1)
       result['_source']['properties'][select_one.code].should eq('one')
@@ -350,10 +375,42 @@ describe Search do
     end
 
     it "gets ui results" do
-      result = collection.new_search.ui_results[0]
+      search = collection.new_search current_user_id: user.id
+      result = search.ui_results[0]
       result['_source']['lat'].should eq(1)
       result['_source']['lng'].should eq(2)
     end
+
+    it "gets ui form snapshot" do
+      snapshot = collection.snapshots.create! date: Time.now, name: 'snp1'
+      snapshot.user_snapshots.create! user: user
+
+      site1.properties = {text.es_code => 'foo2', numeric.es_code => 2, select_one.es_code => 2, select_many.es_code => [2]}
+      site1.save!
+
+      search = collection.new_search current_user_id: user.id
+      result = search.ui_results[0]
+
+      result['_source']['properties'][text.es_code].should eq('foo2')
+      result['_source']['properties'][numeric.es_code].should eq(2)
+      result['_source']['properties'][select_one.es_code].should eq(2)
+      result['_source']['properties'][select_many.es_code].should eq([2])
+
+      search = collection.new_search current_user_id: user.id, snapshot_id: snapshot.id
+      result = search.ui_results[0]
+      result['_source']['properties'][text.es_code].should eq('foo')
+      result['_source']['properties'][numeric.es_code].should eq(1)
+      result['_source']['properties'][select_one.es_code].should eq(1)
+      result['_source']['properties'][select_many.es_code].should eq([1, 2])
+    end
+
+    it "do not get deleted fields" do
+      numeric.delete
+      search = collection.new_search current_user_id: user.id
+      result = search.ui_results[0]
+      result['_source']['properties'][numeric.es_code].should be_nil
+    end
+
   end
 
   context "sort" do

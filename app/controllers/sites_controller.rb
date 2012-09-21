@@ -6,9 +6,9 @@ class SitesController < ApplicationController
 
   def index
     if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id
+      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
     else
-      search = collection.new_search
+      search = collection.new_search current_user_id: current_user.id
     end
     search.name_start_with params[:name] if params[:name].present?
     search.offset params[:offset]
@@ -18,9 +18,9 @@ class SitesController < ApplicationController
 
   def show
     if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id
+      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
     else
-      search = collection.new_search
+      search = collection.new_search current_user_id: current_user.id
     end
     search.id params[:id]
     render json: search.ui_results.first['_source']

@@ -78,6 +78,7 @@ describe Api::CollectionsController do
       rss["rss"]["channel"]["item"]["properties"][select_many.code]['option'][0]['code'].should eq('one')
       rss["rss"]["channel"]["item"]["properties"][select_many.code]['option'][1]['code'].should eq('two')
     end
+
   end
 
   describe "GET CSV collection" do

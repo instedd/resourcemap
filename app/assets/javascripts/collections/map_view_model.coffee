@@ -13,6 +13,8 @@ onCollections ->
       @mapRequestNumber = 0
       @geocoder = new google.maps.Geocoder()
 
+      @markerImageActive = @markerImage 'marker.png'
+      @markerImageActiveShadow = @markerImageShadow 'marker.png'
       @markerImageInactive = @markerImage 'marker_inactive.png'
       @markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
       @markerImageTarget = @markerImage 'marker_target.png'
@@ -215,6 +217,9 @@ onCollections ->
             @setMarkerIcon newMarker, 'active'
             newMarker.collectionId = site.collection_id
 
+            if (("ghost_y_offset" in newMarker.site) && ("ghost_x_offset" in newMarker.site) )
+              newMarker.icon.anchor = new google.maps.Point(10 + newMarker.site.ghost_y_offset, 34 + newMarker.site.ghost_x_offset)
+
             @markers[site.id] = newMarker
           localId = @markers[site.id].siteId = site.id
           do (localId) => @setupMarkerListeners @markers[localId], localId
@@ -294,17 +299,18 @@ onCollections ->
         when 'active', 'null'
           if marker.site && marker.site.icon != 'null'
             # temporary comment this line, will change soon
-            marker.setIcon null
+            marker.setIcon @markerImageActive
             #marker.setIcon @markerImage marker.site.icon
           else
-            marker.setIcon null
-          marker.setShadow null
+            marker.setIcon @markerImageActive
+          marker.setShadow @markerImageActiveShadow
         when 'inactive'
           marker.setIcon @markerImageInactive
           marker.setShadow @markerImageInactiveShadow
         when 'target'
           marker.setIcon @markerImageTarget
           marker.setShadow @markerImageTargetShadow
+
 
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]

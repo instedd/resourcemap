@@ -99,5 +99,24 @@ describe Clusterer do
       ])
     end
 
+    it "should add ghost lat and lng to each site for site in identical location if clustering is not enabled" do
+      clusterer.send(:initialize, 21)
+      clusterer.add :id => 1, :lat => 20, :lng => 30
+      clusterer.add :id => 2, :lat => 20, :lng => 30
+      clusterer.add :id => 3, :lat => 20, :lng => 30
+      clusterer.add :id => 4, :lat => 20, :lng => 30
+
+      clusters = clusterer.clusters
+      clusters[:sites].should eq(
+        [{:id=>1, :lat=>20, :lng=>30, :ghost_y_offset=>0.0, :ghost_x_offset=>15.0},
+        {:id=>2, :lat=>20, :lng=>30, :ghost_y_offset=>15.0, :ghost_x_offset=>0.0},
+        {:id=>3, :lat=>20, :lng=>30, :ghost_y_offset=>0.0, :ghost_x_offset=>-15.0},
+        {:id=>4, :lat=>20, :lng=>30, :ghost_y_offset=>-15.0, :ghost_x_offset=>0.0}
+        ])
+      clusters[:clusters].should be_nil
+      clusters[:original_ghost].should eq([{:lat => 20, :lng => 30}])
+
+    end
+
 
 end
