@@ -58,6 +58,7 @@ class CollectionsController < ApplicationController
 
   def show
     @snapshot = Snapshot.new
+    add_breadcrumb "Settings", '#'
     respond_to do |format|
       format.html
       format.json { render json: collection }
