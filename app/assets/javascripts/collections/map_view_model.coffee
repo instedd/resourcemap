@@ -129,6 +129,8 @@ onCollections ->
         if @showingMap()
           @drawSitesInMap data.sites
           @drawClustersInMap data.clusters
+          # Original position for sites in identical location.
+          @drawOriginalGhost data.original_ghost
           @reloadMapSitesAutomatically = true
           @adjustZIndexes()
           @updateSitesCount()
@@ -171,6 +173,17 @@ onCollections ->
       for listener in @sitesChangedListeners
         listener()
 
+    @drawOriginalGhost: (ghosts = []) ->
+      for ghost in ghosts
+         markerOptions =
+           map: @map
+           position: new google.maps.LatLng(ghost.lat, ghost.lng)
+           zIndex: @zIndex(ghost.lat)
+           optimized: false
+           icon: @markerImageInactive
+           shadow: @markerImageInactiveShadow
+        newMarker = new google.maps.Marker markerOptions
+
     @drawSitesInMap: (sites = []) ->
       dataSiteIds = {}
       editing = window.model.editingSiteLocation()
@@ -198,11 +211,11 @@ onCollections ->
           else
             position = new google.maps.LatLng(site.lat, site.lng)
             if site.ghost_radius?
-              console.log(site.ghost_radius)
-              pointInPixels = @map.dummyOverlay.getProjection().fromLatLngToContainerPixel(position)
+              projection = @map.dummyOverlay.getProjection()
+              pointInPixels = projection.fromLatLngToContainerPixel(position)
               pointInPixels.x += 25 * Math.cos(site.ghost_radius)
               pointInPixels.y += 25 * Math.sin(site.ghost_radius)
-              position = @map.dummyOverlay.getProjection().fromContainerPixelToLatLng(pointInPixels)
+              position = projection.fromContainerPixelToLatLng(pointInPixels)
 
             markerOptions =
               map: @map
