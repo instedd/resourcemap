@@ -1,9 +1,7 @@
 - if single_editing_mode
-  .hierarchy-container
+  .hierarchy-container{ko(event: {blur: :save, keydown: :keyPress}, hasfocus: true), tabIndex: -1}
     <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
     <!-- /ko -->
-  %button{ko(click: :save), style: 'float:right'} Update hierarchy
-  %button{ko(click: :exit), style: 'float:right'} Cancel
   .clear
 - else
   .hierarchy-container
