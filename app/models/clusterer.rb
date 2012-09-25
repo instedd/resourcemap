@@ -109,16 +109,11 @@ class Clusterer
           angle_each = 2 * Math::PI / quantity
           sites.each_with_index do |site, index|
             angle = angle_each * index
-
-            site[:ghost_y_offset] = (r * Math.sin(angle)).round(2)
-            site[:ghost_x_offset] = (r * Math.cos(angle)).round(2)
-
+            site[:ghost_radius] = angle
             result[:sites].push site
-
           end
         end
       end
-
     end
 
     result

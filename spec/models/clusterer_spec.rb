@@ -108,10 +108,10 @@ describe Clusterer do
 
       clusters = clusterer.clusters
       clusters[:sites].should eq(
-        [{:id=>1, :lat=>20, :lng=>30, :ghost_y_offset=>0.0, :ghost_x_offset=>15.0},
-        {:id=>2, :lat=>20, :lng=>30, :ghost_y_offset=>15.0, :ghost_x_offset=>0.0},
-        {:id=>3, :lat=>20, :lng=>30, :ghost_y_offset=>0.0, :ghost_x_offset=>-15.0},
-        {:id=>4, :lat=>20, :lng=>30, :ghost_y_offset=>-15.0, :ghost_x_offset=>0.0}
+        [{:id=>1, :lat=>20, :lng=>30, :ghost_radius => 2*Math::PI/4 * 0 },
+        {:id=>2, :lat=>20, :lng=>30, :ghost_radius => 2*Math::PI/4 * 1 },
+        {:id=>3, :lat=>20, :lng=>30, :ghost_radius => 2*Math::PI/4 * 2 },
+        {:id=>4, :lat=>20, :lng=>30, :ghost_radius => 2*Math::PI/4 * 3 }
         ])
       clusters[:clusters].should be_nil
       clusters[:original_ghost].should eq([{:lat => 20, :lng => 30}])

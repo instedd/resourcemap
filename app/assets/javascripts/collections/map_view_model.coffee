@@ -196,9 +196,17 @@ onCollections ->
             @oldSelectedSite.deleteMarker false
             delete @oldSelectedSite
           else
+            position = new google.maps.LatLng(site.lat, site.lng)
+            if site.ghost_radius?
+              console.log(site.ghost_radius)
+              pointInPixels = @map.dummyOverlay.getProjection().fromLatLngToContainerPixel(position)
+              pointInPixels.x += 25 * Math.cos(site.ghost_radius)
+              pointInPixels.y += 25 * Math.sin(site.ghost_radius)
+              position = @map.dummyOverlay.getProjection().fromContainerPixelToLatLng(pointInPixels)
+
             markerOptions =
               map: @map
-              position: new google.maps.LatLng(site.lat, site.lng)
+              position: position
               zIndex: @zIndex(site.lat)
               optimized: false
 
@@ -207,7 +215,6 @@ onCollections ->
               markerOptions.icon = @markerImageInactive
               markerOptions.shadow = @markerImageInactiveShadow
             else if (selectedSiteId && selectedSiteId == site.id)
-
               markerOptions.icon = @markerImageTarget
               markerOptions.shadow = @markerImageTargetShadow
 
@@ -216,9 +223,6 @@ onCollections ->
             newMarker.site = site
             @setMarkerIcon newMarker, 'active'
             newMarker.collectionId = site.collection_id
-
-            if (("ghost_y_offset" in newMarker.site) && ("ghost_x_offset" in newMarker.site) )
-              newMarker.icon.anchor = new google.maps.Point(10 + newMarker.site.ghost_y_offset, 34 + newMarker.site.ghost_x_offset)
 
             @markers[site.id] = newMarker
           localId = @markers[site.id].siteId = site.id
