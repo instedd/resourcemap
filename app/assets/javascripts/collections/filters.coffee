@@ -78,6 +78,18 @@ onCollections ->
     description: =>
       "where #{@field.name} is between #{@valueFrom} and #{@valueTo}"
 
+  class @FilterByHierarchyProperty extends Filter
+    constructor: (field, value, valueLabel) ->
+      @field = field
+      @value = value
+      @valueLabel = valueLabel
+
+    setQueryParams: (options, api = false) =>
+      options[@field.codeForLink(api)] = @value
+
+    description: =>
+      "inside \"#{@valueLabel}\" if grouped by #{@field.name}"
+
   class @FilterBySelectProperty extends Filter
     constructor: (field, value, valueLabel) ->
       @field = field

@@ -19,6 +19,12 @@ onCollections ->
                           []
       @selected.subscribe (newValue) =>
         @toggleParentsExpand() if newValue
+      @hierarchyIds = ko.observable([@id])
+      $.map @fieldHierarchyItems, (item) => @loadItemToHierarchyIds(item)
+
+    loadItemToHierarchyIds: (item) =>
+      @hierarchyIds().push(item.id)
+      $.map item.fieldHierarchyItems, (item) => @loadItemToHierarchyIds(item)
 
     toggleExpand: =>
       @expanded(!@expanded())

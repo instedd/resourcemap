@@ -8,6 +8,8 @@ onCollections ->
       @expandedRefinePropertyValue = ko.observable()
       @expandedRefinePropertyDateTo = ko.observable()
       @expandedRefinePropertyDateFrom = ko.observable()
+      @expandedRefinePropertyHierarchy = ko.observable()
+      @expandedRefinePropertyHierarchy.subscribe (item) -> item?.select()
       @filters = ko.observableArray([])
 
     @hideRefinePopup: ->
@@ -45,6 +47,7 @@ onCollections ->
     @toggleRefineProperty: (property) ->
       @expandedRefinePropertyOperator('=')
       @expandedRefinePropertyValue('')
+      @expandedRefinePropertyHierarchy(null)
       if @expandedRefineProperty() == property
         @expandedRefineProperty(null)
       else
@@ -101,7 +104,7 @@ onCollections ->
         true
 
     @notValueSelected: ->
-      $.trim(@expandedRefinePropertyValue()).length == 0 && (@anyDateParamenterAbsent() || @anyDateParameterWithInvalidFormat())
+      !$.trim(@expandedRefinePropertyValue()) && (@anyDateParamenterAbsent() || @anyDateParameterWithInvalidFormat()) && !@expandedRefinePropertyHierarchy()
 
     @filterByProperty: ->
       return if @notValueSelected()
@@ -122,6 +125,10 @@ onCollections ->
           @filters.push(new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo()))
           @expandedRefinePropertyDateFrom(null)
           @expandedRefinePropertyDateTo(null)
+      else if field.kind == 'hierarchy'
+        if(!@filteringByProperty(FilterByHierarchyProperty))
+          @filters.push(new FilterByHierarchyProperty(field, @expandedRefinePropertyHierarchy().hierarchyIds(), @expandedRefinePropertyHierarchy().name))
+          @expandedRefinePropertyHierarchy(null)
 
       @expandedRefineProperty(null)
       @hideRefinePopup()

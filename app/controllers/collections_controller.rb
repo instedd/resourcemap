@@ -58,6 +58,7 @@ class CollectionsController < ApplicationController
 
   def show
     @snapshot = Snapshot.new
+    add_breadcrumb "Settings", '#'
     respond_to do |format|
       format.html
       format.json { render json: collection }
@@ -153,9 +154,9 @@ class CollectionsController < ApplicationController
   def search
 
     if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id
+      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
     else
-      search = collection.new_search
+      search = collection.new_search current_user_id: current_user.id
     end
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search]

@@ -1,5 +1,5 @@
 class Collection < ActiveRecord::Base
-  include Collection::CsvConcern 
+  include Collection::CsvConcern
   include Collection::GeomConcern
   include Collection::TireConcern
   include Collection::PluginsConcern
@@ -14,7 +14,7 @@ class Collection < ActiveRecord::Base
   has_many :fields, order: 'ord'
   has_many :thresholds, dependent: :destroy
   has_many :reminders, dependent: :destroy
-  has_many :share_channels, dependent: :destroy 
+  has_many :share_channels, dependent: :destroy
   has_many :channels, :through => :share_channels
   has_many :activities, dependent: :destroy
   has_many :snapshots, dependent: :destroy
@@ -36,7 +36,7 @@ class Collection < ActiveRecord::Base
     user_snapshots.where(user_id: user.id).first.try(:snapshot)
   end
 
-  def visible_fields_for(user, options = {})
+  def visible_fields_for(user, options)
     membership = user.membership_in self
     return [] unless membership
 
@@ -56,7 +56,13 @@ class Collection < ActiveRecord::Base
       end
 
       target_fields = target_fields.select { |f| lms[f.layer_id] && lms[f.layer_id].read }
+
     end
+    target_fields
+  end
+
+  def visible_layers_for(user, options = {})
+    target_fields = visible_fields_for(user, options)
 
     layers = target_fields.map(&:layer).uniq.map do |layer|
       {
@@ -64,6 +70,14 @@ class Collection < ActiveRecord::Base
         name: layer.name,
         ord: layer.ord,
       }
+    end
+
+    membership = user.membership_in self
+    if !membership.admin?
+      lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
+        hash[lm.layer_id] = lm
+        hash
+      end
     end
 
     layers.each do |layer|

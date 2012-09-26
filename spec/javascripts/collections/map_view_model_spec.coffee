@@ -14,11 +14,6 @@ describe 'Collection', ->
       spyOn(@marker, 'setShadow')
       @model = window.model
 
-    it 'should set marker icon to null', ->
-      @model.setMarkerIcon @marker, 'null'
-      expect(@marker.setIcon).toHaveBeenCalledWith(null)
-      expect(@marker.setShadow).toHaveBeenCalledWith(null)
-
     describe 'Sites Query Params', ->
       beforeEach ->
         sw = new google.maps.LatLng(34, 0, false)

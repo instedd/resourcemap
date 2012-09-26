@@ -38,9 +38,9 @@ class Api::CollectionsController < ApplicationController
     except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius]
 
     if current_snapshot
-      search = collection.new_search snapshot: current_snapshot.name
+      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
     else
-      search = collection.new_search
+      search = collection.new_search current_user_id: current_user.id
     end
     search.use_codes_instead_of_es_codes
 

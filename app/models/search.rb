@@ -11,6 +11,8 @@ class Search
   def initialize(collection, options)
     @collection = collection
     @search = collection.new_tire_search(options)
+    @snapshot_id = options[:snapshot_id]
+    @current_user = User.find options[:current_user_id] if options[:current_user_id]
     @from = 0
   end
 
@@ -74,23 +76,30 @@ class Search
   # Returns the results from ElasticSearch but with codes as keys and codes as
   # values (when applicable).
   def api_results
-    fields_by_es_code = fields.index_by &:es_code
+
+    fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
 
     items = results()
     items.each do |item|
       item['_source']['properties'] = Hash[
         item['_source']['properties'].map do |es_code, value|
           field = fields_by_es_code[es_code]
-          field ? [field.code, field.api_value(value)] : [es_code, value]
+           if field
+             [field.code, field.api_value(value)]
+           end
         end
       ]
     end
+
     items
   end
 
   # Returns the results from ElasticSearch but with the location field
   # returned as lat/lng fields, and the date as a date object
   def ui_results
+
+    fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
+
     items = results()
     items.each do |item|
       if item['_source']['location']
@@ -100,7 +109,11 @@ class Search
       end
       item['_source']['created_at'] = Site.parse_date item['_source']['created_at']
       item['_source']['updated_at'] = Site.parse_date item['_source']['updated_at']
+      item['_source']['properties'] = item['_source']['properties'].select { |es_code, value|
+        fields_by_es_code[es_code]
+      }
     end
+
     items
   end
 end

@@ -7,7 +7,9 @@ class Api::SitesController < ApplicationController
   expose(:site)
 
   def show
-    search = site.collection.new_search.id(site.id)
+    search = site.collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
+
+    search.id(site.id)
     @result = search.api_results[0]
 
     respond_to do |format|

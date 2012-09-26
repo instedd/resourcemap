@@ -132,6 +132,8 @@ onCollections ->
         if @showingMap()
           @drawSitesInMap data.sites
           @drawClustersInMap data.clusters
+          # Original position for sites in identical location.
+          @drawOriginalGhost data.original_ghost
           @reloadMapSitesAutomatically = true
           @adjustZIndexes()
           @updateSitesCount()
@@ -174,6 +176,17 @@ onCollections ->
       for listener in @sitesChangedListeners
         listener()
 
+    @drawOriginalGhost: (ghosts = []) ->
+      for ghost in ghosts
+         markerOptions =
+           map: @map
+           position: new google.maps.LatLng(ghost.lat, ghost.lng)
+           zIndex: @zIndex(ghost.lat)
+           optimized: false
+           icon: @markerImageInactive
+           shadow: @markerImageInactiveShadow
+        newMarker = new google.maps.Marker markerOptions
+
     @drawSitesInMap: (sites = []) ->
       dataSiteIds = {}
       editing = window.model.editingSiteLocation()
@@ -215,9 +228,17 @@ onCollections ->
               @oldSelectedSite.deleteMarker false
               delete @oldSelectedSite
             else
+            position = new google.maps.LatLng(site.lat, site.lng)
+            if site.ghost_radius?
+              projection = @map.dummyOverlay.getProjection()
+              pointInPixels = projection.fromLatLngToContainerPixel(position)
+              pointInPixels.x += 25 * Math.cos(site.ghost_radius)
+              pointInPixels.y += 25 * Math.sin(site.ghost_radius)
+              position = projection.fromContainerPixelToLatLng(pointInPixels)
+
               markerOptions =
                 map: @map
-                position: new google.maps.LatLng(site.lat, site.lng)
+              position: position
                 zIndex: @zIndex(site.lat)
                 optimized: false
 
@@ -339,8 +360,8 @@ onCollections ->
             #marker.setIcon null
             marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
           else
-            marker.setIcon null
-          marker.setShadow null
+            marker.setIcon @markerImageActive
+          marker.setShadow @markerImageActiveShadow
         when 'inactive'
           marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_inactive.png'
           #marker.setShadow @markerImageInactiveShadow
@@ -349,9 +370,11 @@ onCollections ->
           marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_target.png'
           #marker.setShadow @markerImageTargetShadow
 
+
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap
+      @markers[siteId].popup.remove() if @markers[siteId].popup
       @deleteMarkerListeners siteId
       delete @markers[siteId]
 

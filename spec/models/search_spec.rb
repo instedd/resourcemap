@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Search do
-  let!(:collection) { Collection.make }
+  let!(:user) { User.make }
+  let!(:collection) { user.create_collection(Collection.make) }
   let!(:layer) { collection.layers.make }
 
   context "search by property" do
@@ -9,6 +10,7 @@ describe Search do
     let!(:tables) { layer.fields.make code: 'tables', kind: 'numeric' }
     let!(:first_name) { layer.fields.make code: 'first_name', kind: 'text' }
     let!(:country) { layer.fields.make code: 'country', kind: 'text' }
+    let!(:hierarchy) { layer.fields.make code: 'hie', kind: 'hierarchy', config: { hierarchy: [{id: 1, name: 'root'}] } }
 
 
     let!(:site1) { collection.sites.make properties:
@@ -16,9 +18,9 @@ describe Search do
     let!(:site2) { collection.sites.make properties:
       {beds.es_code => 10, tables.es_code => 2, first_name.es_code => "peter pan", country.es_code => "albania"}  }
     let!(:site3) { collection.sites.make properties:
-      {beds.es_code => 20, tables.es_code => 3, first_name.es_code => "Alice Cooper", country.es_code => "argelia"}  }
+      {beds.es_code => 20, tables.es_code => 3, first_name.es_code => "Alice Cooper", country.es_code => "argelia", hierarchy.es_code => 1}  }
     let!(:site4) { collection.sites.make properties:
-      {beds.es_code => 10, tables.es_code => 4, first_name.es_code => "John Doyle", country.es_code => "south arabia"}  }
+      {beds.es_code => 10, tables.es_code => 4, first_name.es_code => "John Doyle", country.es_code => "south arabia", hierarchy.es_code => 1}  }
 
     it "searches by equality" do
       search = collection.new_search
@@ -38,6 +40,12 @@ describe Search do
       search.use_codes_instead_of_es_codes
       search.where '@beds' => 10
       assert_results search, site2, site4
+    end
+
+    it "searches by equality on hierarchy field" do
+      search = collection.new_search
+      search.where hierarchy.es_code => 1
+      assert_results search, site3, site4
     end
 
     it "searches by equality of two properties" do
@@ -335,7 +343,31 @@ describe Search do
     end
 
     it "gets api results" do
-      result = collection.new_search.api_results[0]
+      search = collection.new_search current_user_id: user.id
+      result = search.api_results[0]
+      result['_source']['properties'][text.code].should eq('foo')
+      result['_source']['properties'][numeric.code].should eq(1)
+      result['_source']['properties'][select_one.code].should eq('one')
+      result['_source']['properties'][select_many.code].should eq(['one', 'two'])
+    end
+
+
+    it "gets api results from snapshot" do
+      snapshot = collection.snapshots.create! date: Time.now, name: 'snp1'
+      snapshot.user_snapshots.create! user: user
+
+      site1.properties = {text.es_code => 'foo2', numeric.es_code => 2, select_one.es_code => 2, select_many.es_code => [2]}
+      site1.save!
+
+      search = collection.new_search current_user_id: user.id
+      result = search.api_results[0]
+      result['_source']['properties'][text.code].should eq('foo2')
+      result['_source']['properties'][numeric.code].should eq(2)
+      result['_source']['properties'][select_one.code].should eq('two')
+      result['_source']['properties'][select_many.code].should eq(['two'])
+
+      search = collection.new_search current_user_id: user.id, snapshot_id: snapshot.id
+      result = search.api_results[0]
       result['_source']['properties'][text.code].should eq('foo')
       result['_source']['properties'][numeric.code].should eq(1)
       result['_source']['properties'][select_one.code].should eq('one')
@@ -343,10 +375,42 @@ describe Search do
     end
 
     it "gets ui results" do
-      result = collection.new_search.ui_results[0]
+      search = collection.new_search current_user_id: user.id
+      result = search.ui_results[0]
       result['_source']['lat'].should eq(1)
       result['_source']['lng'].should eq(2)
     end
+
+    it "gets ui form snapshot" do
+      snapshot = collection.snapshots.create! date: Time.now, name: 'snp1'
+      snapshot.user_snapshots.create! user: user
+
+      site1.properties = {text.es_code => 'foo2', numeric.es_code => 2, select_one.es_code => 2, select_many.es_code => [2]}
+      site1.save!
+
+      search = collection.new_search current_user_id: user.id
+      result = search.ui_results[0]
+
+      result['_source']['properties'][text.es_code].should eq('foo2')
+      result['_source']['properties'][numeric.es_code].should eq(2)
+      result['_source']['properties'][select_one.es_code].should eq(2)
+      result['_source']['properties'][select_many.es_code].should eq([2])
+
+      search = collection.new_search current_user_id: user.id, snapshot_id: snapshot.id
+      result = search.ui_results[0]
+      result['_source']['properties'][text.es_code].should eq('foo')
+      result['_source']['properties'][numeric.es_code].should eq(1)
+      result['_source']['properties'][select_one.es_code].should eq(1)
+      result['_source']['properties'][select_many.es_code].should eq([1, 2])
+    end
+
+    it "do not get deleted fields" do
+      numeric.delete
+      search = collection.new_search current_user_id: user.id
+      result = search.ui_results[0]
+      result['_source']['properties'][numeric.es_code].should be_nil
+    end
+
   end
 
   context "sort" do
@@ -427,6 +491,28 @@ describe Search do
       assert_results search, site1, site2
     end
 
+  end
+
+  context 'filter by hierarchy' do
+    let!(:unit) { layer.fields.make code: 'unit', kind: 'hierarchy', config: {hierarchy: [{id: 1, name: 'Buenos Aires', sub: [{id: 2, name: 'Vicente Lopez'}]}, {id: 3, name: 'Formosa'}]} }
+    let!(:first_name) { layer.fields.make code: 'first_name', kind: 'text' }
+
+    let!(:site1) { collection.sites.make properties:
+      { first_name.es_code => "At Buenos Aires", unit.es_code => 1 }  }
+    let!(:site2) { collection.sites.make properties:
+      { first_name.es_code => "At Vicente Lopez", unit.es_code => 2 } }
+    let!(:site3) { collection.sites.make properties:
+      { first_name.es_code => "At Vicente Lopez 2", unit.es_code => 2 } }
+    let!(:site4) { collection.sites.make properties:
+      { first_name.es_code => "At Formosa", unit.es_code => 3 } }
+    let!(:site5) { collection.sites.make properties:
+      { first_name.es_code => "Nowhere" }  }
+
+    it 'should filter sites inside some specified items' do
+      search = collection.new_search
+      search.where unit.es_code => [1, 2]
+      assert_results search, site1, site2, site3
+    end
   end
 
   def assert_results(search, *sites)

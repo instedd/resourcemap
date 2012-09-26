@@ -95,7 +95,25 @@ class Clusterer
       result[:clusters] = clusters_to_return if clusters_to_return.present?
       result[:sites] = sites_to_return if sites_to_return.present?
     else
-      result[:sites] = @sites
+      # Disambiguation for sites in identical location
+      result[:sites] = []
+      result[:original_ghost] = []
+      r = 15
+      sites_by_lat_lng = @sites.group_by {|s| [s[:lat], s[:lng]] }
+      sites_by_lat_lng.each do |k, sites|
+        quantity = sites.count
+        if quantity == 1
+          result[:sites].push sites.first
+        else
+          result[:original_ghost].push(lat: k.first, lng: k.last)
+          angle_each = 2 * Math::PI / quantity
+          sites.each_with_index do |site, index|
+            angle = angle_each * index
+            site[:ghost_radius] = angle
+            result[:sites].push site
+          end
+        end
+      end
     end
 
     result
