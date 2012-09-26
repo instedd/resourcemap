@@ -50,10 +50,10 @@ onCollections ->
 
     draw: =>
       pos = @getProjection().fromLatLngToDivPixel @position
-      @div.style.left = @divClick.style.left = "#{pos.x - 13}px"
-      @div.style.top = @divClick.style.top = "#{pos.y - 36}px"
-      @shadow.style.left = "#{pos.x - 7}px"
-      @shadow.style.top = "#{pos.y - 36}px"
+      @div.style.left = @divClick.style.left = "#{pos.x - 17}px"
+      @div.style.top = @divClick.style.top = "#{pos.y - 37}px"
+      @shadow.style.left = "#{pos.x - 15}px"
+      @shadow.style.top = "#{pos.y - 37}px"
 
       # If the count on the cluster is too big (more than 3 digits)
       # we move the div containing the count to the left
