@@ -1,7 +1,6 @@
 = form_for collection do |f|
   :javascript
-    $(document).ready(function(){
-      var select_icon = $('#select_icon');
+    $(document).ready(function(){ var select_icon = $('#select_icon');
       if(select_icon.val() == "")
         select_icon.val('hospital-building');
       $("#focus_icon").val(select_icon.val());
@@ -34,6 +33,8 @@
     %br/
     = f.hidden_field :icon, id: 'select_icon'
     %input#focus_icon{:type =>"hidden"}
+      
+    %button.default{:type => "button"}
     %button.aed-2{:type => "button"}
     %button.construction{:type => "button"}
     %button.daycare{:type => "button"}
@@ -44,7 +45,6 @@
     %button.medicine{:type => "button"}
     %button.nanny{:type => "button"}
     %button.nursery{:type => "button"}
-    %button.shooting{:type => "button"}
     %button.villa{:type => "button"}
   %br     
   %br   
@@ -69,46 +69,45 @@
     %button.gay-female{:type => "button"}
     %button.gay-male{:type => "button"}
     %button.highschool{:type => "button"}
+    %button.school{:type => "button"}
+    %button.university{:type => "button"}
     %button.hiking{:type => "button"}
     %button.hoseriding{:type => "button"}
     %button.hostel_0star{:type => "button"}
     %button.hotel_0star{:type => "button"}
     %button.lodging_0star{:type => "button"}   
-    %button.hunting{:type => "button"}
-    %button.mastcrane1{:type => "button"}
-    %button.medicalstore{:type => "button"}
-    %button.mine{:type => "button"}
+    %button.motel-2{:type => "button"}
+    %button.youthhostel{:type => "button"}
   %br     
   %br   
   .field.w60
-    %button.motel-2{:type => "button"}
+    %button.mastcrane1{:type => "button"}
     %button.ophthalmologist{:type => "button"}
     %button.powerlinepole{:type => "button"}
     %button.poweroutage{:type => "button"}
     %button.powerplant{:type => "button"}
     %button.powersubstation{:type => "button"}
     %button.radio-station-2{:type => "button"}
-    %button.recycle{:type => "button"}
-    %button.resort{:type => "button"}
+    %button.windturbine{:type => "button"}
+    %button.mobilephonetower{:type => "button"}
     %button.restaurant_fish{:type => "button"}
     %button.sawmill-2{:type => "button"}
-    %button.school{:type => "button"}
-       
+    %button.mine{:type => "button"}
   %br     
   %br   
   .field.w60
     %button.septic_tank{:type => "button"}
     %button.shootingrange{:type => "button"}
+    %button.hunting{:type => "button"}
     %button.solarenergy{:type => "button"}
     %button.sozialeeinrichtung{:type => "button"}
     %button.summercamp{:type => "button"}
-    %button.university{:type => "button"}
     %button.veterinary{:type => "button"}
     %button.watertower{:type => "button"}
     %button.wifi{:type => "button"}
-    %button.windturbine{:type => "button"}
-    %button.youthhostel{:type => "button"}
-    %button.mobilephonetower{:type => "button"}
+    %button.medicalstore{:type => "button"}
+    %button.recycle{:type => "button"}
+    %button.resort{:type => "button"}
   %br
   %br
   %br
