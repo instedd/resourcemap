@@ -226,7 +226,7 @@ onCollections ->
                 markerOptions.icon = @markerImage 'resmap_' + site.icon + '_inactive.png'
                 #markerOptions.shadow = @markerImageInactiveShadow
               else if (selectedSiteId && selectedSiteId == site.id)
-                markerOptions.icon = @markerImage 'resmap_' + site.icon + '_focus.png'
+                markerOptions.icon = @markerImage 'resmap_' + site.icon + '_target.png'
                 #markerOptions.shadow = @markerImageTargetShadow
 
               newMarker = new google.maps.Marker markerOptions
@@ -346,7 +346,7 @@ onCollections ->
           #marker.setShadow @markerImageInactiveShadow
         when 'target'
           # marker target or focus 
-          marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_focus.png'
+          marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_target.png'
           #marker.setShadow @markerImageTargetShadow
 
     @deleteMarker: (siteId, removeFromMap = true) ->

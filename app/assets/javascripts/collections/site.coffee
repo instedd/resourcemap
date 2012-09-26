@@ -282,7 +282,7 @@ onCollections ->
         position: position
         animation: if drop || !@id() || !@position() then google.maps.Animation.DROP else null
         draggable: draggable
-        icon: window.model.markerImage 'resmap_' + @icon + '_focus.png'
+        icon: window.model.markerImage 'resmap_' + @icon + '_target.png'
         zIndex: 2000000
       @marker.name = @name()
       @setupMarkerListener()

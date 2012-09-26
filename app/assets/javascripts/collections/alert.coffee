@@ -19,7 +19,7 @@ onCollections ->
       @getPanes().overlayMouseTarget.appendChild @divClick
       return if @site.target 
       listenerDownCallback = =>
-        @setMarkerIcon(@div, "resmap_#{@site.icon}_focus") 
+        @setMarkerIcon(@div, "resmap_#{@site.icon}_target") 
         window.model.editSiteFromMarker(@site.id, @site.collection_id) 
 
       listenerUpCallback = =>
@@ -51,7 +51,7 @@ onCollections ->
     setupListeners: =>
       if @divClick 
         listenerDownCallback = =>
-          @setMarkerIcon(@div, "resmap_#{@site.icon}_focus") 
+          @setMarkerIcon(@div, "resmap_#{@site.icon}_target") 
           window.model.editSiteFromMarker(@site.id, @site.collection_id) 
 
         listenerUpCallback = =>
@@ -71,7 +71,7 @@ onCollections ->
 
     setTarget: =>
       if @div
-        @setMarkerIcon(@div, "resmap_#{@site.icon}_focus")
+        @setMarkerIcon(@div, "resmap_#{@site.icon}_target")
     setInactive: (draw = true) =>
       if @div
         @setMarkerIcon(@div, "resmap_#{@site.icon}_inactive")
