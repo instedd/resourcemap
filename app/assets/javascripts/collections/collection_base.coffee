@@ -24,11 +24,6 @@ onCollections ->
       @viewingCurrentSnapshotMessage = ko.observable()
       @viewingCurrentSnapshotMessage("You are currently viewing this collection's data as it was on snapshot " + @currentSnapshot + ".")
 
-    # Waiting for definitions of refine by hierarchy requirements
-    loadRefineFields: =>
-#      @refineFields = ko.computed => @fields().filter((f) -> f.kind != 'hierarchy')
-      @refineFields = @fields
-
     fetchFields: (callback) =>
       if @fieldsInitialized
         callback() if callback && typeof(callback) == 'function'
@@ -44,8 +39,12 @@ onCollections ->
             fields.push(field)
 
         @fields(fields)
+        @refineFields(fields)
+        @refineFields.sort (f1, f2) ->
+          lowerF1 = f1.name.toLowerCase()
+          lowerF2 = f2.name.toLowerCase()
+          if lowerF1 == lowerF2 then 0 else (if lowerF1 > lowerF2 then 1 else -1)
         callback() if callback && typeof(callback) == 'function'
-        @loadRefineFields()
 
     findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 
