@@ -7,7 +7,12 @@ class Api::SitesController < ApplicationController
   expose(:site)
 
   def show
-    search = site.collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
+    current_snapshot = site.collection.snapshot_for(current_user)
+    if current_snapshot
+      search = site.collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
+    else
+      search = site.collection.new_search current_user_id: current_user.id
+    end
 
     search.id(site.id)
     @result = search.api_results[0]
