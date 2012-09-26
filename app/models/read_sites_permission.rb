@@ -1,0 +1,1 @@
+class ReadSitesPermission < SitesPermission; end

@@ -1,7 +1,7 @@
 @initMemberships = (userId, collectionId, admin, layers) ->
   window.userId = userId
 
-  class Expandable
+  class Expandable extends Module
     constructor: ->
       @expanded = ko.observable false
 
@@ -106,8 +106,57 @@
       @canReadUI = ko.computed => if @canRead() then "Yes" else "No"
       @canWriteUI = ko.computed => if @canWrite() then "Yes" else "No"
 
+  class Permission
+    constructor: (@type, data) ->
+      @allSites = ko.observable(data?.all_sites ? true)
+      @someSites = ko.observable(data?.some_sites ? [])
+      @access = ko.computed
+        read: -> if @allSites() then 'all_sites' else 'some_sites'
+        write: (value) ->
+          @allSites switch value
+            when 'all_sites' then true
+            when 'some_sites' then false
+            else true
+        owner: @
+      @error = ko.computed => if @allSites() or @someSites().length > 0 then null else "can #{@type} sites is missing"
+
+    clone: ->
+      new Permission(@type, all_sites: @allSites(), some_sites: @someSites())
+
+  class AdvancedMembershipMode
+    @constructor: (data)->
+      @advancedMode = ko.observable(false)
+      @sitesRead = new Permission('read', data.sites.read)
+      @sitesUpdate = new Permission('update', data.sites.update)
+      @error = ko.computed => @sitesRead.error() or @sitesUpdate.error()
+      @validAdvancedMembership = ko.computed => !@error()
+
+    @advancedModeOn: ->
+      @backupSitesPermission()
+      @advancedMode(true)
+
+    @saveSitesPermission: ->
+      console.log "saveAdvancedMembership"
+
+    @cancelAdvancedMembership: ->
+      @restoreSitesPermission()
+      @advancedMode(false)
+
+    @backupSitesPermission: ->
+      @originalSitesRead = @sitesRead.clone()
+      @originalSitesUpdate = @sitesUpdate.clone()
+
+    @restoreSitesPermission: ->
+      @sitesRead = @originalSitesRead
+      @sitesUpdate = @originalSitesUpdate
+      delete @originalSitesRead
+      delete @originalSitesUpdate
+
   class Membership extends Expandable
+    @include AdvancedMembershipMode
+
     constructor: (data) ->
+      @callModuleConstructors(arguments)
       super
       @userId = ko.observable data?.user_id
       @userDisplayName = ko.observable data?.user_display_name
@@ -127,6 +176,11 @@
     findLayerMembership: (layer) =>
       lm = @layers().filter((x) -> x.layerId() == layer.id())
       if lm.length > 0 then lm[0] else null
+
+  class @Site
+    constructor: (data) ->
+      @id = data.id
+      @name = data.name
 
   class MembershipsViewModel
     initialize: (admin, memberships, layers) ->

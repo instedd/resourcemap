@@ -8,7 +8,7 @@ onCollections ->
       @name = data.name
       @kind = data.kind
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
-      @writeable = data?.writeable
+      @writeable = @originalWriteable = data?.writeable
 
       @value = ko.observable()
       @hasValue = ko.computed => @value() && (if @kind == 'select_many' then @value().length > 0 else @value())
@@ -175,3 +175,7 @@ onCollections ->
         "#{20 + @name.length * 8}px"
 
     isPluginKind: => -1 isnt PLUGIN_FIELDS.indexOf @kind
+
+    exitEditing: ->
+      @editing(false)
+      @writeable = @originalWriteable

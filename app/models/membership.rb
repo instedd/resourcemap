@@ -4,6 +4,8 @@ class Membership < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :collection
+  has_one :read_sites_permission
+  has_one :write_sites_permission
 
   before_destroy :destroy_collection_memberships
   def destroy_collection_memberships

@@ -38,6 +38,7 @@ onCollections ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
         site.copyPropertiesToCollection(site.collection)
+        site.collection.updatePermission(site)
         if @selectedSite() && @selectedSite().id() == site.id()
           @unselectSite()
 
@@ -88,6 +89,8 @@ onCollections ->
 
         @currentCollection().reloadSites()
 
+        @currentCollection().reloadSites()
+
         @editingSite().updatedAt(data.updated_at)
 
         @editingSite().position(data)
@@ -107,7 +110,7 @@ onCollections ->
       if !@editingSite()?.inEditMode()
         @performSearchOrHierarchy()
 
-      field.editing(false) for field in @currentCollection().fields()
+      field.exitEditing() for field in @currentCollection().fields()
       if @editingSite()?.inEditMode()
         @editingSite().exitEditMode()
       else
