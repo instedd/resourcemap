@@ -32,6 +32,43 @@
   background-image: url(/assets/moveDown.png);
 }
 
+.aed-2 {
+  background-image: url(/assets/resmap_aed-2.png);
+}
+.construction {
+  background-image: url(/assets/resmap_construction.png);
+}
+.daycare {
+  background-image: url(/assets/resmap_daycare.png);
+}
+.drugstore {
+  background-image: url(/assets/resmap_drugstore.png);
+}
+.fetalalcoholsyndrom {
+  background-image: url(/assets/resmap_fetalalcoholsyndrom.png);
+}
+.firstaid {
+  background-image: url(/assets/resmap_firstaid.png);
+}
+.hospital-building {
+  background-image: url(/assets/resmap_hospital-building.png);
+}
+.medicine {
+  background-image: url(/assets/resmap_medicine.png);
+}
+.nanny {
+  background-image: url(/assets/resmap_nanny.png);
+}
+.nursery {
+  background-image: url(/assets/resmap_nursery.png);
+}
+.shooting {
+  background-image: url(/assets/resmap_shooting.png);
+}
+.villa {
+  background-image: url(/assets/resmap_villa.png);
+}
+
 .bar {
   background-image: url(/assets/resmap_bar.png);
 }
@@ -79,6 +116,154 @@
   background-image: url(/assets/resmap_school.png);
 }
 
+.army {
+  background-image: url(/assets/resmap_army.png);
+}
+
+.bomber-2 {
+  background-image: url(/assets/resmap_bomber-2.png);
+}
+.chemistry {
+  background-image: url(/assets/resmap_chemistry.png);
+}
+.constructioncrane {
+  background-image: url(/assets/resmap_constructioncrane.png);
+}
+.cycling {
+  background-image: url(/assets/resmap_cycling.png);
+}
+.dentist {
+  background-image: url(/assets/resmap_dentist.png);
+}
+.disability {
+  background-image: url(/assets/resmap_disability.png);
+}
+.factory {
+  background-image: url(/assets/resmap_factory.png);
+}
+.fishing {
+  background-image: url(/assets/resmap_fishing.png);
+}
+.foodtruck {
+  background-image: url(/assets/resmap_foodtruck.png);
+}
+.footprint {
+  background-image: url(/assets/resmap_footprint.png);
+}
+.fourbyfour {
+  background-image: url(/assets/resmap_fourbyfour.png);
+}
+.gay-female {
+  background-image: url(/assets/resmap_gay-female.png);
+}
+.gay-male {
+  background-image: url(/assets/resmap_gay-male.png);
+}
+.highschool {
+  background-image: url(/assets/resmap_highschool.png);
+}
+.hiking {
+  background-image: url(/assets/resmap_hiking.png);
+}
+.hoseriding {
+  background-image: url(/assets/resmap_horseriding.png);
+}
+.hostel_0star {
+  background-image: url(/assets/resmap_hostel_0star.png);
+}
+.hotel_0star {
+  background-image: url(/assets/resmap_hotel_0star.png);
+}
+.hunting {
+  background-image: url(/assets/resmap_hunting.png);
+}
+.lodging_0star {
+  background-image: url(/assets/resmap_lodging_0star);
+}
+.mastcrane1 {
+  background-image: url(/assets/resmap_mastcrane1.png);
+}
+.medicalstore {
+  background-image: url(/assets/resmap_medicalstore.png);
+}
+.mine {
+  background-image: url(/assets/resmap_mine.png);
+}
+.mobilephonetower {
+  background-image: url(/assets/resmap_mobilephonetower.png);
+}
+.motel-2 {
+  background-image: url(/assets/resmap_motel-2.png);
+}
+.ophthalmologist {
+  background-image: url(/assets/resmap_ophthalmologist.png);
+}
+.powerlinepole {
+  background-image: url(/assets/resmap_powerlinepole.png);
+}
+.powerroutage {
+  background-image: url(/assets/resmap_poweroutage.png);
+}
+ 
+.powerplant {
+  background-image: url(/assets/resmap_powerplant.png);
+}
+.powersubstation {
+  background-image: url(/assets/resmap_powersubstation.png);
+}
+.radio-station-2 {
+  background-image: url(/assets/resmap_radio-station-2.png);
+}
+.recycle {
+  background-image: url(/assets/resmap_recycle.png);
+}
+.resort {
+  background-image: url(/assets/resmap_resort.png);
+}
+.restaurant_fish {
+  background-image: url(/assets/resmap_restaurant_fish.png);
+}
+.sawmill-2 {
+  background-image: url(/assets/resmap_sawmill-2.png);
+}
+.school {
+  background-image: url(/assets/resmap_school.png);
+}
+.septic_tank {
+  background-image: url(/assets/resmap_septic_tank.png);
+}
+.shootingrange {
+  background-image: url(/assets/resmap_shootingrange.png);
+}
+.solarenergy {
+  background-image: url(/assets/resmap_solarenergy.png);
+}
+.sozialeeinrichtung {
+  background-image: url(/assets/resmap_sozialeeinrichtung.png);
+}
+.summercamp {
+  background-image: url(/assets/resmap_summercamp.png);
+}
+.university {
+  background-image: url(/assets/resmap_university.png);
+}
+.veterinary {
+  background-image: url(/assets/resmap_veterinary.png);
+}
+.watertower {
+  background-image: url(/assets/resmap_watertower.png);
+}
+.wifi {
+  background-image: url(/assets/resmap_wifi.png);
+}
+.windturbine {
+  background-image: url(/assets/resmap_windturbine.png);
+}
+.youthhostel {
+  background-image: url(/assets/resmap_youthhostel.png);
+}
+
+
 button.factory:active {
   background-color:#D2D2D2;
   border:1px solid #565656;
@@ -88,7 +273,7 @@ button.factory:active {
   background-image: url(/assets/resmap_school.png);
 }
 
-button.factory, button.school, button.restaurant, button.icecream, button.golfing, button.fmoveup, button.fastfood, button.display, button.drugstore, button.dentist, button.hospital, button.coffee, button.brewery, button.bar{
+button.aed-2, button.construction, button.daycare, button.drugstore, button.fetalalcoholsyndrom, button.firstaid, button.hospital-building, button.medicine, button.nursery, button.nanny, button.shooting, button.villa, button.army, button.bomber-2, button.chemistry, button.constructioncrane, button.cycling, button.dentist, button.disability, button.factory, button.fishing, button.foodtruck, button.footprint, button.fourbyfour, button.gay-female, button.gay-male, button.highschool, button.hiking, button.hoseriding, button.hostel_0star, button.hotel_0star, button.hunting, button.lodging_0star, button.mastcrane1, button.medicalstore, button.mine, button.mobilephonetower, button.motel-2, button.ophthalmologist, button.powerlinepole, button.powerroutage, button.powerplant, button.powersubstation, button.radio-station-2, button.recycle, button.resort, button.restaurant_fish, button.sawmill-2, button.school, button.septic_tank, button.shootingrange, button.solarenergy, button.sozialeeinrichtung, button.summercamp, button.university, button.veterinary, button.watertower, button.wifi, button.windturbine, button.youthhostel ,button.factory, button.school, button.restaurant, button.icecream, button.golfing, button.fmoveup, button.fastfood, button.display, button.drugstore, button.dentist, button.hospital, button.coffee, button.brewery, button.bar{
   width: 35px;
   height: 41px;
   display:block;
