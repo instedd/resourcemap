@@ -8,18 +8,19 @@ onCollections ->
 
     constructor: (collection, data) ->
       @constructorLocatable(data)
-
       @collection = collection
       @selected = ko.observable()
       @id = ko.observable data?.id
       @name = ko.observable data?.name
-      @icon = ko.observable data?.icon
+      @icon = data?.icon
+      @color = data?.color 
       @idWithPrefix = ko.observable data?.id_with_prefix
       @properties = ko.observable data?.properties
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
+      @alert = ko.observable data?.alert 
       @locationText = ko.computed
         read: =>
           if @hasLocation()
@@ -32,7 +33,6 @@ onCollections ->
       @valid = ko.computed => @hasName()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
-
     hasLocation: => @position() != null
 
     hasName: => $.trim(@name()).length > 0
@@ -148,8 +148,8 @@ onCollections ->
       if @marker
         @setupMarkerListener()
       else
-        @createMarker()
-
+        @createMarker() 
+        @alertMarker.setMap null
       @marker.setDraggable(true)
       window.model.setAllMarkersInactive()
       @panToPosition()
@@ -157,9 +157,16 @@ onCollections ->
     endEditLocationInMap: (position) =>
       @editingLocation(false)
       @position(position)
-      @marker.setPosition(@position()) if position
-      @marker.setDraggable false
-      @deleteMarker() if !@position()
+      if @alertMarker
+        @marker.setMap null
+        delete @marker
+        @alertMarker.setMap window.model.map
+        @alertMarker.setData( id: @id(), collection_id: @collection.id, lat: @lat(), lng: @lng(), color: @color, icon: @icon, target: true)
+      else 
+        @marker.setPosition(@position()) if position
+        @marker.setDraggable false
+        @deleteMarker() if !@position() 
+
       window.model.setAllMarkersActive()
       @panToPosition()
 
@@ -275,18 +282,26 @@ onCollections ->
         position: position
         animation: if drop || !@id() || !@position() then google.maps.Animation.DROP else null
         draggable: draggable
-        icon: window.model.markerImageTarget
-        shadow: window.model.markerImageTargetShadow
+        icon: window.model.markerImage 'resmap_' + @icon + '_focus.png'
         zIndex: 2000000
       @marker.name = @name()
       @setupMarkerListener()
       window.model.setAllMarkersInactive() if draggable
-
+    
+    createAlert: () =>
+      @deleteAlertMarker()
+      @alertMarker = new Alert window.model.map, {id: @id(), collection_id: @collection.id, lat: @lat(), lng: @lng(), color: @color, icon: @icon, target: true}
+     
     deleteMarker: (removeFromMap = true) =>
       return unless @marker
       @marker.setMap null if removeFromMap
       delete @marker
       @deleteMarkerListener() if removeFromMap
+
+    deleteAlertMarker: (removeFromMap = true) =>
+      return unless @alertMarker
+      @alertMarker.setMap null if removeFromMap
+      delete @alertMarker
 
     deleteMarkerListener: =>
       return unless @markerListener
@@ -297,6 +312,10 @@ onCollections ->
       @markerListener = google.maps.event.addListener @marker, 'position_changed', =>
         @position(@marker.getPosition())
         @locationText("#{@marker.getPosition().lat()}, #{@marker.getPosition().lng()}")
+
+    setupAlerMarkerListener: =>
+      @alertMarkerListener = google.maps.event.addListener @alertMarker, 'position_changed', =>
+        @position(@marker.getPosition())
 
     toJSON: =>
       json =

@@ -9,7 +9,7 @@ onCollections ->
 
       @reloadMapSitesAutomatically = true
       @clusters = {}
-      @alerts   = {}
+      @alertMarkers = {}
       @siteIds = {}
       @mapRequestNumber = 0
       @geocoder = new google.maps.Geocoder()
@@ -85,7 +85,7 @@ onCollections ->
 
       @markers = {}
       @clusters = {}
-      @alerts   = {}
+      @alertMarkers   = {}
       @showingMap(true)
 
       # This fixes problems when changing from fullscreen expanded to table view and then going back to map view
@@ -181,20 +181,30 @@ onCollections ->
       oldSelectedSiteId = @oldSelectedSite?.id() # Optimization to prevent flickering
 
       # Add markers if they are not already on the map
+       
       for site in sites
         dataSiteIds[site.id] = site.id
         if site.alert == 'true'
-          if @alerts[site.id]
-            @alerts[site.id].setActive() 
+          if @alertMarkers[site.id]
+            if site.highlighted
+              @alertMarkers[site.id].setTarget() 
           else
-            @createAlert(site) 
+            if site.id == oldSelectedSiteId
+              @alertMarkers[site.id] = @oldSelectedSite.alertMarker
+              @alertMarkers[site.id].site = site
+              @alertMarkers[site.id].setActive()
+              @oldSelectedSite.deleteAlertMarker false
+              delete @oldSelectedSite
+            else
+              @createAlert(site)
+            localId = @alertMarkers[site.id].siteId = site.id
+            @alertMarkers[localId].setupListeners()
         else
           if @markers[site.id]
-            console.log 'edit' 
             if site.highlighted
               @setMarkerIcon @markers[site.id], 'target'
             else
-              @setMarkerIcon @markers[site.id], (@editingSite() ? 'inactive' : 'active')
+              #@setMarkerIcon @markers[site.id], (@editingSite() ? 'inactive' : 'active')
 
           else
             if site.id == oldSelectedSiteId
@@ -216,7 +226,6 @@ onCollections ->
                 markerOptions.icon = @markerImage 'resmap_' + site.icon + '_inactive.png'
                 #markerOptions.shadow = @markerImageInactiveShadow
               else if (selectedSiteId && selectedSiteId == site.id)
-
                 markerOptions.icon = @markerImage 'resmap_' + site.icon + '_focus.png'
                 #markerOptions.shadow = @markerImageTargetShadow
 
@@ -239,9 +248,19 @@ onCollections ->
       for siteId in toRemove
         @deleteMarker siteId
 
+      toRemoveAlert = []
+      for siteId, alert of @alertMarkers
+        toRemoveAlert.push siteId unless dataSiteIds[siteId]
+
+      for siteId in toRemoveAlert
+        @deleteAlert siteId, true
       if @oldSelectedSite
-        @oldSelectedSite.deleteMarker() if @oldSelectedSite.id() != selectedSiteId
-        delete @oldSelectedSite
+        if @oldSelectedSite.id() != selectedSiteId
+          if @oldSelectedSite.alert() 
+            @oldSelectedSite.deleteAlertMarker()
+          else
+            @oldSelectedSite.deleteMarker()         
+          delete @oldSelectedSite
 
     @setupMarkerListeners: (marker, localId) ->
       marker.clickListener = google.maps.event.addListener marker, 'click', (event) =>
@@ -260,7 +279,7 @@ onCollections ->
         $(marker.popup).offset(offset)
       marker.mouseOutListener = google.maps.event.addListener marker, 'mouseout', (event) =>
         marker.popup.remove()
-
+    
     @drawClustersInMap: (clusters = []) ->
       dataClusterIds = {}
       editing = window.model.editingSiteLocation()
@@ -287,6 +306,11 @@ onCollections ->
       editingSiteId = @editingSite()?.id()?.toString()
       for siteId, marker of @markers
         @setMarkerIcon marker, (if editingSiteId == siteId then 'target' else 'inactive')
+      for siteId, marker of @alertMarkers
+        if editingSiteId == siteId
+          marker.setTarget()
+        else
+          marker.setInactive()
       for clusterId, cluster of @clusters
         cluster.setInactive()
 
@@ -297,6 +321,12 @@ onCollections ->
           @setMarkerIcon marker, 'target'
         else
           @setMarkerIcon marker, 'active'
+      for siteId, marker of @alertMarkers
+        if selectedSiteId == siteId
+          marker.setTarget()
+        else
+          marker.setActive()
+
       for clusterId, cluster of @clusters
         cluster.setActive()
 
@@ -331,15 +361,31 @@ onCollections ->
           google.maps.event.removeListener @markers[siteId]["#{listener}Listener"]
           delete @markers[siteId]["#{listener}Listener"]
 
+    @deleteAlertMarkerListeners: (siteId) ->
+      for listener in ['divDown', 'divUp']
+        if @alertMarkers[siteId]["#{listener}Listener"]
+          google.maps.event.removeListener @alertMarkers[siteId]["#{listener}Listener"]
+          delete @alertMarkers[siteId]["#{listener}Listener"]
+
+    @setupAlertMarkerListeners: (alertMarker, siteId) ->
+      alertMarker.divDownListener = google.maps.event.addDomListener alertMarker.divDownListener, 'mousedown', (event) =>
+        @editSiteFromMarker localId, marker.collectionId
+
     @createCluster: (cluster) ->
       @clusters[cluster.id] = new Cluster @map, cluster
 
     @createAlert: (alert) ->
-      @alerts[alert.id] = new Alert @map, alert
+      @alertMarkers[alert.id] = new Alert @map, alert
 
     @deleteCluster: (id) ->
       @clusters[id].setMap null
       delete @clusters[id]
+    
+    @deleteAlert: (id, removeFromMap = true) ->
+      return unless @alertMarkers[id] 
+      @alertMarkers[id].setMap null if removeFromMap
+      @deleteAlertMarkerListeners id 
+      delete @alertMarkers[id]
 
     @zIndex: (lat) ->
       bounds = @map.getBounds()
@@ -354,6 +400,8 @@ onCollections ->
         marker.setZIndex(@zIndex(marker.getPosition().lat()))
       for clusterId, cluster of @clusters
         cluster.adjustZIndex()
+      for alertId, alert of @alertMarkers
+        alert.adjustZIndex()
 
     @updateSitesCount: ->
       count = 0
@@ -407,7 +455,6 @@ onCollections ->
       )
 
     @markerImageShadow: (icon) ->
-      console.log 'shadow' 
       new google.maps.MarkerImage(
         @iconUrl(icon), new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
       )

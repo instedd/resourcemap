@@ -4,7 +4,6 @@ onCollections ->
     constructor: (map, site) ->
       @map = map
       @setMap map
-      console.log site 
       @setData(site, false)
 
     onAdd: =>
@@ -13,14 +12,14 @@ onCollections ->
       @divClick = document.createElement 'DIV'
       @divClick.className = 'threshold-click'
       @adjustZIndex()
-
       @setActive false
+      @setTarget() if @site.target
+
       @getPanes().overlayImage.appendChild @div
       @getPanes().overlayMouseTarget.appendChild @divClick
-      
+      return if @site.target 
       listenerDownCallback = =>
-        @setInactive()
-        @divClick.style.backgroundImage = ""
+        @setMarkerIcon(@div, "resmap_#{@site.icon}_focus") 
         window.model.editSiteFromMarker(@site.id, @site.collection_id) 
 
       listenerUpCallback = =>
@@ -31,9 +30,9 @@ onCollections ->
 
     draw: =>
       pos = @getProjection().fromLatLngToDivPixel @position
-      @div.style.backgroundImage = "url(/assets/resmap_#{@site.icon}.png)"
-      @div.style.left = @divClick.style.left = "#{pos.x - 13}px" 
-      @div.style.top  = @divClick.style.top  = "#{pos.y - 36}px"
+      #@setMarkerIcon(@div,"resmap_#{@site.icon}")
+      @div.style.left = "#{pos.x - 13}px" 
+      @div.style.top  = "#{pos.y - 36}px"
       
       @divClick.style.left = "#{pos.x - 16}px" 
       @divClick.style.top  = "#{pos.y - 39}px"
@@ -48,26 +47,47 @@ onCollections ->
       google.maps.event.removeListener @divUpListener
       @div.parentNode.removeChild @div
       @divClick.parentNode.removeChild @divClick
+    
+    setupListeners: =>
+      if @divClick 
+        listenerDownCallback = =>
+          @setMarkerIcon(@div, "resmap_#{@site.icon}_focus") 
+          window.model.editSiteFromMarker(@site.id, @site.collection_id) 
+
+        listenerUpCallback = =>
+          #console.log 'up'
+
+        @divDownListener = google.maps.event.addDomListener @divClick, 'mousedown', listenerDownCallback
+        @divUpListener   = google.maps.event.addDomListener @divClick, 'mouseup', listenerUpCallback
+
+    deleteAlertMarkerListener: =>
+      google.maps.event.removeListener @divDownListener
+      google.maps.event.removeListener @divUpListener
 
     setActive: (draw = true) =>
       if @div
         @div.style.backgroundImage = "url(/assets/resmap_#{@site.icon}.png)"
-      #  $(@div).removeClass('target')
-      #  $(@div).removeClass('inactive')
         @draw if draw
 
+    setTarget: =>
+      if @div
+        @setMarkerIcon(@div, "resmap_#{@site.icon}_focus")
     setInactive: (draw = true) =>
       if @div
-        @div.style.backgroundImage = ""
-      #   $(@div).removeClass('target')
-      #   $(@div).addClass('inactive')
-      # else
-      #   @startAs = 'inactive'
+        @setMarkerIcon(@div, "resmap_#{@site.icon}_inactive")
+        #@div.style.backgroundImage = ""
+        #   $(@div).removeClass('target')
+        #   $(@div).addClass('inactive')
+        # else
+        #   @startAs = 'inactive'
     
-    
+    setMarkerIcon: (marker, icon)  =>
+      marker.style.backgroundImage = "url(/assets/#{icon}.png)"
+
     adjustZIndex: =>
       zIndex = window.model.zIndex(@position.lat())
       @div.style.zIndex = zIndex if @div
+      @divClick.style.zIndex = zIndex if @divClick
 
     setData: (site, draw = true) =>
       @position = new google.maps.LatLng(site.lat, site.lng)
