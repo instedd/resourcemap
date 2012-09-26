@@ -87,8 +87,9 @@ onCollections ->
         unless @editingSite().id()
           @editingSite().id(data.id)
           @editingSite().idWithPrefix(data.id_with_prefix)
-          @currentCollection().addSite(@editingSite(), true)
           $.status.showNotice "Site '#{@editingSite().name()}' successfully created", 2000
+
+        @currentCollection().reloadSites()
 
         @editingSite().updatedAt(data.updated_at)
 

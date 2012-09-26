@@ -30,6 +30,16 @@ onCollections ->
         @loadingSites false
         window.model.refreshTimeago()
 
+    @reloadSites: ->
+      @loadingSites true
+      @siteIds = {}
+      @sites = ko.observableArray()
+      $.get @sitesUrl(), {offset: 0, limit: (@sitesPage - 1) * SITES_PER_PAGE }, (data) =>
+        for site in data
+          @addSite @createSite(site)
+        @loadingSites false
+        window.model.refreshTimeago()
+
     @addSite: (site, isNew = false) ->
       return @siteIds[site.id()] if @siteIds[site.id()]
 
@@ -41,18 +51,7 @@ onCollections ->
       else
         site = window.model.siteIds[site.id()] if window.model.siteIds[site.id()]
 
-      if isNew
-        # Insert it in the right place
-        i=0
-        for s in @sites()
-          if s.name() > site.name()
-            @sites.splice(i, 0, site)
-            break
-          i++
-        if i == @sites().length
-          @sites.push(site)
-      else
-        @sites.push(site)
+      @sites.push(site)
 
       window.model.siteIds[site.id()] = site
       @siteIds[site.id()] = site
