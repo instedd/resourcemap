@@ -1,7 +1,7 @@
 @initMemberships = (userId, collectionId, admin, layers) ->
   window.userId = userId
 
-  class Expandable
+  class Expandable extends Module
     constructor: ->
       @expanded = ko.observable false
 
@@ -106,8 +106,40 @@
       @canReadUI = ko.computed => if @canRead() then "Yes" else "No"
       @canWriteUI = ko.computed => if @canWrite() then "Yes" else "No"
 
-  class Membership extends Expandable
+  class Permission
     constructor: (data) ->
+      @allSites = ko.observable(data.all_sites)
+      @someSites = ko.observable(data.some_sites)
+      @access = ko.computed
+        read: -> if @allSites() then 'all_sites' else 'some_sites'
+        write: (value) -> 
+          @allSites switch value
+            when 'all_sites' then true
+            when 'some_sites' then false
+            else true
+        owner: @
+
+  class AdvancedMembershipMode
+    @constructor: (data)->
+      @advancedMode = ko.observable(false)
+      @validAdvancedMembership = ko.observable(true)
+      @sitesRead = new Permission(data.sites.read)
+      @sitesUpdate = new Permission(data.sites.update)
+
+    @advancedModeOn: ->
+      @advancedMode(true)
+
+    @saveAdvancedMembership: ->
+      console.log "saveAdvancedMembership"
+
+    @cancelAdvancedMembership: ->
+      @advancedMode(false)
+
+  class Membership extends Expandable
+    @include AdvancedMembershipMode
+
+    constructor: (data) ->
+      @callModuleConstructors(arguments)
       super
       @userId = ko.observable data?.user_id
       @userDisplayName = ko.observable data?.user_display_name
@@ -127,6 +159,11 @@
     findLayerMembership: (layer) =>
       lm = @layers().filter((x) -> x.layerId() == layer.id())
       if lm.length > 0 then lm[0] else null
+
+  class @Site
+    constructor: (data) ->
+      @id = data.id
+      @name = data.name
 
   class MembershipsViewModel
     initialize: (admin, memberships, layers) ->

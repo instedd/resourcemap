@@ -12,7 +12,11 @@ class MembershipsController < ApplicationController
         user_id: membership.user_id,
         user_display_name: membership.user.display_name,
         admin: membership.admin?,
-        layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}}
+        layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
+        sites: {
+          read: { all_sites: true, some_sites: [] },
+          update: { all_sites: false, some_sites: [{ id: 2, name: 'Bayon Clinic' }] } 
+        }
       }
     end
     render json: memberships
