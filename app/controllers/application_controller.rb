@@ -37,6 +37,6 @@ class ApplicationController < ActionController::Base
   def show_collection_breadcrumb
     show_collections_breadcrumb
     add_breadcrumb "Collections", collections_path
-    add_breadcrumb collection.name, collection_path(collection)
+    add_breadcrumb collection.name, collections_path + "?collection=#{collection.id}"
   end
 end

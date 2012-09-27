@@ -128,6 +128,7 @@ onCollections ->
     saveName: =>
       if @hasName()
         @post name: @name()
+        @collection.reloadSites()
         @editingName(false)
       else
         @exitName()

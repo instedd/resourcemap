@@ -332,6 +332,7 @@ onCollections ->
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap
+      @markers[siteId].popup.remove() if @markers[siteId].popup
       @deleteMarkerListeners siteId
       delete @markers[siteId]
 
