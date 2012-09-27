@@ -150,6 +150,20 @@ class CollectionsController < ApplicationController
     render :json => :ok
   end
 
+  def all_site_names_and_codes
+    puts current_snapshot
+    if current_snapshot
+      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
+    else
+      search = collection.new_search current_user_id: current_user.id
+    end
+
+    search.select_fields(['id', 'name'])
+
+    fields = search.apply_queries.results.map{ |item| item["fields"]}
+    render json: fields
+  end
+
   def search
 
     if current_snapshot

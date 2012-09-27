@@ -19,6 +19,7 @@ onCollections ->
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @loadCurrentSnapshotMessage()
+      @allSites = ko.observable()
 
     loadCurrentSnapshotMessage: =>
       @viewingCurrentSnapshotMessage = ko.observable()
@@ -46,6 +47,9 @@ onCollections ->
         @fields(fields)
         callback() if callback && typeof(callback) == 'function'
         @loadRefineFields()
+
+      $.get "collections/#{@id}/all_site_names_and_codes", {}, (data) =>
+        @allSites(data)
 
     findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 

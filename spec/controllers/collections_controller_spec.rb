@@ -39,4 +39,31 @@ describe CollectionsController do
     res.should == "Error: Wrong format. Invalid column number in line 1.<br/>Error: Wrong format. Invalid column number in line 2."
   end
 
+  describe "get ES resutls" do
+      before(:each) do
+        layer = collection.layers.make
+
+        text = layer.fields.make :code => 'text', :kind => 'text'
+        numeric = layer.fields.make :code => 'numeric', :kind => 'numeric'
+
+        @site1 = collection.sites.make :name => "site1", :properties => {text.es_code => 'foo', numeric.es_code => 1 }
+        @site2 = collection.sites.make :name => "site2", :properties => {text.es_code => 'bar', numeric.es_code => 2 }
+      end
+
+
+    it "should get json of all field names and codes in a collection" do
+      get :all_site_names_and_codes, collection_id: collection.id, format: 'json'
+
+      json = JSON.parse response.body
+      json.length.should eq(2)
+      json[0]["id"].should eq(@site1.id)
+      json[0]["name"].should eq(@site1.name)
+      json[1]["id"].should eq(@site2.id)
+      json[1]["name"].should eq(@site2.name)
+     end
+
+  end
+
+
+
 end
