@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120906034432) do
+ActiveRecord::Schema.define(:version => 20120926041100) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -212,9 +212,9 @@ ActiveRecord::Schema.define(:version => 20120906034432) do
   create_table "site_memberships", :force => true do |t|
     t.integer  "collection_id"
     t.integer  "field_id"
-    t.boolean  "view"
-    t.boolean  "update"
-    t.boolean  "delete"
+    t.boolean  "view_access"
+    t.boolean  "update_access"
+    t.boolean  "delete_access"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
@@ -241,6 +241,15 @@ ActiveRecord::Schema.define(:version => 20120906034432) do
     t.text     "properties"
     t.string   "location_mode",  :limit => 10,                                :default => "automatic"
     t.string   "id_with_prefix"
+  end
+
+  create_table "sites_permissions", :force => true do |t|
+    t.integer  "membership_id"
+    t.string   "type"
+    t.boolean  "all_sites"
+    t.text     "some_sites"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "snapshots", :force => true do |t|
@@ -276,18 +285,18 @@ ActiveRecord::Schema.define(:version => 20120906034432) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                                 :default => "", :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
+    t.string   "email",                  :default => "", :null => false
+    t.string   "encrypted_password",     :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                         :default => 0
+    t.integer  "sign_in_count",          :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                                            :null => false
-    t.datetime "updated_at",                                            :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.string   "phone_number"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"

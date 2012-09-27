@@ -85,8 +85,11 @@
               %hr/
 
               .bottom-actions
-                %button.white{ ko(click: 'saveAdvancedMembership', enable: :validAdvancedMembership) } Save
+                %button.white{ ko(click: 'saveSitesPermission', enable: :validAdvancedMembership) } Save
                 %a.tgrey{ ko(click: 'cancelAdvancedMembership'), href: 'javascript:void(0)' } Cancel
+                / ko if: !validAdvancedMembership()
+                %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
+                / /ko
         /      /ko
 
         /      ko if: !advancedMode()

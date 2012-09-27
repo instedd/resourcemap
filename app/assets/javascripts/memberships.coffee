@@ -107,33 +107,50 @@
       @canWriteUI = ko.computed => if @canWrite() then "Yes" else "No"
 
   class Permission
-    constructor: (data) ->
-      @allSites = ko.observable(data.all_sites)
-      @someSites = ko.observable(data.some_sites)
+    constructor: (@type, data) ->
+      @allSites = ko.observable(data?.all_sites ? true)
+      @someSites = ko.observable(data?.some_sites ? [])
       @access = ko.computed
         read: -> if @allSites() then 'all_sites' else 'some_sites'
-        write: (value) -> 
+        write: (value) ->
           @allSites switch value
             when 'all_sites' then true
             when 'some_sites' then false
             else true
         owner: @
+      @error = ko.computed => if @allSites() or @someSites().length > 0 then null else "can #{@type} sites is missing"
+
+    clone: ->
+      new Permission(@type, all_sites: @allSites(), some_sites: @someSites())
 
   class AdvancedMembershipMode
     @constructor: (data)->
       @advancedMode = ko.observable(false)
-      @validAdvancedMembership = ko.observable(true)
-      @sitesRead = new Permission(data.sites.read)
-      @sitesUpdate = new Permission(data.sites.update)
+      @sitesRead = new Permission('read', data.sites.read)
+      @sitesUpdate = new Permission('update', data.sites.update)
+      @error = ko.computed => @sitesRead.error() or @sitesUpdate.error()
+      @validAdvancedMembership = ko.computed => !@error()
 
     @advancedModeOn: ->
+      @backupSitesPermission()
       @advancedMode(true)
 
-    @saveAdvancedMembership: ->
+    @saveSitesPermission: ->
       console.log "saveAdvancedMembership"
 
     @cancelAdvancedMembership: ->
+      @restoreSitesPermission()
       @advancedMode(false)
+
+    @backupSitesPermission: ->
+      @originalSitesRead = @sitesRead.clone()
+      @originalSitesUpdate = @sitesUpdate.clone()
+
+    @restoreSitesPermission: ->
+      @sitesRead = @originalSitesRead
+      @sitesUpdate = @originalSitesUpdate
+      delete @originalSitesRead
+      delete @originalSitesUpdate
 
   class Membership extends Expandable
     @include AdvancedMembershipMode
