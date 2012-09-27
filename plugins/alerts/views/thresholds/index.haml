@@ -49,10 +49,14 @@
           <!-- /ko -->
 
           <!-- /ko -->
-          ,change icon to
-          %img{"data-bind" => "attr: { src:iconUrl }" }
+          ,change icon to:
+          %br 
+          .alert-icon{"data-bind" => "style: { margin: '5px 0px 0px 30px', borderColor:color }"}
+            %img{"data-bind" => "attr: { src:iconUrl }" }
           -# %span.stat{"data-bind" => "style: { backgroundColor:icon }" }
-
+          %br
+          %br
+          %br
       .rightbuttons
         %button.fdelete{ ko(click: '$root.deleteThreshold') }
 
