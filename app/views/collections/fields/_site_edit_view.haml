@@ -1,4 +1,6 @@
 - if single_editing_mode
-  %input{ ko(autocomplete: :valueUI, source: '$root.currentCollection().allSites()', event: { keydown: :keyPress }), type: :text }
+  = ko_html_field_tag :valueUI, attr: {id: "esCode"}, html: {class: "autocomplete-site-input" }
+  = ko_html_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, attr: {id: "'site-autocomplete-input-' + esCode"}, html: {type: "hidden" }
 - else
-  %input{ ko(autocomplete: :valueUI, source: '$root.currentCollection().allSites()'), type: :text }
+  = ko_html_field_tag :valueUI, attr: {id: "esCode"}, html: {class: "autocomplete-site-input" }
+  = ko_html_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, attr: {id: "'site-autocomplete-input-' + esCode"}, html: {type: "hidden" }

@@ -424,19 +424,25 @@ onCollections ->
     @initInsteddPlatform:  ->
       $.instedd.init_components() if $.instedd
 
-    # @initAutocomplete: (callback) ->
-    #   @initInsteddPlatform()
-    #   source = []
-    #   for key, value of @siteIds
-    #     item = id: key, label: value.name(), value: value.name()
-    #     source.push(item)
-    #   $(".autocomplete-site-input").autocomplete
-    #     source: source
-    #     select: (event, ui) ->
-    #       # TODO: Complete this feature.
-    #       $(event.target).val(ui.item.value)
-    #       $(event.target).change()
-
+    @initAutocomplete: (callback) ->
+      @initInsteddPlatform()
+      $(".autocomplete-site-input").autocomplete(
+        minLength: 1
+        source: "/collections/#{@currentCollection().id}}/sites_by_term.json"
+        focus: (event, ui) ->
+          $(event.target).val(ui.item.name)
+          $(event.target).change()
+          $("#site-autocomplete-input-#{$(event.target).attr('id')}").val(ui.item.id)
+          $("#site-autocomplete-input-#{$(event.target).attr('id')}").change()
+          return false
+        select: (event, ui) ->
+          $(event.target).val(ui.item.name)
+          $(event.target).change()
+          $("#site-autocomplete-input-#{$(event.target).attr('id')}").val(ui.item.id)
+          $("#site-autocomplete-input-#{$(event.target).attr('id')}").change()
+          return false
+      ).data("autocomplete")._renderItem = (ul, item) ->
+        $("<li></li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo ul
 
     @initDatePicker: (callback) ->
       @initInsteddPlatform()

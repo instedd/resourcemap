@@ -56,6 +56,8 @@ onCollections ->
         window.model.initDatePicker (p, inst) =>
           id = inst.id
           $("##{id}").change()
+          window.model.initAutocomplete()
+
 
     @filterDescription: (filter) ->
       if @filters()[0] == filter
