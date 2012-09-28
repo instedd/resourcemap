@@ -109,29 +109,43 @@ onCollections ->
     @filterByProperty: ->
       return if @notValueSelected()
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
-      if field.kind == 'text' or field.kind == 'user' or field.isPluginKind()
-        if(!@filteringByPropertyAndValue(FilterByTextProperty, @expandedRefinePropertyValue()))
-          @filters.push(new FilterByTextProperty(field, @expandedRefinePropertyValue()))
-      else if field.kind == 'numeric'
-        if(!@filteringByPropertyAndValueAndOperator(FilterByNumericProperty, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
-          @filters.push(new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
-      else if field.kind in ['select_one', 'select_many']
-        @expandedRefinePropertyValue(parseInt(@expandedRefinePropertyValue()))
-        valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0].label
-        if(!@filteringByPropertyAndSelectProperty(FilterBySelectProperty, @expandedRefinePropertyValue(), valueLabel))
-          @filters.push(new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel))
-      else if field.kind == 'date'
-        if(!@filteringByDatePropertyRange(FilterByDateProperty, field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo()))
-          @filters.push(new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo()))
-          @expandedRefinePropertyDateFrom(null)
-          @expandedRefinePropertyDateTo(null)
-      else if field.kind == 'hierarchy'
-        if(!@filteringByProperty(FilterByHierarchyProperty))
-          @filters.push(new FilterByHierarchyProperty(field, @expandedRefinePropertyHierarchy().hierarchyIds(), @expandedRefinePropertyHierarchy().name))
-          @expandedRefinePropertyHierarchy(null)
+      filter = @filterFor(field)
+      if field.kind == 'numeric'
+        @addOrReplaceFilter(filter, (f) => f.operator == @expandedRefinePropertyOperator())
+      else
+        @addOrReplaceFilter(filter)
 
       @expandedRefineProperty(null)
+      @expandedRefinePropertyDateFrom(null)
+      @expandedRefinePropertyDateTo(null)
+      @expandedRefinePropertyHierarchy(null)
       @hideRefinePopup()
+
+    @addOrReplaceFilter: (filter, extraCondition = -> true) ->
+      i = 0
+      for f in @filters()
+        if f.field == filter.field && extraCondition(f)
+          @filters.splice(i, 1, filter)
+          break
+        i++
+      if i == @filters().length
+        @filters.push(filter)
+
+    @filterFor: (field) ->
+      return new FilterByTextProperty(field, @expandedRefinePropertyValue()) if field.isPluginKind()
+      return switch field.kind
+        when 'text', 'user'
+          new FilterByTextProperty(field, @expandedRefinePropertyValue())
+        when 'numeric'
+          new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue())
+        when 'select_one', 'select_many'
+          @expandedRefinePropertyValue(parseInt(@expandedRefinePropertyValue()))
+          valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0].label
+          new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel)
+        when 'date'
+          new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo())
+        when 'hierarchy'
+          new FilterByHierarchyProperty(field, @expandedRefinePropertyHierarchy().hierarchyIds(), @expandedRefinePropertyHierarchy().name)
 
     @expandedRefinePropertyValueKeyPress: (model, event) ->
       switch event.keyCode

@@ -58,7 +58,7 @@ describe 'Collection', ->
           @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0])
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "inside \"Tres de Febrero\" if grouped by #{@hierarchy.name}"
+          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Tres de Febrero\""
           expect(@model.filters()[0].value).toEqual ['2']
 
         it 'should filter selected item and its descendants', ->
@@ -66,7 +66,7 @@ describe 'Collection', ->
           @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0])
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "inside \"Buenos Aires\" if grouped by #{@hierarchy.name}"
+          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Buenos Aires\""
           expect(@model.filters()[0].value).toEqual ["1", "2", "3"]
 
         it 'should not add hierarchy filter twice', ->

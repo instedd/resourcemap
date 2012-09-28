@@ -88,7 +88,7 @@ onCollections ->
       options[@field.codeForLink(api)] = @value
 
     description: =>
-      "inside \"#{@valueLabel}\" if grouped by #{@field.name}"
+      "with #{@field.name} under \"#{@valueLabel}\""
 
   class @FilterBySelectProperty extends Filter
     constructor: (field, value, valueLabel) ->
