@@ -12,7 +12,7 @@ onCollections ->
       @selected = ko.observable()
       @id = ko.observable data?.id
       @name = ko.observable data?.name
-      @icon = data?.icon
+      @icon = data?.icon ? 'default'
       @color = data?.color 
       @idWithPrefix = ko.observable data?.id_with_prefix
       @properties = ko.observable data?.properties
@@ -149,7 +149,7 @@ onCollections ->
         @setupMarkerListener()
       else
         @createMarker() 
-        @alertMarker.setMap null
+        @alertMarker.setMap null if @alertMarker
       @marker.setDraggable(true)
       window.model.setAllMarkersInactive()
       @panToPosition()

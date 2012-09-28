@@ -23,6 +23,7 @@ onCollections ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
     @createSite: ->
+      alert 'yeah'
       @goBackToTable = true unless @showingMap()
       @showMap =>
         pos = @originalSiteLocation = @map.getCenter()
@@ -30,6 +31,7 @@ onCollections ->
         site.copyPropertiesToCollection(@currentCollection())
         @unselectSite()
         @editingSite site
+        console.log site    
         @editingSite().startEditLocationInMap()
         window.model.initDatePicker()
         window.model.initAutocomplete()

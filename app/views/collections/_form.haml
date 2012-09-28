@@ -2,7 +2,7 @@
   :javascript
     $(document).ready(function(){ var select_icon = $('#select_icon');
       if(select_icon.val() == "")
-        select_icon.val('hospital-building');
+        select_icon.val('default');
       $("#focus_icon").val(select_icon.val());
       $('.' + select_icon.val()).css({backgroundColor: '#D2D2D2', border: '1px solid #565656'});
       
