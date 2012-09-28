@@ -46,6 +46,9 @@ onCollections ->
       @unselectSite() if @selectedSite()
       @exitSite() if @editingSite()
 
+      $.get "/collections/#{@currentCollection().id}/sites_by_term.json", (sites) =>
+        @currentCollection().allSites(sites)
+
       initialized = @initMap()
       collection.panToPosition(true) unless initialized
 

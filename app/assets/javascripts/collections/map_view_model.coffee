@@ -5,6 +5,7 @@ onCollections ->
       @showingMap = ko.observable(true)
       @sitesCount = ko.observable(0)
       @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site' else "#{@sitesCount()} sites"
+
       @sitesChangedListeners = []
 
       @reloadMapSitesAutomatically = true
@@ -428,7 +429,8 @@ onCollections ->
       @initInsteddPlatform()
       $(".autocomplete-site-input").autocomplete(
         minLength: 1
-        source: "/collections/#{@currentCollection().id}}/sites_by_term.json"
+        # Pending: replace this adress to @currentCollection().allSites() for avoiding multiple server gets
+        source: "/collections/#{@currentCollection().id}/sites_by_term.json"
         focus: (event, ui) ->
           $(event.target).val(ui.item.name)
           $(event.target).change()
