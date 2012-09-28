@@ -18,19 +18,6 @@ onCollections ->
     @filteringByProperty: (filterClass) ->
       window.arrayAny(@filters(), (f) -> f instanceof filterClass)
 
-    @filteringByPropertyAndValue: (filterClass, value) ->
-      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.value == value)
-
-    @filteringByPropertyAndValueAndOperator: (filterClass, operator, value) ->
-      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.value == value && f.operator == operator)
-
-    @filteringByPropertyAndSelectProperty: (filterClass, value, label) ->
-      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.value == value && f.valueLabel == label)
-
-    @filteringByDatePropertyRange: (filterClass, field, valueFrom, valueTo) ->
-      window.arrayAny(@filters(), (f) -> f instanceof filterClass && f.field == field && f.valueFrom == valueFrom && f.valueTo == valueTo)
-
-
     @toggleRefinePopup: (model, event) ->
       @showingRefinePopup(!@showingRefinePopup())
       if @showingRefinePopup()
