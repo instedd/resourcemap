@@ -123,11 +123,15 @@
     clone: ->
       new Permission(@type, all_sites: @allSites(), some_sites: @someSites())
 
+    toJson: ->
+      all_sites   : @allSites()
+      some_sites  : @someSites()
+
   class AdvancedMembershipMode
     @constructor: (data)->
       @advancedMode = ko.observable(false)
       @sitesRead = new Permission('read', data.sites.read)
-      @sitesUpdate = new Permission('update', data.sites.update)
+      @sitesUpdate = new Permission('update', data.sites.write)
       @error = ko.computed => @sitesRead.error() or @sitesUpdate.error()
       @validAdvancedMembership = ko.computed => !@error()
 
@@ -136,7 +140,9 @@
       @advancedMode(true)
 
     @saveSitesPermission: ->
-      console.log "saveAdvancedMembership"
+      $.post "/collections/#{collectionId}/sites_permission", sites_permission: user_id: @userId(), read: @sitesRead.toJson(), write: @sitesUpdate.toJson(), =>
+        @deleteOriginalSitesPermission()
+        @advancedMode(false)
 
     @cancelAdvancedMembership: ->
       @restoreSitesPermission()
@@ -149,6 +155,9 @@
     @restoreSitesPermission: ->
       @sitesRead = @originalSitesRead
       @sitesUpdate = @originalSitesUpdate
+      @deleteOriginalSitesPermission()
+
+    @deleteOriginalSitesPermission: ->
       delete @originalSitesRead
       delete @originalSitesUpdate
 

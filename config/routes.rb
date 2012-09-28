@@ -31,6 +31,8 @@ ResourceMap::Application.routes.draw do
         post 'unset_admin'
       end
     end
+    resources :sites_permission
+
     get 'members'
     get 'settings'
     get 'csv_template'

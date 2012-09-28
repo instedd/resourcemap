@@ -246,10 +246,10 @@ ActiveRecord::Schema.define(:version => 20121001044637) do
   create_table "sites_permissions", :force => true do |t|
     t.integer  "membership_id"
     t.string   "type"
-    t.boolean  "all_sites"
+    t.boolean  "all_sites",     :default => true
     t.text     "some_sites"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "snapshots", :force => true do |t|

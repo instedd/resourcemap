@@ -1,11 +1,12 @@
 class Membership < ActiveRecord::Base
   include Membership::ActivityConcern
   include Membership::LayerAccessConcern
+  include Membership::SitesPermissionConcern
 
   belongs_to :user
   belongs_to :collection
-  has_one :read_sites_permission
-  has_one :write_sites_permission
+  has_one :read_sites_permission, dependent: :destroy
+  has_one :write_sites_permission, dependent: :destroy
 
   before_destroy :destroy_collection_memberships
   def destroy_collection_memberships

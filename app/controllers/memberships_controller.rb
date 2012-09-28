@@ -15,7 +15,7 @@ class MembershipsController < ApplicationController
         layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
         sites: {
           read: membership.read_sites_permission,
-          update: membership.write_sites_permission
+          write: membership.write_sites_permission
         }
       }
     end
