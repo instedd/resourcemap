@@ -145,6 +145,8 @@ onCollections ->
           new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo())
         when 'hierarchy'
           new FilterByHierarchyProperty(field, @expandedRefinePropertyHierarchy().hierarchyIds(), @expandedRefinePropertyHierarchy().name)
+        else
+          throw "Unknown field kind"
 
     @expandedRefinePropertyValueKeyPress: (model, event) ->
       switch event.keyCode

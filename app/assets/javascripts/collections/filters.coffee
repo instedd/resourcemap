@@ -54,7 +54,9 @@ onCollections ->
       @value = value
 
     setQueryParams: (options, api = false) =>
-      options[@field.codeForLink(api)] = "#{@operator}#{@value}"
+      code = @field.codeForLink(api)
+      options[code] = {} if not options[code]
+      options[code][@operator] = @value
 
     description: =>
       str = "where #{@field.name} "
