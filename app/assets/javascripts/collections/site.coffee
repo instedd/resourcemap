@@ -241,7 +241,6 @@ onCollections ->
       @inEditMode(true)
       @startEditLocationInMap()
       window.model.initDatePicker()
-      window.model.initAutocomplete()
 
     exitEditMode: (saved) =>
       @inEditMode(false)

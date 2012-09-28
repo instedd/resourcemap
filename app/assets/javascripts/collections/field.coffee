@@ -94,7 +94,6 @@ onCollections ->
         window.model.initDatePicker (dateText) =>
           @value(dateText)
           @save()
-        window.model.initAutocomplete()
 
     keyPress: (field, event) =>
       switch event.keyCode

@@ -170,6 +170,11 @@ module SearchBase
     }
   end
 
+  def select_fields(fields_array)
+    @search.fields(fields_array)
+    self
+  end
+
   private
 
   def apply_prefixes to
