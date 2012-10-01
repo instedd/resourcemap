@@ -128,6 +128,7 @@ onCollections ->
     saveName: =>
       if @hasName()
         @post name: @name()
+        @collection.reloadSites()
         @editingName(false)
       else
         @exitName()
@@ -247,7 +248,6 @@ onCollections ->
       @inEditMode(true)
       @startEditLocationInMap()
       window.model.initDatePicker()
-      window.model.initAutocomplete()
 
     exitEditMode: (saved) =>
       @inEditMode(false)

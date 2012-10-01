@@ -39,14 +39,12 @@ class Collection < ActiveRecord::Base
   def visible_fields_for(user, options)
     membership = user.membership_in self
     return [] unless membership
-
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
       target_fields = field_histories.at_date(date).includes(:layer)
     else
       target_fields = fields.includes(:layer)
     end
-
     if membership.admin?
       target_fields = target_fields.all
     else
@@ -63,7 +61,6 @@ class Collection < ActiveRecord::Base
 
   def visible_layers_for(user, options = {})
     target_fields = visible_fields_for(user, options)
-
     layers = target_fields.map(&:layer).uniq.map do |layer|
       {
         id: layer.id,
@@ -94,7 +91,7 @@ class Collection < ActiveRecord::Base
         }
       end
     end
-
+    puts ' ------' * 9
     layers.sort! { |x, y| x[:ord] <=> y[:ord] }
     layers
   end

@@ -134,7 +134,7 @@ onCollections ->
           @drawClustersInMap data.clusters
           # Original position for sites in identical location.
           # commented out 
-          #@drawOriginalGhost data.original_ghost
+          @drawOriginalGhost data.original_ghost
           @reloadMapSitesAutomatically = true
           @adjustZIndexes()
           @updateSitesCount()
@@ -184,8 +184,9 @@ onCollections ->
            position: new google.maps.LatLng(ghost.lat, ghost.lng)
            zIndex: @zIndex(ghost.lat)
            optimized: false
-           icon: @markerImageInactive
-           shadow: @markerImageInactiveShadow
+           icon: @markerImage 'resmap_' + ghost.icon + '_inactive.png' 
+           #icon: @markerImageInactive
+           #shadow: @markerImageInactiveShadow
         newMarker = new google.maps.Marker markerOptions
 
     @drawSitesInMap: (sites = []) ->
@@ -230,17 +231,18 @@ onCollections ->
               delete @oldSelectedSite
             else
               # commented out 
-              # position = new google.maps.LatLng(site.lat, site.lng)
-              # if site.ghost_radius?
-              #   projection = @map.dummyOverlay.getProjection()
-              #   pointInPixels = projection.fromLatLngToContainerPixel(position)
-              #   pointInPixels.x += 25 * Math.cos(site.ghost_radius)
-              #   pointInPixels.y += 25 * Math.sin(site.ghost_radius)
-              #   position = projection.fromContainerPixelToLatLng(pointInPixels)
+              position = new google.maps.LatLng(site.lat, site.lng)
+              if site.ghost_radius?
+                projection = @map.dummyOverlay.getProjection()
+                pointInPixels = projection.fromLatLngToContainerPixel(position)
+                pointInPixels.x += 25 * Math.cos(site.ghost_radius)
+                pointInPixels.y += 25 * Math.sin(site.ghost_radius)
+                position = projection.fromContainerPixelToLatLng(pointInPixels)
 
               markerOptions =
                 map: @map
-                position: new google.maps.LatLng(site.lat, site.lng)
+                position: position 
+                #position: new google.maps.LatLng(site.lat, site.lng)
                 zIndex: @zIndex(site.lat)
                 optimized: false
 
@@ -379,7 +381,7 @@ onCollections ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap
       # commented out  
-      #@markers[siteId].popup.remove() if @markers[siteId].popup
+      @markers[siteId].popup.remove() if @markers[siteId].popup
       @deleteMarkerListeners siteId
       delete @markers[siteId]
 
@@ -492,18 +494,18 @@ onCollections ->
     @initInsteddPlatform:  ->
       $.instedd.init_components() if $.instedd
 
-    @initAutocomplete: (callback) ->
-      @initInsteddPlatform()
-      source = []
-      for key, value of @siteIds
-        item = id: key, label: value.name(), value: value.name()
-        source.push(item)
-      $(".autocomplete-site-input").autocomplete
-        source: source
-        select: (event, ui) ->
-          # TODO: Complete this feature.
-          $(event.target).val(ui.item.value)
-          $(event.target).change()
+      # @initAutocomplete: (callback) ->
+      #   @initInsteddPlatform()
+      #   source = []
+      #   for key, value of @siteIds
+      #     item = id: key, label: value.name(), value: value.name()
+      #     source.push(item)
+      #   $(".autocomplete-site-input").autocomplete
+      #     source: source
+      #     select: (event, ui) ->
+      #       # TODO: Complete this feature.
+      #       $(event.target).val(ui.item.value)
+      #       $(event.target).change()
 
 
     @initDatePicker: (callback) ->

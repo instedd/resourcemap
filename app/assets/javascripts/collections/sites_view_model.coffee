@@ -23,7 +23,6 @@ onCollections ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
     @createSite: ->
-      alert 'yeah'
       @goBackToTable = true unless @showingMap()
       @showMap =>
         pos = @originalSiteLocation = @map.getCenter()
@@ -34,7 +33,6 @@ onCollections ->
         console.log site    
         @editingSite().startEditLocationInMap()
         window.model.initDatePicker()
-        window.model.initAutocomplete()
 
     @editSite: (site) ->
       @goBackToTable = true unless @showingMap()
@@ -86,7 +84,9 @@ onCollections ->
         unless @editingSite().id()
           @editingSite().id(data.id)
           @editingSite().idWithPrefix(data.id_with_prefix)
-          @currentCollection().addSite(@editingSite(), true)
+          $.status.showNotice "Site '#{@editingSite().name()}' successfully created", 2000
+
+        @currentCollection().reloadSites()
 
         @editingSite().updatedAt(data.updated_at)
 

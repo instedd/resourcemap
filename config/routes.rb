@@ -11,6 +11,7 @@ ResourceMap::Application.routes.draw do
 
   resources :repeats
   resources :collections do
+    get :all_site_names_and_codes
     resources :sites
     resources :layers do
       member do
