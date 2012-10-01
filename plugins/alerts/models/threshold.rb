@@ -3,8 +3,7 @@ class Threshold < ActiveRecord::Base
 
   validates :collection, :presence => true
   validates :ord, :presence => true
-  # validates :color, :presence => true
-  validates :icon, :presence => true
+  validates :color, :presence => true
 
   serialize :conditions, Array
   serialize :phone_notification

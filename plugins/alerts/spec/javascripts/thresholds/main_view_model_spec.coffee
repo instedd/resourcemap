@@ -40,19 +40,19 @@ describe 'MainViewModel', ->
 
   describe 'save threshold', ->
     beforeEach ->
-      @threshold = new Threshold icon: 'tomato', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], ord: 1, is_all_site: true, is_all_condition: true, is_notify: true, message_notification: "alert_01", name: "beds"
+      @threshold = new Threshold color: 'tomato', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], ord: 1, is_all_site: true, is_all_condition: true, is_notify: true, message_notification: "alert_01", name: "beds"
       @model.thresholds.push @threshold
       @model.currentThreshold @threshold
       spyOn($, 'post')
 
     it "should post the threshold's json", ->
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], icon : 'tomato', ord: 1, name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], color : 'tomato', ord: 1, name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
 
     it "should put the threshold's json if it has an id", ->
       @threshold.id(1)
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {id: 1, icon : 'tomato', name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds/1.json", {_method: 'put', threshold: {id: 1, color : 'tomato', name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, message_notification : 'alert_01', sites : [ ], conditions : [ ], ord : 1}}, @model.saveThresholdCallback)
 
     it 'should be saving', ->
       @model.saveThreshold()
@@ -92,14 +92,14 @@ describe 'MainViewModel', ->
 
   describe 'edit threshold', ->
     beforeEach ->
-      @threshold = new Threshold id: 1, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], icon : 'marker_red.png', is_all_site: true, is_all_condition: true, is_notify: true
+      @threshold = new Threshold id: 1, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], color : 'tomato', is_all_site: true, is_all_condition: true, is_notify: true
       @model.thresholds.push @threshold
       @model.editThreshold @threshold
 
-    it 'should restore the icon when canceling', ->
-      @threshold.icon()
+    it 'should restore the color when canceling', ->
+      @threshold.color()
       @model.cancelThreshold()
-      expect(@model.thresholds()[0].icon()).toBe 'marker_red.png'
+      expect(@model.thresholds()[0].color()).toBe 'tomato'
 
     it 'should restore the conditions when canceling', ->
       spyOn(window.model, 'findField').andReturn @field

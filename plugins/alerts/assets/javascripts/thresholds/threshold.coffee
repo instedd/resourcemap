@@ -19,7 +19,7 @@ onThresholds -
       @alertSites = ko.observable $.map(data?.sites ? [], (site) -> new Site(site))
       @propertyName = ko.observable data?.name
       @ord = ko.observable data?.ord
-      @color = ko.observable(data?.icon)
+      @color = ko.observable(data?.color)
       @icon = ko.observable(collectionIcon ? "default")
       @iconUrl = ko.computed => "/assets/resmap_#{@icon()}.png"
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
@@ -67,7 +67,7 @@ onThresholds -
 
     toJSON: =>
       id: @id()
-      icon: @color()
+      color: @color()
       name: @propertyName()
       is_all_site: @isAllSite()
       is_all_condition: @isAllCondition()

@@ -7,7 +7,7 @@ describe 'Threshold', ->
     window.model = new MainViewModel @collectionId
     @field_beds = new Field id: '1', code: 'beds'
     window.model.fields [@field_beds]
-    @threshold = new Threshold { id: 1, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, collection_id: @collectionId, ord: 1, icon: 'tomato', name: "bed", sites: [], is_all_site: true, is_all_condition: true, is_notify: true, message_notification: "alert_01", conditions: [{ field: '1', op: 'lt', type: 'value', value: 10, compare_field: '1' }] }, @collectionIcon
+    @threshold = new Threshold { id: 1, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, collection_id: @collectionId, ord: 1, color: 'tomato', name: "bed", sites: [], is_all_site: true, is_all_condition: true, is_notify: true, message_notification: "alert_01", conditions: [{ field: '1', op: 'lt', type: 'value', value: 10, compare_field: '1' }] }, @collectionIcon
 
   it 'should have 1 condition', ->
     expect(@threshold.conditions().length).toEqual 1
@@ -19,14 +19,14 @@ describe 'Threshold', ->
     @threshold.conditions()[0].value null
     expect(@threshold.valid()).toBeFalsy()
 
-  it 'should have default icon', ->
+  it 'should have default color', ->
     expect(@threshold.icon()).toEqual 'default'
 
   it 'should convert to json', ->
     expect(@threshold.toJSON()).toEqual {
       id: 1
       ord: 1
-      icon: 'tomato'
+      color: 'tomato'
       phone_notification : 
         fields: ["1","2"]
         users: ["1", "2"]
@@ -44,7 +44,7 @@ describe 'Threshold', ->
       conditions: [{field: '1', op: 'lt', value: 10, type: 'value', compare_field: '1'}]
     }
 
-  it 'should icon url point to assets directory', ->
+  it 'should color url point to assets directory', ->
     expect(@threshold.iconUrl()).toEqual "/assets/resmap_#{@collectionIcon}.png"
 
   describe 'without data', ->
