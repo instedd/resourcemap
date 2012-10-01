@@ -434,14 +434,10 @@ onCollections ->
         focus: (event, ui) ->
           $(event.target).val(ui.item.name)
           $(event.target).change()
-          $("#site-autocomplete-input-#{$(event.target).attr('id')}").val(ui.item.id)
-          $("#site-autocomplete-input-#{$(event.target).attr('id')}").change()
           return false
         select: (event, ui) ->
           $(event.target).val(ui.item.name)
           $(event.target).change()
-          $("#site-autocomplete-input-#{$(event.target).attr('id')}").val(ui.item.id)
-          $("#site-autocomplete-input-#{$(event.target).attr('id')}").change()
           return false
       )
       if $('.ui-autocomplete').length > 0
