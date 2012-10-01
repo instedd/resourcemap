@@ -18,8 +18,6 @@ onCollections ->
       # change to use dynamic icon from collection 
       #@markerImageInactive = @markerImage 'marker_inactive.png'
       #@markerImageTarget = @markerImage 'marker_target.png'
-     
-
 
       #@markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
       #@markerImageTargetShadow = @markerImageShadow 'marker_target.png'
