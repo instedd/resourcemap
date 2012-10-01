@@ -93,6 +93,7 @@ onCollections ->
         window.model.initDatePicker (dateText) =>
           @value(dateText)
           @save()
+        window.model.initAutocomplete()
 
     keyPress: (field, event) =>
       switch event.keyCode
@@ -115,6 +116,9 @@ onCollections ->
     closeDatePickerAndSave: =>
       if $('#ui-datepicker-div:visible').length == 0
         @save()
+
+    closeAutocompleteAndSave: =>
+      @save()
 
     selectOption: (option) =>
       @value([]) unless @value()

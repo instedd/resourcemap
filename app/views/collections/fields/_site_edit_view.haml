@@ -1,6 +1,6 @@
 - if single_editing_mode
-  = ko_html_field_tag :valueUI, attr: {id: "esCode"}, html: {class: "autocomplete-site-input" }
-  = ko_html_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, attr: {id: "'site-autocomplete-input-' + esCode"}, html: {type: "hidden" }
+  = ko_html_field_tag :valueUI, event: {blur: :closeAutocompleteAndSave}, attr: {id: "esCode"}, html: {class: "autocomplete-site-input" }
+  = ko_html_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :closeAutocompleteAndSave}, attr: {id: "'site-autocomplete-input-' + esCode"}, html: {type: "hidden" }
 - else
   = ko_html_field_tag :valueUI, attr: {id: "esCode"}, html: {class: "autocomplete-site-input" }
-  = ko_html_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, attr: {id: "'site-autocomplete-input-' + esCode"}, html: {type: "hidden" }
+  = ko_html_field_tag :value, hasfocus: true, event: {keydown: :keyPress}, attr: {id: "'site-autocomplete-input-' + esCode"}, html: {type: "hidden" }
