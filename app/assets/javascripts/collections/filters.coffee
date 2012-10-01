@@ -37,6 +37,17 @@ onCollections ->
 
     description: => "with location missing"
 
+  class @FilterBySiteProperty extends Filter
+    constructor: (field, name, id) ->
+      @field = field
+      @name = name
+      @id = id
+
+    setQueryParams: (options, api = false) =>
+      options[@field.codeForLink(api)] = "#{@id}"
+
+    description: => "where #{@field.name} is \"#{@name}\""
+
   class @FilterByTextProperty extends Filter
     constructor: (field, value) ->
       @field = field

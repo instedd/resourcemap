@@ -65,8 +65,7 @@ onCollections ->
       else if @kind == 'date'
         if value then @datePickerFormat(new Date(value))
       else if @kind == 'site'
-        site = (site for site in window.model.currentCollection().allSites() when site.id is parseInt(value))[0]
-        name = site?.name
+        name =  window.model.currentCollection()?.findSiteNameById(value)
         if value && name then name
       else
         value

@@ -443,8 +443,10 @@ onCollections ->
           $("#site-autocomplete-input-#{$(event.target).attr('id')}").val(ui.item.id)
           $("#site-autocomplete-input-#{$(event.target).attr('id')}").change()
           return false
-      ).data("autocomplete")._renderItem = (ul, item) ->
-        $("<li></li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo ul
+      )
+      if $('.ui-autocomplete').length > 0
+        $(".autocomplete-site-input").data("autocomplete")._renderItem = (ul, item) ->
+          $("<li></li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo ul
 
     @initDatePicker: (callback) ->
       @initInsteddPlatform()

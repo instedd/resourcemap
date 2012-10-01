@@ -15,3 +15,4 @@ spec/reports
 *.classpath
 nbprojec/*
 vendor/cache
+spec/fixtures/instant_file.xml

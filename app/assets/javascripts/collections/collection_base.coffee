@@ -19,8 +19,18 @@ onCollections ->
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @loadCurrentSnapshotMessage()
+      @loadAllSites()
+
+    loadAllSites: =>
       @allSites = ko.observable()
 
+    findSiteNameById: (value) =>
+      name = (site for site in window.model.currentCollection().allSites() when site.id is parseInt(value))[0]?.name
+      name
+
+    findSiteIdByName: (value) =>
+      id = (site for site in window.model.currentCollection().allSites() when site.name is value)[0]?.id
+      id
 
     loadCurrentSnapshotMessage: =>
       @viewingCurrentSnapshotMessage = ko.observable()

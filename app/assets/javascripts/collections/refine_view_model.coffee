@@ -43,8 +43,7 @@ onCollections ->
         window.model.initDatePicker (p, inst) =>
           id = inst.id
           $("##{id}").change()
-          window.model.initAutocomplete()
-
+        window.model.initAutocomplete()
 
     @filterDescription: (filter) ->
       if @filters()[0] == filter
@@ -97,6 +96,7 @@ onCollections ->
     @filterByProperty: ->
       return if @notValueSelected()
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
+
       filter = @filterFor(field)
       if field.kind == 'numeric'
         @addOrReplaceFilter(filter, (f) => f.operator == @expandedRefinePropertyOperator())
@@ -124,6 +124,9 @@ onCollections ->
       return switch field.kind
         when 'text', 'user'
           new FilterByTextProperty(field, @expandedRefinePropertyValue())
+        when 'site'
+          id = @currentCollection().findSiteIdByName(@expandedRefinePropertyValue())
+          new FilterBySiteProperty(field, @expandedRefinePropertyValue(), id)
         when 'numeric'
           new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue())
         when 'select_one', 'select_many'
