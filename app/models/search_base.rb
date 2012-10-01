@@ -82,6 +82,8 @@ module SearchBase
         when value[0 .. 1] == '~=' then starts_with(es_code, value[2 .. -1].strip)
         else eq(es_code, value)
         end
+      elsif value.is_a? Hash
+        value.each { |pair| op(es_code, pair[0], pair[1]) }
       else
         eq(es_code, value)
       end

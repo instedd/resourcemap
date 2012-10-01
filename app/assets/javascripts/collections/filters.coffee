@@ -54,7 +54,9 @@ onCollections ->
       @value = value
 
     setQueryParams: (options, api = false) =>
-      options[@field.codeForLink(api)] = "#{@operator}#{@value}"
+      code = @field.codeForLink(api)
+      options[code] = {} if not options[code]
+      options[code][@operator] = @value
 
     description: =>
       str = "where #{@field.name} "
@@ -88,7 +90,7 @@ onCollections ->
       options[@field.codeForLink(api)] = @value
 
     description: =>
-      "inside \"#{@valueLabel}\" if grouped by #{@field.name}"
+      "with #{@field.name} under \"#{@valueLabel}\""
 
   class @FilterBySelectProperty extends Filter
     constructor: (field, value, valueLabel) ->

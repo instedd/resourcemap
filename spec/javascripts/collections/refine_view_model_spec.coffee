@@ -24,10 +24,11 @@ describe 'Collection', ->
         { id: '4', name: 'Santa Fe' }
       ]
       }}
+      @numeric_field = new Field id: 8, code: 'number', name: 'Number', kind: 'numeric'
 
     describe 'filter by property', ->
       beforeEach ->
-        @collection.fields [@bed_field, @owner_field, @email_field, @phone_field, @date_field, @date_field_2, @hierarchy]
+        @collection.fields [@bed_field, @owner_field, @email_field, @phone_field, @date_field, @date_field_2, @hierarchy, @numeric_field]
         @model.currentCollection @collection
         spyOn @model, 'performSearchOrHierarchy'
 
@@ -58,7 +59,7 @@ describe 'Collection', ->
           @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0])
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "inside \"Tres de Febrero\" if grouped by #{@hierarchy.name}"
+          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Tres de Febrero\""
           expect(@model.filters()[0].value).toEqual ['2']
 
         it 'should filter selected item and its descendants', ->
@@ -66,14 +67,24 @@ describe 'Collection', ->
           @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0])
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "inside \"Buenos Aires\" if grouped by #{@hierarchy.name}"
+          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Buenos Aires\""
           expect(@model.filters()[0].value).toEqual ["1", "2", "3"]
 
-        it 'should not add hierarchy filter twice', ->
+        it 'should update current filter value if filtering by existent filter', ->
+          @model.expandedRefineProperty @hierarchy.esCode
+          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0])
+          @model.filterByProperty()
+
+          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Buenos Aires\""
+          expect(@model.filters()[0].value).toEqual ["1", "2", "3"]
+          expect(@model.filters().length).toEqual 1
+
           @model.expandedRefineProperty @hierarchy.esCode
           @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0])
           @model.filterByProperty()
-          @model.filterByProperty()
+
+          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Tres de Febrero\""
+          expect(@model.filters()[0].value).toEqual ["2"]
           expect(@model.filters().length).toEqual 1
 
       describe 'plugin kind', ->
@@ -96,6 +107,33 @@ describe 'Collection', ->
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
           expect(@model.filters()[0].description()).toEqual "where #{@phone_field.name} starts with \"foo\""
+
+      describe 'numeric kind', ->
+        it 'considers as equal two filters on the same field with the same operator', ->
+          @model.expandedRefineProperty @numeric_field.esCode
+          @model.expandedRefinePropertyOperator('<')
+          @model.expandedRefinePropertyValue(15)
+          @model.filterByProperty()
+          expect(@model.filters().length).toEqual 1
+
+          @model.expandedRefineProperty @numeric_field.esCode
+          @model.expandedRefinePropertyOperator('<')
+          @model.expandedRefinePropertyValue(1)
+          @model.filterByProperty()
+          expect(@model.filters().length).toEqual 1
+
+        it 'considers as different two filters on the same field with different operator', ->
+          @model.expandedRefineProperty @numeric_field.esCode
+          @model.expandedRefinePropertyOperator('<')
+          @model.expandedRefinePropertyValue(15)
+          @model.filterByProperty()
+          expect(@model.filters().length).toEqual 1
+
+          @model.expandedRefineProperty @numeric_field.esCode
+          @model.expandedRefinePropertyOperator('>')
+          @model.expandedRefinePropertyValue(1)
+          @model.filterByProperty()
+          expect(@model.filters().length).toEqual 2
 
       describe 'date kind', ->
         beforeEach ->

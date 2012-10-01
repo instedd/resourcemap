@@ -80,6 +80,13 @@ describe Search do
       assert_results search, site1
     end
 
+    it "searches by two comparisons on the same field" do
+      search = collection.new_search
+      search.where beds.es_code => "<=20"
+      search.where beds.es_code => ">7"
+      assert_results search, site2, site3, site4
+    end
+
 
     context "full text search" do
       let!(:population_source) { layer.fields.make :code => 'population_source', :kind => 'text' }

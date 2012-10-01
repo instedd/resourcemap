@@ -47,23 +47,29 @@ describe CollectionsController do
         numeric = layer.fields.make :code => 'numeric', :kind => 'numeric'
 
         @site1 = collection.sites.make :name => "site1", :properties => {text.es_code => 'foo', numeric.es_code => 1 }
-        @site2 = collection.sites.make :name => "site2", :properties => {text.es_code => 'bar', numeric.es_code => 2 }
+        @site2 = collection.sites.make :name => "osite2", :properties => {text.es_code => 'bar', numeric.es_code => 2 }
       end
 
-
     it "should get json of all field names and codes in a collection" do
-      get :all_site_names_and_codes, collection_id: collection.id, format: 'json'
+      get :sites_by_term, collection_id: collection.id, format: 'json'
 
       json = JSON.parse response.body
       json.length.should eq(2)
-      json[0]["id"].should eq(@site1.id)
-      json[0]["name"].should eq(@site1.name)
-      json[1]["id"].should eq(@site2.id)
-      json[1]["name"].should eq(@site2.name)
-     end
+      json[0]["id"].should eq(@site2.id)
+      json[0]["name"].should eq(@site2.name)
+      json[1]["id"].should eq(@site1.id)
+      json[1]["name"].should eq(@site1.name)
+    end
+
+    it "should filter by name in a collection" do
+      get :sites_by_term, collection_id: collection.id, format: 'json', term: "o"
+
+      json = JSON.parse response.body
+      json.length.should eq(1)
+      json[0]["id"].should eq(@site2.id)
+      json[0]["name"].should eq(@site2.name)
+    end
 
   end
-
-
 
 end
