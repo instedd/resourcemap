@@ -8,6 +8,7 @@ describe 'Collection', ->
     beforeEach ->
       editingSite = updateProperty: ->
       window.model.editingSite = -> editingSite
+      window.model.initAutocomplete = -> true
 
     describe 'Generic Field', ->
       beforeEach ->
