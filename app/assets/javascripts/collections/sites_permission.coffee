@@ -4,10 +4,10 @@ onCollections ->
   class @SitesPermission
     constructor: (data) ->
       @read = new Permission(data['read'])
-      @update = new Permission(data['update'])
+      @write = new Permission(data['write'])
 
     canRead: (site) ->
       @read.canAccess(site.id())
 
     canUpdate: (site) ->
-      @update.canAccess(site.id())
+      @write.canAccess(site.id())

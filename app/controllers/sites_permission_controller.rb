@@ -1,7 +1,10 @@
 class SitesPermissionController < ApplicationController
+  before_filter :authenticate_user!
+  before_filter :authenticate_collection_admin!, only: :create
 
   def index
-    render text: 'hello'
+    membership = current_user.memberships.find_by_collection_id params[:collection_id]
+    render json: { read: membership.read_sites_permission, write: membership.write_sites_permission }
   end
 
   def create

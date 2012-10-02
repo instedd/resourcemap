@@ -6,14 +6,9 @@ onCollections ->
       @siteMembershipInitialized = false
 
     @fetchSitesMembership: ->
-      unless @siteMembershipInitialized
-        data =
-          read :
-            all_sites : true
-            some_sites: []
-          update :
-            all_sites : false
-            some_sites: [2]
+      return if @siteMembershipInitialized
+
+      $.get "collections/#{@id}/sites_permission", {}, (data) =>
         @sitesPermission = new SitesPermission(data)
         @siteMembershipInitialized = true
 
