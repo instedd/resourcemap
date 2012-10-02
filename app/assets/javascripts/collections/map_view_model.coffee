@@ -365,8 +365,9 @@ onCollections ->
             #marker.setIcon null
             marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
           else
-            maker.setIcon null
-            marker.setShadow null
+            #maker.setIcon null
+            #marker.setShadow null
+            marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
             #marker.setIcon @markerImageActive
             #marker.setShadow @markerImageActiveShadow
         when 'inactive'
