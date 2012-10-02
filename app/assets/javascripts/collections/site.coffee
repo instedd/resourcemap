@@ -251,6 +251,7 @@ onCollections ->
       window.model.initAutocomplete()
 
     exitEditMode: (saved) =>
+      @collection.updatePermission @
       @inEditMode(false)
 
       @endEditLocationInMap(if saved then @position() else @originalLocation)
