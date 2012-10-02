@@ -130,8 +130,8 @@
   class AdvancedMembershipMode
     @constructor: (data)->
       @advancedMode = ko.observable(false)
-      @sitesRead = new Permission('read', data.sites.read)
-      @sitesUpdate = new Permission('update', data.sites.write)
+      @sitesRead = new Permission('read', data.sites?.read)
+      @sitesUpdate = new Permission('update', data.sites?.write)
       @error = ko.computed => @sitesRead.error() or @sitesUpdate.error()
       @validAdvancedMembership = ko.computed => !@error()
 
