@@ -24,6 +24,10 @@ module KnockoutHelper
     check_box_tag name, '1', false, options.reverse_merge(ko checked: name)
   end
 
+  def ko_radio_button_tag(name, value, options = {})
+    radio_button_tag name, value, false, options.reverse_merge(ko checked: name)
+  end
+
   def ko(hash = {})
     {'data-bind' => kov(hash)}
   end

@@ -28,8 +28,71 @@
           %th Admin?
           %th Can Read?
           %th Can Update?
-          %th
+          %th{style: 'min-width:165px'}
         <!-- ko foreach: memberships -->
+        /      ko if: advancedMode()
+        %tr
+          %td
+          %td{colspan: 5, style: 'padding:6px'}
+            .box.w80
+              %table
+                %tr
+                  %td{style: 'min-width:365px'}
+                    .header_text{ko(text: :userDisplayName)}
+                  %td.center{style: 'min-width:50px'}
+                    %input{ko(checked: :admin), type: :checkbox}
+                  %td{style: 'min-width:75px'}
+                  %td{style: 'min-width:80px'}
+                -# FIXME: hack an empty tr to remove table header background
+                %tr
+                / ko foreach: membershipLayerLinks
+                %tr{style: 'height: 32px'}
+                  %td
+                    %span{ko(text: 'layer.name()'), style: 'margin-left:20px'}
+                  %td
+                  %td.center
+                    %input{ko(checked: :canRead), type: :checkbox}
+                  %td.center
+                    %input{ko(checked: :canWrite), type: :checkbox}
+                / /ko
+              %br/
+              %h1.header_text Sites Permission
+              %div{style: 'padding-left:28px; padding-right:210px'}
+                .permission-edtior
+                  %span Can read
+                  = ko_radio_button_tag 'sitesRead.access', 'all_sites'
+                  = label_tag 'sitesRead.access_all_sites', 'All sites'
+                  = ko_radio_button_tag 'sitesRead.access', 'some_sites'
+                  = label_tag 'sitesRead.access_some_sites', 'Some sites'
+                / ko if: !sitesRead.allSites()
+                %input{ko(autocompleteTagField: 'sitesRead.someSites', objectType: "Site"), proxy: collection_sites_path(collection), valueField: :id, displayField: :name, type: :text}
+                / /ko
+
+                / ko if: sitesRead.allSites()
+                %hr/
+                / /ko
+
+                .permission-edtior
+                  %span Can update
+                  = ko_radio_button_tag 'sitesUpdate.access', 'all_sites'
+                  = label_tag 'sitesUpdate.access_all_sites', 'All sites'
+                  = ko_radio_button_tag 'sitesUpdate.access', 'some_sites'
+                  = label_tag 'sitesUpdate.access_some_sites', 'Some sites'
+                / ko if: !sitesUpdate.allSites()
+                %input{ko(autocompleteTagField: 'sitesUpdate.someSites', objectType: "Site"), proxy: collection_sites_path(collection), valueField: :id, displayField: :name, type: :text}
+                / /ko
+              %br/
+              %hr/
+
+              .bottom-actions
+                %button.white{ ko(click: 'saveSitesPermission', enable: :validAdvancedMembership) } Save
+                %a.tgrey{ ko(click: 'cancelAdvancedMembership'), href: 'javascript:void(0)' } Cancel
+                / ko if: !validAdvancedMembership()
+                %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
+                / /ko
+        /      /ko
+
+        /      ko if: !advancedMode()
         %tr{:style => 'height:32px'}
           - if collection_admin?
             %td
@@ -60,6 +123,7 @@
           %td
             - if collection_admin?
               <!-- ko if: !isCurrentUser() -->
+              = ko_link_to 'advanced', 'advancedModeOn', class: 'icon fedit black'
               = ko_link_to 'delete', '$root.destroyMembership', class: 'icon fdelete black'
               <!-- /ko -->
         <!-- ko if: expanded -->
@@ -83,12 +147,13 @@
           %td
         <!-- /ko -->
         <!-- /ko -->
+        /      /ko
         <!-- /ko -->
         - if collection_admin?
           %tr{:style => 'height:32px'}
             %td
               %button.cadd#add_member Add member
-            %td#autocomplete_container{style: 'width: 470px;'}
+            %td#autocomplete_container{style: 'width: 380px;'}
               = text_field_tag :member_email, '', :placeholder => 'Search by email...'
             %td
             %td

@@ -3,6 +3,8 @@ require 'spec_helper'
 describe Membership do
   it { should belong_to :user }
   it { should belong_to :collection }
+  it { should have_one :read_sites_permission }
+  it { should have_one :write_sites_permission }
 
   let(:collection) { Collection.make }
   let(:user) { User.make }
