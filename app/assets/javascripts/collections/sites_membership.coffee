@@ -5,16 +5,21 @@ onCollections ->
     @constructorSitesMembership: ->
       @siteMembershipInitialized = false
 
-    @fetchSitesMembership: ->
-      return if @siteMembershipInitialized
+    @fetchSitesMembership: (callback)->
+      if @siteMembershipInitialized
+        callback() if typeof(callback) is 'function'
+        return
 
+      @siteMembershipInitialized = true
       $.get "collections/#{@id}/sites_permission", {}, (data) =>
         @sitesPermission = new SitesPermission(data)
-        @siteMembershipInitialized = true
+        callback() if typeof(callback) is 'function'
 
     @readable: (site) ->
       @sitesPermission.canRead(site)
 
-    @updatePermission: (site) ->
-      sitePermission = @sitesPermission.canUpdate(site)
-      field.writeable = (sitePermission and field.writeable) for field in @fields()
+    @updatePermission: (site, callback) ->
+      @fetchSitesMembership =>
+        canUpdate = @sitesPermission.canUpdate(site)
+        field.writeable = (canUpdate and field.writeable) for field in @fields()
+        callback() if typeof(callback) is 'function'

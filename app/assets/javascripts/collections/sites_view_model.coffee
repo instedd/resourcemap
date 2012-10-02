@@ -38,11 +38,10 @@ onCollections ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
         site.copyPropertiesToCollection(site.collection)
-        site.collection.updatePermission(site)
         if @selectedSite() && @selectedSite().id() == site.id()
           @unselectSite()
 
-        @editingSite(site)
+        site.collection.updatePermission site, => @editingSite(site)
         @selectSite(site)
         @currentCollection(site.collection)
 
