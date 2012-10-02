@@ -30,7 +30,6 @@ onCollections ->
         site.copyPropertiesToCollection(@currentCollection())
         @unselectSite()
         @editingSite site
-        console.log site    
         @editingSite().startEditLocationInMap()
         window.model.initDatePicker()
         window.model.initAutocomplete()

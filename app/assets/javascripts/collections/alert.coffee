@@ -17,25 +17,25 @@ onCollections ->
 
       @getPanes().overlayImage.appendChild @div
       @getPanes().overlayMouseTarget.appendChild @divClick
-      return if @site.target 
-      listenerDownCallback = =>
-        @setMarkerIcon(@div, "resmap_#{@site.icon}_target") 
-        window.model.editSiteFromMarker(@site.id, @site.collection_id) 
+      unless @site.target 
+        listenerDownCallback = =>
+          @setMarkerIcon(@div, "resmap_#{@site.icon}_target") 
+          window.model.editSiteFromMarker(@site.id, @site.collection_id) 
 
-      listenerUpCallback = =>
-        #console.log 'up'
+        listenerUpCallback = =>
+          #console.log 'up'
 
-      @divDownListener = google.maps.event.addDomListener @divClick, 'mousedown', listenerDownCallback
-      @divUpListener   = google.maps.event.addDomListener @divClick, 'mouseup', listenerUpCallback
+        @divDownListener = google.maps.event.addDomListener @divClick, 'mousedown', listenerDownCallback
+        @divUpListener   = google.maps.event.addDomListener @divClick, 'mouseup', listenerUpCallback
 
     draw: =>
       pos = @getProjection().fromLatLngToDivPixel @position
       #@setMarkerIcon(@div,"resmap_#{@site.icon}")
-      @div.style.left = "#{pos.x - 13}px" 
-      @div.style.top  = "#{pos.y - 36}px"
+      @div.style.left = "#{pos.x - 16}px" 
+      @div.style.top  = "#{pos.y - 37}px"
       
-      @divClick.style.left = "#{pos.x - 16}px" 
-      @divClick.style.top  = "#{pos.y - 39}px"
+      @divClick.style.left = "#{pos.x - 19}px" 
+      @divClick.style.top  = "#{pos.y - 40}px"
 
       @divClick.style.border = "solid 3px #{@site.color}"
       if @startAs
@@ -72,14 +72,10 @@ onCollections ->
     setTarget: =>
       if @div
         @setMarkerIcon(@div, "resmap_#{@site.icon}_target")
+    
     setInactive: (draw = true) =>
       if @div
         @setMarkerIcon(@div, "resmap_#{@site.icon}_inactive")
-        #@div.style.backgroundImage = ""
-        #   $(@div).removeClass('target')
-        #   $(@div).addClass('inactive')
-        # else
-        #   @startAs = 'inactive'
     
     setMarkerIcon: (marker, icon)  =>
       marker.style.backgroundImage = "url(/assets/#{icon}.png)"

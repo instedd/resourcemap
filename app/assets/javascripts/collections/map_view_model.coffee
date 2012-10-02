@@ -193,9 +193,7 @@ onCollections ->
       editing = window.model.editingSiteLocation()
       selectedSiteId = @selectedSite()?.id()
       oldSelectedSiteId = @oldSelectedSite?.id() # Optimization to prevent flickering
-
       # Add markers if they are not already on the map
-       
       for site in sites
         dataSiteIds[site.id] = site.id
         if site.alert == 'true'
@@ -206,8 +204,12 @@ onCollections ->
             if site.id == oldSelectedSiteId
               @alertMarkers[site.id] = @oldSelectedSite.alertMarker
               @alertMarkers[site.id].site = site
-              @alertMarkers[site.id].setActive()
-              @oldSelectedSite.deleteAlertMarker false
+              @alertMarkers[site.id].setActive(false)
+              if @oldSelectedSite.marker
+                @alertMarkers[site.id].setMap(@map)
+                @oldSelectedSite.deleteMarker()
+              else
+                @oldSelectedSite.deleteAlertMarker false
               delete @oldSelectedSite
             else
               @createAlert(site)
