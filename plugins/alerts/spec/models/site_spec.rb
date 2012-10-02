@@ -9,7 +9,7 @@ describe Site do
   let!(:threshold) { collection.thresholds.make is_all_site: true,
     is_all_condition: true,
     conditions: [ {field: beds_field.es_code, op: :gt, value: '10'} ],
-    icon: 'foo.png'
+    color: 'red'
   }
 
   it "set alert in the index properties" do
@@ -19,7 +19,7 @@ describe Site do
     results = search.perform.results
     results.length.should eq(1)
     results[0]["_source"]["alert"].should eq(true)
-    results[0]["_source"]["icon"].should eq('foo.png')
+    results[0]["_source"]["color"].should eq('red')
   end
 
   describe "get notification numbers" do
