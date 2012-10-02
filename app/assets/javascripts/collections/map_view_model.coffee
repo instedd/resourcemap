@@ -16,12 +16,12 @@ onCollections ->
       @mapRequestNumber = 0
       @geocoder = new google.maps.Geocoder()
 
-      # change to use dynamic icon from collection
-      #@markerImageInactive = @markerImage 'marker_inactive.png'
-      #@markerImageTarget = @markerImage 'marker_target.png'
+      # returned to previous version because no single marker was visible in map. Maybe missing images or maybe bad error/default handling.
+      @markerImageInactive = @markerImage 'marker_inactive.png'
+      @markerImageTarget = @markerImage 'marker_target.png'
 
-      #@markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
-      #@markerImageTargetShadow = @markerImageShadow 'marker_target.png'
+      @markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
+      @markerImageTargetShadow = @markerImageShadow 'marker_target.png'
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
@@ -224,7 +224,7 @@ onCollections ->
             if site.highlighted
               @setMarkerIcon @markers[site.id], 'target'
             else
-              #@setMarkerIcon @markers[site.id], (@editingSite() ? 'inactive' : 'active')
+              @setMarkerIcon @markers[site.id], (@editingSite() ? 'inactive' : 'active')
 
           else
             if site.id == oldSelectedSiteId
@@ -247,17 +247,16 @@ onCollections ->
               markerOptions =
                 map: @map
                 position: position
-                #position: new google.maps.LatLng(site.lat, site.lng)
                 zIndex: @zIndex(site.lat)
                 optimized: false
 
               # Show site in grey if editing a site (but not if it's the one being edited)
               if editing
-                markerOptions.icon = @markerImage 'resmap_' + site.icon + '_inactive.png'
-                #markerOptions.shadow = @markerImageInactiveShadow
+                #markerOptions.icon = @markerImage 'resmap_' + site.icon + '_inactive.png'
+                markerOptions.shadow = @markerImageInactiveShadow
               else if (selectedSiteId && selectedSiteId == site.id)
-                markerOptions.icon = @markerImage 'resmap_' + site.icon + '_target.png'
-                #markerOptions.shadow = @markerImageTargetShadow
+                #markerOptions.icon = @markerImage 'resmap_' + site.icon + '_target.png'
+                markerOptions.shadow = @markerImageTargetShadow
 
               newMarker = new google.maps.Marker markerOptions
               newMarker.name = site.name
@@ -366,21 +365,23 @@ onCollections ->
         when 'active', 'null'
           if marker.site && marker.site.icon != 'null'
             # temporary comment this line, will change soon
-            #marker.setIcon null
-            marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
+            marker.setIcon null
+            #marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
           else
             #maker.setIcon null
             #marker.setShadow null
-            marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
-            #marker.setIcon @markerImageActive
-            #marker.setShadow @markerImageActiveShadow
+            #marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
+            marker.setIcon @markerImageActive
+            marker.setShadow @markerImageActiveShadow
         when 'inactive'
-          marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_inactive.png'
-          #marker.setShadow @markerImageInactiveShadow
+          #marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_inactive.png'
+          marker.setIcon @markerImageInactive
+          marker.setShadow @markerImageInactiveShadow
         when 'target'
           # marker target or focus
-          marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_target.png'
-          #marker.setShadow @markerImageTargetShadow
+          #marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_target.png'
+          marker.setIcon @markerImageTarget
+          marker.setShadow @markerImageTargetShadow
 
 
     @deleteMarker: (siteId, removeFromMap = true) ->
