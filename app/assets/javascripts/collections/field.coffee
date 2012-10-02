@@ -13,7 +13,7 @@ onCollections ->
       @value = ko.observable()
       @hasValue = ko.computed => @value() && (if @kind == 'select_many' then @value().length > 0 else @value())
 
-      if @kind == 'date'
+      if @kind == 'date' || @kind == 'site'
         @valueUI =  ko.computed
          read: =>  @valueUIFor(@value())
          write: (value) =>
@@ -65,8 +65,7 @@ onCollections ->
       else if @kind == 'date'
         if value then @datePickerFormat(new Date(value))
       else if @kind == 'site'
-        site = (site for site in window.model.currentCollection().allSites() when site.id is parseInt(value))[0]
-        name = site?.name
+        name =  window.model.currentCollection()?.findSiteNameById(value)
         if value && name then name
       else
         value
@@ -74,6 +73,8 @@ onCollections ->
     valueUIFrom: (value) =>
       if @kind == 'date'
         @valueFromDateUI(value)
+      else if @kind == 'site'
+        window.model.currentCollection()?.findSiteIdByName(value)
       else
         value
 
@@ -94,6 +95,7 @@ onCollections ->
         window.model.initDatePicker (dateText) =>
           @value(dateText)
           @save()
+        window.model.initAutocomplete()
 
     keyPress: (field, event) =>
       switch event.keyCode
@@ -116,6 +118,9 @@ onCollections ->
     closeDatePickerAndSave: =>
       if $('#ui-datepicker-div:visible').length == 0
         @save()
+
+    closeAutocompleteAndSave: =>
+      @save()
 
     selectOption: (option) =>
       @value([]) unless @value()

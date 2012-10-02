@@ -50,6 +50,13 @@
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
       %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
       <!-- /ko -->
+
+      <!-- ko if: kind == 'site' -->
+      is:
+      %input.autocomplete-site-input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
+      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      <!-- /ko -->
+
       <!-- ko if: kind == 'numeric' -->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
         %option{value: '='} equals

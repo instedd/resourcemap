@@ -8,6 +8,7 @@ onCollections ->
       @constructorLocatable(lat: collection.lat(), lng: collection.lng())
       @constructorSitesContainer()
       @loadCurrentSnapshotMessage()
+      @loadAllSites()
 
       @collection = collection
       @currentSnapshot = collection.currentSnapshot
@@ -19,6 +20,8 @@ onCollections ->
       @fieldsInitialized = collection.fieldsInitialized
       @refineFields = collection.fields
       @groupByOptions = collection.groupByOptions
+      @allSites(collection.allSites())
+
 
     createSite: (site) => new Site(@collection, site)
 

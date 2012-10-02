@@ -8,6 +8,7 @@ describe 'Collection', ->
     beforeEach ->
       @model = window.model
       @collection = new Collection id: 1, name: 'Clinic'
+      @collection.allSites([new Site @collection, id: 1, name: 'Site1', updated_at: "2012-07-11T13:46:22-05:00" ])
       @bed_field = new Field id: 1, code: 'bed', name: 'Bed', kind: 'numeric'
       @owner_field = new Field id: 2, code: 'owner', name: 'Owner', kind: 'user'
       @email_field = new Field id: 3, code: 'email', name: 'Email', kind: 'email'
@@ -25,10 +26,12 @@ describe 'Collection', ->
       ]
       }}
       @numeric_field = new Field id: 8, code: 'number', name: 'Number', kind: 'numeric'
+      @site_field = new Field id: 9, code: 'site', name: 'Site', kind: 'site'
+
 
     describe 'filter by property', ->
       beforeEach ->
-        @collection.fields [@bed_field, @owner_field, @email_field, @phone_field, @date_field, @date_field_2, @hierarchy, @numeric_field]
+        @collection.fields [@bed_field, @owner_field, @email_field, @phone_field, @date_field, @date_field_2, @hierarchy, @numeric_field, @site_field]
         @model.currentCollection @collection
         spyOn @model, 'performSearchOrHierarchy'
 
@@ -183,3 +186,20 @@ describe 'Collection', ->
             model.expandedRefineProperty @date_field.esCode
             @model.filterByProperty()
             expect(@model.filters().length).toEqual 0
+
+      describe 'site kind', ->
+        beforeEach ->
+          @model.expandedRefinePropertyValue 'site1'
+
+        it 'should add text filter', ->
+          @model.expandedRefineProperty @site_field.esCode
+          @model.filterByProperty()
+          expect(@model.filters().length).toEqual 1
+          expect(@model.filters()[0].description()).toEqual "where #{@site_field.name} is \"site1\""
+
+        it 'should not add filter if site is absent', ->
+          model.expandedRefineProperty @site_field.esCode
+          @model.expandedRefinePropertyValue(null)
+          @model.filterByProperty()
+          expect(@model.filters().length).toEqual 0
+
