@@ -8,8 +8,9 @@ class Api::CollectionsController < ApplicationController
   def show
     options = [:sort]
 
-    if params[:format] == 'csv'
+    if params[:format] == 'csv' || params[:page] == 'all'
       options << :all
+      params.delete(:page)
     else
       options << :page
     end
