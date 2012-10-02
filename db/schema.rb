@@ -209,6 +209,16 @@ ActiveRecord::Schema.define(:version => 20121001044637) do
 
   add_index "site_histories", ["site_id"], :name => "index_site_histories_on_site_id"
 
+  create_table "site_memberships", :force => true do |t|
+    t.integer  "collection_id"
+    t.integer  "field_id"
+    t.boolean  "view_access"
+    t.boolean  "update_access"
+    t.boolean  "delete_access"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "site_reminders", :force => true do |t|
     t.integer  "reminder_id"
     t.integer  "site_id"
