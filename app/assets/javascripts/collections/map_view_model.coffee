@@ -279,7 +279,8 @@ onCollections ->
         toRemoveAlert.push siteId unless dataSiteIds[siteId]
 
       for siteId in toRemoveAlert
-        @deleteAlert siteId, true
+        @deleteAlert siteId
+      
       if @oldSelectedSite
         if @oldSelectedSite.id() != selectedSiteId
           if @oldSelectedSite.alert() 
@@ -367,7 +368,7 @@ onCollections ->
           else
             #maker.setIcon null
             #marker.setShadow null
-            marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
+            marker.setIcon @markerImage 'resmap_default.png'
             #marker.setIcon @markerImageActive
             #marker.setShadow @markerImageActiveShadow
         when 'inactive'
