@@ -58,6 +58,7 @@ onLayers ->
 
     saveLayerCallback: (data) =>
       #if layer is new, we need to set id
+      $.status.showNotice("Layer '#{@currentLayer().name()}' successfully #{if @currentLayer().id() then 'saved' else 'created'}", 2000)
       @currentLayer().id(data.id)
       layersToReloadOrder = [@currentLayer()]
 
@@ -97,6 +98,8 @@ onLayers ->
             @saveLayerOrd(nextLayer)
 
           @layers.remove(layer)
+
+          $.status.showNotice("Layer '#{layer.name()}' successfully deleted", 2000)
 
     isFirstLayer: (layer) => layer.ord() == 1
     isLastLayer: (layer) => layer.ord() == @layers().length

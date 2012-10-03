@@ -17,7 +17,7 @@ module Field::Base
 
   PluginKinds = Plugin.hooks(:field_type).index_by { |h| h[:name] }
 
-  Kinds = BaseKinds.map{|k| k[:name]} | PluginKinds.keys
+  Kinds = (BaseKinds.map{|k| k[:name]} | PluginKinds.keys).sort
 
   Kinds.each do |kind|
     class_eval %Q(def #{kind}?; kind == '#{kind}'; end)

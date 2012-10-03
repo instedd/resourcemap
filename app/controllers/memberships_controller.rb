@@ -7,12 +7,16 @@ class MembershipsController < ApplicationController
       (hash[membership.user_id] ||= []) << membership
       hash
     end
-    memberships = collection.memberships.includes(:user).all.map do |membership|
+    memberships = collection.memberships.includes([:user, :read_sites_permission, :write_sites_permission]).all.map do |membership|
       {
         user_id: membership.user_id,
         user_display_name: membership.user.display_name,
         admin: membership.admin?,
-        layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}}
+        layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
+        sites: {
+          read: membership.read_sites_permission,
+          write: membership.write_sites_permission
+        }
       }
     end
     render json: memberships

@@ -1,6 +1,7 @@
 #= require module
 #= require collections/locatable
 #= require collections/sites_container
+#= require collections/sites_membership
 #= require collections/layer
 #= require collections/field
 onCollections ->
@@ -8,10 +9,12 @@ onCollections ->
   class @CollectionBase extends Module
     @include Locatable
     @include SitesContainer
+    @include SitesMembership
 
     constructor: (data) ->
       @constructorLocatable(data)
       @constructorSitesContainer()
+      @constructorSitesMembership()
 
       @id = data?.id
       @name = data?.name
@@ -81,3 +84,4 @@ onCollections ->
     unloadCurrentSnapshot: ->
       $.post "/collections/#{@id}/unload_current_snapshot.json", ->
         window.location.reload()
+

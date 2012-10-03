@@ -5,7 +5,7 @@ describe Site::TireConcern do
   let!(:layer) { collection.layers.make }
   let!(:beds_field) { layer.fields.make :code => 'beds' }
   let!(:tables_field) { layer.fields.make :code => 'tables' }
-  let!(:threshold) { collection.thresholds.make is_all_site: true, message_notification: "alert", conditions: [ {field: beds_field.es_code, op: 'lt', value: 10} ], icon: 'icon.png' }
+  let!(:threshold) { collection.thresholds.make is_all_site: true, message_notification: "alert", conditions: [ {field: beds_field.es_code, op: 'lt', value: 10} ] }
 
   it "stores in index after create" do
     site = collection.sites.make :properties => {beds_field.es_code => 10, tables_field.es_code => 20}

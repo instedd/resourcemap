@@ -88,6 +88,7 @@
               %div
                 %label Location:
                 = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}
+              / ko if: collection.readable($data)
               <!-- ko foreach: $root.currentCollection().layers() -->
               %div
                 %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
@@ -108,6 +109,7 @@
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
+              / /ko
     .tablebottom
       %button.grey{ko(enable: :valid), type: 'submit'} Done
       %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
@@ -146,6 +148,7 @@
                 %div{style: 'margin-bottom:14px'}
                   %label ID With Prefix:
                   %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
+              / ko if: collection.readable($data)
               <!-- ko foreach: collection.layers -->
               %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
@@ -178,6 +181,7 @@
               <!-- /ko -->
               <!-- /ko -->
               <!-- /ko -->
+              / /ko
     <!-- ko if: !$root.currentSnapshot() -->
     .tablebottom
       = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')

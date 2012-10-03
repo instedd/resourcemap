@@ -12,15 +12,16 @@ onCollections ->
       @clusters = {}
       @alertMarkers = {}
       @siteIds = {}
+      @ghostMarkers = []
       @mapRequestNumber = 0
       @geocoder = new google.maps.Geocoder()
 
-      # change to use dynamic icon from collection 
-      #@markerImageInactive = @markerImage 'marker_inactive.png'
-      #@markerImageTarget = @markerImage 'marker_target.png'
+      # returned to previous version because no single marker was visible in map. Maybe missing images or maybe bad error/default handling.
+      @markerImageInactive = @markerImage 'marker_inactive.png'
+      @markerImageTarget = @markerImage 'marker_target.png'
 
-      #@markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
-      #@markerImageTargetShadow = @markerImageShadow 'marker_target.png'
+      @markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
+      @markerImageTargetShadow = @markerImageShadow 'marker_target.png'
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
@@ -132,8 +133,8 @@ onCollections ->
           @drawSitesInMap data.sites
           @drawClustersInMap data.clusters
           # Original position for sites in identical location.
-          # commented out 
-          @drawOriginalGhost data.original_ghost
+          @deleteGhostMarkers()
+          @ghostMarkers = @drawOriginalGhost data.original_ghost
           @reloadMapSitesAutomatically = true
           @adjustZIndexes()
           @updateSitesCount()
@@ -177,16 +178,19 @@ onCollections ->
         listener()
 
     @drawOriginalGhost: (ghosts = []) ->
+      ghostMarkers = []
       for ghost in ghosts
-         markerOptions =
-           map: @map
-           position: new google.maps.LatLng(ghost.lat, ghost.lng)
-           zIndex: @zIndex(ghost.lat)
-           optimized: false
-           icon: @markerImage 'resmap_' + ghost.icon + '_inactive.png' 
-           #icon: @markerImageInactive
-           #shadow: @markerImageInactiveShadow
+        markerOptions =
+          map: @map
+          position: new google.maps.LatLng(ghost.lat, ghost.lng)
+          zIndex: @zIndex(ghost.lat)
+          optimized: false
+          #icon: @markerImage 'resmap_' + ghost.icon + '_inactive.png'
+          icon: @markerImageInactive
+          shadow: @markerImageInactiveShadow
         newMarker = new google.maps.Marker markerOptions
+        ghostMarkers.push(newMarker)
+      ghostMarkers
 
     @drawSitesInMap: (sites = []) ->
       dataSiteIds = {}
@@ -199,7 +203,7 @@ onCollections ->
         if site.alert == 'true'
           if @alertMarkers[site.id]
             if site.highlighted
-              @alertMarkers[site.id].setTarget() 
+              @alertMarkers[site.id].setTarget()
           else
             if site.id == oldSelectedSiteId
               @alertMarkers[site.id] = @oldSelectedSite.alertMarker
@@ -220,7 +224,7 @@ onCollections ->
             if site.highlighted
               @setMarkerIcon @markers[site.id], 'target'
             else
-              #@setMarkerIcon @markers[site.id], (@editingSite() ? 'inactive' : 'active')
+              @setMarkerIcon @markers[site.id], (@editingSite() ? 'inactive' : 'active')
 
           else
             if site.id == oldSelectedSiteId
@@ -231,7 +235,7 @@ onCollections ->
               @oldSelectedSite.deleteMarker false
               delete @oldSelectedSite
             else
-              # commented out 
+              # commented out
               position = new google.maps.LatLng(site.lat, site.lng)
               if site.ghost_radius?
                 projection = @map.dummyOverlay.getProjection()
@@ -242,18 +246,17 @@ onCollections ->
 
               markerOptions =
                 map: @map
-                position: position 
-                #position: new google.maps.LatLng(site.lat, site.lng)
+                position: position
                 zIndex: @zIndex(site.lat)
                 optimized: false
 
               # Show site in grey if editing a site (but not if it's the one being edited)
               if editing
-                markerOptions.icon = @markerImage 'resmap_' + site.icon + '_inactive.png'
-                #markerOptions.shadow = @markerImageInactiveShadow
+                #markerOptions.icon = @markerImage 'resmap_' + site.icon + '_inactive.png'
+                markerOptions.shadow = @markerImageInactiveShadow
               else if (selectedSiteId && selectedSiteId == site.id)
-                markerOptions.icon = @markerImage 'resmap_' + site.icon + '_target.png'
-                #markerOptions.shadow = @markerImageTargetShadow
+                #markerOptions.icon = @markerImage 'resmap_' + site.icon + '_target.png'
+                markerOptions.shadow = @markerImageTargetShadow
 
               newMarker = new google.maps.Marker markerOptions
               newMarker.name = site.name
@@ -283,10 +286,10 @@ onCollections ->
       
       if @oldSelectedSite
         if @oldSelectedSite.id() != selectedSiteId
-          if @oldSelectedSite.alert() 
+          if @oldSelectedSite.alert()
             @oldSelectedSite.deleteAlertMarker()
           else
-            @oldSelectedSite.deleteMarker()         
+            @oldSelectedSite.deleteMarker()
           delete @oldSelectedSite
 
     @setupMarkerListeners: (marker, localId) ->
@@ -306,7 +309,7 @@ onCollections ->
         $(marker.popup).offset(offset)
       marker.mouseOutListener = google.maps.event.addListener marker, 'mouseout', (event) =>
         marker.popup.remove()
-    
+
     @drawClustersInMap: (clusters = []) ->
       dataClusterIds = {}
       editing = window.model.editingSiteLocation()
@@ -359,34 +362,44 @@ onCollections ->
 
     @setMarkerIcon: (marker, icon) ->
       switch icon
-        
+
         when 'active', 'null'
           if marker.site && marker.site.icon != 'null'
             # temporary comment this line, will change soon
-            #marker.setIcon null
-            marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
+            marker.setIcon null
+            #marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
           else
             #maker.setIcon null
             #marker.setShadow null
             marker.setIcon @markerImage 'resmap_default.png'
-            #marker.setIcon @markerImageActive
-            #marker.setShadow @markerImageActiveShadow
+            marker.setIcon @markerImageActive
+            marker.setShadow @markerImageActiveShadow
         when 'inactive'
-          marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_inactive.png'
-          #marker.setShadow @markerImageInactiveShadow
+          #marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_inactive.png'
+          marker.setIcon @markerImageInactive
+          marker.setShadow @markerImageInactiveShadow
         when 'target'
-          # marker target or focus 
-          marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_target.png'
-          #marker.setShadow @markerImageTargetShadow
+          # marker target or focus
+          #marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_target.png'
+          marker.setIcon @markerImageTarget
+          marker.setShadow @markerImageTargetShadow
 
 
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap
-      # commented out  
+      # commented out
       @markers[siteId].popup.remove() if @markers[siteId].popup
       @deleteMarkerListeners siteId
       delete @markers[siteId]
+
+    @deleteGhostMarkers: () ->
+      return unless @ghostMarkers.length > 0
+      for marker in @ghostMarkers
+        marker.setMap null
+      delete @ghostMarkers
+
+
 
     @deleteMarkerListeners: (siteId) ->
       for listener in ['click', 'mouseOver', 'mouseOut']
@@ -413,11 +426,11 @@ onCollections ->
     @deleteCluster: (id) ->
       @clusters[id].setMap null
       delete @clusters[id]
-    
+
     @deleteAlert: (id, removeFromMap = true) ->
-      return unless @alertMarkers[id] 
+      return unless @alertMarkers[id]
       @alertMarkers[id].setMap null if removeFromMap
-      @deleteAlertMarkerListeners id 
+      @deleteAlertMarkerListeners id
       delete @alertMarkers[id]
 
     @zIndex: (lat) ->

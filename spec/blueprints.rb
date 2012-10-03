@@ -73,7 +73,7 @@ end
 Threshold.blueprint do
   collection
   ord { Sham.sn }
-  icon { Sham.icon }
+  color { Sham.color }
 end
 
 Snapshot.blueprint do
