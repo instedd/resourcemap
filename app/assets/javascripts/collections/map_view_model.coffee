@@ -16,13 +16,6 @@ onCollections ->
       @mapRequestNumber = 0
       @geocoder = new google.maps.Geocoder()
 
-      # returned to previous version because no single marker was visible in map. Maybe missing images or maybe bad error/default handling.
-      @markerImageInactive = @markerImage 'marker_inactive.png'
-      @markerImageTarget = @markerImage 'marker_target.png'
-
-      @markerImageInactiveShadow = @markerImageShadow 'marker_inactive.png'
-      @markerImageTargetShadow = @markerImageShadow 'marker_target.png'
-
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
           @reloadMapSites()
@@ -85,7 +78,7 @@ onCollections ->
 
       @markers = {}
       @clusters = {}
-      @alertMarkers   = {}
+      @alertMarkers = {}
       @showingMap(true)
 
       # This fixes problems when changing from fullscreen expanded to table view and then going back to map view
@@ -185,9 +178,7 @@ onCollections ->
           position: new google.maps.LatLng(ghost.lat, ghost.lng)
           zIndex: @zIndex(ghost.lat)
           optimized: false
-          #icon: @markerImage 'resmap_' + ghost.icon + '_inactive.png'
-          icon: @markerImageInactive
-          shadow: @markerImageInactiveShadow
+          icon: @markerImage 'resmap_' + ghost.icon + '_inactive.png'
         newMarker = new google.maps.Marker markerOptions
         ghostMarkers.push(newMarker)
       ghostMarkers
@@ -235,7 +226,6 @@ onCollections ->
               @oldSelectedSite.deleteMarker false
               delete @oldSelectedSite
             else
-              # commented out
               position = new google.maps.LatLng(site.lat, site.lng)
               if site.ghost_radius?
                 projection = @map.dummyOverlay.getProjection()
@@ -252,11 +242,9 @@ onCollections ->
 
               # Show site in grey if editing a site (but not if it's the one being edited)
               if editing
-                #markerOptions.icon = @markerImage 'resmap_' + site.icon + '_inactive.png'
-                markerOptions.shadow = @markerImageInactiveShadow
+                markerOptions.icon = @markerImage 'resmap_' + site.icon + '_inactive.png'
               else if (selectedSiteId && selectedSiteId == site.id)
-                #markerOptions.icon = @markerImage 'resmap_' + site.icon + '_target.png'
-                markerOptions.shadow = @markerImageTargetShadow
+                markerOptions.icon = @markerImage 'resmap_' + site.icon + '_target.png'
 
               newMarker = new google.maps.Marker markerOptions
               newMarker.name = site.name
@@ -283,7 +271,7 @@ onCollections ->
 
       for siteId in toRemoveAlert
         @deleteAlert siteId
-      
+
       if @oldSelectedSite
         if @oldSelectedSite.id() != selectedSiteId
           if @oldSelectedSite.alert()
@@ -365,30 +353,20 @@ onCollections ->
 
         when 'active', 'null'
           if marker.site && marker.site.icon != 'null'
-            # temporary comment this line, will change soon
-            marker.setIcon null
-            #marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
+            marker.setIcon @markerImage 'resmap_' + marker.site.icon + '.png'
           else
-            #maker.setIcon null
-            #marker.setShadow null
             marker.setIcon @markerImage 'resmap_default.png'
-            marker.setIcon @markerImageActive
-            marker.setShadow @markerImageActiveShadow
         when 'inactive'
-          #marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_inactive.png'
-          marker.setIcon @markerImageInactive
-          marker.setShadow @markerImageInactiveShadow
+          marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_inactive.png'
+
         when 'target'
           # marker target or focus
-          #marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_target.png'
-          marker.setIcon @markerImageTarget
-          marker.setShadow @markerImageTargetShadow
+          marker.setIcon @markerImage 'resmap_' + marker.site.icon + '_target.png'
 
 
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap
-      # commented out
       @markers[siteId].popup.remove() if @markers[siteId].popup
       @deleteMarkerListeners siteId
       delete @markers[siteId]
@@ -398,8 +376,6 @@ onCollections ->
       for marker in @ghostMarkers
         marker.setMap null
       delete @ghostMarkers
-
-
 
     @deleteMarkerListeners: (siteId) ->
       for listener in ['click', 'mouseOver', 'mouseOut']
