@@ -13,14 +13,14 @@ onCollections ->
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @icon = data?.icon ? 'default'
-      @color = data?.color 
+      @color = data?.color
       @idWithPrefix = ko.observable data?.id_with_prefix
       @properties = ko.observable data?.properties
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
-      @alert = ko.observable data?.alert 
+      @alert = ko.observable data?.alert
       @locationText = ko.computed
         read: =>
           if @hasLocation()
@@ -55,7 +55,7 @@ onCollections ->
       if field.showInGroupBy && window.model.currentCollection()
         window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[esCode], newValue: value}])
 
-      if field.kind == 'date'
+      if field.kind == 'date' && value
          value = (new Date(value)).toISOString()
 
       @properties()[esCode] = value
@@ -149,7 +149,7 @@ onCollections ->
       if @marker
         @setupMarkerListener()
       else
-        @createMarker() 
+        @createMarker()
         @alertMarker.setMap null if @alertMarker
       @marker.setDraggable(true)
       window.model.setAllMarkersInactive()
@@ -163,10 +163,10 @@ onCollections ->
         delete @marker
         @alertMarker.setMap window.model.map
         @alertMarker.setData( id: @id(), collection_id: @collection.id, lat: @lat(), lng: @lng(), color: @color, icon: @icon, target: true)
-      else 
+      else
         @marker.setPosition(@position()) if position
         @marker.setDraggable false
-        @deleteMarker() if !@position() 
+        @deleteMarker() if !@position()
 
       window.model.setAllMarkersActive()
       @panToPosition()
@@ -289,11 +289,11 @@ onCollections ->
       @marker.name = @name()
       @setupMarkerListener()
       window.model.setAllMarkersInactive() if draggable
-    
+
     createAlert: () =>
       @deleteAlertMarker()
       @alertMarker = new Alert window.model.map, {id: @id(), collection_id: @collection.id, lat: @lat(), lng: @lng(), color: @color, icon: @icon, target: true}
-     
+
     deleteMarker: (removeFromMap = true) =>
       return unless @marker
       @marker.setMap null if removeFromMap
