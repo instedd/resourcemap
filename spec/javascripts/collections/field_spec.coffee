@@ -182,6 +182,10 @@ describe 'Collection', ->
       it 'should set value for in ISO format', ->
         expect(@field.value()).toEqual('1012-12-26T03:00:00.000Z')
 
+      it 'should not fail when no value is selected', ->
+        @field.value(undefined)
+        expect(@field.value()).toEqual(undefined)
+
       it 'should get value for ui', ->
         expect(@field.valueUI()).toEqual('12/26/1012')
 
