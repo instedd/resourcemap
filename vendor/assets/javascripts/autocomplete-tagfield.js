@@ -72,8 +72,8 @@
 		var tagList = inputItem.parent();
 
 		// set presets
-		for(i=0; i<preset.length; i++) {
-			addItem(preset[i]);
+    for(j=0; j<preset.length; j++) {
+      addItem(preset[j]);
 		}
 
 		// events
