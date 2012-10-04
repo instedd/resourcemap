@@ -12,7 +12,7 @@ onCollections ->
       @clusters = {}
       @alertMarkers = {}
       @siteIds = {}
-      @disambiguationPaths = []
+      @disambiguationPaths = {}
       @ghostMarkers = []
       @mapRequestNumber = 0
       @geocoder = new google.maps.Geocoder()
@@ -124,7 +124,6 @@ onCollections ->
       getCallback = (data = {}) =>
         return unless currentMapRequestNumber == @mapRequestNumber
         if @showingMap()
-          @deleteDisambiguationPaths()
           @drawSitesInMap data.sites
           @drawClustersInMap data.clusters
           @deleteGhostMarkers() #Original position for sites in identical location.
@@ -232,8 +231,8 @@ onCollections ->
               if site.ghost_radius?
                 projection = @map.dummyOverlay.getProjection()
                 pointInPixels = projection.fromLatLngToContainerPixel(position)
-                pointInPixels.x += 25 * Math.cos(site.ghost_radius)
-                pointInPixels.y += 25 * Math.sin(site.ghost_radius)
+                pointInPixels.x += 40 * Math.cos(site.ghost_radius)
+                pointInPixels.y += 40 * Math.sin(site.ghost_radius)
                 position = projection.fromContainerPixelToLatLng(pointInPixels)
 
                 disambiguationPath = new google.maps.Polyline(
@@ -242,7 +241,7 @@ onCollections ->
                   strokeOpacity: 1.0
                   strokeWeight: 2
                 )
-                @storeDisambiguationPath(disambiguationPath)
+                @storeDisambiguationPath(site.id, disambiguationPath)
 
               markerOptions =
                 map: @map
@@ -360,7 +359,7 @@ onCollections ->
         cluster.setActive()
 
     @setMarkerIcon: (marker, icon) ->
-      if icon == 'null'
+      if icon == 'null' || !icon
         icon = 'active'
 
       if marker.site && marker.site.icon != 'null'
@@ -377,13 +376,15 @@ onCollections ->
         when 'target'
            '_target'
 
-
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap
       @markers[siteId].popup.remove() if @markers[siteId].popup
       @deleteMarkerListeners siteId
       delete @markers[siteId]
+      return unless @disambiguationPaths[siteId]
+      @disambiguationPaths[siteId].setMap null if removeFromMap
+      delete @disambiguationPaths[siteId]
 
     @deleteGhostMarkers: () ->
       return unless @ghostMarkers.length > 0
@@ -391,15 +392,9 @@ onCollections ->
         marker.setMap null
       delete @ghostMarkers
 
-    @deleteDisambiguationPaths: () ->
-      return if @disambiguationPaths.length == 0
-      for path in @disambiguationPaths
-        path.setMap(null)
-      @disambiguationPaths = []
-
-    @storeDisambiguationPath: (path) ->
+    @storeDisambiguationPath: (site_id, path) ->
       path.setMap(@map)
-      @disambiguationPaths.push(path)
+      @disambiguationPaths[site_id] = path
 
     @deleteMarkerListeners: (siteId) ->
       for listener in ['click', 'mouseOver', 'mouseOut']
