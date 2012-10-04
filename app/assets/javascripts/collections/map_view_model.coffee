@@ -505,23 +505,9 @@ onCollections ->
       $.instedd.init_components() if $.instedd
 
     @initAutocomplete: (callback) ->
-      @initInsteddPlatform()
-      $(".autocomplete-site-input").autocomplete(
-        minLength: 1
-        # Pending: replace this adress to @currentCollection().allSites() for avoiding multiple server gets
-        source: "/collections/#{@currentCollection().id}/sites_by_term.json"
-        focus: (event, ui) ->
-          $(event.target).val(ui.item.name)
-          $(event.target).change()
-          return false
-        select: (event, ui) ->
-          $(event.target).val(ui.item.name)
-          $(event.target).change()
-          return false
-      )
-      if $('.ui-autocomplete').length > 0
+      if $(".autocomplete-site-input").length > 0 && $(".autocomplete-site-input").data("autocomplete")
         $(".autocomplete-site-input").data("autocomplete")._renderItem = (ul, item) ->
-          $("<li></li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo ul
+           $("<li></li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo ul
 
     @initDatePicker: (callback) ->
       @initInsteddPlatform()

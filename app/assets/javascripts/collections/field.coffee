@@ -109,7 +109,6 @@ onCollections ->
     save: =>
       @editing(false)
       @filter('')
-      @valueUI(@value()) # This sometimes change @value
       window.model.editingSite().updateProperty(@esCode, @value())
       delete @originalValue
 

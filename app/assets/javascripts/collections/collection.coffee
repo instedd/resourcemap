@@ -36,3 +36,6 @@ onCollections ->
 
     searchUsersUrl: -> "/collections/#{@id}/memberships/search.json"
 
+    searchSitesUrl: -> "/collections/#{@id}/sites_by_term.json"
+
+

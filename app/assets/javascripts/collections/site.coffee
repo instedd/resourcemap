@@ -71,7 +71,6 @@ onCollections ->
           hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode], newValue: field.value()})
 
         if field.value()
-          field.valueUI(field.value())
           value = field.value()
 
           @properties()[field.esCode] = value
