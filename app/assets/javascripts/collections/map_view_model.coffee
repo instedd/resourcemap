@@ -217,7 +217,7 @@ onCollections ->
             if site.highlighted
               @setMarkerIcon @markers[site.id], 'target'
             else
-              @setMarkerIcon @markers[site.id], (@editingSite() ? 'inactive' : 'active')
+              #@setMarkerIcon @markers[site.id], (@editingSite() ? 'inactive' : 'active')
 
           else
             if site.id == oldSelectedSiteId
