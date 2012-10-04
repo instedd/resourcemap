@@ -109,11 +109,7 @@ onCollections ->
     save: =>
       @editing(false)
       @filter('')
-      console.log("el valor de value es #{@value()}")
       @valueUI(@value()) # This sometimes change @value
-      console.log("aplicamos lo de valueUI")
-      console.log("el valor de value es #{@value()}")
-      console.log("el valor de valueUI es #{@valueUI()}")
       window.model.editingSite().updateProperty(@esCode, @value())
       delete @originalValue
 
