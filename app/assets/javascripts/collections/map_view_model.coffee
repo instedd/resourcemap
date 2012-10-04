@@ -369,13 +369,12 @@ onCollections ->
 
     @endingUrl: (icon_name) ->
       switch icon_name
-        when 'active'
-           ''
         when 'inactive'
            '_inactive'
         when 'target'
            '_target'
-
+        else
+          ''
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap
