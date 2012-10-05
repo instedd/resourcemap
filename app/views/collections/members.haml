@@ -51,9 +51,9 @@
                     %span{ko(text: 'layer.name()'), style: 'margin-left:20px'}
                   %td
                   %td.center
-                    %input{ko(checked: :canRead), type: :checkbox}
+                    %input{ko(checked: :canRead, enable: '!$parent.admin()'), type: :checkbox}
                   %td.center
-                    %input{ko(checked: :canWrite), type: :checkbox}
+                    %input{ko(checked: :canWrite, enable: '!$parent.admin()'), type: :checkbox}
                 / /ko
               %br/
               %h1.header_text Sites Permission
@@ -140,9 +140,9 @@
           <!-- /ko -->
           <!-- ko if: $root.admin() && !membership.isCurrentUser() -->
           %td.center
-            %input{ko(checked: :canRead), type: :checkbox}
+            %input{ko(checked: :canRead, enable: '!$parent.admin()'), type: :checkbox}
           %td.center
-            %input{ko(checked: :canWrite), type: :checkbox}
+            %input{ko(checked: :canWrite, enable: '!$parent.admin()'), type: :checkbox}
           <!-- /ko -->
           %td
         <!-- /ko -->
