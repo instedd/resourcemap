@@ -84,7 +84,7 @@
             %td
               %div
                 = label_tag :name, "Name:"
-                = text_field_tag :name, '', placeholder: 'Enter new site name', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName})
+                = text_field_tag :name, '', placeholder: 'Enter new site name', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}), :autofocus => true
               %div
                 %label Location:
                 = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}
