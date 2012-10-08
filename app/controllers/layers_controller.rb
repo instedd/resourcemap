@@ -1,5 +1,6 @@
 class LayersController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :authenticate_collection_admin!, :except => [:index]
   before_filter :fix_field_config, only: [:create, :update]
 
   def index

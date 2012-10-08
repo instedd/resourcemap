@@ -194,7 +194,7 @@
         %button.faccept{ko(text: :name)}
         <!-- /ko -->
 
-      - if !current_snapshot
+      - if !current_snapshot && collection_admin?
         / ko if: !$root.savingLayer()
         %button.farrow{ko(click: '$root.editLayer')} Edit
         / /ko
@@ -203,7 +203,7 @@
     %br/
     <!-- /ko -->
 
-    - if !current_snapshot
+    - if !current_snapshot && collection_admin?
       / ko if: !savingLayer()
       -# New layer link
       .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none'}

@@ -13,13 +13,10 @@ onCollections ->
       @value = ko.observable()
       @hasValue = ko.computed => @value() && (if @kind == 'select_many' then @value().length > 0 else @value())
 
-      if @kind == 'date' || @kind == 'site'
-        @valueUI =  ko.computed
-         read: =>  @valueUIFor(@value())
-         write: (value) =>
-           @value(@valueUIFrom(value))
-      else
-        @valueUI = ko.computed => @valueUIFor(@value())
+      @valueUI =  ko.computed
+       read: =>  @valueUIFor(@value())
+       write: (value) =>
+         @value(@valueUIFrom(value))
 
       if @kind in ['select_one', 'select_many']
         @options = if data.config?.options?
@@ -79,7 +76,7 @@ onCollections ->
         value
 
     valueFromDateUI: (value) =>
-      (new Date(value)).toISOString()
+      (new Date(value)).toISOString() if value
 
     datePickerFormat: (date) =>
       date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear()

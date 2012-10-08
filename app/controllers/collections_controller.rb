@@ -163,7 +163,13 @@ class CollectionsController < ApplicationController
 
     search.apply_queries
 
-    render json: search.results.map{ |item| item["fields"]}
+    results = search.results.map{ |item| item["fields"]}
+
+    results.each do |item|
+      item[:value] = item["name"]
+    end
+
+    render json: results
   end
 
   def search
