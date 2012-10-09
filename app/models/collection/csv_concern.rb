@@ -73,16 +73,22 @@ module Collection::CsvConcern
           item[:error_description] = "Invalid column number"
         else
 
-          #Check name does not exist
+          #Check unique name
           name = row[2].strip
-
           if items.any?{|item| item.second[:name] == name}
             item[:error] = "Invalid name."
             item[:error_description] = "Hierarchy name should be unique"
           else
-            item[:id] = row[0].strip
-            item[:parent] = row[1].strip if row[1].present?
-            item[:name] = name
+            #Check unique id
+            id = row[0].strip
+            if items.any?{|item| item.second[:id] == id}
+              item[:error] = "Invalid id."
+              item[:error_description] = "Hierarchy id should be unique"
+            else
+              item[:id] = id
+              item[:parent] = row[1].strip if row[1].present?
+              item[:name] = name
+            end
           end
         end
 
