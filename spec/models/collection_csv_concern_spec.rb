@@ -140,6 +140,32 @@ describe Collection::CsvConcern do
 
       ])
     end
+
+    it "hierarchy name should be unique" do
+      json = collection.decode_hierarchy_csv %(
+        1,,Site 1
+        2,,Site 1
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Site 1'},
+        {order: 2, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'}
+      ])
+    end
+
+     it "more than one hierarchy name repeated" do
+        json = collection.decode_hierarchy_csv %(
+          1,,Site 1
+          2,,Site 1
+          3,,Site 1
+        ).strip
+
+        json.should eq([
+          {order: 1, id: '1', name: 'Site 1'},
+          {order: 2, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'},
+          {order: 3, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'}
+        ])
+      end
   end
 
 end

@@ -216,7 +216,6 @@ class CollectionsController < ApplicationController
   def decode_hierarchy_csv
     @hierarchy = collection.decode_hierarchy_csv(params[:file].read)
     @hierarchy_errors = CollectionsController.generate_error_description_list(@hierarchy)
-    puts @hierarchy_errors
     render layout: false
   end
 

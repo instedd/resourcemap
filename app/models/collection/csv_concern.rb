@@ -72,9 +72,18 @@ module Collection::CsvConcern
           item[:error] = "Wrong format."
           item[:error_description] = "Invalid column number"
         else
-          item[:id] = row[0].strip
-          item[:parent] = row[1].strip if row[1].present?
-          item[:name] = row[2].strip
+
+          #Check name does not exist
+          name = row[2].strip
+
+          if items.any?{|item| item.second[:name] == name}
+            item[:error] = "Invalid name."
+            item[:error_description] = "Hierarchy name should be unique"
+          else
+            item[:id] = row[0].strip
+            item[:parent] = row[1].strip if row[1].present?
+            item[:name] = name
+          end
         end
 
         items[item[:order]] = item
