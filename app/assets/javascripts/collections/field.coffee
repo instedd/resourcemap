@@ -90,7 +90,7 @@ onCollections ->
         @originalValue = @value()
         @editing(true)
         window.model.initDatePicker (dateText) =>
-          @value(dateText)
+          @valueUI(dateText)
           @save()
         window.model.initAutocomplete()
 
