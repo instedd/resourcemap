@@ -191,7 +191,7 @@
 
       .middlebuttons
         <!-- ko foreach: fields -->
-        %button.faccept{ko(text: :name)}
+        %div{ko(attr: {class: 'iconClass()'}, text: :name), :style => 'line-height:21px;color:black;'}
         <!-- /ko -->
 
       - if !current_snapshot && collection_admin?

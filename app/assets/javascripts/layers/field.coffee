@@ -68,7 +68,10 @@ onLayers ->
       @nextId += 1
 
     buttonClass: =>
-      FIELD_TYPES[@kind()]
+      FIELD_TYPES[@kind()].css_class
+
+    iconClass: =>
+      FIELD_TYPES[@kind()].small_css_class || 'faccept'
 
     setHierarchy: (hierarchy) =>
       @hierarchy(hierarchy)
