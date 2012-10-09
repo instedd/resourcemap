@@ -116,9 +116,6 @@ onCollections ->
       if $('#ui-datepicker-div:visible').length == 0
         @save()
 
-    closeAutocompleteAndSave: =>
-      @save()
-
     selectOption: (option) =>
       @value([]) unless @value()
       @value().push(option.id)
