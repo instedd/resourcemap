@@ -150,6 +150,7 @@
                   %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
               / ko if: collection.readable($data)
               <!-- ko foreach: collection.layers -->
+              / col = collection
               %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
@@ -162,6 +163,9 @@
                 <!-- /ko -->
                 <!-- ko if: !writeable -->
                 %span.value{ko(text: :valueUI)}
+                <!-- /ko -->
+                <!-- ko if: kind == 'site' && !editing() -->
+                %button.farrow.right{ko(click: 'function(data, event) { $root.editSiteFromId(value(),$root.currentCollection().id) }'), type: "button"}
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: !hasValue() -->

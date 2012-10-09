@@ -7,6 +7,7 @@ module Site::IndexUtils
     hash = {
       id: site_id,
       name: site.name,
+      id_with_prefix: site.id_with_prefix, 
       name_not_analyzed: site.name,
       type: :site,
       properties: site.properties,
@@ -30,6 +31,7 @@ module Site::IndexUtils
     {
       properties: {
         name: { type: :string },
+        id_with_prefix: { type: :string },
         name_not_analyzed: { type: :string, index: :not_analyzed },
         location: { type: :geo_point },
         created_at: { type: :date, format: :basic_date_time },

@@ -179,9 +179,6 @@ describe 'Collection', ->
       it 'should have value when set one', ->
         expect(@field.hasValue()).toBeTruthy()
 
-      it 'should set value for in ISO format', ->
-        expect(@field.value()).toEqual('1012-12-26T03:00:00.000Z')
-
       it 'should not fail when no value is selected', ->
         @field.value(undefined)
         expect(@field.value()).toEqual(undefined)
@@ -191,7 +188,8 @@ describe 'Collection', ->
 
       it 'should read and write valueUI and change value', ->
         @field.valueUI('12/25/1012')
-        expect(@field.value()).toEqual('1012-12-25T03:00:00.000Z')
+        isoValue = (new Date('12/25/1012')).toISOString()
+        expect(@field.value()).toEqual(isoValue)
         expect(@field.valueUI()).toEqual('12/25/1012')
 
 

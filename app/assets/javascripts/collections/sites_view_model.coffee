@@ -47,6 +47,19 @@ onCollections ->
 
         @loadBreadCrumb()
 
+    @editSiteFromId: (siteId, collectionId) ->
+      site = @siteIds[siteId]
+      if site
+        @editSite site
+      else
+        @loadingSite(true)
+        $.get "/collections/#{collectionId}/sites/#{siteId}.json", {}, (data) =>
+          @loadingSite(false)
+          collection = window.model.findCollectionById(collectionId)
+          site = new Site(collection, data)
+          site = collection.addSite(site)
+          @editSite site
+
     @selectSiteFromId: (siteId, collectionId) ->
       site = @siteIds[siteId]
       if site
@@ -116,9 +129,9 @@ onCollections ->
         if @editingSite()
           # Unselect site if it's not on the tree
           @editingSite().editingLocation(false)
-          if @editingSite().alert() 
+          if @editingSite().alert()
             @editingSite().deleteAlertMarker() unless @editingSite().id()
-          else 
+          else
             @editingSite().deleteMarker() unless @editingSite().id()
           @editingSite(null)
           window.model.setAllMarkersActive()
@@ -169,6 +182,7 @@ onCollections ->
           @reloadMapSites()
         else
           @selectedSite(site)
+
           @selectedSite().selected(true)
           if @selectedSite().id() && @selectedSite().hasLocation()
             # Again, all these checks are to prevent flickering
@@ -180,7 +194,7 @@ onCollections ->
                 @deleteAlert @selectedSite().id(), false
               else
                 @selectedSite().createAlert()
-            else 
+            else
               if @markers[@selectedSite().id()]
                 @selectedSite().marker = @markers[@selectedSite().id()]
                 @selectedSite().marker.setZIndex(200000)
