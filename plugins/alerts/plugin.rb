@@ -20,7 +20,7 @@ class Alerts::Plugin < Plugin
   field_type \
     name: 'phone',
     css_class: 'lphone',
-    small_css_class: 'lphone',
+    small_css_class: 'sphone',
     edit_view: 'fields/phone_edit_view'
 
   clusterer \
