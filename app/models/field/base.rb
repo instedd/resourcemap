@@ -58,6 +58,8 @@ module Field::Base
       end
     elsif hierarchy?
       return value
+    elsif date?
+      return value.to_time.strftime("%m/%d/%Y")
     else
       return value
     end

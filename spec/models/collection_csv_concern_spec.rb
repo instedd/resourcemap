@@ -24,6 +24,18 @@ describe Collection::CsvConcern do
     roots[1].lng.to_f.should eq(40.0)
   end
 
+  it "should print date as MM/DD/YYYY" do
+    user = User.make
+    layer = collection.layers.make
+    date = layer.fields.make :code => 'date', :kind => 'date'
+    collection.memberships.make :user => user
+    site = collection.sites.make :properties => {date.es_code => '1985-10-19T03:00:00.000Z'}
+
+    csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
+
+    csv[1][4].should eq('10/19/1985')
+  end
+
   describe "decode hierarchy csv test" do
 
     it "decodes hierarchy csv" do
