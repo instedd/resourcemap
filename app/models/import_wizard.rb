@@ -175,6 +175,10 @@ class ImportWizard
                   if !value.blank?
                     site.properties[existing_field] = value
                   end
+                when 'date'
+                  if !value.blank?
+                    site.properties[existing_field] = Site.format_date_iso_string(Date.strptime(value, '%m/%d/%Y'))
+                  end
               end
               fields[existing_field.code] = existing_field
             end
