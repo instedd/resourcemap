@@ -147,7 +147,7 @@ class ImportWizard
             existing_field = existing_fields[spec[:field_id].to_i]
             if existing_field
               case existing_field.kind
-                when 'numeric', 'text'
+                when 'numeric', 'text', 'site'
                   site.properties[existing_field] = value
                 when 'select_one'
                   existing_option = existing_field.config['options'].find { |x| x['code'] == value }

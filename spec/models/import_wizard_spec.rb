@@ -447,5 +447,33 @@ describe ImportWizard do
      sites[1].properties.should eq({date.es_code => "2033-10-23T00:00:00Z"})
    end
 
+  it "imports with name and existing site property" do
+
+    collection.sites.make :name => 'Site1', :id => '123'
+
+    csv_string = CSV.generate do |csv|
+     csv << ['Name', 'Column']
+     csv << ['Foo', '123']
+     csv << ['', '', '', '']
+    end
+
+    specs = [
+     {name: 'Name', usage: 'name'},
+     {name: 'Column', usage: 'existing_field', field_id: site.id},
+     ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    collection.layers.all.should eq([layer])
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Site1')
+
+    sites[1].name.should eq('Foo')
+    sites[1].properties.should eq({site.es_code => "123"})
+  end
 
 end
