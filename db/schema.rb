@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121005075705) do
+ActiveRecord::Schema.define(:version => 20121011081126) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -163,16 +163,6 @@ ActiveRecord::Schema.define(:version => 20121005075705) do
 
   add_index "reminders", ["collection_id"], :name => "index_reminders_on_collection_id"
   add_index "reminders", ["repeat_id"], :name => "index_reminders_on_repeat_id"
-
-  create_table "reminders_sites", :force => true do |t|
-    t.integer  "reminder_id"
-    t.integer  "site_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-  end
-
-  add_index "reminders_sites", ["reminder_id"], :name => "index_reminders_sites_on_reminder_id"
-  add_index "reminders_sites", ["site_id"], :name => "index_reminders_sites_on_site_id"
 
   create_table "repeats", :force => true do |t|
     t.string   "name"
