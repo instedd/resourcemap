@@ -6,14 +6,14 @@ module Field::Base
   # ]
 
   BaseKinds = [
-   { name: 'text', css_class: 'ltext' },
-   { name: 'numeric', css_class: 'lnumber' },
-   { name: 'select_one', css_class: 'lsingleoption' },
-   { name: 'select_many', css_class: 'lmultipleoptions' },
-   { name: 'hierarchy', css_class: 'lhierarchy' },
-   { name: 'date', css_class: 'ldate' },
-   { name: 'site', css_class: 'lsite' },
-   { name: 'user', css_class: 'luser' }]
+   { name: 'text', css_class: 'ltext', small_css_class: 'stext' },
+   { name: 'numeric', css_class: 'lnumber', small_css_class: 'snumeric' },
+   { name: 'select_one', css_class: 'lsingleoption', small_css_class: 'sselect_one' },
+   { name: 'select_many', css_class: 'lmultipleoptions', small_css_class: 'sselect_many' },
+   { name: 'hierarchy', css_class: 'lhierarchy', small_css_class: 'shierarchy' },
+   { name: 'date', css_class: 'ldate', small_css_class: 'sdate' },
+   { name: 'site', css_class: 'lsite', small_css_class: 'ssite' },
+   { name: 'user', css_class: 'luser', small_css_class: 'suser' }]
 
   PluginKinds = Plugin.hooks(:field_type).index_by { |h| h[:name] }
 
@@ -58,6 +58,8 @@ module Field::Base
       end
     elsif hierarchy?
       return value
+    elsif date?
+      return value.to_time.strftime("%m/%d/%Y")
     else
       return value
     end

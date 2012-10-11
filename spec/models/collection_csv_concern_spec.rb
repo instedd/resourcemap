@@ -24,6 +24,18 @@ describe Collection::CsvConcern do
     roots[1].lng.to_f.should eq(40.0)
   end
 
+  it "should print date as MM/DD/YYYY" do
+    user = User.make
+    layer = collection.layers.make
+    date = layer.fields.make :code => 'date', :kind => 'date'
+    collection.memberships.make :user => user
+    site = collection.sites.make :properties => {date.es_code => '1985-10-19T03:00:00.000Z'}
+
+    csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
+
+    csv[1][4].should eq('10/19/1985')
+  end
+
   describe "decode hierarchy csv test" do
 
     it "decodes hierarchy csv" do
@@ -138,6 +150,46 @@ describe Collection::CsvConcern do
         {order: 3, error: 'Wrong format.', error_description: 'Invalid column number'},
         {order: 4, id: '4', name: 'Site 4'}
 
+      ])
+    end
+
+    it "hierarchy name should be unique" do
+      json = collection.decode_hierarchy_csv %(
+        1,,Site 1
+        2,,Site 1
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Site 1'},
+        {order: 2, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'}
+      ])
+    end
+
+    it "more than one hierarchy name repeated" do
+      json = collection.decode_hierarchy_csv %(
+        1,,Site 1
+        2,,Site 1
+        3,,Site 1
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Site 1'},
+        {order: 2, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'},
+        {order: 3, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'}
+      ])
+    end
+
+    it "hiearchy id should be unique" do
+      json = collection.decode_hierarchy_csv %(
+        1,,Site 1
+        1,,Site 2
+        1,,Site 3
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Site 1'},
+        {order: 2, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'},
+        {order: 3, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'}
       ])
     end
   end

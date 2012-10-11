@@ -509,11 +509,8 @@ onCollections ->
         $(".autocomplete-site-input").data("autocomplete")._renderItem = (ul, item) ->
            $("<li></li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo ul
 
-    @initDatePicker: (callback) ->
+    @initDatePicker: (options = {}) ->
       @initInsteddPlatform()
-
-      options = {}
-      options.onSelect = callback if callback
       # fix dinamic DOM
       # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
       $(".ux-datepicker").removeClass('hasDatepicker').datepicker(options)

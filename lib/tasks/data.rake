@@ -19,7 +19,12 @@ end
 
 def execute_sql(filename)
   open(filename, 'r') do |f|
-    ActiveRecord::Base.connection.execute(f.read) if Rails.env.production?
+    mysql_client.query f.read if Rails.env.production?
     puts "finish executing #{filename}"
   end
+end
+
+def mysql_client
+  db_config = Rails.configuration.database_configuration[Rails.env] unless @client
+  @client ||= Mysql2::Client.new(host: db_config['host'], username: db_config['username'], flags: Mysql2::Client::MULTI_STATEMENTS)
 end

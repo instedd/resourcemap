@@ -1,0 +1,25 @@
+<% Field::BaseKinds.each do |kind| %>
+<%=   ".#{kind[:small_css_class]} {" %>
+
+    display: inline-block;
+    vertical-align: middle;
+    height: 21px;
+    min-width: 20px;
+    padding-left: 27px;
+    margin: 4px 2px 4px 5px;
+    <%= "background:url(/assets/fields_small_icons/#{kind[:name]}.png) no-repeat;" %>
+}
+<% end %>
+
+<% Field::PluginKinds.each do |name, kind| %>
+  <%=   ".#{kind[:small_css_class]} {" %>
+      display: inline-block;
+      vertical-align: middle;
+      height: 21px;
+      min-width: 20px;
+      padding-left: 27px;
+      margin: 4px 2px 4px 5px;
+      <%= "background:url(/assets/fields_small_icons/#{name}.png) no-repeat;" %>
+  }
+<% end %>
+

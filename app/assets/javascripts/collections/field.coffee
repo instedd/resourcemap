@@ -89,9 +89,13 @@ onCollections ->
       if !window.model.currentCollection()?.currentSnapshot
         @originalValue = @value()
         @editing(true)
-        window.model.initDatePicker (dateText) =>
-          @value(dateText)
+        optionsDatePicker = {}
+        optionsDatePicker.onSelect = (dateText) =>
+          @valueUI(dateText)
           @save()
+        optionsDatePicker.onClose = () =>
+          @save()
+        window.model.initDatePicker(optionsDatePicker)
         window.model.initAutocomplete()
 
     keyPress: (field, event) =>
@@ -115,9 +119,6 @@ onCollections ->
     closeDatePickerAndSave: =>
       if $('#ui-datepicker-div:visible').length == 0
         @save()
-
-    closeAutocompleteAndSave: =>
-      @save()
 
     selectOption: (option) =>
       @value([]) unless @value()

@@ -14,11 +14,13 @@ class Alerts::Plugin < Plugin
   field_type \
     name: 'email',
     css_class: 'lmessage',
+    small_css_class: 'smessage',
     edit_view: 'fields/email_edit_view'
 
   field_type \
     name: 'phone',
     css_class: 'lphone',
+    small_css_class: 'sphone',
     edit_view: 'fields/phone_edit_view'
 
   clusterer \
