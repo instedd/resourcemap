@@ -7,6 +7,7 @@ class LayersController < ApplicationController
     respond_to do |format|
       format.html do
         show_collection_breadcrumb
+        add_breadcrumb "Properties", collection_path(collection)
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
       if current_snapshot

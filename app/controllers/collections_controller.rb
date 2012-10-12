@@ -4,6 +4,7 @@ class CollectionsController < ApplicationController
   before_filter :authenticate_collection_admin!, :only => [:destroy, :create_snapshot]
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
+  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :import_wizard, :reminders]
 
   def index
     if params[:name].present?
@@ -58,7 +59,7 @@ class CollectionsController < ApplicationController
 
   def show
     @snapshot = Snapshot.new
-    add_breadcrumb "Settings", '#'
+    add_breadcrumb "Properties", '#'
     respond_to do |format|
       format.html
       format.json { render json: collection }
