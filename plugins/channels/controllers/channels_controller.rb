@@ -6,6 +6,7 @@ class ChannelsController < ApplicationController
     respond_to do |format| 
       format.html do
         show_collection_breadcrumb
+        add_breadcrumb "Properties", collection_path(collection)
         add_breadcrumb "Channels", collection_channels_path(collection)
       end
       format.json { render json: collection.channels.select('share_channels.status,channels.id,channels.collection_id,channels.name,channels.password,channels.nuntium_channel_name,is_manual_configuration, channels.is_share').all.as_json(include: [:collections], except: [:plugins], methods: method)}
