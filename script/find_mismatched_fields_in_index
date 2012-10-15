@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+APP_PATH = File.expand_path('../../config/application',  __FILE__)
+require File.expand_path('../../config/boot',  __FILE__)
+require File.expand_path('../../config/environment',  __FILE__)
+
+ENV['RAILS_ENV'] ||= 'production'
+
+Collection.all.each do |collection|
+  our_mapping = collection.site_mapping[:properties][:properties][:properties]
+  es_mapping = collection.index.mapping['site']['properties']['properties']['properties']
+
+  our_mapping.keys.each do |key|
+    es_type = es_mapping[key]["type"].to_s
+    our_type = our_mapping[key][:type].to_s
+
+    if es_type != our_type
+      puts "Mismatched type in collection #{collection.id}, field #{key}. ES type is #{es_type} and our type is #{our_type}."
+    end
+  end
+end
+
