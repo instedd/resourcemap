@@ -21,7 +21,7 @@ class RegistrationsController < Devise::RegistrationsController
     if successfully_updated
       # Sign in the user bypassing validation in case his password changed
       sign_in current_user, :bypass => true
-      redirect_to root_path
+      redirect_to collections_path, notice: "Account updated successfully"
     else
       render "edit"
     end
