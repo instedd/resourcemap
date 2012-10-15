@@ -28,8 +28,9 @@ onCollections ->
       @allSites = ko.observable()
 
     findSiteNameById: (value) =>
-      name = (site for site in window.model.currentCollection().allSites() when site.id is parseInt(value))[0]?.name
-      name
+      allSites = window.model.currentCollection().allSites()
+      return if not allSites
+      (site.name for site in allSites when site.id is parseInt(value))[0]
 
     findSiteIdByName: (value) =>
       id = (site for site in window.model.currentCollection().allSites() when site.name is value)[0]?.id
