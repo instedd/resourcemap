@@ -60,10 +60,10 @@ onCollections ->
       else if @kind == 'hierarchy'
         if value then @fieldHierarchyItemsMap[value] else ''
       else if @kind == 'date'
-        if value then @datePickerFormat(new Date(value))
+        if value then @datePickerFormat(new Date(value)) else ''
       else if @kind == 'site'
-        name =  window.model.currentCollection()?.findSiteNameById(value)
-        if value && name then name
+        name = window.model.currentCollection()?.findSiteNameById(value)
+        if value && name then name else ''
       else
         value
 
@@ -71,7 +71,8 @@ onCollections ->
       if @kind == 'date'
         @valueFromDateUI(value)
       else if @kind == 'site'
-        window.model.currentCollection()?.findSiteIdByName(value)
+        # Return site_id or "" if the id for this name is not found (deleting the value or invalid value)
+        window.model.currentCollection()?.findSiteIdByName(value) || ""
       else
         value
 

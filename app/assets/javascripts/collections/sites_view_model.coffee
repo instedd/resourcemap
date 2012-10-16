@@ -91,6 +91,7 @@ onCollections ->
           @editSite site
 
     @saveSite: ->
+      debugger
       return unless @editingSite().valid()
 
       callback = (data) =>
@@ -119,6 +120,7 @@ onCollections ->
       @editingSite().post @editingSite().toJSON(), callback
 
     @exitSite: ->
+      debugger
       if !@editingSite()?.inEditMode()
         @performSearchOrHierarchy()
 
