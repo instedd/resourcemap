@@ -192,6 +192,15 @@ describe 'Collection', ->
         expect(@field.value()).toEqual(isoValue)
         expect(@field.valueUI()).toEqual('12/25/1012')
 
+    describe 'Site Field', ->
+      beforeEach ->
+        @field = new Field { id: 1, code: 'techreference', name: 'Reference', kind: 'site' }
+
+      it 'should delete value', ->
+        #This works only because current collection is undefined
+        @field.valueUI("")
+        expect(@field.value()).toEqual('')
+
 
     describe 'Plugin field', ->
       beforeEach ->
