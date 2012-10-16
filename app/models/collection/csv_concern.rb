@@ -31,6 +31,16 @@ module Collection::CsvConcern
     end
   end
 
+  def sample_csv
+    fields = self.fields.all
+
+    CSV.generate do |csv|
+      header = ['name', 'lat', 'long']
+      fields.each { |field| header << field.code }
+      csv << header
+    end
+  end
+
   def import_csv(user, string_or_io)
     Collection.transaction do
       csv = CSV.new string_or_io, return_headers: false

@@ -71,6 +71,7 @@ ResourceMap::Application.routes.draw do
 
   namespace :api do
     get 'collections/:id' => 'collections#show',as: :collection
+    get 'collections/:id/sample_csv' => 'collections#sample_csv',as: :sample_csv
     get 'collections/:id/count' => 'collections#count',as: :count
     get 'collections/:id/geo' => 'collections#geo_json',as: :geojson
     get 'sites/:id' => 'sites#show', as: :site
