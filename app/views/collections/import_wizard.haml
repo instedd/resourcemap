@@ -20,6 +20,10 @@
           %li Add rows for new sites
           %li Remove columns for fields you are not interested in updating
           %li Add columns for new fields
+    - else
+      %p
+        You can download a sample CSV file
+        = (link_to 'here', api_sample_csv_path(collection, format: 'csv')) + '.'
 
     %form#upload_form{action: collection_import_wizard_upload_csv_path(collection), method: :post, enctype: 'multipart/form-data'}
       %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
