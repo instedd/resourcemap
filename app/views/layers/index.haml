@@ -94,7 +94,12 @@
         .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField', style: {marginTop: '$root.currentFieldMarginTop'}), style: 'position:relative'}
           %p.title Type
           %p.smalltext The data type to fill in this field.
+          <!-- ko if: isNew() -->
           = select_tag :kind, options_for_select(Field::Kinds.map { |kind_name| [kind_name.titleize, kind_name] }), 'data-bind' => kov(value: :kind)
+          <!-- /ko -->
+          <!-- ko if: !isNew() -->
+          %div{"data-bind" => "text: kind_titleize"}
+          <!-- /ko -->
           %hr/
           %label{ko(css: {error: :nameError})} Name
           %p.smalltext The name of this field as it is presented.
