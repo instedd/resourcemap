@@ -23,7 +23,11 @@ onLayers ->
       @errorUploadingHierarchy = ko.observable(false)
       @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer().fields().indexOf(@) + 1}"
       @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
-      @codeError = ko.computed => if @hasCode() then null else "the field #{@fieldErrorDescription()} is missing a Code"
+      @codeError = ko.computed =>
+        if !@hasCode() then return "the field #{@fieldErrorDescription()} is missing a Code"
+        if (@code() in ['lat', 'long', 'name', 'resmap-id', 'last updated']) then return "the field #{@fieldErrorDescription()} code is reserved"
+        null
+
       @optionsError = ko.computed =>
         return null unless @isOptionsKind()
 
