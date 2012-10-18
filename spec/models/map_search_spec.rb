@@ -18,7 +18,7 @@ describe MapSearch do
     search.zoom = 1
     search.results[:sites].should eq([
       id: site.id, lat: site.lat.to_f, lng: site.lng.to_f,
-      name: site.name, name_not_analyzed: site.name,
+      name: site.name, name_not_analyzed: site.name, id_with_prefix:"AA1",
       collection_id: site.collection_id,
       highlighted: false, icon: 'null'
     ])

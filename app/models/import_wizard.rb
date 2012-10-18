@@ -87,6 +87,7 @@ class ImportWizard
 
       # Now process all rows
       rows[1 .. -1].each do |row|
+
         # Check that the name is present
         next unless row[name_spec[:index]].present?
 
@@ -146,39 +147,39 @@ class ImportWizard
           when 'existing_field'
             existing_field = existing_fields[spec[:field_id].to_i]
             if existing_field
-              case existing_field.kind
-                when 'numeric', 'text', 'site'
-                  site.properties[existing_field] = value
-                when 'select_one'
-                  existing_option = existing_field.config['options'].find { |x| x['code'] == value }
-                  if existing_option
-                    site.properties[existing_field] = existing_option['id']
-                  else
-                    site.properties[existing_field] = existing_field.config['next_id']
-                    existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => value, 'label' => value}
-                    existing_field.config['next_id'] += 1
-                  end
-                when 'select_many'
-                  site.properties[existing_field] = []
-                  value.split(',').each do |v|
-                    v = v.strip
-                    existing_option = existing_field.config['options'].find { |x| x['code'] == v }
+              if value.blank?
+                site.properties[existing_field] = nil
+              else
+                case existing_field.kind
+                  when 'numeric', 'text', 'site'
+                    site.properties[existing_field] = value
+                  when 'select_one'
+                    existing_option = existing_field.config['options'].find { |x| x['code'] == value }
                     if existing_option
-                      site.properties[existing_field] << existing_option['id']
+                      site.properties[existing_field] = existing_option['id']
                     else
-                      site.properties[existing_field] << existing_field.config['next_id']
-                      existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => v, 'label' => v}
+                      site.properties[existing_field] = existing_field.config['next_id']
+                      existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => value, 'label' => value}
                       existing_field.config['next_id'] += 1
                     end
-                  end
-                when 'hierarchy'
-                  if !value.blank?
+                  when 'select_many'
+                    site.properties[existing_field] = []
+                    value.split(',').each do |v|
+                      v = v.strip
+                      existing_option = existing_field.config['options'].find { |x| x['code'] == v }
+                      if existing_option
+                        site.properties[existing_field] << existing_option['id']
+                      else
+                        site.properties[existing_field] << existing_field.config['next_id']
+                        existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => v, 'label' => v}
+                        existing_field.config['next_id'] += 1
+                      end
+                    end
+                  when 'hierarchy'
                     site.properties[existing_field] = value
-                  end
-                when 'date'
-                  if !value.blank?
+                  when 'date'
                     site.properties[existing_field] = Site.format_date_iso_string(Date.strptime(value, '%m/%d/%Y'))
-                  end
+                end
               end
               fields[existing_field.code] = existing_field
             end

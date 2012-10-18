@@ -8,6 +8,9 @@ class Field < ActiveRecord::Base
 
   validates_presence_of :ord
   validates_inclusion_of :kind, :in => Kinds
+  validates_presence_of :code
+  validates_exclusion_of :code, :in => ['lat', 'long', 'name', 'resmap-id', 'last updated']
+
 
   serialize :config
 

@@ -6,6 +6,8 @@ onLayers ->
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
+      @kind_titleize = ko.computed =>
+        (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
       @ord = ko.observable data?.ord
       @options = if data.config?.options?
                    ko.observableArray($.map(data.config.options, (x) -> new Option(x)))
@@ -15,12 +17,17 @@ onLayers ->
       @hierarchy = ko.observable data.config?.hierarchy
       @initHierarchyItems() if @hierarchy()
       @hasFocus = ko.observable(false)
+      @isNew = ko.computed =>  !@id()?
       @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
       @uploadingHierarchy = ko.observable(false)
       @errorUploadingHierarchy = ko.observable(false)
       @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer().fields().indexOf(@) + 1}"
       @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
-      @codeError = ko.computed => if @hasCode() then null else "the field #{@fieldErrorDescription()} is missing a Code"
+      @codeError = ko.computed =>
+        if !@hasCode() then return "the field #{@fieldErrorDescription()} is missing a Code"
+        if (@code() in ['lat', 'long', 'name', 'resmap-id', 'last updated']) then return "the field #{@fieldErrorDescription()} code is reserved"
+        null
+
       @optionsError = ko.computed =>
         return null unless @isOptionsKind()
 
