@@ -537,4 +537,57 @@ describe ImportWizard do
     site2.properties.should eq({text.es_code => 'lala'})
   end
 
+  it "should delete all property values" do
+    site1 = collection.sites.make name: 'Foo old', id: 1234, properties: {
+      text.es_code => 'coco',
+      numeric.es_code => 10,
+      select_one.es_code => 1,
+      select_many.es_code => [1, 2],
+      hierarchy.es_code => 60,
+      site.es_code => 1234,
+      date.es_code => "2012-10-24T03:00:00.000Z"
+    }
+
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+
+
+    csv_string = CSV.generate do |csv|
+      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date']
+      csv << ["#{site1.id}", 'Foo old', '1.2', '3.4', '', '', '', '', '',  '', '']
+    end
+
+    specs = [
+      {name: 'resmap-id', usage: 'id'},
+      {name: 'Name', usage: 'name'},
+      {name: 'Text', usage: 'existing_field', field_id: text.id},
+      {name: 'Numeric', usage: 'existing_field', field_id: numeric.id},
+      {name: 'Select One', usage: 'existing_field', field_id: select_one.id},
+      {name: 'Select Many', usage: 'existing_field', field_id: select_many.id},
+      {name: 'Hierarchy', usage: 'existing_field', field_id: hierarchy.id},
+      {name: 'Site', usage: 'existing_field', field_id: site.id},
+      {name: 'Date', usage: 'existing_field', field_id: date.id},
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    layers = collection.layers.all
+    layers.length.should eq(1)
+    layers[0].name.should eq(layer.name)
+
+    fields = layers[0].fields.all
+    fields.length.should eq(7)
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    site1.reload
+    site1.name.should eq('Foo old')
+    site1.properties.should eq({})
+
+    site2.reload
+    site2.name.should eq('Bar old')
+    site2.properties.should eq({text.es_code => 'lala'})
+  end
+
 end
