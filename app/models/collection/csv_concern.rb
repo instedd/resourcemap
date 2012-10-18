@@ -31,13 +31,18 @@ module Collection::CsvConcern
     end
   end
 
-  def sample_csv
+  def sample_csv(user = nil)
     fields = self.fields.all
 
     CSV.generate do |csv|
       header = ['name', 'lat', 'long']
       fields.each { |field| header << field.code }
       csv << header
+      row = ['Paris', 48.86, 2.35]
+      fields.each do |field|
+        row << Array(field.sample_value user).join(", ")
+      end
+      csv << row
     end
   end
 

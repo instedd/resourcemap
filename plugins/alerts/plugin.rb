@@ -15,13 +15,15 @@ class Alerts::Plugin < Plugin
     name: 'email',
     css_class: 'lmessage',
     small_css_class: 'smessage',
-    edit_view: 'fields/email_edit_view'
+    edit_view: 'fields/email_edit_view',
+    sample_value: 'an@email.com'
 
   field_type \
     name: 'phone',
     css_class: 'lphone',
     small_css_class: 'sphone',
-    edit_view: 'fields/phone_edit_view'
+    edit_view: 'fields/phone_edit_view',
+    sample_value: '85512345678'
 
   clusterer \
     map: ->(site, tmp) do

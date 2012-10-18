@@ -23,6 +23,73 @@ describe Field do
     end
   end
 
+  describe "sample value" do
+    it "for text are strings" do
+      field = Field.make kind: 'text'
+      field.sample_value.should be_an_instance_of String
+      field.sample_value.length.should be > 0
+    end
+
+    it "for numbers is a number" do
+      field = Field.make kind: 'numeric'
+      field.sample_value.should be_a_kind_of Numeric
+    end
+
+    it "for dates is a date" do
+      field = Field.make kind: 'date'
+      expect { Time.strptime field.sample_value, '%m/%d/%Y' }.to_not raise_error
+    end
+
+    it "for user is a string" do
+      user = User.make email: 'an@email.com'
+      field = Field.make kind: 'user'
+      field.sample_value(user).should == (user.email)
+    end
+
+    it "for 'select one' is one of the choices" do
+      config_options = [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}]
+      field = Field.make kind: 'select_one', config: { options: config_options }.with_indifferent_access
+      codes = config_options.map { |o| o[:code] }
+      codes.should include field.sample_value
+    end
+
+    it "for 'select many' are among the choices" do
+      config_options = [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}, {id: 3, code: 'three', label: 'Three'}]
+      field = Field.make kind: 'select_many', config: { options: config_options }.with_indifferent_access
+      codes = config_options.map { |o| o[:code] }
+      field.sample_value.length.should be > 0
+      field.sample_value.each do |option|
+        codes.should include option
+      end
+    end
+
+    it "for hierarchy is a valid item" do
+      config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}]}]
+      field = Field.make kind: 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+      # This isn't right: if you change the config_hierarchy, the next line has to be changed as well
+      [0, 1].should include field.sample_value
+    end
+
+    it "for email and phone is a string" do
+      field = Field.make kind: 'email'
+      field.sample_value.should be_an_instance_of String
+
+      field = Field.make kind: 'phone'
+      field.sample_value.should be_an_instance_of String
+    end
+
+    it "for fields with no config should be the empty string" do
+      field = Field.make kind: 'select_many', config: {}
+      field.sample_value.should == ''
+
+      field = Field.make kind: 'select_one', config: {}
+      field.sample_value.should == ''
+
+      field = Field.make kind: 'hierarchy', config: {}
+      field.sample_value.should == ''
+    end
+  end
+
   describe "cast strongly type" do
     let!(:config_options) { [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}] }
 

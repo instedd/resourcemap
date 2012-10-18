@@ -27,6 +27,10 @@ module Field::Base
     select_one? || select_many?
   end
 
+  def plugin?
+    PluginKinds.has_key? kind
+  end
+
   def stored_as_date?
     date?
   end
@@ -87,6 +91,48 @@ module Field::Base
     end
   end
 
+  def sample_value(user = nil)
+    if plugin?
+      kind_config = PluginKinds[kind]
+      if kind_config.has_key? :sample_value
+        return kind_config[:sample_value]
+      else
+        return ''
+      end
+    end
+
+    if text?
+      value = 'sample text value'
+    elsif numeric?
+      value = -39.2
+    elsif date?
+      value = (Time.strptime '4/23/1851', '%m/%d/%Y').iso8601
+    elsif user?
+      return '' if user.nil?
+      value = user.email
+    elsif select_one?
+      options = config['options']
+      return '' if options.nil? or options.length == 0
+      value = config['options'][0]['id']
+    elsif select_many?
+      options = config['options']
+      return '' if options.nil? or options.length == 0
+      if options.length == 1
+        value = [options[0]['id']]
+      else
+        value = [options[0]['id'], options[1]['id']]
+      end
+    elsif hierarchy?
+      @hierarchy_items_map ||= create_hierarchy_items_map
+      keys = @hierarchy_items_map.keys
+      return '' if keys.length == 0
+      value = keys.first
+    else
+      return ''
+    end
+    api_value value
+  end
+
   private
 
   def find_hierarchy_value(value)
@@ -95,7 +141,7 @@ module Field::Base
     item ? hierarchy_item_to_s(item) : value
   end
 
-  def create_hierarchy_items_map(map = {}, items = config['hierarchy'], parent = nil)
+  def create_hierarchy_items_map(map = {}, items = config['hierarchy'] || [], parent = nil)
     items.each do |item|
       map_item = {'name' => item['name'], 'parent' => parent}
       map[item['id']] = map_item
