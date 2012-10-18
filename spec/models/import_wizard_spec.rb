@@ -2,6 +2,9 @@ require 'spec_helper'
 
 describe ImportWizard do
   let!(:user) { User.make }
+  let!(:user2) { User.make :email => 'user2@email.com'}
+  let(:membership) { collection.memberships.create! :user_id => user2.id }
+
   let!(:collection) { user.create_collection Collection.make_unsaved }
   let!(:layer) { collection.layers.make }
 
@@ -12,6 +15,7 @@ describe ImportWizard do
   let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy',  config: {hierarchy: [{"0"=>{"id"=>"60", "name"=>"papa"}, sub: [{"0"=> {"id"=>"100", "name"=>"uno"}, "1"=>{"id"=>"101", "name"=>"dos"}}.with_indifferent_access]}]}.with_indifferent_access}
   let!(:site) { layer.fields.make :code => 'site', :kind => 'site' }
   let!(:date) { layer.fields.make :code => 'date', :kind => 'date' }
+  let!(:director) { layer.fields.make :code => 'user', :kind => 'user' }
 
   it "imports with name, lat, lon and one new numeric property" do
     csv_string = CSV.generate do |csv|
@@ -484,15 +488,16 @@ describe ImportWizard do
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
       site.es_code => 1234,
-      date.es_code => "2012-10-24T03:00:00.000Z"
+      date.es_code => "2012-10-24T03:00:00.000Z",
+      director.es_code => user.email
     }
 
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
 
     csv_string = CSV.generate do |csv|
-      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date']
-      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two', 'uno',  1235, '12/26/1988']
+      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
+      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two', 'uno',  1235, '12/26/1988', 'user2@email.com']
     end
 
     specs = [
@@ -505,6 +510,7 @@ describe ImportWizard do
       {name: 'Hierarchy', usage: 'existing_field', field_id: hierarchy.id},
       {name: 'Site', usage: 'existing_field', field_id: site.id},
       {name: 'Date', usage: 'existing_field', field_id: date.id},
+      {name: 'User', usage: 'existing_field', field_id: director.id},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -515,7 +521,7 @@ describe ImportWizard do
     layers[0].name.should eq(layer.name)
 
     fields = layers[0].fields.all
-    fields.length.should eq(7)
+    fields.length.should eq(8)
 
     sites = collection.sites.all
     sites.length.should eq(2)
@@ -529,7 +535,8 @@ describe ImportWizard do
       select_many.es_code => [2],
       hierarchy.es_code => 'uno',
       site.es_code => '1235',
-      date.es_code => "1988-12-26T00:00:00Z"
+      date.es_code => "1988-12-26T00:00:00Z",
+      director.es_code => 'user2@email.com'
     })
 
     site2.reload
@@ -545,15 +552,16 @@ describe ImportWizard do
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
       site.es_code => 1234,
-      date.es_code => "2012-10-24T03:00:00.000Z"
+      date.es_code => "2012-10-24T03:00:00.000Z",
+      director.es_code => user.email
     }
 
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
 
     csv_string = CSV.generate do |csv|
-      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date']
-      csv << ["#{site1.id}", 'Foo old', '1.2', '3.4', '', '', '', '', '',  '', '']
+      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
+      csv << ["#{site1.id}", 'Foo old', '1.2', '3.4', '', '', '', '', '',  '', '', '']
     end
 
     specs = [
@@ -566,6 +574,7 @@ describe ImportWizard do
       {name: 'Hierarchy', usage: 'existing_field', field_id: hierarchy.id},
       {name: 'Site', usage: 'existing_field', field_id: site.id},
       {name: 'Date', usage: 'existing_field', field_id: date.id},
+      {name: 'User', usage: 'existing_field', field_id: director.id},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -576,7 +585,7 @@ describe ImportWizard do
     layers[0].name.should eq(layer.name)
 
     fields = layers[0].fields.all
-    fields.length.should eq(7)
+    fields.length.should eq(8)
 
     sites = collection.sites.all
     sites.length.should eq(2)
