@@ -8,8 +8,7 @@ namespace :data do
       exit
     end
 
-    Repeat.destroy_all
-    Dir["#{args[:directory]}/*.sql"].each do |filename|
+    Dir["#{args[:directory]}/*.sql"].sort.each do |filename|
       execute_sql filename
     end
     User.encrypt_users_password
@@ -25,6 +24,6 @@ def execute_sql(filename)
 end
 
 def mysql_client
-  db_config = Rails.configuration.database_configuration[Rails.env] unless @client
-  @client ||= Mysql2::Client.new(host: db_config['host'], username: db_config['username'], flags: Mysql2::Client::MULTI_STATEMENTS)
+  db_config = Rails.configuration.database_configuration[Rails.env]
+  Mysql2::Client.new(host: db_config['host'], username: db_config['username'], flags: Mysql2::Client::MULTI_STATEMENTS)
 end
