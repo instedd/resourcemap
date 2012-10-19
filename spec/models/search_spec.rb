@@ -492,7 +492,7 @@ describe Search do
       assert_results search, site1
     end
 
-    it "should serch by especific date" do
+    pending "should search by specific date" do
       search = collection.new_search
       search.where inaguration.es_code => "=09/23/2012,09/23/2012"
       assert_results search, site1, site2
