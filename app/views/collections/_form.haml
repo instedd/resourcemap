@@ -5,7 +5,7 @@
         select_icon.val('default');
       $("#focus_icon").val(select_icon.val());
       $('.' + select_icon.val()).css({backgroundColor: '#D2D2D2', border: '1px solid #565656'});
-      
+
       $("button").click(function(){
         if (this != $('.white')[0]){
           $('.' + $('#focus_icon').val()).css({backgroundColor: '#f5f5f5', border: '1px solid white'});
@@ -17,7 +17,7 @@
         }
       });
     });
-  
+
   .field.w60
     = f.label :name
     = f.text_field :name
@@ -26,14 +26,14 @@
   .field.w60
     = f.label :description
     = f.text_area :description, rows: 3
-  
+
   .field.w60
     %label
       Use an icon from our library
     %br/
     = f.hidden_field :icon, id: 'select_icon'
     %input#focus_icon{:type =>"hidden"}
-      
+
     %button.default{:type => "button"}
     %button.aed-2{:type => "button"}
     %button.construction{:type => "button"}
@@ -46,8 +46,8 @@
     %button.nanny{:type => "button"}
     %button.nursery{:type => "button"}
     %button.villa{:type => "button"}
-  %br     
-  %br   
+  %br
+  %br
   .field.w60
     %button.army{:type => "button"}
     %button.bomber-2{:type => "button"}
@@ -60,11 +60,11 @@
     %button.fishing{:type => "button"}
     %button.foodtruck{:type => "button"}
     %button.footprint{:type => "button"}
-    %button.fourbyfour{:type => "button"} 
-      
- 
-  %br     
-  %br   
+    %button.fourbyfour{:type => "button"}
+
+
+  %br
+  %br
   .field.w60
     %button.gay-female{:type => "button"}
     %button.gay-male{:type => "button"}
@@ -75,11 +75,11 @@
     %button.hoseriding{:type => "button"}
     %button.hostel_0star{:type => "button"}
     %button.hotel_0star{:type => "button"}
-    %button.lodging_0star{:type => "button"}   
+    %button.lodging_0star{:type => "button"}
     %button.motel-2{:type => "button"}
     %button.youthhostel{:type => "button"}
-  %br     
-  %br   
+  %br
+  %br
   .field.w60
     %button.mastcrane1{:type => "button"}
     %button.ophthalmologist{:type => "button"}
@@ -93,8 +93,8 @@
     %button.restaurant_fish{:type => "button"}
     %button.sawmill-2{:type => "button"}
     %button.mine{:type => "button"}
-  %br     
-  %br   
+  %br
+  %br
   .field.w60
     %button.septic_tank{:type => "button"}
     %button.shootingrange{:type => "button"}

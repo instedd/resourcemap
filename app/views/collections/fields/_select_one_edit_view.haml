@@ -1,4 +1,6 @@
 - if single_editing_mode
   %select{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}', hasfocus: true, event: {change: :save, blur: :save})}
 - else
-  %select{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
+  %select.right.w20{ko(value: :value, options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
+  .clear
+

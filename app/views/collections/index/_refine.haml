@@ -9,7 +9,7 @@
     %span{ko(text: '$root.filterDescription($data)')}
     %a x
   <!-- /ko -->
-  .refine.box{ko(click: 'toggleRefinePopup'), style: 'float:left;padding:3px;cursor:pointer;position:relative;top:1px'}
+  .refine{ko(click: 'toggleRefinePopup'), style: 'float:left;padding:3px;cursor:pointer;position:relative;top:1px'}
     <!-- ko if: filters().length == 0 -->
     Refine results
     <!-- /ko -->
@@ -45,7 +45,7 @@
       %span Location missing
       <!-- ko if: expandedRefineProperty() == 'location_missing' -->
       #div{ko(click: '$root.filterByLocationMissing'), style: 'cursor:pointer;padding:10px;margin-left:10px'}
-        %input{ko(click: '$root.filterByLocationMissing'), type: :button, value: 'OK'}
+        %a.white.button{ko(click: '$root.filterByLocationMissing')} OK
       <!-- /ko -->
     <!-- /ko -->
     <!-- ko foreach: currentCollection().refineFields() -->
@@ -57,13 +57,13 @@
       <!-- ko if: kind == 'text' || kind == 'user' || isPluginKind() -->
       starts with:
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
-      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
 
       <!-- ko if: kind == 'site' -->
       is:
       %input.autocomplete-site-input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
-      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
 
       <!-- ko if: kind == 'numeric' -->
@@ -74,7 +74,7 @@
         %option{value: '>'} is greater than
         %option{value: '>='} is greater than or equal to
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true), type: :number}
-      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
       <!-- ko if: kind == 'date'-->
       From
@@ -82,16 +82,16 @@
       To
       %input.ux-datepicker#range_to{ko(value: '$root.expandedRefinePropertyDateTo', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
 
-      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
       <!-- ko if: kind == 'hierarchy' -->
       %div{ko(template: {name: "'refine-hierarchy-items-template'", with: 'fieldHierarchyItems'})}
-      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
       <!-- ko if: kind == 'select_one' || kind == 'select_many' -->
       is:
       %select{ko(value: '$root.expandedRefinePropertyValue', options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
-      %input{ko(click: '$root.filterByProperty'), type: :button, value: 'OK'}
+      %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
     <!-- /ko -->
     <!-- /ko -->
@@ -102,7 +102,6 @@
     %p{style: 'display:inline'}
       = ko_link_to 'clear search', :clearSearch
     <!-- /ko -->
-    = ko_text_field_tag :search, html: {class: 'ux-search'}
-    %input{type: :submit, value: 'Search'}
+    = ko_text_field_tag :search, html: {class: 'ux-search', placeholder: 'Search'}
 .clear
 %br/

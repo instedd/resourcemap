@@ -13,7 +13,8 @@ module KnockoutHelper
   end
 
   def ko_number_field_tag(name, options = {})
-    number_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: :afterkeydown))
+    html_opts = options.delete(:html)
+    number_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: :afterkeydown)).merge(html_opts || {})
   end
 
   def ko_html_field_tag(name, options = {})

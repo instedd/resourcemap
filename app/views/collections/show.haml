@@ -34,7 +34,7 @@
     %hr.clear/
     %h2 Delete sites
     %p Delete this collection's sites and activities but preserve layers, fields and memberships.
-    = link_to "delete this collection's sites", collection_path(only_sites: true), class: 'icon fdelete black', method: :delete, data: { confirm: "Are you sure you want to delete collection #{collection.name}'s sites?" }
+    = link_to "delete this collection's sites", collection_path(only_sites: true), class: 'icon fclose black', method: :delete, data: { confirm: "Are you sure you want to delete collection #{collection.name}'s sites?" }
     %br/
     %br/
     %hr.clear/

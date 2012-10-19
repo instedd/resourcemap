@@ -21,9 +21,9 @@
   %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer'} Add more...
   <!-- /ko -->
   .superblyTagfieldClearer
-  <!-- ko if: expanded() -->
-  %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
-  %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px'}
-    %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
-      %a{ko(text: :label, click: '$parent.selectOption')}
-  <!-- /ko -->
+    <!-- ko if: expanded() -->
+    %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:100%'}
+    %ul.taglist.box{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px;width:100%'}
+      %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
+        %a{ko(text: :label, click: '$parent.selectOption')}
+    <!-- /ko -->

@@ -1,4 +1,5 @@
 - if single_editing_mode
   %input.ux-search{ ko(autocomplete: :value, value: :value, hasfocus: true, source: '$root.currentCollection().searchUsersUrl()', event: { keydown: :keyPress, blur: :save }), valueUpdate: :afterkeydown, type: :text }
 - else
-  %input.ux-search{ ko(autocomplete: :value, value: :value, source: '$root.currentCollection().searchUsersUrl()'), valueUpdate: :afterkeydown,  type: :text }
+  %input.w20.ux-search.right{ ko(autocomplete: :value, value: :value, source: '$root.currentCollection().searchUsersUrl()'), valueUpdate: :afterkeydown,  type: :text }
+  .clear
