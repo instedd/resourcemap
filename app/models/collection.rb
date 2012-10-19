@@ -91,7 +91,6 @@ class Collection < ActiveRecord::Base
         }
       end
     end
-    puts ' ------' * 9
     layers.sort! { |x, y| x[:ord] <=> y[:ord] }
     layers
   end
