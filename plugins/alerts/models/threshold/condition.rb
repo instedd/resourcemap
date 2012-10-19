@@ -5,7 +5,7 @@ class Threshold::Condition
 
   def initialize(hash, properties)
     @operator = hash[:op]
-    hash[:value] = hash[:value] * properties[hash[:compare_field]] / 100 if hash[:type] == "percentage" 
+    hash[:value] = hash[:value] * (properties[hash[:compare_field]] || 0) / 100 if hash[:type] == "percentage" 
     @value = hash[:value]
   end
 
