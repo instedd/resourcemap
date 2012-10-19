@@ -300,7 +300,8 @@ onCollections ->
       marker.mouseOverListener = google.maps.event.addListener marker, 'mouseover', (event) =>
         pos = window.model.map.dummyOverlay.getProjection().fromLatLngToContainerPixel marker.getPosition()
         offset = $('#map').offset()
-        marker.popup = $("<div style=\"position:absolute;top:#{offset.top + pos.y - 64}px;left:#{offset.left + pos.x}px;padding:4px;background-color:black;color:white;border:1px solid grey\">#{marker.name}</div>")
+        marker.popup = $("<div style=\"position:absolute;top:#{offset.top + pos.y - 64}px;left:#{offset.left + pos.x}px;padding:4px;background-color:black;color:white;border:1px solid grey\"></div>")
+        $(marker.popup).text(marker.name)
         $(document.body).append(marker.popup)
         offset = $(marker.popup).offset()
         offset.left -= $(marker.popup).width() / 2
