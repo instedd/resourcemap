@@ -11,7 +11,7 @@
     <!-- ko foreach: $root.currentCollection().fields() -->
     <!-- ko if: $parent.properties()[$data.esCode] -->
     %td
-      %span{ko(attr: "{ title: $parent.highlightedPropertyValue($data) }", html: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
+      %span{ko(attr: "{ title: $parent.highlightedPropertyValue($data) }", text: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
     <!-- /ko -->
     <!-- ko if: !$parent.properties()[$data.esCode] -->
     %td
