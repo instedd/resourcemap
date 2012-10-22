@@ -84,10 +84,12 @@
             %td
               %div
                 = label_tag :name, "Name:"
-                = text_field_tag :name, '', placeholder: 'Enter new site name', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}), :autofocus => true
+                = text_field_tag :name, '', placeholder: 'Enter new site name', class: 'w20 right', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}), :autofocus => true
+                .clear
               %div
                 %label Location:
-                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}
+                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: 'Search / Drag the pin'}
+                .clear
               / ko if: collection.readable($data)
               <!-- ko foreach: $root.currentCollection().layers() -->
               %div
@@ -142,7 +144,7 @@
                 %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
                 <!-- /ko -->
                 <!-- ko if: editingLocation() -->
-                = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}
+                = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search'}
                 <!-- /ko -->
               - if Settings.mobile_id?
                 %div{style: 'margin-bottom:14px'}
@@ -156,7 +158,7 @@
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
               %div{style: 'margin-bottom:14px'}
-                %label{ko(text: "name + ':'")}
+                %label{ko(text: "name + '(' + code + '):'")}
                 <!-- ko if: hasValue() -->
                 <!-- ko if: writeable -->
                 %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer'}

@@ -31,3 +31,7 @@
 #NavMenu ul {
   background: transparent;
 }
+
+.refine-popup a.button.white {
+  padding: 7px 5px !important;
+}

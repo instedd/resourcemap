@@ -30,6 +30,8 @@ onChannels ->
           "Channel's name is missing"
         else if length < 4
           "Channel's name require at least 4 characters"
+        else
+          null
       @shareCollectionError   = ko.computed => 
         return null if @isShare() == "false" 
         "Share Channels is missing" if $.trim(@sharedCollections()).length == 0 
@@ -40,6 +42,8 @@ onChannels ->
           "Channel's password is missing"
         else if length < 4
           "Channel's password require at least 4 characters"
+        else
+          null
       @ticketCodeError        = ko.computed =>
         return null if @isManualConfiguration()
         length = $.trim(@ticketCode()).length
@@ -47,7 +51,8 @@ onChannels ->
           "Channel's ticket code is missing"        
         else if length != 4
           "Channel's ticket code must be 4 characters"
-
+        else 
+          null
       @error                  = ko.computed => 
         return @nameError() if @nameError()
         return @passwordError() if @passwordError()
