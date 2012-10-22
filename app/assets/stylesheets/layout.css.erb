@@ -137,6 +137,11 @@ td.loadmore { height: 36px }
 .fmovedown { background:url(/assets/moveDown.png) no-repeat; position:absolute; bottom:1px }
 .fmoveup { background:url(/assets/moveUp.png) no-repeat; position:absolute; top:0 }
 
+.fmoveup.disabled, .fmoveup.disabled:hover, .fmoveup.disabled:active,
+.fmovedown.disabled, .fmovedown.disabled:hover, .fmovedown.disabled:active {
+  background-position: 0px -90px;
+}
+
 .hierarchy.active { background:#d0d0d0 }
 .header_text {margin-bottom: 5px; font-size: 18px;}
 
