@@ -15,6 +15,11 @@
   </div>
 
   <div class="field w30">
+    <%= f.label :current_password %> <p>we need your current password to confirm your changes</p>
+    <%= f.password_field :current_password %>
+  </div>
+
+  <div class="field w30">
     <%= f.label :password %> <p>leave blank if you don't want to change it</p>
     <%= f.password_field :password, :autocomplete => "off" %>
   </div>
@@ -22,11 +27,6 @@
   <div class="field w30">
     <%= f.label :password_confirmation %>
     <%= f.password_field :password_confirmation %>
-  </div>
-
-  <div class="field w30">
-    <%= f.label :current_password %> <p>we need your current password to confirm your changes</p>
-    <%= f.password_field :current_password %>
   </div>
 
   <div class="field w30">
