@@ -189,7 +189,6 @@
             %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'})}
             %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'})}
           / /ko
-          %button.fbranch
           / ko if: !$root.savingLayer() && !$root.currentLayer()
           %button.fdelete{ko(click: '$root.deleteLayer')}
           / /ko
