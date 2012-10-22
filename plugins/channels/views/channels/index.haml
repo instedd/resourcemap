@@ -51,13 +51,13 @@
       .middlebuttons
         %label{ko(css: {error: 'nameError'})} Name
         %br
-        %input{ko(value: :name),type: :text, style: 'width:240px'}
+        %input{ko(value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
         %br
         %label{ko(visible: "isManualConfiguration", css: {error: 'passwordError'})} Password
         %label{ko(visible: "!isManualConfiguration()", css: {error: 'ticketCodeError'})} Key
         %br
-        %input{ko(visible: "isManualConfiguration", value: :password), type: :password, style: 'width:240px'}
-        %input{ko(visible: "!isManualConfiguration()", value: :ticketCode), type: :text, style: 'width:240px'}
+        %input{ko(visible: "isManualConfiguration", value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
+        %input{ko(visible: "!isManualConfiguration()", value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
         %br
         %input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
         %br
