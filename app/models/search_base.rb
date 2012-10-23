@@ -27,7 +27,8 @@ module SearchBase
     if field.kind == 'date'
       date_field_range(query_key, value)
     elsif field.kind == 'hierarchy' and value.is_a? Array
-      @search.filter :terms, query_key => value
+      query_value = decode_hierarchy_option(query_key, value)
+      @search.filter :terms, query_key => query_value
     else
       query_value = decode_option(query_key, value)
 
@@ -211,6 +212,38 @@ module SearchBase
       end
     end
     value
+  end
+
+  def decode_hierarchy_option(es_code, array_value)
+    field = fields.find { |x| x.es_code == es_code }
+
+    if field && field.config && field.config[:hierarchy]
+      return array_value.map do |value|
+        find_hierarchy_id_by_name(field.config[:hierarchy], value)
+      end
+    end
+    array_value
+  end
+
+  def find_hierarchy_id_by_name(hierarchy, value)
+    hierarchy.each do |item|
+      found = hierarchy_id_by_name(item, value)
+      if found
+        return found
+      end
+    end
+  end
+
+  def hierarchy_id_by_name(option, value)
+    if value == option[:name]
+      return option[:id]
+    end
+    if option[:sub]
+      option[:sub].each do |option|
+        return hierarchy_id_by_name(option, value)
+      end
+    end
+    nil
   end
 
   def add_query(query)

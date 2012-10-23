@@ -491,7 +491,7 @@ describe Search do
       assert_results search, site1
     end
 
-    pending "should search by specific date" do
+    it "should search by specific date" do
       search = collection.new_search
       search.where inaguration.es_code => "=09/23/2012,09/23/2012"
       assert_results search, site1, site2
@@ -528,6 +528,21 @@ describe Search do
       search.where unit.es_code => [1, 2]
       assert_results search, site1, site2, site3
     end
+
+    it "searches by hierarchy with @code" do
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      search.where unit.code => ['Buenos Aires']
+      assert_results search, site1
+    end
+
+    it "searches by multiple hierarchy with @code" do
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      search.where unit.code => ['Buenos Aires', 'Vicente Lopez']
+      assert_results search, site1, site2, site3
+    end
+
   end
 
   def assert_results(search, *sites)
