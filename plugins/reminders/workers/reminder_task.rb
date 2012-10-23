@@ -13,13 +13,14 @@ class ReminderTask
       # to be refactoring 
       active_gateway =  reminder.collection.active_gateway
       suggested_channel = active_gateway.nil?? Channel.default_nuntium_name : active_gateway.nuntium_channel_name
-      
-      Resque.enqueue SmsTask, users_phone_number.flatten, message_reminder,suggested_channel unless users_phone_number.empty?
-      Resque.enqueue EmailTask, users_email.flatten, message_reminder, "[ResourceMap] Reminder Notification"  unless users_email.empty?
+      users_phone_number = users_phone_number.flatten.compact 
+      users_email = users_email.flatten.compact
+      Resque.enqueue SmsTask, users_phone_number, message_reminder,suggested_channel unless users_phone_number.empty?
+      Resque.enqueue EmailTask, users_email, message_reminder, "[ResourceMap] Reminder Notification"  unless users_email.empty?
     end
   end
 
   def self.get_site_properties_value_by_kind(site, kind)
-    site.collection.fields.select { |f| f.kind == kind }.map{ |field| site.properties[field.id.to_s] }
+    site.collection.fields.select { |f| f.kind == kind }.map{ |field| site.properties[field.id.to_s] if site.properties[field.id.to_s] != "" }
   end
 end
