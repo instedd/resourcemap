@@ -4,7 +4,7 @@ class SitesPermissionController < ApplicationController
 
   def index
     membership = current_user.memberships.find_by_collection_id params[:collection_id]
-    render json: { read: membership.read_sites_permission, write: membership.write_sites_permission }
+    render json: membership.sites_permission
   end
 
   def create

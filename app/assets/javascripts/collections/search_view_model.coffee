@@ -6,6 +6,7 @@ onCollections ->
       @lastSearch = ko.observable(null)
 
       @inSearch = ko.computed => @currentCollection()?.isSearch()
+      @div = ko.observable('')
 
     @performSearchOrHierarchy: ->
       return false if !@currentCollection() || @ignorePerformSearchOrHierarchy
@@ -40,6 +41,10 @@ onCollections ->
       @performSearchOrHierarchy()
 
     @highlightSearch: (text) ->
+      if !@div()
+        @div($('<div/>'))
+
+      text = @div().text(text).html()
       if @lastSearch()
         text = "#{text}"
         idx = text.toLowerCase().indexOf(@lastSearch().toLowerCase())

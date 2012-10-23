@@ -7,11 +7,11 @@ describe Membership::SitesPermissionConcern do
   let!(:read_sites_permission) { membership.create_read_sites_permission all_sites: true, some_sites: [] }
 
   it "should find sites permission" do
-    membership.sites_permission(:read).should eq read_sites_permission
+    membership.find_or_build_sites_permission(:read).should eq read_sites_permission
   end
 
   it "should build sites permission" do
-    membership.sites_permission(:write).should be_new_record
+    membership.find_or_build_sites_permission(:write).should be_new_record
   end
 
   describe "update sites permission" do

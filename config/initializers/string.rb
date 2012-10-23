@@ -8,7 +8,7 @@ class String
     self.gsub(/\[[\w\s]+\]/) do |template|
       option_hash.each do |key, value| 
         if template == '['+ key+ ']' 
-          template = value
+          template = key
           break
         end
       end
