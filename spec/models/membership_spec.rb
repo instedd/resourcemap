@@ -77,4 +77,28 @@ describe Membership do
       collection.layer_memberships.exists?.should be_false
     end
   end
+
+  describe "sites permission" do
+    it "should include read permission" do
+      read_permission = membership.create_read_sites_permission all_sites: true
+      membership.sites_permission.should include(read: read_permission)
+    end
+
+    it "should include write permission" do
+      write_permission = membership.create_write_sites_permission all_sites: true
+      membership.sites_permission.should include(write: write_permission)
+    end
+
+    context "when user is collection admin" do
+      it "should allow read for all sites" do
+        membership.admin = true
+        membership.sites_permission[:read].all_sites.should be true
+      end
+
+      it "should allow write for all sites" do
+        membership.admin = true
+        membership.sites_permission[:write].all_sites.should be true
+      end
+    end
+  end
 end
