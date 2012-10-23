@@ -558,24 +558,68 @@ describe ImportWizard do
 
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
+    csv_string = CSV.generate do |csv|
+     csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
+     csv << ["#{site1.id}", 'Foo old', '1.2', '3.4', '', '', '', '', '',  '', '', '']
+    end
+
+    specs = [
+     {name: 'resmap-id', usage: 'id'},
+     {name: 'Name', usage: 'name'},
+     {name: 'Text', usage: 'existing_field', field_id: text.id},
+     {name: 'Numeric', usage: 'existing_field', field_id: numeric.id},
+     {name: 'Select One', usage: 'existing_field', field_id: select_one.id},
+     {name: 'Select Many', usage: 'existing_field', field_id: select_many.id},
+     {name: 'Hierarchy', usage: 'existing_field', field_id: hierarchy.id},
+     {name: 'Site', usage: 'existing_field', field_id: site.id},
+     {name: 'Date', usage: 'existing_field', field_id: date.id},
+     {name: 'User', usage: 'existing_field', field_id: director.id},
+     ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    layers = collection.layers.all
+    layers.length.should eq(1)
+    layers[0].name.should eq(layer.name)
+
+    fields = layers[0].fields.all
+    fields.length.should eq(8)
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    site1.reload
+    site1.name.should eq('Foo old')
+    site1.properties.should eq({})
+
+    site2.reload
+    site2.name.should eq('Bar old')
+    site2.properties.should eq({text.es_code => 'lala'})
+  end
+
+  pending "should create new fields with all property values" do
+    site1 = collection.sites.make name: 'Foo old', id: 1234, properties: {}
+
+    site2 = collection.sites.make name: 'Bar old', properties: {}, id: 1235
 
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
-      csv << ["#{site1.id}", 'Foo old', '1.2', '3.4', '', '', '', '', '',  '', '', '']
+      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two', 'uno',  1235, '12/26/1988', 'user2@email.com']
     end
 
     specs = [
       {name: 'resmap-id', usage: 'id'},
       {name: 'Name', usage: 'name'},
-      {name: 'Text', usage: 'existing_field', field_id: text.id},
-      {name: 'Numeric', usage: 'existing_field', field_id: numeric.id},
-      {name: 'Select One', usage: 'existing_field', field_id: select_one.id},
-      {name: 'Select Many', usage: 'existing_field', field_id: select_many.id},
-      {name: 'Hierarchy', usage: 'existing_field', field_id: hierarchy.id},
-      {name: 'Site', usage: 'existing_field', field_id: site.id},
-      {name: 'Date', usage: 'existing_field', field_id: date.id},
-      {name: 'User', usage: 'existing_field', field_id: director.id},
-      ]
+      {name: 'Text', usage: 'new_field', kind: 'text', code: 'new_text'},
+      {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'new_numeric'},
+      {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'new_select_one'},
+      {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'new_select_many'},
+      {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'new_hierarchy'},
+      {name: 'Site', usage: 'new_field', kind: 'site', code: 'new_site'},
+      {name: 'Date', usage: 'new_field', kind: 'date', code: 'new_date'},
+      {name: 'User', usage: 'new_field', kind: 'user', code: 'new_user'},
+    ]
 
     ImportWizard.import user, collection, csv_string
     ImportWizard.execute user, collection, specs

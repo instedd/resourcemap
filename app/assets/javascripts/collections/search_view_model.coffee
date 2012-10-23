@@ -41,10 +41,12 @@ onCollections ->
       @performSearchOrHierarchy()
 
     @highlightSearch: (text) ->
+
+      # Preventing XXS attacks: escape text
       if !@div()
         @div($('<div/>'))
-
       text = @div().text(text).html()
+
       if @lastSearch()
         text = "#{text}"
         idx = text.toLowerCase().indexOf(@lastSearch().toLowerCase())
