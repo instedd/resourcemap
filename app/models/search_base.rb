@@ -22,14 +22,13 @@ module SearchBase
 
   def eq(es_code, value)
     field = check_field_exists es_code
+    query_key = decode(es_code)
 
     if field.kind == 'date'
-      date_field_range(es_code, value)
+      date_field_range(query_key, value)
     elsif field.kind == 'hierarchy' and value.is_a? Array
-      query_key = decode(es_code)
       @search.filter :terms, query_key => value
     else
-      query_key = decode(es_code)
       query_value = decode_option(query_key, value)
 
       @search.filter :term, query_key => query_value
@@ -91,10 +90,10 @@ module SearchBase
     self
   end
 
-  def date_field_range(es_code, info)
+  def date_field_range(key, info)
     date_from = Time.strptime(parse_date_from(info), '%m/%d/%Y').iso8601
     date_to = Time.strptime(parse_date_to(info), '%m/%d/%Y').iso8601
-    @search.filter :range, es_code => {gte: date_from, lte: date_to}
+    @search.filter :range, key => {gte: date_from, lte: date_to}
     self
   end
 
