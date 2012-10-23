@@ -11,7 +11,7 @@
         <!-- ko foreach: collections -->
         %tr
           %td
-            %div
+            %div{ko(click: '$root.enterCollection'), style: 'cursor: pointer'}
               %input{ko(checked: :checked), type: :checkbox, style: 'position:relative;top:3px'}
               %span{ko(text: :name)}
             <!-- ko if: currentSnapshot -->
