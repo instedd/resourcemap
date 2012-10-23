@@ -1,6 +1,6 @@
 <?xml version='1.0' ?>
       <site>
-        <collection-id type='integer'>108</collection-id>
+        <collection-id type='integer'>156</collection-id>
         <name>Cambodiana</name>
         <lat type='float'>11.53</lat>
         <lng type='float'>104.93</lng>
