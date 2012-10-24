@@ -509,7 +509,7 @@ describe Search do
   end
 
   context 'filter by hierarchy' do
-    let!(:unit) { layer.fields.make code: 'unit', kind: 'hierarchy', config: {hierarchy: [{id: 1, name: 'Buenos Aires', sub: [{id: 2, name: 'Vicente Lopez'}]}, {id: 3, name: 'Formosa'}]} }
+    let!(:unit) { layer.fields.make code: 'unit', kind: 'hierarchy', 'config' => {'hierarchy' => [{'id' => 1, 'name' => 'Buenos Aires', 'sub' => [{ 'id' => 2, 'name' => 'Vicente Lopez'}]}, {'id' => 3, 'name' => 'Formosa'}]} }
     let!(:first_name) { layer.fields.make code: 'first_name', kind: 'text' }
 
     let!(:site1) { collection.sites.make properties:

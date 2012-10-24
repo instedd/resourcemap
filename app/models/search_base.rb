@@ -215,11 +215,13 @@ module SearchBase
   end
 
   def decode_hierarchy_option(es_code, array_value)
+    return array_value unless @use_codes_instead_of_es_codes
+
     field = fields.find { |x| x.es_code == es_code }
 
-    if field && field.config && field.config[:hierarchy]
+    if field && field.config && field.config['hierarchy']
       return array_value.map do |value|
-        find_hierarchy_id_by_name(field.config[:hierarchy], value)
+        find_hierarchy_id_by_name(field.config['hierarchy'], value)
       end
     end
     array_value
@@ -235,12 +237,15 @@ module SearchBase
   end
 
   def hierarchy_id_by_name(option, value)
-    if value == option[:name]
-      return option[:id]
+    if value == option['name']
+      return option['id']
     end
-    if option[:sub]
-      option[:sub].each do |option|
-        return hierarchy_id_by_name(option, value)
+    if option['sub']
+      option['sub'].each do |option|
+        found = hierarchy_id_by_name(option, value)
+        if found
+          return found
+        end
       end
     end
     nil
