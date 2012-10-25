@@ -24,6 +24,8 @@ module SearchBase
     field = check_field_exists es_code
     query_key = decode(es_code)
 
+    apply_format_validation(field, value)
+
     if field.kind == 'date'
       date_field_range(query_key, value)
     elsif field.kind == 'hierarchy' and value.is_a? Array
@@ -51,8 +53,10 @@ module SearchBase
     class_eval %Q(
       def #{op}(es_code, value)
         check_field_exists es_code
+        code = decode(es_code)
+        check_valid_numeric_value(value, es_code)
 
-        @search.filter :range, decode(es_code) => {#{op}: value}
+        @search.filter :range, code => {#{op}: value}
         self
       end
     )
@@ -283,6 +287,21 @@ module SearchBase
       end
     end
     time
+  end
+
+  def apply_format_validation(field, value)
+    if field.kind == 'numeric'
+      check_valid_numeric_value(value, field.code)
+    end
+  end
+
+
+  def check_valid_numeric_value(value, field_code)
+    raise "Invalid numeric format in #{field_code}" unless value.integer?
+  end
+
+  def integer?(string)
+    true if Integer(string) rescue false
   end
 
   def check_field_exists(code)
