@@ -73,6 +73,8 @@ class Api::CollectionsController < ApplicationController
     if params[:lat] || params[:lng] || params[:radius]
       [:lat, :lng, :radius].each do |key|
         raise "Missing '#{key}' parameter" unless params[key]
+        raise "Missing '#{key}' value" unless !params[key].blank?
+
       end
       search.radius params[:lat], params[:lng], params[:radius]
     end

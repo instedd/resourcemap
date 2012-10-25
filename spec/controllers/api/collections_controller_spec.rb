@@ -137,13 +137,31 @@ describe Api::CollectionsController do
     it "should validate numeric fields in equal queries" do
       get :show, id: collection.id, format: 'csv', numeric.code => "invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid numeric format in numeric")
+      response.body.should include("Invalid numeric value in numeric param")
     end
 
     it "should validate numeric fields in other operations" do
       get :show, id: collection.id, format: 'csv', numeric.code => "<=invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid numeric format in numeric")
+      response.body.should include("Invalid numeric value in numeric param")
+    end
+
+    it "should validate presence of value" do
+      get :show, id: collection.id, format: 'csv', text.code => ""
+      response.response_code.should be(400)
+      response.body.should include("Missing text value")
+    end
+
+    it "should validate date fields format" do
+      get :show, id: collection.id, format: 'csv', date.code => "invalid1234"
+      response.response_code.should be(400)
+      response.body.should include("Invalid date value in date param")
+    end
+
+    it "should validate date fields format values" do
+      get :show, id: collection.id, format: 'csv', date.code => "32/4,invalid"
+      response.response_code.should be(400)
+      response.body.should include("Invalid date value in date param")
     end
   end
 
