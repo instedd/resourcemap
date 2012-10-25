@@ -24,8 +24,10 @@ module SearchBase
     field = check_field_exists es_code
     query_key = decode(es_code)
 
+    apply_format_validation(field, value)
+
     if field.kind == 'date'
-      date_field_range(query_key, value)
+      date_field_range(query_key, value, es_code)
     elsif field.kind == 'hierarchy' and value.is_a? Array
       query_value = decode_hierarchy_option(query_key, value)
       @search.filter :terms, query_key => query_value
@@ -51,8 +53,10 @@ module SearchBase
     class_eval %Q(
       def #{op}(es_code, value)
         check_field_exists es_code
+        code = decode(es_code)
+        check_valid_numeric_value(value, es_code)
 
-        @search.filter :range, decode(es_code) => {#{op}: value}
+        @search.filter :range, code => {#{op}: value}
         self
       end
     )
@@ -72,6 +76,7 @@ module SearchBase
 
   def where(properties = {})
     properties.each do |es_code, value|
+      check_precense_of_value(value, es_code)
       if value.is_a? String
         case
         when value[0 .. 1] == '<=' then lte(es_code, value[2 .. -1].strip)
@@ -91,9 +96,13 @@ module SearchBase
     self
   end
 
-  def date_field_range(key, info)
-    date_from = Time.strptime(parse_date_from(info), '%m/%d/%Y').iso8601
-    date_to = Time.strptime(parse_date_to(info), '%m/%d/%Y').iso8601
+  def date_field_range(key, info, code)
+    date_from_time = Time.strptime(parse_date_from(info, code), '%m/%d/%Y') rescue (raise "Invalid date value in #{code} param")
+    date_to_time = Time.strptime(parse_date_to(info, code), '%m/%d/%Y') rescue (raise "Invalid date value in #{code} param")
+
+    date_from = date_from_time.iso8601
+    date_to = date_to_time.iso8601
+
     @search.filter :range, key => {gte: date_from, lte: date_to}
     self
   end
@@ -261,16 +270,16 @@ module SearchBase
     @prefixes.push query
   end
 
-  def parse_date_from(info)
-    date = (info.match /(.*),/).captures
-    date[0]
+  def parse_date_from(info, field_code)
+    match = (info.match /(.*),/)
+    match.captures[0]
   end
 
-  def parse_date_to(info)
-     date = (info.match /,(.*)/).captures
-     date[0]
-   end
 
+  def parse_date_to(info, field_code)
+    match = (info.match /,(.*)/)
+    match.captures[0]
+  end
 
   def parse_time(time)
     if time.is_a? String
@@ -283,6 +292,24 @@ module SearchBase
       end
     end
     time
+  end
+
+  def apply_format_validation(field, value)
+    if field.kind == 'numeric'
+      check_valid_numeric_value(value, field.code)
+    end
+  end
+
+  def check_valid_numeric_value(value, field_code)
+    raise "Invalid numeric value in #{field_code} param" unless value.integer?
+  end
+
+  def integer?(string)
+    true if Integer(string) rescue false
+  end
+
+  def check_precense_of_value(value, field_code)
+    raise "Missing #{field_code} value" unless !value.blank?
   end
 
   def check_field_exists(code)
