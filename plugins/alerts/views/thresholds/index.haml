@@ -147,7 +147,7 @@
       %input{"data-bind" => "checked: isNotify", :value => "false", :name => "notification", :type => "radio"}
       %label Do not send notifications
       %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"}
-      %label Notify this people
+      %label Notify these people
       %br
       .middlebuttons{ko(visible: 'isNotify() == "true"' ), :style => "height: 320px;"}
         .middlebuttons.w30{:style => "float: left;"}
