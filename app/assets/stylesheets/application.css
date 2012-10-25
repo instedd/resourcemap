@@ -153,3 +153,11 @@
   vertical-align: middle;
   width: 96px;
 }
+
+.client-CMPE {
+  background: url("/assets/Center_for_Malaria_Parasitology_and_Entomology_of_Lao_PDR.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
