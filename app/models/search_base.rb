@@ -22,14 +22,14 @@ module SearchBase
 
   def eq(es_code, value)
     field = check_field_exists es_code
+    query_key = decode(es_code)
 
     if field.kind == 'date'
-      date_field_range(es_code, value)
+      date_field_range(query_key, value)
     elsif field.kind == 'hierarchy' and value.is_a? Array
-      query_key = decode(es_code)
-      @search.filter :terms, query_key => value
+      query_value = decode_hierarchy_option(query_key, value)
+      @search.filter :terms, query_key => query_value
     else
-      query_key = decode(es_code)
       query_value = decode_option(query_key, value)
 
       @search.filter :term, query_key => query_value
@@ -91,10 +91,10 @@ module SearchBase
     self
   end
 
-  def date_field_range(es_code, info)
+  def date_field_range(key, info)
     date_from = Time.strptime(parse_date_from(info), '%m/%d/%Y').iso8601
     date_to = Time.strptime(parse_date_to(info), '%m/%d/%Y').iso8601
-    @search.filter :range, es_code => {gte: date_from, lte: date_to}
+    @search.filter :range, key => {gte: date_from, lte: date_to}
     self
   end
 
@@ -212,6 +212,43 @@ module SearchBase
       end
     end
     value
+  end
+
+  def decode_hierarchy_option(es_code, array_value)
+    return array_value unless @use_codes_instead_of_es_codes
+
+    field = fields.find { |x| x.es_code == es_code }
+
+    if field && field.config && field.config['hierarchy']
+      return array_value.map do |value|
+        find_hierarchy_id_by_name(field.config['hierarchy'], value)
+      end
+    end
+    array_value
+  end
+
+  def find_hierarchy_id_by_name(hierarchy, value)
+    hierarchy.each do |item|
+      found = hierarchy_id_by_name(item, value)
+      if found
+        return found
+      end
+    end
+  end
+
+  def hierarchy_id_by_name(option, value)
+    if value == option['name']
+      return option['id']
+    end
+    if option['sub']
+      option['sub'].each do |option|
+        found = hierarchy_id_by_name(option, value)
+        if found
+          return found
+        end
+      end
+    end
+    nil
   end
 
   def add_query(query)

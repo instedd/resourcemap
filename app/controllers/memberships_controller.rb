@@ -1,6 +1,6 @@
 class MembershipsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin]
+  before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin, :index]
 
   def index
     layer_memberships = collection.layer_memberships.all.inject({}) do |hash, membership|
