@@ -217,7 +217,6 @@ onCollections ->
               @setMarkerIcon @markers[site.id], 'target'
             else
               @setMarkerIcon @markers[site.id], (if @editingSite() then 'inactive' else 'active')
-
           else
             if site.id == oldSelectedSiteId
               @markers[site.id] = @oldSelectedSite.marker
@@ -301,7 +300,7 @@ onCollections ->
         pos = window.model.map.dummyOverlay.getProjection().fromLatLngToContainerPixel marker.getPosition()
         offset = $('#map').offset()
         marker.popup = $("<div style=\"position:absolute;top:#{offset.top + pos.y - 64}px;left:#{offset.left + pos.x}px;padding:4px;background-color:black;color:white;border:1px solid grey\"></div>")
-        $(marker.popup).text(marker.name)
+        $(marker.popup).text(marker.site.name)
         $(document.body).append(marker.popup)
         offset = $(marker.popup).offset()
         offset.left -= $(marker.popup).width() / 2
