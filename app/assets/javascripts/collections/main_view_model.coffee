@@ -78,6 +78,10 @@ onCollections ->
       showTable = false
       groupBy = null
 
+      if (value = $.url().param('collection') ? $.url().param('editing_collection')) and not @currentCollection()
+        @enterCollection value
+        return
+
       queryParams = $.url().param()
       for key of queryParams
         value = queryParams[key]
@@ -99,9 +103,6 @@ onCollections ->
           when 'editing_site'
             editingSiteId = parseInt(value)
           when 'editing_collection', 'collection'
-            if not @currentCollection()
-              @enterCollection(value)
-              return
             editingCollectionId = parseInt(value)
           when '_table'
             showTable = true
