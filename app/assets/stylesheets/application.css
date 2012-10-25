@@ -35,3 +35,121 @@
 .refine-popup a.button.white {
   padding: 7px 5px !important;
 }
+
+.homepage .illustration {
+  background: url("/assets/data_collection.png") no-repeat scroll 0 0 transparent;
+  height: 406px;
+  width: 551px;
+}
+
+.get-update {
+  background: url("/assets/get_update.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.visualize-and-update {
+  background: url("/assets/visualize_and_update.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.update {
+  background: url("/assets/update.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.identify {
+  background: url("/assets/identify.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.receive {
+  background: url("/assets/receive.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.collaborate {
+  background: url("/assets/collaborate.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.maintain {
+  background: url("/assets/maintain.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.tracking-medical-supplies {
+  background: url("/assets/tracking_medical_supplies_and_personnel.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.managing-disease-prevention-supplies {
+  background: url("/assets/managing_disease_prevention_supplies.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.monitoring-food-price {
+  background: url("/assets/monitoring_food_price_and_supply_levels.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.testing-enviromental-health {
+  background: url("/assets/testing_enviromental_health.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.client-cnm {
+  background: url("/assets/centre_nationale_de_malaria.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.client-tracking-health-facility-data {
+  background: url("/assets/chiang_rai_province_track_health_facility_data.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.client-bangladesh-ministry-of-health {
+  background: url("/assets/bangladesh_ministry_of_health.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
