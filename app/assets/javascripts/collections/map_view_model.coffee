@@ -458,7 +458,6 @@ onCollections ->
 
     @showTable: ->
       @queryParams = $.url().param()
-      @sortByName()
       @exitSite() if @editingSite()
       @editingSite(null)
       @oldSelectedSite = null
