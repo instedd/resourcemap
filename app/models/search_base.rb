@@ -30,6 +30,7 @@ module SearchBase
       date_field_range(query_key, value, es_code)
     elsif field.kind == 'hierarchy' and value.is_a? Array
       query_value = decode_hierarchy_option(query_key, value)
+
       @search.filter :terms, query_key => query_value
     else
       query_value = decode_option(query_key, value)
@@ -216,11 +217,9 @@ module SearchBase
   def decode_option(es_code, value)
     field = fields.find { |x| x.es_code == es_code }
     if field && field.config && field.config['options']
-      field.config['options'].each do |option|
-        return option['id'] if option['label'] == value || option['code'] == value
-      end
+      value_id = check_option_exists(field, value)
     end
-    value
+    value_id
   end
 
   def decode_hierarchy_option(es_code, array_value)
@@ -228,36 +227,14 @@ module SearchBase
 
     field = fields.find { |x| x.es_code == es_code }
 
+    value_ids = []
     if field && field.config && field.config['hierarchy']
-      return array_value.map do |value|
-        find_hierarchy_id_by_name(field.config['hierarchy'], value)
+      array_value.each do |value|
+        value_id = check_option_exists(field, value)
+        value_ids << value_id
       end
     end
-    array_value
-  end
-
-  def find_hierarchy_id_by_name(hierarchy, value)
-    hierarchy.each do |item|
-      found = hierarchy_id_by_name(item, value)
-      if found
-        return found
-      end
-    end
-  end
-
-  def hierarchy_id_by_name(option, value)
-    if value == option['name']
-      return option['id']
-    end
-    if option['sub']
-      option['sub'].each do |option|
-        found = hierarchy_id_by_name(option, value)
-        if found
-          return found
-        end
-      end
-    end
-    nil
+    value_ids
   end
 
   def add_query(query)
@@ -298,6 +275,20 @@ module SearchBase
     if field.kind == 'numeric'
       check_valid_numeric_value(value, field.code)
     end
+  end
+
+  def check_option_exists(field, value)
+    value_id = nil
+    if field.kind == 'hierarchy'
+      value_id = field.find_hierarchy_id_by_name(value)
+    elsif field.select_kind?
+      field.config['options'].each do |option|
+        value_id = option['id'] if option['label'] == value || option['code'] == value
+      end
+    end
+
+    raise "Invalid option in #{field.code} param" unless !value_id.nil?
+    value_id
   end
 
   def check_valid_numeric_value(value, field_code)
