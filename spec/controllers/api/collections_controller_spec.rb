@@ -169,8 +169,18 @@ describe Api::CollectionsController do
       response.response_code.should be(400)
       response.body.should include("Invalid option in hierarchy param")
     end
+
+    it "should validate select_one existing option" do
+      get :show, id: collection.id, format: 'csv', select_one.code => "invalid"
+      response.response_code.should be(400)
+      response.body.should include("Invalid option in select_one param")
+    end
+
+    it "should validate select_many existing option" do
+      get :show, id: collection.id, format: 'csv', select_many.code => "invalid"
+      response.response_code.should be(400)
+      response.body.should include("Invalid option in select_many param")
+    end
   end
-
-
 
 end

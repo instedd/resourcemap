@@ -217,11 +217,9 @@ module SearchBase
   def decode_option(es_code, value)
     field = fields.find { |x| x.es_code == es_code }
     if field && field.config && field.config['options']
-      field.config['options'].each do |option|
-        return option['id'] if option['label'] == value || option['code'] == value
-      end
+      value_id = check_option_exists(field, value)
     end
-    value
+    value_id
   end
 
   def decode_hierarchy_option(es_code, array_value)
@@ -280,7 +278,15 @@ module SearchBase
   end
 
   def check_option_exists(field, value)
-    value_id = field.find_hierarchy_id_by_name(value)
+    value_id = nil
+    if field.kind == 'hierarchy'
+      value_id = field.find_hierarchy_id_by_name(value)
+    elsif field.select_kind?
+      field.config['options'].each do |option|
+        value_id = option['id'] if option['label'] == value || option['code'] == value
+      end
+    end
+
     raise "Invalid option in #{field.code} param" unless !value_id.nil?
     value_id
   end
