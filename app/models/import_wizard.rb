@@ -19,7 +19,7 @@ class ImportWizard
         i += 1
         break if i == 26
       end
-      to_columns collection, rows
+      to_columns collection, rows, user.admins?(collection)
     end
 
     def execute(user, collection, columns_spec)
@@ -230,7 +230,7 @@ class ImportWizard
 
     private
 
-    def to_columns(collection, rows)
+    def to_columns(collection, rows, admin)
       fields = collection.fields.index_by &:code
 
       columns = rows[0].select(&:present?).map{|x| {:name => x.strip, :sample => "", :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
@@ -242,11 +242,11 @@ class ImportWizard
             column[:sample] << row[i].to_s
           end
         end
-        guess_column_usage(column, fields, rows, i)
+        guess_column_usage(column, fields, rows, i, admin)
       end
     end
 
-    def guess_column_usage(column, fields, rows, i)
+    def guess_column_usage(column, fields, rows, i, admin)
       if (field = fields[column[:name]])
         column[:usage] = :existing_field
         column[:layer_id] = field.layer_id
@@ -275,6 +275,11 @@ class ImportWizard
       end
 
       if column[:name] =~ /last updated/i
+        column[:usage] = :ignore
+        return
+      end
+
+      if not admin
         column[:usage] = :ignore
         return
       end
