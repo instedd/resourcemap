@@ -30,6 +30,7 @@ module SearchBase
       date_field_range(query_key, value, es_code)
     elsif field.kind == 'hierarchy' and value.is_a? Array
       query_value = decode_hierarchy_option(query_key, value)
+
       @search.filter :terms, query_key => query_value
     else
       query_value = decode_option(query_key, value)
@@ -228,36 +229,15 @@ module SearchBase
 
     field = fields.find { |x| x.es_code == es_code }
 
+    value_ids = []
     if field && field.config && field.config['hierarchy']
-      return array_value.map do |value|
-        find_hierarchy_id_by_name(field.config['hierarchy'], value)
+      array_value.each do |value|
+        value_id = field.find_hierarchy_id_by_name(value)
+        check_option_exists(field, value_id)
+        value_ids << value_id
       end
     end
-    array_value
-  end
-
-  def find_hierarchy_id_by_name(hierarchy, value)
-    hierarchy.each do |item|
-      found = hierarchy_id_by_name(item, value)
-      if found
-        return found
-      end
-    end
-  end
-
-  def hierarchy_id_by_name(option, value)
-    if value == option['name']
-      return option['id']
-    end
-    if option['sub']
-      option['sub'].each do |option|
-        found = hierarchy_id_by_name(option, value)
-        if found
-          return found
-        end
-      end
-    end
-    nil
+    value_ids
   end
 
   def add_query(query)
@@ -298,6 +278,10 @@ module SearchBase
     if field.kind == 'numeric'
       check_valid_numeric_value(value, field.code)
     end
+  end
+
+  def check_option_exists(field, value)
+    raise "Invalid option in #{field.code} param" unless (!value.nil? && (field.hierarchy_options_codes.include? value))
   end
 
   def check_valid_numeric_value(value, field_code)

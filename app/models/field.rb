@@ -32,7 +32,33 @@ class Field < ActiveRecord::Base
     collection.update_mapping
   end
 
+  def hierarchy_options_codes
+    hierarchy_options.map {|option| option[:id]}
+  end
+
+  def hierarchy_options
+    options = []
+    config['hierarchy'].each do |option|
+      add_option_to_options(options, option)
+    end
+    options
+  end
+
+  def find_hierarchy_id_by_name(value)
+    option = hierarchy_options.find {|option| option[:name] == value}
+    option[:id] if option
+  end
+
   private
+
+  def add_option_to_options(options, option)
+    options << { id: option['id'], name: option['name']}
+    if option['sub']
+      option['sub'].each do |sub_option|
+        add_option_to_options(options, sub_option)
+      end
+    end
+  end
 
   def sanitize_hierarchy_items(items)
     items.map! &:to_hash

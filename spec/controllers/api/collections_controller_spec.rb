@@ -163,6 +163,12 @@ describe Api::CollectionsController do
       response.response_code.should be(400)
       response.body.should include("Invalid date value in date param")
     end
+
+    it "should validate hierarchy existing option" do
+      get :show, id: collection.id, format: 'csv', hierarchy.code => ["invalid"]
+      response.response_code.should be(400)
+      response.body.should include("Invalid option in hierarchy param")
+    end
   end
 
 
