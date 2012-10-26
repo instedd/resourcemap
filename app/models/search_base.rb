@@ -232,8 +232,7 @@ module SearchBase
     value_ids = []
     if field && field.config && field.config['hierarchy']
       array_value.each do |value|
-        value_id = field.find_hierarchy_id_by_name(value)
-        check_option_exists(field, value_id)
+        value_id = check_option_exists(field, value)
         value_ids << value_id
       end
     end
@@ -281,7 +280,9 @@ module SearchBase
   end
 
   def check_option_exists(field, value)
-    raise "Invalid option in #{field.code} param" unless (!value.nil? && (field.hierarchy_options_codes.include? value))
+    value_id = field.find_hierarchy_id_by_name(value)
+    raise "Invalid option in #{field.code} param" unless !value_id.nil?
+    value_id
   end
 
   def check_valid_numeric_value(value, field_code)
