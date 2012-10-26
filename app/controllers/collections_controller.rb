@@ -148,8 +148,13 @@ class CollectionsController < ApplicationController
   end
 
   def import_wizard_execute
-    ImportWizard.execute(current_user, collection, params[:columns].values)
-    render :json => :ok
+    columns = params[:columns].values
+    if columns.find { |x| x[:usage] == 'new_field' } and not current_user.admins? collection
+      render text: "Non-admin users can't create new fields", status: :unauthorized
+    else
+      ImportWizard.execute(current_user, collection, params[:columns].values)
+      render :json => :ok
+    end
   end
 
   def sites_by_term

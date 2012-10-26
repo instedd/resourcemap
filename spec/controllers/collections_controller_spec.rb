@@ -5,6 +5,7 @@ describe CollectionsController do
   render_views
 
   let!(:user) { User.make }
+  let!(:user2) { User.make }
   let!(:collection) { user.create_collection(Collection.make) }
 
   before(:each) {sign_in user}
@@ -73,6 +74,28 @@ describe CollectionsController do
       json[0]["value"].should eq(@site2.name)
     end
 
+  end
+
+  describe "import wizard" do
+    it "should do something" do
+      sign_out user
+      membership = collection.memberships.create! :user_id => user2.id
+      membership.set_layer_access :verb => :read, :access => true
+      membership.set_layer_access :verb => :write, :access => true
+      sign_in user2
+
+      uploaded_file = Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/csv_test.csv'), "text/csv")
+      post :import_wizard_upload_csv, collection_id: collection.id, file: uploaded_file, format: 'csv'
+
+      specs = {
+        '0' => {name: 'Name', usage: 'name'},
+        '1' => {name: 'Lat', usage: 'lat'},
+        '2' => {name: 'Lon', usage: 'lng'},
+        '3' => {name: 'Beds', usage: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
+      }
+      post :import_wizard_execute, collection_id: collection.id, columns: specs
+      response.response_code.should == 401
+    end
   end
 
 end
