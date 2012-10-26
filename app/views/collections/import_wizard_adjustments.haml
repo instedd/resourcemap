@@ -33,7 +33,10 @@
                       Internal ResourceMap ID
                       //ko
                       /ko if: usage() != 'id'
-                      %select{ko(options: '$root.selectableUsages', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
+                      - if collection_admin?
+                        %select{ko(options: '$root.selectableUsagesForAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
+                      - else
+                        %select{ko(options: '$root.selectableUsagesForNonAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
                       //ko
                       /ko if: usage() == 'existing_field'
                       %select{ko(options: '$root.layers', optionsText: "'name'", value: 'layer')}

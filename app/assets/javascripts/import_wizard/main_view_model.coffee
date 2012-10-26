@@ -26,8 +26,10 @@ onImportWizard ->
       @usages.push(new Usage('Longitude', 'lng'))
       @usages.push(new Usage('Ignore', 'ignore'))
 
+      @selectableUsagesForAdmins = @usages.slice(0)
+      # Non admins can't create new fields
+      @selectableUsagesForNonAdmins = @usages.slice(1)
       # The usage ID is not selectable by the user
-      @selectableUsages = @usages.slice(0)
       @usages.push(new Usage('resmap-id', 'id'))
 
     findLayer: (id) =>
