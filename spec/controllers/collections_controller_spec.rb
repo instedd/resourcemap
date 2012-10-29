@@ -5,7 +5,6 @@ describe CollectionsController do
   render_views
 
   let!(:user) { User.make }
-  let!(:user2) { User.make }
   let!(:collection) { user.create_collection(Collection.make) }
 
   before(:each) {sign_in user}
@@ -77,9 +76,11 @@ describe CollectionsController do
   end
 
   describe "import wizard" do
-    it "should do something" do
+    let!(:user2) { User.make }
+    let!(:membership) { collection.memberships.create! :user_id => user2.id }
+
+    it "should not allow to create a new field to a non-admin user" do
       sign_out user
-      membership = collection.memberships.create! :user_id => user2.id
       membership.set_layer_access :verb => :read, :access => true
       membership.set_layer_access :verb => :write, :access => true
       sign_in user2
