@@ -36,10 +36,11 @@ module Collection::CsvConcern
 
     CSV.generate do |csv|
       header = ['name', 'lat', 'long']
-      fields.each { |field| header << field.code }
+      writable_fields = writable_fields_for(user)
+      writable_fields.each { |field| header << field.code }
       csv << header
       row = ['Paris', 48.86, 2.35]
-      fields.each do |field|
+      writable_fields.each do |field|
         row << Array(field.sample_value user).join(", ")
       end
       csv << row
