@@ -67,7 +67,7 @@ ResourceMap::Application.routes.draw do
   resources :activities, :only => [:index], :path => 'activity'
   resources :gateways
 
-  get 'terms_and_conditions', :to => redirect('/')
+  match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
 
   namespace :api do
     get 'collections/:id' => 'collections#show',as: :collection
