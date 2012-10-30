@@ -30,12 +30,13 @@ module SearchBase
       date_field_range(query_key, value, es_code)
     elsif field.kind == 'hierarchy' and value.is_a? Array
       query_value = decode_hierarchy_option(query_key, value)
-
       @search.filter :terms, query_key => query_value
-    else
+    elsif field.select_kind?
       query_value = decode_option(query_key, value)
-
       @search.filter :term, query_key => query_value
+      self
+    else
+      @search.filter :term, query_key => value
       self
     end
   end
@@ -44,7 +45,11 @@ module SearchBase
     field = check_field_exists es_code
 
     query_key = decode(es_code)
-    query_value = decode_option(query_key, value)
+    if field.select_kind?
+      query_value = decode_option(query_key, value)
+    else
+      query_value = value
+    end
 
     add_prefix key: query_key, value: query_value
     self
