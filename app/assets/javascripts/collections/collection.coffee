@@ -22,6 +22,10 @@ onCollections ->
     sitesUrl: -> "/collections/#{@id}/sites.json"
 
     fetchLocation: => $.get "/collections/#{@id}.json", {}, (data) =>
+      @minLat = data.min_lat
+      @maxLat = data.max_lat
+      @minLng = data.min_lng
+      @maxLng = data.max_lng
       @position(data)
       @updatedAt(data.updated_at)
 
