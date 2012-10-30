@@ -12,7 +12,8 @@ describe Api::CollectionsController do
   let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
   let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-  let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy',  config: {hierarchy: [{"0"=>{"id"=>"dad", "name"=>"Dad"}, sub: [{"0"=> {"id"=>"son", "name"=>"Son"}, "1"=>{"id"=>"bro", "name"=>"Bro"}}.with_indifferent_access]}]}.with_indifferent_access}
+  config_hierarchy = [{ id: 'dad', name: 'Dad', sub: [{id: 'son', name: 'Son'}, {id: 'bro', name: 'Bro'}]}]
+  let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy',  config: { hierarchy: config_hierarchy }.with_indifferent_access }
   let!(:site_ref) { layer.fields.make :code => 'site', :kind => 'site' }
   let!(:date) { layer.fields.make :code => 'date', :kind => 'date' }
   let!(:director) { layer.fields.make :code => 'user', :kind => 'user' }
@@ -138,18 +139,24 @@ describe Api::CollectionsController do
       get :show, id: collection.id, format: 'csv', numeric.code => "invalid"
       response.response_code.should be(400)
       response.body.should include("Invalid numeric value in numeric param")
+      get :show, id: collection.id, format: 'csv', numeric.code => "2"
+      response.response_code.should be(200)
     end
 
     it "should validate numeric fields in other operations" do
       get :show, id: collection.id, format: 'csv', numeric.code => "<=invalid"
       response.response_code.should be(400)
       response.body.should include("Invalid numeric value in numeric param")
+      get :show, id: collection.id, format: 'csv', numeric.code => "<=2"
+      response.response_code.should be(200)
     end
 
     it "should validate presence of value" do
       get :show, id: collection.id, format: 'csv', text.code => ""
       response.response_code.should be(400)
       response.body.should include("Missing text value")
+      get :show, id: collection.id, format: 'csv', text.code => "text"
+      response.response_code.should be(200)
     end
 
     it "should validate date fields format" do
@@ -162,24 +169,32 @@ describe Api::CollectionsController do
       get :show, id: collection.id, format: 'csv', date.code => "32/4,invalid"
       response.response_code.should be(400)
       response.body.should include("Invalid date value in date param")
+      get :show, id: collection.id, format: 'csv', date.code => "12/25/2012,12/31/2012"
+      response.response_code.should be(200)
     end
 
     it "should validate hierarchy existing option" do
       get :show, id: collection.id, format: 'csv', hierarchy.code => ["invalid"]
       response.response_code.should be(400)
       response.body.should include("Invalid option in hierarchy param")
+      get :show, id: collection.id, format: 'csv', hierarchy.code => ["Dad"]
+      response.response_code.should be(200)
     end
 
     it "should validate select_one existing option" do
       get :show, id: collection.id, format: 'csv', select_one.code => "invalid"
       response.response_code.should be(400)
       response.body.should include("Invalid option in select_one param")
+      get :show, id: collection.id, format: 'csv', select_one.code => "one"
+      response.response_code.should be(200)
     end
 
     it "should validate select_many existing option" do
       get :show, id: collection.id, format: 'csv', select_many.code => "invalid"
       response.response_code.should be(400)
       response.body.should include("Invalid option in select_many param")
+      get :show, id: collection.id, format: 'csv', select_many.code => "one"
+      response.response_code.should be(200)
     end
   end
 
