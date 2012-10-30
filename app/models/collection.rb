@@ -36,6 +36,26 @@ class Collection < ActiveRecord::Base
     user_snapshots.where(user_id: user.id).first.try(:snapshot)
   end
 
+  def writable_fields_for(user)
+    membership = user.membership_in self
+    return [] unless membership
+
+    target_fields = fields.includes(:layer)
+
+    if membership.admin?
+      target_fields = target_fields.all
+    else
+      lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
+        hash[lm.layer_id] = lm
+        hash
+      end
+
+      target_fields = target_fields.select {|f| lms[f.layer_id] && lms[f.layer_id].write}
+
+    end
+    target_fields
+  end
+
   def visible_fields_for(user, options)
     membership = user.membership_in self
     return [] unless membership

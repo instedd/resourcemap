@@ -25,7 +25,6 @@ describe Collection::CsvConcern do
   end
 
   it "should print date as MM/DD/YYYY" do
-    user = User.make
     layer = collection.layers.make
     date = layer.fields.make :code => 'date', :kind => 'date'
     collection.memberships.make :user => user
@@ -34,6 +33,38 @@ describe Collection::CsvConcern do
     csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
 
     csv[1][4].should eq('10/19/1985')
+  end
+
+  describe "generate sample csv" do
+
+    it "should include only visible fields for the user" do
+      user2 = User.make
+
+      layer_visible = collection.layers.make
+      layer_invisible = collection.layers.make
+      layer_writable = collection.layers.make
+
+      date_visible = layer_visible.fields.make :code => 'date_visible', :kind => 'date'
+      date_invisible = layer_invisible.fields.make :code => 'date_invisible', :kind => 'date'
+      layer_writable = layer_writable.fields.make :code => 'date_writable', :kind => 'date'
+
+      membership = collection.memberships.make :user => user2
+      membership.admin = false
+      membership.set_layer_access :verb => :read, :access => true, :layer_id => layer_visible.id
+      membership.set_layer_access :verb => :write, :access => false, :layer_id => layer_visible.id
+      membership.set_layer_access :verb => :read, :access => false, :layer_id => layer_invisible.id
+      membership.set_layer_access :verb => :write, :access => false, :layer_id => layer_invisible.id
+      membership.set_layer_access :verb => :read, :access => true, :layer_id => layer_writable.id
+      membership.set_layer_access :verb => :write, :access => true, :layer_id => layer_writable.id
+      membership.save!
+
+      csv = CSV.parse(collection.sample_csv user2)
+
+      csv[0].should include('date_writable')
+      csv[0].should_not include('date_visible')
+      csv[0].should_not include('date_invisible')
+      csv[1].length.should be(4)
+    end
   end
 
   describe "decode hierarchy csv test" do
