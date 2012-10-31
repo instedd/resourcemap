@@ -81,7 +81,6 @@ module SearchBase
 
   def where(properties = {})
     properties.each do |es_code, value|
-
       field = check_field_exists es_code
 
       if value.is_a? String
@@ -165,8 +164,9 @@ module SearchBase
   end
 
   def hierarchy(es_code, value)
+    field = check_field_exists es_code
     if value.present?
-      eq es_code, value
+      eq field, value
     else
       @search.filter :not, {exists: {field: es_code}}
     end
@@ -283,8 +283,10 @@ module SearchBase
       validated_value = {}
       validated_value[:date_from] = Time.strptime(parse_date_from(value), '%m/%d/%Y') rescue (raise "Invalid date value in #{field.code} param")
       validated_value[:date_to] = Time.strptime(parse_date_to(value), '%m/%d/%Y') rescue (raise "Invalid date value in #{field.code} param")
-    elsif field.kind == 'hierarchy' || field.select_kind?
+    elsif field.kind == 'hierarchy'
       validated_value = check_option_exists(field, value.first)
+    elsif field.select_kind?
+      validated_value = check_option_exists(field, value)
     end
     validated_value
   end
@@ -292,10 +294,18 @@ module SearchBase
   def check_option_exists(field, value)
     value_id = nil
     if field.kind == 'hierarchy'
-      value_id = field.find_hierarchy_id_by_name(value)
+      if @use_codes_instead_of_es_codes
+        value_id = field.find_hierarchy_id_by_name(value)
+      else
+        value_id = value unless !field.hierarchy_options_codes.include? value
+      end
     elsif field.select_kind?
       field.config['options'].each do |option|
-        value_id = option['id'] if option['label'] == value || option['code'] == value
+        if @use_codes_instead_of_es_codes
+          value_id = option['id'] if option['label'] == value || option['code'] == value
+        else
+          value_id = value if field.config["options"].any?{|opt| opt["id"].to_s == value}
+        end
       end
     end
     raise "Invalid option in #{field.code} param" unless !value_id.nil?

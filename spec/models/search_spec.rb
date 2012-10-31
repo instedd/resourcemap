@@ -10,7 +10,7 @@ describe Search do
     let!(:tables) { layer.fields.make code: 'tables', kind: 'numeric' }
     let!(:first_name) { layer.fields.make code: 'first_name', kind: 'text' }
     let!(:country) { layer.fields.make code: 'country', kind: 'text' }
-    let!(:hierarchy) { layer.fields.make code: 'hie', kind: 'hierarchy', config: { hierarchy: [{id: 1, name: 'root'}] } }
+    let!(:hierarchy) { layer.fields.make code: 'hie', kind: 'hierarchy', config: { "hierarchy" => [{ 'id' => 1, 'name' => 'root'}] } }
 
 
     let!(:site1) { collection.sites.make properties:
@@ -44,7 +44,7 @@ describe Search do
 
     it "searches by equality on hierarchy field" do
       search = collection.new_search
-      search.where hierarchy.es_code => 1
+      search.where hierarchy.es_code => [1]
       assert_results search, site3, site4
     end
 
@@ -107,46 +107,39 @@ describe Search do
 
     it "searches with lt" do
       search = collection.new_search
-      search.lt beds.es_code, 8
-      assert_results search, site1
-    end
-
-    it "searches with lt with code" do
-      search = collection.new_search
-      search.use_codes_instead_of_es_codes
-      search.lt 'beds', 8
+      search.lt beds, 8
       assert_results search, site1
     end
 
     it "searches with lte" do
       search = collection.new_search
-      search.lte beds.es_code, 10
+      search.lte beds, 10
       assert_results search, site1, site2, site4
     end
 
     it "searches with gt" do
       search = collection.new_search
-      search.gt beds.es_code, 18
+      search.gt beds, 18
       assert_results search, site3
     end
 
     it "searches with gte" do
       search = collection.new_search
-      search.gte beds.es_code, 10
+      search.gte beds, 10
       assert_results search, site2, site3, site4
     end
 
     it "searches with combined properties" do
       search = collection.new_search
-      search.lt beds.es_code, 11
-      search.gte tables.es_code, 4
+      search.lt beds, 11
+      search.gte tables, 4
       assert_results search, site4
     end
 
     it "searches with ops" do
       search = collection.new_search
-      search.op beds.es_code, '<', 8
-      search.op tables.es_code, '>=', 1
+      search.op beds, '<', 8
+      search.op tables, '>=', 1
       assert_results search, site1
     end
 
@@ -278,7 +271,9 @@ describe Search do
     end
 
     it "finds by value of select one property using where" do
-      assert_results collection.new_search.where(prop.es_code => "A glass of water"), site1
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      assert_results search.where(prop.code => "A glass of water"), site1
     end
 
     it "doesn't give false positives" do
@@ -474,14 +469,14 @@ describe Search do
     it "should parse date from" do
       search = collection.new_search
       parameter = "12/12/2012,1/1/2013"
-      field = search.send(:parse_date_from, parameter, "code")
+      field = search.send(:parse_date_from, parameter)
       field.should eq("12/12/2012")
     end
 
     it "should parse date to" do
       search = collection.new_search
       parameter = "12/12/2012,1/1/2013"
-      field = search.send(:parse_date_to, parameter, "code")
+      field = search.send(:parse_date_to, parameter)
       field.should eq("1/1/2013")
     end
 

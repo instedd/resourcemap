@@ -113,9 +113,6 @@ class Api::CollectionsController < ApplicationController
     yield
   rescue => ex
 
-    puts ex.message
-    puts ex.backtrace
-
     Rails.logger.info ex.message
     Rails.logger.info ex.backtrace
 

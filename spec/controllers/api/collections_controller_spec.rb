@@ -126,10 +126,11 @@ describe Api::CollectionsController do
     it "should return CSV" do
       csv =  CSV.parse response.body
 
-      csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, select_one.code, select_many.code, hierarchy.code, site_ref.code, date.code, director.code, 'last updated'])
-      csv[1].should eq([site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "", "", "", "", "", "", site2.updated_at.to_datetime.rfc822])
+      csv.length.should eq(3)
 
-      csv[2].should eq([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'one', 'one, two', 'dad', site2.id.to_s, '10/24/2012', user.email, site.updated_at.to_datetime.rfc822])
+      csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, select_one.code, select_many.code, hierarchy.code, site_ref.code, date.code, director.code, 'last updated'])
+      csv.should include [site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "", "", "", "", "", "", site2.updated_at.to_datetime.rfc822]
+      csv.should include [site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'one', 'one, two', 'dad', site2.id.to_s, '10/24/2012', user.email, site.updated_at.to_datetime.rfc822]
     end
   end
 
