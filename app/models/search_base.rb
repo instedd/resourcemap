@@ -22,7 +22,7 @@ module SearchBase
 
   def eq(field, value)
 
-    validated_value = apply_format_validation(field, value)
+    validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
     query_key = field.es_code
 
     if field.kind == 'date'
@@ -39,7 +39,7 @@ module SearchBase
   end
 
   def starts_with(field, value)
-    validated_value = apply_format_validation(field, value)
+    validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
     query_key = field.es_code
     add_prefix key: query_key, value: validated_value
     self
@@ -48,7 +48,7 @@ module SearchBase
   ['lt', 'lte', 'gt', 'gte'].each do |op|
     class_eval %Q(
       def #{op}(field, value)
-        validated_value = apply_format_validation(field, value)
+        validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
         @search.filter :range, field.es_code => {#{op}: validated_value}
         self
       end
@@ -205,26 +205,6 @@ module SearchBase
     code.start_with?('@') ? code[1 .. -1] : code
   end
 
-  def decode_option(field, value)
-    if field && field.config && field.config['options']
-      value_id = check_option_exists(field, value)
-    end
-    value_id
-  end
-
-  def decode_hierarchy_option(field, array_value)
-    return array_value unless @use_codes_instead_of_es_codes
-
-    value_ids = []
-    if field && field.config && field.config['hierarchy']
-      array_value.each do |value|
-        value_id = check_option_exists(field, value)
-        value_ids << value_id
-      end
-    end
-    value_ids
-  end
-
   def add_query(query)
     @queries ||= []
     @queries.push query
@@ -233,17 +213,6 @@ module SearchBase
   def add_prefix(query)
     @prefixes ||= []
     @prefixes.push query
-  end
-
-  def parse_date_from(info)
-    match = (info.match /(.*),/)
-    match.captures[0]
-  end
-
-
-  def parse_date_to(info)
-    match = (info.match /,(.*)/)
-    match.captures[0]
   end
 
   def parse_time(time)
@@ -257,59 +226,6 @@ module SearchBase
       end
     end
     time
-  end
-
-  def apply_format_validation(field, value)
-    check_precense_of_value(value, field.code)
-
-    if field.kind == 'numeric'
-      validated_value = check_valid_numeric_value(value, field.code)
-    elsif field.kind == 'date'
-      validated_value = {}
-      validated_value[:date_from] = Time.strptime(parse_date_from(value), '%m/%d/%Y') rescue (raise "Invalid date value in #{field.code} param")
-      validated_value[:date_to] = Time.strptime(parse_date_to(value), '%m/%d/%Y') rescue (raise "Invalid date value in #{field.code} param")
-    elsif field.kind == 'hierarchy'
-      validated_value = decode_hierarchy_option(field, value)
-    elsif field.select_kind?
-      validated_value = decode_option(field, value)
-    else
-      validated_value = value
-    end
-    validated_value
-  end
-
-  def check_option_exists(field, value)
-    value_id = nil
-    if field.kind == 'hierarchy'
-      if @use_codes_instead_of_es_codes
-        value_id = field.find_hierarchy_id_by_name(value)
-      else
-        value_id = value unless !field.hierarchy_options_codes.include? value
-      end
-    elsif field.select_kind?
-      field.config['options'].each do |option|
-        if @use_codes_instead_of_es_codes
-          value_id = option['id'] if option['label'] == value || option['code'] == value
-        else
-          value_id = value if field.config["options"].any?{|opt| opt["id"].to_s == value}
-        end
-      end
-    end
-    raise "Invalid option in #{field.code} param" unless !value_id.nil?
-    value_id
-  end
-
-  def check_valid_numeric_value(value, field_code)
-    raise "Invalid numeric value in #{field_code} param" unless value.integer?
-    value
-  end
-
-  def integer?(string)
-    true if Integer(string) rescue false
-  end
-
-  def check_precense_of_value(value, field_code)
-    raise "Missing #{field_code} value" unless !value.blank?
   end
 
   def check_field_exists(code)

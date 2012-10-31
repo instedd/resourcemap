@@ -1,6 +1,8 @@
 class Field < ActiveRecord::Base
   include Field::Base
   include Field::TireConcern
+  include Field::ValidationConcern
+
   include HistoryConcern
 
   belongs_to :collection

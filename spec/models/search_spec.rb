@@ -469,15 +469,15 @@ describe Search do
     it "should parse date from" do
       search = collection.new_search
       parameter = "12/12/2012,1/1/2013"
-      field = search.send(:parse_date_from, parameter)
-      field.should eq("12/12/2012")
+      date = creation.send(:parse_date_from, parameter)
+      date.should eq("12/12/2012")
     end
 
     it "should parse date to" do
       search = collection.new_search
       parameter = "12/12/2012,1/1/2013"
-      field = search.send(:parse_date_to, parameter)
-      field.should eq("1/1/2013")
+      date = creation.send(:parse_date_to, parameter)
+      date.should eq("1/1/2013")
     end
 
     it "should search by range" do
