@@ -144,6 +144,10 @@ class ImportWizard
                 end
               end
             end
+
+            field = fields[spec[:code]]
+            site.properties[field] = field.strongly_type value
+
           when 'existing_field'
             existing_field = existing_fields[spec[:field_id].to_i]
             if existing_field
@@ -186,19 +190,13 @@ class ImportWizard
               end
               fields[existing_field.code] = existing_field
             end
-          end
 
-          # Assign the site value
-          case spec[:usage]
           when 'name'
             site.name = value
           when 'lat'
             site.lat = value
           when 'lng'
             site.lng = value
-          when 'new_field'
-            field = fields[spec[:code]]
-            site.properties[field] = field.strongly_type value
           end
         end
       end
