@@ -101,8 +101,6 @@ onCollections ->
 
         @currentCollection().reloadSites()
 
-        @currentCollection().reloadSites()
-
         @editingSite().updatedAt(data.updated_at)
 
         @editingSite().position(data)

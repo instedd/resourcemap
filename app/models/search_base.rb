@@ -24,15 +24,19 @@ module SearchBase
     field = check_field_exists es_code
     query_key = decode(es_code)
 
+    apply_format_validation(field, value)
+
     if field.kind == 'date'
-      date_field_range(query_key, value)
+      date_field_range(query_key, value, es_code)
     elsif field.kind == 'hierarchy' and value.is_a? Array
       query_value = decode_hierarchy_option(query_key, value)
       @search.filter :terms, query_key => query_value
-    else
+    elsif field.select_kind?
       query_value = decode_option(query_key, value)
-
       @search.filter :term, query_key => query_value
+      self
+    else
+      @search.filter :term, query_key => value
       self
     end
   end
@@ -41,7 +45,11 @@ module SearchBase
     field = check_field_exists es_code
 
     query_key = decode(es_code)
-    query_value = decode_option(query_key, value)
+    if field.select_kind?
+      query_value = decode_option(query_key, value)
+    else
+      query_value = value
+    end
 
     add_prefix key: query_key, value: query_value
     self
@@ -51,8 +59,10 @@ module SearchBase
     class_eval %Q(
       def #{op}(es_code, value)
         check_field_exists es_code
+        code = decode(es_code)
+        check_valid_numeric_value(value, es_code)
 
-        @search.filter :range, decode(es_code) => {#{op}: value}
+        @search.filter :range, code => {#{op}: value}
         self
       end
     )
@@ -72,6 +82,7 @@ module SearchBase
 
   def where(properties = {})
     properties.each do |es_code, value|
+      check_precense_of_value(value, es_code)
       if value.is_a? String
         case
         when value[0 .. 1] == '<=' then lte(es_code, value[2 .. -1].strip)
@@ -91,9 +102,13 @@ module SearchBase
     self
   end
 
-  def date_field_range(key, info)
-    date_from = Time.strptime(parse_date_from(info), '%m/%d/%Y').iso8601
-    date_to = Time.strptime(parse_date_to(info), '%m/%d/%Y').iso8601
+  def date_field_range(key, info, code)
+    date_from_time = Time.strptime(parse_date_from(info, code), '%m/%d/%Y') rescue (raise "Invalid date value in #{code} param")
+    date_to_time = Time.strptime(parse_date_to(info, code), '%m/%d/%Y') rescue (raise "Invalid date value in #{code} param")
+
+    date_from = date_from_time.iso8601
+    date_to = date_to_time.iso8601
+
     @search.filter :range, key => {gte: date_from, lte: date_to}
     self
   end
@@ -207,11 +222,9 @@ module SearchBase
   def decode_option(es_code, value)
     field = fields.find { |x| x.es_code == es_code }
     if field && field.config && field.config['options']
-      field.config['options'].each do |option|
-        return option['id'] if option['label'] == value || option['code'] == value
-      end
+      value_id = check_option_exists(field, value)
     end
-    value
+    value_id
   end
 
   def decode_hierarchy_option(es_code, array_value)
@@ -219,36 +232,14 @@ module SearchBase
 
     field = fields.find { |x| x.es_code == es_code }
 
+    value_ids = []
     if field && field.config && field.config['hierarchy']
-      return array_value.map do |value|
-        find_hierarchy_id_by_name(field.config['hierarchy'], value)
+      array_value.each do |value|
+        value_id = check_option_exists(field, value)
+        value_ids << value_id
       end
     end
-    array_value
-  end
-
-  def find_hierarchy_id_by_name(hierarchy, value)
-    hierarchy.each do |item|
-      found = hierarchy_id_by_name(item, value)
-      if found
-        return found
-      end
-    end
-  end
-
-  def hierarchy_id_by_name(option, value)
-    if value == option['name']
-      return option['id']
-    end
-    if option['sub']
-      option['sub'].each do |option|
-        found = hierarchy_id_by_name(option, value)
-        if found
-          return found
-        end
-      end
-    end
-    nil
+    value_ids
   end
 
   def add_query(query)
@@ -261,16 +252,16 @@ module SearchBase
     @prefixes.push query
   end
 
-  def parse_date_from(info)
-    date = (info.match /(.*),/).captures
-    date[0]
+  def parse_date_from(info, field_code)
+    match = (info.match /(.*),/)
+    match.captures[0]
   end
 
-  def parse_date_to(info)
-     date = (info.match /,(.*)/).captures
-     date[0]
-   end
 
+  def parse_date_to(info, field_code)
+    match = (info.match /,(.*)/)
+    match.captures[0]
+  end
 
   def parse_time(time)
     if time.is_a? String
@@ -283,6 +274,38 @@ module SearchBase
       end
     end
     time
+  end
+
+  def apply_format_validation(field, value)
+    if field.kind == 'numeric'
+      check_valid_numeric_value(value, field.code)
+    end
+  end
+
+  def check_option_exists(field, value)
+    value_id = nil
+    if field.kind == 'hierarchy'
+      value_id = field.find_hierarchy_id_by_name(value)
+    elsif field.select_kind?
+      field.config['options'].each do |option|
+        value_id = option['id'] if option['label'] == value || option['code'] == value
+      end
+    end
+
+    raise "Invalid option in #{field.code} param" unless !value_id.nil?
+    value_id
+  end
+
+  def check_valid_numeric_value(value, field_code)
+    raise "Invalid numeric value in #{field_code} param" unless value.integer?
+  end
+
+  def integer?(string)
+    true if Integer(string) rescue false
+  end
+
+  def check_precense_of_value(value, field_code)
+    raise "Missing #{field_code} value" unless !value.blank?
   end
 
   def check_field_exists(code)

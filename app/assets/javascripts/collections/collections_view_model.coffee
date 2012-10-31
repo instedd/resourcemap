@@ -54,10 +54,14 @@ onCollections ->
 
       collection.fetchSitesMembership()
       collection.fetchFields =>
-        @processQueryParams()
-        @refreshTimeago()
-        @makeFixedHeaderTable()
-        @rewriteUrl()
+        if @processingURL
+          @processURL()
+        else
+          @ignorePerformSearchOrHierarchy = false
+          @performSearchOrHierarchy()
+          @refreshTimeago()
+          @makeFixedHeaderTable()
+          @rewriteUrl()
 
       $('.BreadCrumb').load("collections/breadcrumbs", { collection_id: collection.id })
 
