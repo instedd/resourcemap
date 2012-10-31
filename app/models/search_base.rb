@@ -22,17 +22,15 @@ module SearchBase
 
   def eq(field, value)
 
-    apply_format_validation(field, value)
+    validated_value = apply_format_validation(field, value)
     query_key = field.es_code
 
     if field.kind == 'date'
-      date_field_range(query_key, value)
+      date_field_range(query_key, validated_value)
     elsif field.kind == 'hierarchy' and value.is_a? Array
-      query_value = decode_hierarchy_option(field, query_key, value)
-      @search.filter :terms, query_key => query_value
+      @search.filter :terms, query_key => validated_value
     elsif field.select_kind?
-      query_value = decode_option(field, query_key, value)
-      @search.filter :term, query_key => query_value
+      @search.filter :term, query_key => validated_value
       self
     else
       @search.filter :term, query_key => value
@@ -41,27 +39,17 @@ module SearchBase
   end
 
   def starts_with(field, value)
-    apply_format_validation(field, value)
-
+    validated_value = apply_format_validation(field, value)
     query_key = field.es_code
-
-    if field.select_kind?
-      query_value = decode_option(field, query_key, value)
-    else
-      query_value = value
-    end
-
-    add_prefix key: query_key, value: query_value
+    add_prefix key: query_key, value: validated_value
     self
   end
 
   ['lt', 'lte', 'gt', 'gte'].each do |op|
     class_eval %Q(
       def #{op}(field, value)
-
-        apply_format_validation(field, value)
-
-        @search.filter :range, field.es_code => {#{op}: value}
+        validated_value = apply_format_validation(field, value)
+        @search.filter :range, field.es_code => {#{op}: validated_value}
         self
       end
     )
@@ -102,12 +90,9 @@ module SearchBase
     self
   end
 
-  def date_field_range(key, value)
-    date_from_time = Time.strptime(parse_date_from(value), '%m/%d/%Y')
-    date_to_time = Time.strptime(parse_date_to(value), '%m/%d/%Y')
-
-    date_from = date_from_time.iso8601
-    date_to = date_to_time.iso8601
+  def date_field_range(key, valid_value)
+    date_from = valid_value[:date_from].iso8601
+    date_to = valid_value[:date_to].iso8601
 
     @search.filter :range, key => {gte: date_from, lte: date_to}
     self
@@ -220,14 +205,14 @@ module SearchBase
     code.start_with?('@') ? code[1 .. -1] : code
   end
 
-  def decode_option(field, es_code, value)
+  def decode_option(field, value)
     if field && field.config && field.config['options']
       value_id = check_option_exists(field, value)
     end
     value_id
   end
 
-  def decode_hierarchy_option(field, es_code, array_value)
+  def decode_hierarchy_option(field, array_value)
     return array_value unless @use_codes_instead_of_es_codes
 
     value_ids = []
@@ -284,9 +269,11 @@ module SearchBase
       validated_value[:date_from] = Time.strptime(parse_date_from(value), '%m/%d/%Y') rescue (raise "Invalid date value in #{field.code} param")
       validated_value[:date_to] = Time.strptime(parse_date_to(value), '%m/%d/%Y') rescue (raise "Invalid date value in #{field.code} param")
     elsif field.kind == 'hierarchy'
-      validated_value = check_option_exists(field, value.first)
+      validated_value = decode_hierarchy_option(field, value)
     elsif field.select_kind?
-      validated_value = check_option_exists(field, value)
+      validated_value = decode_option(field, value)
+    else
+      validated_value = value
     end
     validated_value
   end
