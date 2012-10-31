@@ -46,7 +46,7 @@ describe Collection::CsvConcern do
 
       date_visible = layer_visible.fields.make :code => 'date_visible', :kind => 'date'
       date_invisible = layer_invisible.fields.make :code => 'date_invisible', :kind => 'date'
-      layer_writable = layer_writable.fields.make :code => 'date_writable', :kind => 'date'
+      date_writable = layer_writable.fields.make :code => 'date_writable', :kind => 'date'
 
       membership = collection.memberships.make :user => user2
       membership.admin = false

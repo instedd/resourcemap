@@ -115,6 +115,26 @@ describe Field do
     Field.make(kind: 'email').should be_valid
   end
 
+  describe "generate hierarchy options" do
+    it "for empty hierarchy" do
+      config_hierarchy = []
+      field = Field.make kind: 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+      field.hierarchy_options.should eq([])
+    end
+
+    it "for hierarchy with one level" do
+      config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}]}]
+      field = Field.make kind: 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+      field.hierarchy_options.should eq([{:id=>0, :name=>"root"}, {:id=>1, :name=>"child"}])
+    end
+
+    it "for hierarchy with one level two childs" do
+      config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}, {id: 2, name: 'child2'}]}]
+      field = Field.make kind: 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+      field.hierarchy_options.should eq([{:id=>0, :name=>"root"}, {:id=>1, :name=>"child"}, {:id=>2, :name=>"child2"}])
+    end
+  end
+
   describe "core field type" do
     subject { Field::Kinds - Field::PluginKinds.keys }
 

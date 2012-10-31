@@ -5,26 +5,30 @@
 
 .tabsline
   %h2 Import wizard
-  %p First, upload your CSV file
+  %p This wizard will guide you through importing a CSV file
+  %br/
 
   - if current_snapshot
     = render '/current_snapshot_message'
   - else
+    = render 'steps', :step => 1
+    %br
+
+    %h2.orange Upload your CSV file
+    .box.plain.grey{:style => 'width: 66%'}
+      .black We recommend you to download the CSV, make changes to it and upload it here for doing a bulk update:
+      %ul
+        %li Remove rows for sites you are not interested in updating
+        %li Add rows for new sites
+        %li Remove columns for fields you are not interested in updating
+        %li Add columns for new fields
+
     - if collection.sites.exists?
-      %p
-        We recommend you to
-        = link_to 'download the existing CSV', api_collection_path(collection, format: "csv")
-        , make changes to it and upload it here for doing a bulk update:
-        %ul
-          %li Remove rows for sites you are not interested in updating
-          %li Add rows for new sites
-          %li Remove columns for fields you are not interested in updating
-          %li Add columns for new fields
-    - else
-      %p
-        You can download a sample CSV file
-        = (link_to 'here', api_sample_csv_path(collection, format: 'csv')) + '.'
+      = link_to 'Download the existing CSV', api_collection_path(collection, format: "csv"), class: "icon fimport black"
+    -else
+      = link_to 'Download a template CSV file', api_sample_csv_path(collection, format: 'csv'), class: "icon fimport black"
 
     %form#upload_form{action: collection_import_wizard_upload_csv_path(collection), method: :post, enctype: 'multipart/form-data'}
       %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
+      .icon.fexport.black Upload a CSV file to update multiple sites
       %input#upload{type: :file, name: :file}

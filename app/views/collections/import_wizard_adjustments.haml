@@ -9,6 +9,15 @@
   %p Now specify how to map each column to a field.
   %br/
 
+  - if current_snapshot
+    = render '/current_snapshot_message'
+  - else
+    = render 'steps', :step => 2
+    %br
+
+  %h2.orange Curate Data
+  %p.orange Specify how to map each column to a field
+
   #import-wizard-main.hidden-until-loaded
     /ko if: !hasId()
     - if collection.sites.exists?

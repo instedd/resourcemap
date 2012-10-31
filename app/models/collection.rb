@@ -145,7 +145,7 @@ class Collection < ActiveRecord::Base
     search = self.new_search
     search.use_codes_instead_of_es_codes
 
-    search.send operator , option[:code], option[:value]
+    search.send operator, field, option[:value]
     results = search.results
     response_prepare(option[:code], field.id, results)
   end
