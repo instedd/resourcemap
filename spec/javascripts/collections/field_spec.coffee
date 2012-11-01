@@ -117,13 +117,11 @@ describe 'Collection', ->
         expect(@field.valueUI()).toEqual('Green')
 
       it 'should have options', ->
-        # Remember the 'no value' option created by the field
-        expect(@field.options.length).toEqual(3)
+        expect(@field.options.length).toEqual(2)
 
 
       it 'should have optionsIds', ->
-        # Remember the 'no value' option created by the field
-        expect(@field.optionsIds).toEqual(['', 1, 2])
+        expect(@field.optionsIds).toEqual([1, 2])
 
     describe 'Select Many Field', ->
       beforeEach ->
