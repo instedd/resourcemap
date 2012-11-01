@@ -1,6 +1,8 @@
 class Field < ActiveRecord::Base
   include Field::Base
   include Field::TireConcern
+  include Field::ValidationConcern
+
   include HistoryConcern
 
   belongs_to :collection
@@ -45,7 +47,7 @@ class Field < ActiveRecord::Base
   end
 
   def find_hierarchy_id_by_name(value)
-    option = hierarchy_options.find {|option| option[:name] == value}
+    option = hierarchy_options.find {|opt| opt[:name] == value}
     option[:id] if option
   end
 

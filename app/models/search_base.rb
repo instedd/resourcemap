@@ -20,20 +20,17 @@ module SearchBase
     @search.filter :prefix, name: name.downcase
   end
 
-  def eq(es_code, value)
-    field = check_field_exists es_code
-    query_key = decode(es_code)
+  def eq(field, value)
 
-    apply_format_validation(field, value)
+    validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
+    query_key = field.es_code
 
     if field.kind == 'date'
-      date_field_range(query_key, value, es_code)
+      date_field_range(query_key, validated_value)
     elsif field.kind == 'hierarchy' and value.is_a? Array
-      query_value = decode_hierarchy_option(query_key, value)
-      @search.filter :terms, query_key => query_value
+      @search.filter :terms, query_key => validated_value
     elsif field.select_kind?
-      query_value = decode_option(query_key, value)
-      @search.filter :term, query_key => query_value
+      @search.filter :term, query_key => validated_value
       self
     else
       @search.filter :term, query_key => value
@@ -41,40 +38,30 @@ module SearchBase
     end
   end
 
-  def starts_with(es_code, value)
-    field = check_field_exists es_code
-
-    query_key = decode(es_code)
-    if field.select_kind?
-      query_value = decode_option(query_key, value)
-    else
-      query_value = value
-    end
-
-    add_prefix key: query_key, value: query_value
+  def starts_with(field, value)
+    validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
+    query_key = field.es_code
+    add_prefix key: query_key, value: validated_value
     self
   end
 
   ['lt', 'lte', 'gt', 'gte'].each do |op|
     class_eval %Q(
-      def #{op}(es_code, value)
-        check_field_exists es_code
-        code = decode(es_code)
-        check_valid_numeric_value(value, es_code)
-
-        @search.filter :range, code => {#{op}: value}
+      def #{op}(field, value)
+        validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
+        @search.filter :range, field.es_code => {#{op}: validated_value}
         self
       end
     )
   end
 
-  def op(es_code, op, value)
+  def op(field, op, value)
     case op.to_s.downcase
-    when '<', 'l' then lt(es_code, value)
-    when '<=', 'lte' then lte(es_code, value)
-    when '>', 'gt' then gt(es_code, value)
-    when '>=', 'gte' then gte(es_code, value)
-    when '=', '==', 'eq' then eq(es_code, value)
+    when '<', 'l' then lt(field, value)
+    when '<=', 'lte' then lte(field, value)
+    when '>', 'gt' then gt(field, value)
+    when '>=', 'gte' then gte(field, value)
+    when '=', '==', 'eq' then eq(field, value)
     else raise "Invalid operation: #{op}"
     end
     self
@@ -82,32 +69,30 @@ module SearchBase
 
   def where(properties = {})
     properties.each do |es_code, value|
-      check_precense_of_value(value, es_code)
+      field = check_field_exists es_code
+
       if value.is_a? String
         case
-        when value[0 .. 1] == '<=' then lte(es_code, value[2 .. -1].strip)
-        when value[0] == '<' then lt(es_code, value[1 .. -1].strip)
-        when value[0 .. 1] == '>=' then gte(es_code, value[2 .. -1].strip)
-        when value[0] == '>' then gt(es_code, value[1 .. -1].strip)
-        when value[0] == '=' then eq(es_code, value[1 .. -1].strip)
-        when value[0 .. 1] == '~=' then starts_with(es_code, value[2 .. -1].strip)
-        else eq(es_code, value)
+        when value[0 .. 1] == '<=' then lte(field, value[2 .. -1].strip)
+        when value[0] == '<' then lt(field, value[1 .. -1].strip)
+        when value[0 .. 1] == '>=' then gte(field, value[2 .. -1].strip)
+        when value[0] == '>' then gt(field, value[1 .. -1].strip)
+        when value[0] == '=' then eq(field, value[1 .. -1].strip)
+        when value[0 .. 1] == '~=' then starts_with(field, value[2 .. -1].strip)
+        else eq(field, value)
         end
       elsif value.is_a? Hash
-        value.each { |pair| op(es_code, pair[0], pair[1]) }
+        value.each { |pair| op(field, pair[0], pair[1]) }
       else
-        eq(es_code, value)
+        eq(field, value)
       end
     end
     self
   end
 
-  def date_field_range(key, info, code)
-    date_from_time = Time.strptime(parse_date_from(info, code), '%m/%d/%Y') rescue (raise "Invalid date value in #{code} param")
-    date_to_time = Time.strptime(parse_date_to(info, code), '%m/%d/%Y') rescue (raise "Invalid date value in #{code} param")
-
-    date_from = date_from_time.iso8601
-    date_to = date_to_time.iso8601
+  def date_field_range(key, valid_value)
+    date_from = valid_value[:date_from].iso8601
+    date_to = valid_value[:date_to].iso8601
 
     @search.filter :range, key => {gte: date_from, lte: date_to}
     self
@@ -164,8 +149,9 @@ module SearchBase
   end
 
   def hierarchy(es_code, value)
+    field = check_field_exists es_code
     if value.present?
-      eq es_code, value
+      eq field, value
     else
       @search.filter :not, {exists: {field: es_code}}
     end
@@ -219,29 +205,6 @@ module SearchBase
     code.start_with?('@') ? code[1 .. -1] : code
   end
 
-  def decode_option(es_code, value)
-    field = fields.find { |x| x.es_code == es_code }
-    if field && field.config && field.config['options']
-      value_id = check_option_exists(field, value)
-    end
-    value_id
-  end
-
-  def decode_hierarchy_option(es_code, array_value)
-    return array_value unless @use_codes_instead_of_es_codes
-
-    field = fields.find { |x| x.es_code == es_code }
-
-    value_ids = []
-    if field && field.config && field.config['hierarchy']
-      array_value.each do |value|
-        value_id = check_option_exists(field, value)
-        value_ids << value_id
-      end
-    end
-    value_ids
-  end
-
   def add_query(query)
     @queries ||= []
     @queries.push query
@@ -250,17 +213,6 @@ module SearchBase
   def add_prefix(query)
     @prefixes ||= []
     @prefixes.push query
-  end
-
-  def parse_date_from(info, field_code)
-    match = (info.match /(.*),/)
-    match.captures[0]
-  end
-
-
-  def parse_date_to(info, field_code)
-    match = (info.match /,(.*)/)
-    match.captures[0]
   end
 
   def parse_time(time)
@@ -274,38 +226,6 @@ module SearchBase
       end
     end
     time
-  end
-
-  def apply_format_validation(field, value)
-    if field.kind == 'numeric'
-      check_valid_numeric_value(value, field.code)
-    end
-  end
-
-  def check_option_exists(field, value)
-    value_id = nil
-    if field.kind == 'hierarchy'
-      value_id = field.find_hierarchy_id_by_name(value)
-    elsif field.select_kind?
-      field.config['options'].each do |option|
-        value_id = option['id'] if option['label'] == value || option['code'] == value
-      end
-    end
-
-    raise "Invalid option in #{field.code} param" unless !value_id.nil?
-    value_id
-  end
-
-  def check_valid_numeric_value(value, field_code)
-    raise "Invalid numeric value in #{field_code} param" unless value.integer?
-  end
-
-  def integer?(string)
-    true if Integer(string) rescue false
-  end
-
-  def check_precense_of_value(value, field_code)
-    raise "Missing #{field_code} value" unless !value.blank?
   end
 
   def check_field_exists(code)
