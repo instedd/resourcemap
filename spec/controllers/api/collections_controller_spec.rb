@@ -43,6 +43,7 @@ describe Api::CollectionsController do
     it "should return JSON" do
       json = JSON.parse response.body
       json["name"].should eq(collection.name)
+      json['sites'].sort_by! { |site| site["id"] }
       json["sites"].length.should eq(2)
 
       json["sites"][0]["id"].should eq(site2.id)
@@ -90,6 +91,7 @@ describe Api::CollectionsController do
       rss =  Hash.from_xml response.body
 
       rss["rss"]["channel"]["title"].should eq(collection.name)
+      rss["rss"]["channel"]["item"].sort_by! { |item| item["site"] }
 
       rss["rss"]["channel"]["item"][0]["title"].should eq(site.name)
       rss["rss"]["channel"]["item"][0]["lat"].should eq(site.lat.to_s)
