@@ -18,9 +18,9 @@ describe Api::CollectionsController do
   let!(:date) { layer.fields.make :code => 'date', :kind => 'date' }
   let!(:director) { layer.fields.make :code => 'user', :kind => 'user' }
 
-  let!(:site2) {collection.sites.make}
+  let!(:site2) {collection.sites.make :name => "Site A"}
 
-  let!(:site) { collection.sites.make :properties => {
+  let!(:site) { collection.sites.make  :name => "Site B", :properties => {
     text.es_code => 'foo',
     numeric.es_code => 1,
     select_one.es_code => 1,
@@ -43,7 +43,7 @@ describe Api::CollectionsController do
     it "should return JSON" do
       json = JSON.parse response.body
       json["name"].should eq(collection.name)
-      json['sites'].sort_by! { |site| site["id"] }
+      json['sites'].sort_by! { |site| site["name"] }
       json["sites"].length.should eq(2)
 
       json["sites"][0]["id"].should eq(site2.id)
@@ -91,27 +91,35 @@ describe Api::CollectionsController do
       rss =  Hash.from_xml response.body
 
       rss["rss"]["channel"]["title"].should eq(collection.name)
-      rss["rss"]["channel"]["item"].sort_by! { |item| item["site"] }
+      rss["rss"]["channel"]["item"].sort_by! { |item| item["name"] }
 
-      rss["rss"]["channel"]["item"][0]["title"].should eq(site.name)
-      rss["rss"]["channel"]["item"][0]["lat"].should eq(site.lat.to_s)
-      rss["rss"]["channel"]["item"][0]["long"].should eq(site.lng.to_s)
-      rss["rss"]["channel"]["item"][0]["guid"].should eq(api_site_url site, format: 'rss')
+      rss["rss"]["channel"]["item"][0]["title"].should eq(site2.name)
+      rss["rss"]["channel"]["item"][0]["lat"].should eq(site2.lat.to_s)
+      rss["rss"]["channel"]["item"][0]["long"].should eq(site2.lng.to_s)
+      rss["rss"]["channel"]["item"][0]["guid"].should eq(api_site_url site2, format: 'rss')
+
+      #TODO: This is returning "properties"=>"\n      "
+      rss["rss"]["channel"]["item"][0]["properties"].blank?.should eq(true)
+
+      rss["rss"]["channel"]["item"][1]["title"].should eq(site.name)
+      rss["rss"]["channel"]["item"][1]["lat"].should eq(site.lat.to_s)
+      rss["rss"]["channel"]["item"][1]["long"].should eq(site.lng.to_s)
+      rss["rss"]["channel"]["item"][1]["guid"].should eq(api_site_url site, format: 'rss')
 
 
-      rss["rss"]["channel"]["item"][0]["properties"].length.should eq(8)
+      rss["rss"]["channel"]["item"][1]["properties"].length.should eq(8)
 
-      rss["rss"]["channel"]["item"][0]["properties"][text.code].should eq(site.properties[text.es_code])
-      rss["rss"]["channel"]["item"][0]["properties"][numeric.code].should eq(site.properties[numeric.es_code].to_s)
-      rss["rss"]["channel"]["item"][0]["properties"][select_one.code].should eq('one')
-      rss["rss"]["channel"]["item"][0]["properties"][select_many.code].length.should eq(1)
-      rss["rss"]["channel"]["item"][0]["properties"][select_many.code]['option'].length.should eq(2)
-      rss["rss"]["channel"]["item"][0]["properties"][select_many.code]['option'][0]['code'].should eq('one')
-      rss["rss"]["channel"]["item"][0]["properties"][select_many.code]['option'][1]['code'].should eq('two')
-      rss["rss"]["channel"]["item"][0]["properties"][hierarchy.code].should eq('dad')
-      rss["rss"]["channel"]["item"][0]["properties"][site_ref.code].should eq(site2.id.to_s)
-      rss["rss"]["channel"]["item"][0]["properties"][date.code].should eq('10/24/2012')
-      rss["rss"]["channel"]["item"][0]["properties"][director.code].should eq(user.email)
+      rss["rss"]["channel"]["item"][1]["properties"][text.code].should eq(site.properties[text.es_code])
+      rss["rss"]["channel"]["item"][1]["properties"][numeric.code].should eq(site.properties[numeric.es_code].to_s)
+      rss["rss"]["channel"]["item"][1]["properties"][select_one.code].should eq('one')
+      rss["rss"]["channel"]["item"][1]["properties"][select_many.code].length.should eq(1)
+      rss["rss"]["channel"]["item"][1]["properties"][select_many.code]['option'].length.should eq(2)
+      rss["rss"]["channel"]["item"][1]["properties"][select_many.code]['option'][0]['code'].should eq('one')
+      rss["rss"]["channel"]["item"][1]["properties"][select_many.code]['option'][1]['code'].should eq('two')
+      rss["rss"]["channel"]["item"][1]["properties"][hierarchy.code].should eq('dad')
+      rss["rss"]["channel"]["item"][1]["properties"][site_ref.code].should eq(site2.id.to_s)
+      rss["rss"]["channel"]["item"][1]["properties"][date.code].should eq('10/24/2012')
+      rss["rss"]["channel"]["item"][1]["properties"][director.code].should eq(user.email)
 
 
     end
