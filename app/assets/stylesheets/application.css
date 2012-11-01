@@ -138,16 +138,8 @@
   width: 96px;
 }
 
-.client-tracking-health-facility-data {
-  background: url("/assets/chiang_rai_province_track_health_facility_data.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 96px;
-  vertical-align: middle;
-  width: 96px;
-}
-
-.client-bangladesh-ministry-of-health {
-  background: url("/assets/bangladesh_ministry_of_health.png") no-repeat scroll center top transparent;
+.client-wranda-ministry-of-health {
+  background: url("/assets/rwanda_coat_of_arms.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
