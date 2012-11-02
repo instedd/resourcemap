@@ -18,7 +18,6 @@ onImportWizard ->
       # For new select_one or select_many fields
       @selectKind = ko.observable 'code'
 
-      @sample = ko.observable data.sample
       @value = ko.observable data.value
 
     toJSON: =>

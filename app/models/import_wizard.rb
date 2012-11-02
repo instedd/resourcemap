@@ -11,13 +11,18 @@ class ImportWizard
       csv.each { |row| }
     end
 
-    def sample(user, collection)
+    def get_preview_sites(user, collection)
+      rows = CSV.read file_for(user, collection)
+
+      rows[1 .. -1]
+    end
+
+    def guess_columns_spec(user, collection)
       rows = []
       i = 0
+
       CSV.foreach(file_for user, collection) do |row|
         rows << row
-        i += 1
-        break if i == 26
       end
       to_columns collection, rows, user.admins?(collection)
     end
@@ -224,20 +229,26 @@ class ImportWizard
         # And this will create the new ones
         collection.save!
       end
+
+      delete_file(user, collection)
+
     end
+
+    def delete_file(user, collection)
+      File.delete(file_for(user, collection))
+    end
+
 
     private
 
     def to_columns(collection, rows, admin)
       fields = collection.fields.index_by &:code
 
-      columns = rows[0].select(&:present?).map{|x| {:name => x.strip, :sample => "", :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
+      columns = rows[0].select(&:present?).map{|x| {:name => x.strip, :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
       columns.each_with_index do |column, i|
         rows[1 .. 4].each do |row|
           if row[i]
             column[:value] = row[i].to_s unless column[:value].present?
-            column[:sample] << ", " if column[:sample].present?
-            column[:sample] << row[i].to_s
           end
         end
         guess_column_usage(column, fields, rows, i, admin)

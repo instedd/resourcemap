@@ -24,120 +24,137 @@
       .alert.box.flash_error.drop_shadow
         = raw "All sites will be imported as new. If you want to modify the existing ones #{link_to "go back", :back, :class => 'black'} to the previous page."
     //ko
-    %table
-      %tr
-        %td{valign: :top}
-          %div{style: 'height: 400px;overflow:auto'}
-            %ul{ko(foreach: :columns)}
-              %li{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
-                %div
-                  %strong{ko(text: :name)}
-                  %ul
-                    %li
-                      Sample values:
-                      %span{ko(text: :sample)}
-                    %li
-                      Use as:
-                      /ko if: usage() == 'id'
-                      Internal ResourceMap ID
-                      //ko
-                      /ko if: usage() != 'id'
-                      - if collection_admin?
-                        %select{ko(options: '$root.selectableUsagesForAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
-                      - else
-                        %select{ko(options: '$root.selectableUsagesForNonAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
-                      //ko
-                      /ko if: usage() == 'existing_field'
-                      %select{ko(options: '$root.layers', optionsText: "'name'", value: 'layer')}
-                      %select{ko(options: 'layer().fields', optionsText: "'name'", value: 'field')}
-                      //ko
-                      /ko if: usage() == 'new_field'
-                      = select_tag :kind, options_for_select([['Text field', 'text'], ['Numeric field', 'numeric'], ['Select one field', 'select_one'], ['Select many field', 'select_many']]), 'data-bind' => kov(value: :kind)
-                      /ko if: kind() == 'select_one' || kind() == 'select_many'
-                      = select_tag :selectKind, options_for_select([['Use as the code', 'code'], ['Use as the label', 'label'], ['Use as both the code and label', 'both']]), 'data-bind' => kov(value: :selectKind)
-                      //ko
-                      //ko
-                    /ko if: usage() == 'new_field'
-                    %li
-                      Field Code:
-                      %input{ko(value: :code, valueUpdate: :afterkeydown)}
-                    %li
-                      Field Name:
-                      %input{ko(value: :label, valueUpdate: :afterkeydown)}
-                    //ko
-        %td{ko(with: :site), valign: :top}
-          %div{style: 'height: 400px;overflow:auto'}
-            Sample site preview:
+
+    %div{style: 'height: 400px;overflow:auto'}
+      %ul{ko(foreach: :columns)}
+        %li{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
+          %div
+            %strong{ko(text: :name)}
             %ul
               %li
-                %span{ko(css: {error: "hasMoreThanOneId()"})} ID:
-                /ko if: id()
-                %span{ko(text: :id)}
+                Use as:
+                /ko if: usage() == 'id'
+                Internal ResourceMap ID
                 //ko
-                /ko if: !id()
-                %span New ID
+                /ko if: usage() != 'id'
+                - if collection_admin?
+                  %select{ko(options: '$root.selectableUsagesForAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
+                - else
+                  %select{ko(options: '$root.selectableUsagesForNonAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
                 //ko
+                /ko if: usage() == 'existing_field'
+                %select{ko(options: '$root.layers', optionsText: "'name'", value: 'layer')}
+                %select{ko(options: 'layer().fields', optionsText: "'name'", value: 'field')}
+                //ko
+                /ko if: usage() == 'new_field'
+                = select_tag :kind, options_for_select([['Text field', 'text'], ['Numeric field', 'numeric'], ['Select one field', 'select_one'], ['Select many field', 'select_many']]), 'data-bind' => kov(value: :kind)
+                /ko if: kind() == 'select_one' || kind() == 'select_many'
+                = select_tag :selectKind, options_for_select([['Use as the code', 'code'], ['Use as the label', 'label'], ['Use as both the code and label', 'both']]), 'data-bind' => kov(value: :selectKind)
+                //ko
+                //ko
+              /ko if: usage() == 'new_field'
               %li
-                %span{ko(css: {error: "!name() || hasMoreThanOneName()"})} Name:
-                %span{ko(text: :name)}
+                Field Code:
+                %input{ko(value: :code, valueUpdate: :afterkeydown)}
               %li
-                Location:
-                %ul
-                  %li
-                    %span{ko(css: {error: "hasMoreThanOneLat()"})} Latitude:
-                    %span{ko(text: :lat)}
-                  %li
-                    %span{ko(css: {error: "hasMoreThanOneLng()"})} Longitude:
-                    %span{ko(text: :lng)}
-              %li
-                Properties:
-                %ul{ko(foreach: :properties)}
-                  %li
-                    /ko if: usage == 'new_field'
-                    %strong New Field
-                    %br/
-                    From column:
-                    %span{ko(text: :column)}
-                    %br/
-                    Code:
-                    %span{ko(text: :code)}
-                    %br/
-                    Name:
-                    %span{ko(text: :name)}
-                    %br/
-                    Field type:
-                    %span{ko(text: :kind)}
-                    %br/
-                    /ko if: kind != 'select_one' && kind != 'select_many'
-                    Value:
-                    %span{ko(text: :value)}
-                    %br/
-                    //ko
-                    /ko if: kind == 'select_one' || kind == 'select_many'
-                    %span{ko(css: {error: "!valueCode()"})} Value code:
-                    %span{ko(text: :valueCode)}
-                    %br/
-                    %span{ko(css: {error: "!valueLabel()"})} Value label:
-                    %span{ko(text: :valueLabel)}
-                    %br/
-                    //ko
-                    //ko
+                Field Name:
+                %input{ko(value: :label, valueUpdate: :afterkeydown)}
+              //ko
 
-                    /ko if: usage == 'existing_field' && layer && field
-                    %strong Existing field
-                    %br/
-                    From column:
-                    %span{ko(text: :column)}
-                    %br/
-                    Layer:
-                    %span{ko(text: 'layer.name')}
-                    %br/
-                    Field:
-                    %span{ko(text: 'field.name')}
-                    %br/
-                    Value:
-                    %span{ko(text: :value)}
-                    //ko
+    %div{ko(with: :site)}
+      Sample site preview:
+      %ul
+        %li
+          %span{ko(css: {error: "hasMoreThanOneId()"})} ID:
+          /ko if: id()
+          %span{ko(text: :id)}
+          //ko
+          /ko if: !id()
+          %span New ID
+          //ko
+        %li
+          %span{ko(css: {error: "!name() || hasMoreThanOneName()"})} Name:
+          %span{ko(text: :name)}
+        %li
+          Location:
+          %ul
+            %li
+              %span{ko(css: {error: "hasMoreThanOneLat()"})} Latitude:
+              %span{ko(text: :lat)}
+            %li
+              %span{ko(css: {error: "hasMoreThanOneLng()"})} Longitude:
+              %span{ko(text: :lng)}
+        %li
+          Properties:
+          %ul{ko(foreach: :properties)}
+            %li
+              /ko if: usage == 'new_field'
+              %strong New Field
+              %br/
+              From column:
+              %span{ko(text: :column)}
+              %br/
+              Code:
+              %span{ko(text: :code)}
+              %br/
+              Name:
+              %span{ko(text: :name)}
+              %br/
+              Field type:
+              %span{ko(text: :kind)}
+              %br/
+              /ko if: kind != 'select_one' && kind != 'select_many'
+              Value:
+              %span{ko(text: :value)}
+              %br/
+              //ko
+              /ko if: kind == 'select_one' || kind == 'select_many'
+              %span{ko(css: {error: "!valueCode()"})} Value code:
+              %span{ko(text: :valueCode)}
+              %br/
+              %span{ko(css: {error: "!valueLabel()"})} Value label:
+              %span{ko(text: :valueLabel)}
+              %br/
+              //ko
+              //ko
+
+              /ko if: usage == 'existing_field' && layer && field
+              %strong Existing field
+              %br/
+              From column:
+              %span{ko(text: :column)}
+              %br/
+              Layer:
+              %span{ko(text: 'layer.name')}
+              %br/
+              Field:
+              %span{ko(text: 'field.name')}
+              %br/
+              Value:
+              %span{ko(text: :value)}
+              //ko
+
+
+
+    .box.nopadd.h50
+      .tablescroll{style: 'margin-top: 0'}
+        %table.GralTable.fht-table.fht-table-init{style: 'table-layout: fixed;'}
+          %colgroup
+            / ko foreach: columns()
+            %col{width: '150px'}
+            //ko
+          %thead
+            %tr
+              / ko foreach: columns()
+              %th{ko(text: :name)}
+              //ko
+          %tbody
+            / ko foreach: sites()
+            %tr
+              / ko foreach: $data
+              %td{ko(text: '$data')}
+              //ko
+            //ko
 
     %br/
     /ko if: importing()

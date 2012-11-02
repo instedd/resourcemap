@@ -643,4 +643,42 @@ describe ImportWizard do
     site2.properties.should eq({text.es_code => 'lala'})
   end
 
+  it "should guess column spec" do
+    csv_string = CSV.generate do |csv|
+     csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'text', 'numeric']
+     csv << ["123", 'Foo old', '1.2', '3.4', '', '']
+    end
+
+    ImportWizard.import user, collection, csv_string
+    column_spec = ImportWizard.guess_columns_spec user, collection
+
+    column_spec.length.should eq(6)
+
+    column_spec.should include({:name=>"resmap-id", :kind=>:text, :code=>"resmap-id", :label=>"Resmap", :value=>"123", :usage=>:id})
+    column_spec.should include({:name=>"Name", :kind=>:text, :code=>"name", :label=>"Name", :value=>"Foo old", :usage=>:name})
+    column_spec.should include({:name=>"Lat", :kind=>:text, :code=>"lat", :label=>"Lat", :value=>"1.2", :usage=>:lat})
+    column_spec.should include({:name=>"Lon", :kind=>:text, :code=>"lon", :label=>"Lon", :value=>"3.4", :usage=>:lng})
+    column_spec.should include({:name=>"text", :kind=>:text, :code=>"text", :label=>"Text", :value=>"", :usage=>:existing_field, :layer_id=> text.layer_id, :field_id=>text.id})
+    column_spec.should include({:name=>"numeric", :kind=>:text, :code=>"numeric", :label=>"Numeric", :value=>"", :usage=>:existing_field, :layer_id=>numeric.layer_id, :field_id=>numeric.id})
+
+    ImportWizard.delete_file(user, collection)
+  end
+
+  it "should get preview sites" do
+    csv_string = CSV.generate do |csv|
+    csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'text', 'numeric']
+    csv << ["123", 'Foo old', '1.2', '3.4', '', '']
+    csv << ["124", 'Other Foo old', '1.2', '3.4', '', '']
+
+    end
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = ImportWizard.get_preview_sites user, collection
+
+    sites_preview.should eq([["123", 'Foo old', '1.2', '3.4', '', ''], ["124", 'Other Foo old', '1.2', '3.4', '', '']])
+
+    ImportWizard.delete_file(user, collection)
+  end
+
+
 end

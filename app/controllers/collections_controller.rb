@@ -143,9 +143,14 @@ class CollectionsController < ApplicationController
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
 
-  def import_wizard_sample
-    render json: ImportWizard.sample(current_user, collection)
+  def import_wizard_guess_columns_spec
+    render json: ImportWizard.guess_columns_spec(current_user, collection)
   end
+
+  def import_wizard_get_preview_sites
+    render json: ImportWizard.get_preview_sites(current_user, collection)
+  end
+
 
   def import_wizard_execute
     columns = params[:columns].values
