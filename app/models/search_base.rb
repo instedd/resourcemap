@@ -159,7 +159,7 @@ module SearchBase
   def hierarchy(es_code, value)
     field = check_field_exists es_code
     if value.present?
-      eq field, value
+      eq field, [value]
     else
       @search.filter :not, {exists: {field: es_code}}
     end

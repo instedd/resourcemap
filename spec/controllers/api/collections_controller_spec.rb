@@ -18,7 +18,7 @@ describe Api::CollectionsController do
   let!(:date) { layer.fields.make :code => 'date', :kind => 'date' }
   let!(:director) { layer.fields.make :code => 'user', :kind => 'user' }
 
-  let!(:site2) {collection.sites.make :name => "Site A"}
+  let!(:site2) {collection.sites.make :name => "Site A", properties: { hierarchy.es_code => 'bro' } }
 
   let!(:site) { collection.sites.make  :name => "Site B", :properties => {
     text.es_code => 'foo',
@@ -51,7 +51,9 @@ describe Api::CollectionsController do
       json["sites"][0]["lat"].should eq(site2.lat)
       json["sites"][0]["long"].should eq(site2.lng)
 
-      json["sites"][0]["properties"].length.should eq(0)
+      json["sites"][0]["properties"].length.should eq(1)
+
+      json["sites"][0]["properties"][hierarchy.code].should eq("bro")
 
       json["sites"][1]["id"].should eq(site.id)
       json["sites"][1]["name"].should eq(site.name)
@@ -73,11 +75,15 @@ describe Api::CollectionsController do
   end
 
   describe "GET JSON collection with query parameters" do
-    before(:each) do
-      get :show, id: collection.id, format: 'json', select_one: 'one'
-    end
 
-    it { response.should be_success }
+    it "should retrieve sites under certain item in a hierarchy field" do
+      get :show, id: collection.id, format: 'json', hierarchy.code => { under: 'Dad' }
+      response.should be_success 
+      json = JSON.parse response.body
+      json["sites"].length.should eq(2)
+      json["sites"][0]["id"].should eq(site2.id)
+      json["sites"][1]["id"].should eq(site.id)
+    end
   end
 
   describe "GET RSS collection" do
