@@ -524,6 +524,12 @@ describe Search do
       assert_results search, site1, site2, site3
     end
 
+    it 'should filter sites inside some specified item by id again' do
+      search = collection.new_search
+      search.where unit.es_code => { under: 3 }
+      assert_results search, site4
+    end
+
     it 'should filter sites inside some specified item by name' do
       search = collection.new_search
       search.use_codes_instead_of_es_codes

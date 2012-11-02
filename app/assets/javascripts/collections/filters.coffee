@@ -92,16 +92,19 @@ onCollections ->
       "where #{@field.name} is between #{@valueFrom} and #{@valueTo}"
 
   class @FilterByHierarchyProperty extends Filter
-    constructor: (field, value, valueLabel) ->
+    constructor: (field, operator, value, valueLabel) ->
       @field = field
+      @operator = operator
       @value = value
       @valueLabel = valueLabel
 
     setQueryParams: (options, api = false) =>
-      options[@field.codeForLink(api)] = @value
+      code = @field.codeForLink(api)
+      options[code] = {} if not options[code]
+      options[code][@operator] = @value
 
     description: =>
-      "with #{@field.name} under \"#{@valueLabel}\""
+      "with #{@field.name} #{@operator} \"#{@valueLabel}\""
 
   class @FilterBySelectProperty extends Filter
     constructor: (field, value, valueLabel) ->

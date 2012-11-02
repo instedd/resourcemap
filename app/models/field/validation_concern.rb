@@ -71,9 +71,12 @@ module Field::ValidationConcern
   def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
     start_at.each do |item|
       return item if item['id'] == id
-      return find_hierarchy_item_by_id(id, item['sub']) if item.has_key? 'sub'
+      if item.has_key? 'sub'
+        found = find_hierarchy_item_by_id(id, item['sub'])
+        return found unless found.nil?
+      end
     end
-    raise "No item '#{id}' found in hierarchy"
+    nil
   end
 
   def check_option_exists(value, use_codes_instead_of_es_codes)
