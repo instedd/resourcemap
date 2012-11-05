@@ -11,10 +11,36 @@ class ImportWizard
       csv.each { |row| }
     end
 
-    def get_preview_sites(user, collection)
-      rows = CSV.read file_for(user, collection)
+    def get_preview_sites(user, collection, columns_spec)
+      csv = CSV.read file_for(user, collection)
 
-      rows[1 .. -1]
+      validated_csv_columns = []
+
+      csv_columns = csv[1 .. -1].transpose
+
+      csv_columns.each_with_index do |csv_column, csv_column_number|
+
+        column_spec = columns_spec[csv_column_number]
+
+        puts column_spec
+
+        if column_spec[:usage] == :existing_field
+          field = Field.find column_spec[:field_id]
+        end
+
+        validated_csv_column = []
+        csv_column.each do |csv_field_value|
+          begin
+            validate_column_value(column_spec, csv_field_value, field)
+          rescue => ex
+            error = ex.message
+          end
+          validated_csv_column << {value: csv_field_value, error: error}
+
+        end
+        validated_csv_columns << validated_csv_column
+      end
+      validated_csv_columns.transpose
     end
 
     def guess_columns_spec(user, collection)
@@ -240,6 +266,12 @@ class ImportWizard
 
 
     private
+
+    def validate_column_value(column_spec, field_value, field)
+      if field && field_value
+        field.apply_format_validation(field_value)
+      end
+    end
 
     def to_columns(collection, rows, admin)
       fields = collection.fields.index_by &:code

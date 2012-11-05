@@ -148,7 +148,7 @@ class CollectionsController < ApplicationController
   end
 
   def import_wizard_get_preview_sites
-    render json: ImportWizard.get_preview_sites(current_user, collection)
+    render json: ImportWizard.get_preview_sites(current_user, collection, JSON.parse(params[:columns]))
   end
 
 

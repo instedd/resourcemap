@@ -153,7 +153,10 @@
             / ko foreach: sites()
             %tr
               / ko foreach: $data
-              %td{ko(text: '$data')}
+
+              %td{ko(css: {error: 'error'}, text: 'value')}
+
+              //ko
               //ko
             //ko
 

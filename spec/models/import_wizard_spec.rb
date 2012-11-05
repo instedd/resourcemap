@@ -664,18 +664,22 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
 
-  it "should get preview sites" do
+  it "should get error for invalid numeric fields" do
     csv_string = CSV.generate do |csv|
-    csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'text', 'numeric']
-    csv << ["123", 'Foo old', '1.2', '3.4', '', '']
-    csv << ["124", 'Other Foo old', '1.2', '3.4', '', '']
+    csv << ['numeric']
+    csv << ['123']
+    csv << ['invalid123']
 
     end
 
     ImportWizard.import user, collection, csv_string
-    sites_preview = ImportWizard.get_preview_sites user, collection
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    sites_preview = ImportWizard.get_preview_sites user, collection, column_spec
 
-    sites_preview.should eq([["123", 'Foo old', '1.2', '3.4', '', ''], ["124", 'Other Foo old', '1.2', '3.4', '', '']])
+    sites_preview.length.should eq(2)
+
+    sites_preview.should include([{value: '123', error: nil}])
+    sites_preview.should include([{value: 'invalid123', error: 'Invalid numeric value in numeric param'}])
 
     ImportWizard.delete_file(user, collection)
   end

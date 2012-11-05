@@ -1,7 +1,7 @@
 module Field::ValidationConcern
   extend ActiveSupport::Concern
 
-  def apply_format_validation(value, use_codes_instead_of_es_codes)
+  def apply_format_validation(value, use_codes_instead_of_es_codes = false)
     check_precense_of_value(value)
     if kind == 'numeric'
       validated_value = check_valid_numeric_value(value)
