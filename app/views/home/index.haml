@@ -1,15 +1,37 @@
 .homepage
   .right
     .illustration
-    %a.button.fpdf.right{:href => "/docs/instedd-resourcemap.pdf", :target=>"_blank"}
-      Download brochure (580 KB)
-  %h1.home Make better decisions
-  %p.sub by knowing where your resources are in real time
-  %p Resource Map is a free, open-source tool that helps you make better decisions by giving you better insight into the location and distribution of your resources. With Resource Map, you and your team can collaboratively record, track, and analyze resources at a glance using a live map. Resource Map works with any computer or cell phone with text messaging capability, putting up-to-the-minute alerts and powerful resource management always within reach, wherever you go.
-  %br/
-  %br/
-  %br/
-  %br/
+  %h1.home{:style => "margin-top: 0px;"} Make better decisions
+  %p.sub{:style => "font-size: 26px;"} by knowing where your resources are in real time
+  
+  %p
+    %span.r-arrow{:style => "margin-left: 4px"} 
+    %span{:style => "font-weight:bold;"}   
+      Free:
+    Use it for free in the cloud OR download the code, it’s open source!
+  %p
+    %span.r-arrow{:style => "margin-left: 4px"}
+      
+    %span{:style => "font-weight:bold;"}   
+      Insightful: 
+    Gain insight into the location & distribution of your resources 
+  %p
+    %span.r-arrow{:style => "margin-left: 4px"}
+    %span{:style => "font-weight:bold;"}   
+      Collaborative: 
+    Your team can record, track and analyze resources 
+  %p
+    %span.r-arrow{:style => "margin-left: 4px"}
+    %span{:style => "font-weight:bold;"}   
+      SMS Enabled: 
+    Use SMS to query, update or receive alerts from the system 
+
+  %p
+    %span.r-arrow{:style => "margin-left: 4px"}
+    %span{:style => "font-weight:bold;"}   
+      Map Ready: 
+    See everything on the map for a birds-eye view
+
   %br/
 
   - if current_user
@@ -20,14 +42,10 @@
   - else
     %p
       Get started:
-      = link_button_to 'Create an account', new_user_registration_path, :class => "orange"
-    %p
-    %p
-      Already a member?
-      = link_to 'Log in', new_user_session_path
+      = link_button_to 'Sign up for free', new_user_registration_path, :class => "orange", :style => "font-size: 18px; height: 46px; width: 200px"
   .clear
   / #container
-  .home-middle-bar
+  .home-middle-bar{:style => "margin: 25px auto 20px;"}
     .benefits
       %ul#benefits-container
         %li
@@ -161,8 +179,6 @@
     / #w45 right
     .clear
     / #clear
-    %br/
-    %br/
     #container
     %h1 Who has used it?
 
@@ -196,11 +212,14 @@
       %h2
         How can i help?
       %span
+    .right.w45
       %p
         Got suggestions or feature requests? Join the discussion.
         %br
         %a.button.black.fchat{:href=>"https://groups.google.com/group/instedd-tech"}
           %span Join our discussion list
+      
+    .left.w45
       %p
         Got a way with code? Help us develop our tools (and make the world a better place at the same time).
         %br
