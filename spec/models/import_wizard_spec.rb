@@ -654,12 +654,12 @@ describe ImportWizard do
 
     column_spec.length.should eq(6)
 
-    column_spec.should include({:name=>"resmap-id", :kind=>:text, :code=>"resmap-id", :label=>"Resmap", :value=>"123", :usage=>:id})
-    column_spec.should include({:name=>"Name", :kind=>:text, :code=>"name", :label=>"Name", :value=>"Foo old", :usage=>:name})
-    column_spec.should include({:name=>"Lat", :kind=>:text, :code=>"lat", :label=>"Lat", :value=>"1.2", :usage=>:lat})
-    column_spec.should include({:name=>"Lon", :kind=>:text, :code=>"lon", :label=>"Lon", :value=>"3.4", :usage=>:lng})
+    column_spec.should include({:name=>"resmap-id", :kind=> :id, :code=>"resmap-id", :label=>"Resmap", :value=>"123", :usage=>:id})
+    column_spec.should include({:name=>"Name", :kind=>:name, :code=>"name", :label=>"Name", :value=>"Foo old", :usage=>:name})
+    column_spec.should include({:name=>"Lat", :kind=>:location, :code=>"lat", :label=>"Lat", :value=>"1.2", :usage=>:lat})
+    column_spec.should include({:name=>"Lon", :kind=>:location, :code=>"lon", :label=>"Lon", :value=>"3.4", :usage=>:lng})
     column_spec.should include({:name=>"text", :kind=>:text, :code=>"text", :label=>"Text", :value=>"", :usage=>:existing_field, :layer_id=> text.layer_id, :field_id=>text.id})
-    column_spec.should include({:name=>"numeric", :kind=>:text, :code=>"numeric", :label=>"Numeric", :value=>"", :usage=>:existing_field, :layer_id=>numeric.layer_id, :field_id=>numeric.id})
+    column_spec.should include({:name=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :value=>"", :usage=>:existing_field, :layer_id=>numeric.layer_id, :field_id=>numeric.id})
 
     ImportWizard.delete_file(user, collection)
   end

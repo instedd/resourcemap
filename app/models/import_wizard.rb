@@ -260,31 +260,37 @@ class ImportWizard
         column[:usage] = :existing_field
         column[:layer_id] = field.layer_id
         column[:field_id] = field.id
+        column[:kind] = field.kind.to_sym
         return
       end
 
       if column[:name] =~ /^resmap-id$/i
         column[:usage] = :id
+        column[:kind] = :id
         return
       end
 
       if column[:name] =~ /^name$/i
         column[:usage] = :name
+        column[:kind] = :name
         return
       end
 
       if column[:name] =~ /^\s*lat/i
         column[:usage] = :lat
+        column[:kind] = :location
         return
       end
 
       if column[:name] =~ /^\s*(lon|lng)/i
         column[:usage] = :lng
+        column[:kind] = :location
         return
       end
 
       if column[:name] =~ /last updated/i
         column[:usage] = :ignore
+        column[:kind] = :ignore
         return
       end
 

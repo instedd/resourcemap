@@ -146,7 +146,8 @@
           %thead
             %tr
               / ko foreach: columns()
-              %th{ko(text: :name)}
+              %th
+                %span{ko(text: :name, attr:{class: 'iconClass()' })}
               //ko
           %tbody
             / ko foreach: sites()

@@ -32,3 +32,10 @@ onImportWizard ->
         json.label = @label()
         json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json
+
+    iconClass: =>
+        if @field()
+            FIELD_TYPES[@kind()].small_css_class || 'faccept'
+        else
+            'faccept'
+
