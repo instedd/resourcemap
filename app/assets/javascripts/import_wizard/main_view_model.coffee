@@ -10,6 +10,8 @@ onImportWizard ->
 
       @loadUsages()
 
+      @sites = ko.observableArray()
+
       @hasId = ko.observable false
       @site = ko.computed => @computeSite()
       @error = ko.computed => @site().error()

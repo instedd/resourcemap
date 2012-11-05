@@ -63,7 +63,7 @@ describe 'Collection', ->
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
           expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Tres de Febrero\""
-          expect(@model.filters()[0].value).toEqual ['2']
+          expect(@model.filters()[0].value).toEqual '2'
 
         it 'should filter selected item and its descendants', ->
           @model.expandedRefineProperty @hierarchy.esCode
@@ -71,7 +71,7 @@ describe 'Collection', ->
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
           expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Buenos Aires\""
-          expect(@model.filters()[0].value).toEqual ["1", "2", "3"]
+          expect(@model.filters()[0].value).toEqual "1"
 
         it 'should update current filter value if filtering by existent filter', ->
           @model.expandedRefineProperty @hierarchy.esCode
@@ -79,7 +79,7 @@ describe 'Collection', ->
           @model.filterByProperty()
 
           expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Buenos Aires\""
-          expect(@model.filters()[0].value).toEqual ["1", "2", "3"]
+          expect(@model.filters()[0].value).toEqual "1"
           expect(@model.filters().length).toEqual 1
 
           @model.expandedRefineProperty @hierarchy.esCode
@@ -87,7 +87,7 @@ describe 'Collection', ->
           @model.filterByProperty()
 
           expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Tres de Febrero\""
-          expect(@model.filters()[0].value).toEqual ["2"]
+          expect(@model.filters()[0].value).toEqual "2"
           expect(@model.filters().length).toEqual 1
 
       describe 'plugin kind', ->

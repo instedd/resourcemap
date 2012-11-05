@@ -19,10 +19,21 @@ module Field::ValidationConcern
     validated_value
   end
 
+  def descendants_of_in_hierarchy(parent_id, use_codes_instead_of_es_codes)
+    parent_id = check_option_exists parent_id, use_codes_instead_of_es_codes
+    options = []
+    add_option_to_options options, find_hierarchy_item_by_id(parent_id)
+    if use_codes_instead_of_es_codes
+      options.map { |item| item[:name] }
+    else
+      options.map { |item| item[:id] }
+    end
+  end
+
   private
 
   def check_precense_of_value(value)
-    raise "Missing #{code} value" unless !value.blank?
+    raise "Missing #{code} value" if value.blank?
   end
 
   def check_valid_numeric_value(value)
@@ -55,6 +66,17 @@ module Field::ValidationConcern
       value_ids << value_id
     end
     value_ids
+  end
+
+  def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
+    start_at.each do |item|
+      return item if item['id'] == id
+      if item.has_key? 'sub'
+        found = find_hierarchy_item_by_id(id, item['sub'])
+        return found unless found.nil?
+      end
+    end
+    nil
   end
 
   def check_option_exists(value, use_codes_instead_of_es_codes)

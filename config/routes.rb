@@ -49,8 +49,9 @@ ResourceMap::Application.routes.draw do
     get 'import_wizard'
     post 'import_wizard_upload_csv'
     get 'import_wizard_adjustments'
-    get 'import_wizard_sample'
+    get 'import_wizard_guess_columns_spec'
     post 'import_wizard_execute'
+    get 'import_wizard_get_preview_sites'
 
     get 'recreate_index'
     get 'search'

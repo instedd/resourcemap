@@ -37,6 +37,13 @@ module SearchBase
       self
     end
   end
+  
+  def under(field, value)
+    value = field.descendants_of_in_hierarchy value, @use_codes_instead_of_es_codes
+    validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
+    query_key = field.es_code
+    @search.filter :terms, query_key => validated_value
+  end
 
   def starts_with(field, value)
     validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
@@ -62,6 +69,7 @@ module SearchBase
     when '>', 'gt' then gt(field, value)
     when '>=', 'gte' then gte(field, value)
     when '=', '==', 'eq' then eq(field, value)
+    when 'under' then under(field, value)
     else raise "Invalid operation: #{op}"
     end
     self
@@ -151,7 +159,7 @@ module SearchBase
   def hierarchy(es_code, value)
     field = check_field_exists es_code
     if value.present?
-      eq field, value
+      eq field, [value]
     else
       @search.filter :not, {exists: {field: es_code}}
     end

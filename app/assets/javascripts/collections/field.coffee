@@ -19,12 +19,16 @@ onCollections ->
          @value(@valueUIFrom(value))
 
       if @kind in ['select_one', 'select_many']
-        @options = if @kind == 'select_one' then [new Option {id: '', label: '(no value)' }] else []
-        @options = @options.concat if data.config?.options?
-                                     $.map data.config.options, (x) => new Option x
-                                   else
-                                     []
+        @options = if data.config?.options?
+                    $.map data.config.options, (x) => new Option x
+                  else
+                    []
         @optionsIds = $.map @options, (x) => x.id
+        if @kind == 'select_one'
+          @optionsUI = [new Option {id: '', label: '(no value)' }].concat(@options)
+          @optionsUIIds = $.map @optionsUI, (x) => x.id
+        else
+          @optionsUI = @options
         @hierarchy = @options
 
       if @kind == 'hierarchy'
@@ -161,7 +165,7 @@ onCollections ->
           true
 
     labelFor: (id) =>
-      for option in @options
+      for option in @optionsUI
         if option.id == id
           return option.label
       null

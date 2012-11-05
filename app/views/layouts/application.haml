@@ -1,7 +1,9 @@
 - content_for :head do
   :javascript
-    $(document).ajaxError(function () {
-      $.status.showError('Unexpected error occurred, please refresh the page.')
+    $(document).ajaxError(function(event, xhr, settings, error) {
+      if (xhr.status !== 0 && xhr.readyState !== 0) {
+        $.status.showError('Unexpected error occurred, please refresh the page.');
+      }
     });
 
 - content_for :navigation do

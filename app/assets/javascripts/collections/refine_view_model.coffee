@@ -136,7 +136,7 @@ onCollections ->
         when 'date'
           new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo())
         when 'hierarchy'
-          new FilterByHierarchyProperty(field, @expandedRefinePropertyHierarchy().hierarchyIds(), @expandedRefinePropertyHierarchy().name)
+          new FilterByHierarchyProperty(field, 'under', @expandedRefinePropertyHierarchy().id, @expandedRefinePropertyHierarchy().name)
         else
           throw "Unknown field kind"
 
