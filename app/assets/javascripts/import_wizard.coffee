@@ -13,7 +13,8 @@ onImportWizard -> if $('#import-wizard-main').length > 0
 
       ko.applyBindings window.model
 
-      $.get "/collections/#{collectionId}/import_wizard_get_preview_sites.json", {}, (sites) =>
+
+      $.post "/collections/#{collectionId}/import_wizard_get_preview_sites.json", {columns: JSON.stringify(columns)}, (sites) =>
         window.model.sites(sites)
 
         $('.hidden-until-loaded').show()

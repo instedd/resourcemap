@@ -654,28 +654,32 @@ describe ImportWizard do
 
     column_spec.length.should eq(6)
 
-    column_spec.should include({:name=>"resmap-id", :kind=>:text, :code=>"resmap-id", :label=>"Resmap", :value=>"123", :usage=>:id})
-    column_spec.should include({:name=>"Name", :kind=>:text, :code=>"name", :label=>"Name", :value=>"Foo old", :usage=>:name})
-    column_spec.should include({:name=>"Lat", :kind=>:text, :code=>"lat", :label=>"Lat", :value=>"1.2", :usage=>:lat})
-    column_spec.should include({:name=>"Lon", :kind=>:text, :code=>"lon", :label=>"Lon", :value=>"3.4", :usage=>:lng})
+    column_spec.should include({:name=>"resmap-id", :kind=> :id, :code=>"resmap-id", :label=>"Resmap", :value=>"123", :usage=>:id})
+    column_spec.should include({:name=>"Name", :kind=>:name, :code=>"name", :label=>"Name", :value=>"Foo old", :usage=>:name})
+    column_spec.should include({:name=>"Lat", :kind=>:location, :code=>"lat", :label=>"Lat", :value=>"1.2", :usage=>:lat})
+    column_spec.should include({:name=>"Lon", :kind=>:location, :code=>"lon", :label=>"Lon", :value=>"3.4", :usage=>:lng})
     column_spec.should include({:name=>"text", :kind=>:text, :code=>"text", :label=>"Text", :value=>"", :usage=>:existing_field, :layer_id=> text.layer_id, :field_id=>text.id})
-    column_spec.should include({:name=>"numeric", :kind=>:text, :code=>"numeric", :label=>"Numeric", :value=>"", :usage=>:existing_field, :layer_id=>numeric.layer_id, :field_id=>numeric.id})
+    column_spec.should include({:name=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :value=>"", :usage=>:existing_field, :layer_id=>numeric.layer_id, :field_id=>numeric.id})
 
     ImportWizard.delete_file(user, collection)
   end
 
-  it "should get preview sites" do
+  it "should get error for invalid numeric fields" do
     csv_string = CSV.generate do |csv|
-    csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'text', 'numeric']
-    csv << ["123", 'Foo old', '1.2', '3.4', '', '']
-    csv << ["124", 'Other Foo old', '1.2', '3.4', '', '']
+    csv << ['numeric']
+    csv << ['123']
+    csv << ['invalid123']
 
     end
 
     ImportWizard.import user, collection, csv_string
-    sites_preview = ImportWizard.get_preview_sites user, collection
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    sites_preview = ImportWizard.get_preview_sites user, collection, column_spec
 
-    sites_preview.should eq([["123", 'Foo old', '1.2', '3.4', '', ''], ["124", 'Other Foo old', '1.2', '3.4', '', '']])
+    sites_preview.length.should eq(2)
+
+    sites_preview.should include([{value: '123', error: nil}])
+    sites_preview.should include([{value: 'invalid123', error: 'Invalid numeric value in numeric param'}])
 
     ImportWizard.delete_file(user, collection)
   end
