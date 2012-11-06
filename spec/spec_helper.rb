@@ -10,8 +10,8 @@ Spork.prefork do
 
   # This file is copied to spec/ when you run 'rails generate rspec:install'
   ENV["RAILS_ENV"] ||= 'test'
+  Spork.trap_class_method ActionDispatch::Reloader, :to_prepare if ENV["DRB"]
   require File.expand_path("../../config/environment", __FILE__)
-  require File.expand_path("../../spec/blueprints", __FILE__)
   require 'rspec/rails'
   require 'rspec/autorun'
 
@@ -64,7 +64,7 @@ end
 
 Spork.each_run do
   # This code will be run each time you run your specs.
-
+  require File.expand_path("../../spec/blueprints", __FILE__)
 end
 
 
