@@ -20,6 +20,18 @@ onImportWizard ->
 
       @value = ko.observable data.value
 
+      @usage.subscribe =>
+        window.model.validateSites()
+
+      @kind.subscribe =>
+        window.model.validateSites()
+
+      @field.subscribe =>
+        window.model.validateSites()
+
+      @layer.subscribe =>
+        window.model.validateSites()
+
     toJSON: =>
       json =
         usage: @usage()
@@ -34,8 +46,7 @@ onImportWizard ->
       json
 
     iconClass: =>
-        if @field()
-            FIELD_TYPES[@kind()].small_css_class || 'faccept'
-        else
-            'faccept'
-
+      if @field()
+        FIELD_TYPES[@kind()].small_css_class || 'faccept'
+      else
+        'faccept'

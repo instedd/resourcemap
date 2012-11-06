@@ -129,3 +129,9 @@ onImportWizard ->
         error: =>
           @importing(false)
           @importError(true)
+
+    validateSites: =>
+      columns = $.map(@columns(), (x) -> x.toJSON())
+      $.post "/collections/#{@collectionId}/import_wizard_validate_sites_with_columns.json", {columns: JSON.stringify(columns)}, (sites) =>
+        console.log(sites)
+        @sites(sites)
