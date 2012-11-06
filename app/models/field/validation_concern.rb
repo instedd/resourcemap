@@ -77,7 +77,7 @@ module Field::ValidationConcern
   end
 
   def check_date_format(value)
-    Time.strptime(value, '%m/%d/%Y') rescue (raise "Invalid date value in #{code} param")
+    Site.format_date_iso_string(Time.strptime(value, '%m/%d/%Y')) rescue (raise "Invalid date value in #{code} param")
   end
 
   def parse_date_from(value)

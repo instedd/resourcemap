@@ -106,7 +106,7 @@ module Field::Base
     elsif numeric?
       value = -39.2
     elsif date?
-      value = (Time.strptime '4/23/1851', '%m/%d/%Y').iso8601
+      value = Site.format_date_iso_string(Time.strptime '4/23/1851', '%m/%d/%Y')
     elsif user?
       return '' if user.nil?
       value = user.email

@@ -99,8 +99,8 @@ module SearchBase
   end
 
   def date_field_range(key, valid_value)
-    date_from = valid_value[:date_from].iso8601
-    date_to = valid_value[:date_to].iso8601
+    date_from = valid_value[:date_from]
+    date_to = valid_value[:date_to]
 
     @search.filter :range, key => {gte: date_from, lte: date_to}
     self

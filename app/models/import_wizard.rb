@@ -179,7 +179,7 @@ class ImportWizard
               else
                 case existing_field.kind
                   when 'numeric', 'text', 'site', 'user'
-                    site.properties[existing_field] = value
+                    site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
                   when 'select_one'
                     existing_option = existing_field.config['options'].find { |x| x['code'] == value }
                     if existing_option
@@ -203,12 +203,12 @@ class ImportWizard
                       end
                     end
                   when 'hierarchy'
-                    site.properties[existing_field] = value
+                    site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
                   when 'date'
-                    site.properties[existing_field] = Site.format_date_iso_string(Date.strptime(value, '%m/%d/%Y'))
+                    site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
                 end
                 if Field::PluginKinds.has_key? existing_field.kind
-                  site.properties[existing_field] = value
+                  site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
                 end
               end
               fields[existing_field.code] = existing_field

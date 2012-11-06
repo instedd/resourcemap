@@ -402,8 +402,8 @@ describe ImportWizard do
   it "should update hierarchy fields in bulk update" do
      csv_string = CSV.generate do |csv|
         csv << ['Name', 'Column']
-        csv << ['Foo', 101]
-        csv << ['Bar', 100]
+        csv << ['Foo', 'Son']
+        csv << ['Bar', 'Bro']
       end
 
       specs = [
@@ -418,10 +418,10 @@ describe ImportWizard do
       sites = collection.sites.all
 
       sites[0].name.should eq('Foo')
-      sites[0].properties.should eq({hierarchy.es_code => "101"})
+      sites[0].properties.should eq({hierarchy.es_code => "100"})
 
       sites[1].name.should eq('Bar')
-      sites[1].properties.should eq({hierarchy.es_code => "100"})
+      sites[1].properties.should eq({hierarchy.es_code => "101"})
 
   end
 
@@ -499,7 +499,7 @@ describe ImportWizard do
 
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
-      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two', 'uno',  1235, '12/26/1988', 'user2@email.com']
+      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two', 'Dad',  1235, '12/26/1988', 'user2@email.com']
     end
 
     specs = [
@@ -535,7 +535,7 @@ describe ImportWizard do
       numeric.es_code => 11,
       select_one.es_code => 2,
       select_many.es_code => [2],
-      hierarchy.es_code => 'uno',
+      hierarchy.es_code => '60',
       site.es_code => '1235',
       date.es_code => "1988-12-26T00:00:00Z",
       director.es_code => 'user2@email.com'
