@@ -463,8 +463,8 @@ describe Search do
     let!(:creation) { layer.fields.make code: 'creation', kind: 'date' }
     let!(:inaguration) { layer.fields.make code: 'inaguration', kind: 'date' }
 
-    let!(:site1) { collection.sites.make :name => 'b', properties: { creation.es_code =>"2012-09-07T03:00:00.000Z", inaguration.es_code =>"2012-09-23T03:00:00.000Z"} }
-    let!(:site2) { collection.sites.make :name => 'a', properties: { creation.es_code =>"2013-09-07T03:00:00.000Z", inaguration.es_code =>"2012-09-23T03:00:00.000Z"} }
+    let!(:site1) { collection.sites.make :name => 'b', properties: { creation.es_code =>"2012-09-07T00:00:00.000Z", inaguration.es_code =>"2012-09-23T00:00:00.000Z"} }
+    let!(:site2) { collection.sites.make :name => 'a', properties: { creation.es_code =>"2013-09-07T00:00:00.000Z", inaguration.es_code =>"2012-09-23T00:00:00.000Z"} }
 
     it "should parse date from" do
       search = collection.new_search

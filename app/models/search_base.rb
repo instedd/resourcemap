@@ -22,7 +22,7 @@ module SearchBase
 
   def eq(field, value)
 
-    validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
+    validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
     query_key = field.es_code
 
     if field.kind == 'date'
@@ -37,16 +37,16 @@ module SearchBase
       self
     end
   end
-  
+
   def under(field, value)
     value = field.descendants_of_in_hierarchy value, @use_codes_instead_of_es_codes
-    validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
+    validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
     query_key = field.es_code
     @search.filter :terms, query_key => validated_value
   end
 
   def starts_with(field, value)
-    validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
+    validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
     query_key = field.es_code
     add_prefix key: query_key, value: validated_value
     self
@@ -55,7 +55,7 @@ module SearchBase
   ['lt', 'lte', 'gt', 'gte'].each do |op|
     class_eval %Q(
       def #{op}(field, value)
-        validated_value = field.apply_format_validation(value, @use_codes_instead_of_es_codes)
+        validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
         @search.filter :range, field.es_code => {#{op}: validated_value}
         self
       end
@@ -99,8 +99,8 @@ module SearchBase
   end
 
   def date_field_range(key, valid_value)
-    date_from = valid_value[:date_from].iso8601
-    date_to = valid_value[:date_to].iso8601
+    date_from = valid_value[:date_from]
+    date_to = valid_value[:date_to]
 
     @search.filter :range, key => {gte: date_from, lte: date_to}
     self

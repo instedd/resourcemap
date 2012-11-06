@@ -2,17 +2,19 @@ require 'spec_helper'
 
 describe ImportWizard do
   let!(:user) { User.make }
-  let!(:user2) { User.make :email => 'user2@email.com'}
-  let(:membership) { collection.memberships.create! :user_id => user2.id }
 
   let!(:collection) { user.create_collection Collection.make_unsaved }
+  let!(:user2) { collection.users.make :email => 'user2@email.com'}
+  let!(:membership) { collection.memberships.create! :user_id => user2.id }
+
   let!(:layer) { collection.layers.make }
 
   let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
   let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
   let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-  let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy',  config: {hierarchy: [{"0"=>{"id"=>"60", "name"=>"papa"}, sub: [{"0"=> {"id"=>"100", "name"=>"uno"}, "1"=>{"id"=>"101", "name"=>"dos"}}.with_indifferent_access]}]}.with_indifferent_access}
+  config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+  let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
   let!(:site) { layer.fields.make :code => 'site', :kind => 'site' }
   let!(:date) { layer.fields.make :code => 'date', :kind => 'date' }
   let!(:director) { layer.fields.make :code => 'user', :kind => 'user' }
@@ -400,8 +402,8 @@ describe ImportWizard do
   it "should update hierarchy fields in bulk update" do
      csv_string = CSV.generate do |csv|
         csv << ['Name', 'Column']
-        csv << ['Foo', 101]
-        csv << ['Bar', 100]
+        csv << ['Foo', 'Son']
+        csv << ['Bar', 'Bro']
       end
 
       specs = [
@@ -416,10 +418,10 @@ describe ImportWizard do
       sites = collection.sites.all
 
       sites[0].name.should eq('Foo')
-      sites[0].properties.should eq({hierarchy.es_code => "101"})
+      sites[0].properties.should eq({hierarchy.es_code => "100"})
 
       sites[1].name.should eq('Bar')
-      sites[1].properties.should eq({hierarchy.es_code => "100"})
+      sites[1].properties.should eq({hierarchy.es_code => "101"})
 
   end
 
@@ -497,7 +499,7 @@ describe ImportWizard do
 
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
-      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two', 'uno',  1235, '12/26/1988', 'user2@email.com']
+      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two', 'Dad',  1235, '12/26/1988', 'user2@email.com']
     end
 
     specs = [
@@ -533,7 +535,7 @@ describe ImportWizard do
       numeric.es_code => 11,
       select_one.es_code => 2,
       select_many.es_code => [2],
-      hierarchy.es_code => 'uno',
+      hierarchy.es_code => '60',
       site.es_code => '1235',
       date.es_code => "1988-12-26T00:00:00Z",
       director.es_code => 'user2@email.com'
@@ -644,15 +646,17 @@ describe ImportWizard do
   end
 
   it "should guess column spec" do
+    email_field = layer.fields.make :code => 'email', :kind => 'email'
+
     csv_string = CSV.generate do |csv|
-     csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'text', 'numeric']
-     csv << ["123", 'Foo old', '1.2', '3.4', '', '']
+     csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
+     csv << ["123", 'Foo old', '1.2', '3.4', '', '', 'two', 'two', 'uno',  1235, '12/26/1988', 'user2@email.com', 'email@mail.com']
     end
 
     ImportWizard.import user, collection, csv_string
     column_spec = ImportWizard.guess_columns_spec user, collection
 
-    column_spec.length.should eq(6)
+    column_spec.length.should eq(13)
 
     column_spec.should include({:name=>"resmap-id", :kind=> :id, :code=>"resmap-id", :label=>"Resmap", :value=>"123", :usage=>:id})
     column_spec.should include({:name=>"Name", :kind=>:name, :code=>"name", :label=>"Name", :value=>"Foo old", :usage=>:name})
@@ -660,26 +664,53 @@ describe ImportWizard do
     column_spec.should include({:name=>"Lon", :kind=>:location, :code=>"lon", :label=>"Lon", :value=>"3.4", :usage=>:lng})
     column_spec.should include({:name=>"text", :kind=>:text, :code=>"text", :label=>"Text", :value=>"", :usage=>:existing_field, :layer_id=> text.layer_id, :field_id=>text.id})
     column_spec.should include({:name=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :value=>"", :usage=>:existing_field, :layer_id=>numeric.layer_id, :field_id=>numeric.id})
+    column_spec.should include({:name=>"select_one", :kind=>:select_one, :code=>"select_one", :label=>"Select One", :value=>"two", :usage=>:existing_field, :layer_id=>select_one.layer_id, :field_id=>select_one.id})
+    column_spec.should include({:name=>"select_many", :kind=>:select_many, :code=>"select_many", :label=>"Select Many", :value=>"two", :usage=>:existing_field, :layer_id=>select_many.layer_id, :field_id=>select_many.id})
+    column_spec.should include({:name=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :value=>"uno", :usage=>:existing_field, :layer_id=>hierarchy.layer_id, :field_id=>hierarchy.id})
+    column_spec.should include({:name=>"site", :kind=>:site, :code=>"site", :label=>"Site", :value=>"1235", :usage=>:existing_field, :layer_id=>site.layer_id, :field_id=>site.id})
+    column_spec.should include({:name=>"date", :kind=>:date, :code=>"date", :label=>"Date", :value=>"12/26/1988", :usage=>:existing_field, :layer_id=>date.layer_id, :field_id=>date.id})
+    column_spec.should include({:name=>"user", :kind=>:user, :code=>"user", :label=>"User", :value=>"user2@email.com", :usage=>:existing_field, :layer_id=>director.layer_id, :field_id=>director.id})
+    column_spec.should include({:name=>"email", :kind=>:email, :code=>"email", :label=>"Email", :value=>"email@mail.com", :usage=>:existing_field, :layer_id=>email_field.layer_id, :field_id=>email_field.id})
 
     ImportWizard.delete_file(user, collection)
   end
 
   it "should get error for invalid numeric fields" do
-    csv_string = CSV.generate do |csv|
-    csv << ['numeric']
-    csv << ['123']
-    csv << ['invalid123']
+    email_field = layer.fields.make :code => 'email', :kind => 'email'
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
+    csv_string = CSV.generate do |csv|
+      csv << ['text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
+      csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
+      csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
     end
 
     ImportWizard.import user, collection, csv_string
     column_spec = ImportWizard.guess_columns_spec user, collection
-    sites_preview = ImportWizard.get_preview_sites user, collection, column_spec
+    sites_preview = ImportWizard.validate_sites_with_columns user, collection, column_spec
 
     sites_preview.length.should eq(2)
 
-    sites_preview.should include([{value: '123', error: nil}])
-    sites_preview.should include([{value: 'invalid123', error: 'Invalid numeric value in numeric param'}])
+    first_line = sites_preview.first
+    first_line.should include({:value=>"new val", :error=>nil})
+    first_line.should include({value: '11', error: nil})
+    first_line.should include({:value=>"two", :error=>nil})
+    first_line.should include({:value=>"one", :error=>nil})
+    first_line.should include({:value=>"Dad", :error=>nil})
+    first_line.should include({:value=>"1235", :error=>nil})
+    first_line.should include({:value=>"12/26/1988", :error=>nil})
+    first_line.should include({:value=>"user2@email.com", :error=>nil})
+    first_line.should include({:value=>"email@mail.com", :error=>nil})
+
+    second_line = sites_preview.last
+    second_line.should include({:value=>"new val", :error=>nil})
+    second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric param"})
+    second_line.should include({:value=>"inval", :error=>"Invalid option in select_one param"})
+    second_line.should include({:value=>"Dad, inv", :error=>"Invalid option in select_many param"})
+    second_line.should include({:value=>"inval", :error=>"Invalid option in hierarchy param"})
+    second_line.should include({:value=>"999", :error=>"Non-existent site-id in site param"})
+    second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user param"})
+    second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email param"})
 
     ImportWizard.delete_file(user, collection)
   end
