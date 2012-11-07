@@ -33,8 +33,7 @@ class User < ActiveRecord::Base
     email
   end
 
-  def can_write_field?(collection, field_es_code)
-    field = collection.fields.where_es_code_is(field_es_code).first
+  def can_write_field?(field, collection, field_es_code)
     return false unless field
 
     membership = membership_in(collection)

@@ -12,13 +12,14 @@ class ImportWizard
     end
 
     def validate_sites_with_columns(user, collection, columns_spec)
+      columns_spec.map!{|c| c.with_indifferent_access}
       csv = CSV.read file_for(user, collection)
       validated_csv_columns = []
       csv_columns = csv[1 .. -1].transpose
       csv_columns.each_with_index do |csv_column, csv_column_number|
 
         column_spec = columns_spec[csv_column_number]
-        if column_spec[:usage] == :existing_field
+        if column_spec[:usage].to_sym == :existing_field
           field = Field.find column_spec[:field_id]
         end
         validated_csv_column = []
