@@ -8,6 +8,7 @@ ResourceMap::Application.routes.draw do
   match 'android/collections' => 'android#collections_json', :via => :get
   match 'android/submission' => 'android#submission', :via => :post
   match 'collections/breadcrumbs' => 'collections#render_breadcrumbs', :via => :post
+  match 'real-time-resource-tracking' => 'home#second_page', :via => :get
 
   resources :repeats
   resources :collections do

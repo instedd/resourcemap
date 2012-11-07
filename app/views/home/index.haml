@@ -4,29 +4,27 @@
   %h1.home{:style => "margin-top: 0px;"} Make better decisions
   %p.sub{:style => "font-size: 26px;"} by knowing where your resources are in real time
   
-  %p
+  %p{:style => "font-size: 16px;"}
     %span.r-arrow{:style => "margin-left: 4px"} 
     %span{:style => "font-weight:bold;"}   
       Free:
     Use it for free in the cloud OR download the code, it’s open source!
-  %p
+  %p{:style => "font-size: 16px;"}
     %span.r-arrow{:style => "margin-left: 4px"}
-      
     %span{:style => "font-weight:bold;"}   
       Insightful: 
     Gain insight into the location & distribution of your resources 
-  %p
+  %p{:style => "font-size: 16px;"}
     %span.r-arrow{:style => "margin-left: 4px"}
     %span{:style => "font-weight:bold;"}   
       Collaborative: 
     Your team can record, track and analyze resources 
-  %p
+  %p{:style => "font-size: 16px;"}
     %span.r-arrow{:style => "margin-left: 4px"}
     %span{:style => "font-weight:bold;"}   
       SMS Enabled: 
     Use SMS to query, update or receive alerts from the system 
-
-  %p
+  %p{:style => "font-size: 16px;"}
     %span.r-arrow{:style => "margin-left: 4px"}
     %span{:style => "font-weight:bold;"}   
       Map Ready: 
@@ -36,13 +34,11 @@
 
   - if current_user
     %p
-      Get started:
       =link_button_to 'View your collections', collections_path, :class => "orange"
     %p
   - else
     %p
-      Get started:
-      = link_button_to 'Sign up for free', new_user_registration_path, :class => "orange", :style => "font-size: 18px; height: 46px; width: 200px"
+      = link_button_to 'Sign up for free', new_user_registration_path, :class => "orange", :style => "font-size: 18px; height: 46px; width: 200px; padding-bottom: 9px;"
   .clear
   / #container
   .home-middle-bar{:style => "margin: 25px auto 20px;"}
@@ -99,136 +95,8 @@
   / #home-middle-bar
   #container
     %h1 What can I use it for?
-    %p.desc
-      Accurately tracking and allocating resources is critical to getting the most from every asset at your disposal. Here are a few ways that Resource Map can help you maximize your resource allocation and usage:
-    .left.w45
-      %h2 Tracking Medical Supplies and Personnel
-      .icon-container.left
-        %span.tracking-medical-supplies      
-      %p In an emergency medical situation, when lives may hang in the balance, the last thing you want to do is waste time finding supplies, personnel, and mobile or permanent treatment facilities. With Resource Map, you can quickly locate and manage critical resources on a real-time map using a computer or smartphone. On an emergency scene, when you might not have access to computers or smartphones, you and your team can view and update resource allocations with any phone capable of text messaging.
-    / #left w45
-    .right.w45
-      %h2 Monitoring Food Prices and Supply Levels
-      .icon-container.left
-        %span.monitoring-food-price
-      %p Whether you're helping economically disadvantaged people find nutritious, fresh, and affordable produce, managing food banks, or simply trying to chart the most popular edibles in a given area, Resource Map makes it easy. And since Resource Map can be updated using almost any cellular phone, your resource data is always just as fresh as the food.
-    / #left w45
-    .clear
-    / #clear
-    %br/
-    .left.w45
-      %h2 Managing Disease Prevention Supplies
-      .icon-container.left
-        %span.managing-disease-prevention-supplies
-      %p Medicine is at its best when it helps people avoid illness in the first place. Resource Map aids prevention efforts by giving teams new ways to manage key supply chain items, such as vaccines, vitamins, and other disease prevention tools. And by uploading statistics on various measures of health, you can even use Resource Map to monitor the effectiveness of your interventions. After all, a healthy community is one of your most important resources.
-    / #left w45
-    .right.w45
-      %h2 Testing Environmental Health
-      .icon-container.left
-        %span.testing-enviromental-health
-      %p The health of any community is intimately related to the health of the environment that surrounds it. Resource Map helps to keep the air clean, the water pure, and sanitation effective by giving you instant, visual access to an array of environmental quality indicators. Field reports can be filed with any phone capable of text messaging, allowing your team the mobility it needs to test and report environmental conditions more frequently and easily.
-    / #left w45
-    .clear
-    / #clear
-    %br/
-    .box.plain.grey.features
-
-      %h2 Features
-      %br
-      .left.w45
-        %div
-          %span.r-arrow>
-          View and update resource allocations via the Web or SMS text message
-        %div
-          %span.r-arrow>
-          Receive instant Web or text alerts when resources are low
-        %div
-          %span.r-arrow>
-          Request resource status updates using text messages
-        %div
-          %span.r-arrow>
-          Import existing resource allocation data from spreadsheets
-
-
-      / #left w45
-      .right.w45
-        %div
-          %span.r-arrow>
-          Export your Resource Map database for further analysis in other applications
-        %div
-          %span.r-arrow>
-          View aggregated data on a live resource map
-        %div
-          %span.r-arrow>
-          Define and track custom data types and variables
-        %div 
-          %span.r-arrow>
-          Visualize live and historical data on a map or using a graph
-      / #right w45
-      .clear
-      / #clear
-    / #box plain grey
-    %br/
-    %br/
-    .w45.left
-      %h1 How does it work?
-      %p Getting started with Resource Map is simple. Just enter resource allocation data manually or upload an existing spreadsheet containing the data. Once your data is online, it's easy to keep tabs on resources visually, on a real-time map, using any computer or smartphone. Even better, field teams can receive alerts, update resource deployment, and query resource status using any phone that can send and receive text messages, in addition to using a computer or smartphone. If you can get a cell phone signal, you can view and manage resources with Resource Map.
-    / #w45 left
-    .w45.right
-      = image_tag 'how_does_it_work.png', :localized => true
-    / #w45 right
-    .clear
-    / #clear
-    #container
-    %h1 Who has used it?
-
-    .left.w45
-      %h2 The National Center for Parasitology, Entomology and Malaria Control (CNM) 
-      .icon-container.left
-        %span.client-cnm
-      %p
-        With the support of the Clinton Health Access Initiative (CHAI), CNM uses Resource Map to support their malaria drug program with our tool to capture malaria drug updates from at risk health centers on a two week cycle. The goal of monitoring resources so closely is to improve the stock management of malaria treatment drugs. This tool helps the health centers to avoid the possibility of over or under stocking important drug supplies.
-      / #left w45
-    .right.w45
-      %h2 Center for Malaria Parasitology and Entomology      
-      .icon-container.left
-        %span.client-CMPE
-      %p
-        With the support from the Global Fund, the Center for Malaria Parasitology and Entomology of Laos PDR (CMPE) uses Resource Map to report both the stock levels of life saving malaria drugs and the number of Malaria cases located at the village health centers up to the national level.  This allows the Ministry of Health to have a real time visual picture of what resources are available and what is needed to treat patients.
-    
-    .clear
-    .left.w45
-      %h2 Rwanda Ministry of Health
-      .icon-container.left
-        %span.client-wranda-ministry-of-health
-      %p
-        The Rwanda Ministry of Health uses Resource Map as its Facility Registry service. The Facility Registry provides the master list of hospitals, clinics and health services and is a building block of Rwanda's national Health Information System, which integrates Resource Map data into clinical and public health workflows and tools across the country.
-
-    / #left w45
-    .clear
-    / #clear
-
-    %br/
-    %hr/
-    %div.w45.support
-      %h2
-        How can i help?
-      %span
-    .right.w45
-      %p
-        Got suggestions or feature requests? Join the discussion.
-        %br
-        %a.button.black.fchat{:href=>"https://groups.google.com/group/instedd-tech"}
-          %span Join our discussion list
-      
-    .left.w45
-      %p
-        Got a way with code? Help us develop our tools (and make the world a better place at the same time).
-        %br
-        %a.button.black.fbulb{:href=>"https://bitbucket.org/instedd/resource_map/issues?status=new&status=new"}
-          %span Visit our backlog
-
-
-
-    .clear
-    / #clear
+    %p.desc{:style => "margin:0 0 10px !important;"}
+      Accurately tracking and allocating resources is critical to getting the  most from every asset at your disposal. Resource Map can help you maximize your resource allocation and usage. 
+    %p
+      %a{:href => "/real-time-resource-tracking", :style => "font-size:30px;margin-left: auto; margin-right: auto; width: 220px; display:block;"}
+        Find out how →
