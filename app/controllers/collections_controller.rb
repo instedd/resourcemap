@@ -147,10 +147,9 @@ class CollectionsController < ApplicationController
     render json: ImportWizard.guess_columns_spec(current_user, collection)
   end
 
-  def import_wizard_get_preview_sites
-    render json: ImportWizard.get_preview_sites(current_user, collection, JSON.parse(params[:columns]))
+  def import_wizard_validate_sites_with_columns
+    render json: ImportWizard.validate_sites_with_columns(current_user, collection, JSON.parse(params[:columns]))
   end
-
 
   def import_wizard_execute
     columns = params[:columns].values

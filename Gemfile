@@ -39,6 +39,7 @@ group :test, :development do
   gem 'rvm-capistrano', '1.2.2'
   gem 'jasminerice'
   gem 'guard-jasmine'
+  gem 'spork'
 end
 
 group :test do

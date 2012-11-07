@@ -52,7 +52,7 @@ ResourceMap::Application.routes.draw do
     get 'import_wizard_adjustments'
     get 'import_wizard_guess_columns_spec'
     post 'import_wizard_execute'
-    post 'import_wizard_get_preview_sites'
+    post 'import_wizard_validate_sites_with_columns'
 
     get 'recreate_index'
     get 'search'
