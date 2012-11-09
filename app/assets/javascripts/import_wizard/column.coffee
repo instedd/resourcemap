@@ -22,18 +22,11 @@ onImportWizard ->
 
       @iconClass = ko.computed => @computeIconClass()
 
-      @usage.subscribe =>
-        window.model.validateSites()
-
       @kind.subscribe =>
         window.model.validateSites()
 
       @field.subscribe =>
         window.model.validateSites()
-
-      @layer.subscribe =>
-        window.model.validateSites()
-
 
     toJSON: =>
       json =
@@ -50,7 +43,7 @@ onImportWizard ->
 
     computeIconClass: =>
       if @field()
-        FIELD_TYPES[@kind()].small_css_class || 'faccept'
+        FIELD_TYPES[@field().kind].small_css_class || 'faccept'
       else
         'faccept'
 
