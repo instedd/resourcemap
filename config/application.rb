@@ -59,8 +59,8 @@ module ResourceMap
     config.assets.version = '1.0'
 
     config.action_mailer.delivery_method = :sendmail
-
     config.google_analytics = 'UA-17030081-1'
     config.version_name = File.read('REVISION').strip rescue 'Development'
+    config.application_name = "Real-Time Resource Tracking with SMS Support & Map Display: ResourceMap"
   end
 end
