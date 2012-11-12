@@ -47,7 +47,7 @@
                 %select{ko(options: 'layer().fields', optionsText: "'name'", value: 'field')}
                 //ko
                 /ko if: usage() == 'new_field'
-                = select_tag :kind, options_for_select([['Text field', 'text'], ['Numeric field', 'numeric'], ['Select one field', 'select_one'], ['Select many field', 'select_many']]), 'data-bind' => kov(value: :kind)
+                = select_tag :kind, options_for_select(Field::Kinds.map{ |kind_name| [kind_name.titleize, kind_name]}.delete_if{|e| e[1] == "hierarchy"}), 'data-bind' => kov(value: :kind)
                 /ko if: kind() == 'select_one' || kind() == 'select_many'
                 = select_tag :selectKind, options_for_select([['Use as the code', 'code'], ['Use as the label', 'label'], ['Use as both the code and label', 'both']]), 'data-bind' => kov(value: :selectKind)
                 //ko
