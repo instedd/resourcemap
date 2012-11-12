@@ -6,8 +6,8 @@ set :rvm_type, :system
 set :application, "resource_map"
 set :repository,  "https://bitbucket.org/instedd/resource_map"
 set :scm, :mercurial
-set :user, 'ilab'
-set :group, 'ilab'
+set :user, 'ubuntu'
+set :group, 'ubuntu'
 set :deploy_via, :remote_cache
 set :branch, `hg branch`.strip
 default_run_options[:pty] = true
@@ -30,7 +30,6 @@ end
 namespace :foreman do
   desc 'Export the Procfile to Ubuntu upstart scripts'
   task :export, :roles => :app do
-    sudo 'whoami' 
     run "echo -e \"PATH=$PATH\\nGEM_HOME=$GEM_HOME\\nGEM_PATH=$GEM_PATH\\nRAILS_ENV=production\" >  #{current_path}/.env"
     run "cd #{current_path} && rvmsudo bundle exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"resque=1,resque_scheduler=1\""
   end
