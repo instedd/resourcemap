@@ -133,5 +133,16 @@ onImportWizard ->
     validateSites: =>
       columns = $.map(@columns(), (x) -> x.toJSON())
       $.post "/collections/#{@collectionId}/import_wizard_validate_sites_with_columns.json", {columns: JSON.stringify(columns)}, (sites) =>
-        console.log(sites)
         @sites(sites)
+        $('.error').each (index) ->
+          $(this).CreateBubblePopup({
+          selectable: true,
+          position : 'top',
+          innerHtml: $(this).attr('error'),
+          innerHtmlStyle: {
+              color:'#000000',
+              'background-color' :'white'
+              },
+          themeName:  'bubble',
+          themePath:  '<%= InsteddRails.url %>/theme/images/'
+          });

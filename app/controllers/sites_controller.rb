@@ -39,11 +39,14 @@ class SitesController < ApplicationController
   end
 
   def update_property
-    return head :forbidden unless current_user.can_write_field? site.collection, params[:es_code]
+    field = site.collection.fields.where_es_code_is(params[:es_code]).first
+
+    return head :forbidden unless current_user.can_write_field? field, site.collection, params[:es_code]
 
     site.user = current_user
     site.properties_will_change!
-    site.properties[params[:es_code]] = params[:value]
+
+    site.properties[params[:es_code]] = field.apply_format_update_validation(params[:value], false, collection)
     site.save!
     render json: site
   end

@@ -46,26 +46,26 @@ describe "layer access" do
 
   context "can write field" do
     it "can't write if property doesn't exist" do
-      user.can_write_field?(collection, "unexistent").should be_false
+      user.can_write_field?(nil, collection, "unexistent").should be_false
     end
 
     it "can't write if only read access" do
       membership.set_layer_access :verb => :read, :access => true, :layer_id => layer1.id
 
-      user.can_write_field?(collection, field1.es_code).should be_false
+      user.can_write_field?(field1, collection, field1.es_code).should be_false
     end
 
     it "can write if write access" do
       membership.set_layer_access :verb => :write, :access => true, :layer_id => layer1.id
 
-      user.can_write_field?(collection, field1.es_code).should be_true
+      user.can_write_field?(field1, collection, field1.es_code).should be_true
     end
 
     it "can write if admin" do
       membership.admin = true
       membership.save!
 
-      user.can_write_field?(collection, field1.es_code).should be_true
+      user.can_write_field?(field1, collection, field1.es_code).should be_true
     end
   end
 

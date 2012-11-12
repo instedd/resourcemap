@@ -675,7 +675,7 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
 
-  it "should get error for invalid numeric fields" do
+  it "should get error for invalid existing fields" do
     email_field = layer.fields.make :code => 'email', :kind => 'email'
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
@@ -714,6 +714,59 @@ describe ImportWizard do
 
     ImportWizard.delete_file(user, collection)
   end
+
+  it "should get error for invalid new fields" do
+     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+
+     csv_string = CSV.generate do |csv|
+       csv << ['text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
+       csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
+       csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
+     end
+
+     ImportWizard.import user, collection, csv_string
+
+     column_spec = [
+       {name: 'Text', usage: 'new_field', kind: 'text', code: 'text'},
+       {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'numeric'},
+       {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'select_one'},
+       {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'select_many'},
+       {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'hierarchy'},
+       {name: 'Site', usage: 'new_field', kind: 'site', code: 'site'},
+       {name: 'Date', usage: 'new_field', kind: 'date', code: 'date'},
+       {name: 'User', usage: 'new_field', kind: 'user', code: 'user'},
+       {name: 'Email', usage: 'new_field', kind: 'email', code: 'email'},
+     ]
+
+     sites_preview = ImportWizard.validate_sites_with_columns user, collection, column_spec
+
+     sites_preview.length.should eq(2)
+
+     first_line = sites_preview.first
+     first_line.should include({:value=>"new val", :error=>nil})
+     first_line.should include({value: '11', error: nil})
+     first_line.should include({:value=>"two", :error=>nil})
+     first_line.should include({:value=>"one", :error=>nil})
+     first_line.should include({:value=>"Dad", :error=> "Hierarchy fields can only be created via web in the Layers page"})
+     first_line.should include({:value=>"1235", :error=>nil})
+     first_line.should include({:value=>"12/26/1988", :error=>nil})
+     first_line.should include({:value=>"user2@email.com", :error=>nil})
+     first_line.should include({:value=>"email@mail.com", :error=>nil})
+
+     second_line = sites_preview.last
+     second_line.should include({:value=>"new val", :error=>nil})
+     second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric param"})
+     #option will be created as news
+     second_line.should include({:value=>"inval", :error=>nil})
+     second_line.should include({:value=>"Dad, inv", :error=>nil})
+     #hierarchy fields cannot be created using import wizard
+     second_line.should include({:value=>"inval", :error=> "Hierarchy fields can only be created via web in the Layers page"})
+     second_line.should include({:value=>"999", :error=>"Non-existent site-id in site param"})
+     second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user param"})
+     second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email param"})
+
+     ImportWizard.delete_file(user, collection)
+   end
 
 
 end

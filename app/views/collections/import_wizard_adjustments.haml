@@ -153,9 +153,7 @@
             / ko foreach: sites()
             %tr
               / ko foreach: $data
-
-              %td{ko(css: {error: 'error'}, text: 'value')}
-
+              %td{ko(css: {error: 'error'}, text: 'value', attr: {id: "$index() + '_' + $parentContext.$index()", error: 'error' } ) }
               //ko
               //ko
             //ko

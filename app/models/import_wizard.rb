@@ -12,13 +12,14 @@ class ImportWizard
     end
 
     def validate_sites_with_columns(user, collection, columns_spec)
+      columns_spec.map!{|c| c.with_indifferent_access}
       csv = CSV.read file_for(user, collection)
       validated_csv_columns = []
       csv_columns = csv[1 .. -1].transpose
       csv_columns.each_with_index do |csv_column, csv_column_number|
 
         column_spec = columns_spec[csv_column_number]
-        if column_spec[:usage] == :existing_field
+        if column_spec[:usage].to_sym == :existing_field
           field = Field.find column_spec[:field_id]
         end
         validated_csv_column = []
@@ -262,7 +263,24 @@ class ImportWizard
     def validate_column_value(column_spec, field_value, field, collection)
       if field
         field.apply_format_update_validation(field_value, true, collection)
+      else
+        validate_format(column_spec, field_value, collection)
       end
+    end
+
+    def validate_format(column_spec, field_value, collection)
+      # Bypass some field validations
+      if column_spec[:kind] == 'hierarchy'
+        raise "Hierarchy fields can only be created via web in the Layers page"
+      elsif column_spec[:kind] == 'select_one' || column_spec[:kind] == 'select_many'
+        # options will be created
+        return field_value
+      end
+
+      column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
+
+      sample_field = Field.new kind: column_spec[:kind], code: column_header
+      sample_field.apply_format_update_validation(field_value, true, collection)
     end
 
     def to_columns(collection, rows, admin)
