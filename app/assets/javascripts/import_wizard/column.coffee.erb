@@ -28,6 +28,12 @@ onImportWizard ->
       @field.subscribe =>
         window.model.validateSites()
 
+      @error = ko.computed =>
+        @validateColum()
+
+      @error.subscribe =>
+        @applyColumnBubble()
+
     toJSON: =>
       json =
         usage: @usage()
@@ -40,6 +46,28 @@ onImportWizard ->
         json.label = @label()
         json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json
+
+    applyColumnBubble: =>
+      $('.error_column').each (index) ->
+        $(this).CreateBubblePopup({
+        selectable: true,
+        position : 'top',
+        innerHtml: $(this).attr('error'),
+        innerHtmlStyle: {
+            color:'#000000',
+            'background-color' :'white'
+            },
+        themeName:  'bubble',
+        themePath:  '<%= InsteddRails.url %>/theme/images/'
+        });
+
+    validateColum: =>
+      if @usage() == 'new_field' && @label() && @code()
+        fields = $.map(window.model.layers, (l) -> l.fields)
+        if window.arrayAny(fields, (f) => f.name == @label())
+          return "A field with label #{@label()} already exists in collection's fields"
+        if window.arrayAny(fields, (f) => f.code == @code())
+          return "A field with code #{@code()} already exists in collection's fields"
 
     computeIconClass: =>
       if @usage() == 'existing_field' && @field()

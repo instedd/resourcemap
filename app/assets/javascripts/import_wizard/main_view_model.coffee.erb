@@ -19,6 +19,9 @@ onImportWizard ->
       @importing = ko.observable false
       @importError = ko.observable false
 
+    validationErrors: =>
+      window.arrayAny(@sites(), (s) => s.error) || window.arrayAny(@columns(), (c) => c.error())
+
     loadUsages: =>
       @usages = [new Usage('New field', 'new_field')]
       if @layers.length > 0
