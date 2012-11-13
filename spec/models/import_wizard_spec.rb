@@ -600,14 +600,29 @@ describe ImportWizard do
     site2.properties.should eq({text.es_code => 'lala'})
   end
 
-  pending "should create new fields with all property values" do
+  it "should not create a hierarchy field in import wizard" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Hierarchy']
+      csv << ['Dad']
+    end
+
+    specs = [
+      {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'new_hierarchy'},
+    ]
+
+    ImportWizard.import user, collection, csv_string
+    expect { ImportWizard.execute(user, collection, specs) }.to raise_error
+
+  end
+
+  it "should create new fields with all property values" do
     site1 = collection.sites.make name: 'Foo old', id: 1234, properties: {}
 
     site2 = collection.sites.make name: 'Bar old', properties: {}, id: 1235
 
     csv_string = CSV.generate do |csv|
-      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
-      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two', 'uno',  1235, '12/26/1988', 'user2@email.com']
+      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Site', 'Date', 'User', 'Email', 'Phone']
+      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two, one',  1235, '12/26/1988', 'user2@email.com', 'new@email.com', '1456']
     end
 
     specs = [
@@ -615,34 +630,36 @@ describe ImportWizard do
       {name: 'Name', usage: 'name'},
       {name: 'Text', usage: 'new_field', kind: 'text', code: 'new_text'},
       {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'new_numeric'},
-      {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'new_select_one'},
-      {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'new_select_many'},
-      {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'new_hierarchy'},
+      {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'new_select_one', label: 'New Select One', selectKind: 'both'},
+      {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'new_select_many', label: 'New Select Many', selectKind: 'both'},
       {name: 'Site', usage: 'new_field', kind: 'site', code: 'new_site'},
       {name: 'Date', usage: 'new_field', kind: 'date', code: 'new_date'},
       {name: 'User', usage: 'new_field', kind: 'user', code: 'new_user'},
+      {name: 'Email', usage: 'new_field', kind: 'email', code: 'new_email'},
+      {name: 'Phone', usage: 'new_field', kind: 'phone', code: 'new_phone'},
     ]
 
     ImportWizard.import user, collection, csv_string
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
-    layers.length.should eq(1)
-    layers[0].name.should eq(layer.name)
+    layers.length.should eq(2)
 
-    fields = layers[0].fields.all
-    fields.length.should eq(8)
+    new_layer = layers.detect{|l| l.name == "Import wizard"}
+
+    fields = new_layer.fields.all
+    fields.length.should eq(9)
 
     sites = collection.sites.all
     sites.length.should eq(2)
 
     site1.reload
-    site1.name.should eq('Foo old')
-    site1.properties.should eq({})
+    site1.name.should eq('Foo new')
+    site1.properties.length.should eq(9)
 
     site2.reload
     site2.name.should eq('Bar old')
-    site2.properties.should eq({text.es_code => 'lala'})
+    site2.properties.should eq({})
   end
 
   it "should guess column spec" do

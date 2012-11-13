@@ -96,7 +96,7 @@ class ImportWizard
       spec_i = 1
       columns_spec.each do |spec|
         if spec[:usage] == 'new_field'
-          if (spec[:kind] == 'text' || spec[:kind] == 'numeric' || spec[:kind] == 'select_one' || spec[:kind] == 'select_many') && spec[:selectKind] != 'label'
+          if spec[:selectKind] != 'label'
             fields[spec[:code]] = layer.fields.new code: spec[:code], name: spec[:label], kind: spec[:kind], ord: spec_i
             fields[spec[:code]].layer = layer
             spec_i += 1
@@ -133,6 +133,8 @@ class ImportWizard
 
           case spec[:usage]
           when 'new_field'
+            value = validate_format(spec, value, collection)
+
             # For select one and many we need to collect the fields options
             if spec[:kind] == 'select_one' || spec[:kind] == 'select_many'
               field = fields[spec[:code]]
