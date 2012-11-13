@@ -42,12 +42,10 @@ onImportWizard ->
       json
 
     computeIconClass: =>
-      if @usage() == 'existing_field'
+      if @usage() == 'existing_field' && @field()
         kind = @field().kind
       else
         kind = @kind()
-
-      console.log(kind)
 
       field_class = FIELD_TYPES[kind]
 
