@@ -34,6 +34,8 @@ onImportWizard ->
       @error.subscribe =>
         @applyColumnBubble()
 
+      @applyColumnBubble()
+
     toJSON: =>
       json =
         usage: @usage()
@@ -64,10 +66,9 @@ onImportWizard ->
     validateColum: =>
       if @usage() == 'new_field' && @label() && @code()
         fields = $.map(window.model.layers, (l) -> l.fields)
-        if window.arrayAny(fields, (f) => f.name == @label())
-          return "A field with label #{@label()} already exists in collection's fields"
-        if window.arrayAny(fields, (f) => f.code == @code())
-          return "A field with code #{@code()} already exists in collection's fields"
+        return "A field with label #{@label()} already exists in collection's fields" if window.arrayAny(fields, (f) => f.name == @label())
+        return "A field with code #{@code()} already exists in collection's fields" if window.arrayAny(fields, (f) => f.code == @code())
+      null
 
     computeIconClass: =>
       if @usage() == 'existing_field' && @field()

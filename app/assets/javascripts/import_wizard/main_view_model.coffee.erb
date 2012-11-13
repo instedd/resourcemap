@@ -20,7 +20,7 @@ onImportWizard ->
       @importError = ko.observable false
 
     validationErrors: =>
-      window.arrayAny(@sites(), (s) => s.error) || window.arrayAny(@columns(), (c) => c.error())
+      window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error())
 
     loadUsages: =>
       @usages = [new Usage('New field', 'new_field')]
