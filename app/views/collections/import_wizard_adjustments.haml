@@ -147,7 +147,7 @@
             %tr
               / ko foreach: columns()
               %th
-                %span{ko(css: {error_column: 'error'},text: :name, attr:{ error: 'error' })}
+                %span.column_header{ko(css: {error_column: 'error'},text: :name, attr:{ error: 'error' })}
               //ko
           %tbody
             / ko foreach: sites()

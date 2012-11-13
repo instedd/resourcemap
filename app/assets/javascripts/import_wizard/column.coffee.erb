@@ -32,7 +32,8 @@ onImportWizard ->
         @validateColum()
 
       @error.subscribe =>
-        @applyColumnBubble()
+        # HTML is rendered after executing applyColumnBubble, so the popups don't get removed
+        setTimeout(@applyColumnBubble, 50)
 
       @applyColumnBubble()
 
@@ -50,6 +51,7 @@ onImportWizard ->
       json
 
     applyColumnBubble: =>
+      $('.column_header').not(".error_column").RemoveBubblePopup()
       $('.error_column').each (index) ->
         $(this).CreateBubblePopup({
         selectable: true,
@@ -62,6 +64,7 @@ onImportWizard ->
         themeName:  'bubble',
         themePath:  '<%= InsteddRails.url %>/theme/images/'
         });
+
 
     validateColum: =>
       if @usage() == 'new_field' && @label() && @code()
