@@ -6,6 +6,9 @@ describe 'ImportWizard', ->
     @columns =[{name: "field 1", usage: "name", sample: "res name", value: "res name"}]
     @model = window.model
 
+    window.Column::applyColumnBubble = () ->
+      true
+
   describe 'MainViewModel', ->
     it 'should load usages for no layer', ->
       @model.initialize(1, [], @columns)
@@ -40,7 +43,6 @@ describe 'ImportWizard', ->
       @columns =[{name: "resmap-id", usage: "id", sample: "1", value: "1"}]
       @model.initialize(1, @layers, @columns)
       expect(@model.hasId()).toBe(true)
-
 
 
 
