@@ -1,7 +1,7 @@
 .homepage
   #container
     %h1 What can I use it for?
-    %p.desc
+    %p.desc{:style => "margin:0 0 15px !important;"}
       Accurately tracking and allocating resources is critical to getting the most from every asset at your disposal. Here are a few ways that Resource Map can help you maximize your resource allocation and usage:
     .left.w45{:style => "width: auto !important;"}
       %h2 Tracking Medical Supplies and Personnel
@@ -9,6 +9,9 @@
         %span.tracking-medical-supplies      
       %p{:style => "font-size: 16px;"} In an emergency medical situation, when lives may hang in the balance, the last thing you want to do is waste time finding supplies, personnel, and mobile or permanent treatment facilities. With Resource Map, you can quickly locate and manage critical resources on a real-time map using a computer or smartphone. On an emergency scene, when you might not have access to computers or smartphones, you and your team can view and update resource allocations with any phone capable of text messaging.
     / #left w45
+    .clear
+    / #clear
+    %br/
     .right.w45{:style => "width: auto !important;"}
       %h2 Monitoring Food Prices and Supply Levels
       .icon-container.left
@@ -24,6 +27,9 @@
         %span.managing-disease-prevention-supplies
       %p{:style => "font-size: 16px;"} Medicine is at its best when it helps people avoid illness in the first place. Resource Map aids prevention efforts by giving teams new ways to manage key supply chain items, such as vaccines, vitamins, and other disease prevention tools. And by uploading statistics on various measures of health, you can even use Resource Map to monitor the effectiveness of your interventions. After all, a healthy community is one of your most important resources.
     / #left w45
+    .clear
+    / #clear
+    %br/
     .right.w45{:style => "width: auto !important;"}
       %h2 Testing Environmental Health
       .icon-container.left
@@ -32,6 +38,7 @@
     / #left w45
     .clear
     / #clear
+    %br/
     %br/
     .box.plain.grey.features
 
@@ -50,8 +57,6 @@
         %div
           %span.r-arrow>
           Import existing resource allocation data from spreadsheets
-
-
       / #left w45
       .right.w45{:style => "font-size: 16px;"}
         %div
@@ -74,7 +79,7 @@
     %br/
     .box.plain.grey.features
       %p{:style => "margin: 0px;"}
-        = link_button_to 'Sign up for free', new_user_registration_path, :class => "orange", :style => "font-size: 18px; height: 46px; width: 200px; padding-bottom: 9px; margin-left: auto; margin-right: auto;  display:block;"
+        = link_button_to 'Sign up for free', new_user_registration_path, :class => "orange", :style => "font-size: 18px; height: 46px; width: 200px;margin-left:auto; margin-right: auto; display:block;"
 
     %br/ 
     %br/
@@ -87,8 +92,8 @@
     / #w45 right
     .clear
     / #clear
-    #container
-    %h1 Who has used it?
+  #container
+    %h1{:style => "margin: 5px 0 20px;"} Who has using it?
 
     .left.w45{:style => "width: auto !important;"}
 
@@ -98,6 +103,10 @@
       %p{:style => "font-size: 16px;"}
         With the support of the Clinton Health Access Initiative (CHAI), CNM uses Resource Map to support their malaria drug program with our tool to capture malaria drug updates from at risk health centers on a two week cycle. The goal of monitoring resources so closely is to improve the stock management of malaria treatment drugs. This tool helps the health centers to avoid the possibility of over or under stocking important drug supplies.
       / #left w45
+    .clear
+    / #clear
+    %br/
+
     .right.w45{:style => "width: auto !important;"}
 
       %h2 Center for Malaria Parasitology and Entomology      
@@ -107,6 +116,7 @@
         With the support from the Global Fund, the Center for Malaria Parasitology and Entomology of Laos PDR (CMPE) uses Resource Map to report both the stock levels of life saving malaria drugs and the number of Malaria cases located at the village health centers up to the national level.  This allows the Ministry of Health to have a real time visual picture of what resources are available and what is needed to treat patients.
     
     .clear
+    %br
     .left.w45{:style => "width: auto !important;"}
 
       %h2 Rwanda Ministry of Health
@@ -117,7 +127,9 @@
 
     / #left w45
     .clear
+    %br
+    %br 
   .box.plain.grey.features
     %p{:style => "margin: 0px;"}
-      = link_button_to 'Sign up for free', new_user_registration_path, :class => "orange", :style => "font-size: 18px; height: 46px; width: 200px; padding-bottom: 9px; margin-left: auto; margin-right: auto;  display:block;"
+      = link_button_to 'Sign up for free', new_user_registration_path, :class => "orange", :style => "font-size: 18px; height: 46px; width: 200px;margin-left: auto; margin-right: auto;  display:block;"
 

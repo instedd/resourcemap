@@ -34,12 +34,12 @@
 
   - if current_user
     %p
-      =link_button_to 'View your collections', collections_path, :class => "orange" , :style => "font-size: 18px; height: 46px; width: 200px; padding-bottom: 9px;"
+      =link_button_to 'View your collections', collections_path, :class => "orange" , :style => "font-size: 24px; height: 52px; width: 260px;margin: auto;"
 
     %p
   - else
     %p
-      = link_button_to 'Sign up for free', new_user_registration_path, :class => "orange", :style => "font-size: 18px; height: 46px; width: 200px; padding-bottom: 9px;"
+      = link_button_to 'Sign up for free', new_user_registration_path, :class => "orange", :style => "font-size: 24px; height: 52px; width: 220px;margin: auto;"
   .clear
   / #container
   .home-middle-bar{:style => "margin: 25px auto 20px;"}
@@ -96,8 +96,8 @@
   / #home-middle-bar
   #container
     %h1 What can I use it for?
-    %p.desc{:style => "margin:0 0 10px !important;"}
+    %p.desc{:style => "margin:0 0 30px !important;"}
       Accurately tracking and allocating resources is critical to getting the  most from every asset at your disposal. Resource Map can help you maximize your resource allocation and usage. 
     %p
-      %a{:href => "/real-time-resource-tracking", :style => "font-size:30px;margin-left: auto; margin-right: auto; width: 220px; display:block;"}
+      %a{:href => "/real-time-resource-tracking", :style => "font-weight:bold; font-size:30px; margin-left: auto; margin-right: auto; width: 230px; display:block;"}
         Find out how →
