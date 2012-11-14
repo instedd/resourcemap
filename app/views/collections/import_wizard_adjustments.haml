@@ -1,6 +1,6 @@
 :css
   .ignored, .ignored input, .ignored select { color: grey; }
-  .error { color: red; }
+  .error, .error_column { color: red; }
 
 = render 'tabs'
 
@@ -109,10 +109,10 @@
               %br/
               //ko
               /ko if: kind == 'select_one' || kind == 'select_many'
-              %span{ko(css: {error: "!valueCode()"})} Value code:
+              %span{ko(css: {error: "!valueCode"})} Value code:
               %span{ko(text: :valueCode)}
               %br/
-              %span{ko(css: {error: "!valueLabel()"})} Value label:
+              %span{ko(css: {error: "!valueLabel"})} Value label:
               %span{ko(text: :valueLabel)}
               %br/
               //ko
@@ -147,13 +147,13 @@
             %tr
               / ko foreach: columns()
               %th
-                %span{ko(text: :name, attr:{class: 'iconClass()' })}
+                %span.column_header{ko(css: {error_column: 'error'},text: :name, attr:{ error: 'error' })}
               //ko
           %tbody
             / ko foreach: sites()
             %tr
               / ko foreach: $data
-              %td{ko(css: {error: 'error'}, text: 'value', attr: {id: "$index() + '_' + $parentContext.$index()", error: 'error' } ) }
+              %td{ko(css: {error: 'error'}, text: 'value', attr: { error: 'error' } ) }
               //ko
               //ko
             //ko

@@ -19,6 +19,9 @@ onImportWizard ->
       @importing = ko.observable false
       @importError = ko.observable false
 
+    validationErrors: =>
+      window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error())
+
     loadUsages: =>
       @usages = [new Usage('New field', 'new_field')]
       if @layers.length > 0
@@ -132,8 +135,8 @@ onImportWizard ->
 
     validateSites: =>
       columns = $.map(@columns(), (x) -> x.toJSON())
-      $.post "/collections/#{@collectionId}/import_wizard_validate_sites_with_columns.json", {columns: JSON.stringify(columns)}, (sites) =>
-        @sites(sites)
+      $.post "/collections/#{@collectionId}/import_wizard_validate_sites_with_columns.json", {columns: JSON.stringify(columns)}, (preview) =>
+        @sites(preview.sites)
         $('.error').each (index) ->
           $(this).CreateBubblePopup({
           selectable: true,

@@ -451,7 +451,7 @@ describe ImportWizard do
 
      sites[1].name.should eq('Bar')
      sites[1].properties.should eq({date.es_code => "2033-10-23T00:00:00Z"})
-   end
+  end
 
   it "imports with name and existing site property" do
 
@@ -600,7 +600,7 @@ describe ImportWizard do
     site2.properties.should eq({text.es_code => 'lala'})
   end
 
-  it "should not create a hierarchy field in import wizard" do
+  it "should not create a new hierarchy field in import wizard" do
     csv_string = CSV.generate do |csv|
       csv << ['Hierarchy']
       csv << ['Dad']
@@ -662,7 +662,7 @@ describe ImportWizard do
     site2.properties.should eq({})
   end
 
-  it "should guess column spec" do
+  it "should guess column spec for existing fields" do
     email_field = layer.fields.make :code => 'email', :kind => 'email'
 
     csv_string = CSV.generate do |csv|
@@ -704,7 +704,7 @@ describe ImportWizard do
 
     ImportWizard.import user, collection, csv_string
     column_spec = ImportWizard.guess_columns_spec user, collection
-    sites_preview = ImportWizard.validate_sites_with_columns user, collection, column_spec
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:sites]
 
     sites_preview.length.should eq(2)
 
@@ -755,7 +755,7 @@ describe ImportWizard do
        {name: 'Email', usage: 'new_field', kind: 'email', code: 'email'},
      ]
 
-     sites_preview = ImportWizard.validate_sites_with_columns user, collection, column_spec
+     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:sites]
 
      sites_preview.length.should eq(2)
 
@@ -783,7 +783,30 @@ describe ImportWizard do
      second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email param"})
 
      ImportWizard.delete_file(user, collection)
-   end
+  end
 
+
+  it "should not create fields with duplicated name or code" do
+    layer.fields.make :code => 'new_field', :kind => 'numeric', :name => 'Existing field'
+
+    csv_string = CSV.generate do |csv|
+     csv << ['text']
+     csv << ['new val']
+    end
+
+    ImportWizard.import user, collection, csv_string
+
+    column_spec = [
+      {name: 'Text', usage: 'new_field', kind: 'text', code: 'text', label: 'Non Existing field'},
+    ]
+
+    expect {ImportWizard.validate_columns collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with code 'text' already exists in the layer named #{layer.name}")
+
+    column_spec = [
+     {name: 'Text', usage: 'new_field', kind: 'text', code: 'newtext', label: 'Existing field'},
+    ]
+
+    expect {ImportWizard.validate_columns collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
+  end
 
 end

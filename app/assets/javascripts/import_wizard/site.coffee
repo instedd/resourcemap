@@ -23,7 +23,8 @@ onImportWizard ->
         for property in @properties()
           if property.kind == 'select_one' || property.kind == 'select_many'
             return "you must choose a column to be the Code of property #{property.code}" unless property.valueCode
-            return "you must choose a column to be the Label of property #{property.code}" unless property.valueLabel
+            return "you must choose a column to be the Label of property #{property.code}" unless property.valueLabels
+
         null
 
-      @valid = ko.computed => !@error()
+      @valid = ko.computed => !@error() && !window.model.validationErrors()

@@ -12,10 +12,11 @@ class ImportWizard
     end
 
     def validate_sites_with_columns(user, collection, columns_spec)
+      validated_data = {}
       columns_spec.map!{|c| c.with_indifferent_access}
       csv = CSV.read file_for(user, collection)
-      validated_csv_columns = []
       csv_columns = csv[1 .. -1].transpose
+      validated_csv_columns = []
       csv_columns.each_with_index do |csv_column, csv_column_number|
 
         column_spec = columns_spec[csv_column_number]
@@ -33,7 +34,8 @@ class ImportWizard
         end
         validated_csv_columns << validated_csv_column
       end
-      validated_csv_columns.transpose
+      validated_data[:sites] = validated_csv_columns.transpose
+      validated_data
     end
 
     def guess_columns_spec(user, collection)
@@ -51,6 +53,9 @@ class ImportWizard
       columns_spec.map! &:with_indifferent_access
 
       existing_fields = collection.fields.index_by &:id
+
+      # Validate new fields
+      validate_columns(collection, columns_spec)
 
       # Read all the CSV to memory
       rows = CSV.read file_for(user, collection)
@@ -133,7 +138,7 @@ class ImportWizard
 
           case spec[:usage]
           when 'new_field'
-            value = validate_format(spec, value, collection)
+            value = validate_format_value(spec, value, collection)
 
             # For select one and many we need to collect the fields options
             if spec[:kind] == 'select_one' || spec[:kind] == 'select_many'
@@ -259,6 +264,23 @@ class ImportWizard
       File.delete(file_for(user, collection))
     end
 
+    def validate_columns(collection, columns_spec)
+      collection_fields = collection.fields.all(:include => :layer)
+      columns_spec.each do |col_spec|
+        if col_spec[:usage] == 'new_field'
+          # Validate code
+          found = collection_fields.detect{|f| f.code == col_spec[:code]}
+          if found
+            raise "Can't save field from column #{col_spec[:name]}: A field with code '#{col_spec[:code]}' already exists in the layer named #{found.layer.name}"
+          end
+          # Validate name
+          found = collection_fields.detect{|f| f.name == col_spec[:label]}
+          if found
+            raise "Can't save field from column #{col_spec[:name]}: A field with label '#{col_spec[:label]}' already exists in the layer named #{found.layer.name}"
+          end
+        end
+      end
+    end
 
     private
 
@@ -266,11 +288,11 @@ class ImportWizard
       if field
         field.apply_format_update_validation(field_value, true, collection)
       else
-        validate_format(column_spec, field_value, collection)
+        validate_format_value(column_spec, field_value, collection)
       end
     end
 
-    def validate_format(column_spec, field_value, collection)
+    def validate_format_value(column_spec, field_value, collection)
       # Bypass some field validations
       if column_spec[:kind] == 'hierarchy'
         raise "Hierarchy fields can only be created via web in the Layers page"

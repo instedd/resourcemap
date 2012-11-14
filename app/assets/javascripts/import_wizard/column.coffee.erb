@@ -28,6 +28,15 @@ onImportWizard ->
       @field.subscribe =>
         window.model.validateSites()
 
+      @error = ko.computed =>
+        @validateColum()
+
+      @error.subscribe =>
+        # HTML is rendered after executing applyColumnBubble, so the popups don't get removed
+        setTimeout(@applyColumnBubble, 50)
+
+      @applyColumnBubble()
+
     toJSON: =>
       json =
         usage: @usage()
@@ -41,13 +50,34 @@ onImportWizard ->
         json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json
 
+    applyColumnBubble: =>
+      $('.column_header').not(".error_column").RemoveBubblePopup()
+      $('.error_column').each (index) ->
+        $(this).CreateBubblePopup({
+        selectable: true,
+        position : 'top',
+        innerHtml: $(this).attr('error'),
+        innerHtmlStyle: {
+            color:'#000000',
+            'background-color' :'white'
+            },
+        themeName:  'bubble',
+        themePath:  '<%= InsteddRails.url %>/theme/images/'
+        });
+
+
+    validateColum: =>
+      if @usage() == 'new_field' && @label() && @code()
+        fields = $.map(window.model.layers, (l) -> l.fields)
+        return "A field with label #{@label()} already exists in collection's fields" if window.arrayAny(fields, (f) => f.name == @label())
+        return "A field with code #{@code()} already exists in collection's fields" if window.arrayAny(fields, (f) => f.code == @code())
+      null
+
     computeIconClass: =>
-      if @usage() == 'existing_field'
+      if @usage() == 'existing_field' && @field()
         kind = @field().kind
       else
         kind = @kind()
-
-      console.log(kind)
 
       field_class = FIELD_TYPES[kind]
 
