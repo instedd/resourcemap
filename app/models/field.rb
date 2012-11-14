@@ -12,7 +12,8 @@ class Field < ActiveRecord::Base
   validates_inclusion_of :kind, :in => Kinds
   validates_presence_of :code
   validates_exclusion_of :code, :in => ['lat', 'long', 'name', 'resmap-id', 'last updated']
-
+  validates_uniqueness_of :code, :scope => :collection_id
+  validates_uniqueness_of :name, :scope => :collection_id
 
   serialize :config
 

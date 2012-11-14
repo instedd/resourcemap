@@ -19,8 +19,7 @@ describe Snapshot do
     @site2 = collection.sites.make name: 'site2 last year'
 
     stub_time '2012-06-05 12:17:58 -0500'
-
-    @field2 = layer.fields.make code: 'beds', kind: 'numeric'
+    @field2 = layer.fields.make code: 'beds2', kind: 'numeric'
 
     @site3 = collection.sites.make name: 'site3 today'
     @site4 = collection.sites.make name: 'site4 today'

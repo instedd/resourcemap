@@ -6,7 +6,7 @@ describe Site::CleanupConcern do
   let!(:layer) { collection.layers.make user: user }
   let!(:prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
   let!(:beds) { layer.fields.make :kind => 'numeric', :code => 'beds' }
-  let!(:many) { layer.fields.make :kind => 'select_many', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+  let!(:many) { layer.fields.make :kind => 'select_many', :code => 'many', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
 
   it "converts properties values to int if the field is int" do
     site = collection.sites.make properties: {beds.es_code => '123'}
