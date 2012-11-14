@@ -17,3 +17,4 @@ onImportWizard -> if $('#import-wizard-main').length > 0
         window.model.sites(preview.sites)
 
         $('.hidden-until-loaded').show()
+        window.model.showValidations()
