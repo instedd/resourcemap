@@ -15,8 +15,15 @@
     = render 'steps', :step => 2
     %br
 
-  %h2.orange Curate Data
+  %h2.orange.loading Curate Data
   %p.orange Specify how to map each column to a field
+
+  #generating_preview.grey
+    We are generating a preview for the sites you are importing.
+    %br
+    Then you will be able to define how to use each column.
+    %br
+    This may take a while depending on the size of your file.
 
   #import-wizard-main.hidden-until-loaded
     /ko if: !hasId()
@@ -25,7 +32,30 @@
         = raw "All sites will be imported as new. If you want to modify the existing ones #{link_to "go back", :back, :class => 'black'} to the previous page."
     //ko
 
-    %div{style: 'height: 400px;overflow:auto'}
+
+    .box.nopadd.h50
+      .tablescroll{style: 'margin-top: 0'}
+        %table.GralTable.fht-table.fht-table-init{style: 'table-layout: fixed;'}
+          %colgroup
+            / ko foreach: columns()
+            %col{width: '150px'}
+            //ko
+          %thead
+            %tr
+              / ko foreach: columns()
+              %th
+                %span.column_header{ko(css: {error_column: 'error'}, text: :name, attr: {error: 'error'}, class: 'iconClass')}
+              //ko
+          %tbody
+            / ko foreach: sites()
+            %tr
+              / ko foreach: $data
+              %td{ko(css: {error: 'error'}, text: 'value', attr: { error: 'error' } ) }
+              //ko
+              //ko
+            //ko
+
+    %div{style:'overflow:auto'}
       %ul{ko(foreach: :columns)}
         %li{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
           %div
@@ -134,29 +164,6 @@
               %span{ko(text: :value)}
               //ko
 
-
-
-    .box.nopadd.h50
-      .tablescroll{style: 'margin-top: 0'}
-        %table.GralTable.fht-table.fht-table-init{style: 'table-layout: fixed;'}
-          %colgroup
-            / ko foreach: columns()
-            %col{width: '150px'}
-            //ko
-          %thead
-            %tr
-              / ko foreach: columns()
-              %th
-                %span.column_header{ko(css: {error_column: 'error'}, text: :name, attr: {error: 'error'}, class: 'iconClass')}
-              //ko
-          %tbody
-            / ko foreach: sites()
-            %tr
-              / ko foreach: $data
-              %td{ko(css: {error: 'error'}, text: 'value', attr: { error: 'error' } ) }
-              //ko
-              //ko
-            //ko
 
     %br/
     /ko if: importing()
