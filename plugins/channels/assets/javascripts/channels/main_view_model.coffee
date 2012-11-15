@@ -10,7 +10,7 @@ onChannels ->
       @isSaving         = ko.observable false
     
     addChannel: =>
-      channel = new Channel {collection_id: @collectionId(), is_share: 'false', is_manual_configuration: true, queued_messages_count: 0}, @collectionId()
+      channel = new Channel {collection_id: @collectionId(), is_share: 'false', is_manual_configuration: false, queued_messages_count: 0}, @collectionId()
       @currentChannel channel
       @channels.push channel
 
