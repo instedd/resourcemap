@@ -149,4 +149,22 @@ describe Field do
     it { should include 'site' }
 
   end
+
+  describe "validations" do
+
+    ['name', 'code'].each do |parameter|
+      it "should validate uniqueness of #{parameter} in collection" do
+        collection = Collection.make
+        beds = collection.fields.make :kind => 'text', parameter.to_sym => 'beds'
+        beds2 = collection.fields.make_unsaved :kind => 'text', parameter.to_sym => 'beds'
+
+        beds2.should_not be_valid
+
+        collection2 = Collection.make
+
+        beds3 = collection2.fields.make_unsaved :kind =>'text', parameter.to_sym => 'beds'
+        beds3.should be_valid
+      end
+    end
+  end
 end

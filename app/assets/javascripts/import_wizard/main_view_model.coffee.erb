@@ -133,6 +133,10 @@ onImportWizard ->
           @importing(false)
           @importError(true)
 
+    showValidations: =>
+      for column in @columns()
+        column.applyColumnBubble()
+
     validateSites: =>
       columns = $.map(@columns(), (x) -> x.toJSON())
       $.post "/collections/#{@collectionId}/import_wizard_validate_sites_with_columns.json", {columns: JSON.stringify(columns)}, (preview) =>

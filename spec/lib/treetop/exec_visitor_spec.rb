@@ -10,7 +10,6 @@ describe ExecVisitor, "Process query command" do
     parser = CommandParser.new
     @collection = Collection.make(:name => 'Healt Center')
     @layer = @collection.layers.make(:name => "default")
-    @layer.fields.make(:code => "AB", :ord => 1, :kind => "numeric")
     @user = User.make(:phone_number => '85512345678')
     @f1 = @layer.fields.make(:id => 10, :name => "Ambulance", :code => "AB", :ord => 1, :kind => "numeric")
     @f2 = @layer.fields.make(:id => 11, :name => "Doctor", :code => "DO", :ord => 2, :kind => "numeric")

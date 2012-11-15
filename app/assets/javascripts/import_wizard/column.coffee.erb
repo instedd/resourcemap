@@ -35,8 +35,6 @@ onImportWizard ->
         # HTML is rendered after executing applyColumnBubble, so the popups don't get removed
         setTimeout(@applyColumnBubble, 50)
 
-      @applyColumnBubble()
-
     toJSON: =>
       json =
         usage: @usage()
