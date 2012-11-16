@@ -53,6 +53,8 @@ ResourceMap::Application.routes.draw do
     get 'import_wizard_guess_columns_spec'
     post 'import_wizard_execute'
     post 'import_wizard_validate_sites_with_columns'
+    post 'import_wizard_validate_sites_with_column'
+
 
     get 'recreate_index'
     get 'search'

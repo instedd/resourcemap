@@ -137,10 +137,19 @@ onImportWizard ->
       for column in @columns()
         column.applyColumnBubble()
 
-    validateSites: =>
-      columns = $.map(@columns(), (x) -> x.toJSON())
-      $.post "/collections/#{@collectionId}/import_wizard_validate_sites_with_columns.json", {columns: JSON.stringify(columns)}, (preview) =>
-        @sites(preview.sites)
+    validateSites:(modified_column) =>
+      column = modified_column.toJSON()
+      $.post "/collections/#{@collectionId}/import_wizard_validate_sites_with_column.json", {column: JSON.stringify(column)}, (preview_column) =>
+        for column_index, validated_value of preview_column
+          for site in @sites()
+            site_index = @sites().indexOf(site)
+            site.splice(column_index, 1, validated_value[site_index])
+
+        # @sites.valueHasMutated() does not work. If this solution has problems (like flickering) we will need to fill @sites with observable arrays instead of arrays
+        old_sites = @sites()
+        @sites([])
+        @sites(old_sites)
+
         $('.error').each (index) ->
           $(this).CreateBubblePopup({
           selectable: true,

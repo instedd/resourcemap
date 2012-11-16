@@ -151,6 +151,10 @@ class CollectionsController < ApplicationController
     render json: ImportWizard.validate_sites_with_columns(current_user, collection, JSON.parse(params[:columns]))
   end
 
+  def import_wizard_validate_sites_with_column
+    render json: ImportWizard.validate_sites_with_column(current_user, collection, JSON.parse(params[:column]))
+  end
+
   def import_wizard_execute
     columns = params[:columns].values
     if columns.find { |x| x[:usage] == 'new_field' } and not current_user.admins? collection

@@ -23,10 +23,10 @@ onImportWizard ->
       @iconClass = ko.computed => @computeIconClass()
 
       @kind.subscribe =>
-        window.model.validateSites()
+        window.model.validateSites(this)
 
       @field.subscribe =>
-        window.model.validateSites()
+        window.model.validateSites(this)
 
       @error = ko.computed =>
         @validateColum()
