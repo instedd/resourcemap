@@ -8,6 +8,10 @@
           %span.stat-r
           %span{ko(html: :highlightedName)}
       %button.farrow{ko(click: '$root.editSite'), type: :button}
+    %td
+      %span{ko(text: :safe_lat)}
+    %td
+      %span{ko(text: :safe_lng)}
     <!-- ko foreach: $root.currentCollection().fields() -->
     <!-- ko if: $parent.properties()[$data.esCode] -->
     %td
