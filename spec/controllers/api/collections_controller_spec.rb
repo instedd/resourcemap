@@ -74,7 +74,7 @@ describe Api::CollectionsController do
     end
   end
 
-  describe "GET JSON collection with query parameters" do
+  describe "GET JSON collection with query fieldeters" do
 
     it "should retrieve sites under certain item in a hierarchy field" do
       get :show, id: collection.id, format: 'json', hierarchy.code => { under: 'Dad' }
@@ -152,12 +152,12 @@ describe Api::CollectionsController do
     end
   end
 
-  describe "validate query params" do
+  describe "validate query fields" do
 
     it "should validate numeric fields in equal queries" do
       get :show, id: collection.id, format: 'csv', numeric.code => "invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid numeric value in numeric param")
+      response.body.should include("Invalid numeric value in numeric field")
       get :show, id: collection.id, format: 'csv', numeric.code => "2"
       response.response_code.should be(200)
     end
@@ -165,7 +165,7 @@ describe Api::CollectionsController do
     it "should validate numeric fields in other operations" do
       get :show, id: collection.id, format: 'csv', numeric.code => "<=invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid numeric value in numeric param")
+      response.body.should include("Invalid numeric value in numeric field")
       get :show, id: collection.id, format: 'csv', numeric.code => "<=2"
       response.response_code.should be(200)
     end
@@ -181,13 +181,13 @@ describe Api::CollectionsController do
     it "should validate date fields format" do
       get :show, id: collection.id, format: 'csv', date.code => "invalid1234"
       response.response_code.should be(400)
-      response.body.should include("Invalid date value in date param")
+      response.body.should include("Invalid date value in date field")
     end
 
     it "should validate date fields format values" do
       get :show, id: collection.id, format: 'csv', date.code => "32/4,invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid date value in date param")
+      response.body.should include("Invalid date value in date field")
       get :show, id: collection.id, format: 'csv', date.code => "12/25/2012,12/31/2012"
       response.response_code.should be(200)
     end
@@ -195,7 +195,7 @@ describe Api::CollectionsController do
     it "should validate hierarchy existing option" do
       get :show, id: collection.id, format: 'csv', hierarchy.code => ["invalid"]
       response.response_code.should be(400)
-      response.body.should include("Invalid option in hierarchy param")
+      response.body.should include("Invalid option in hierarchy field")
       get :show, id: collection.id, format: 'csv', hierarchy.code => ["Dad"]
       response.response_code.should be(200)
     end
@@ -203,7 +203,7 @@ describe Api::CollectionsController do
     it "should validate select_one existing option" do
       get :show, id: collection.id, format: 'csv', select_one.code => "invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid option in select_one param")
+      response.body.should include("Invalid option in select_one field")
       get :show, id: collection.id, format: 'csv', select_one.code => "one"
       response.response_code.should be(200)
     end
@@ -211,7 +211,7 @@ describe Api::CollectionsController do
     it "should validate select_many existing option" do
       get :show, id: collection.id, format: 'csv', select_many.code => "invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid option in select_many param")
+      response.body.should include("Invalid option in select_many field")
       get :show, id: collection.id, format: 'csv', select_many.code => "one"
       response.response_code.should be(200)
     end

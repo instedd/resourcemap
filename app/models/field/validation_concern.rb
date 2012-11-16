@@ -58,7 +58,7 @@ module Field::ValidationConcern
   def check_email_format(value)
     regex = Regexp.new('^(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})$')
     if value.match(regex).nil?
-      raise "Invalid email value in #{code} param"
+      raise "Invalid email value in #{code} field"
     end
     value
   end
@@ -68,7 +68,7 @@ module Field::ValidationConcern
   end
 
   def check_valid_numeric_value(value)
-    raise "Invalid numeric value in #{code} param" unless value.integer?
+    raise "Invalid numeric value in #{code} field" unless value.integer?
     value
   end
 
@@ -77,13 +77,13 @@ module Field::ValidationConcern
   end
 
   def check_date_format(value)
-    Site.format_date_iso_string(Time.strptime(value, '%m/%d/%Y')) rescue (raise "Invalid date value in #{code} param")
+    Site.format_date_iso_string(Time.strptime(value, '%m/%d/%Y')) rescue (raise "Invalid date value in #{code} field")
   end
 
   def parse_date_from(value)
     match = (value.match /(.*),/)
     if match.nil?
-      raise "Invalid date value in #{code} param"
+      raise "Invalid date value in #{code} field"
     end
     match.captures[0]
   end
@@ -91,7 +91,7 @@ module Field::ValidationConcern
   def parse_date_to(value)
     match = (value.match /,(.*)/)
     if match.nil?
-      raise "Invalid date value in #{code} param"
+      raise "Invalid date value in #{code} field"
     end
     match.captures[0]
   end
@@ -143,7 +143,7 @@ module Field::ValidationConcern
         end
       end
     end
-    raise "Invalid option in #{code} param" if value_id.nil?
+    raise "Invalid option in #{code} field" if value_id.nil?
     value_id
   end
 
@@ -156,7 +156,7 @@ module Field::ValidationConcern
     user_emails = collection.users.map {|u| u.email}
 
     if !user_emails.include? user_email
-      raise "Non-existent user-email in #{code} param"
+      raise "Non-existent user-email in #{code} field"
     end
     user_email
   end
@@ -166,7 +166,7 @@ module Field::ValidationConcern
     site_ids = collection.sites.map{|s| s.id.to_s}
 
     if !site_ids.include? site_id
-      raise "Non-existent site-id in #{code} param"
+      raise "Non-existent site-id in #{code} field"
     end
     site_id
   end

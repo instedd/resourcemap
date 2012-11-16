@@ -721,13 +721,13 @@ describe ImportWizard do
 
     second_line = sites_preview.last
     second_line.should include({:value=>"new val", :error=>nil})
-    second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric param"})
-    second_line.should include({:value=>"inval", :error=>"Invalid option in select_one param"})
-    second_line.should include({:value=>"Dad, inv", :error=>"Invalid option in select_many param"})
-    second_line.should include({:value=>"inval", :error=>"Invalid option in hierarchy param"})
-    second_line.should include({:value=>"999", :error=>"Non-existent site-id in site param"})
-    second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user param"})
-    second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email param"})
+    second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
+    second_line.should include({:value=>"inval", :error=>"Invalid option in select_one field"})
+    second_line.should include({:value=>"Dad, inv", :error=>"Invalid option in select_many field"})
+    second_line.should include({:value=>"inval", :error=>"Invalid option in hierarchy field"})
+    second_line.should include({:value=>"999", :error=>"Non-existent site-id in site field"})
+    second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user field"})
+    second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email field"})
 
     ImportWizard.delete_file(user, collection)
   end
@@ -772,15 +772,15 @@ describe ImportWizard do
 
      second_line = sites_preview.last
      second_line.should include({:value=>"new val", :error=>nil})
-     second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric param"})
+     second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
      #option will be created as news
      second_line.should include({:value=>"inval", :error=>nil})
      second_line.should include({:value=>"Dad, inv", :error=>nil})
      #hierarchy fields cannot be created using import wizard
      second_line.should include({:value=>"inval", :error=> "Hierarchy fields can only be created via web in the Layers page"})
-     second_line.should include({:value=>"999", :error=>"Non-existent site-id in site param"})
-     second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user param"})
-     second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email param"})
+     second_line.should include({:value=>"999", :error=>"Non-existent site-id in site field"})
+     second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user field"})
+     second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email field"})
 
      ImportWizard.delete_file(user, collection)
   end
@@ -826,7 +826,7 @@ describe ImportWizard do
      sites_preview_one_column[1].length.should eq(2)
 
      sites_preview_one_column[1].should include({value: '11', error: nil})
-     sites_preview_one_column[1].should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric param"})
+     sites_preview_one_column[1].should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
   end
 
 end
