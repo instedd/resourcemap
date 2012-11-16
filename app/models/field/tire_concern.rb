@@ -19,7 +19,7 @@ module Field::TireConcern
 
   module ClassMethods
     def where_es_code_is(es_code)
-      where(:id => es_code.to_i)
+      where(:id => es_code.to_i).first
     end
   end
 end
