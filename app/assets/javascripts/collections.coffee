@@ -12,7 +12,6 @@ onCollections -> if $('#collections-main').length > 0
     window.model = new MainViewModel
     window.model.initialize(collections)
     ko.applyBindings window.model
-    window.model.goToRoot()
 
     window.model.processURL()
 
