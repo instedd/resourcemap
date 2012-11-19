@@ -34,7 +34,7 @@
   <!-- ko with: currentCollection -->
   .tableheader.w40
     %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
-    %span.i18b-groupChat
+    %span
     %span{ko(text: :name)}
     %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:9px'}
 
@@ -70,7 +70,7 @@
   %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
     .tableheader.w40
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
-      %span.i18b-groupChat
+      %span
       <!-- ko if: inEditMode() -->
       %span{ko(text: :name)}
       <!-- /ko -->
@@ -122,7 +122,7 @@
   %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline;width:100%'}
     .tableheader.w40
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
-      %span.i18b-groupChat
+      %span
       %span{ko(text: :name)}
     .tablescroll
       %table{style: 'width:100%'}
@@ -201,7 +201,7 @@
   %form{ko(visible: :loadingSite)}
     .tableheader.w40
       %button.pback
-      %span.i18b-groupChat
+      %span
       %span Loading...
 #right-panel.right
   .mapheader
