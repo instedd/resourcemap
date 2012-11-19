@@ -1,5 +1,6 @@
 class Channel < ActiveRecord::Base
   has_many :share_channels, :dependent => :destroy
+  belongs_to :user
   has_many :collections, :through => :share_channels
   validates :name, :presence => true, :length => {:minimum => 4, :maximum => 30}, :uniqueness => {:scope => :collection_id}
   validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :is_manual_configuration
