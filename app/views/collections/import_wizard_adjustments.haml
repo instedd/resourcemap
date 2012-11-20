@@ -44,7 +44,7 @@
             %tr
               / ko foreach: columns()
               %th
-                %span.column_header{ko(css: {error_column: 'error'}, text: :name, attr: {error: 'error'}, class: 'iconClass')}
+                %a.fancybox.column_header{ko(css: {error_column: 'error'}, attr: {error: 'error'}, class: 'iconClass', text: :name, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
               //ko
           %tbody
             / ko foreach: sites()
@@ -55,41 +55,40 @@
               //ko
             //ko
 
-    %div{style:'overflow:auto'}
-      %ul{ko(foreach: :columns)}
-        %li{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
-          %div
-            %strong{ko(text: :name)}
-            %ul
-              %li
-                Use as:
-                /ko if: usage() == 'id'
-                Internal ResourceMap ID
-                //ko
-                /ko if: usage() != 'id'
-                - if collection_admin?
-                  %select{ko(options: '$root.selectableUsagesForAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
-                - else
-                  %select{ko(options: '$root.selectableUsagesForNonAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
-                //ko
-                /ko if: usage() == 'existing_field'
-                %select{ko(options: '$root.layers', optionsText: "'name'", value: 'layer')}
-                %select{ko(options: 'layer().fields', optionsText: "'name'", value: 'field')}
-                //ko
-                /ko if: usage() == 'new_field'
-                = select_tag :kind, options_for_select(Field::Kinds.map{ |kind_name| [kind_name.titleize, kind_name]}.delete_if{|e| e[1] == "hierarchy"}), 'data-bind' => kov(value: :kind)
-                /ko if: kind() == 'select_one' || kind() == 'select_many'
-                = select_tag :selectKind, options_for_select([['Use as the code', 'code'], ['Use as the label', 'label'], ['Use as both the code and label', 'both']]), 'data-bind' => kov(value: :selectKind)
-                //ko
-                //ko
-              /ko if: usage() == 'new_field'
-              %li
-                Field Code:
-                %input{ko(value: :code, valueUpdate: :afterkeydown)}
-              %li
-                Field Name:
-                %input{ko(value: :label, valueUpdate: :afterkeydown)}
+    #columnUsageTemplate{ko(with: :selectedColumn), style:'display: none;'}
+      %div{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
+        %div
+          %strong{ko(text: :name)}
+          %ul
+            %li
+              Use as:
+              /ko if: usage() == 'id'
+              Internal ResourceMap ID
               //ko
+              /ko if: usage() != 'id'
+              - if collection_admin?
+                %select{ko(options: '$root.selectableUsagesForAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
+              - else
+                %select{ko(options: '$root.selectableUsagesForNonAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
+              //ko
+              /ko if: usage() == 'existing_field'
+              %select{ko(options: '$root.layers', optionsText: "'name'", value: 'layer')}
+              %select{ko(options: 'layer().fields', optionsText: "'name'", value: 'field')}
+              //ko
+              /ko if: usage() == 'new_field'
+              = select_tag :kind, options_for_select(Field::Kinds.map{ |kind_name| [kind_name.titleize, kind_name]}.delete_if{|e| e[1] == "hierarchy"}), 'data-bind' => kov(value: :kind)
+              /ko if: kind() == 'select_one' || kind() == 'select_many'
+              = select_tag :selectKind, options_for_select([['Use as the code', 'code'], ['Use as the label', 'label'], ['Use as both the code and label', 'both']]), 'data-bind' => kov(value: :selectKind)
+              //ko
+              //ko
+            /ko if: usage() == 'new_field'
+            %li
+              Field Code:
+              %input{ko(value: :code, valueUpdate: :afterkeydown)}
+            %li
+              Field Name:
+              %input{ko(value: :label, valueUpdate: :afterkeydown)}
+            //ko
 
     %div{ko(with: :site)}
       Sample site preview:

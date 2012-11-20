@@ -12,6 +12,7 @@
  *= require fixedheadertable
  *= require_tree .
  *= requiere_fullscreen
+ *= require jquery.fancybox
 */
 
 .ui-autocomplete {

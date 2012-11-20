@@ -14,7 +14,7 @@ class ImportWizard
     def validate_sites_with_columns(user, collection, columns_spec)
       columns_spec.map!{|c| c.with_indifferent_access}
       csv = CSV.read file_for(user, collection)
-      csv_columns = csv[1 .. -1].transpose
+      csv_columns = csv[1 .. 11].transpose
       validated_data = {}
       validated_csv_columns = []
       fields = collection.fields
@@ -32,7 +32,7 @@ class ImportWizard
       csv = CSV.read file_for(user, collection)
       csv[0].map!{|r| r.strip}
       column_index = csv[0].index(column_spec[:name])
-      csv_column = csv[1 .. -1].transpose[column_index]
+      csv_column = csv[1 .. 11].transpose[column_index]
       fields = collection.fields
 
       {column_index => validate_column(user, collection, column_spec, fields, csv_column)}

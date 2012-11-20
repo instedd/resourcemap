@@ -7,7 +7,7 @@ onImportWizard ->
       @collectionId = collectionId
       @layers = $.map(layers, (x) -> new Layer(x))
       @columns = ko.observableArray $.map(columns, (x) -> new Column(x))
-
+      @selectedColumn = ko.observable()
       @loadUsages()
 
       @sites = ko.observableArray()
@@ -136,6 +136,10 @@ onImportWizard ->
     showValidations: =>
       for column in @columns()
         column.applyColumnBubble()
+
+    selectColumn: (column) =>
+      @selectedColumn(column)
+      true
 
     validateSites:(modified_column) =>
       column = modified_column.toJSON()

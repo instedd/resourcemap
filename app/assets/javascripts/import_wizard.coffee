@@ -20,3 +20,4 @@ onImportWizard -> if $('#import-wizard-main').length > 0
         $('h2.orange').removeClass('loading')
         $('.hidden-until-loaded').show()
         window.model.showValidations()
+        $(".fancybox").fancybox()
