@@ -41,20 +41,40 @@ onImportWizard ->
     findLayer: (id) =>
       (layer for layer in @layers when layer.id == id)[0]
 
+    refreshColumnsPopups: ->
+       $('.column_header').not(".error_column").RemoveBubblePopup()
+       $('.error_column').each (index) ->
+         $(this).CreateBubblePopup({
+         selectable: true,
+         position : 'top',
+         innerHtml: $(this).attr('error'),
+         innerHtmlStyle: {
+             color:'#000000',
+             'background-color' :'white'
+             },
+         themeName:  'bubble',
+         themePath:  '<%= InsteddRails.url %>/theme/images/'
+         });
+
+    refreshSitesPopups: ->
+        $('.error').each (index) ->
+          $(this).CreateBubblePopup({
+          selectable: true,
+          position : 'top',
+          innerHtml: $(this).attr('error'),
+          innerHtmlStyle: {
+              color:'#000000',
+              'background-color' :'white'
+              },
+          themeName:  'bubble',
+          themePath:  '<%= InsteddRails.url %>/theme/images/'
+          });
+
+
     refreshBubblePopups: =>
-      $('.column_header').not(".error_column").RemoveBubblePopup()
-      $('.error_column').each (index) ->
-        $(this).CreateBubblePopup({
-        selectable: true,
-        position : 'top',
-        innerHtml: $(this).attr('error'),
-        innerHtmlStyle: {
-            color:'#000000',
-            'background-color' :'white'
-            },
-        themeName:  'bubble',
-        themePath:  '<%= InsteddRails.url %>/theme/images/'
-        });
+       # HTML is rendered after executing refreshColumnsPopups, so the popups don't get removed
+      setTimeout(@refreshColumnsPopups, 50)
+      @refreshSitesPopups()
 
     selectColumn: (column) =>
       @selectedColumn(column)
@@ -73,18 +93,9 @@ onImportWizard ->
         @sites([])
         @sites(old_sites)
 
-        $('.error').each (index) ->
-          $(this).CreateBubblePopup({
-          selectable: true,
-          position : 'top',
-          innerHtml: $(this).attr('error'),
-          innerHtmlStyle: {
-              color:'#000000',
-              'background-color' :'white'
-              },
-          themeName:  'bubble',
-          themePath:  '<%= InsteddRails.url %>/theme/images/'
-          });
+        @refreshSitesPopups()
+
+
 
     startImport: =>
       @importing(true)

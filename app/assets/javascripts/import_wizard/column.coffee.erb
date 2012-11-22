@@ -28,10 +28,6 @@ onImportWizard ->
 
       @error = ko.observableArray([])
 
-      # @error.subscribe =>
-      #   # HTML is rendered after executing applyColumnBubble, so the popups don't get removed
-      #   setTimeout(@applyColumnBubble, 50)
-
     toJSON: =>
       json =
         usage: @usage()
