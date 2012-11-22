@@ -1,6 +1,7 @@
 onCollections ->
 
   class @CollectionsViewModel
+
     @constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()

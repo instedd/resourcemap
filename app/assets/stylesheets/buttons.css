@@ -244,3 +244,16 @@ button::-moz-focus-inner {
   padding: 0;
   border: 0
 }
+
+.box.plain.orange {
+  background-color:#FFF0BD;
+  background-position:initial initial;
+  background-repeat:initial initial;
+  padding:20px;
+}
+
+.center {
+  margin-left:auto; 
+  margin-right: auto; 
+  display:block;
+}

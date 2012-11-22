@@ -1,7 +1,74 @@
 %h1 SMS Gateway
 .tabsline
   #gateways-main.hidden-until-loaded 
+    <!-- ko foreach: gateways -->
+    <!-- ko if: $data != $root.currentGateway() -->
     .box.grey.w60
       .toptitle
-        %span
+        %span{ko(text: :name)}
+      .rightbuttons
+        %button.fdelete{ko(visible: 'isAdmin', click: '$root.deleteGateway')}
+          
+      .middlebuttons{ko(visible: '!clientConnected()')}
+        %label.error{ko(text: :queuedMessageText)}
+      .middlebuttons{ko(visible: 'clientConnected')}
+        %label Phone number:
+        %span{ko(text: :phoneNumber)} 
+        %br 
+        %label Gateway URL:
+        %span{ko(text: :gateWayURL)} 
+        %br
+        %label User name:
+        %span{ko(text: :nuntiumChannelName)} 
+
+
+      %button.farrow{ko(visible: 'isAdmin', click: '$root.editGateway')} Edit configuration
+      %button.orange{ko(visible: 'clientConnected', click: '$root.setIsTry'), style: 'float:right; margin-right:-3px'} Try Your Gateway
+      .middlebuttons{ko(visible: 'isTry')}
+        %label
+          Enter your distination phone number
+        %input{ko(value: :tryPhoneNumber, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
+        %button.farrow{ko(visible: 'isAdmin', click: '$root.tryGateway')} Try Now!
+    %br
+    <!-- /ko -->
+    
+    -# Form editor or new
+    <!-- ko if: $data == $root.currentGateway() -->
+    .box.w60
+      .middlebuttons
+        %label{ko(css: {error: 'nameError'})} Name
+        %br
+        %input{ko(value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
+        %br
+        %label{ko(visible: "isManualConfiguration", css: {error: 'passwordError'})} Password
+        %label{ko(visible: "!isManualConfiguration()", css: {error: 'ticketCodeError'})} Key
+        %br
+        %input{ko(visible: "isManualConfiguration", value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
+        %input{ko(visible: "!isManualConfiguration()", value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
+        %br
+        %input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
+        %br
+        %br
+        Share 
+        %br
+        %input{"data-bind" => "checked: isShare", :value => "false", :name => "collection", :type => "radio"}
+        %label Not share
+        %input{"data-bind" => "checked: isShare", :value => "true",  :name => "collection", :type => "radio"}
+        %label Share
+        %br
+        .bottom-actions
+          %button.white{ ko(click: '$root.saveGateway', enable: :valid) } Save
+          %a.tgrey{ ko(click: '$root.cancelGateway'), href: 'javascript:void(0)' } Cancel
+          <!-- ko if: !valid() -->
+          %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
+          <!-- /ko -->
+    %br 
+    <!-- /ko -->
+    <!-- /ko -->
+    
+    .box.grey.add{ ko(visible: '!currentGateway()', click: 'addGateway'), style: 'display:none'}
+      %span
+        Add Gateway
+      %button.cadd.right
+      %br{clear: :all}
 

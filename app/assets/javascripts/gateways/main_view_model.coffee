@@ -1,57 +1,52 @@
 onGateways ->
   class @MainViewModel
     constructor: ()->
-      @channels         = ko.observableArray()
-      @sharedChannels   = ko.observableArray()
-      @currentChannel   = ko.observable()
-      @originalChannel  = ko.observable()
-      @collections      = ko.observableArray([])
+      @gateways         = ko.observableArray()
+      @currentGateway   = ko.observable()
+      @originalGateway  = ko.observable()
       @isSaving         = ko.observable false
     
-    addChannel: =>
-      channel = new Channel {collection_id: @collectionId(), is_share: 'false', is_manual_configuration: false, queued_messages_count: 0}, @collectionId()
-      @currentChannel channel
-      @channels.push channel
+    addGateway: =>
+      gateway = new Gateway is_share: 'false', is_manual_configuration: false, queued_messages_count: 0
+      @currentGateway gateway 
+      @gateways.push gateway
 
-    saveChannel: =>
+    saveGateway: =>
       @isSaving true
-      json = @currentChannel().toJson()
-      if @currentChannel().id
-        $.post "/plugin/channels/collections/#{@collectionId()}/channels/#{@currentChannel().id}.json", channel: json, _method: 'put', @saveChannelCallback
+      json = @currentGateway().toJson()
+      if @currentGateway().id
+        $.post "/gateways/#{@currentGateway().id}.json", gateway: json, _method: 'put', @saveGatewayCallback
       else
-        $.post "/plugin/channels/collections/#{@collectionId()}/channels.json", channel: json, @saveChannelCallback
+        $.post "/gateways.json", gateway: json, @saveGatewayCallback
 
-    saveChannelCallback: (data) =>
-      @currentChannel().id = data.id
-      @currentChannel().gateWayURL data.gateway_url
-      @currentChannel().nuntiumChannelName data.nuntium_channel_name
-      @currentChannel null
+    saveGatewayCallback: (data) =>
+      @currentGateway().id = data.id
+      @currentGateway null
       @isSaving false
 
-    cancelChannel: =>
-      if @currentChannel().id
-        @channels.replace @currentChannel(), @originalChannel
+    cancelGateway: =>
+      if @currentGateway().id
+        @gateways.replace @currentGateway(), @originalGateway
       else
-        @channels.remove @currentChannel
-      @currentChannel null
-      delete @originalChannel
-      #$.get "/plugin/channels/collections/#{@collectionId()}/channels/#{@currentChannel().id}.json", nuntium_info: true, @getNuntiumInfoCallback
+        @gateways.remove @currentGateway
+      @currentGateway null
+      delete @originalGateway
 
     getNuntiumInfoCallback: (data) =>
       console.log data
 
-    editChannel: (channel) =>
-      @originalChannel = channel.clone()
-      @currentChannel channel
+    editGateway: (gateway) =>
+      @originalGateway = gateway.clone()
+      @currentGateway gateway 
 
-    deleteChannel: (channel) =>
-      if window.confirm 'Are you sure to delete channel?'
-        @deletedChannel = channel
-        $.post "/plugin/channels/collections/#{@collectionId()}/channels/#{channel.id}.json", { _method: 'delete' }, @deleteChannelCallback 
+    deleteGateway: (gateway) =>
+      if window.confirm 'Are you sure to delete this gateway?'
+        @deletedGateway = gateway 
+        $.post "gateways/#{gateway.id}.json", { _method: 'delete' }, @deleteGatewayCallback 
 
-    deleteChannelCallback: =>
-      @channels.remove @deletedChannel
-      delete @deletedChannel
+    deleteGatewayCallback: =>
+      @gateways.remove @deletedGateway
+      delete @deletedGateway
 
     onOffEnable: (channel) =>
       channel.setStatus true, @channelStatusCallback
@@ -61,3 +56,11 @@ onGateways ->
 
     reminderStatusCallback: (data) =>
 
+    setIsTry: (gateway) =>
+      gateway.isTry true 
+
+    tryGateway: (gateway) =>
+      $.post "/gateways/#{gateway.id}/try.json", phone_number: gateway.tryPhoneNumber(), @tryGatewayCallback
+
+    tryGatewayCallback: (data) =>
+      gateway.isTry false

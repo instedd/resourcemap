@@ -1,6 +1,6 @@
 onGateways ->
-  class @Channel
-    constructor: (data, currentCollectionId) ->
+  class @Gateway
+    constructor: (data) ->
       @id                     = data?.id
       @collectionId           = data?.collection_id
       @name                   = ko.observable data?.name
@@ -11,7 +11,7 @@ onGateways ->
       @isManualConfiguration  = ko.observable data?.is_manual_configuration
       @isShare                = ko.observable data?.is_share.toString()
       @clientConnected        = ko.observable data?.client_connected
-      @isAdmin                = data?.collection_id == currentCollectionId
+      @isAdmin                = true
       @queuedMessageCount     = ko.observable data?.queued_messages_count
       @queuedMessageText      = ko.computed =>
         messageText = 'Client disconected,' + @queuedMessageCount() 
@@ -71,7 +71,8 @@ onGateways ->
           @disableCss 'cb-disable selected'
       
       @valid                  = ko.computed => not @error()?
-    
+      @isTry                  = ko.observable false 
+      @tryPhoneNumber         = ko.observable()
     toJson: ->
       id                      : @id
       collection_id           : @collectionId
@@ -84,7 +85,7 @@ onGateways ->
       ticket_code             : @ticketCode()
 
     clone: =>
-      new Channel
+      new Gateway
         id                      : @id
         name                    : @name()
         is_share                : @isShare()

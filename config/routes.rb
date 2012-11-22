@@ -67,7 +67,9 @@ ResourceMap::Application.routes.draw do
   end
 
   resources :activities, :only => [:index], :path => 'activity'
-  resources :gateways
+  resources :gateways do
+    post 'try' 
+  end
 
   match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
 

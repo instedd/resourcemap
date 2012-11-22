@@ -5,6 +5,7 @@
   <!-- ko if: !currentCollection() && !editingSite() -->
   .tableheader.w40
     %div{style: 'padding-top:6px;padding-left:15px'} My Collections
+
   .tablescroll
     %table.GralTable.CleanTable
       %tbody
@@ -24,6 +25,37 @@
             %button.farrow{ko(click: '$root.enterCollection'), type: :button}
             <!-- /ko -->
         <!-- /ko -->
+    %br{:clear => "all"}/
+    #profile-main{style: 'display:none'}
+      .box.plain.orange{ko(visible: 'collections().length < 1 || (!$root.isExist())'), :style => 'padding:5px; display:none'}
+        <!-- ko if: collections().length < 1 -->
+        .sbox.grey.StateDisplay{style: 'margin: 0px;padding: 0px;'}
+          .values{style: 'padding: 0px;margin: 4px 0 4px 0;font-size: 12px;line-height: 12px;'}
+            .L
+              %span No collections
+              %span created
+            .R
+              %span 0%
+              %span completed
+            %br{:clear => "all"}/
+            .M{style: 'padding: 0px'}
+              %span.Fill{style: 'width: 5px'}/
+          %button.orange{ko(click: '$root.createCollection'), :type => "button", style: 'padding: 0px; cursor: pointer'} Start creating
+        <!-- /ko -->
+        .space{ko(visible: 'collections().length < 1 && (!$root.isExist())'),height: '4px'}
+        .sbox.grey.StateDisplay{ko(visible: '!$root.isExist()'), style: 'margin: 0px;padding: 0px;'}
+          .values{style: 'padding: 0px;margin: 4px 0 4px 0;font-size: 12px;line-height: 12px;'}
+            .L
+              %span No gateways
+              %span created
+            .R
+              %span 0%
+              %span completed
+            %br{:clear => "all"}/
+            .M{style: 'padding: 0px'}
+              %span.Fill{style: 'width: 5px'}/
+          %button.orange{:onClick => "window.location='/gateways';return false;", :type => "button", style: 'padding: 0px'} Start creating
+
   .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
     %button.cadd{type: "button"}
     %span.createCollection Create Collection

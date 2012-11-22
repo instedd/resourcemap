@@ -1,7 +1,7 @@
 class Channel < ActiveRecord::Base
   has_many :share_channels, :dependent => :destroy
-  belongs_to :user
   has_many :collections, :through => :share_channels
+  belongs_to :user
   validates :name, :presence => true, :length => {:minimum => 4, :maximum => 30}, :uniqueness => {:scope => :collection_id}
   validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :is_manual_configuration
   validates :ticket_code, :presence => {:on => :create}, :unless => :is_manual_configuration
@@ -15,7 +15,7 @@ class Channel < ActiveRecord::Base
   attr_accessor  :phone_number
 
   def generate_nuntium_name
-    sprintf("#{Collection.find(collection_id).name.parameterize}-#{self.id}")
+    sprintf("#{self.name}-#{self.id}")
   end
 
   def register_nuntium_channel
@@ -32,14 +32,14 @@ class Channel < ActiveRecord::Base
       :priority => 50,
       :configuration => { 
         :password => self.password,
-        :friendly_name => self.name,
-        :owner_layer_id => self.collection_id
+        :friendly_name => self.name
+        #:owner_layer_id => self.collection_id
       }
     }
   
     config.merge!({
       :ticket_code => self.ticket_code, 
-      :ticket_essage => "This phone will be used for updates and queries on layer #{Collection.find(self.collection_id).name}.",
+      :ticket_message => "This phone will be used for updates and queries on all collections under user #{current_user.name}.",
     }) unless is_manual_configuration
     handle_nuntium_channel_response Nuntium.new_from_config.create_channel(config)
     # Use plain sql query to skip update callback execution
@@ -71,7 +71,7 @@ class Channel < ActiveRecord::Base
       :restrictions => '',
       :configuration => { 
         :friendly_name => self.name,
-        :owner_layer_id => self.collection_id,
+        #:owner_layer_id => self.collection_id,
         :password => self.password
       })
   end
