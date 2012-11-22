@@ -18,8 +18,6 @@ onImportWizard ->
       # For new select_one or select_many fields
       @selectKind = ko.observable 'code'
 
-      @value = ko.observable data.value
-
       @iconClass = ko.computed => @computeIconClass()
 
       @kind.subscribe =>
@@ -28,8 +26,7 @@ onImportWizard ->
       @field.subscribe =>
         window.model.validateSites(this)
 
-      @error = ko.computed =>
-        @validateColum()
+      @error = ko.observableArray([])
 
       @error.subscribe =>
         # HTML is rendered after executing applyColumnBubble, so the popups don't get removed
@@ -64,12 +61,16 @@ onImportWizard ->
         });
 
 
-    validateColum: =>
-      if @usage() == 'new_field' && @label() && @code()
-        fields = $.map(window.model.layers, (l) -> l.fields)
-        return "A field with label #{@label()} already exists in collection's fields" if window.arrayAny(fields, (f) => f.name == @label())
-        return "A field with code #{@code()} already exists in collection's fields" if window.arrayAny(fields, (f) => f.code == @code())
-      null
+    # validateColumn: () =>
+    #
+    #     # Should not be repeated values in columns
+    #     if (@kind() == 'select_one' || @kind() == 'select_many') && !(@selectKind() == 'both')
+    #       columns = columns.filter((c) => c.label() == @label() && c.code() == @code() && c.kind() == @kind())
+    #       if !(columns.length == 2 && ((columns[0].selectKind() == 'code' && columns[1].selectKind() == 'label') || (columns[0].selectKind() == 'label' && columns[1].selectKind() == 'code') ))
+    #         return "You must choose a single column to be the Label and a single colunm to be the Code of property #{@name()}"
+    #     else
+
+
 
     computeIconClass: =>
       if @usage() == 'existing_field' && @field()

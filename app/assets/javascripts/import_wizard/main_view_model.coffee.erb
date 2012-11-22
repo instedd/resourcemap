@@ -13,14 +13,15 @@ onImportWizard ->
       @sites = ko.observableArray()
 
       @hasId = ko.observable false
+
       @site = ko.computed => @computeSite()
-      @error = ko.computed => @site().error()
-      @valid = ko.computed => @site().valid()
+
+      @error = ko.computed =>
+        window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error())
+
+      @valid = ko.computed => !@error()
       @importing = ko.observable false
       @importError = ko.observable false
-
-    validationErrors: =>
-      window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error())
 
     loadUsages: =>
       @usages = [new Usage('New field', 'new_field')]
@@ -39,99 +40,6 @@ onImportWizard ->
 
     findLayer: (id) =>
       (layer for layer in @layers when layer.id == id)[0]
-
-    computeSite: =>
-      data = {name: null, properties: []}
-      propertiesByCode = {}
-      propertiesByField = {}
-      levels = {}
-
-      for column in @columns()
-        if column.usage() == 'ignore'
-          continue
-
-        if column.usage() == 'id'
-          if data.id
-            data.hasMoreThanOneId = true
-          data.id = column.value()
-          @hasId(true)
-          continue
-
-        if column.usage() == 'name'
-          if data.name
-            data.hasMoreThanOneName = true
-          data.name = column.value()
-          continue
-
-        if column.usage() == 'lat'
-          if data.lat
-            data.hasMoreThanOneLat = true
-          data.lat = column.value()
-          continue
-
-        if column.usage() == 'lng'
-          if data.lng
-            data.hasMoreThanOneLng = true
-          data.lng = column.value()
-          continue
-
-        existing = null
-        propertyData =
-          usage: column.usage()
-          column: column.name()
-          layer: column.layer()
-          field: column.field()
-          kind: column.kind()
-          code: column.code()
-          name: column.label()
-          value: column.value()
-
-        if column.usage() == 'new_field'
-          if column.kind() == 'select_one' || column.kind() == 'select_many'
-            existing = propertiesByCode[column.code()]
-            if existing
-              switch column.selectKind()
-                when 'code'
-                  existing.valueCode column.value()
-                when 'label'
-                  existing.valueLabel column.value()
-                when 'both'
-                  existing.valueCode column.value()
-                  existing.valueLabel column.value()
-            else
-              switch column.selectKind()
-                when 'code'
-                  propertyData.valueCode = column.value()
-                when 'label'
-                  propertyData.valueLabel = column.value()
-                when 'both'
-                  propertyData.valueCode = column.value()
-                  propertyData.valueLabel = column.value()
-        else
-          if propertiesByField[column.field()?.id]
-            data.hasMoreThanOneField = "#{column.layer().name} - #{column.field().name}"
-          propertiesByField[column.field().id] = true if column.field()?.id
-
-        unless existing
-          property = new Property(propertyData)
-          data.properties.push property
-
-        if !existing && (column.kind() == 'select_one' || column.kind() == 'select_many')
-          propertiesByCode[column.code()] = property
-
-      new Site data
-
-    startImport: =>
-      @importing(true)
-      columns = $.map(@columns(), (x) -> x.toJSON())
-      $.ajax "/collections/#{@collectionId}/import_wizard_execute.json",
-        type: 'POST'
-        data: {columns: columns},
-        success: =>
-          window.location = "/collections?collection=#{@collectionId}"
-        error: =>
-          @importing(false)
-          @importError(true)
 
     showValidations: =>
       for column in @columns()
@@ -166,3 +74,119 @@ onImportWizard ->
           themeName:  'bubble',
           themePath:  '<%= InsteddRails.url %>/theme/images/'
           });
+
+    startImport: =>
+      @importing(true)
+      columns = $.map(@columns(), (x) -> x.toJSON())
+      $.ajax "/collections/#{@collectionId}/import_wizard_execute.json",
+        type: 'POST'
+        data: {columns: columns},
+        success: =>
+          window.location = "/collections?collection=#{@collectionId}"
+        error: =>
+          @importing(false)
+          @importError(true)
+
+    computeSite: =>
+      data = {name: null, properties: []}
+      propertiesByCode = {}
+      propertiesByField = {}
+      propertiesByLabel = {}
+
+      for column in @columns()
+
+        # Delete previous errors
+        column.error([])
+
+        if column.usage() == 'new_field'
+          column.error.push('Label cannot be blank') unless !!column.label()
+          column.error.push('Code cannot be blank') unless !!column.code()
+
+        if column.usage() == 'ignore'
+          continue
+
+        if column.usage() == 'id'
+          if data.id_column
+            column.error.push('You chose more than one column to be the ID of the site')
+          data.id_column = column
+          @hasId(true)
+          continue
+
+        if column.usage() == 'name'
+          if data.name_column
+            column.error.push('You chose more than one column to be the Name of the site')
+            data.name_column.error.push('You chose more than one column to be the Name of the site')
+          data.name_column = column
+          continue
+
+        if column.usage() == 'lat'
+          if data.lat_column
+            column.error.push('You chose more than one column to be the Lat of the site')
+            data.lat_column.error.push('You chose more than one column to be the Lat of the site')
+          data.lat_column = column
+          continue
+
+        if column.usage() == 'lng'
+           if data.lng_column
+             column.error.push('You chose more than one column to be the Longitude of the site')
+             data.lng_column.error.push('You chose more than one column to be the Longitude of the site')
+           data.lng_column = column
+           continue
+
+        existing = null
+        propertyData =
+          column: column
+          kind: column.kind()
+
+        if column.usage() == 'new_field'
+          # Code and Label should not exist in collection's existing fields
+          fields = $.map(@layers, (l) -> l.fields)
+          if window.arrayAny(fields, (f) => f.name == column.label())
+            column.error.push("A field with label #{column.label()} already exists in collection's fields")
+          if window.arrayAny(fields, (f) => f.code == column.code())
+            column.error.push("A field with code #{column.code()} already exists in collection's fields")
+
+          if column.kind() == 'select_one' || column.kind() == 'select_many'
+            existing = propertiesByCode[column.code()]
+            if existing
+              switch column.selectKind()
+                when 'code'
+                  existing.valueCode true
+                when 'label'
+                  existing.valueLabel true
+                when 'both'
+                  existing.valueCode true
+                  existing.valueLabel true
+            else
+              switch column.selectKind()
+                when 'code'
+                  propertyData.valueCode = true
+                when 'label'
+                  propertyData.valueLabel = true
+                when 'both'
+                  propertyData.valueCode = true
+                  propertyData.valueLabel = true
+        else
+          if propertiesByField[column.field()?.id]
+            column.error.push("You chose more than one column to be the existing '#{column.layer().name} - #{column.field().name}' field")
+          propertiesByField[column.field().id] = true if column.field()?.id
+
+        unless existing
+          property = new Property(propertyData)
+          data.properties.push property
+
+        unless ((column.kind() == 'select_one' || column.kind() == 'select_many') && !(column.selectKind() == 'both'))
+          if propertiesByLabel[column.label()]
+            column.error.push("You chose more than one column with label #{@label()}")
+          if propertiesByCode[column.code()]
+            column.error.push("You chose more than one column with code #{@code()}")
+
+        propertiesByCode[column.code()] = property
+        propertiesByLabel[column.label()] = property
+
+      for property in data.properties
+        if property.kind == 'select_one' || property.kind == 'select_many'
+          property.column.error.push("You must choose a column to be the Code of property #{property.code}") unless property.valueCode
+          property.column.error.push("you must choose a column to be the Label of property #{property.code}") unless property.valueLabel
+
+      @showValidations()

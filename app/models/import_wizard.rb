@@ -328,11 +328,6 @@ class ImportWizard
 
       columns = rows[0].select(&:present?).map{|x| {:name => x.strip, :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
       columns.each_with_index do |column, i|
-        rows[1 .. 4].each do |row|
-          if row[i]
-            column[:value] = row[i].to_s unless column[:value].present?
-          end
-        end
         guess_column_usage(column, fields, rows, i, admin)
       end
     end

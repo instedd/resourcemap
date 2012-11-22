@@ -3,7 +3,7 @@ describe 'ImportWizard', ->
     window.runOnCallbacks 'importWizard'
     window.model = new MainViewModel
     @layers = [{id: 1, name: "layer 1", fields: [] }]
-    @columns =[{name: "field 1", usage: "name", sample: "res name", value: "res name"}]
+    @columns =[{name: "field 1", usage: "name"}]
     @model = window.model
 
     window.Column::applyColumnBubble = () ->
@@ -40,9 +40,11 @@ describe 'ImportWizard', ->
     it 'imported sites should have id when site is computed if site has a column id', ->
       @model.initialize(1, @layers, @columns)
       expect(@model.hasId()).toBe(false)
-      @columns =[{name: "resmap-id", usage: "id", sample: "1", value: "1"}]
-      @model.initialize(1, @layers, @columns)
+      columns = [{name: "resmap-id", usage: "id"]
+      @model.initialize(1, @layers, columns)
       expect(@model.hasId()).toBe(true)
+
+
 
 
 

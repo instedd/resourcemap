@@ -19,5 +19,6 @@ onImportWizard -> if $('#import-wizard-main').length > 0
         $('#generating_preview').hide()
         $('h2.orange').removeClass('loading')
         $('.hidden-until-loaded').show()
+        window.model.computeSite()
         window.model.showValidations()
         $(".fancybox").fancybox()
