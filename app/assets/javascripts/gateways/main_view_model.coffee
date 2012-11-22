@@ -63,4 +63,8 @@ onGateways ->
       $.post "/gateways/#{gateway.id}/try.json", phone_number: gateway.tryPhoneNumber(), @tryGatewayCallback
 
     tryGatewayCallback: (data) =>
+      gateway = @findGateway(data.id)
       gateway.isTry false
+    
+    findGateway: (id) =>
+      return gateway for gateway in @gateways() when gateway.id == id

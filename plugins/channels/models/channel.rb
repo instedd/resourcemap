@@ -39,7 +39,7 @@ class Channel < ActiveRecord::Base
   
     config.merge!({
       :ticket_code => self.ticket_code, 
-      :ticket_message => "This phone will be used for updates and queries on all collections under user #{current_user.name}.",
+      :ticket_message => "This phone will be used for updates and queries on all collections.",
     }) unless is_manual_configuration
     handle_nuntium_channel_response Nuntium.new_from_config.create_channel(config)
     # Use plain sql query to skip update callback execution
