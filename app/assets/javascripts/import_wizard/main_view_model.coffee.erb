@@ -207,8 +207,8 @@ onImportWizard ->
         propertiesByLabel[column.label()] = property
 
       for property in data.properties
-        if property.kind == 'select_one' || property.kind == 'select_many'
-          property.column.error.push("You must choose a column to be the Code of property #{property.code}") unless property.valueCode
-          property.column.error.push("you must choose a column to be the Label of property #{property.code}") unless property.valueLabel
+        if column.usage() == 'new_field' && (property.kind == 'select_one' || property.kind == 'select_many')
+          property.column.error.push("You must choose a column to be the Code of property #{property.column.name()}") unless property.valueCode
+          property.column.error.push("you must choose a column to be the Label of property #{property.column.name()}") unless property.valueLabel
 
       @refreshBubblePopups()
