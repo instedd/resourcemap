@@ -28,9 +28,9 @@ onImportWizard ->
 
       @error = ko.observableArray([])
 
-      @error.subscribe =>
-        # HTML is rendered after executing applyColumnBubble, so the popups don't get removed
-        setTimeout(@applyColumnBubble, 50)
+      # @error.subscribe =>
+      #   # HTML is rendered after executing applyColumnBubble, so the popups don't get removed
+      #   setTimeout(@applyColumnBubble, 50)
 
     toJSON: =>
       json =
@@ -44,22 +44,6 @@ onImportWizard ->
         json.label = @label()
         json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json
-
-    applyColumnBubble: =>
-      $('.column_header').not(".error_column").RemoveBubblePopup()
-      $('.error_column').each (index) ->
-        $(this).CreateBubblePopup({
-        selectable: true,
-        position : 'top',
-        innerHtml: $(this).attr('error'),
-        innerHtmlStyle: {
-            color:'#000000',
-            'background-color' :'white'
-            },
-        themeName:  'bubble',
-        themePath:  '<%= InsteddRails.url %>/theme/images/'
-        });
-
 
     # validateColumn: () =>
     #
