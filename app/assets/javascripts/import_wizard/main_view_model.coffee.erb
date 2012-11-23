@@ -17,7 +17,7 @@ onImportWizard ->
       @site = ko.computed => @computeSite()
 
       @error = ko.computed =>
-        window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error())
+        window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error().length > 0)
 
       @valid = ko.computed => !@error()
       @importing = ko.observable false
