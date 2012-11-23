@@ -57,22 +57,22 @@ onImportWizard ->
          });
 
     refreshSitesPopups: ->
-        $('.error').each (index) ->
-          $(this).CreateBubblePopup({
-          selectable: true,
-          position : 'top',
-          innerHtml: $(this).attr('error'),
-          innerHtmlStyle: {
-              color:'#000000',
-              'background-color' :'white'
-              },
-          themeName:  'bubble',
-          themePath:  '<%= InsteddRails.url %>/theme/images/'
-          });
+      $('.error').each (index) ->
+        $(this).CreateBubblePopup({
+        selectable: true,
+        position : 'top',
+        innerHtml: $(this).attr('error'),
+        innerHtmlStyle: {
+            color:'#000000',
+            'background-color' :'white'
+            },
+        themeName:  'bubble',
+        themePath:  '<%= InsteddRails.url %>/theme/images/'
+        });
 
 
     refreshBubblePopups: =>
-       # HTML is rendered after executing refreshColumnsPopups, so the popups don't get removed
+      # HTML is rendered after executing refreshColumnsPopups, so the popups don't get removed
       setTimeout(@refreshColumnsPopups, 50)
       @refreshSitesPopups()
 
@@ -95,8 +95,6 @@ onImportWizard ->
 
         @refreshSitesPopups()
 
-
-
     startImport: =>
       @importing(true)
       columns = $.map(@columns(), (x) -> x.toJSON())
@@ -114,6 +112,7 @@ onImportWizard ->
       propertiesByCode = {}
       propertiesByField = {}
       propertiesByLabel = {}
+      optionColumnByCodeAndLabel = {}
 
       for column in @columns()
 
@@ -137,25 +136,25 @@ onImportWizard ->
         if column.usage() == 'name'
           if data.name_column
             column.error.push('You chose more than one column to be the Name of the site')
-            data.name_column.error.push('You chose more than one column to be the Name of the site')
+            data.name_column.error(['You chose more than one column to be the Name of the site'])
           data.name_column = column
           continue
 
         if column.usage() == 'lat'
           if data.lat_column
             column.error.push('You chose more than one column to be the Lat of the site')
-            data.lat_column.error.push('You chose more than one column to be the Lat of the site')
+            data.lat_column.error(['You chose more than one column to be the Lat of the site'])
           data.lat_column = column
           continue
 
         if column.usage() == 'lng'
            if data.lng_column
              column.error.push('You chose more than one column to be the Longitude of the site')
-             data.lng_column.error.push('You chose more than one column to be the Longitude of the site')
+             data.lng_column.error(['You chose more than one column to be the Longitude of the site'])
            data.lng_column = column
            continue
 
-        existing = null
+        do_not_add = false
         propertyData =
           column: column
           kind: column.kind()
@@ -170,15 +169,16 @@ onImportWizard ->
 
           if column.kind() == 'select_one' || column.kind() == 'select_many'
             existing = propertiesByCode[column.code()]
-            if existing
+            if existing && existing.column.label() == column.label()
+              do_not_add = true
               switch column.selectKind()
                 when 'code'
-                  existing.valueCode true
+                  existing.valueCode = true
                 when 'label'
-                  existing.valueLabel true
+                  existing.valueLabel = true
                 when 'both'
-                  existing.valueCode true
-                  existing.valueLabel true
+                  existing.valueCode = true
+                  existing.valueLabel = true
             else
               switch column.selectKind()
                 when 'code'
@@ -190,18 +190,19 @@ onImportWizard ->
                   propertyData.valueLabel = true
         else
           if propertiesByField[column.field()?.id]
+            propertiesByField[column.field()?.id].error(["You chose more than one column to be the existing '#{column.layer().name} - #{column.field().name}' field"])
             column.error.push("You chose more than one column to be the existing '#{column.layer().name} - #{column.field().name}' field")
-          propertiesByField[column.field().id] = true if column.field()?.id
+          propertiesByField[column.field().id] = column if column.field()?.id
 
-        unless existing
+        unless do_not_add
           property = new Property(propertyData)
           data.properties.push property
 
         unless ((column.kind() == 'select_one' || column.kind() == 'select_many') && !(column.selectKind() == 'both'))
           if propertiesByLabel[column.label()]
-            column.error.push("You chose more than one column with label #{@label()}")
+            column.error.push("You chose more than one column with label #{column.label()}")
           if propertiesByCode[column.code()]
-            column.error.push("You chose more than one column with code #{@code()}")
+            column.error.push("You chose more than one column with code #{column.code()}")
 
         propertiesByCode[column.code()] = property
         propertiesByLabel[column.label()] = property
