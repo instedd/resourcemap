@@ -154,3 +154,13 @@
   vertical-align: middle;
   width: 96px;
 }
+
+::-webkit-input-placeholder {
+  font-style: italic;
+}
+:-moz-placeholder {
+  font-style: italic;
+}
+:-ms-input-placeholder {
+  font-style: italic;
+}
