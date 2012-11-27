@@ -1,7 +1,7 @@
 <!-- ko if: !currentCollection() && !editingSite() -->
 -# Collections
 .tableheader.expanded
-  %div{style: 'padding-top:6px;padding-left:15px'} My Collections
+  %div{style: 'padding-top:6px;'} My Collections
   .mapheader.w60.right
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: "{active: !$root.showingMap()}")}
@@ -11,7 +11,7 @@
   %table.GralTable
     %thead
       %tr
-        %th.w39 Collection
+        %th{style: 'width:288px'} Collection
         %th{style: 'width:100%'} Last update
         %th
     %tbody
@@ -51,7 +51,7 @@
     %br{clear: "all"}
 .tablescroll
   %table.GralTable{style: 'table-layout: fixed;'}
-    %col{width: '388'}
+    %col{width: '300'}
     %col{width: '100'}
     %col{width: '100'}
     <!-- ko foreach: $root.currentCollection().fields() -->

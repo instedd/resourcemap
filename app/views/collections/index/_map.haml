@@ -1,9 +1,9 @@
-.left.w40.h50
+.left.w30.h50
   <!-- ko if: !loadingSite() -->
 
   -# Collections
   <!-- ko if: !currentCollection() && !editingSite() -->
-  .tableheader.w40
+  .tableheader
     %div{style: 'padding-top:6px;padding-left:15px'} My Collections
   .tablescroll
     %table.GralTable.CleanTable
@@ -32,7 +32,7 @@
   -# Collection sites
   <!-- ko if: !editingSite() -->
   <!-- ko with: currentCollection -->
-  .tableheader.w40
+  .tableheader.w30
     %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
     %span
     %span{ko(text: :name)}
@@ -68,7 +68,7 @@
   -# New Site or Edit Site form
   <!-- ko if: newOrEditSite -->
   %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
-    .tableheader.w40
+    .tableheader.w30
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
       <!-- ko if: inEditMode() -->
@@ -120,7 +120,7 @@
   -# Show Site form
   <!-- ko if: showSite -->
   %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline;width:100%'}
-    .tableheader.w40
+    .tableheader.w30
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
       %span{ko(text: :name)}
@@ -199,7 +199,7 @@
 
   -# Loading Site...
   %form{ko(visible: :loadingSite)}
-    .tableheader.w40
+    .tableheader.w30
       %button.pback
       %span
       %span Loading...

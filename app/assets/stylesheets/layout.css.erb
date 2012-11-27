@@ -42,12 +42,28 @@
 .box.nopadd { padding:0 }
 .box.nopadd .left { border-right:1px solid #eeeeee}
 .h50 { height:500px}
-.tableheader { background:url(<%= InsteddRails.url %>/theme/images/interface/backtd.png) repeat-x left 32px #ffffff; position:absolute; height:40px; z-index:1 }
+
+.tableheader {
+  background:url(<%= InsteddRails.url %>/theme/images/interface/backtd.png) repeat-x left 32px #ffffff;
+  height:40px;
+  z-index:1
+}
+
 .tableheader.expanded { width:960px }
 .tableheader.expanded div { display:inline-block }
-.tableheader.expanded div:first-child { border-right:1px solid #eeeeee; width:400px }
+
+.tableheader.expanded div:first-child {
+  border-right:1px solid #eeeeee;
+  width:300px;
+}
+
 .tableheader span, .tableheader button { vertical-align:middle }
-.tablescroll { overflow:auto; height:410px; margin-top:40px }
+
+.tablescroll {
+  overflow:auto;
+  height:410px;
+}
+
 .tablescroll .GralTable tr:nth-child(2) { background:none !important }
 .tablescroll .GralTable tr.active td { background:#d0d0d0 }
 .tablescroll .GralTable tr td:first-child { border-right:1px solid #eeeeee }
@@ -99,8 +115,6 @@ ul.taglist li a { display:block }
 .ftable.active { background-position: 0px -60px; }
 
 td.loadmore { height: 36px }
-
-.w39 { width: 388px; min-width: 388px; max-width: 388px }
 
 .tablescroll .superblyTagItems { display:inline-block;padding:0;margin:0 }
 .tablescroll .superblyTagItem { top:4px;cursor:pointer }
