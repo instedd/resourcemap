@@ -84,16 +84,16 @@
       <!-- /ko -->
       <!-- ko template: {name: 'table-sites-template', with: $data} -->
       <!-- /ko -->
-.tablebottom
-  <!-- ko if: !currentSnapshot-->
-  %button.flocation{ko(click: '$root.createSite')} Create Site
-  <!-- /ko -->
   <!-- ko if: hasMoreSites() && !loadingSites()-->
-  %span.loadmore
+  %span.loadmore{ko(click: :loadMoreSites), style: 'cursor:pointer;'}
     = ko_link_to "Load more sites...", :loadMoreSites
   <!-- /ko -->
   <!-- ko if: hasMoreSites() && loadingSites()-->
   %span.loadmore Loading...
+  <!-- /ko -->
+.tablebottom
+  <!-- ko if: !currentSnapshot-->
+  %button.flocation{ko(click: '$root.createSite')} Create Site
   <!-- /ko -->
 <!-- /ko -->
 <!-- /ko -->
