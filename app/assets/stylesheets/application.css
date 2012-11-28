@@ -164,3 +164,16 @@
 :-ms-input-placeholder {
   font-style: italic;
 }
+
+#export {
+  margin:0;
+  padding:2px;
+  display:inline-block;
+}
+
+#export .link {
+  color: black;
+  text-decoration:underline;
+  cursor:pointer;
+  margin:0;
+}

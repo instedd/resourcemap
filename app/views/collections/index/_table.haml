@@ -36,14 +36,7 @@
     %span
     %span{ko(text: :name)}
     %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:9px'}
-  .greyback
-    %span{style: 'margin:0;padding:3px;display:inline-block'}
-      Export this result in
-      %span{ko(click: '$root.exportInRSS'), style: 'text-decoration:underline;cursor:pointer;margin:0'} RSS
-      ,
-      %span{ko(click: '$root.exportInJSON'), style: 'text-decoration:underline;cursor:pointer;margin:0'} JSON
-      or
-      %span{ko(click: '$root.exportInCSV'), style: 'text-decoration:underline;cursor:pointer;margin:0'} CSV
+  = render 'collections/index/export'
   .mapheader.right
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
