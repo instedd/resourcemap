@@ -1,3 +1,7 @@
+.field_option {
+  cursor: pointer;
+}
+
 <% Field::BaseKinds.each do |kind| %>
 <%=   ".#{kind[:small_css_class]} {" %>
 
@@ -22,4 +26,16 @@
       <%= "background:url(/assets/fields_small_icons/#{name}.png) no-repeat;" %>
   }
 <% end %>
+
+<% Field::Kinds.each do |name, kind| %>
+  <%=   ".f#{name} {" %>
+      <%= "background:url(/assets/fields_small_buttons/f#{name}.png) no-repeat;" %>
+  }
+<% end %>
+
+button.icon_button.active {
+  background-position: 0 -60px !important;
+}
+
+
 

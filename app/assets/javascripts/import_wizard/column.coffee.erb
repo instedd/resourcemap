@@ -16,7 +16,7 @@ onImportWizard ->
       @label = ko.observable data.label
 
       # For new select_one or select_many fields
-      @selectKind = ko.observable 'code'
+      @selectKind = ko.observable 'both'
 
       @iconClass = ko.computed => @computeIconClass()
 
@@ -25,6 +25,10 @@ onImportWizard ->
 
       @field.subscribe =>
         window.model.validateSites(this)
+
+      # If usage change is because this column is the model.selectedColumn and fancybox it's open
+      @usage.subscribe =>
+        $('.fancybox').resize()
 
       @error = ko.observableArray([])
 

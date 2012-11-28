@@ -17,6 +17,8 @@ onImportWizard -> if $('#import-wizard-main').length > 0
         window.model.sites(preview.sites)
 
         $('#generating_preview').hide()
-        $('h2.orange').removeClass('loading')
+        $('h2').removeClass('loading')
         $('.hidden-until-loaded').show()
-        $(".fancybox").fancybox()
+        $(".fancybox").fancybox({
+          minWidth: '450px'
+          })
