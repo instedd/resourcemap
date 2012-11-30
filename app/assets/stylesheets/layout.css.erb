@@ -41,6 +41,29 @@
 
 .box.nopadd { padding:0 }
 .box.nopadd .left { border-right:1px solid #eeeeee}
+
+.box.slightly-padded {
+  padding:0;
+  padding-top:2px;
+}
+
+.box.slightly-padded .tableheader {
+  border-right:1px solid #eeeeee;
+  margin-top: -3px;
+  margin-left:4px;
+  height: 35px;
+  background: transparent;
+}
+
+.box.slightly-padded .tablescroll {
+  padding-top:10px;
+  background:url(<%= InsteddRails.url %>/theme/images/interface/backtd.png) repeat-x left 0px #ffffff;
+}
+
+.box.slightly-padded .GralTable td {
+  padding-left: 0px;
+}
+
 .h50 { height:500px}
 
 .tableheader {

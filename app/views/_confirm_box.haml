@@ -12,7 +12,7 @@
 
 - content_for :head do
   :javascript
-    $(function() { initOverview("#{action_code}"); });
+    $(function() { initConfirm("#{action_code}"); });
 
 %a{:id => "#{action_code}-collapsed", :class => "icon #{icon_class} black", :href => "#"}
   = action_description
