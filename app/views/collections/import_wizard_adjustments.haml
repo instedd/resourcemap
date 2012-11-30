@@ -59,9 +59,7 @@
       %h2
         %span{ko(text: 'name')}
         Column Settings
-
       %hr
-
       %div{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
         %div
           /ko if: usage() == 'id'
@@ -114,10 +112,9 @@
     //ko
     /ko if: !importing() && !importError()
     /ko if: valid()
-    %button{ko(click: :startImport)} Start importing
+    %button.grey{ko(click: :startImport)} Start importing
     //ko
     /ko if: !valid()
-    %span.error Fix this error to start importing:
-    %span{ko(text: :error)}
+    %span.error Fix the errors to start importing
     //ko
     //ko

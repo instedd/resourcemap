@@ -45,6 +45,7 @@ onImportWizard ->
         json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json
 
+
     # validateColumn: () =>
     #
     #     # Should not be repeated values in columns
@@ -57,17 +58,14 @@ onImportWizard ->
 
 
     computeIconClass: =>
-      if @usage() == 'existing_field' && @field()
-        kind = @field().kind
-      else
-        kind = @kind()
+      kind = switch @usage()
+        when 'existing_field' then @field().kind
+        when 'new_field' then  @kind()
+        when 'lat' then 'location'
+        when 'lng'then 'location'
+        else @usage()
+      "f#{kind}"
 
-      field_class = FIELD_TYPES[kind]
-
-      if field_class
-        field_class.small_css_class
-      else
-        'faccept'
 
 
 

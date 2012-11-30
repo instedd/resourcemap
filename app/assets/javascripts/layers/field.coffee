@@ -78,7 +78,7 @@ onLayers ->
       FIELD_TYPES[@kind()].css_class
 
     iconClass: =>
-      FIELD_TYPES[@kind()].small_css_class || 'faccept'
+      FIELD_TYPES[@kind()].small_css_class
 
     setHierarchy: (hierarchy) =>
       @hierarchy(hierarchy)

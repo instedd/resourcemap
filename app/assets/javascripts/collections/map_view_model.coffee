@@ -456,7 +456,6 @@ onCollections ->
       @sitesCount count
 
     @showTable: ->
-      debugger
       @queryParams = $.url().param()
       @exitSite() if @editingSite()
       @editingSite(null)

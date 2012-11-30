@@ -186,10 +186,9 @@ describe 'Collection', ->
       it 'should get value for ui', ->
         expect(@field.valueUI()).toEqual('12/26/1012')
 
-      it 'should read and write valueUI and change value', ->
+      it 'value should be the in date_picker_format if valueUI changes', ->
         @field.valueUI('12/25/1012')
-        isoValue = (new Date('12/25/1012')).toISOString()
-        expect(@field.value()).toEqual(isoValue)
+        expect(@field.value()).toEqual('12/25/1012')
         expect(@field.valueUI()).toEqual('12/25/1012')
 
     describe 'Site Field', ->

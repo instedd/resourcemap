@@ -70,19 +70,16 @@ onCollections ->
         name = window.model.currentCollection()?.findSiteNameById(value)
         if value && name then name else ''
       else
-        value
+        if value then value else ''
 
     valueUIFrom: (value) =>
       if @kind == 'date'
-        @valueFromDateUI(value)
+        value
       else if @kind == 'site'
         # Return site_id or "" if the id for this name is not found (deleting the value or invalid value)
         window.model.currentCollection()?.findSiteIdByName(value) || ""
       else
         value
-
-    valueFromDateUI: (value) =>
-      (new Date(value)).toISOString() if value
 
     datePickerFormat: (date) =>
       date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear()

@@ -40,8 +40,6 @@ class ImportWizard
 
     def guess_columns_spec(user, collection)
       rows = []
-      i = 0
-
       CSV.foreach(file_for user, collection) do |row|
         rows << row
       end

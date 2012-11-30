@@ -46,7 +46,7 @@ class SitesController < ApplicationController
     site.user = current_user
     site.properties_will_change!
 
-    site.properties[params[:es_code]] = field.apply_format_update_validation(params[:value], false, collection)
+    site.properties[params[:es_code]] = field.apply_format_update_validation(params[:value], false, site.collection)
     site.save!
     render json: site
   end

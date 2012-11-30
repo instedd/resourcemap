@@ -21,15 +21,17 @@ module Field::ValidationConcern
 
   def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
     if value.blank?
-      return value
+      return nil
     elsif kind == 'numeric'
       validated_value = check_valid_numeric_value(value)
     elsif kind == 'date'
       validated_value = check_date_format(value)
     elsif kind == 'hierarchy'
       validated_value = check_option_exists(value, use_codes_instead_of_es_codes)
-    elsif select_kind?
+    elsif kind == 'select_many'
       validated_value = decode_select_many_options(value, use_codes_instead_of_es_codes)
+    elsif kind == 'select_one'
+      validated_value = check_option_exists(value, use_codes_instead_of_es_codes)
     elsif kind == 'email'
       validated_value = check_email_format(value)
     elsif kind == 'user'
@@ -69,7 +71,7 @@ module Field::ValidationConcern
 
   def check_valid_numeric_value(value)
     raise "Invalid numeric value in #{code} field" unless value.integer?
-    value
+    Integer(value)
   end
 
   def integer?(string)
@@ -117,7 +119,11 @@ module Field::ValidationConcern
   end
 
   def decode_select_many_options(option_string, use_codes_instead_of_es_codes)
-    option_list = option_string.split(%r{\s*,\s*})
+    if option_string.kind_of?(Array)
+      option_list = option_string
+    else
+      option_list = option_string.split(%r{\s*,\s*})
+    end
     value_ids = []
     option_list.each do |value|
       value_id = check_option_exists(value, use_codes_instead_of_es_codes)
@@ -134,13 +140,21 @@ module Field::ValidationConcern
       else
         value_id = value unless !hierarchy_options_codes.include? value
       end
-    elsif select_kind?
-      config['options'].each do |option|
-        if use_codes_instead_of_es_codes
+    elsif kind == 'select_many'
+      if use_codes_instead_of_es_codes
+        config['options'].each do |option|
           value_id = option['id'] if option['label'] == value || option['code'] == value
-        else
-          value_id = value if config["options"].any?{|opt| opt["id"].to_s == value}
         end
+      else
+        value_id = value if config["options"].any?{|opt| opt["id"].to_s == value.to_s}
+      end
+    elsif kind == 'select_one'
+      if use_codes_instead_of_es_codes
+        config['options'].each do |option|
+          value_id = option['id'] if option['label'] == value || option['code'] == value
+        end
+      else
+        value_id = value if config["options"].any?{|opt| opt["id"].to_s == value.to_s}
       end
     end
     raise "Invalid option in #{code} field" if value_id.nil?
@@ -165,7 +179,7 @@ module Field::ValidationConcern
   def check_site_exists(site_id, collection)
     site_ids = collection.sites.map{|s| s.id.to_s}
 
-    if !site_ids.include? site_id
+    if !site_ids.include? site_id.to_s
       raise "Non-existent site-id in #{code} field"
     end
     site_id

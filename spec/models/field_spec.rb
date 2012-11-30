@@ -151,10 +151,11 @@ describe Field do
   end
 
   describe "validations" do
+    let!(:user) { User.make }
+    let!(:collection) { user.create_collection Collection.make_unsaved }
 
     ['name', 'code'].each do |parameter|
       it "should validate uniqueness of #{parameter} in collection" do
-        collection = Collection.make
         beds = collection.fields.make :kind => 'text', parameter.to_sym => 'beds'
         beds2 = collection.fields.make_unsaved :kind => 'text', parameter.to_sym => 'beds'
 
@@ -166,5 +167,74 @@ describe Field do
         beds3.should be_valid
       end
     end
+
+    describe "apply_format_update_validation" do
+
+      let!(:layer) { collection.layers.make }
+      let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
+      let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+      let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+      let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+      config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+      let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+      let!(:site_field) { layer.fields.make :code => 'site', :kind => 'site' }
+      let!(:date) { layer.fields.make :code => 'date', :kind => 'date' }
+      let!(:director) { layer.fields.make :code => 'user', :kind => 'user' }
+      let!(:email_field) { layer.fields.make :code => 'email', :kind => 'email' }
+
+      let!(:site) {collection.sites.make name: 'Foo old', id: 1234, properties: {} }
+
+
+      it "should validate format for numeric field" do
+        numeric.apply_format_update_validation(2, false, collection).should be(2)
+        numeric.apply_format_update_validation("2", false, collection).should be(2)
+        expect { numeric.apply_format_update_validation("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.code} field")
+      end
+
+      it "should validate format for date field" do
+        date.apply_format_update_validation("11/27/2012", false, collection).should == "2012-11-27T00:00:00Z"
+        expect { date.apply_format_update_validation("11/27", false, collection) }.to raise_error(RuntimeError, "Invalid date value in #{date.code} field")
+        expect { date.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid date value in #{date.code} field")
+      end
+
+      it "should validate format for hierarchy field" do
+        hierarchy.apply_format_update_validation("101", false, collection).should == "101"
+        expect { hierarchy.apply_format_update_validation("Dad", false, collection) }.to raise_error(RuntimeError, "Invalid option in #{hierarchy.code} field")
+        expect { hierarchy.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in #{hierarchy.code} field")
+      end
+
+      it "should validate format for select_one field" do
+        select_one.apply_format_update_validation(1, false, collection).should == 1
+        select_one.apply_format_update_validation("1", false, collection).should == "1"
+        expect { select_one.apply_format_update_validation("one", false, collection) }.to raise_error(RuntimeError, "Invalid option in #{select_one.code} field")
+        expect { select_one.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in #{select_one.code} field")
+      end
+
+      it "should validate format for select_many field" do
+        select_many.apply_format_update_validation([2], false, collection).should == [2]
+        select_many.apply_format_update_validation(["2", "1"], false, collection).should == ["2", "1"]
+        expect { select_many.apply_format_update_validation(["two",], false, collection) }.to raise_error(RuntimeError, "Invalid option in #{select_many.code} field")
+        expect { select_many.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in #{select_many.code} field")
+      end
+
+      it "should validate format for site field" do
+        site_field.apply_format_update_validation(1234, false, collection).should == 1234
+        site_field.apply_format_update_validation("1234", false, collection).should == "1234"
+        expect { site_field.apply_format_update_validation(124, false, collection) }.to raise_error(RuntimeError, "Non-existent site-id in #{site_field.code} field")
+        expect { site_field.apply_format_update_validation("124inv", false, collection) }.to raise_error(RuntimeError, "Non-existent site-id in #{site_field.code} field")
+      end
+
+      it "should validate format for user field" do
+        director.apply_format_update_validation(user.email, false, collection).should == user.email
+        expect { director.apply_format_update_validation("inexisting@email.com", false, collection) }.to raise_error(RuntimeError, "Non-existent user-email in #{director.code} field")
+      end
+
+      it "should validate format for email field" do
+        email_field.apply_format_update_validation("valid@email.com", false, collection).should == "valid@email.com"
+        expect { email_field.apply_format_update_validation("s@@email.c.om", false, collection) }.to raise_error(RuntimeError, "Invalid email value in #{email_field.code} field")
+      end
+
+    end
+
   end
 end
