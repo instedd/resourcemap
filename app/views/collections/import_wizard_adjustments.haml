@@ -44,7 +44,7 @@
             %tr
               / ko foreach: columns()
               %th
-                %a.fancybox.column_header{ko(css: {error_column: 'error().length > 0'}, attr: {error: 'error'}, class: 'iconClass', text: :name, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
+                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'error().length > 0'}, attr: {error: 'error'}, class: 'iconClass', text: :name, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
               //ko
           %tbody
             / ko foreach: sites()

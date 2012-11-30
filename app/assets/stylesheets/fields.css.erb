@@ -33,6 +33,12 @@
   }
 <% end %>
 
+<% ['name', 'id', 'location'].each  do |name| %>
+  <%=   ".f#{name} {" %>
+      <%= "background:url(/assets/fields_small_buttons/f#{name}.png) no-repeat;" %>
+  }
+<% end %>
+
 button.icon_button.active {
   background-position: 0 -60px !important;
 }
