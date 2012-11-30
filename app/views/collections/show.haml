@@ -11,7 +11,7 @@
         sites
       %button.csvDownload.white.right{type: "button", |
           onclick: "window.location = '#{sites_count == 0 ? api_sample_csv_path(collection, format: 'csv') : api_collection_path(collection, format: 'csv')}'"}
-        = if sites_count == 0 then 'download sample csv' else 'download as csv' end
+        = if sites_count == 0 then 'Download sample CSV' else 'Download as CSV' end
     %div
       = link_to'Upload it for bulk sites updates', collection_import_wizard_path(collection), class: 'icon fexport black'
   %hr.clear/
@@ -19,7 +19,7 @@
   %p{style: 'margin:-8px 0 8px 0'}
     Access the API in
     #{link_to 'RSS', api_collection_path(collection, format: :rss), target: :_blank},
-    #{link_to 'JSON', api_collection_path(collection, format: :json), target: :_blank}.
+    #{link_to 'JSON', api_collection_path(collection, format: :json), target: :_blank},
     or
     #{link_to 'CSV', api_collection_path(collection, format: :csv), target: :_blank}.
     Check the
@@ -30,14 +30,12 @@
   - if Settings.is_on? :snapshot
     = render 'snapshot'
 
+  %hr.clear/
+
   - if collection_admin?
-    %hr.clear/
-    %h2 Delete sites
-    %p Delete this collection's sites and activities but preserve layers, fields and memberships.
-    = link_to "delete this collection's sites", collection_path(only_sites: true), class: 'icon fclose black', method: :delete, data: { confirm: "Are you sure you want to delete collection #{collection.name}'s sites?" }
-    %br/
-    %br/
-    %hr.clear/
-    %h2 Delete
-    %p Delete this collection. All sites, layers, fields, memberships and activities will be forever gone.
-    = link_to 'delete this collection', collection, class: 'icon fdelete black', method: :delete, data: { confirm: "Are you sure you want to delete the collection #{collection.name}?" }
+    .delete-collection-or-sites
+      .left
+        = render './confirm_box', :action_code => 'delete-collection-sites', :action_description => "Delete this collection's sites", :icon_class => 'fclose', :confirm_action_prompt => "Are you sure you want to delete this collection's sites?", :action_url => collection_path(only_sites: true)
+
+      .left
+        = render './confirm_box', :action_code => 'delete-collection', :action_description => 'Delete collection', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to delete this collection? All sites, layers, fields, memberships and activities will also be deleted.', :action_url => collection_path
