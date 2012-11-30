@@ -99,6 +99,9 @@ module Field::ValidationConcern
   end
 
   def decode_hierarchy_option(array_value, use_codes_instead_of_es_codes)
+    if !array_value.kind_of?(Array)
+      array_value = [array_value]
+    end
     value_ids = []
     array_value.each do |value|
       value_id = check_option_exists(value, use_codes_instead_of_es_codes)

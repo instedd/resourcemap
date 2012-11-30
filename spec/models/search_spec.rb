@@ -556,7 +556,56 @@ describe Search do
       search.where unit.es_code => [1, 2]
       assert_results search, site1, site2, site3
     end
+  end
 
+  context 'hierarchy parameter for select_kind and hierarchy fields' do
+    let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+    let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+
+    let!(:site1) { collection.sites.make properties:
+     { select_one.es_code => "1", select_many.es_code => [1, 2], hierarchy.es_code => '100'}  }
+    let!(:site2) { collection.sites.make properties:
+     { select_many.es_code => [2]} }
+    let!(:site3) { collection.sites.make properties:
+     { select_one.es_code => "1", hierarchy.es_code  => '60'} }
+
+    it "filters select one field" do
+     search = collection.new_search
+     search.hierarchy(select_one.es_code, "1")
+     assert_results search, site1, site3
+    end
+
+    it "filter select many field" do
+      search = collection.new_search
+      search.hierarchy(select_many.es_code, "2")
+      assert_results search, site1, site2
+    end
+
+    it "filter select many field with no value" do
+      search = collection.new_search
+      search.hierarchy(select_many.es_code, nil)
+      assert_results search, site3
+    end
+
+    it "filter select one field with no value" do
+      search = collection.new_search
+      search.hierarchy(select_one.es_code, nil)
+      assert_results search, site2
+    end
+
+    it "filter hierarchy field" do
+      search = collection.new_search
+      search.hierarchy(hierarchy.es_code, "60")
+      assert_results search, site3
+    end
+
+    it "filter hierarchy field with no value" do
+      search = collection.new_search
+      search.hierarchy(hierarchy.es_code, nil)
+      assert_results search, site2
+    end
   end
 
   def assert_results(search, *sites)
