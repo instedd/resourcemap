@@ -55,6 +55,10 @@
   background: transparent;
 }
 
+.box.slightly-padded .tableheader.expanded {
+  border-right: 0px;
+}
+
 .box.slightly-padded .tablescroll {
   padding-top:10px;
   background:url(<%= InsteddRails.url %>/theme/images/interface/backtd.png) repeat-x left 0px #ffffff;
@@ -62,6 +66,16 @@
 
 .box.slightly-padded .GralTable td {
   padding-left: 0px;
+}
+
+.box.slightly-padded .GralTable.tableview td {
+  padding-left: 3px;
+}
+
+.box.slightly-padded .tablescroll .GralTable td div {
+  display:inline-block;
+  overflow:hidden;
+  margin-top: 7px;
 }
 
 .h50 { height:500px}
