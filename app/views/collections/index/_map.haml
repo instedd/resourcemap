@@ -27,7 +27,7 @@
         <!-- /ko -->
     %br{:clear => "all"}/
     #profile-main{style: 'display:none'}
-      .box.plain.orange{ko(visible: 'collections().length < 1 || (!$root.isExist())'), :style => 'padding:5px; display:none;background-color: #B6D7A8'}
+      .box.plain.orange{ko(visible: 'collections().length < 1 || (!$root.isExist())'), :style => 'padding:5px; display:none;background-color: #B6D7A8;border: 0px'}
         .sbox.grey.StateDisplay{style: 'margin: 0px;padding: 0px;background-color: #FFFFFF'}
           .values{style: 'padding: 0px;margin: 4px 0 4px 0;font-size: 12px;line-height: 12px;width: 100%;'}
              
@@ -46,13 +46,13 @@
             <!-- /ko -->
             .L 
               <!-- ko if: collections().length < 1 -->
-              %button.cadd{ko(click: '$root.createCollection'),type: "button", style: 'width:10px'}
-              %span{style: 'display: inline;'} Create Your First Collection (+50%)
+              %button.fadd{ko(click: '$root.createCollection'),type: "button", style: 'width:250px'}
+                %span{style: 'float:left;'} Create Your First Collection (+50%)
               %br{:clear => "all"}/
               <!-- /ko -->
               <!-- ko if: !$root.isExist() -->
-              %button.cadd{onClick: "window.location='/gateways';return false;", type: "button", style: 'width:10px'}
-              %span{style: 'display: inline;'} Create Your First Gateway (+50%)
+              %button.fadd{onClick: "window.location='/gateways';return false;", type: "button", style: 'width:250px'}
+                %span{style: 'float:left;'} Configure SMS Gateway (+50%)
               <!-- /ko -->
   .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
     %button.cadd{type: "button"}
