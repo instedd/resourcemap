@@ -21,6 +21,9 @@ onCollections -> if $('#collections-main').length > 0
     $('#snapshot_loaded_message').show()
   # Adjust width to window
   window.adjustContainerSize = ->
+    adjustRightPanelWidth = (referenceWidth) =>
+      $('#right-panel').width(referenceWidth - 304)
+
     width = $(window).width()
     containerWidth = width - 80
     containerWidth = 960 if containerWidth < 960
@@ -28,16 +31,20 @@ onCollections -> if $('#collections-main').length > 0
     $('#container').width(containerWidth)
     $('#header').width(containerWidth)
     $('.BreadCrumb').width(containerWidth - 410)
-    $('#right-panel').width(containerWidth - 404)
+
+    adjustRightPanelWidth(containerWidth)
+
     $('.tableheader.expanded').width(containerWidth)
-    $('#map').width(containerWidth - 420)
+    $('#map').width(containerWidth - 320)
     $('.h50').height(500)
     $('#map').height('')
 
     if(window.model && window.model.fullscreen())
       $('#container').width(width)
       $('.tableheader.expanded').width("100%")
-      $('#right-panel').width(width - 404)
+
+      adjustRightPanelWidth(width)
+
       $('#map').width("100%")
       $('#collections-main').height("100%")
       $('#collections-main .h50').height("100%")

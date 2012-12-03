@@ -24,7 +24,7 @@
         %li Add columns for new fields
 
     - if collection.sites.exists?
-      = link_to 'Download the existing CSV', api_collection_path(collection, format: "csv"), class: "icon fimport black"
+      = link_to 'Download a CSV with all the sites in this collection', api_collection_path(collection, format: "csv"), class: "icon fimport black"
     -else
       = link_to 'Download a template CSV file', api_sample_csv_path(collection, format: 'csv'), class: "icon fimport black"
 

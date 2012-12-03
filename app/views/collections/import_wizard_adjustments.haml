@@ -15,8 +15,15 @@
     = render 'steps', :step => 2
     %br
 
-  %h2.orange Curate Data
-  %p.orange Specify how to map each column to a field
+  %h2.loading Curate Data
+  %p Specify how to map each column to a field
+
+  #generating_preview.grey
+    We are generating a preview for the sites you are importing.
+    %br
+    Then you will be able to define how to use each column.
+    %br
+    This may take a while depending on the size of your file.
 
   #import-wizard-main.hidden-until-loaded
     /ko if: !hasId()
@@ -24,116 +31,6 @@
       .alert.box.flash_error.drop_shadow
         = raw "All sites will be imported as new. If you want to modify the existing ones #{link_to "go back", :back, :class => 'black'} to the previous page."
     //ko
-
-    %div{style: 'height: 400px;overflow:auto'}
-      %ul{ko(foreach: :columns)}
-        %li{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
-          %div
-            %strong{ko(text: :name)}
-            %ul
-              %li
-                Use as:
-                /ko if: usage() == 'id'
-                Internal ResourceMap ID
-                //ko
-                /ko if: usage() != 'id'
-                - if collection_admin?
-                  %select{ko(options: '$root.selectableUsagesForAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
-                - else
-                  %select{ko(options: '$root.selectableUsagesForNonAdmins', optionsText: "'name'", optionsValue: "'code'", value: 'usage')}
-                //ko
-                /ko if: usage() == 'existing_field'
-                %select{ko(options: '$root.layers', optionsText: "'name'", value: 'layer')}
-                %select{ko(options: 'layer().fields', optionsText: "'name'", value: 'field')}
-                //ko
-                /ko if: usage() == 'new_field'
-                = select_tag :kind, options_for_select(Field::Kinds.map{ |kind_name| [kind_name.titleize, kind_name]}.delete_if{|e| e[1] == "hierarchy"}), 'data-bind' => kov(value: :kind)
-                /ko if: kind() == 'select_one' || kind() == 'select_many'
-                = select_tag :selectKind, options_for_select([['Use as the code', 'code'], ['Use as the label', 'label'], ['Use as both the code and label', 'both']]), 'data-bind' => kov(value: :selectKind)
-                //ko
-                //ko
-              /ko if: usage() == 'new_field'
-              %li
-                Field Code:
-                %input{ko(value: :code, valueUpdate: :afterkeydown)}
-              %li
-                Field Name:
-                %input{ko(value: :label, valueUpdate: :afterkeydown)}
-              //ko
-
-    %div{ko(with: :site)}
-      Sample site preview:
-      %ul
-        %li
-          %span{ko(css: {error: "hasMoreThanOneId()"})} ID:
-          /ko if: id()
-          %span{ko(text: :id)}
-          //ko
-          /ko if: !id()
-          %span New ID
-          //ko
-        %li
-          %span{ko(css: {error: "!name() || hasMoreThanOneName()"})} Name:
-          %span{ko(text: :name)}
-        %li
-          Location:
-          %ul
-            %li
-              %span{ko(css: {error: "hasMoreThanOneLat()"})} Latitude:
-              %span{ko(text: :lat)}
-            %li
-              %span{ko(css: {error: "hasMoreThanOneLng()"})} Longitude:
-              %span{ko(text: :lng)}
-        %li
-          Properties:
-          %ul{ko(foreach: :properties)}
-            %li
-              /ko if: usage == 'new_field'
-              %strong New Field
-              %br/
-              From column:
-              %span{ko(text: :column)}
-              %br/
-              Code:
-              %span{ko(text: :code)}
-              %br/
-              Name:
-              %span{ko(text: :name)}
-              %br/
-              Field type:
-              %span{ko(text: :kind)}
-              %br/
-              /ko if: kind != 'select_one' && kind != 'select_many'
-              Value:
-              %span{ko(text: :value)}
-              %br/
-              //ko
-              /ko if: kind == 'select_one' || kind == 'select_many'
-              %span{ko(css: {error: "!valueCode"})} Value code:
-              %span{ko(text: :valueCode)}
-              %br/
-              %span{ko(css: {error: "!valueLabel"})} Value label:
-              %span{ko(text: :valueLabel)}
-              %br/
-              //ko
-              //ko
-
-              /ko if: usage == 'existing_field' && layer && field
-              %strong Existing field
-              %br/
-              From column:
-              %span{ko(text: :column)}
-              %br/
-              Layer:
-              %span{ko(text: 'layer.name')}
-              %br/
-              Field:
-              %span{ko(text: 'field.name')}
-              %br/
-              Value:
-              %span{ko(text: :value)}
-              //ko
-
 
 
     .box.nopadd.h50
@@ -147,7 +44,7 @@
             %tr
               / ko foreach: columns()
               %th
-                %span.column_header{ko(css: {error_column: 'error'}, text: :name, attr: {error: 'error'}, class: 'iconClass')}
+                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'error().length > 0'}, attr: {error: 'error'}, class: 'iconClass', text: :name, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
               //ko
           %tbody
             / ko foreach: sites()
@@ -158,6 +55,54 @@
               //ko
             //ko
 
+    #columnUsageTemplate{ko(with: :selectedColumn), style:'display: none;'}
+      %h2
+        %span{ko(text: 'name')}
+        Column Settings
+      %hr
+      %div{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
+        %div
+          /ko if: usage() == 'id'
+          - content = "Internal ResourceMap ID"
+          //ko
+          /ko if: usage() != 'id'
+          - if collection_admin?
+            - content = 'collections/import_wizard/usage_options_for_admin'
+          - else
+            - content = 'collections/import_wizard/usage_options_for_non_admin'
+          //ko
+          = render 'collections/import_wizard/popup_row', :label => 'Use as:', :content => content
+          /ko if: usage() == 'existing_field'
+          = render 'collections/import_wizard/popup_row', :label => 'Layer:', :content => 'collections/import_wizard/existing_layer_options'
+          = render 'collections/import_wizard/popup_row', :label => 'Field:', :content => 'collections/import_wizard/existing_field_options'
+          //ko
+          /ko if: usage() == 'new_field'
+          = render 'collections/import_wizard/popup_row', :label => 'Field Code:', :content => 'collections/import_wizard/new_field_code'
+          = render 'collections/import_wizard/popup_row', :label => 'Field Name:', :content => 'collections/import_wizard/new_field_name'
+          //ko
+        %div
+          /ko if: usage() == 'new_field'
+          %label Field Type:
+          %div
+            - i = 0
+            - Field::Kinds.delete_if{|e| e == "hierarchy"}.each do |field_name|
+              - i = i+1
+              %span.field_option.left{ko(click: "function() { kind('#{field_name}') }"), style: "width: 25%;"}
+                %button.icon_button{ko(css: {active: "kind() == '#{field_name}'"}), class: "f#{field_name}"}
+                  = field_name.titleize
+              - if i == 4
+                %br
+            .clear
+          /ko if: kind() == 'select_one' || kind() == 'select_many'
+          .box.alert
+            Please select what you want to update with this input:
+            %br
+            - [['Option code', 'code'], ['Option label', 'label'], ['Both the code and label', 'both']].each do |option|
+              = radio_button_tag 'select_kind_group', option[1], false, 'data-bind' => kov(checked: 'selectKind')
+              = label_tag "select_kind_group_#{option[1]}", option[0]
+          //ko
+          //ko
+
     %br/
     /ko if: importing()
     Importing, please wait. This might take several minutes.
@@ -167,10 +112,9 @@
     //ko
     /ko if: !importing() && !importError()
     /ko if: valid()
-    %button{ko(click: :startImport)} Start importing
+    %button.grey{ko(click: :startImport)} Start importing
     //ko
     /ko if: !valid()
-    %span.error Fix this error to start importing:
-    %span{ko(text: :error)}
+    %span.error Fix the errors to start importing
     //ko
     //ko

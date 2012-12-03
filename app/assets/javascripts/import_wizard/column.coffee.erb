@@ -16,24 +16,21 @@ onImportWizard ->
       @label = ko.observable data.label
 
       # For new select_one or select_many fields
-      @selectKind = ko.observable 'code'
-
-      @value = ko.observable data.value
+      @selectKind = ko.observable 'both'
 
       @iconClass = ko.computed => @computeIconClass()
 
       @kind.subscribe =>
-        window.model.validateSites()
+        window.model.validateSites(this)
 
       @field.subscribe =>
-        window.model.validateSites()
+        window.model.validateSites(this)
 
-      @error = ko.computed =>
-        @validateColum()
+      # If usage change is because this column is the model.selectedColumn and fancybox it's open
+      @usage.subscribe =>
+        $('.fancybox').resize()
 
-      @error.subscribe =>
-        # HTML is rendered after executing applyColumnBubble, so the popups don't get removed
-        setTimeout(@applyColumnBubble, 50)
+      @error = ko.observableArray([])
 
     toJSON: =>
       json =
@@ -48,41 +45,27 @@ onImportWizard ->
         json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json
 
-    applyColumnBubble: =>
-      $('.column_header').not(".error_column").RemoveBubblePopup()
-      $('.error_column').each (index) ->
-        $(this).CreateBubblePopup({
-        selectable: true,
-        position : 'top',
-        innerHtml: $(this).attr('error'),
-        innerHtmlStyle: {
-            color:'#000000',
-            'background-color' :'white'
-            },
-        themeName:  'bubble',
-        themePath:  '<%= InsteddRails.url %>/theme/images/'
-        });
+
+    # validateColumn: () =>
+    #
+    #     # Should not be repeated values in columns
+    #     if (@kind() == 'select_one' || @kind() == 'select_many') && !(@selectKind() == 'both')
+    #       columns = columns.filter((c) => c.label() == @label() && c.code() == @code() && c.kind() == @kind())
+    #       if !(columns.length == 2 && ((columns[0].selectKind() == 'code' && columns[1].selectKind() == 'label') || (columns[0].selectKind() == 'label' && columns[1].selectKind() == 'code') ))
+    #         return "You must choose a single column to be the Label and a single colunm to be the Code of property #{@name()}"
+    #     else
 
 
-    validateColum: =>
-      if @usage() == 'new_field' && @label() && @code()
-        fields = $.map(window.model.layers, (l) -> l.fields)
-        return "A field with label #{@label()} already exists in collection's fields" if window.arrayAny(fields, (f) => f.name == @label())
-        return "A field with code #{@code()} already exists in collection's fields" if window.arrayAny(fields, (f) => f.code == @code())
-      null
 
     computeIconClass: =>
-      if @usage() == 'existing_field' && @field()
-        kind = @field().kind
-      else
-        kind = @kind()
+      kind = switch @usage()
+        when 'existing_field' then @field().kind
+        when 'new_field' then  @kind()
+        when 'lat' then 'location'
+        when 'lng'then 'location'
+        else @usage()
+      "f#{kind}"
 
-      field_class = FIELD_TYPES[kind]
-
-      if field_class
-        field_class.small_css_class
-      else
-        'faccept'
 
 
 

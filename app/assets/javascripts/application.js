@@ -21,4 +21,5 @@
 //= require knockout-2.1.0
 //= require autocomplete-tagfield
 //= require knockout
+//= require jquery.fancybox
 //= require_tree .

@@ -675,19 +675,19 @@ describe ImportWizard do
 
     column_spec.length.should eq(13)
 
-    column_spec.should include({:name=>"resmap-id", :kind=> :id, :code=>"resmap-id", :label=>"Resmap", :value=>"123", :usage=>:id})
-    column_spec.should include({:name=>"Name", :kind=>:name, :code=>"name", :label=>"Name", :value=>"Foo old", :usage=>:name})
-    column_spec.should include({:name=>"Lat", :kind=>:location, :code=>"lat", :label=>"Lat", :value=>"1.2", :usage=>:lat})
-    column_spec.should include({:name=>"Lon", :kind=>:location, :code=>"lon", :label=>"Lon", :value=>"3.4", :usage=>:lng})
-    column_spec.should include({:name=>"text", :kind=>:text, :code=>"text", :label=>"Text", :value=>"", :usage=>:existing_field, :layer_id=> text.layer_id, :field_id=>text.id})
-    column_spec.should include({:name=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :value=>"", :usage=>:existing_field, :layer_id=>numeric.layer_id, :field_id=>numeric.id})
-    column_spec.should include({:name=>"select_one", :kind=>:select_one, :code=>"select_one", :label=>"Select One", :value=>"two", :usage=>:existing_field, :layer_id=>select_one.layer_id, :field_id=>select_one.id})
-    column_spec.should include({:name=>"select_many", :kind=>:select_many, :code=>"select_many", :label=>"Select Many", :value=>"two", :usage=>:existing_field, :layer_id=>select_many.layer_id, :field_id=>select_many.id})
-    column_spec.should include({:name=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :value=>"uno", :usage=>:existing_field, :layer_id=>hierarchy.layer_id, :field_id=>hierarchy.id})
-    column_spec.should include({:name=>"site", :kind=>:site, :code=>"site", :label=>"Site", :value=>"1235", :usage=>:existing_field, :layer_id=>site.layer_id, :field_id=>site.id})
-    column_spec.should include({:name=>"date", :kind=>:date, :code=>"date", :label=>"Date", :value=>"12/26/1988", :usage=>:existing_field, :layer_id=>date.layer_id, :field_id=>date.id})
-    column_spec.should include({:name=>"user", :kind=>:user, :code=>"user", :label=>"User", :value=>"user2@email.com", :usage=>:existing_field, :layer_id=>director.layer_id, :field_id=>director.id})
-    column_spec.should include({:name=>"email", :kind=>:email, :code=>"email", :label=>"Email", :value=>"email@mail.com", :usage=>:existing_field, :layer_id=>email_field.layer_id, :field_id=>email_field.id})
+    column_spec.should include({:name=>"resmap-id", :kind=> :id, :code=>"resmap-id", :label=>"Resmap", :usage=>:id})
+    column_spec.should include({:name=>"Name", :kind=>:name, :code=>"name", :label=>"Name", :usage=>:name})
+    column_spec.should include({:name=>"Lat", :kind=>:location, :code=>"lat", :label=>"Lat", :usage=>:lat})
+    column_spec.should include({:name=>"Lon", :kind=>:location, :code=>"lon", :label=>"Lon", :usage=>:lng})
+    column_spec.should include({:name=>"text", :kind=>:text, :code=>"text", :label=>"Text", :usage=>:existing_field, :layer_id=> text.layer_id, :field_id=>text.id})
+    column_spec.should include({:name=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :usage=>:existing_field, :layer_id=>numeric.layer_id, :field_id=>numeric.id})
+    column_spec.should include({:name=>"select_one", :kind=>:select_one, :code=>"select_one", :label=>"Select One", :usage=>:existing_field, :layer_id=>select_one.layer_id, :field_id=>select_one.id})
+    column_spec.should include({:name=>"select_many", :kind=>:select_many, :code=>"select_many", :label=>"Select Many", :usage=>:existing_field, :layer_id=>select_many.layer_id, :field_id=>select_many.id})
+    column_spec.should include({:name=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :usage=>:existing_field, :layer_id=>hierarchy.layer_id, :field_id=>hierarchy.id})
+    column_spec.should include({:name=>"site", :kind=>:site, :code=>"site", :label=>"Site", :usage=>:existing_field, :layer_id=>site.layer_id, :field_id=>site.id})
+    column_spec.should include({:name=>"date", :kind=>:date, :code=>"date", :label=>"Date", :usage=>:existing_field, :layer_id=>date.layer_id, :field_id=>date.id})
+    column_spec.should include({:name=>"user", :kind=>:user, :code=>"user", :label=>"User", :usage=>:existing_field, :layer_id=>director.layer_id, :field_id=>director.id})
+    column_spec.should include({:name=>"email", :kind=>:email, :code=>"email", :label=>"Email", :usage=>:existing_field, :layer_id=>email_field.layer_id, :field_id=>email_field.id})
 
     ImportWizard.delete_file(user, collection)
   end
@@ -721,13 +721,13 @@ describe ImportWizard do
 
     second_line = sites_preview.last
     second_line.should include({:value=>"new val", :error=>nil})
-    second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric param"})
-    second_line.should include({:value=>"inval", :error=>"Invalid option in select_one param"})
-    second_line.should include({:value=>"Dad, inv", :error=>"Invalid option in select_many param"})
-    second_line.should include({:value=>"inval", :error=>"Invalid option in hierarchy param"})
-    second_line.should include({:value=>"999", :error=>"Non-existent site-id in site param"})
-    second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user param"})
-    second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email param"})
+    second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
+    second_line.should include({:value=>"inval", :error=>"Invalid option in select_one field"})
+    second_line.should include({:value=>"Dad, inv", :error=>"Invalid option in select_many field"})
+    second_line.should include({:value=>"inval", :error=>"Invalid option in hierarchy field"})
+    second_line.should include({:value=>"999", :error=>"Non-existent site-id in site field"})
+    second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user field"})
+    second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email field"})
 
     ImportWizard.delete_file(user, collection)
   end
@@ -772,15 +772,15 @@ describe ImportWizard do
 
      second_line = sites_preview.last
      second_line.should include({:value=>"new val", :error=>nil})
-     second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric param"})
+     second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
      #option will be created as news
      second_line.should include({:value=>"inval", :error=>nil})
      second_line.should include({:value=>"Dad, inv", :error=>nil})
      #hierarchy fields cannot be created using import wizard
      second_line.should include({:value=>"inval", :error=> "Hierarchy fields can only be created via web in the Layers page"})
-     second_line.should include({:value=>"999", :error=>"Non-existent site-id in site param"})
-     second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user param"})
-     second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email param"})
+     second_line.should include({:value=>"999", :error=>"Non-existent site-id in site field"})
+     second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user field"})
+     second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email field"})
 
      ImportWizard.delete_file(user, collection)
   end
@@ -807,6 +807,26 @@ describe ImportWizard do
     ]
 
     expect {ImportWizard.validate_columns collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
+  end
+
+  it "should validate only one column" do
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+
+     csv_string = CSV.generate do |csv|
+       csv << ['text', 'numeric ', ' select_one', 'select_many ', ' hierarchy', 'site', 'date', 'user', 'email']
+       csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
+       csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
+     end
+
+     ImportWizard.import user, collection, csv_string
+
+     column_spec = {name: 'numeric', usage: 'new_field', kind: 'numeric', code: 'numeric'}
+     sites_preview_one_column = (ImportWizard.validate_sites_with_column user, collection, column_spec)
+
+     sites_preview_one_column[1].length.should eq(2)
+
+     sites_preview_one_column[1].should include({value: '11', error: nil})
+     sites_preview_one_column[1].should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
   end
 
 end

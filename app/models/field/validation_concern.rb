@@ -21,15 +21,17 @@ module Field::ValidationConcern
 
   def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
     if value.blank?
-      return value
+      return nil
     elsif kind == 'numeric'
       validated_value = check_valid_numeric_value(value)
     elsif kind == 'date'
       validated_value = check_date_format(value)
     elsif kind == 'hierarchy'
       validated_value = check_option_exists(value, use_codes_instead_of_es_codes)
-    elsif select_kind?
+    elsif kind == 'select_many'
       validated_value = decode_select_many_options(value, use_codes_instead_of_es_codes)
+    elsif kind == 'select_one'
+      validated_value = check_option_exists(value, use_codes_instead_of_es_codes)
     elsif kind == 'email'
       validated_value = check_email_format(value)
     elsif kind == 'user'
@@ -58,7 +60,7 @@ module Field::ValidationConcern
   def check_email_format(value)
     regex = Regexp.new('^(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})$')
     if value.match(regex).nil?
-      raise "Invalid email value in #{code} param"
+      raise "Invalid email value in #{code} field"
     end
     value
   end
@@ -68,8 +70,8 @@ module Field::ValidationConcern
   end
 
   def check_valid_numeric_value(value)
-    raise "Invalid numeric value in #{code} param" unless value.integer?
-    value
+    raise "Invalid numeric value in #{code} field" unless value.integer?
+    Integer(value)
   end
 
   def integer?(string)
@@ -77,13 +79,13 @@ module Field::ValidationConcern
   end
 
   def check_date_format(value)
-    Site.format_date_iso_string(Time.strptime(value, '%m/%d/%Y')) rescue (raise "Invalid date value in #{code} param")
+    Site.format_date_iso_string(Time.strptime(value, '%m/%d/%Y')) rescue (raise "Invalid date value in #{code} field")
   end
 
   def parse_date_from(value)
     match = (value.match /(.*),/)
     if match.nil?
-      raise "Invalid date value in #{code} param"
+      raise "Invalid date value in #{code} field"
     end
     match.captures[0]
   end
@@ -91,12 +93,15 @@ module Field::ValidationConcern
   def parse_date_to(value)
     match = (value.match /,(.*)/)
     if match.nil?
-      raise "Invalid date value in #{code} param"
+      raise "Invalid date value in #{code} field"
     end
     match.captures[0]
   end
 
   def decode_hierarchy_option(array_value, use_codes_instead_of_es_codes)
+    if !array_value.kind_of?(Array)
+      array_value = [array_value]
+    end
     value_ids = []
     array_value.each do |value|
       value_id = check_option_exists(value, use_codes_instead_of_es_codes)
@@ -117,7 +122,11 @@ module Field::ValidationConcern
   end
 
   def decode_select_many_options(option_string, use_codes_instead_of_es_codes)
-    option_list = option_string.split(%r{\s*,\s*})
+    if option_string.kind_of?(Array)
+      option_list = option_string
+    else
+      option_list = option_string.split(%r{\s*,\s*})
+    end
     value_ids = []
     option_list.each do |value|
       value_id = check_option_exists(value, use_codes_instead_of_es_codes)
@@ -134,16 +143,24 @@ module Field::ValidationConcern
       else
         value_id = value unless !hierarchy_options_codes.include? value
       end
-    elsif select_kind?
-      config['options'].each do |option|
-        if use_codes_instead_of_es_codes
+    elsif kind == 'select_many'
+      if use_codes_instead_of_es_codes
+        config['options'].each do |option|
           value_id = option['id'] if option['label'] == value || option['code'] == value
-        else
-          value_id = value if config["options"].any?{|opt| opt["id"].to_s == value}
         end
+      else
+        value_id = value if config["options"].any?{|opt| opt["id"].to_s == value.to_s}
+      end
+    elsif kind == 'select_one'
+      if use_codes_instead_of_es_codes
+        config['options'].each do |option|
+          value_id = option['id'] if option['label'] == value || option['code'] == value
+        end
+      else
+        value_id = value if config["options"].any?{|opt| opt["id"].to_s == value.to_s}
       end
     end
-    raise "Invalid option in #{code} param" if value_id.nil?
+    raise "Invalid option in #{code} field" if value_id.nil?
     value_id
   end
 
@@ -156,7 +173,7 @@ module Field::ValidationConcern
     user_emails = collection.users.map {|u| u.email}
 
     if !user_emails.include? user_email
-      raise "Non-existent user-email in #{code} param"
+      raise "Non-existent user-email in #{code} field"
     end
     user_email
   end
@@ -165,8 +182,8 @@ module Field::ValidationConcern
   def check_site_exists(site_id, collection)
     site_ids = collection.sites.map{|s| s.id.to_s}
 
-    if !site_ids.include? site_id
-      raise "Non-existent site-id in #{code} param"
+    if !site_ids.include? site_id.to_s
+      raise "Non-existent site-id in #{code} field"
     end
     site_id
   end

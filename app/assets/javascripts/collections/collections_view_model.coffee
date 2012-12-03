@@ -43,6 +43,7 @@ onCollections ->
 
       if typeof collection == 'string'
         collection = @findCollectionById parseInt(collection)
+
       @currentCollection collection
       @unselectSite() if @selectedSite()
       @exitSite() if @editingSite()

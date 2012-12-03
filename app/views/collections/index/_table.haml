@@ -1,7 +1,7 @@
 <!-- ko if: !currentCollection() && !editingSite() -->
 -# Collections
 .tableheader.expanded
-  %div{style: 'padding-top:6px;padding-left:15px'} My Collections
+  %div{style: 'padding-top:6px;'} My Collections
   .mapheader.w60.right
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: "{active: !$root.showingMap()}")}
@@ -11,7 +11,7 @@
   %table.GralTable
     %thead
       %tr
-        %th.w39 Collection
+        %th{style: 'width:288px'} Collection
         %th{style: 'width:100%'} Last update
         %th
     %tbody
@@ -33,17 +33,10 @@
 .tableheader.expanded
   %div
     %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
-    %span.i18b-groupChat
+    %span
     %span{ko(text: :name)}
     %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:9px'}
-  .greyback
-    %span{style: 'margin:0;padding:3px;display:inline-block'}
-      Export this result in
-      %span{ko(click: '$root.exportInRSS'), style: 'text-decoration:underline;cursor:pointer;margin:0'} RSS
-      ,
-      %span{ko(click: '$root.exportInJSON'), style: 'text-decoration:underline;cursor:pointer;margin:0'} JSON
-      or
-      %span{ko(click: '$root.exportInCSV'), style: 'text-decoration:underline;cursor:pointer;margin:0'} CSV
+  = render 'collections/index/export'
   .mapheader.right
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
@@ -51,7 +44,9 @@
     %br{clear: "all"}
 .tablescroll
   %table.GralTable{style: 'table-layout: fixed;'}
-    %col{width: '388'}
+    %col{width: '300'}
+    %col{width: '100'}
+    %col{width: '100'}
     <!-- ko foreach: $root.currentCollection().fields() -->
     %col{ko(attr: { width: 'suggestedWidth()' })}
     <!-- /ko -->
@@ -65,6 +60,10 @@
           -# https://developer.mozilla.org/en-US/docs/CSS/float
           %button{ko(style: {background: "'transparent url(#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png) no-repeat scroll center'", height: "'11px'", cssFloat: "'right'", float: "'right'", borderStyle: "'none'", paddingLeft: "'17px'"})}
           <!-- /ko -->
+        %th
+          %span{style: 'display:inline'} Lat
+        %th
+          %span{style: 'display:inline'} Long
         <!-- ko foreach: $root.currentCollection().fields() -->
         %th{ko(click: '$root.sortBy', style: {maxWidth: 'suggestedWidth()', minWidth: 'suggestedWidth()'}), style: 'overflow:hidden;cursor:pointer'}
           %span{ko(text: :name), style: 'display:inline'}
@@ -85,16 +84,16 @@
       <!-- /ko -->
       <!-- ko template: {name: 'table-sites-template', with: $data} -->
       <!-- /ko -->
-.tablebottom
-  <!-- ko if: !currentSnapshot-->
-  %button.flocation{ko(click: '$root.createSite')} Create Site
-  <!-- /ko -->
   <!-- ko if: hasMoreSites() && !loadingSites()-->
-  %span.loadmore
+  %span.loadmore{ko(click: :loadMoreSites), style: 'cursor:pointer;'}
     = ko_link_to "Load more sites...", :loadMoreSites
   <!-- /ko -->
   <!-- ko if: hasMoreSites() && loadingSites()-->
   %span.loadmore Loading...
+  <!-- /ko -->
+.tablebottom
+  <!-- ko if: !currentSnapshot-->
+  %button.flocation{ko(click: '$root.createSite')} Create Site
   <!-- /ko -->
 <!-- /ko -->
 <!-- /ko -->

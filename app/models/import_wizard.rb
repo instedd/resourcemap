@@ -12,36 +12,34 @@ class ImportWizard
     end
 
     def validate_sites_with_columns(user, collection, columns_spec)
-      validated_data = {}
       columns_spec.map!{|c| c.with_indifferent_access}
       csv = CSV.read file_for(user, collection)
-      csv_columns = csv[1 .. -1].transpose
+      csv_columns = csv[1 .. 11].transpose
+      validated_data = {}
       validated_csv_columns = []
+      fields = collection.fields
       csv_columns.each_with_index do |csv_column, csv_column_number|
 
         column_spec = columns_spec[csv_column_number]
-        if column_spec[:usage].to_sym == :existing_field
-          field = Field.find column_spec[:field_id]
-        end
-        validated_csv_column = []
-        csv_column.each do |csv_field_value|
-          begin
-            validate_column_value(column_spec, csv_field_value, field, collection)
-          rescue => ex
-            error = ex.message
-          end
-          validated_csv_column << {value: csv_field_value, error: error}
-        end
-        validated_csv_columns << validated_csv_column
+        validated_csv_columns << validate_column(user, collection, column_spec, fields, csv_column)
       end
       validated_data[:sites] = validated_csv_columns.transpose
       validated_data
     end
 
+    def validate_sites_with_column(user, collection, column_spec)
+      column_spec = column_spec.with_indifferent_access
+      csv = CSV.read file_for(user, collection)
+      csv[0].map!{|r| r.strip}
+      column_index = csv[0].index(column_spec[:name])
+      csv_column = csv[1 .. 11].transpose[column_index]
+      fields = collection.fields
+
+      {column_index => validate_column(user, collection, column_spec, fields, csv_column)}
+    end
+
     def guess_columns_spec(user, collection)
       rows = []
-      i = 0
-
       CSV.foreach(file_for user, collection) do |row|
         rows << row
       end
@@ -284,6 +282,22 @@ class ImportWizard
 
     private
 
+   def validate_column(user, collection, column_spec, fields, csv_column)
+      if column_spec[:usage].to_sym == :existing_field
+        field = fields.find column_spec[:field_id]
+      end
+      validated_csv_column = []
+      csv_column.each do |csv_field_value|
+        begin
+          validate_column_value(column_spec, csv_field_value, field, collection)
+        rescue => ex
+          error = ex.message
+        end
+        validated_csv_column << {value: csv_field_value, error: error}
+      end
+      validated_csv_column
+    end
+
     def validate_column_value(column_spec, field_value, field, collection)
       if field
         field.apply_format_update_validation(field_value, true, collection)
@@ -312,11 +326,6 @@ class ImportWizard
 
       columns = rows[0].select(&:present?).map{|x| {:name => x.strip, :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
       columns.each_with_index do |column, i|
-        rows[1 .. 4].each do |row|
-          if row[i]
-            column[:value] = row[i].to_s unless column[:value].present?
-          end
-        end
         guess_column_usage(column, fields, rows, i, admin)
       end
     end

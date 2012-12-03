@@ -20,6 +20,14 @@
   margin: 3px 5px !important;
 }
 
+
+.loading {
+  background-image: url("/assets/loading.gif");
+  padding: 0 0 0 27px;
+  background-repeat: no-repeat;
+}
+
+
 /* ------------ table ------------------- */
 .GralTable td { padding:0px 6px; overflow: hidden; text-overflow: ellipsis; }
 .GralTable td.add { color:#1e87c9 }
@@ -34,12 +42,29 @@
 .box.nopadd { padding:0 }
 .box.nopadd .left { border-right:1px solid #eeeeee}
 .h50 { height:500px}
-.tableheader { background:url(<%= InsteddRails.url %>/theme/images/interface/backtd.png) repeat-x left 32px #ffffff; position:absolute; height:40px; z-index:1 }
+
+.tableheader {
+  background:url(<%= InsteddRails.url %>/theme/images/interface/backtd.png) repeat-x left 32px #ffffff;
+  height:40px;
+  z-index:1
+}
+
 .tableheader.expanded { width:960px }
 .tableheader.expanded div { display:inline-block }
-.tableheader.expanded div:first-child { border-right:1px solid #eeeeee; width:400px }
+
+.tableheader.expanded div:first-child {
+  border-right:1px solid #eeeeee;
+  width:300px;
+}
+
 .tableheader span, .tableheader button { vertical-align:middle }
-.tablescroll { overflow:auto; height:410px; margin-top:40px }
+
+.tablescroll {
+  overflow:auto;
+  height:420px;
+  border-bottom: 1px #EEE solid;
+}
+
 .tablescroll .GralTable tr:nth-child(2) { background:none !important }
 .tablescroll .GralTable tr.active td { background:#d0d0d0 }
 .tablescroll .GralTable tr td:first-child { border-right:1px solid #eeeeee }
@@ -56,8 +81,23 @@
 .stat-r { background:#ff4800; background-image:none !important; border-top:1px solid #bf3602; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
 .stat-y { background:#fcbb00; background-image:none !important; border-top:1px solid #bc8b00; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
 .stat-g { background:#79e820; background-image:none !important; border-top:1px solid #5bae18; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
-.tablebottom { padding:15px 0 0 10px; color:#555555 }
-.tablebottom span.loadmore { font-weight:bold; font-style:italic; text-align:center; margin-left:65px; width:615px; display:inline-block }
+
+.tablebottom {
+  color: #555555;
+  height: 35px;
+  padding-top: 5px;
+}
+
+.tablescroll span.loadmore
+{
+  padding-top: 12px;
+  vertical-align: middle;
+  text-align:center;
+  width:100%;
+  height:30px;
+  display:inline-block;
+  border-top:1px #EEE solid;
+}
 
 .tablescroll div { padding:0 8px; margin:5px 0 0px 0 }
 .tablescroll hr { width:316px; margin:0px 0px 10px 5px }
@@ -91,8 +131,6 @@ ul.taglist li a { display:block }
 .ftable.active { background-position: 0px -60px; }
 
 td.loadmore { height: 36px }
-
-.w39 { width: 388px; min-width: 388px; max-width: 388px }
 
 .tablescroll .superblyTagItems { display:inline-block;padding:0;margin:0 }
 .tablescroll .superblyTagItem { top:4px;cursor:pointer }

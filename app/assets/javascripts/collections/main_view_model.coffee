@@ -82,9 +82,9 @@ onCollections ->
         @enterCollection value
         return
 
-      queryParams = $.url().param()
-      for key of queryParams
-        value = queryParams[key]
+      @queryParams = $.url().param()
+      for key of @queryParams
+        value = @queryParams[key]
         switch key
           when 'lat', 'lng', 'z'
             continue
@@ -129,7 +129,11 @@ onCollections ->
       @ignorePerformSearchOrHierarchy = false
       @performSearchOrHierarchy()
 
-      @showTable() if showTable
+      if showTable
+        @showTable()
+      else
+        @initMap()
+
       @selectSiteFromId(selectedSiteId, selectedCollectionId) if selectedSiteId
       @editSiteFromMarker(editingSiteId, editingCollectionId) if editingSiteId
       @groupBy(@currentCollection().findFieldByEsCode(groupBy)) if groupBy && @currentCollection()
