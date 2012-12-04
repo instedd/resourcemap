@@ -96,7 +96,7 @@
 
 .tableheader.expanded div:first-child {
   border-right:1px solid #eeeeee;
-  width:300px;
+  width:295px;
 }
 
 .tableheader span, .tableheader button { vertical-align:middle }
@@ -198,7 +198,18 @@ td.loadmore { height: 36px }
 .coldiv span { background: url(<%= InsteddRails.url %>/theme/images/icons/misc/grey/arrowRight.png) no-repeat 10px 50% #ffffff }
 .expdiv span { background: url(<%= InsteddRails.url %>/theme/images/icons/misc/grey/arrowDown.png) no-repeat 10px 50% #ffffff }
 
-.tableheader .pback { margin-left: 6px; }
+.tableheader .pback {
+  margin-left: 3px;
+  margin-top:6px;
+}
+
+.mapheader .greyback {
+  margin-top: 3px;
+}
+
+.tableheader.expanded .greyback {
+  margin-left:3px;
+}
 
 .GralTable button.farrow { margin: 3px 2px !important;}
 

@@ -30,12 +30,12 @@
 -# Collection sites
 <!-- ko if: !editingSite() -->
 <!-- ko with: currentCollection -->
-.tableheader.expanded
+.tableheader.expanded{style: 'height:34px;'}
   %div
     %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
     %span
     %span{ko(text: :name)}
-    %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:9px'}
+    %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
   = render 'collections/index/export'
   .mapheader.right
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
