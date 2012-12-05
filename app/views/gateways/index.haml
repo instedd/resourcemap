@@ -18,7 +18,7 @@
         %label Gateway URL:
         %span{ko(text: :gateWayURL)} 
         %br
-        %label User name:
+        %label Gateway Name:
         %span{ko(text: :nuntiumChannelName)} 
 
 
@@ -40,21 +40,13 @@
         %br
         %input{ko(value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
         %br
-        %label{ko(visible: "isManualConfiguration", css: {error: 'passwordError'})} Password
+        -#%label{ko(visible: "isManualConfiguration", css: {error: 'passwordError'})} Password
         %label{ko(visible: "!isManualConfiguration()", css: {error: 'ticketCodeError'})} Key
         %br
-        %input{ko(visible: "isManualConfiguration", value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
-        %input{ko(visible: "!isManualConfiguration()", value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
+        -#%input{ko(visible: "isManualConfiguration", value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
+        %input{ko(visible: "!isManualConfiguration()", hasfocus: true, value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
         %br
-        %input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
-        %br
-        %br
-        Share 
-        %br
-        %input{"data-bind" => "checked: isShare", :value => "false", :name => "collection", :type => "radio"}
-        %label Not share
-        %input{"data-bind" => "checked: isShare", :value => "true",  :name => "collection", :type => "radio"}
-        %label Share
+        -#%input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
         %br
         .bottom-actions
           %button.white{ ko(click: '$root.saveGateway', enable: :valid) } Save

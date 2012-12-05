@@ -48,9 +48,9 @@ onGateways ->
         return null if @isManualConfiguration()
         length = $.trim(@ticketCode()).length
         if length < 1
-          "Channel's ticket code is missing"        
+          "SMS gateway key is missing"        
         else if length != 4
-          "Channel's ticket code must be 4 characters"
+          "SMS gateway key is must be 4 characters"
         else 
           null
       @error                  = ko.computed => 

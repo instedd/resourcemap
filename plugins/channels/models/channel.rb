@@ -111,6 +111,7 @@ class Channel < ActiveRecord::Base
   end
   
   def self.default_nuntium_name
-    'testing' 
+    # smart or camgsm(mobitel)
+    'smart' 
   end
 end
