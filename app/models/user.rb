@@ -89,4 +89,8 @@ class User < ActiveRecord::Base
   def self.encrypt_users_password
     all.each { |user| user.update_attributes password: user.encrypted_password }
   end
+
+  def get_gateway
+    channels.first 
+  end
 end

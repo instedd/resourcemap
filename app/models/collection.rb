@@ -170,4 +170,12 @@ class Collection < ActiveRecord::Base
     end
     nil
   end
+
+  def get_user_owner
+    memberships.find_by_admin(true).user
+  end
+
+  def get_gateway_under_user_owner
+    get_user_owner.get_gateway 
+  end
 end

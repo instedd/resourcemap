@@ -116,4 +116,13 @@ describe User do
     User.encrypt_users_password
     User.first.encrypted_password.should_not == 'bar123'
   end
+
+  describe 'gateway' do 
+    let(:user_1){ User.make }
+    let!(:gateway) { user_1.channels.make name: 'default', kicket_code: '1234', is_manual_configuration: false}
+
+    it 'should return gateway under user' do
+      user_1.get_gateway.should eq gateway 
+    end
+  end
 end
