@@ -75,8 +75,6 @@ onCollections -> if $('#collections-main').length > 0
       else
         left_body.height(height_for_body + 35)
         $('table.GralTable').fixedHeaderTable({ height: height_for_body})
-        #$('.GralTable').height(height_for_body + 100)
-
 
       map.width("100%")
       collections_main.height("100%")
@@ -87,7 +85,7 @@ onCollections -> if $('#collections-main').length > 0
       if(window.model.fullscreenExpanded())
         right_panel.width(width)
 
-    google.maps.event.trigger(map, "resize") if window.model && window.model.showingMap()
+    google.maps.event.trigger(map, "resize") if window.model && window.model.showingMap() && map
     false
 
 
