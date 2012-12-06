@@ -5,7 +5,7 @@
   <!-- ko if: !currentCollection() && !editingSite() -->
   .tableheader
     %div{style: 'padding-top:9px;padding-left:6px;'} My Collections
-  .tablescroll
+  .tablescroll.sites
     %table.GralTable.CleanTable
       %tbody
         <!-- ko foreach: collections -->
@@ -39,7 +39,7 @@
     %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
-  .tablescroll
+  .tablescroll.sites
     %table.GralTable.CleanTable
       %tbody
         <!-- ko if: !isSearch() && $root.groupBy().esCode != '' -->
@@ -203,7 +203,7 @@
       %button.pback
       %span
       %span Loading...
-#right-panel.right
+#right-panel.right.sites
   .mapheader
     <!-- ko if: $root.currentCollection() -->
     = render 'collections/index/export'

@@ -42,8 +42,8 @@
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}
     %br{clear: "all"}
-.tablescroll
-  %table.GralTable{style: 'table-layout: fixed;'}
+.tablescroll.expanded.sites{style:'width:100%;'}
+  %table.GralTable.tableview{style: 'table-layout: fixed;'}
     %col{width: '300'}
     %col{width: '100'}
     %col{width: '100'}

@@ -16,7 +16,15 @@
 }
 
 .fullscreen .tablescroll {
-  height:89%;
+}
+
+.fullscreen .tablescroll.expanded.sites {
+}
+
+.fullscreen .tablescroll.sites {
+}
+
+.fullscreen #right-panel.sites {
 }
 
 .fullscreen #toolbar, .fullscreen #header, .fullscreen #footer-span {

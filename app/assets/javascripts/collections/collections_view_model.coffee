@@ -32,6 +32,9 @@ onCollections ->
       @rewriteUrl()
 
       $('.BreadCrumb').load("collections/breadcrumbs", {})
+
+      window.setTimeout(window.adjustContainerSize, 100)
+
       # Return undefined because otherwise some browsers (i.e. Miss Firefox)
       # would render the Object returned when called from a 'javascript:___'
       # value in an href (and this is done in the breadcrumb links).
@@ -49,6 +52,7 @@ onCollections ->
 
       $.get "/collections/#{@currentCollection().id}/sites_by_term.json", (sites) =>
         @currentCollection().allSites(sites)
+        window.adjustContainerSize()
 
       initialized = @initMap()
       collection.panToPosition(true) unless initialized
@@ -63,8 +67,11 @@ onCollections ->
           @refreshTimeago()
           @makeFixedHeaderTable()
           @rewriteUrl()
+        window.adjustContainerSize()
 
       $('.BreadCrumb').load("collections/breadcrumbs", { collection_id: collection.id })
+      window.adjustContainerSize()
+
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
@@ -90,6 +97,8 @@ onCollections ->
         window.adjustContainerSize()
         @reloadMapSites()
       @makeFixedHeaderTable()
+
+      window.setTimeout(window.adjustContainerSize, 200)
 
     @toogleExpandFullScreen: ->
       if @fullscreen() && !@fullscreenExpanded()

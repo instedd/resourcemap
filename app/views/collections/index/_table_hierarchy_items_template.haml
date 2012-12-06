@@ -3,7 +3,7 @@
   <!-- ko foreach: hierarchyItems -->
   %tr{ko(css: {active: :selected})}
     %td.w30{ko(click: :toggleExpand), style: 'overflow:auto;height:30px;cursor:pointer'}
-      %div{style: 'margin-top:2px'}
+      %div{style: 'margin-top:5px'}
         %a{ko(style: {marginLeft: "'' + (level * 20) + 'px'"}), href: 'javascript:void(0)'}
           %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
         %span{ko(text: :name)}
