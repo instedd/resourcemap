@@ -2,7 +2,7 @@
   .ignored, .ignored input, .ignored select { color: grey; }
   .error, .error_column { color: red; }
 
-= render 'tabs'
+= render '/tabs'
 
 .tabsline
   %h2 Import wizard
@@ -67,18 +67,18 @@
           //ko
           /ko if: usage() != 'id'
           - if collection_admin?
-            - content = 'collections/import_wizard/usage_options_for_admin'
+            - content = 'import_wizards/adjusments/usage_options_for_admin'
           - else
-            - content = 'collections/import_wizard/usage_options_for_non_admin'
+            - content = 'import_wizards/adjusments/usage_options_for_non_admin'
           //ko
-          = render 'collections/import_wizard/popup_row', :label => 'Use as:', :content => content
+          = render 'import_wizards/adjusments/popup_row', :label => 'Use as:', :content => content
           /ko if: usage() == 'existing_field'
-          = render 'collections/import_wizard/popup_row', :label => 'Layer:', :content => 'collections/import_wizard/existing_layer_options'
-          = render 'collections/import_wizard/popup_row', :label => 'Field:', :content => 'collections/import_wizard/existing_field_options'
+          = render 'import_wizards/adjusments/popup_row', :label => 'Layer:', :content => 'import_wizards/adjusments/existing_layer_options'
+          = render 'import_wizards/adjusments/popup_row', :label => 'Field:', :content => 'import_wizards/adjusments/existing_field_options'
           //ko
           /ko if: usage() == 'new_field'
-          = render 'collections/import_wizard/popup_row', :label => 'Field Code:', :content => 'collections/import_wizard/new_field_code'
-          = render 'collections/import_wizard/popup_row', :label => 'Field Name:', :content => 'collections/import_wizard/new_field_name'
+          = render 'import_wizards/adjusments/popup_row', :label => 'Field Code:', :content => 'import_wizards/adjusments/new_field_code'
+          = render 'import_wizards/adjusments/popup_row', :label => 'Field Name:', :content => 'import_wizards/adjusments/new_field_name'
           //ko
         %div
           /ko if: usage() == 'new_field'

@@ -33,7 +33,8 @@
   }
 <% end %>
 
-<% ['name', 'id', 'location'].each  do |name| %>
+
+<% ['name', 'id', 'location', 'ignore'].each do |name| %>
   <%=   ".f#{name} {" %>
       <%= "background:url(/assets/fields_small_buttons/f#{name}.png) no-repeat;" %>
   }

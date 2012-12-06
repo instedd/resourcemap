@@ -4,7 +4,7 @@ class CollectionsController < ApplicationController
   before_filter :authenticate_collection_admin!, :only => [:destroy, :create_snapshot]
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
-  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :import_wizard, :reminders]
+  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
 
   def index
     if params[:name].present?
@@ -126,43 +126,6 @@ class CollectionsController < ApplicationController
 
   def max_value_of_property
     render json: collection.max_value_of_property(params[:property])
-  end
-
-  def import_wizard_upload_csv
-    ImportWizard.import current_user, collection, params[:file].read
-    redirect_to collection_import_wizard_adjustments_path(collection)
-  rescue => ex
-    redirect_to collection_import_wizard_path(collection), :notice => "The file was not a valid CSV file"
-  end
-
-  def import_wizard
-    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
-  end
-
-  def import_wizard_adjustments
-    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
-  end
-
-  def import_wizard_guess_columns_spec
-    render json: ImportWizard.guess_columns_spec(current_user, collection)
-  end
-
-  def import_wizard_validate_sites_with_columns
-    render json: ImportWizard.validate_sites_with_columns(current_user, collection, JSON.parse(params[:columns]))
-  end
-
-  def import_wizard_validate_sites_with_column
-    render json: ImportWizard.validate_sites_with_column(current_user, collection, JSON.parse(params[:column]))
-  end
-
-  def import_wizard_execute
-    columns = params[:columns].values
-    if columns.find { |x| x[:usage] == 'new_field' } and not current_user.admins? collection
-      render text: "Non-admin users can't create new fields", status: :unauthorized
-    else
-      ImportWizard.execute(current_user, collection, params[:columns].values)
-      render :json => :ok
-    end
   end
 
   def sites_by_term

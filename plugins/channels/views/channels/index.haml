@@ -1,7 +1,7 @@
 = stylesheet_link_tag 'channels'
-= render 'collections/tabs'
+= render '/tabs'
 .tabsline
-  #channels-main.hidden-until-loaded 
+  #channels-main.hidden-until-loaded
     %h2 Channels
     <!-- ko foreach: channels -->
     <!-- ko if: $data != $root.currentChannel() -->
@@ -10,41 +10,41 @@
         %span{ko(text: :name)}
         &rarr;
         <!-- ko if: isShare() == "true" -->
-        <!-- ko foreach: sharedCollections --> 
+        <!-- ko foreach: sharedCollections -->
         %span{ ko(text: :name) }
         <!-- /ko -->
         <!-- /ko -->
       .rightbuttons
         %p.field.switch
           %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
-            %span 
+            %span
           %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
-            %span 
+            %span
         %button.fdelete{ko(visible: 'isAdmin', click: '$root.deleteChannel')}
-          
+
       .middlebuttons{ko(visible: '!clientConnected()')}
         %label Gateway URL:
-        %span{ko(text: :gateWayURL)} 
+        %span{ko(text: :gateWayURL)}
         %br
         %label User name:
-        %span{ko(text: :nuntiumChannelName)} 
-        %br   
+        %span{ko(text: :nuntiumChannelName)}
+        %br
         %label.error{ko(text: :queuedMessageText)}
       .middlebuttons{ko(visible: 'clientConnected')}
         %label Phone number:
-        %span{ko(text: :phoneNumber)} 
-        %br 
+        %span{ko(text: :phoneNumber)}
+        %br
         %label Gateway URL:
-        %span{ko(text: :gateWayURL)} 
+        %span{ko(text: :gateWayURL)}
         %br
         %label User name:
-        %span{ko(text: :nuntiumChannelName)} 
+        %span{ko(text: :nuntiumChannelName)}
 
 
       %button.farrow{ko(visible: 'isAdmin', click: '$root.editChannel')} Edit configuration
     %br
     <!-- /ko -->
-    
+
     -# Form editor or new
     <!-- ko if: $data == $root.currentChannel() -->
     .box.w60
@@ -62,7 +62,7 @@
         %input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
         %br
         %br
-        Share 
+        Share
         %br
         %input{"data-bind" => "checked: isShare", :value => "false", :name => "collection", :type => "radio"}
         %label Not share
@@ -70,22 +70,22 @@
         %label Share
         %br
         .middlebuttons{ko(visible: 'isShare() == "true"' )}
-          
+
           %input{ko(autocompleteTagField: 'sharedCollections',objectType: "Collection", valueUpdate: :afterkeydown), proxy: collections_path(), valueField: 'id', displayField: 'name', type: :text}
-            
+
         .bottom-actions
           %button.white{ ko(click: '$root.saveChannel', enable: :valid) } Save
           %a.tgrey{ ko(click: '$root.cancelChannel'), href: 'javascript:void(0)' } Cancel
           <!-- ko if: !valid() -->
           %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
           <!-- /ko -->
-    %br 
+    %br
     <!-- /ko -->
     <!-- /ko -->
-    
+
     .box.grey.add{ ko(visible: '!currentChannel()', click: 'addChannel'), style: 'display:none'}
       %span
-        Add Channel 
+        Add Channel
       %button.cadd.right
       %br{clear: :all}
 
