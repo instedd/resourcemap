@@ -37,6 +37,7 @@ onGateways ->
 
     editGateway: (gateway) =>
       @originalGateway = gateway.clone()
+      gateway.isEdit true 
       @currentGateway gateway 
 
     deleteGateway: (gateway) =>
@@ -65,6 +66,9 @@ onGateways ->
     tryGatewayCallback: (data) =>
       gateway = @findGateway(data.id)
       gateway.isTry false
-    
+   
+    cancel: (gateway)=>
+      gateway.isTry false
+
     findGateway: (id) =>
       return gateway for gateway in @gateways() when gateway.id == id

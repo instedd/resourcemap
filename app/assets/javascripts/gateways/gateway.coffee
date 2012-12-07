@@ -11,7 +11,7 @@ onGateways ->
       @isManualConfiguration  = ko.observable data?.is_manual_configuration
       @isShare                = ko.observable data?.is_share.toString()
       @clientConnected        = ko.observable data?.client_connected
-      @isAdmin                = true
+      @isEdit                 = ko.observable false
       @queuedMessageCount     = ko.observable data?.queued_messages_count
       @queuedMessageText      = ko.computed =>
         messageText = 'Client disconected,' + @queuedMessageCount() 
@@ -24,6 +24,8 @@ onGateways ->
       @gateWayURL             = ko.observable data?.gateway_url
       @sharedCollections      = ko.observable $.map data?.collections ? [], (collection) -> 
         new Collection(collection) if(collection.id != data.collection_id)
+      
+      @isTry                  = ko.observable false 
       @nameError              = ko.computed => 
         length = $.trim(@name()).length
         if length < 1
@@ -36,7 +38,7 @@ onGateways ->
         return null if @isShare() == "false" 
         "Share Channels is missing" if $.trim(@sharedCollections()).length == 0 
       @passwordError          = ko.computed => 
-        return null if !@isManualConfiguration() 
+        return null if !@isEdit()
         length = $.trim(@password()).length
         if length < 1
           "Channel's password is missing"
@@ -45,7 +47,7 @@ onGateways ->
         else
           null
       @ticketCodeError        = ko.computed =>
-        return null if @isManualConfiguration()
+        return null if @isEdit()
         length = $.trim(@ticketCode()).length
         if length < 1
           "SMS gateway key is missing"        
@@ -53,11 +55,21 @@ onGateways ->
           "SMS gateway key is must be 4 characters"
         else 
           null
+
+      @destinationPhoneNumberError            = ko.computed =>
+        return null if !@isTry()
+        length = $.trim(@tryPhoneNumber()).length
+        if length < 1
+          "Destination phone number is missing"        
+        else 
+          null
+
       @error                  = ko.computed => 
-        return @nameError() if @nameError()
-        return @passwordError() if @passwordError()
-        return @ticketCodeError() if @ticketCodeError() 
-        return @shareCollectionError() if @shareCollectionError() 
+        # return @nameError() if @nameError()
+        # return @passwordError() if @passwordError()
+        # return @ticketCodeError() if @ticketCodeError() 
+        # return @shareCollectionError() if @shareCollectionError() 
+        return @destinationPhoneNumberError() if @destinationPhoneNumberError()
       
       @enableCss              = ko.observable 'cb-enable'
       @disableCss             = ko.observable 'cb-disalbe'
@@ -71,7 +83,6 @@ onGateways ->
           @disableCss 'cb-disable selected'
       
       @valid                  = ko.computed => not @error()?
-      @isTry                  = ko.observable false 
       @tryPhoneNumber         = ko.observable()
     toJson: ->
       id                      : @id

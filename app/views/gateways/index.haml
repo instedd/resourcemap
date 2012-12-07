@@ -6,10 +6,26 @@
     .box.grey.w60
       .toptitle
         %span{ko(text: :name)}
+        &rarr;
       .rightbuttons
-        %button.fdelete{ko(visible: 'isAdmin', click: '$root.deleteGateway')}
+        %p.field.switch
+          %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
+            %span 
+          %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
+            %span 
+        %button.fdelete{ko(click: '$root.deleteGateway')}
           
       .middlebuttons{ko(visible: '!clientConnected()')}
+        %label Gateway URL : 
+        %span{ko(text: :gateWayURL)} 
+        %br 
+        %label User Name :
+        %span{ko(text: :nuntiumChannelName)} 
+        %br 
+        %label Password :
+        %span{ko(text: :password)} 
+
+        %br
         %label.error{ko(text: :queuedMessageText)}
       .middlebuttons{ko(visible: 'clientConnected')}
         %label Phone number:
@@ -18,17 +34,18 @@
         %label Gateway URL:
         %span{ko(text: :gateWayURL)} 
         %br
-        %label Gateway Name:
+        %label User Name:
         %span{ko(text: :nuntiumChannelName)} 
 
 
-      %button.farrow{ko(visible: 'isAdmin', click: '$root.editGateway')} Edit configuration
-      %button.orange{ko(visible: 'clientConnected', click: '$root.setIsTry'), style: 'float:right; margin-right:-3px'} Try Your Gateway
+      %button.farrow{ko(visible: '!clientConnected()', click: '$root.editGateway')} Edit configuration
+      %button.fmessage{ko(visible: 'clientConnected() && !isTry()', click: '$root.setIsTry')} Test Your Gateway
       .middlebuttons{ko(visible: 'isTry')}
         %label
-          Enter your distination phone number
-        %input{ko(value: :tryPhoneNumber, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
-        %button.farrow{ko(visible: 'isAdmin', click: '$root.tryGateway')} Try Now!
+        %input{ko(value: :tryPhoneNumber, valueUpdate: :afterkeydown), type: :text, style: 'width:240px', placeholder: 'Enter your destination phone number' }
+        %button.fmessage{ko(click: '$root.tryGateway', enable: 'valid')} Send Now!
+
+        %button.fclose{ko(click: '$root.cancel')} Cancel
     %br
     <!-- /ko -->
     
@@ -40,11 +57,11 @@
         %br
         %input{ko(value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
         %br
-        -#%label{ko(visible: "isManualConfiguration", css: {error: 'passwordError'})} Password
-        %label{ko(visible: "!isManualConfiguration()", css: {error: 'ticketCodeError'})} Key
+        %label{ko(css: {error: 'passwordError'})} Password
+        -#%label{ko(visible: "!isManualConfiguration()", css: {error: 'ticketCodeError'})} Key
         %br
-        -#%input{ko(visible: "isManualConfiguration", value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
-        %input{ko(visible: "!isManualConfiguration()", hasfocus: true, value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
+        %input{ko(value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
+        -#%input{ko(visible: "!isManualConfiguration()", hasfocus: true, value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
         %br
         -#%input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
         %br
