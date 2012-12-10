@@ -31,8 +31,9 @@
     <!-- ko foreach: layers -->
     <!-- ko if: $data == $root.currentLayer() -->
     .box.w80
-      %p
+      %p{style: 'margin-top:0px;'}
         %label{ko(css: {error: :nameError}), :for => :name} Name
+        %br/
         %br/
         = ko_text_field_tag :name, hasfocus: :hasFocus, css: {error: :nameError}
 
@@ -56,7 +57,7 @@
                   %a{ko(click: 'selectingLayerClick', attr: '{id: name}'), href: '#'} Move to layer...
                   = select_tag :layer, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', event: '{ change: selectingLayerSelect }'), :style => "display: none; position:relative; top:-29px; right:42px;"
 
-              .feditor-button
+              .feditor-button{style: 'margin-top:-5px;'}
                 %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
               .feditor-content
                 %h1{ko(text: :name)}
