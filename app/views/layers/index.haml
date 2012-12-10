@@ -47,14 +47,15 @@
           .feditor{ko(css: {first: '$data == $parent.fields()[0]'}, click: '$root.selectField')}
             .feditor-top
             .feditor-container
-              .rightbuttons
-                .btupdn{style: 'vertical-align:bottom'}
+              .rightbuttons{style:'width:160px;'}
+                %button.fdelete{ko(click: "$root.deleteField"), style:'margin-top:0px;float:right;'}
+                .btupdn{style: 'float:right;'}
                   %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'margin-top:0'}
                   %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'})}
-                %button.fdelete{ko(click: "$root.deleteField")}
-              .change_layer
-                %a{ko(click: 'selectingLayerClick', attr: '{id: name}'), href: '#'} Move to layer...
-                = select_tag :layer, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', event: '{ change: selectingLayerSelect }'), :style => "display: none"
+                .change_layer{style:'float:right;position:relative;top:4px;'}
+                  %a{ko(click: 'selectingLayerClick', attr: '{id: name}'), href: '#'} Move to layer...
+                  = select_tag :layer, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', event: '{ change: selectingLayerSelect }'), :style => "display: none; position:relative; top:-29px; right:42px;"
+
               .feditor-button
                 %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
               .feditor-content
