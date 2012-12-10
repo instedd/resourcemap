@@ -200,7 +200,7 @@
 
       - if !current_snapshot && collection_admin?
         / ko if: !$root.savingLayer()
-        %button.farrow{ko(click: '$root.editLayer')} Edit
+        %button.farrow{ko(click: '$root.editLayer'), style:'margin-bottom:0px;margin-top:0px'} Edit
         / /ko
     <!-- /ko -->
 
@@ -210,8 +210,9 @@
     - if !current_snapshot && collection_admin?
       / ko if: !savingLayer()
       -# New layer link
-      .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none'}
-        %span Add layer
-        %button.cadd.right{type: :button}
+      .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none;'}
+        %span{style:'padding-top:6px;'}
+          = 'Add layer'
+        %button.cadd.right{type: :button, style: 'margin-top:3px;margin-right:0px;'}
         %br{clear: :all}
       / /ko
