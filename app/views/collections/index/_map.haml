@@ -88,7 +88,7 @@
                 .clear
               %div
                 %label Location:
-                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: 'Search / Drag the pin'}
+                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: 'Search or drag the pin'}
                 .clear
               / ko if: collection.readable($data)
               <!-- ko foreach: $root.currentCollection().layers() -->
