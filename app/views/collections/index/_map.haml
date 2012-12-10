@@ -113,8 +113,9 @@
               <!-- /ko -->
               / /ko
     .tablebottom
-      %button.grey{ko(enable: :valid), type: 'submit'} Done
-      %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
+      .right{style: 'margin-right:3px;margin-top:-5px;'}
+        %button.grey{ko(enable: :valid), type: 'submit'} Done
+        %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
   <!-- /ko -->
 
   -# Show Site form
