@@ -156,7 +156,12 @@ ul.taglist li { background:url(<%= InsteddRails.url %>/theme/images/interface/ad
 ul.taglist li:hover { background-color:#eaeaea }
 ul.taglist li a { display:block }
 
-.box { position:relative; -webkit-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.3); -moz-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.3); box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.3) }
+.box {
+  position:relative;
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.3)
+}
 .box.add { padding:0 5px; margin-top:10px; width:610px; height:30px; cursor: pointer }
 .box.add span { color:#1f86c8; display:inline-block; padding-top:8px }
 .box label { color:#555555 }
