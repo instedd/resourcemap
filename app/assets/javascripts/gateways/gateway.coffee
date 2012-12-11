@@ -73,7 +73,7 @@ onGateways ->
       
       @enableCss              = ko.observable 'cb-enable'
       @disableCss             = ko.observable 'cb-disalbe'
-      @status                 = ko.observable data?.status
+      @status                 = ko.observable data?.is_enable
       @statusInit             = ko.computed =>
         if @status()
           @enableCss 'cb-enable selected'
@@ -110,5 +110,4 @@ onGateways ->
 
     setStatus: (status, callback) ->
       @status status
-      collectionId = parseInt(window.location.toString().match(/\/collections\/(\d+)\/channels/)[1])
-      $.post "/plugin/channels/collections/#{collectionId}/channels/#{@id}/set_status.json", {status: status}, callback 
+      $.post "/gateways/#{@id}/status.json", {status: status}, callback 

@@ -16,7 +16,7 @@
         %button.fdelete{ko(click: '$root.deleteGateway')}
           
       .middlebuttons{ko(visible: '!clientConnected()')}
-        %label Gateway URL : 
+        %label Endpoint URL : 
         %span{ko(text: :gateWayURL)} 
         %br 
         %label User Name :
@@ -31,7 +31,7 @@
         %label Phone number:
         %span{ko(text: :phoneNumber)} 
         %br 
-        %label Gateway URL:
+        %label Endpoint URL:
         %span{ko(text: :gateWayURL)} 
         %br
         %label User Name:
@@ -42,7 +42,7 @@
       %button.fmessage{ko(visible: 'clientConnected() && !isTry()', click: '$root.setIsTry')} Test Your Gateway
       .middlebuttons{ko(visible: 'isTry')}
         %label
-        %input{ko(value: :tryPhoneNumber, valueUpdate: :afterkeydown), type: :text, style: 'width:240px', placeholder: 'Enter your destination phone number' }
+        %input{ko(value: :tryPhoneNumber, valueUpdate: :afterkeydown), type: :text, hasfocus: true,  style: 'width:240px', placeholder: 'Enter your destination phone number' }
         %button.fmessage{ko(click: '$root.tryGateway', enable: 'valid')} Send Now!
 
         %button.fclose{ko(click: '$root.cancel')} Cancel
@@ -57,11 +57,11 @@
         %br
         %input{ko(value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
         %br
-        %label{ko(css: {error: 'passwordError'})} Password
-        -#%label{ko(visible: "!isManualConfiguration()", css: {error: 'ticketCodeError'})} Key
+        -#%label{ko(css: {error: 'passwordError'})} Password
+        %label{ko(visible: "!isManualConfiguration()", css: {error: 'ticketCodeError'})} Key
         %br
-        %input{ko(value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
-        -#%input{ko(visible: "!isManualConfiguration()", hasfocus: true, value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
+        -#%input{ko(value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
+        %input{ko(visible: "!isManualConfiguration()", hasfocus: true, value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
         %br
         -#%input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
         %br

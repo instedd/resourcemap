@@ -4,7 +4,7 @@ class GatewaysController < ApplicationController
     method = Channel.nuntium_info_methods
     respond_to do |format|
       format.html 
-      format.json { render json: current_user.channels.select('channels.id,channels.collection_id,channels.name,channels.password,channels.nuntium_channel_name,is_manual_configuration, channels.is_share').all.as_json(methods: method)}    
+      format.json { render json: current_user.channels.select('channels.id,channels.collection_id,channels.name,channels.password,channels.nuntium_channel_name,channels.is_enable, channels.is_manual_configuration, channels.is_share').all.as_json(methods: method)}    
     end
   end
 
@@ -28,8 +28,16 @@ class GatewaysController < ApplicationController
   end
 
   def try
-    channel = Channel.find params[:gateway_id] 
-    SmsNuntium.notify_sms [params[:phone_number]], 'Welcome to resource map!', channel.nuntium_channel_name    
+    channel = Channel.find params[:gateway_id]
+    SmsNuntium.notify_sms [params[:phone_number]], 'Welcome to resource map!', channel.nuntium_channel_name
     render json: channel.as_json
   end
+  
+  def status
+    channel = Channel.find params[:id] 
+    channel.is_enable = params[:status]
+    channel.save!
+    render json: channel
+  end
+ 
 end

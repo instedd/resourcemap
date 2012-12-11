@@ -49,11 +49,11 @@ onGateways ->
       @gateways.remove @deletedGateway
       delete @deletedGateway
 
-    onOffEnable: (channel) =>
-      channel.setStatus true, @channelStatusCallback
+    onOffEnable: (gateway) =>
+      gateway.setStatus true, @channelStatusCallback
 
-    onOffDisable: (channel) =>
-      channel.setStatus false, @channelStatusCallback
+    onOffDisable: (gateway) =>
+      gateway.setStatus false, @channelStatusCallback
 
     reminderStatusCallback: (data) =>
 

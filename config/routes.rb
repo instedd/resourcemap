@@ -70,6 +70,7 @@ ResourceMap::Application.routes.draw do
 
   resources :activities, :only => [:index], :path => 'activity'
   resources :gateways do
+    post 'status', :on => :member
     post 'try' 
   end
 
