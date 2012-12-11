@@ -1,7 +1,7 @@
 -# Sites template
 %script{type: "text/html", id: "table-sites-template"}
   <!-- ko foreach: sites -->
-  %tr{ko(css: "{active: $data == $root.selectedSite()}")}
+  %tr
     %td{style: 'overflow:auto'}
       %div{style: 'margin-top:5px'}
         %p{ko(style: {marginLeft: "'' + (($parent.level + 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
