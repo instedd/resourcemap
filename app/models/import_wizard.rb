@@ -13,17 +13,14 @@ class ImportWizard
 
     def validate_sites_with_columns(user, collection, columns_spec)
       columns_spec.map!{|c| c.with_indifferent_access}
-      csv = CSV.read file_for(user, collection)
-      csv_columns = csv[1 .. 11].transpose
       validated_data = {}
-      validated_csv_columns = []
-      fields = collection.fields
-      csv_columns.each_with_index do |csv_column, csv_column_number|
+      csv = CSV.read file_for(user, collection)
+      csv_columns = csv[1.. -1].transpose
+      csv[0].map!{|r| r.strip}
 
-        column_spec = columns_spec[csv_column_number]
-        validated_csv_columns << validate_column(user, collection, column_spec, fields, csv_column)
-      end
-      validated_data[:sites] = validated_csv_columns.transpose
+      validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
+      # TODO: implement pagination
+      validated_data[:sites] = get_sites(user, collection, columns_spec, 1)
       validated_data
     end
 
@@ -32,10 +29,55 @@ class ImportWizard
       csv = CSV.read file_for(user, collection)
       csv[0].map!{|r| r.strip}
       column_index = csv[0].index(column_spec[:name])
-      csv_column = csv[1 .. 11].transpose[column_index]
+      csv_column = csv[1 .. -1].transpose[column_index]
+
+      sites = csv_column.map{|csv_field_value| {value: csv_field_value}}
+
+      #TODO: Refactor this duplicated code
+      sites_errors = {}
+      sites_errors[:hierarchy_field_found] = []
+      sites_errors[:duplicated_code] = []
+      sites_errors[:duplicated_label] = []
+      sites_errors[:existing_code] = []
+      sites_errors[:usage_missing] = []
+      sites_errors[:data_errors] = []
+
+      sites_errors[:hierarchy_field_found] << column_index if column_spec[:usage] == 'new_field' && column_spec[:kind] == 'hierarchy'
+      errors_for_column = validate_column(user, collection, column_spec, collection.fields, csv_column, column_index)
+      sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
+
+      { sites: sites, errors: sites_errors}
+    end
+
+    def calculate_errors(user, collection, columns_spec, csv_columns, header)
+      sites_errors = {}
+      sites_errors[:hierarchy_field_found] = []
+      sites_errors[:duplicated_code] = []
+      sites_errors[:duplicated_label] = []
+      sites_errors[:existing_code] = []
+      sites_errors[:usage_missing] = []
+      sites_errors[:data_errors] = []
+
       fields = collection.fields
 
-      {column_index => validate_column(user, collection, column_spec, fields, csv_column)}
+      csv_columns.each_with_index do |csv_column, csv_column_number|
+        column_spec = columns_spec[csv_column_number]
+        sites_errors[:hierarchy_field_found] << csv_column_number if column_spec[:usage] == 'new_field' && column_spec[:kind] == 'hierarchy'
+        errors_for_column = validate_column(user, collection, column_spec, fields, csv_column, csv_column_number)
+        sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
+      end
+
+      sites_errors
+    end
+
+    def get_sites(user, collection, columns_spec, page)
+      csv = CSV.read file_for(user, collection)
+      csv_columns = csv[1 .. 11]
+      processed_csv_columns = []
+      csv_columns.each do |csv_column|
+        processed_csv_columns << csv_column.map{|csv_field_value| {value: csv_field_value} }
+      end
+      processed_csv_columns
     end
 
     def guess_columns_spec(user, collection)
@@ -282,20 +324,28 @@ class ImportWizard
 
     private
 
-   def validate_column(user, collection, column_spec, fields, csv_column)
+    def validate_column(user, collection, column_spec, fields, csv_column, column_number)
       if column_spec[:usage].to_sym == :existing_field
         field = fields.find column_spec[:field_id]
       end
       validated_csv_column = []
-      csv_column.each do |csv_field_value|
+      csv_column.each_with_index do |csv_field_value, field_number|
         begin
           validate_column_value(column_spec, csv_field_value, field, collection)
         rescue => ex
-          error = ex.message
+          validated_csv_column << {description: ex.message, row: field_number}
         end
-        validated_csv_column << {value: csv_field_value, error: error}
       end
-      validated_csv_column
+
+      grouped_errors = nil
+      validated_columns_grouped = validated_csv_column.group_by{|e| e[:description]}
+      validated_columns_grouped.each do |error_type|
+        if error_type[0]
+          # For the moment we only have one kind of error for each column.
+          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}}
+        end
+      end
+      grouped_errors
     end
 
     def validate_column_value(column_spec, field_value, field, collection)

@@ -692,7 +692,7 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
 
-  it "should get error for invalid existing fields" do
+  it "should get sites & errors for invalid existing fields" do
     email_field = layer.fields.make :code => 'email', :kind => 'email'
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
@@ -700,89 +700,137 @@ describe ImportWizard do
       csv << ['text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
       csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
       csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
+      csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
     end
 
     ImportWizard.import user, collection, csv_string
     column_spec = ImportWizard.guess_columns_spec user, collection
-    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:sites]
+    processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
+    sites_preview = processed_sites[:sites]
 
-    sites_preview.length.should eq(2)
-
+    sites_preview.length.should eq(3)
     first_line = sites_preview.first
-    first_line.should include({:value=>"new val", :error=>nil})
-    first_line.should include({value: '11', error: nil})
-    first_line.should include({:value=>"two", :error=>nil})
-    first_line.should include({:value=>"one", :error=>nil})
-    first_line.should include({:value=>"Dad", :error=>nil})
-    first_line.should include({:value=>"1235", :error=>nil})
-    first_line.should include({:value=>"12/26/1988", :error=>nil})
-    first_line.should include({:value=>"user2@email.com", :error=>nil})
-    first_line.should include({:value=>"email@mail.com", :error=>nil})
+    first_line.should == [{:value=>"new val"}, {value: '11'}, {:value=>"two"}, {:value=>"one"}, {:value=>"Dad"},
+      {:value=>"1235"}, {:value=>"12/26/1988"}, {:value=>"user2@email.com"}, {:value=>"email@mail.com"}]
 
+    #Lines 2 and 3 are equals
     second_line = sites_preview.last
-    second_line.should include({:value=>"new val", :error=>nil})
-    second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
-    second_line.should include({:value=>"inval", :error=>"Invalid option in select_one field"})
-    second_line.should include({:value=>"Dad, inv", :error=>"Invalid option in select_many field"})
-    second_line.should include({:value=>"inval", :error=>"Invalid option in hierarchy field"})
-    second_line.should include({:value=>"999", :error=>"Non-existent site-id in site field"})
-    second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user field"})
-    second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email field"})
+    second_line.should  == [{:value=>"new val"}, {:value=>"invalid11"}, {:value=>"inval"}, {:value=>"Dad, inv"}, {:value=>"inval"},
+      {:value=>"999"}, {:value=>"12/26"}, {:value=>"non-existing@email.com"}, {:value=>"email@ma@il.com"}]
+
+    sites_errors = processed_sites[:errors]
+
+    data_errors = sites_errors[:data_errors]
+    data_errors.length.should eq(8)
+
+    data_errors[0][:description].should eq("Invalid numeric value in numeric field")
+    data_errors[0][:column].should eq(1)
+    data_errors[0][:rows].should eq([1, 2])
+
+    data_errors[1][:description].should eq("Invalid option in select_one field")
+    data_errors[1][:column].should eq(2)
+    data_errors[1][:rows].should eq([1, 2])
+
+    data_errors[2][:description].should eq("Invalid option in select_many field")
+    data_errors[2][:column].should eq(3)
+    data_errors[2][:rows].should eq([1, 2])
+
+    data_errors[3][:description].should eq("Invalid option in hierarchy field")
+    data_errors[3][:column].should eq(4)
+    data_errors[3][:rows].should eq([1, 2])
+
+    data_errors[4][:description].should eq("Non-existent site-id in site field")
+    data_errors[4][:column].should eq(5)
+    data_errors[4][:rows].should eq([1, 2])
+
+    data_errors[5][:description].should eq("Invalid date value in date field")
+    data_errors[5][:column].should eq(6)
+    data_errors[5][:rows].should eq([1, 2])
+
+    data_errors[6][:description].should eq("Non-existent user-email in user field")
+    data_errors[6][:column].should eq(7)
+    data_errors[6][:rows].should eq([1, 2])
+
+    data_errors[7][:description].should eq("Invalid email value in email field")
+    data_errors[7][:column].should eq(8)
+    data_errors[7][:rows].should eq([1, 2])
 
     ImportWizard.delete_file(user, collection)
   end
 
   it "should get error for invalid new fields" do
-     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
-     csv_string = CSV.generate do |csv|
-       csv << ['text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
-       csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
-       csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
-     end
+    csv_string = CSV.generate do |csv|
+     csv << ['text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
+     csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
+     csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
+     csv << ['new val', 'invalid11', '', '', '', '', '12/26', '', 'email@ma@il.com']
 
-     ImportWizard.import user, collection, csv_string
+    end
 
-     column_spec = [
-       {name: 'Text', usage: 'new_field', kind: 'text', code: 'text'},
-       {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'numeric'},
-       {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'select_one'},
-       {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'select_many'},
-       {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'hierarchy'},
-       {name: 'Site', usage: 'new_field', kind: 'site', code: 'site'},
-       {name: 'Date', usage: 'new_field', kind: 'date', code: 'date'},
-       {name: 'User', usage: 'new_field', kind: 'user', code: 'user'},
-       {name: 'Email', usage: 'new_field', kind: 'email', code: 'email'},
-     ]
+    ImportWizard.import user, collection, csv_string
 
-     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:sites]
+    column_spec = [
+     {name: 'Text', usage: 'new_field', kind: 'text', code: 'text'},
+     {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'numeric'},
+     {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'select_one'},
+     {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'select_many'},
+     {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'hierarchy'},
+     {name: 'Site', usage: 'new_field', kind: 'site', code: 'site'},
+     {name: 'Date', usage: 'new_field', kind: 'date', code: 'date'},
+     {name: 'User', usage: 'new_field', kind: 'user', code: 'user'},
+     {name: 'Email', usage: 'new_field', kind: 'email', code: 'email'},
+    ]
 
-     sites_preview.length.should eq(2)
+    sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
+    sites_preview = sites[:sites]
 
-     first_line = sites_preview.first
-     first_line.should include({:value=>"new val", :error=>nil})
-     first_line.should include({value: '11', error: nil})
-     first_line.should include({:value=>"two", :error=>nil})
-     first_line.should include({:value=>"one", :error=>nil})
-     first_line.should include({:value=>"Dad", :error=> "Hierarchy fields can only be created via web in the Layers page"})
-     first_line.should include({:value=>"1235", :error=>nil})
-     first_line.should include({:value=>"12/26/1988", :error=>nil})
-     first_line.should include({:value=>"user2@email.com", :error=>nil})
-     first_line.should include({:value=>"email@mail.com", :error=>nil})
+    sites_preview.length.should eq(3)
+    first_line = sites_preview.first
+    first_line.should == [{:value=>"new val"}, {value: '11'}, {:value=>"two"}, {:value=>"one"}, {:value=>"Dad"},
+      {:value=>"1235"}, {:value=>"12/26/1988"}, {:value=>"user2@email.com"}, {:value=>"email@mail.com"}]
 
-     second_line = sites_preview.last
-     second_line.should include({:value=>"new val", :error=>nil})
-     second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
-     #option will be created as news
-     second_line.should include({:value=>"inval", :error=>nil})
-     second_line.should include({:value=>"Dad, inv", :error=>nil})
-     #hierarchy fields cannot be created using import wizard
-     second_line.should include({:value=>"inval", :error=> "Hierarchy fields can only be created via web in the Layers page"})
-     second_line.should include({:value=>"999", :error=>"Non-existent site-id in site field"})
-     second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user field"})
-     second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email field"})
+    second_line = sites_preview[1]
+    second_line.should  == [{:value=>"new val"}, {:value=>"invalid11"}, {:value=>"inval"}, {:value=>"Dad, inv"}, {:value=>"inval"},
+      {:value=>"999"}, {:value=>"12/26"}, {:value=>"non-existing@email.com"}, {:value=>"email@ma@il.com"}]
 
-     ImportWizard.delete_file(user, collection)
+    sites_errors = sites[:errors]
+
+    sites_errors[:hierarchy_field_found].should eq([4])
+    sites_errors[:duplicated_code].should eq([])
+    sites_errors[:duplicated_label].should eq([])
+    sites_errors[:existing_code].should eq([])
+    sites_errors[:usage_missing].should eq([])
+
+    data_errors = sites_errors[:data_errors]
+    data_errors.length.should eq(6)
+
+    data_errors[0][:description].should eq("Invalid numeric value in numeric field")
+    data_errors[0][:column].should eq(1)
+    data_errors[0][:rows].should eq([1, 2])
+
+    data_errors[1][:description].should eq("Hierarchy fields can only be created via web in the Layers page")
+    data_errors[1][:column].should eq(4)
+    data_errors[1][:rows].should eq([0, 1, 2])
+
+    data_errors[2][:description].should eq("Non-existent site-id in site field")
+    data_errors[2][:column].should eq(5)
+    data_errors[2][:rows].should eq([1])
+
+    data_errors[3][:description].should eq("Invalid date value in date field")
+    data_errors[3][:column].should eq(6)
+    data_errors[3][:rows].should eq([1, 2])
+
+    data_errors[4][:description].should eq("Non-existent user-email in user field")
+    data_errors[4][:column].should eq(7)
+    data_errors[4][:rows].should eq([1])
+
+    data_errors[5][:description].should eq("Invalid email value in email field")
+    data_errors[5][:column].should eq(8)
+    data_errors[5][:rows].should eq([1, 2])
+
+    ImportWizard.delete_file(user, collection)
   end
 
 
@@ -821,32 +869,24 @@ describe ImportWizard do
      ImportWizard.import user, collection, csv_string
 
      column_spec = {name: 'numeric', usage: 'new_field', kind: 'numeric', code: 'numeric'}
-     sites_preview_one_column = (ImportWizard.validate_sites_with_column user, collection, column_spec)
 
-     sites_preview_one_column[1].length.should eq(2)
+     sites = ImportWizard.validate_sites_with_column user, collection, column_spec
+     sites_values = sites[:sites]
 
-     sites_preview_one_column[1].should include({value: '11', error: nil})
-     sites_preview_one_column[1].should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
-  end
+     sites_errors = sites[:errors]
+     sites_errors[:hierarchy_field_found].should eq([])
+     sites_errors[:duplicated_code].should eq([])
+     sites_errors[:duplicated_label].should eq([])
+     sites_errors[:existing_code].should eq([])
+     sites_errors[:usage_missing].should eq([])
 
-  it "should validate only one column" do
-   site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+     data_errors = sites_errors[:data_errors]
+     data_errors.length.should eq(1)
 
-    csv_string = CSV.generate do |csv|
-      csv << ['text', 'numeric ', ' select_one', 'select_many ', ' hierarchy', 'site', 'date', 'user', 'email']
-      csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
-      csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
-    end
+     data_errors[0][:description].should eq("Invalid numeric value in numeric field")
+     data_errors[0][:column].should eq(1)
+     data_errors[0][:rows].should eq([1])
 
-    ImportWizard.import user, collection, csv_string
-
-    column_spec = {name: 'numeric', usage: 'new_field', kind: 'numeric', code: 'numeric'}
-    sites_preview_one_column = (ImportWizard.validate_sites_with_column user, collection, column_spec)
-
-    sites_preview_one_column[1].length.should eq(2)
-
-    sites_preview_one_column[1].should include({value: '11', error: nil})
-    sites_preview_one_column[1].should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
   end
 
   it "should not show errors if usage is ignore" do
@@ -863,10 +903,11 @@ describe ImportWizard do
     column_spec = {name: 'numeric', usage: 'ignore'}
     sites_preview_one_column = (ImportWizard.validate_sites_with_column user, collection, column_spec)
 
-    sites_preview_one_column[1].length.should eq(2)
+    sites_preview = sites_preview_one_column[:sites]
+    sites_preview.should  == [{:value=>"11"}, {:value=>"invalid11"}]
+    sites_errors = sites_preview_one_column[:errors]
 
-    sites_preview_one_column[1].should include({value: '11', error: nil})
-    sites_preview_one_column[1].should include({:value=>"invalid11", :error=> nil})
+    sites_errors[:data_errors].should == []
   end
 
 end
