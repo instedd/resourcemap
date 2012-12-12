@@ -772,15 +772,15 @@ describe ImportWizard do
     ImportWizard.import user, collection, csv_string
 
     column_spec = [
-     {name: 'Text', usage: 'new_field', kind: 'text', code: 'text'},
-     {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'numeric'},
-     {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'select_one'},
-     {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'select_many'},
-     {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'hierarchy'},
-     {name: 'Site', usage: 'new_field', kind: 'site', code: 'site'},
-     {name: 'Date', usage: 'new_field', kind: 'date', code: 'date'},
-     {name: 'User', usage: 'new_field', kind: 'user', code: 'user'},
-     {name: 'Email', usage: 'new_field', kind: 'email', code: 'email'},
+     {name: 'Text', usage: 'new_field', kind: 'text', code: 'text', label: 'text'},
+     {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'numeric', label: 'numeric'},
+     {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'select_one', label: 'select_one'},
+     {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'select_many', label: 'select_many'},
+     {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'hierarchy', label: 'hierarchy'},
+     {name: 'Site', usage: 'new_field', kind: 'site', code: 'site', label: 'site'},
+     {name: 'Date', usage: 'new_field', kind: 'date', code: 'date', label: 'date'},
+     {name: 'User', usage: 'new_field', kind: 'user', code: 'user', label: 'user'},
+     {name: 'Email', usage: 'new_field', kind: 'email', code: 'email', label: 'email'},
     ]
 
     sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
@@ -874,11 +874,6 @@ describe ImportWizard do
      sites_values = sites[:sites]
 
      sites_errors = sites[:errors]
-     sites_errors[:hierarchy_field_found].should eq([])
-     sites_errors[:duplicated_code].should eq([])
-     sites_errors[:duplicated_label].should eq([])
-     sites_errors[:existing_code].should eq([])
-     sites_errors[:usage_missing].should eq([])
 
      data_errors = sites_errors[:data_errors]
      data_errors.length.should eq(1)
@@ -908,6 +903,49 @@ describe ImportWizard do
     sites_errors = sites_preview_one_column[:errors]
 
     sites_errors[:data_errors].should == []
+  end
+
+  ['lat', 'lng', 'name', 'id'].each do |usage|
+    it "should return validation errors when more than one column is selected to be #{usage}" do
+      csv_string = CSV.generate do |csv|
+        csv << ['col1', 'col2 ']
+        csv << ['val', 'val']
+      end
+
+       column_specs = [
+         {name: 'Column 1', usage: "#{usage}"},
+         {name: 'Column 2', usage:"#{usage}"}
+         ]
+
+      ImportWizard.import user, collection, csv_string
+
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+
+      sites_errors = sites_preview[:errors]
+      sites_errors[:duplicated_usage].should eq(["#{usage}" => [0,1]])
+    end
+  end
+
+  ['code', 'label'].each do |value|
+    it "should return validation errors when there is new_fields with duplicated #{value}" do
+      csv_string = CSV.generate do |csv|
+        csv << ['col1', 'col2 ']
+        csv << ['val', 'val']
+      end
+
+       column_specs = [
+         {name: 'Column 1', usage: 'new_field', "#{value}" => "repeated" },
+         {name: 'Column 2', usage: 'new_field', "#{value}" => "repeated" }
+         ]
+
+      ImportWizard.import user, collection, csv_string
+
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+
+      sites_errors = sites_preview[:errors]
+      key = "duplicated_#{value}".to_sym
+      sites_errors[key].should eq(["repeated" => [0,1]])
+    end
   end
 
 end

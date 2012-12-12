@@ -36,11 +36,11 @@ class ImportWizard
       #TODO: Refactor this duplicated code
       sites_errors = {}
       sites_errors[:hierarchy_field_found] = []
-      sites_errors[:duplicated_code] = []
-      sites_errors[:duplicated_label] = []
-      sites_errors[:existing_code] = []
       sites_errors[:usage_missing] = []
       sites_errors[:data_errors] = []
+
+      #At this point we asume that no columns with duplicated usage or columns with duplicated/existing code or label are found in column_specs.
+      #This validations are performed client side
 
       sites_errors[:hierarchy_field_found] << column_index if column_spec[:usage] == 'new_field' && column_spec[:kind] == 'hierarchy'
       errors_for_column = validate_column(user, collection, column_spec, collection.fields, csv_column, column_index)
@@ -50,21 +50,36 @@ class ImportWizard
     end
 
     def calculate_errors(user, collection, columns_spec, csv_columns, header)
+
+      #Add index to each column spec
+      columns_spec.each_with_index do |column_spec, column_index|
+        column_spec[:index] = column_index
+      end
+
       sites_errors = {}
-      sites_errors[:hierarchy_field_found] = []
-      sites_errors[:duplicated_code] = []
-      sites_errors[:duplicated_label] = []
+
+      proc_select_new_fields = Proc.new{ columns_spec.select {|spec| spec[:usage] == 'new_field'}}
+      sites_errors[:duplicated_code] = calculate_duplicated(proc_select_new_fields, 'code')
+      sites_errors[:duplicated_label] = calculate_duplicated(proc_select_new_fields, 'label')
+
+
+      sites_errors[:existing_label] = []
       sites_errors[:existing_code] = []
       sites_errors[:usage_missing] = []
-      sites_errors[:data_errors] = []
+
+      proc_default_usages = Proc.new{columns_spec.reject{|spec| spec[:usage] == 'new_field' || spec[:usage] == 'existing_field'}}
+      sites_errors[:duplicated_usage] = calculate_duplicated(proc_default_usages, :usage)
 
       fields = collection.fields
 
+      sites_errors[:data_errors] = []
+      sites_errors[:hierarchy_field_found] = []
       csv_columns.each_with_index do |csv_column, csv_column_number|
         column_spec = columns_spec[csv_column_number]
         sites_errors[:hierarchy_field_found] << csv_column_number if column_spec[:usage] == 'new_field' && column_spec[:kind] == 'hierarchy'
         errors_for_column = validate_column(user, collection, column_spec, fields, csv_column, csv_column_number)
         sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
+
       end
 
       sites_errors
@@ -346,6 +361,18 @@ class ImportWizard
         end
       end
       grouped_errors
+    end
+
+    def calculate_duplicated(selection_block, groping_field)
+      spec_to_validate = selection_block.call()
+      spec_by_field = spec_to_validate.group_by{ |s| s[groping_field]}
+      duplicated_columns = []
+      spec_by_field.each do |column_spec|
+        if column_spec[1].length > 1
+          duplicated_columns << {column_spec[0] => column_spec[1].map{|spec| spec[:index] }}
+        end
+      end
+      duplicated_columns
     end
 
     def validate_column_value(column_spec, field_value, field, collection)
