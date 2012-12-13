@@ -4,13 +4,12 @@ class GatewaysController < ApplicationController
     method = Channel.nuntium_info_methods
     respond_to do |format|
       format.html 
-      format.json { render json: current_user.channels.select('channels.id,channels.collection_id,channels.name,channels.password,channels.nuntium_channel_name,channels.is_enable, channels.is_manual_configuration, channels.is_share').all.as_json(methods: method)}    
+      format.json { render json: current_user.channels.select('channels.id,channels.collection_id,channels.name,channels.password,channels.nuntium_channel_name,channels.is_enable,channels.basic_setup, channels.advanced_setup, channels.national_setup, channels.is_manual_configuration, channels.is_share').all.as_json(methods: method)}    
     end
   end
 
   def create
     #params[:gateway][:collection_id] = current_user.memberships.find_by_admin(true).collection_id  # to be refactor in near future 
-    puts params[:gateway] 
     channel = current_user.channels.create params[:gateway]
     render json: channel.as_json
   end
@@ -29,7 +28,8 @@ class GatewaysController < ApplicationController
 
   def try
     channel = Channel.find params[:gateway_id]
-    SmsNuntium.notify_sms [params[:phone_number]], 'Welcome to resource map!', channel.nuntium_channel_name
+    puts channel.to_json 
+    SmsNuntium.notify_sms [params[:phone_number]], 'Welcome to resource map!', channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name
     render json: channel.as_json
   end
   
@@ -39,5 +39,4 @@ class GatewaysController < ApplicationController
     channel.save!
     render json: channel
   end
- 
 end

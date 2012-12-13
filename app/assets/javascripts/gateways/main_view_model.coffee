@@ -2,6 +2,7 @@ onGateways ->
   class @MainViewModel
     constructor: ()->
       @gateways         = ko.observableArray()
+      @nationalGateways = ko.observableArray([])
       @currentGateway   = ko.observable()
       @originalGateway  = ko.observable()
       @isSaving         = ko.observable false
@@ -35,9 +36,14 @@ onGateways ->
     getNuntiumInfoCallback: (data) =>
       console.log data
 
+    showConfiguration: (gateway) =>
+      gateway.viewConfiguration true
+
+    hideConfiguration: (gateway) =>
+      gateway.viewConfiguration false
+
     editGateway: (gateway) =>
       @originalGateway = gateway.clone()
-      gateway.isEdit true 
       @currentGateway gateway 
 
     deleteGateway: (gateway) =>

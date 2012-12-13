@@ -8,11 +8,30 @@ onGateways ->
       @ticketCode             = ko.observable data?.ticket_code 
       @isEnable               = ko.observable data?.is_enable
       @nuntiumChannelName     = ko.observable data?.nuntium_channel_name
-      @isManualConfiguration  = ko.observable data?.is_manual_configuration
       @isShare                = ko.observable data?.is_share.toString()
       @clientConnected        = ko.observable data?.client_connected
-      @isEdit                 = ko.observable false
       @queuedMessageCount     = ko.observable data?.queued_messages_count
+      @nationalGateway        = ko.observable()
+      @selectedGateway        = ko.observable(@setupType(data.advanced_setup, data.national_setup))
+      @basicSetup             = ko.observable data?.basic_setup
+      @advancedSetup          = ko.observable data?.advanced_setup
+      @nationalSetup          = ko.observable data?.national_setup
+      @viewConfiguration      = ko.observable false
+      @processGatewaySelected = ko.computed =>
+        switch @selectedGateway()
+          when 'basic'
+            @basicSetup true
+            @advancedSetup false
+            @nationalSetup false
+          when 'advance' 
+            @basicSetup false
+            @advancedSetup true
+            @nationalSetup false
+          when 'national' 
+            @basicSetup false
+            @advancedSetup false
+            @nationalSetup true
+
       @queuedMessageText      = ko.computed =>
         messageText = 'Client disconected,' + @queuedMessageCount() 
         if data?.queued_messages_count > 1
@@ -38,7 +57,7 @@ onGateways ->
         return null if @isShare() == "false" 
         "Share Channels is missing" if $.trim(@sharedCollections()).length == 0 
       @passwordError          = ko.computed => 
-        return null if !@isEdit()
+        return null if !@advancedSetup()
         length = $.trim(@password()).length
         if length < 1
           "Channel's password is missing"
@@ -47,7 +66,7 @@ onGateways ->
         else
           null
       @ticketCodeError        = ko.computed =>
-        return null if @isEdit()
+        return null if !@basicSetup()
         length = $.trim(@ticketCode()).length
         if length < 1
           "SMS gateway key is missing"        
@@ -65,10 +84,10 @@ onGateways ->
           null
 
       @error                  = ko.computed => 
-        # return @nameError() if @nameError()
-        # return @passwordError() if @passwordError()
-        # return @ticketCodeError() if @ticketCodeError() 
-        # return @shareCollectionError() if @shareCollectionError() 
+        return @nameError() if @nameError()
+        return @passwordError() if @passwordError()
+        return @ticketCodeError() if @ticketCodeError() 
+        return @shareCollectionError() if @shareCollectionError() 
         return @destinationPhoneNumberError() if @destinationPhoneNumberError()
       
       @enableCss              = ko.observable 'cb-enable'
@@ -84,12 +103,15 @@ onGateways ->
       
       @valid                  = ko.computed => not @error()?
       @tryPhoneNumber         = ko.observable()
+    
     toJson: ->
       id                      : @id
       collection_id           : @collectionId
-      name                    : @name()
+      name                    : if @nationalSetup() then @nationalGateway().code else @name()
       is_share                : @isShare()
-      is_manual_configuration : @isManualConfiguration()
+      basic_setup             : @basicSetup()
+      advanced_setup          : @advancedSetup()
+      national_setup          : @nationalSetup()
       #nuntium_channel_name    : @nuntiumChannelName()
       share_collections       : $.map(@sharedCollections(), (collection) -> collection.id)
       password                : @password()
@@ -100,7 +122,9 @@ onGateways ->
         id                      : @id
         name                    : @name()
         is_share                : @isShare()
-        is_manual_configuration : @isManualConfiguration()
+        basic_setup             : @basicSetup()
+        advanced_setup          : @advancedSetup()
+        national_setup          : @nationalSetup()
         nuntium_channel_name    : @nuntiumChannelName()
         gateway_url             : @gateWayURL() 
         collections             : @sharedCollections()
@@ -111,3 +135,13 @@ onGateways ->
     setStatus: (status, callback) ->
       @status status
       $.post "/gateways/#{@id}/status.json", {status: status}, callback 
+
+    setupType: (advanced, national) ->
+      if advanced
+        'advanced'
+      else if national
+        'national'
+      else
+        'basic'
+
+
