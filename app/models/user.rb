@@ -93,4 +93,8 @@ class User < ActiveRecord::Base
   def get_gateway
     channels.first 
   end
+  
+  def active_gateway
+    channels.where("channels.is_enable=?", true)
+  end
 end

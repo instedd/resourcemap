@@ -252,4 +252,9 @@ class CollectionsController < ApplicationController
   def recreate_index
     render json: collection.recreate_index
   end
+
+  def register_gateways
+    collection.channels = Channel.find params["gateways"]
+    render json: collection.as_json
+  end
 end

@@ -12,6 +12,7 @@ ResourceMap::Application.routes.draw do
 
   resources :repeats
   resources :collections do
+    post :register_gateways
     get :sites_by_term
     resources :sites
     resources :layers do
