@@ -1,11 +1,11 @@
 describe 'Collection', ->
   beforeEach ->
     window.runOnCallbacks 'collections'
-    window.model = new MainViewModel
 
   describe 'Hierarchy Item', ->
     beforeEach ->
       @collection = new Collection id: 1
+      window.model = new MainViewModel [@collection]
       @field = new Field { id: 1, code: 'admu', name: 'Admin Unit', kind: 'select_one', writeable: true }
       @col_hierarchy = new CollectionHierarchy(@collection, @field)
 

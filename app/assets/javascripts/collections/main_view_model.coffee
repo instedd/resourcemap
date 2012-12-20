@@ -25,6 +25,9 @@ onCollections ->
     @include UrlRewriteViewModel
     @include GatewaysViewModel
 
+    constructor: (collections) ->
+      @initialize(collections)
+
     initialize: (collections) ->
       @callModuleConstructors(arguments)
       @groupBy = ko.observable(@defaultGroupBy)
@@ -139,9 +142,9 @@ onCollections ->
       @groupBy(@currentCollection().findFieldByEsCode(groupBy)) if groupBy && @currentCollection()
 
       @processingURL = false
-  
+
     isGatewayExist: =>
-      _self = @ 
+      _self = @
       $.get "/gateways.json", (data) ->
         _self.isExist(true) if data.length > 0
         $('#profile-main').show()

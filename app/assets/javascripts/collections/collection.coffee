@@ -15,7 +15,11 @@ onCollections ->
       @checked = ko.observable true
       @fieldsInitialized = false
 
-      @groupByOptions = ko.computed => [window.model.defaultGroupBy].concat(@fields().filter((f) -> f.showInGroupBy))
+      @groupByOptions = ko.computed =>
+        defaultOptions = []
+        if window.model
+          defaultOptions =[window.model.defaultGroupBy]
+        defaultOptions.concat(@fields().filter((f) -> f.showInGroupBy))
 
     isSearch: => false
 

@@ -1,8 +1,7 @@
 describe 'Thresholds', ->
   beforeEach ->
     window.runOnCallbacks 'collections'
-    window.model = new MainViewModel
-    window.model.initialize []
+    window.model = new MainViewModel []
 
   describe 'MapViewModel', ->
     beforeEach ->

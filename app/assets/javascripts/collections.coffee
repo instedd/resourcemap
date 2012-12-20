@@ -9,8 +9,7 @@ onCollections -> if $('#collections-main').length > 0
 
   # Get collections and start the view model
   $.get "/collections.json", {}, (collections) =>
-    window.model = new MainViewModel
-    window.model.initialize(collections)
+    window.model = new MainViewModel(collections)
     ko.applyBindings window.model
     console.log window.model
     window.model.processURL()
