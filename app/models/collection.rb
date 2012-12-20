@@ -166,7 +166,7 @@ class Collection < ActiveRecord::Base
 
   def active_gateway
     self.channels.each do |channel|
-      return channel if channel.client_connected && channel.share_channels.where(:collection_id => id).first.status
+      return channel if channel.client_connected && channel.is_enable && !channel.share_channels.find_by_collection_id(id).nil?
     end
     nil
   end
