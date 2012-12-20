@@ -1,6 +1,6 @@
 - content_for :head do
   = stylesheet_link_tag 'alerts'
-= render 'collections/tabs'
+= render '/tabs'
 
 .tabsline
   #thresholds-main.hidden-until-loaded{ ko(css: { ready: :isReady }) }
@@ -50,7 +50,7 @@
 
           <!-- /ko -->
           ,change icon to:
-          %br 
+          %br
           .alert-icon{"data-bind" => "style: { margin: '5px 0px 0px 0px', borderColor:color }"}
             %img{"data-bind" => "attr: { src:iconUrl }" }
           -# %span.stat{"data-bind" => "style: { backgroundColor:icon }" }
@@ -133,13 +133,13 @@
         %button.fred.fsize{ ko( click: "setIcon.bind($data, '#b30b0b')") }
         %button.forange.fsize{ ko( click: "setIcon.bind($data, '#c2720f')") }
         %button.fyellow.fsize{ ko( click: "setIcon.bind($data, '#c2b30f')") }
-        %button.fgreen.fsize{ ko( click: "setIcon.bind($data, '#128e4e')") }      
-        %button.fcyan.fsize{ ko( click: "setIcon.bind($data, '#00baba')") }         
-        %button.fblue.fsize{ ko( click: "setIcon.bind($data, '#1c388c')") }    
-        %button.fpurple.fsize{ ko( click: "setIcon.bind($data, '#5f1c8c')") }    
-        %button.fblack.fsize{ ko( click: "setIcon.bind($data, '#000000')") }   
-        %button.fgrey.fsize{ ko( click: "setIcon.bind($data, '#9e9e9e')") } 
-      %br     
+        %button.fgreen.fsize{ ko( click: "setIcon.bind($data, '#128e4e')") }
+        %button.fcyan.fsize{ ko( click: "setIcon.bind($data, '#00baba')") }
+        %button.fblue.fsize{ ko( click: "setIcon.bind($data, '#1c388c')") }
+        %button.fpurple.fsize{ ko( click: "setIcon.bind($data, '#5f1c8c')") }
+        %button.fblack.fsize{ ko( click: "setIcon.bind($data, '#000000')") }
+        %button.fgrey.fsize{ ko( click: "setIcon.bind($data, '#9e9e9e')") }
+      %br
       %hr
       %br
       %h1.header_text Notifications

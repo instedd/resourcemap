@@ -1,10 +1,10 @@
 -# Hierarchy item template (used when grouping results by hierarchy item)
 %script{type: "text/html", id: "map-hierarchy-items-template"}
   <!-- ko foreach: hierarchyItems -->
-  %tr{ko(css: {active: "$data == $root.selectedHierarchy()"})}
-    %td{ko(click: :toggleExpand), style: 'height:30px;cursor:pointer'}
-      %div
-        %a{ko(style: {marginLeft: "'' + (level * 20) + 'px'"}), href: 'javascript:void(0)'}
+  %tr
+    %td.hierarchyItem{ko(click: :toggleExpand, style: :columnStyle)}
+      %div{ko(style: :labelStyle, css: {greyback: :isSelected})}
+        %a{href: 'javascript:void(0)'}
           %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
         %span{ko(text: :name)}
   <!-- ko if: expanded -->

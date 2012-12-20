@@ -4,16 +4,15 @@
   -# Collections
   <!-- ko if: !currentCollection() && !editingSite() -->
   .tableheader
-    %div{style: 'padding-top:6px;padding-left:15px'} My Collections
-
-  .tablescroll
+    %div{style: 'padding-top:9px;padding-left:6px;'} My Collections
+  .tablescroll.sites
     %table.GralTable.CleanTable
       %tbody
         <!-- ko foreach: collections -->
         %tr
           %td
             %div
-              %input{ko(checked: :checked), type: :checkbox, style: 'position:relative;top:3px'}
+              %input{ko(checked: :checked), type: :checkbox, style: 'position:relative;'}
               %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor: pointer'}
             <!-- ko if: currentSnapshot -->
             .snapshot_on.right{style: 'padding-right:0'}
@@ -62,14 +61,14 @@
   -# Collection sites
   <!-- ko if: !editingSite() -->
   <!-- ko with: currentCollection -->
-  .tableheader.w30
+  .tableheader
     %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
     %span
     %span{ko(text: :name)}
-    %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:9px'}
+    %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
-  .tablescroll
+  .tablescroll.sites
     %table.GralTable.CleanTable
       %tbody
         <!-- ko if: !isSearch() && $root.groupBy().esCode != '' -->
@@ -118,7 +117,7 @@
                 .clear
               %div
                 %label Location:
-                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: 'Search / Drag the pin'}
+                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: 'Search or drag the pin'}
                 .clear
               / ko if: collection.readable($data)
               <!-- ko foreach: $root.currentCollection().layers() -->
@@ -143,8 +142,9 @@
               <!-- /ko -->
               / /ko
     .tablebottom
-      %button.grey{ko(enable: :valid), type: 'submit'} Done
-      %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
+      .right{style: 'margin-right:3px;margin-top:-5px;'}
+        %button.grey{ko(enable: :valid), type: 'submit'} Done
+        %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
   <!-- /ko -->
 
   -# Show Site form
@@ -233,7 +233,7 @@
       %button.pback
       %span
       %span Loading...
-#right-panel.right
+#right-panel.right.sites
   .mapheader
     <!-- ko if: $root.currentCollection() -->
     = render 'collections/index/export'

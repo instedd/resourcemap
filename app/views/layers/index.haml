@@ -3,7 +3,7 @@
   :css
     .error { color: red; }
 
-= render 'collections/tabs'
+= render '/tabs'
 
 -# Hierarchy item template
 %script{type: "text/html", id: "hierarchy-items-template"}
@@ -31,10 +31,11 @@
     <!-- ko foreach: layers -->
     <!-- ko if: $data == $root.currentLayer() -->
     .box.w80
-      %p
+      %p{style: 'margin-top:0px;'}
         %label{ko(css: {error: :nameError}), :for => :name} Name
         %br/
-        = ko_text_field_tag :name, hasfocus: :hasFocus, css: {error: :nameError}
+        %br/
+        = ko_text_field_tag :name, hasfocus: :hasFocus, css: {error: :nameError, w30: true}
 
       %label{ko(css: {error: :fieldsError})} Fields
       %br/
@@ -47,15 +48,16 @@
           .feditor{ko(css: {first: '$data == $parent.fields()[0]'}, click: '$root.selectField')}
             .feditor-top
             .feditor-container
-              .rightbuttons
-                .btupdn{style: 'vertical-align:bottom'}
+              .rightbuttons{style:'width:160px;'}
+                %button.fdelete{ko(click: "$root.deleteField"), style:'margin-top:0px;float:right;'}
+                .btupdn{style: 'float:right;'}
                   %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'margin-top:0'}
                   %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'})}
-                %button.fdelete{ko(click: "$root.deleteField")}
-              .change_layer
-                %a{ko(click: 'selectingLayerClick', attr: '{id: name}'), href: '#'} Move to layer...
-                = select_tag :layer, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', event: '{ change: selectingLayerSelect }'), :style => "display: none"
-              .feditor-button
+                .change_layer{style:'float:right;position:relative;top:4px;'}
+                  %a{ko(click: 'selectingLayerClick', attr: '{id: name}'), href: '#'} Move to layer...
+                  = select_tag :layer, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', event: '{ change: selectingLayerSelect }'), :style => "display: none; position:relative; top:-29px; right:42px;"
+
+              .feditor-button{style: 'margin-top:-5px;'}
                 %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
               .feditor-content
                 %h1{ko(text: :name)}
@@ -200,7 +202,7 @@
 
       - if !current_snapshot && collection_admin?
         / ko if: !$root.savingLayer()
-        %button.farrow{ko(click: '$root.editLayer')} Edit
+        %button.farrow{ko(click: '$root.editLayer'), style:'margin-bottom:0px;margin-top:0px'} Edit
         / /ko
     <!-- /ko -->
 
@@ -210,8 +212,9 @@
     - if !current_snapshot && collection_admin?
       / ko if: !savingLayer()
       -# New layer link
-      .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none'}
-        %span Add layer
-        %button.cadd.right{type: :button}
+      .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none;'}
+        %span{style:'padding-top:6px;'}
+          = 'Add layer'
+        %button.cadd.right{type: :button, style: 'margin-top:3px;margin-right:0px;'}
         %br{clear: :all}
       / /ko

@@ -41,6 +41,48 @@
 
 .box.nopadd { padding:0 }
 .box.nopadd .left { border-right:1px solid #eeeeee}
+
+.box.slightly-padded {
+  padding:0;
+  padding-top:2px;
+}
+
+.box.slightly-padded .tableheader {
+  border-right:1px solid #eeeeee;
+  margin-top: -3px;
+  margin-left:4px;
+  height: 35px;
+  background: transparent;
+}
+
+.box.slightly-padded .tableheader.expanded {
+  border-right: 0px;
+}
+
+.tableheader.expanded .mapheader {
+  margin-right:9px;
+  margin-top:3px;
+}
+
+.box.slightly-padded .tablescroll {
+  padding-top:10px;
+  background:url(<%= InsteddRails.url %>/theme/images/interface/backtd.png) repeat-x left 0px #ffffff;
+}
+
+.box.slightly-padded .GralTable td {
+  padding-left: 0px;
+}
+
+.box.slightly-padded .GralTable.tableview td {
+  padding-left: 3px;
+}
+
+.box.slightly-padded .tablescroll .GralTable td div {
+  display:inline-block;
+  overflow:hidden;
+  margin-top: 7px;
+}
+
 .h50 { height:500px}
 
 .tableheader {
@@ -54,7 +96,7 @@
 
 .tableheader.expanded div:first-child {
   border-right:1px solid #eeeeee;
-  width:300px;
+  width:295px;
 }
 
 .tableheader span, .tableheader button { vertical-align:middle }
@@ -78,6 +120,11 @@
 .tablescroll .GralTable th.r { text-align:right }
 .tablescroll .GralTable td.r { text-align:right }
 .tablescroll .GralTable td span { white-space: nowrap; vertical-align:middle; /*height:4px*/ }
+
+.tablescroll .GralTable {
+  border-bottom: 1px #EEE solid;
+}
+
 .stat-r { background:#ff4800; background-image:none !important; border-top:1px solid #bf3602; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
 .stat-y { background:#fcbb00; background-image:none !important; border-top:1px solid #bc8b00; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
 .stat-g { background:#79e820; background-image:none !important; border-top:1px solid #5bae18; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
@@ -109,15 +156,24 @@ ul.taglist li { background:url(<%= InsteddRails.url %>/theme/images/interface/ad
 ul.taglist li:hover { background-color:#eaeaea }
 ul.taglist li a { display:block }
 
-.box { position:relative; -webkit-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.3); -moz-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.3); box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.3) }
+.box {
+  position:relative;
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.3)
+}
 .box.add { padding:0 5px; margin-top:10px; width:610px; height:30px; cursor: pointer }
 .box.add span { color:#1f86c8; display:inline-block; padding-top:8px }
 .box label { color:#555555 }
 
-.toptitle { width:550px }
+.toptitle { width:552px; float:left; }
 .toptitle span { color:#000000 }
-.rightbuttons { position:absolute; right:2px; top:5px }
+.rightbuttons { position:absolute; right:5px; top:5px }
 .rightbuttons button { margin:0 }
+
+.middlebuttons {
+  margin-top:25px;
+}
 
 .feditor-container { position:relative }
 .feditor-container .rightbuttons{ top:-6px; right:5px }
@@ -151,7 +207,18 @@ td.loadmore { height: 36px }
 .coldiv span { background: url(<%= InsteddRails.url %>/theme/images/icons/misc/grey/arrowRight.png) no-repeat 10px 50% #ffffff }
 .expdiv span { background: url(<%= InsteddRails.url %>/theme/images/icons/misc/grey/arrowDown.png) no-repeat 10px 50% #ffffff }
 
-.tableheader .pback { margin-left: 6px; }
+.tableheader .pback {
+  margin-left: 3px;
+  margin-top:6px;
+}
+
+.mapheader .greyback {
+  margin-top: 3px;
+}
+
+.tableheader.expanded .greyback {
+  margin-left:3px;
+}
 
 .GralTable button.farrow { margin: 3px 2px !important;}
 

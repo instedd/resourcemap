@@ -27,7 +27,13 @@ onCollections ->
       @hierarchyIds = ko.observable([@id])
       $.map @hierarchyItems, (item) => @loadItemToHierarchyIds(item)
 
+      # Styles
+      @labelStyle = @style()['labelStyle']
+      @columnStyle = @style()['columnStyle']
 
+      @isSelected = ko.computed => @ == window.model.selectedHierarchy()
+
+    # public
     loadItemToHierarchyIds: (item) =>
       @hierarchyIds().push(item.id)
       $.map item.hierarchyItems, (item) => @loadItemToHierarchyIds(item)
@@ -40,3 +46,24 @@ onCollections ->
       hierarchy_value: @id
 
     createSite: (site) => new Site(window.model.currentCollection().collection, site)
+
+    # private
+    style: =>
+      pixels_per_indent_level = 20
+      row_width = 300
+
+      indent = @level * pixels_per_indent_level
+
+      {
+        columnStyle: {
+          height: '30px',
+          cursor: 'pointer'
+        }
+        labelStyle: {
+          width: "#{row_width - 28 - indent}px",
+          marginLeft: "#{6 + indent}px",
+          paddingLeft: '2px',
+          marginTop: '1px'
+        }
+      }
+

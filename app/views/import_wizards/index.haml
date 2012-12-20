@@ -1,7 +1,7 @@
 :javascript
   $(function() { $('#upload').change(function() { $('#upload_form').submit() }); });
 
-= render 'tabs'
+= render '/tabs'
 
 .tabsline
   %h2 Import wizard
@@ -28,7 +28,7 @@
     -else
       = link_to 'Download a template CSV file', api_sample_csv_path(collection, format: 'csv'), class: "icon fimport black"
 
-    %form#upload_form{action: collection_import_wizard_upload_csv_path(collection), method: :post, enctype: 'multipart/form-data'}
+    %form#upload_form{action: upload_csv_collection_import_wizard_path(collection), method: :post, enctype: 'multipart/form-data'}
       %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
       .icon.fexport.black Upload a CSV file to update multiple sites
       %input#upload{type: :file, name: :file}

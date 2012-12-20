@@ -1,11 +1,13 @@
 -# Sites template
 %script{type: "text/html", id: "map-sites-template"}
   <!-- ko foreach: sites -->
-  %tr{ko(css: {active: "$data == $root.selectedSite()"})}
+  %tr
     %td
-      %div
-        %p{ko(style: {marginLeft: "'' + (($parent.level + 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
+      %div{ko(style: {width: "'' + (272 - ($parent.level + 1) * 20 - 30) + 'px'", marginLeft: "'' + (($parent.level + 1) * 20 + 6) + 'px'"}, css: {greyback: "$data == $root.selectedSite()"}), style: 'padding-left:2px;margin-top:5px;margin-left:8px;width:240px;'}
+        %p{ko(click: '$root.selectSite'), style: 'cursor: pointer'}
           %span.stat-r
           %span{ko(html: :highlightedName)}
       %button.farrow{ko(click: '$root.editSite'), type: "button"}
   <!-- /ko -->
+
+

@@ -1,6 +1,6 @@
 - content_for :head do
   = stylesheet_link_tag 'reminders'
-= render 'collections/tabs'
+= render '/tabs'
 .tabsline
   #reminders-main.hidden-until-loaded
     %h2 Reminders
@@ -23,15 +23,15 @@
       .rightbuttons
         %p.field.switch
           %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
-            %span 
+            %span
           %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
-            %span 
+            %span
         %button.fdelete{ ko(click: '$root.deleteReminder') }
       .message
         %span{ko(text: :reminderMessage)}
       %button.farrow{ko(click: '$root.editReminder')} Edit
     <!-- /ko -->
-    
+
     -# Form editor
     <!-- ko if: $data == $root.currentReminder() -->
     -# <!-- ko with: currentReminder -->

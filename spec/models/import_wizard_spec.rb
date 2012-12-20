@@ -829,4 +829,44 @@ describe ImportWizard do
      sites_preview_one_column[1].should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
   end
 
+  it "should validate only one column" do
+   site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+
+    csv_string = CSV.generate do |csv|
+      csv << ['text', 'numeric ', ' select_one', 'select_many ', ' hierarchy', 'site', 'date', 'user', 'email']
+      csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
+      csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
+    end
+
+    ImportWizard.import user, collection, csv_string
+
+    column_spec = {name: 'numeric', usage: 'new_field', kind: 'numeric', code: 'numeric'}
+    sites_preview_one_column = (ImportWizard.validate_sites_with_column user, collection, column_spec)
+
+    sites_preview_one_column[1].length.should eq(2)
+
+    sites_preview_one_column[1].should include({value: '11', error: nil})
+    sites_preview_one_column[1].should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
+  end
+
+  it "should not show errors if usage is ignore" do
+   site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+
+    csv_string = CSV.generate do |csv|
+      csv << ['text', 'numeric ', ' select_one', 'select_many ', ' hierarchy', 'site', 'date', 'user', 'email']
+      csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
+      csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
+    end
+
+    ImportWizard.import user, collection, csv_string
+
+    column_spec = {name: 'numeric', usage: 'ignore'}
+    sites_preview_one_column = (ImportWizard.validate_sites_with_column user, collection, column_spec)
+
+    sites_preview_one_column[1].length.should eq(2)
+
+    sites_preview_one_column[1].should include({value: '11', error: nil})
+    sites_preview_one_column[1].should include({:value=>"invalid11", :error=> nil})
+  end
+
 end

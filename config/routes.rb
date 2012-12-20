@@ -48,18 +48,21 @@ ResourceMap::Application.routes.draw do
       post 'unload_current_snapshot'
     end
 
-    get 'import_wizard'
-    post 'import_wizard_upload_csv'
-    get 'import_wizard_adjustments'
-    get 'import_wizard_guess_columns_spec'
-    post 'import_wizard_execute'
-    post 'import_wizard_validate_sites_with_columns'
-    post 'import_wizard_validate_sites_with_column'
-
-
     get 'recreate_index'
     get 'search'
     post 'decode_hierarchy_csv'
+
+    resource :import_wizard, only: [] do
+       get 'index'
+       post 'upload_csv'
+       get 'adjustments'
+       get 'guess_columns_spec'
+       post 'execute'
+       post 'validate_sites_with_columns'
+       post 'validate_sites_with_column'
+       get 'get_visible_sites/:page' => 'import_wizards#get_visible_sites'
+     end
+
   end
 
   resources :sites do

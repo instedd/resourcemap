@@ -1,26 +1,26 @@
 -# Sites template
 %script{type: "text/html", id: "table-sites-template"}
   <!-- ko foreach: sites -->
-  %tr{ko(css: "{active: $data == $root.selectedSite()}")}
+  %tr
     %td{style: 'overflow:auto'}
-      %div{style: 'margin-top:2px'}
+      %div{style: 'margin-top:5px'}
         %p{ko(style: {marginLeft: "'' + (($parent.level + 1) * 20) + 'px'"}, click: '$root.selectSite'), style: 'cursor: pointer'}
           %span.stat-r
           %span{ko(html: :highlightedName)}
       %button.farrow{ko(click: '$root.editSite'), type: :button}
-    %td
+    %td.padded
       %span{ko(text: :safe_lat)}
-    %td
+    %td.padded
       %span{ko(text: :safe_lng)}
     <!-- ko foreach: $root.currentCollection().fields() -->
     <!-- ko if: $parent.properties()[$data.esCode] -->
-    %td
+    %td.padded
       %span{ko(attr: "{ title: $parent.highlightedPropertyValue($data) }", text: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
     <!-- /ko -->
     <!-- ko if: !$parent.properties()[$data.esCode] -->
-    %td
+    %td.padded
     <!-- /ko -->
     <!-- /ko -->
-    %td.timeago{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
-    %td
+    %td.timeago.padded{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
+    %td.padded
   <!-- /ko -->

@@ -82,7 +82,7 @@ onImportWizard ->
 
     validateSites:(modified_column) =>
       column = modified_column.toJSON()
-      $.post "/collections/#{@collectionId}/import_wizard_validate_sites_with_column.json", {column: JSON.stringify(column)}, (preview_column) =>
+      $.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_column.json", {column: JSON.stringify(column)}, (preview_column) =>
         for column_index, validated_value of preview_column
           for site in @sites()
             site_index = @sites().indexOf(site)
@@ -98,7 +98,7 @@ onImportWizard ->
     startImport: =>
       @importing(true)
       columns = $.map(@columns(), (x) -> x.toJSON())
-      $.ajax "/collections/#{@collectionId}/import_wizard_execute.json",
+      $.ajax "/collections/#{@collectionId}/import_wizard/execute.json",
         type: 'POST'
         data: {columns: columns},
         success: =>

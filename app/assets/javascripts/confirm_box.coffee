@@ -1,4 +1,4 @@
-@initOverview = (action_code) ->
+@initConfirm = (action_code) ->
   show_confirm = =>
     $("##{action_code}-collapsed").hide()
     $("##{action_code}-expanded").show()
