@@ -19,9 +19,16 @@ onImportWizard ->
       @error = ko.computed =>
         window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error().length > 0)
 
+      @validationErrors = ko.observable()
+
       @valid = ko.computed => !@error()
       @importing = ko.observable false
       @importError = ko.observable false
+
+    loadSites: (preview)=>
+      sites = $.map(preview.sites, (x) -> new Site(x))
+      @sites(sites)
+      @validationErrors(new ValidationErrors(preview.errors))
 
     loadUsages: =>
       @usages = [new Usage('New field', 'new_field')]

@@ -16,7 +16,8 @@ onImportWizard -> if $('#import-wizard-main').length > 0
       ko.applyBindings window.model
 
       $.post "/collections/#{collectionId}/import_wizard/validate_sites_with_columns.json", {columns: JSON.stringify(columns)}, (preview) =>
-        window.model.sites(preview.sites)
+
+        window.model.loadSites(preview)
 
         $('#generating_preview').hide()
         $('h2').removeClass('loading')
