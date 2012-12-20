@@ -25,6 +25,8 @@
             <!-- /ko -->
         <!-- /ko -->
     %br{:clear => "all"}/
+
+    -# acount completeness  
     #profile-main{style: 'display:none'}
       .box.plain.orange{ko(visible: 'collections().length < 1 || (!$root.isExist())'), :style => 'padding:5px; display:none;background-color: #B6D7A8;border: 0px'}
         .sbox.grey.StateDisplay{style: 'margin: 0px;padding: 0px;background-color: #FFFFFF'}
@@ -53,6 +55,8 @@
               %button.fadd{onClick: "window.location='/gateways';return false;", type: "button", style: 'width:250px'}
                 %span{style: 'float:left; font-size: 12px'} Configure SMS Gateway (+50%)
               <!-- /ko -->
+
+
   .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
     %button.cadd{type: "button"}
     %span.createCollection Create Collection
