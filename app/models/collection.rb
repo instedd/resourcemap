@@ -178,4 +178,8 @@ class Collection < ActiveRecord::Base
   def get_gateway_under_user_owner
     get_user_owner.get_gateway 
   end
+
+  def register_gateways_under_user_owner(owner_user)
+    self.channels = owner_user.channels.find_all_by_is_enable true
+  end
 end

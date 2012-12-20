@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
     return false unless collection.save
 
     memberships.create! collection_id: collection.id, admin: true
+    collection.register_gateways_under_user_owner(self)
     collection
   end
 
