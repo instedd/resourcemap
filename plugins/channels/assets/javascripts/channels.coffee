@@ -6,12 +6,15 @@ onChannels -> if $('#channels-main').length > 0
   collectionId = parseInt(match[1])
   
   window.model = new MainViewModel(collectionId)
+  
   ko.applyBindings(window.model)
   
+  $.get "/gateways.json", without_nuntium: true, (data) ->
+      window.model.gateways $.map data, (channel) ->
+        new Option channel
+  
   $.get "/plugin/channels/collections/#{collectionId}/channels.json", (data) ->
-    window.model.channels $.map data, (channel) ->
-      #reminder.repeat = window.model.findRepeat repeatId if repeatId = reminder.repeat_id
-      new Channel channel, collectionId
-
+    window.model.selectedGateways $.map data, (channel) ->
+      channel.id.toString()
   
   $('.hidden-until-loaded').show()

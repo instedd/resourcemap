@@ -12,14 +12,13 @@ onCollections -> if $('#collections-main').length > 0
     window.model = new MainViewModel
     window.model.initialize(collections)
     ko.applyBindings window.model
-
+    console.log window.model
     window.model.processURL()
-
+    window.model.isGatewayExist()
     $('#collections-dummy').remove()
     $('#collections-main').show()
     $('#refine-container').show()
     $('#snapshot_loaded_message').show()
-
   # Adjust width to window
   window.adjustContainerSize = ->
     adjustRightPanelWidth = (referenceWidth) =>

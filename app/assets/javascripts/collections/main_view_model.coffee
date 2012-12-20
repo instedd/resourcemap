@@ -11,6 +11,7 @@
 #= require collections/search_view_model
 #= require collections/sort_view_model
 #= require collections/url_rewrite_view_model
+#= require collections/gateways_view_model
 onCollections ->
 
   class @MainViewModel extends Module
@@ -22,10 +23,10 @@ onCollections ->
     @include SearchViewModel
     @include SortViewModel
     @include UrlRewriteViewModel
+    @include GatewaysViewModel
 
     initialize: (collections) ->
       @callModuleConstructors(arguments)
-
       @groupBy = ko.observable(@defaultGroupBy)
 
       @filters.subscribe => @performSearchOrHierarchy()
@@ -33,7 +34,6 @@ onCollections ->
 
       @shouldShowLocationMissingAlert = ko.computed =>
         !@filteringByProperty(FilterByLocationMissing) && @currentCollection()?.sitesWithoutLocation().length > 0
-
       @locationMissingAlertText = ko.computed =>
         n = @currentCollection()?.sitesWithoutLocation().length
         singular = n == 1
@@ -139,3 +139,9 @@ onCollections ->
       @groupBy(@currentCollection().findFieldByEsCode(groupBy)) if groupBy && @currentCollection()
 
       @processingURL = false
+  
+    isGatewayExist: =>
+      _self = @ 
+      $.get "/gateways.json", (data) ->
+        _self.isExist(true) if data.length > 0
+        $('#profile-main').show()

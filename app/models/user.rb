@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   before_create :reset_authentication_token
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
   has_many :memberships
+  has_many :channels
   has_many :collections, through: :memberships, order: 'name ASC'
   has_one :user_snapshot
 
@@ -14,6 +15,7 @@ class User < ActiveRecord::Base
     return false unless collection.save
 
     memberships.create! collection_id: collection.id, admin: true
+    collection.register_gateways_under_user_owner(self)
     collection
   end
 
@@ -87,5 +89,13 @@ class User < ActiveRecord::Base
 
   def self.encrypt_users_password
     all.each { |user| user.update_attributes password: user.encrypted_password }
+  end
+
+  def get_gateway
+    channels.first 
+  end
+  
+  def active_gateway
+    channels.where("channels.is_enable=?", true)
   end
 end

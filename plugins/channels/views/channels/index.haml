@@ -2,90 +2,18 @@
 = render '/tabs'
 .tabsline
   #channels-main.hidden-until-loaded
-    %h2 Channels
-    <!-- ko foreach: channels -->
-    <!-- ko if: $data != $root.currentChannel() -->
-    .box.grey.w60
-      .toptitle
-        %span{ko(text: :name)}
-        &rarr;
-        <!-- ko if: isShare() == "true" -->
-        <!-- ko foreach: sharedCollections -->
-        %span{ ko(text: :name) }
-        <!-- /ko -->
-        <!-- /ko -->
-      .rightbuttons
-        %p.field.switch
-          %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
-            %span
-          %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
-            %span
-        %button.fdelete{ko(visible: 'isAdmin', click: '$root.deleteChannel')}
-
-      .middlebuttons{ko(visible: '!clientConnected()')}
-        %label Gateway URL:
-        %span{ko(text: :gateWayURL)}
-        %br
-        %label User name:
-        %span{ko(text: :nuntiumChannelName)}
-        %br
-        %label.error{ko(text: :queuedMessageText)}
-      .middlebuttons{ko(visible: 'clientConnected')}
-        %label Phone number:
-        %span{ko(text: :phoneNumber)}
-        %br
-        %label Gateway URL:
-        %span{ko(text: :gateWayURL)}
-        %br
-        %label User name:
-        %span{ko(text: :nuntiumChannelName)}
-
-
-      %button.farrow{ko(visible: 'isAdmin', click: '$root.editChannel')} Edit configuration
-    %br
-    <!-- /ko -->
-
-    -# Form editor or new
-    <!-- ko if: $data == $root.currentChannel() -->
-    .box.w60
-      .middlebuttons
-        %label{ko(css: {error: 'nameError'})} Name
-        %br
-        %input{ko(value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
-        %br
-        %label{ko(visible: "isManualConfiguration", css: {error: 'passwordError'})} Password
-        %label{ko(visible: "!isManualConfiguration()", css: {error: 'ticketCodeError'})} Key
-        %br
-        %input{ko(visible: "isManualConfiguration", value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
-        %input{ko(visible: "!isManualConfiguration()", value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
-        %br
-        %input{ko(checked: :isManualConfiguration), type: :checkbox} Manual configuration
-        %br
-        %br
-        Share
-        %br
-        %input{"data-bind" => "checked: isShare", :value => "false", :name => "collection", :type => "radio"}
-        %label Not share
-        %input{"data-bind" => "checked: isShare", :value => "true",  :name => "collection", :type => "radio"}
-        %label Share
-        %br
-        .middlebuttons{ko(visible: 'isShare() == "true"' )}
-
-          %input{ko(autocompleteTagField: 'sharedCollections',objectType: "Collection", valueUpdate: :afterkeydown), proxy: collections_path(), valueField: 'id', displayField: 'name', type: :text}
-
-        .bottom-actions
-          %button.white{ ko(click: '$root.saveChannel', enable: :valid) } Save
-          %a.tgrey{ ko(click: '$root.cancelChannel'), href: 'javascript:void(0)' } Cancel
-          <!-- ko if: !valid() -->
-          %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
-          <!-- /ko -->
-    %br
-    <!-- /ko -->
-    <!-- /ko -->
-
-    .box.grey.add{ ko(visible: '!currentChannel()', click: 'addChannel'), style: 'display:none'}
-      %span
-        Add Channel
-      %button.cadd.right
-      %br{clear: :all}
+    %h2 SMS Settings
+    %p Please select the SMS gateways to be used for this collection. When using more than one gateway the system will use one of the other gateways if the primary fails. 
+    <!-- ko foreach: gateways -->
+    %input{ko(checked: '$root.selectedGateways', value: :id), type: "checkbox" }
+    %span{ko(text: :name )}
+    %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
+    <!-- /ko --> 
+    %p 
+      %a{href: 'gateways_path'} 
+        Click here to configure your SMS gateways
+    .bottom-actions
+      %button.white{ ko(click: '$root.saveChannel') } Save
+      = link_to 'or cancel', collections_path, :style => 'text-decoration:underline;color:'
+  %br{clear: :all}
 

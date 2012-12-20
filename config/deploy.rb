@@ -13,6 +13,8 @@ set :branch, `hg branch`.strip
 default_run_options[:pty] = true
 default_environment['TERM'] = ENV['TERM']
 
+after "deploy", "deploy:cleanup" # keep only the last 5 releases
+
 namespace :deploy do
   task :start do ; end
   task :stop do ; end
@@ -52,6 +54,7 @@ end
 
 before "deploy:start", "deploy:migrate"
 before "deploy:restart", "deploy:migrate"
+
 after "deploy:update_code", "deploy:symlink_configs"
 
 after "deploy:update", "foreman:export"    # Export foreman scripts

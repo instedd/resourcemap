@@ -96,7 +96,7 @@ Reminder.blueprint do
 end
 
 Channel.blueprint do
-  collection
+  user
 end
 
 Membership.blueprint do

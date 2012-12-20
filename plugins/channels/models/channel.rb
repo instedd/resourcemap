@@ -1,9 +1,10 @@
 class Channel < ActiveRecord::Base
   has_many :share_channels, :dependent => :destroy
   has_many :collections, :through => :share_channels
-  validates :name, :presence => true, :length => {:minimum => 4, :maximum => 30}, :uniqueness => {:scope => :collection_id}
-  validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :is_manual_configuration
-  validates :ticket_code, :presence => {:on => :create}, :unless => :is_manual_configuration
+  belongs_to :user
+  validates :name, :presence => true, :length => {:minimum => 4, :maximum => 30}, :uniqueness => {:scope => :user_id}
+  validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :advanced_setup
+  validates :ticket_code, :presence => {:on => :create}, :if => :basic_setup
     
   serialize :share_collections
   #attr_accessible :channel_name, :collection_id, :is_enable, :is_manual_configuration, :name, :password, :share_collections
@@ -14,7 +15,7 @@ class Channel < ActiveRecord::Base
   attr_accessor  :phone_number
 
   def generate_nuntium_name
-    sprintf("#{Collection.find(collection_id).name.parameterize}-#{self.id}")
+    sprintf("#{self.name}-#{self.id}")
   end
 
   def register_nuntium_channel
@@ -31,14 +32,14 @@ class Channel < ActiveRecord::Base
       :priority => 50,
       :configuration => { 
         :password => self.password,
-        :friendly_name => self.name,
-        :owner_layer_id => self.collection_id
+        :friendly_name => self.name
+        #:owner_layer_id => self.collection_id
       }
     }
   
     config.merge!({
       :ticket_code => self.ticket_code, 
-      :ticket_essage => "This phone will be used for updates and queries on layer #{Collection.find(self.collection_id).name}.",
+      :ticket_message => "This phone will be used for updates and queries on all collections.",
     }) unless is_manual_configuration
     handle_nuntium_channel_response Nuntium.new_from_config.create_channel(config)
     # Use plain sql query to skip update callback execution
@@ -70,7 +71,7 @@ class Channel < ActiveRecord::Base
       :restrictions => '',
       :configuration => { 
         :friendly_name => self.name,
-        :owner_layer_id => self.collection_id,
+        #:owner_layer_id => self.collection_id,
         :password => self.password
       })
   end
@@ -110,6 +111,7 @@ class Channel < ActiveRecord::Base
   end
   
   def self.default_nuntium_name
-    'testing' 
+    # smart or camgsm(mobitel)
+    'smart' 
   end
 end

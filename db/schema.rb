@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121011081126) do
+ActiveRecord::Schema.define(:version => 20121212090738) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -37,6 +37,10 @@ ActiveRecord::Schema.define(:version => 20121011081126) do
     t.text     "share_collections"
     t.datetime "created_at",              :null => false
     t.datetime "updated_at",              :null => false
+    t.integer  "user_id"
+    t.boolean  "basic_setup"
+    t.boolean  "advanced_setup"
+    t.boolean  "national_setup"
   end
 
   create_table "collections", :force => true do |t|

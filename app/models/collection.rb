@@ -166,8 +166,20 @@ class Collection < ActiveRecord::Base
 
   def active_gateway
     self.channels.each do |channel|
-      return channel if channel.client_connected && channel.share_channels.where(:collection_id => id).first.status
+      return channel if channel.client_connected && channel.is_enable && !channel.share_channels.find_by_collection_id(id).nil?
     end
     nil
+  end
+
+  def get_user_owner
+    memberships.find_by_admin(true).user
+  end
+
+  def get_gateway_under_user_owner
+    get_user_owner.get_gateway 
+  end
+
+  def register_gateways_under_user_owner(owner_user)
+    self.channels = owner_user.channels.find_all_by_is_enable true
   end
 end

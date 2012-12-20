@@ -12,6 +12,7 @@ ResourceMap::Application.routes.draw do
 
   resources :repeats
   resources :collections do
+    post :register_gateways
     get :sites_by_term
     resources :sites
     resources :layers do
@@ -71,7 +72,10 @@ ResourceMap::Application.routes.draw do
   end
 
   resources :activities, :only => [:index], :path => 'activity'
-  resources :gateways
+  resources :gateways do
+    post 'status', :on => :member
+    post 'try' 
+  end
 
   match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
 

@@ -1,0 +1,114 @@
+%h1 SMS Gateway
+.tabsline
+  #gateways-main.hidden-until-loaded 
+    <!-- ko foreach: gateways -->
+    <!-- ko if: $data != $root.currentGateway() -->
+    .box.grey.w60
+      .toptitle
+        %span{ko(text: :name)}
+        &rarr;
+        %span{ko(visible: :nationalSetup)}
+          ResoureMap Default Gateway
+      .rightbuttons
+        %p.field.switch
+          %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
+            %span 
+          %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
+            %span 
+        %button.fdelete{ko(click: '$root.deleteGateway')}
+          
+      .middlebuttons{ko(visible: '!nationalSetup()')}
+        .middlebuttons{ko(visible: '!clientConnected() && viewConfiguration()')}
+          %label Endpoint URL : 
+          %span{ko(text: :gateWayURL)} 
+          %br 
+          %label User Name :
+          %span{ko(text: :nuntiumChannelName)} 
+          %br 
+          %label Password :
+          %span{ko(text: :password)} 
+
+          %br 
+          %button.farrow{ko(click: '$root.hideConfiguration')} Hide Configuration
+
+      
+      .middlebuttons{ko(visible: '!nationalSetup()'), style: 'margin-top:0px'}
+        .middlebuttons{ko(visible: '!clientConnected()'), style: 'margin-top:0px'}
+          %button.farrow{ko(visible: '!viewConfiguration()', click: '$root.showConfiguration')} View Configuration
+          %br{ko(visible: '!viewConfiguration()')}
+          %hr{style: "margin:0px;height:6px;background-color: #D0D0D0;"}
+          %label.error{ko(text: :queuedMessageText)}
+
+      %button.fmessage{ko(visible: 'clientConnected() || nationalSetup()', click: '$root.setIsTry')} Test Your Gateway
+      .middlebuttons{ko(visible: 'isTry')}
+        %label
+        %input{ko(value: :tryPhoneNumber, valueUpdate: :afterkeydown), type: :text, hasfocus: true,  style: 'width:240px', placeholder: 'Enter your destination phone number' }
+        %button.fmessage{ko(click: '$root.tryGateway', enable: 'valid')} Send Now!
+
+        %button.fclose{ko(click: '$root.cancel')} Cancel
+    %br
+    <!-- /ko -->
+    
+    -# Form editor or new
+    <!-- ko if: $data == $root.currentGateway() -->
+    .box.w60
+      .middlebuttons
+        %label{ko(visible: '!nationalSetup()', css: {error: 'nameError'})} Name
+        %input{ko(visible: '!nationalSetup()', value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
+        %br
+        %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
+        
+        %input{ko(checked: :selectedGateway), type: :radio, name: 'gatewayConfiguration', value: 'basic'} 
+        %label Android Phone SMS Gateway -Basic Setup(Recommended)
+        .basic{ko(visible: :basicSetup), style: "margin-left:25px"} 
+          %p
+            The android phone sms gateway allow you to use any adroid device as a local gateway for sending and receiving system SMS message 
+            %a{:href => "/#"} Click here for instructions 
+          %label{ko(css: {error: 'ticketCodeError'})} Key
+          %input{ko(hasfocus: true, value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
+          %br
+        %br
+        %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
+        
+        %input{ko(checked: :selectedGateway), type: :radio, name: 'gatewayConfiguration', value: 'advance'} 
+        %label Android Phone SMS Gateway -Advanced Setup
+        
+        .advanced{ko(visible: :advancedSetup), style: "margin-left:25px"} 
+          %p
+            The android phone sms gateway allow you to use any adroid device as a local gateway for sending and receiving system SMS message 
+            %a{:href => "/#"} Click here for instructions 
+
+          %label{ko(css: {error: 'passwordError'})} Password
+          %input{ko(value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
+          %br
+        %br
+        %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
+        
+        %input{ko(checked: :selectedGateway), type: :radio, name: 'gatewayConfiguration', value: 'national'} 
+        %label National Gateway(Only Some Country Supported)
+        .national{ko(visible: :nationalSetup), style: "margin-left:25px"} 
+          %p
+            In a limited number of countries we have a gateway provided by a local phone company that can be used to send and recieve system messages. Please select the list below to
+          %label{ko(css: {error: 'passwordError'})} Gateway
+          %select{ ko(options: '$root.nationalGateways', optionsText: "'name'", value: :nationalGateway, hasfocus: true) }
+          %hr{style: "margin:0px;height:10px;background-color: #FFFFFF;"}
+
+        %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
+        
+        .bottom-actions
+          %button.white{ ko(click: '$root.saveGateway', enable: :valid) } Save
+          %a.tgrey{ ko(click: '$root.cancelGateway'), href: 'javascript:void(0)' } Cancel
+          <!-- ko if: !valid() -->
+          %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
+          <!-- /ko -->
+        
+    %br 
+    <!-- /ko -->
+    <!-- /ko -->
+    
+    .box.grey.add{ ko(visible: '!currentGateway()', click: 'addGateway'), style: 'display:none'}
+      %span
+        Add Gateway
+      %button.cadd.right
+      %br{clear: :all}
+

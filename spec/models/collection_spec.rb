@@ -134,5 +134,19 @@ describe Collection do
     end
 
   end
-
+  
+  describe 'gateway' do
+    let(:admin_user) { User.make }
+    let(:collection_1) { admin_user.collections.make name: 'test'}
+    let!(:membership) { admin_user.memberships.make collection: collection_1 }
+    let!(:gateway) { admin_user.channels.make name: 'default', is_manual_configuration: false, ticket_code: '2222'  }
+    
+    it 'should return user_owner of collection' do
+      collection_1.get_user_owner.should eq admin_user
+    end
+    
+    it 'should return gateway under user_owner' do
+      collection_1.get_gateway_under_user_owner.should eq gateway  
+    end
+  end
 end
