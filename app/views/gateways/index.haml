@@ -31,10 +31,12 @@
           %br 
           %button.farrow{ko(click: '$root.hideConfiguration')} Hide Configuration
 
-      .middlebuttons{ko(visible: '!clientConnected()')}
-        %button.farrow{ko(visible: '!viewConfiguration()', click: '$root.showConfiguration')} View Configuration
-        %br{ko(visible: '!viewConfiguration()')}
-        %label.error{ko(text: :queuedMessageText)}
+      
+      .middlebuttons{ko(visible: '!nationalSetup()')}
+        .middlebuttons{ko(visible: '!clientConnected()')}
+          %button.farrow{ko(visible: '!viewConfiguration()', click: '$root.showConfiguration')} View Configuration
+          %br{ko(visible: '!viewConfiguration()')}
+          %label.error{ko(text: :queuedMessageText)}
 
       %button.fmessage{ko(visible: 'clientConnected() || nationalSetup()', click: '$root.setIsTry')} Test Your Gateway
       .middlebuttons{ko(visible: 'isTry')}

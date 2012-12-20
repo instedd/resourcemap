@@ -4,12 +4,11 @@ class GatewaysController < ApplicationController
     method = Channel.nuntium_info_methods
     respond_to do |format|
       format.html 
-      format.json { render json: current_user.channels.select('channels.id,channels.collection_id,channels.name,channels.password,channels.nuntium_channel_name,channels.is_enable,channels.basic_setup, channels.advanced_setup, channels.national_setup, channels.is_manual_configuration, channels.is_share').all.as_json(methods: method)}    
+      format.json { render json: params[:without_nuntium] ?  current_user.channels.where("channels.is_enable=?", true).all.as_json : current_user.channels.select('channels.id,channels.collection_id,channels.name,channels.password,channels.nuntium_channel_name,channels.is_enable,channels.basic_setup, channels.advanced_setup, channels.national_setup, channels.is_manual_configuration, channels.is_share').all.as_json(methods: method)}    
     end
   end
 
   def create
-    #params[:gateway][:collection_id] = current_user.memberships.find_by_admin(true).collection_id  # to be refactor in near future 
     channel = current_user.channels.create params[:gateway]
     render json: channel.as_json
   end

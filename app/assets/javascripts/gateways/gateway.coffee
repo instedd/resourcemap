@@ -8,7 +8,6 @@ onGateways ->
       @ticketCode             = ko.observable data?.ticket_code 
       @isEnable               = ko.observable data?.is_enable
       @nuntiumChannelName     = ko.observable data?.nuntium_channel_name
-      @isShare                = ko.observable data?.is_share.toString()
       @clientConnected        = ko.observable data?.client_connected
       @queuedMessageCount     = ko.observable data?.queued_messages_count
       @nationalGateway        = ko.observable()
@@ -41,9 +40,6 @@ onGateways ->
       
       @phoneNumber            = ko.observable data?.phone_number
       @gateWayURL             = ko.observable data?.gateway_url
-      @sharedCollections      = ko.observable $.map data?.collections ? [], (collection) -> 
-        new Collection(collection) if(collection.id != data.collection_id)
-      
       @isTry                  = ko.observable false 
       @nameError              = ko.computed => 
         length = $.trim(@name()).length
@@ -53,9 +49,7 @@ onGateways ->
           "Channel's name require at least 4 characters"
         else
           null
-      @shareCollectionError   = ko.computed => 
-        return null if @isShare() == "false" 
-        "Share Channels is missing" if $.trim(@sharedCollections()).length == 0 
+      
       @passwordError          = ko.computed => 
         return null if !@advancedSetup()
         length = $.trim(@password()).length
@@ -87,7 +81,6 @@ onGateways ->
         return @nameError() if @nameError()
         return @passwordError() if @passwordError()
         return @ticketCodeError() if @ticketCodeError() 
-        return @shareCollectionError() if @shareCollectionError() 
         return @destinationPhoneNumberError() if @destinationPhoneNumberError()
       
       @enableCss              = ko.observable 'cb-enable'
@@ -108,12 +101,10 @@ onGateways ->
       id                      : @id
       collection_id           : @collectionId
       name                    : if @nationalSetup() then @nationalGateway().code else @name()
-      is_share                : @isShare()
       basic_setup             : @basicSetup()
       advanced_setup          : @advancedSetup()
       national_setup          : @nationalSetup()
       #nuntium_channel_name    : @nuntiumChannelName()
-      share_collections       : $.map(@sharedCollections(), (collection) -> collection.id)
       password                : @password()
       ticket_code             : @ticketCode()
 
@@ -121,13 +112,11 @@ onGateways ->
       new Gateway
         id                      : @id
         name                    : @name()
-        is_share                : @isShare()
         basic_setup             : @basicSetup()
         advanced_setup          : @advancedSetup()
         national_setup          : @nationalSetup()
         nuntium_channel_name    : @nuntiumChannelName()
         gateway_url             : @gateWayURL() 
-        collections             : @sharedCollections()
         password                : @password()
         ticket_code             : @ticketCode()
         queued_messages_count   : @queuedMessageCount()
