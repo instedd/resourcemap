@@ -67,7 +67,7 @@ class ImportWizard
       sites_errors[:existing_code] = []
       sites_errors[:usage_missing] = []
 
-      proc_default_usages = Proc.new{columns_spec.reject{|spec| spec[:usage] == 'new_field' || spec[:usage] == 'existing_field'}}
+      proc_default_usages = Proc.new{columns_spec.reject{|spec| spec[:usage] == 'new_field' || spec[:usage] == 'existing_field' || spec[:usage] == 'ignore'}}
       sites_errors[:duplicated_usage] = calculate_duplicated(proc_default_usages, :usage)
 
       fields = collection.fields

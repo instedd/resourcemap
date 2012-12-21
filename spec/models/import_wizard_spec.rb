@@ -855,6 +855,8 @@ describe ImportWizard do
     ]
 
     expect {ImportWizard.validate_columns collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
+
+    ImportWizard.delete_file(user, collection)
   end
 
   it "should validate only one column" do
@@ -882,6 +884,7 @@ describe ImportWizard do
      data_errors[0][:column].should eq(1)
      data_errors[0][:rows].should eq([1])
 
+     ImportWizard.delete_file(user, collection)
   end
 
   it "should not show errors if usage is ignore" do
@@ -903,6 +906,8 @@ describe ImportWizard do
     sites_errors = sites_preview_one_column[:errors]
 
     sites_errors[:data_errors].should == []
+
+    ImportWizard.delete_file(user, collection)
   end
 
   ['lat', 'lng', 'name', 'id'].each do |usage|
@@ -923,7 +928,30 @@ describe ImportWizard do
 
       sites_errors = sites_preview[:errors]
       sites_errors[:duplicated_usage].should eq(["#{usage}" => [0,1]])
+      ImportWizard.delete_file(user, collection)
     end
+  end
+
+  it "should not return duplicated_usage validation errror when there is more than one column with usage 'ignore'" do
+    csv_string = CSV.generate do |csv|
+      csv << ['col1', 'col2 ']
+      csv << ['val', 'val']
+    end
+
+    column_specs = [
+     {name: 'Column 1', usage: "ignore"},
+     {name: 'Column 2', usage: "ignore"}
+     ]
+
+     ImportWizard.import user, collection, csv_string
+
+     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+
+     sites_errors = sites_preview[:errors]
+     sites_errors[:duplicated_usage].should eq([])
+
+    ImportWizard.delete_file(user, collection)
+
   end
 
   ['code', 'label'].each do |value|
@@ -945,6 +973,8 @@ describe ImportWizard do
       sites_errors = sites_preview[:errors]
       key = "duplicated_#{value}".to_sym
       sites_errors[key].should eq(["repeated" => [0,1]])
+      ImportWizard.delete_file(user, collection)
+
     end
   end
 
