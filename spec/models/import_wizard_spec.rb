@@ -798,8 +798,8 @@ describe ImportWizard do
     sites_errors = sites[:errors]
 
     sites_errors[:hierarchy_field_found].should eq([4])
-    sites_errors[:duplicated_code].should eq([])
-    sites_errors[:duplicated_label].should eq([])
+    sites_errors[:duplicated_code].should eq({})
+    sites_errors[:duplicated_label].should eq({})
     sites_errors[:existing_code].should eq([])
     sites_errors[:usage_missing].should eq([])
 
@@ -927,7 +927,7 @@ describe ImportWizard do
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
 
       sites_errors = sites_preview[:errors]
-      sites_errors[:duplicated_usage].should eq(["#{usage}" => [0,1]])
+      sites_errors[:duplicated_usage].should eq("#{usage}" => [0,1])
       ImportWizard.delete_file(user, collection)
     end
   end
@@ -948,7 +948,7 @@ describe ImportWizard do
      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
 
      sites_errors = sites_preview[:errors]
-     sites_errors[:duplicated_usage].should eq([])
+     sites_errors[:duplicated_usage].should eq({})
 
     ImportWizard.delete_file(user, collection)
 
@@ -972,7 +972,7 @@ describe ImportWizard do
 
       sites_errors = sites_preview[:errors]
       key = "duplicated_#{value}".to_sym
-      sites_errors[key].should eq(["repeated" => [0,1]])
+      sites_errors[key].should eq("repeated" => [0,1])
       ImportWizard.delete_file(user, collection)
 
     end

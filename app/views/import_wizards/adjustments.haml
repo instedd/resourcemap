@@ -34,7 +34,10 @@
 
     /ko if: (validationErrors() && validationErrors().hasErrors())
     %ul
-      %li{ko(text: 'validationErrors()')}
+      / ko foreach: validationErrors().errorsForUI()
+      %li{ko(text: 'description')}
+      %span{ko(text: 'more_info')}
+      //ko
     //ko
 
     .box.nopadd.h50

@@ -366,10 +366,10 @@ class ImportWizard
     def calculate_duplicated(selection_block, groping_field)
       spec_to_validate = selection_block.call()
       spec_by_field = spec_to_validate.group_by{ |s| s[groping_field]}
-      duplicated_columns = []
+      duplicated_columns = {}
       spec_by_field.each do |column_spec|
         if column_spec[1].length > 1
-          duplicated_columns << {column_spec[0] => column_spec[1].map{|spec| spec[:index] }}
+          duplicated_columns[column_spec[0]] = column_spec[1].map{|spec| spec[:index] }
         end
       end
       duplicated_columns
