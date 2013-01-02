@@ -17,10 +17,17 @@ onImportWizard ->
             switch errorType
               when 'duplicated_code'
                 error_description.description = "Duplicated column with code #{errorId}"
-              when'duplicated_label'
+                error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
+              when 'duplicated_label'
                 error_description.description = "Duplicated column with label #{errorId}"
+                error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
+              when 'duplicated_usage'
+                error_description.description = "Duplicated column with usage #{errorId}"
+                error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
+
               else
                 error_description.description = "TBD"
-            error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
+                error_description.more_info = "TBD"
+
             errorsForUI.push(error_description)
       errorsForUI

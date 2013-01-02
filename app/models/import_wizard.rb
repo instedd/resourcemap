@@ -58,7 +58,7 @@ class ImportWizard
 
       sites_errors = {}
 
-      proc_select_new_fields = Proc.new{ columns_spec.select {|spec| spec[:usage] == 'new_field'}}
+      proc_select_new_fields = Proc.new{columns_spec.select {|spec| spec[:usage] == 'new_field'}}
       sites_errors[:duplicated_code] = calculate_duplicated(proc_select_new_fields, 'code')
       sites_errors[:duplicated_label] = calculate_duplicated(proc_select_new_fields, 'label')
 
