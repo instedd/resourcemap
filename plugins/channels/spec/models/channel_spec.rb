@@ -3,7 +3,7 @@ describe Channel do
   it { should validate_presence_of :name }
 
   it 'should valid when name is more than 4 charracters' do
-      channel = Channel.new name: 'abcd', password: '12345', is_manual_configuration: true
+      channel = Channel.new name: 'abcd', password: '12345', advanced_setup: true
       channel.valid?.should be_true
   end
 
@@ -12,9 +12,9 @@ describe Channel do
     channel.should_not be_valid
   end
 
-  describe 'when is is_manual_configuration == true' do
+  describe 'when is advanced_setup == true' do
     before(:each) do
-      @channel = Channel.new name: 'abcd', password: '', is_manual_configuration: true
+      @channel = Channel.new name: 'abcd', password: '', advanced_setup: true
     end
     
     it 'should require password' do
@@ -34,7 +34,7 @@ describe Channel do
   
   describe 'when is_manual_configuration == false' do
     before(:each) do
-      @channel = Channel.new name: 'abcd', ticket_code: '', is_manual_configuration: false
+      @channel = Channel.new name: 'abcd', ticket_code: '', basic_setup: true
     end
 
     it 'should require ticket_code' do
