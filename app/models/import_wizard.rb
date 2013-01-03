@@ -62,9 +62,10 @@ class ImportWizard
       sites_errors[:duplicated_code] = calculate_duplicated(proc_select_new_fields, 'code')
       sites_errors[:duplicated_label] = calculate_duplicated(proc_select_new_fields, 'label')
 
+      collection_fields = collection.fields.all(:include => :layer)
+      sites_errors[:existing_code] = calculate_existing(columns_spec, collection_fields, 'code')
+      sites_errors[:existing_label] = calculate_existing(columns_spec, collection_fields, 'label')
 
-      sites_errors[:existing_label] = []
-      sites_errors[:existing_code] = []
       sites_errors[:usage_missing] = []
 
       proc_default_usages = Proc.new{columns_spec.reject{|spec| spec[:usage] == 'new_field' || spec[:usage] == 'existing_field' || spec[:usage] == 'ignore'}}
@@ -373,6 +374,27 @@ class ImportWizard
         end
       end
       duplicated_columns
+    end
+
+    def calculate_existing(columns_spec, collection_fields, grouping_field)
+      spec_to_validate = columns_spec.select {|spec| spec[:usage] == 'new_field'}
+      existing_columns = {}
+      spec_to_validate.each do |column_spec|
+        #Refactor this
+        if grouping_field == 'code'
+          found = collection_fields.detect{|f| f.code == column_spec[grouping_field]}
+        elsif grouping_field == 'label'
+          found = collection_fields.detect{|f| f.name == column_spec[grouping_field]}
+        end
+        if found
+          if existing_columns[column_spec[grouping_field]]
+            existing_columns[column_spec[grouping_field]] << column_spec[:index]
+          else
+            existing_columns[column_spec[grouping_field]] = [column_spec[:index]]
+          end
+        end
+      end
+      existing_columns
     end
 
     def validate_column_value(column_spec, field_value, field, collection)

@@ -772,15 +772,15 @@ describe ImportWizard do
     ImportWizard.import user, collection, csv_string
 
     column_spec = [
-     {name: 'Text', usage: 'new_field', kind: 'text', code: 'text', label: 'text'},
-     {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'numeric', label: 'numeric'},
-     {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'select_one', label: 'select_one'},
-     {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'select_many', label: 'select_many'},
-     {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'hierarchy', label: 'hierarchy'},
-     {name: 'Site', usage: 'new_field', kind: 'site', code: 'site', label: 'site'},
-     {name: 'Date', usage: 'new_field', kind: 'date', code: 'date', label: 'date'},
-     {name: 'User', usage: 'new_field', kind: 'user', code: 'user', label: 'user'},
-     {name: 'Email', usage: 'new_field', kind: 'email', code: 'email', label: 'email'},
+     {name: 'Text', usage: 'new_field', kind: 'text', code: 'text2', label: 'text2'},
+     {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'numeric2', label: 'numeric2'},
+     {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'select_one2', label: 'select_one2'},
+     {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'select_many2', label: 'select_many2'},
+     {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'hierarchy2', label: 'hierarchy2'},
+     {name: 'Site', usage: 'new_field', kind: 'site', code: 'site2', label: 'site2'},
+     {name: 'Date', usage: 'new_field', kind: 'date', code: 'date2', label: 'date2'},
+     {name: 'User', usage: 'new_field', kind: 'user', code: 'user2', label: 'user2'},
+     {name: 'Email', usage: 'new_field', kind: 'email', code: 'email2', label: 'email2'},
     ]
 
     sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
@@ -800,13 +800,14 @@ describe ImportWizard do
     sites_errors[:hierarchy_field_found].should eq([4])
     sites_errors[:duplicated_code].should eq({})
     sites_errors[:duplicated_label].should eq({})
-    sites_errors[:existing_code].should eq([])
+    sites_errors[:existing_code].should eq({})
+    sites_errors[:existing_label].should eq({})
     sites_errors[:usage_missing].should eq([])
 
     data_errors = sites_errors[:data_errors]
     data_errors.length.should eq(6)
 
-    data_errors[0][:description].should eq("Invalid numeric value in numeric field")
+    data_errors[0][:description].should eq("Invalid numeric value in numeric2 field")
     data_errors[0][:column].should eq(1)
     data_errors[0][:rows].should eq([1, 2])
 
@@ -814,19 +815,19 @@ describe ImportWizard do
     data_errors[1][:column].should eq(4)
     data_errors[1][:rows].should eq([0, 1, 2])
 
-    data_errors[2][:description].should eq("Non-existent site-id in site field")
+    data_errors[2][:description].should eq("Non-existent site-id in site2 field")
     data_errors[2][:column].should eq(5)
     data_errors[2][:rows].should eq([1])
 
-    data_errors[3][:description].should eq("Invalid date value in date field")
+    data_errors[3][:description].should eq("Invalid date value in date2 field")
     data_errors[3][:column].should eq(6)
     data_errors[3][:rows].should eq([1, 2])
 
-    data_errors[4][:description].should eq("Non-existent user-email in user field")
+    data_errors[4][:description].should eq("Non-existent user-email in user2 field")
     data_errors[4][:column].should eq(7)
     data_errors[4][:rows].should eq([1])
 
-    data_errors[5][:description].should eq("Invalid email value in email field")
+    data_errors[5][:description].should eq("Invalid email value in email2 field")
     data_errors[5][:column].should eq(8)
     data_errors[5][:rows].should eq([1, 2])
 
@@ -972,6 +973,36 @@ describe ImportWizard do
 
       sites_errors = sites_preview[:errors]
       key = "duplicated_#{value}".to_sym
+      sites_errors[key].should eq("repeated" => [0,1])
+      ImportWizard.delete_file(user, collection)
+
+    end
+  end
+
+  ['code', 'label'].each do |value|
+    it "should return validation errors when there is existing_field with duplicated #{value}" do
+      if value == 'label'
+        repeated = layer.fields.make "name" => "repeated"
+      else
+        repeated = layer.fields.make "#{value}" => "repeated"
+      end
+
+      csv_string = CSV.generate do |csv|
+        csv << ['col1', 'col2 ']
+        csv << ['val', 'val']
+      end
+
+       column_specs = [
+         {name: 'Column 1', usage: 'new_field', "#{value}" => "repeated" },
+         {name: 'Column 2', usage: 'new_field', "#{value}" => "repeated" }
+         ]
+
+      ImportWizard.import user, collection, csv_string
+
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+
+      sites_errors = sites_preview[:errors]
+      key = "existing_#{value}".to_sym
       sites_errors[key].should eq("repeated" => [0,1])
       ImportWizard.delete_file(user, collection)
 
