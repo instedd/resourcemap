@@ -2,19 +2,20 @@ module Collection::PluginsConcern
   extend ActiveSupport::Concern
 
   included do
-    serialize :plugins, Hash
+    #serialize :plugins, Hash
   end
 
   def selected_plugins=(plugin_names)
-    self.plugins = {}
-    plugin_names.each do |name|
-      next unless name.present?
-      plugins[name] = {}
-    end
+   # self.plugins = {}
+   # plugin_names.each do |name|
+   #   next unless name.present?
+   #   plugins[name] = {}
+   # end
   end
 
   def plugin_enabled?(key)
-    plugins.has_key? key
+    Settings.is_on? key
+    #plugins.has_key? key
   end
 
   def selected_plugins
