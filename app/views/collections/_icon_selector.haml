@@ -1,0 +1,12 @@
+= f.hidden_field :icon, id: 'select_icon'
+%input#focus_icon{:type =>"hidden"}
+
+- icons = [:default, :aed2, :construction, :daycare, :drugstore, :fetalalcoholsyndrom, :firstaid, :hospitalbuilding, :medicine, :nanny, :nursery, :villa, :army, :bomber2, :chemistry2, :constructioncrane, :cycling, :dentist, :disability, :factory, :fishing, :foodtruck, :footprint, :fourbyfour, :gayfemale, :gaymale, :highschool, :school, :university, :hiking, :hoseriding, :hostel0star, :hotel0star, :lodging0star, :motel2, :youthhostel, :mastcrane1, :ophthalmologist, :powerlinepole, :poweroutage, :powerplant, :powersubstation, :radiostation2, :windturbine, :mobilephonetower, :restaurant_fish, :sawmill2, :mine, :septic_tank, :shootingrange, :hunting, :solarenergy, :sozialeeinrichtung, :summercamp, :veterinary, :watertower, :wifi, :medicalstore, :recycle, :resort]
+
+- icons_per_row = 9
+
+- icons.in_groups_of(icons_per_row).each do |row|
+  - row.each do |i|
+    = f.button :type => "button", :class => i
+
+
