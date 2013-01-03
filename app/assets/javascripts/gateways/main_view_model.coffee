@@ -8,7 +8,7 @@ onGateways ->
       @isSaving         = ko.observable false
     
     addGateway: =>
-      gateway = new Gateway is_share: 'false', queued_messages_count: 0, name:'default-gateway'
+      gateway = new Gateway  queued_messages_count: 0, name:'default-gateway', is_enable: true
       @currentGateway gateway 
       @gateways.push gateway
 
