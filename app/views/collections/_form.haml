@@ -29,8 +29,7 @@
 
   .field.w60
     %label
-      Use an icon from our library
-    %br/
+      Icon
     = f.hidden_field :icon, id: 'select_icon'
     %input#focus_icon{:type =>"hidden"}
 
@@ -46,9 +45,9 @@
     %button.nanny{:type => "button"}
     %button.nursery{:type => "button"}
     %button.villa{:type => "button"}
-  %br
-  %br
-  .field.w60
+    %br
+    %br
+    %br
     %button.army{:type => "button"}
     %button.bomber-2{:type => "button"}
     %button.chemistry-2{:type => "button"}
@@ -61,11 +60,9 @@
     %button.foodtruck{:type => "button"}
     %button.footprint{:type => "button"}
     %button.fourbyfour{:type => "button"}
-
-
-  %br
-  %br
-  .field.w60
+    %br
+    %br
+    %br
     %button.gay-female{:type => "button"}
     %button.gay-male{:type => "button"}
     %button.highschool{:type => "button"}
@@ -78,9 +75,9 @@
     %button.lodging_0star{:type => "button"}
     %button.motel-2{:type => "button"}
     %button.youthhostel{:type => "button"}
-  %br
-  %br
-  .field.w60
+    %br
+    %br
+    %br
     %button.mastcrane1{:type => "button"}
     %button.ophthalmologist{:type => "button"}
     %button.powerlinepole{:type => "button"}
@@ -93,9 +90,9 @@
     %button.restaurant_fish{:type => "button"}
     %button.sawmill-2{:type => "button"}
     %button.mine{:type => "button"}
-  %br
-  %br
-  .field.w60
+    %br
+    %br
+    %br
     %button.septic_tank{:type => "button"}
     %button.shootingrange{:type => "button"}
     %button.hunting{:type => "button"}
@@ -108,16 +105,17 @@
     %button.medicalstore{:type => "button"}
     %button.recycle{:type => "button"}
     %button.resort{:type => "button"}
-  %br
-  %br
-  %br
-  = f.label :plugins
-  %br
-  = hidden_field_tag 'collection[selected_plugins][]', nil
-  - Plugin.all.each do |plugin|
-    = check_box_tag 'collection[selected_plugins][]', plugin.name, collection.plugins.has_key?(plugin.name), id: "plugin_#{plugin.object_id}"
-    = label_tag "plugin_#{plugin.object_id}", plugin.name.humanize
     %br
-  %br
-  = f.button 'Save', :class => 'white'
-  = link_to 'or cancel', collections_path, :style => 'text-decoration:underline;'
+    %br
+    %br
+  .w60
+    = f.label :plugins
+    %br
+    = hidden_field_tag 'collection[selected_plugins][]', nil
+    - Plugin.all.each do |plugin|
+      = check_box_tag 'collection[selected_plugins][]', plugin.name, collection.plugins.has_key?(plugin.name), id: "plugin_#{plugin.object_id}"
+      = label_tag "plugin_#{plugin.object_id}", plugin.name.humanize
+      %br
+    %br
+    = f.button 'Save', :class => 'white'
+    = link_to 'or cancel', collections_path, :style => 'text-decoration:underline;'
