@@ -13,6 +13,10 @@ module Settings
   def is_on?(plugin)
     plugins[plugin.to_s] == true
   end
+  
+  def selected_plugins
+    plugins.map{|k,v| k if v == true }.compact
+  end
 
   def method_missing(method_name)
     if method_name.to_s =~ /(\w+)\?$/

@@ -18,7 +18,8 @@ module Collection::PluginsConcern
   end
 
   def selected_plugins
-    plugins.keys
+    Settings.selected_plugins 
+    #plugins.keys
   end
 
   def each_plugin(&block)
