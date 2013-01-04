@@ -243,8 +243,9 @@
     = render 'collections/index/export'
     <!-- /ko -->
     %span{ko(text: :sitesCountText)}
-    - Plugin.all.each do |plugin|
-      = render_plugin_hook plugin, :map_header
+    - if Settings.is_on? :alerts
+      - Plugin.all.each do |plugin|
+        = render_plugin_hook plugin, :map_header
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     <!-- ko if: !editingSite() -->
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
