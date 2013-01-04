@@ -42,7 +42,7 @@ describe 'ValidationErrors', ->
     proc_duplicated_label = (errors) -> errors.duplicated_label = {text_column: [0, 1]}
     check_duplicated_field_assertion('label', 'text_column', proc_duplicated_label)
 
-  it "should generate redeable errors for duplicated usage", ->
+  it "should generate redeable errors for duplicated usage for default usages (lat, lng, name or id)", ->
     proc_duplicated_usage = (errors, column_name) -> errors.duplicated_usage = {lat: [0, 1]}
     check_duplicated_field_assertion('usage', 'lat', proc_duplicated_usage)
 

@@ -914,14 +914,14 @@ describe ImportWizard do
   ['lat', 'lng', 'name', 'id'].each do |usage|
     it "should return validation errors when more than one column is selected to be #{usage}" do
       csv_string = CSV.generate do |csv|
-        csv << ['col1', 'col2 ']
-        csv << ['val', 'val']
+      csv << ['col1', 'col2 ']
+      csv << ['val', 'val']
       end
 
-       column_specs = [
-         {name: 'Column 1', usage: "#{usage}"},
-         {name: 'Column 2', usage:"#{usage}"}
-         ]
+      column_specs = [
+       {name: 'Column 1', usage: "#{usage}"},
+       {name: 'Column 2', usage:"#{usage}"}
+       ]
 
       ImportWizard.import user, collection, csv_string
 
@@ -929,9 +929,32 @@ describe ImportWizard do
 
       sites_errors = sites_preview[:errors]
       sites_errors[:duplicated_usage].should eq("#{usage}" => [0,1])
+
       ImportWizard.delete_file(user, collection)
     end
   end
+
+  it "should return validation errors when more than one column is selected to be the same existing field" do
+    csv_string = CSV.generate do |csv|
+      csv << ['col1', 'col2 ']
+      csv << ['val', 'val']
+    end
+
+    column_specs = [
+     {name: 'Column 1', usage: "existing_field", field_id: text.id},
+     {name: 'Column 2', usage: "existing_field", field_id: text.id}
+     ]
+
+     ImportWizard.import user, collection, csv_string
+
+     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+     sites_errors = sites_preview[:errors]
+     #sites_errors[:duplicated_usage].should eq("existing '#{layer.name} - #{text.name}' field" => [0,1])
+     sites_errors[:duplicated_usage].should eq(text.id => [0,1])
+
+     ImportWizard.delete_file(user, collection)
+  end
+
 
   it "should not return duplicated_usage validation errror when there is more than one column with usage 'ignore'" do
     csv_string = CSV.generate do |csv|
