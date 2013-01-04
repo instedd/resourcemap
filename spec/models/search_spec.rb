@@ -303,7 +303,7 @@ describe Search do
 
   context "geo" do
     let!(:site1) { collection.sites.make lat: 10, lng: 20}
-    let!(:site2) { collection.sites.make lat: 15, lng: 25}
+    let!(:site2) { collection.sites.make lat: 15.321, lng: 25.123}
     let!(:site3) { collection.sites.make lat: 40, lng: 60}
 
     it "searches by box" do
@@ -324,6 +324,14 @@ describe Search do
 
     it "searches by numeric radius on single site" do
       assert_results collection.new_search.radius(10, 20, 1), site1
+    end
+
+    it "full text searches by lat" do
+      assert_results collection.new_search.full_text_search("15.3"), site2
+    end
+
+    it "full text searches by lng" do
+      assert_results collection.new_search.full_text_search("25.1"), site2
     end
   end
 

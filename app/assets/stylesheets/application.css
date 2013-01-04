@@ -186,4 +186,6 @@
   margin-right:10px;
 }
 
-
+.settings-form label {
+  padding-bottom:5px;
+}

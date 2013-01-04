@@ -4,7 +4,6 @@ module Site::TireConcern
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
   DateISOString = "%Y-%m-%dT%H:%M:%SZ" #YYYY-MM-DDTHH:mm:ssZ #2012-12-25T03:00:00Z
 
-
   included do
     after_save :store_in_index
     after_destroy :remove_from_index

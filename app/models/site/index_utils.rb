@@ -7,7 +7,7 @@ module Site::IndexUtils
     hash = {
       id: site_id,
       name: site.name,
-      id_with_prefix: site.id_with_prefix, 
+      id_with_prefix: site.id_with_prefix,
       name_not_analyzed: site.name,
       type: :site,
       properties: site.properties,
@@ -16,7 +16,12 @@ module Site::IndexUtils
       icon: site.collection.icon,
     }
 
-    hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f} if site.lat? && site.lng?
+    if site.lat? && site.lng?
+      hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f}
+      hash[:lat_analyzed] = site.lat.to_s
+      hash[:lng_analyzed] = site.lng.to_s
+    end
+
     hash.merge! site.extended_properties if site.is_a? Site
     result = index.store hash
 
@@ -34,9 +39,11 @@ module Site::IndexUtils
         id_with_prefix: { type: :string },
         name_not_analyzed: { type: :string, index: :not_analyzed },
         location: { type: :geo_point },
+        lat_analyzed: { type: :string },
+        lng_analyzed: { type: :string },
         created_at: { type: :date, format: :basic_date_time },
         updated_at: { type: :date, format: :basic_date_time },
-        properties: { properties: fields_mapping(fields) },
+        properties: { properties: fields_mapping(fields) }
       }
     }
   end
