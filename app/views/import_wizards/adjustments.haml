@@ -51,7 +51,7 @@
             %tr
               / ko foreach: columns()
               %th
-                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'error().length > 0'}, attr: {error: 'error'}, class: 'iconClass', text: :name, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
+                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'error().length > 0'}, attr: {error: 'error'}, class: 'iconClass', text: :header, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
               //ko
           %tbody
             / ko foreach: sites()
@@ -64,7 +64,7 @@
 
     #columnUsageTemplate{ko(with: :selectedColumn), style:'display: none;'}
       %h2
-        %span{ko(text: 'name')}
+        %span{ko(text: 'header')}
         Column Settings
       %hr
       %div{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
