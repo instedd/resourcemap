@@ -1,14 +1,12 @@
 describe 'Collection', ->
   beforeEach ->
     window.runOnCallbacks 'collections'
-    window.model = new MainViewModel
 
   describe 'SitesViewModel', ->
     beforeEach ->
       @collection = new Collection id: 1
+      window.model = new MainViewModel [@collection]
       @model = window.model
-      @model.initialize [@collection]
-
 
     describe 'selected hierarchy', ->
       beforeEach ->

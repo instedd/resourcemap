@@ -30,7 +30,7 @@ onCollections ->
     @safe_six_decimals_string_coordinate: (coord) ->
       if coord?
         strCoord = coord.toString()
-        strCoord[0..strCoord.indexOf('.') + 6]
+        strCoord[0..strCoord.indexOf('.') + 7]
       else
         ''
 

@@ -29,95 +29,11 @@
 
   .field.w60
     %label
-      Use an icon from our library
-    %br/
-    = f.hidden_field :icon, id: 'select_icon'
-    %input#focus_icon{:type =>"hidden"}
-
-    %button.default{:type => "button"}
-    %button.aed-2{:type => "button"}
-    %button.construction{:type => "button"}
-    %button.daycare{:type => "button"}
-    %button.drugstore{:type => "button"}
-    %button.fetalalcoholsyndrom{:type => "button"}
-    %button.firstaid{:type => "button"}
-    %button.hospital-building{:type => "button"}
-    %button.medicine{:type => "button"}
-    %button.nanny{:type => "button"}
-    %button.nursery{:type => "button"}
-    %button.villa{:type => "button"}
-  %br
-  %br
-  .field.w60
-    %button.army{:type => "button"}
-    %button.bomber-2{:type => "button"}
-    %button.chemistry-2{:type => "button"}
-    %button.constructioncrane{:type => "button"}
-    %button.cycling{:type => "button"}
-    %button.dentist{:type => "button"}
-    %button.disability{:type => "button"}
-    %button.factory{:type => "button"}
-    %button.fishing{:type => "button"}
-    %button.foodtruck{:type => "button"}
-    %button.footprint{:type => "button"}
-    %button.fourbyfour{:type => "button"}
+      Icon
+    = render 'icon_selector', :f => f
+  .w60
+  %br{clear: :all}
 
 
-  %br
-  %br
-  .field.w60
-    %button.gay-female{:type => "button"}
-    %button.gay-male{:type => "button"}
-    %button.highschool{:type => "button"}
-    %button.school{:type => "button"}
-    %button.university{:type => "button"}
-    %button.hiking{:type => "button"}
-    %button.hoseriding{:type => "button"}
-    %button.hostel_0star{:type => "button"}
-    %button.hotel_0star{:type => "button"}
-    %button.lodging_0star{:type => "button"}
-    %button.motel-2{:type => "button"}
-    %button.youthhostel{:type => "button"}
-  %br
-  %br
-  .field.w60
-    %button.mastcrane1{:type => "button"}
-    %button.ophthalmologist{:type => "button"}
-    %button.powerlinepole{:type => "button"}
-    %button.poweroutage{:type => "button"}
-    %button.powerplant{:type => "button"}
-    %button.powersubstation{:type => "button"}
-    %button.radio-station-2{:type => "button"}
-    %button.windturbine{:type => "button"}
-    %button.mobilephonetower{:type => "button"}
-    %button.restaurant_fish{:type => "button"}
-    %button.sawmill-2{:type => "button"}
-    %button.mine{:type => "button"}
-  %br
-  %br
-  .field.w60
-    %button.septic_tank{:type => "button"}
-    %button.shootingrange{:type => "button"}
-    %button.hunting{:type => "button"}
-    %button.solarenergy{:type => "button"}
-    %button.sozialeeinrichtung{:type => "button"}
-    %button.summercamp{:type => "button"}
-    %button.veterinary{:type => "button"}
-    %button.watertower{:type => "button"}
-    %button.wifi{:type => "button"}
-    %button.medicalstore{:type => "button"}
-    %button.recycle{:type => "button"}
-    %button.resort{:type => "button"}
-  %br
-  %br
-  %br
-  = f.label :plugins
-  %br
-  = hidden_field_tag 'collection[selected_plugins][]', nil
-  - Plugin.all.each do |plugin|
-    = check_box_tag 'collection[selected_plugins][]', plugin.name, collection.plugins.has_key?(plugin.name), id: "plugin_#{plugin.object_id}"
-    = label_tag "plugin_#{plugin.object_id}", plugin.name.humanize
-    %br
-  %br
   = f.button 'Save', :class => 'white'
   = link_to 'or cancel', collections_path, :style => 'text-decoration:underline;'

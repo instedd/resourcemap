@@ -27,10 +27,10 @@ module ElasticSearch::QueryHelper
 
         if ids.present?
           ids = ids.map { |k, v| %Q(#{k}:"#{v}") }
-          ids.push append_star_unless_numeric(search_hash.search)
+          ids.push append_star(search_hash.search)
           conditions.push "(#{ids.join " OR "})"
         else
-          conditions.push append_star_unless_numeric(search_hash.search)
+          conditions.push append_star(search_hash.search)
         end
       end
 
@@ -41,7 +41,7 @@ module ElasticSearch::QueryHelper
         if key.downcase == 'id' || key.downcase == 'name'
           op = '='
         else
-          field =  collection.fields.find { |x| x.code == key || x.name == key}
+          field = collection.fields.find { |x| x.code == key || x.name == key}
           next unless field
 
           key = field.es_code
@@ -99,23 +99,16 @@ module ElasticSearch::QueryHelper
       nil
     end
 
-    # When searching for a number, like 8, we don't want to search 8*:
-    # that is, we don't want to search prefixes, we want to search an exact number.
-    # That's why we don't append a start.
-    def append_star_unless_numeric(text)
-      if text.integer?
-        text
+    def append_star(text)
+      # Lucene doesn't support searching for "foo ba*":
+      # http://wiki.apache.org/lucene-java/LuceneFAQ#Can_I_combine_wildcard_and_phrase_search.2C_e.g._.22foo_ba.2A.22.3F
+      #
+      # So our approach here is: if just one word is looked for, we use a star, no quotes.
+      # Otherwise, we use quotes and no star.
+      if text =~ /\s/
+        %Q("#{text}")
       else
-        # Lucene doesn't support searching for "foo ba*":
-        # http://wiki.apache.org/lucene-java/LuceneFAQ#Can_I_combine_wildcard_and_phrase_search.2C_e.g._.22foo_ba.2A.22.3F
-        #
-        # So our approach here is: if just one word is looked for, we use a star, no quotes.
-        # Otherwise, we use quotes and no star.
-        if text =~ /\s/
-          %Q("#{text}")
-        else
-          "#{text}*"
-        end
+        "#{text}*"
       end
     end
   end

@@ -2,9 +2,8 @@ describe 'Collection', ->
   beforeEach ->
     window.runOnCallbacks 'collections'
 
-    window.model = new MainViewModel
     @collection = new Collection id: 1
-    window.model.initialize [@collection]
+    window.model = new MainViewModel [@collection]
     @model = window.model
 
   describe 'MapViewModel', ->

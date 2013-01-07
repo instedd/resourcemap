@@ -76,12 +76,14 @@ onGateways ->
           "Destination phone number is missing"        
         else 
           null
+      
+      @phoneNumberError       = ko.computed =>
+        return @destinationPhoneNumberError() if @destinationPhoneNumberError()
 
       @error                  = ko.computed => 
         return @nameError() if @nameError()
         return @passwordError() if @passwordError()
         return @ticketCodeError() if @ticketCodeError() 
-        return @destinationPhoneNumberError() if @destinationPhoneNumberError()
       
       @enableCss              = ko.observable 'cb-enable'
       @disableCss             = ko.observable 'cb-disalbe'
@@ -95,6 +97,7 @@ onGateways ->
           @disableCss 'cb-disable selected'
       
       @valid                  = ko.computed => not @error()?
+      @validPhoneNumber       = ko.computed => not @phoneNumberError()?
       @tryPhoneNumber         = ko.observable()
     
     toJson: ->
@@ -102,6 +105,7 @@ onGateways ->
       collection_id           : @collectionId
       name                    : if @nationalSetup() then @nationalGateway().code else @name()
       basic_setup             : @basicSetup()
+      is_enable               : @isEnable()
       advanced_setup          : @advancedSetup()
       national_setup          : @nationalSetup()
       #nuntium_channel_name    : @nuntiumChannelName()

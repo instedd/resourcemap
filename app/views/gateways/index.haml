@@ -43,7 +43,7 @@
       .middlebuttons{ko(visible: 'isTry')}
         %label
         %input{ko(value: :tryPhoneNumber, valueUpdate: :afterkeydown), type: :text, hasfocus: true,  style: 'width:240px', placeholder: 'Enter your destination phone number' }
-        %button.fmessage{ko(click: '$root.tryGateway', enable: 'valid')} Send Now!
+        %button.fmessage{ko(click: '$root.tryGateway', enable: 'validPhoneNumber')} Send Now!
 
         %button.fclose{ko(click: '$root.cancel')} Cancel
     %br

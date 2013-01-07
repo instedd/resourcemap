@@ -5,3 +5,8 @@ plugins:
   threshold: off
   snapshot: on
   reminder: off
+  
+  channels: off
+  reminders: off
+  alerts: off
+  account_completeness: off
