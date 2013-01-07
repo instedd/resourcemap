@@ -60,7 +60,7 @@ module Field::ValidationConcern
   def check_email_format(value)
     regex = Regexp.new('^(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})$')
     if value.match(regex).nil?
-      raise "Invalid email value in #{code} field"
+      raise "Invalid email address in #{code} field"
     end
     value
   end
@@ -173,7 +173,7 @@ module Field::ValidationConcern
     user_emails = collection.users.map {|u| u.email}
 
     if !user_emails.include? user_email
-      raise "Non-existent user-email in #{code} field"
+      raise "Non-existent user email address in #{code} field"
     end
     user_email
   end
