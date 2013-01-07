@@ -30,7 +30,7 @@ describe 'ValidationErrors', ->
     expect(redeable_errors.length).toBe(1)
     first_error = redeable_errors[0]
     expect(first_error.error_kind).toBe("existing_#{error_type}")
-    expect(first_error.description).toBe("The is an existing field with #{error_type} #{column_name} in your collection")
+    expect(first_error.description).toBe("There is an existing field with #{error_type} #{column_name} in your collection")
     expect(first_error.columns).toEqual([0,1])
     expect(first_error.more_info).toEqual('Column numbers: 0,1')
 
