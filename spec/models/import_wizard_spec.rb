@@ -28,10 +28,10 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', usage: 'name'},
-      {name: 'Lat', usage: 'lat'},
-      {name: 'Lon', usage: 'lng'},
-      {name: 'Beds', usage: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'},
+      {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -69,11 +69,11 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'resmap-id', usage: 'id'},
-      {name: 'Name', usage: 'name'},
-      {name: 'Lat', usage: 'lat'},
-      {name: 'Lon', usage: 'lng'},
-      {name: 'Beds', usage: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
+      {header: 'resmap-id', use_as: 'id'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'},
+      {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -109,11 +109,11 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'resmap-id', usage: 'id'},
-      {name: 'Name', usage: 'name'},
-      {name: 'Lat', usage: 'lat'},
-      {name: 'Lon', usage: 'lng'},
-      {name: 'Beds', usage: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
+      {header: 'resmap-id', use_as: 'id'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'},
+      {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -146,8 +146,8 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', usage: 'name'},
-      {name: 'Visibility', usage: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'both'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Visibility', use_as: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'both'},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -182,9 +182,9 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', usage: 'name'},
-      {name: 'Visibility', usage: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'label'},
-      {name: 'Visibility Code', usage: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'code'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Visibility', use_as: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'label'},
+      {header: 'Visibility Code', use_as: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'code'},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -218,8 +218,8 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', usage: 'name'},
-      {name: 'Column', usage: 'existing_field', field_id: text.id},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: text.id},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -246,8 +246,8 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', usage: 'name'},
-      {name: 'Column', usage: 'existing_field', field_id: numeric.id},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: numeric.id},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -274,8 +274,8 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', usage: 'name'},
-      {name: 'Column', usage: 'existing_field', field_id: select_one.id},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: select_one.id},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -302,8 +302,8 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', usage: 'name'},
-      {name: 'Column', usage: 'existing_field', field_id: select_one.id},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: select_one.id},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -341,8 +341,8 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', usage: 'name'},
-      {name: 'Column', usage: 'existing_field', field_id: select_many.id},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: select_many.id},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -369,8 +369,8 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Name', usage: 'name'},
-      {name: 'Column', usage: 'existing_field', field_id: select_many.id},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: select_many.id},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -407,8 +407,8 @@ describe ImportWizard do
       end
 
       specs = [
-        {name: 'Name', usage: 'name'},
-        {name: 'Column', usage: 'existing_field', field_id: hierarchy.id},
+        {header: 'Name', use_as: 'name'},
+        {header: 'Column', use_as: 'existing_field', field_id: hierarchy.id},
         ]
 
       ImportWizard.import user, collection, csv_string
@@ -434,8 +434,8 @@ describe ImportWizard do
      end
 
      specs = [
-       {name: 'Name', usage: 'name'},
-       {name: 'Column', usage: 'existing_field', field_id: date.id},
+       {header: 'Name', use_as: 'name'},
+       {header: 'Column', use_as: 'existing_field', field_id: date.id},
        ]
 
      ImportWizard.import user, collection, csv_string
@@ -464,8 +464,8 @@ describe ImportWizard do
     end
 
     specs = [
-     {name: 'Name', usage: 'name'},
-     {name: 'Column', usage: 'existing_field', field_id: site.id},
+     {header: 'Name', use_as: 'name'},
+     {header: 'Column', use_as: 'existing_field', field_id: site.id},
      ]
 
     ImportWizard.import user, collection, csv_string
@@ -503,16 +503,16 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'resmap-id', usage: 'id'},
-      {name: 'Name', usage: 'name'},
-      {name: 'Text', usage: 'existing_field', field_id: text.id},
-      {name: 'Numeric', usage: 'existing_field', field_id: numeric.id},
-      {name: 'Select One', usage: 'existing_field', field_id: select_one.id},
-      {name: 'Select Many', usage: 'existing_field', field_id: select_many.id},
-      {name: 'Hierarchy', usage: 'existing_field', field_id: hierarchy.id},
-      {name: 'Site', usage: 'existing_field', field_id: site.id},
-      {name: 'Date', usage: 'existing_field', field_id: date.id},
-      {name: 'User', usage: 'existing_field', field_id: director.id},
+      {header: 'resmap-id', use_as: 'id'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Text', use_as: 'existing_field', field_id: text.id},
+      {header: 'Numeric', use_as: 'existing_field', field_id: numeric.id},
+      {header: 'Select One', use_as: 'existing_field', field_id: select_one.id},
+      {header: 'Select Many', use_as: 'existing_field', field_id: select_many.id},
+      {header: 'Hierarchy', use_as: 'existing_field', field_id: hierarchy.id},
+      {header: 'Site', use_as: 'existing_field', field_id: site.id},
+      {header: 'Date', use_as: 'existing_field', field_id: date.id},
+      {header: 'User', use_as: 'existing_field', field_id: director.id},
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -566,16 +566,16 @@ describe ImportWizard do
     end
 
     specs = [
-     {name: 'resmap-id', usage: 'id'},
-     {name: 'Name', usage: 'name'},
-     {name: 'Text', usage: 'existing_field', field_id: text.id},
-     {name: 'Numeric', usage: 'existing_field', field_id: numeric.id},
-     {name: 'Select One', usage: 'existing_field', field_id: select_one.id},
-     {name: 'Select Many', usage: 'existing_field', field_id: select_many.id},
-     {name: 'Hierarchy', usage: 'existing_field', field_id: hierarchy.id},
-     {name: 'Site', usage: 'existing_field', field_id: site.id},
-     {name: 'Date', usage: 'existing_field', field_id: date.id},
-     {name: 'User', usage: 'existing_field', field_id: director.id},
+     {header: 'resmap-id', use_as: 'id'},
+     {header: 'Name', use_as: 'name'},
+     {header: 'Text', use_as: 'existing_field', field_id: text.id},
+     {header: 'Numeric', use_as: 'existing_field', field_id: numeric.id},
+     {header: 'Select One', use_as: 'existing_field', field_id: select_one.id},
+     {header: 'Select Many', use_as: 'existing_field', field_id: select_many.id},
+     {header: 'Hierarchy', use_as: 'existing_field', field_id: hierarchy.id},
+     {header: 'Site', use_as: 'existing_field', field_id: site.id},
+     {header: 'Date', use_as: 'existing_field', field_id: date.id},
+     {header: 'User', use_as: 'existing_field', field_id: director.id},
      ]
 
     ImportWizard.import user, collection, csv_string
@@ -607,7 +607,7 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'new_hierarchy'},
+      {header: 'Hierarchy', use_as: 'new_field', kind: 'hierarchy', code: 'new_hierarchy'},
     ]
 
     ImportWizard.import user, collection, csv_string
@@ -626,17 +626,17 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'resmap-id', usage: 'id'},
-      {name: 'Name', usage: 'name'},
-      {name: 'Text', usage: 'new_field', kind: 'text', code: 'new_text'},
-      {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'new_numeric'},
-      {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'new_select_one', label: 'New Select One', selectKind: 'both'},
-      {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'new_select_many', label: 'New Select Many', selectKind: 'both'},
-      {name: 'Site', usage: 'new_field', kind: 'site', code: 'new_site'},
-      {name: 'Date', usage: 'new_field', kind: 'date', code: 'new_date'},
-      {name: 'User', usage: 'new_field', kind: 'user', code: 'new_user'},
-      {name: 'Email', usage: 'new_field', kind: 'email', code: 'new_email'},
-      {name: 'Phone', usage: 'new_field', kind: 'phone', code: 'new_phone'},
+      {header: 'resmap-id', use_as: 'id'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Text', use_as: 'new_field', kind: 'text', code: 'new_text'},
+      {header: 'Numeric', use_as: 'new_field', kind: 'numeric', code: 'new_numeric'},
+      {header: 'Select One', use_as: 'new_field', kind: 'select_one', code: 'new_select_one', label: 'New Select One', selectKind: 'both'},
+      {header: 'Select Many', use_as: 'new_field', kind: 'select_many', code: 'new_select_many', label: 'New Select Many', selectKind: 'both'},
+      {header: 'Site', use_as: 'new_field', kind: 'site', code: 'new_site'},
+      {header: 'Date', use_as: 'new_field', kind: 'date', code: 'new_date'},
+      {header: 'User', use_as: 'new_field', kind: 'user', code: 'new_user'},
+      {header: 'Email', use_as: 'new_field', kind: 'email', code: 'new_email'},
+      {header: 'Phone', use_as: 'new_field', kind: 'phone', code: 'new_phone'},
     ]
 
     ImportWizard.import user, collection, csv_string
@@ -675,19 +675,19 @@ describe ImportWizard do
 
     column_spec.length.should eq(13)
 
-    column_spec.should include({:name=>"resmap-id", :kind=> :id, :code=>"resmap-id", :label=>"Resmap", :usage=>:id})
-    column_spec.should include({:name=>"Name", :kind=>:name, :code=>"name", :label=>"Name", :usage=>:name})
-    column_spec.should include({:name=>"Lat", :kind=>:location, :code=>"lat", :label=>"Lat", :usage=>:lat})
-    column_spec.should include({:name=>"Lon", :kind=>:location, :code=>"lon", :label=>"Lon", :usage=>:lng})
-    column_spec.should include({:name=>"text", :kind=>:text, :code=>"text", :label=>"Text", :usage=>:existing_field, :layer_id=> text.layer_id, :field_id=>text.id})
-    column_spec.should include({:name=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :usage=>:existing_field, :layer_id=>numeric.layer_id, :field_id=>numeric.id})
-    column_spec.should include({:name=>"select_one", :kind=>:select_one, :code=>"select_one", :label=>"Select One", :usage=>:existing_field, :layer_id=>select_one.layer_id, :field_id=>select_one.id})
-    column_spec.should include({:name=>"select_many", :kind=>:select_many, :code=>"select_many", :label=>"Select Many", :usage=>:existing_field, :layer_id=>select_many.layer_id, :field_id=>select_many.id})
-    column_spec.should include({:name=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :usage=>:existing_field, :layer_id=>hierarchy.layer_id, :field_id=>hierarchy.id})
-    column_spec.should include({:name=>"site", :kind=>:site, :code=>"site", :label=>"Site", :usage=>:existing_field, :layer_id=>site.layer_id, :field_id=>site.id})
-    column_spec.should include({:name=>"date", :kind=>:date, :code=>"date", :label=>"Date", :usage=>:existing_field, :layer_id=>date.layer_id, :field_id=>date.id})
-    column_spec.should include({:name=>"user", :kind=>:user, :code=>"user", :label=>"User", :usage=>:existing_field, :layer_id=>director.layer_id, :field_id=>director.id})
-    column_spec.should include({:name=>"email", :kind=>:email, :code=>"email", :label=>"Email", :usage=>:existing_field, :layer_id=>email_field.layer_id, :field_id=>email_field.id})
+    column_spec.should include({:header=>"resmap-id", :kind=> :id, :code=>"resmap-id", :label=>"Resmap", :use_as=>:id})
+    column_spec.should include({:header=>"Name", :kind=>:name, :code=>"name", :label=>"Name", :use_as=>:name})
+    column_spec.should include({:header=>"Lat", :kind=>:location, :code=>"lat", :label=>"Lat", :use_as=>:lat})
+    column_spec.should include({:header=>"Lon", :kind=>:location, :code=>"lon", :label=>"Lon", :use_as=>:lng})
+    column_spec.should include({:header=>"text", :kind=>:text, :code=>"text", :label=>"Text", :use_as=>:existing_field, :layer_id=> text.layer_id, :field_id=>text.id})
+    column_spec.should include({:header=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :use_as=>:existing_field, :layer_id=>numeric.layer_id, :field_id=>numeric.id})
+    column_spec.should include({:header=>"select_one", :kind=>:select_one, :code=>"select_one", :label=>"Select One", :use_as=>:existing_field, :layer_id=>select_one.layer_id, :field_id=>select_one.id})
+    column_spec.should include({:header=>"select_many", :kind=>:select_many, :code=>"select_many", :label=>"Select Many", :use_as=>:existing_field, :layer_id=>select_many.layer_id, :field_id=>select_many.id})
+    column_spec.should include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :layer_id=>hierarchy.layer_id, :field_id=>hierarchy.id})
+    column_spec.should include({:header=>"site", :kind=>:site, :code=>"site", :label=>"Site", :use_as=>:existing_field, :layer_id=>site.layer_id, :field_id=>site.id})
+    column_spec.should include({:header=>"date", :kind=>:date, :code=>"date", :label=>"Date", :use_as=>:existing_field, :layer_id=>date.layer_id, :field_id=>date.id})
+    column_spec.should include({:header=>"user", :kind=>:user, :code=>"user", :label=>"User", :use_as=>:existing_field, :layer_id=>director.layer_id, :field_id=>director.id})
+    column_spec.should include({:header=>"email", :kind=>:email, :code=>"email", :label=>"Email", :use_as=>:existing_field, :layer_id=>email_field.layer_id, :field_id=>email_field.id})
 
     ImportWizard.delete_file(user, collection)
   end
@@ -772,15 +772,15 @@ describe ImportWizard do
     ImportWizard.import user, collection, csv_string
 
     column_spec = [
-     {name: 'Text', usage: 'new_field', kind: 'text', code: 'text2', label: 'text2'},
-     {name: 'Numeric', usage: 'new_field', kind: 'numeric', code: 'numeric2', label: 'numeric2'},
-     {name: 'Select One', usage: 'new_field', kind: 'select_one', code: 'select_one2', label: 'select_one2'},
-     {name: 'Select Many', usage: 'new_field', kind: 'select_many', code: 'select_many2', label: 'select_many2'},
-     {name: 'Hierarchy', usage: 'new_field', kind: 'hierarchy', code: 'hierarchy2', label: 'hierarchy2'},
-     {name: 'Site', usage: 'new_field', kind: 'site', code: 'site2', label: 'site2'},
-     {name: 'Date', usage: 'new_field', kind: 'date', code: 'date2', label: 'date2'},
-     {name: 'User', usage: 'new_field', kind: 'user', code: 'user2', label: 'user2'},
-     {name: 'Email', usage: 'new_field', kind: 'email', code: 'email2', label: 'email2'},
+     {header: 'Text', use_as: 'new_field', kind: 'text', code: 'text2', label: 'text2'},
+     {header: 'Numeric', use_as: 'new_field', kind: 'numeric', code: 'numeric2', label: 'numeric2'},
+     {header: 'Select One', use_as: 'new_field', kind: 'select_one', code: 'select_one2', label: 'select_one2'},
+     {header: 'Select Many', use_as: 'new_field', kind: 'select_many', code: 'select_many2', label: 'select_many2'},
+     {header: 'Hierarchy', use_as: 'new_field', kind: 'hierarchy', code: 'hierarchy2', label: 'hierarchy2'},
+     {header: 'Site', use_as: 'new_field', kind: 'site', code: 'site2', label: 'site2'},
+     {header: 'Date', use_as: 'new_field', kind: 'date', code: 'date2', label: 'date2'},
+     {header: 'User', use_as: 'new_field', kind: 'user', code: 'user2', label: 'user2'},
+     {header: 'Email', use_as: 'new_field', kind: 'email', code: 'email2', label: 'email2'},
     ]
 
     sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
@@ -846,13 +846,13 @@ describe ImportWizard do
     ImportWizard.import user, collection, csv_string
 
     column_spec = [
-      {name: 'Text', usage: 'new_field', kind: 'text', code: 'text', label: 'Non Existing field'},
+      {header: 'Text', use_as: 'new_field', kind: 'text', code: 'text', label: 'Non Existing field'},
     ]
 
     expect {ImportWizard.validate_columns collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with code 'text' already exists in the layer named #{layer.name}")
 
     column_spec = [
-     {name: 'Text', usage: 'new_field', kind: 'text', code: 'newtext', label: 'Existing field'},
+     {header: 'Text', use_as: 'new_field', kind: 'text', code: 'newtext', label: 'Existing field'},
     ]
 
     expect {ImportWizard.validate_columns collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
@@ -871,7 +871,7 @@ describe ImportWizard do
 
      ImportWizard.import user, collection, csv_string
 
-     column_spec = {name: 'numeric', usage: 'new_field', kind: 'numeric', code: 'numeric'}
+     column_spec = {header: 'numeric', use_as: 'new_field', kind: 'numeric', code: 'numeric'}
 
      sites = ImportWizard.validate_sites_with_column user, collection, column_spec
      sites_values = sites[:sites]
@@ -899,7 +899,7 @@ describe ImportWizard do
 
     ImportWizard.import user, collection, csv_string
 
-    column_spec = {name: 'numeric', usage: 'ignore'}
+    column_spec = {header: 'numeric', use_as: 'ignore'}
     sites_preview_one_column = (ImportWizard.validate_sites_with_column user, collection, column_spec)
 
     sites_preview = sites_preview_one_column[:sites]
@@ -919,8 +919,8 @@ describe ImportWizard do
       end
 
       column_specs = [
-       {name: 'Column 1', usage: "#{usage}"},
-       {name: 'Column 2', usage:"#{usage}"}
+       {header: 'Column 1', use_as: "#{usage}"},
+       {header: 'Column 2', use_as:"#{usage}"}
        ]
 
       ImportWizard.import user, collection, csv_string
@@ -941,8 +941,8 @@ describe ImportWizard do
     end
 
     column_specs = [
-     {name: 'Column 1', usage: "existing_field", field_id: text.id},
-     {name: 'Column 2', usage: "existing_field", field_id: text.id}
+     {header: 'Column 1', use_as: "existing_field", field_id: text.id},
+     {header: 'Column 2', use_as: "existing_field", field_id: text.id}
      ]
 
      ImportWizard.import user, collection, csv_string
@@ -963,8 +963,8 @@ describe ImportWizard do
     end
 
     column_specs = [
-     {name: 'Column 1', usage: "ignore"},
-     {name: 'Column 2', usage: "ignore"}
+     {header: 'Column 1', use_as: "ignore"},
+     {header: 'Column 2', use_as: "ignore"}
      ]
 
      ImportWizard.import user, collection, csv_string
@@ -985,10 +985,10 @@ describe ImportWizard do
         csv << ['val', 'val']
       end
 
-       column_specs = [
-         {name: 'Column 1', usage: 'new_field', "#{value}" => "repeated" },
-         {name: 'Column 2', usage: 'new_field', "#{value}" => "repeated" }
-         ]
+     column_specs = [
+       {header: 'Column 1', use_as: 'new_field', "#{value}" => "repeated" },
+       {header: 'Column 2', use_as: 'new_field', "#{value}" => "repeated" }
+       ]
 
       ImportWizard.import user, collection, csv_string
 
@@ -1016,8 +1016,8 @@ describe ImportWizard do
       end
 
        column_specs = [
-         {name: 'Column 1', usage: 'new_field', "#{value}" => "repeated" },
-         {name: 'Column 2', usage: 'new_field', "#{value}" => "repeated" }
+         {header: 'Column 1', use_as: 'new_field', "#{value}" => "repeated" },
+         {header: 'Column 2', use_as: 'new_field', "#{value}" => "repeated" }
          ]
 
       ImportWizard.import user, collection, csv_string

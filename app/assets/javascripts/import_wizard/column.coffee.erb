@@ -40,8 +40,8 @@ onImportWizard ->
 
     toJSON: =>
       json =
-        usage: @usage()
-        name: @name()
+        use_as: @usage()
+        header: @name()
       if @usage() == 'existing_field'
         json.field_id = @field().id
       if @usage() == 'new_field'
