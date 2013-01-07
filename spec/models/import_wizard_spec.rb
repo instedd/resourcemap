@@ -747,11 +747,11 @@ describe ImportWizard do
     data_errors[5][:column].should eq(6)
     data_errors[5][:rows].should eq([1, 2])
 
-    data_errors[6][:description].should eq("Non-existent user-email in user field")
+    data_errors[6][:description].should eq("Non-existent user email address in user field")
     data_errors[6][:column].should eq(7)
     data_errors[6][:rows].should eq([1, 2])
 
-    data_errors[7][:description].should eq("Invalid email value in email field")
+    data_errors[7][:description].should eq("Invalid email address in email field")
     data_errors[7][:column].should eq(8)
     data_errors[7][:rows].should eq([1, 2])
 
@@ -823,11 +823,11 @@ describe ImportWizard do
     data_errors[3][:column].should eq(6)
     data_errors[3][:rows].should eq([1, 2])
 
-    data_errors[4][:description].should eq("Non-existent user-email in user2 field")
+    data_errors[4][:description].should eq("Non-existent user email address in user2 field")
     data_errors[4][:column].should eq(7)
     data_errors[4][:rows].should eq([1])
 
-    data_errors[5][:description].should eq("Invalid email value in email2 field")
+    data_errors[5][:description].should eq("Invalid email address in email2 field")
     data_errors[5][:column].should eq(8)
     data_errors[5][:rows].should eq([1, 2])
 
