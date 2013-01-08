@@ -19,16 +19,9 @@ onImportWizard ->
       @error = ko.computed =>
         window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error().length > 0)
 
-      @validationErrors = ko.observable()
-
       @valid = ko.computed => !@error()
       @importing = ko.observable false
       @importError = ko.observable false
-
-    loadSites: (preview)=>
-      sites = $.map(preview.sites, (x) -> new Site(x))
-      @sites(sites)
-      @validationErrors(new ValidationErrors(preview.errors))
 
     loadUsages: =>
       @usages = [new Usage('New field', 'new_field')]
@@ -89,15 +82,18 @@ onImportWizard ->
 
     validateSites:(modified_column) =>
       column = modified_column.toJSON()
-      #$.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_column.json", {column: JSON.stringify(column)}, (preview) =>
-        # for column_index, validated_value of preview_column
-        #           for site in @sites()
-        #             site_index = @sites().indexOf(site)
-        #             site.splice(column_index, 1, validated_value[site_index])
-        #@refreshSitesPopups()
+      $.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_column.json", {column: JSON.stringify(column)}, (preview_column) =>
+        for column_index, validated_value of preview_column
+          for site in @sites()
+            site_index = @sites().indexOf(site)
+            site.splice(column_index, 1, validated_value[site_index])
 
-      $.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_columns.json", {columns: JSON.stringify(@columns())}, (preview) =>
-        window.model.loadSites(preview)
+        # @sites.valueHasMutated() does not work. If this solution has problems (like flickering) we will need to fill @sites with observable arrays instead of arrays
+        old_sites = @sites()
+        @sites([])
+        @sites(old_sites)
+
+        @refreshSitesPopups()
 
     startImport: =>
       @importing(true)

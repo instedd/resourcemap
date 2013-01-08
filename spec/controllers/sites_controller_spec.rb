@@ -67,13 +67,13 @@ describe SitesController do
   it "should validate format for user field" do
     post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: user.email
     validate_site_property_value(site, director, user.email)
-    expect { post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com" }.to raise_error(RuntimeError, "Non-existent user email address in #{director.code} field")
+    expect { post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com" }.to raise_error(RuntimeError, "Non-existent user-email in #{director.code} field")
   end
 
   it "should validate format for email field" do
     post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "valid@email.com"
     validate_site_property_value(site, email_field, "valid@email.com")
-    expect {  post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "v3@@e.mail.c.om"}.to raise_error(RuntimeError, "Invalid email address in #{email_field.code} field")
+    expect {  post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "v3@@e.mail.c.om"}.to raise_error(RuntimeError, "Invalid email value in #{email_field.code} field")
   end
 
   def validate_site_property_value(site, property, value)

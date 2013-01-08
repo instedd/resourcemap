@@ -226,13 +226,15 @@ describe Field do
 
       it "should validate format for user field" do
         director.apply_format_update_validation(user.email, false, collection).should == user.email
-        expect { director.apply_format_update_validation("inexisting@email.com", false, collection) }.to raise_error(RuntimeError, "Non-existent user email address in #{director.code} field")
+        expect { director.apply_format_update_validation("inexisting@email.com", false, collection) }.to raise_error(RuntimeError, "Non-existent user-email in #{director.code} field")
       end
 
       it "should validate format for email field" do
         email_field.apply_format_update_validation("valid@email.com", false, collection).should == "valid@email.com"
-        expect { email_field.apply_format_update_validation("s@@email.c.om", false, collection) }.to raise_error(RuntimeError, "Invalid email address in #{email_field.code} field")
+        expect { email_field.apply_format_update_validation("s@@email.c.om", false, collection) }.to raise_error(RuntimeError, "Invalid email value in #{email_field.code} field")
       end
+
     end
+
   end
 end

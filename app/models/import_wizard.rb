@@ -13,14 +13,17 @@ class ImportWizard
 
     def validate_sites_with_columns(user, collection, columns_spec)
       columns_spec.map!{|c| c.with_indifferent_access}
-      validated_data = {}
       csv = CSV.read file_for(user, collection)
-      csv_columns = csv[1.. -1].transpose
-      csv[0].map!{|r| r.strip}
+      csv_columns = csv[1 .. 11].transpose
+      validated_data = {}
+      validated_csv_columns = []
+      fields = collection.fields
+      csv_columns.each_with_index do |csv_column, csv_column_number|
 
-      validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
-      # TODO: implement pagination
-      validated_data[:sites] = get_sites(user, collection, columns_spec, 1)
+        column_spec = columns_spec[csv_column_number]
+        validated_csv_columns << validate_column(user, collection, column_spec, fields, csv_column)
+      end
+      validated_data[:sites] = validated_csv_columns.transpose
       validated_data
     end
 
@@ -28,72 +31,11 @@ class ImportWizard
       column_spec = column_spec.with_indifferent_access
       csv = CSV.read file_for(user, collection)
       csv[0].map!{|r| r.strip}
-      column_index = csv[0].index(column_spec[:header])
-      csv_column = csv[1 .. -1].transpose[column_index]
+      column_index = csv[0].index(column_spec[:name])
+      csv_column = csv[1 .. 11].transpose[column_index]
+      fields = collection.fields
 
-      sites = csv_column.map{|csv_field_value| {value: csv_field_value}}
-
-      #TODO: Refactor this duplicated code
-      sites_errors = {}
-      sites_errors[:hierarchy_field_found] = []
-      sites_errors[:usage_missing] = []
-      sites_errors[:data_errors] = []
-
-      #At this point we asume that no columns with duplicated usage or columns with duplicated/existing code or label are found in column_specs.
-      #This validations are performed client side
-
-      sites_errors[:hierarchy_field_found] << column_index if column_spec[:use_as] == 'new_field' && column_spec[:kind] == 'hierarchy'
-      errors_for_column = validate_column(user, collection, column_spec, collection.fields, csv_column, column_index)
-      sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
-
-      { sites: sites, errors: sites_errors}
-    end
-
-    def calculate_errors(user, collection, columns_spec, csv_columns, header)
-      #Add index to each column spec
-      columns_spec.each_with_index do |column_spec, column_index|
-        column_spec[:index] = column_index
-      end
-
-      sites_errors = {}
-
-      proc_select_new_fields = Proc.new{columns_spec.select{|spec| spec[:use_as] == 'new_field'}}
-      sites_errors[:duplicated_code] = calculate_duplicated(proc_select_new_fields, 'code')
-      sites_errors[:duplicated_label] = calculate_duplicated(proc_select_new_fields, 'label')
-
-      collection_fields = collection.fields.all(:include => :layer)
-      sites_errors[:existing_code] = calculate_existing(columns_spec, collection_fields, 'code')
-      sites_errors[:existing_label] = calculate_existing(columns_spec, collection_fields, 'label')
-
-      sites_errors[:usage_missing] = []
-
-      # Calculate duplicated usage for default fields (lat, lng, id, name)
-      proc_default_usages = Proc.new{columns_spec.reject{|spec| spec[:use_as] == 'new_field' || spec[:use_as] == 'existing_field' || spec[:use_as] == 'ignore'}}
-      sites_errors[:duplicated_usage] = calculate_duplicated(proc_default_usages, :use_as)
-      # Add duplicated-usage-error for existing_fields
-      proc_existing_fields = Proc.new{columns_spec.select{|spec| spec[:use_as] == 'existing_field'}}
-      sites_errors[:duplicated_usage].update(calculate_duplicated(proc_existing_fields, :field_id))
-
-      sites_errors[:data_errors] = []
-      sites_errors[:hierarchy_field_found] = []
-      csv_columns.each_with_index do |csv_column, csv_column_number|
-        column_spec = columns_spec[csv_column_number]
-        sites_errors[:hierarchy_field_found] << csv_column_number if column_spec[:use_as] == 'new_field' && column_spec[:kind] == 'hierarchy'
-        errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number)
-        sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
-      end
-
-      sites_errors
-    end
-
-    def get_sites(user, collection, columns_spec, page)
-      csv = CSV.read file_for(user, collection)
-      csv_columns = csv[1 .. 11]
-      processed_csv_columns = []
-      csv_columns.each do |csv_column|
-        processed_csv_columns << csv_column.map{|csv_field_value| {value: csv_field_value} }
-      end
-      processed_csv_columns
+      {column_index => validate_column(user, collection, column_spec, fields, csv_column)}
     end
 
     def guess_columns_spec(user, collection)
@@ -121,20 +63,20 @@ class ImportWizard
         next if row.blank?
 
         row = row.strip
-        spec = columns_spec.find{|x| x[:header].strip == row}
+        spec = columns_spec.find{|x| x[:name].strip == row}
         spec[:index] = i if spec
 
       end
 
       # Get the id spec
-      id_spec = columns_spec.find{|x| x[:use_as] == 'id'}
+      id_spec = columns_spec.find{|x| x[:usage] == 'id'}
 
       # Also get the name spec, as the name is mandatory
-      name_spec = columns_spec.find{|x| x[:use_as] == 'name'}
+      name_spec = columns_spec.find{|x| x[:usage] == 'name'}
 
       # Relate code and label select kinds for 'select one' and 'select many'
       columns_spec.each do |spec|
-        if spec[:use_as] == 'new_field'
+        if spec[:usage] == 'new_field'
           if spec[:kind] == 'select_one' || spec[:kind] == 'select_many'
             if spec[:selectKind] == 'code'
               spec[:related] = columns_spec.find{|x| x[:code] == spec[:code] && x[:selectKind] == 'label'}
@@ -156,7 +98,7 @@ class ImportWizard
       # 'code' and 'both' is enough
       spec_i = 1
       columns_spec.each do |spec|
-        if spec[:use_as] == 'new_field'
+        if spec[:usage] == 'new_field'
           if spec[:selectKind] != 'label'
             fields[spec[:code]] = layer.fields.new code: spec[:code], name: spec[:label], kind: spec[:kind], ord: spec_i
             fields[spec[:code]].layer = layer
@@ -192,7 +134,7 @@ class ImportWizard
 
           value = row[spec[:index]].try(:strip)
 
-          case spec[:use_as]
+          case spec[:usage]
           when 'new_field'
             value = validate_format_value(spec, value, collection)
 
@@ -323,16 +265,16 @@ class ImportWizard
     def validate_columns(collection, columns_spec)
       collection_fields = collection.fields.all(:include => :layer)
       columns_spec.each do |col_spec|
-        if col_spec[:use_as] == 'new_field'
+        if col_spec[:usage] == 'new_field'
           # Validate code
           found = collection_fields.detect{|f| f.code == col_spec[:code]}
           if found
-            raise "Can't save field from column #{col_spec[:header]}: A field with code '#{col_spec[:code]}' already exists in the layer named #{found.layer.name}"
+            raise "Can't save field from column #{col_spec[:name]}: A field with code '#{col_spec[:code]}' already exists in the layer named #{found.layer.name}"
           end
           # Validate name
           found = collection_fields.detect{|f| f.name == col_spec[:label]}
           if found
-            raise "Can't save field from column #{col_spec[:header]}: A field with label '#{col_spec[:label]}' already exists in the layer named #{found.layer.name}"
+            raise "Can't save field from column #{col_spec[:name]}: A field with label '#{col_spec[:label]}' already exists in the layer named #{found.layer.name}"
           end
         end
       end
@@ -340,61 +282,20 @@ class ImportWizard
 
     private
 
-    def validate_column(user, collection, column_spec, fields, csv_column, column_number)
-      if column_spec[:use_as].to_sym == :existing_field
-        field = fields.detect{|e| e.id == column_spec[:field_id]}
+   def validate_column(user, collection, column_spec, fields, csv_column)
+      if column_spec[:usage].to_sym == :existing_field
+        field = fields.find column_spec[:field_id]
       end
       validated_csv_column = []
-      csv_column.each_with_index do |csv_field_value, field_number|
+      csv_column.each do |csv_field_value|
         begin
           validate_column_value(column_spec, csv_field_value, field, collection)
         rescue => ex
-          validated_csv_column << {description: ex.message, row: field_number}
+          error = ex.message
         end
+        validated_csv_column << {value: csv_field_value, error: error}
       end
-
-      grouped_errors = nil
-      validated_columns_grouped = validated_csv_column.group_by{|e| e[:description]}
-      validated_columns_grouped.each do |error_type|
-        if error_type[0]
-          # For the moment we only have one kind of error for each column.
-          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}}
-        end
-      end
-      grouped_errors
-    end
-
-    def calculate_duplicated(selection_block, groping_field)
-      spec_to_validate = selection_block.call()
-      spec_by_field = spec_to_validate.group_by{ |s| s[groping_field]}
-      duplicated_columns = {}
-      spec_by_field.each do |column_spec|
-        if column_spec[1].length > 1
-          duplicated_columns[column_spec[0]] = column_spec[1].map{|spec| spec[:index] }
-        end
-      end
-      duplicated_columns
-    end
-
-    def calculate_existing(columns_spec, collection_fields, grouping_field)
-      spec_to_validate = columns_spec.select {|spec| spec[:use_as] == 'new_field'}
-      existing_columns = {}
-      spec_to_validate.each do |column_spec|
-        #Refactor this
-        if grouping_field == 'code'
-          found = collection_fields.detect{|f| f.code == column_spec[grouping_field]}
-        elsif grouping_field == 'label'
-          found = collection_fields.detect{|f| f.name == column_spec[grouping_field]}
-        end
-        if found
-          if existing_columns[column_spec[grouping_field]]
-            existing_columns[column_spec[grouping_field]] << column_spec[:index]
-          else
-            existing_columns[column_spec[grouping_field]] = [column_spec[:index]]
-          end
-        end
-      end
-      existing_columns
+      validated_csv_column
     end
 
     def validate_column_value(column_spec, field_value, field, collection)
@@ -423,53 +324,53 @@ class ImportWizard
     def to_columns(collection, rows, admin)
       fields = collection.fields.index_by &:code
 
-      columns = rows[0].select(&:present?).map{|x| {:header => x.strip, :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
+      columns = rows[0].select(&:present?).map{|x| {:name => x.strip, :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
       columns.each_with_index do |column, i|
         guess_column_usage(column, fields, rows, i, admin)
       end
     end
 
     def guess_column_usage(column, fields, rows, i, admin)
-      if (field = fields[column[:header]])
-        column[:use_as] = :existing_field
+      if (field = fields[column[:name]])
+        column[:usage] = :existing_field
         column[:layer_id] = field.layer_id
         column[:field_id] = field.id
         column[:kind] = field.kind.to_sym
         return
       end
 
-      if column[:header] =~ /^resmap-id$/i
-        column[:use_as] = :id
+      if column[:name] =~ /^resmap-id$/i
+        column[:usage] = :id
         column[:kind] = :id
         return
       end
 
-      if column[:header] =~ /^name$/i
-        column[:use_as] = :name
+      if column[:name] =~ /^name$/i
+        column[:usage] = :name
         column[:kind] = :name
         return
       end
 
-      if column[:header] =~ /^\s*lat/i
-        column[:use_as] = :lat
+      if column[:name] =~ /^\s*lat/i
+        column[:usage] = :lat
         column[:kind] = :location
         return
       end
 
-      if column[:header] =~ /^\s*(lon|lng)/i
-        column[:use_as] = :lng
+      if column[:name] =~ /^\s*(lon|lng)/i
+        column[:usage] = :lng
         column[:kind] = :location
         return
       end
 
-      if column[:header] =~ /last updated/i
-        column[:use_as] = :ignore
+      if column[:name] =~ /last updated/i
+        column[:usage] = :ignore
         column[:kind] = :ignore
         return
       end
 
       if not admin
-        column[:use_as] = :ignore
+        column[:usage] = :ignore
         return
       end
 
@@ -481,7 +382,7 @@ class ImportWizard
         found = true
 
         if row[i].start_with?('0')
-          column[:use_as] = :new_field
+          column[:usage] = :new_field
           column[:kind] = :text
           return
         end
@@ -489,17 +390,17 @@ class ImportWizard
         begin
           Float(row[i])
         rescue
-          column[:use_as] = :new_field
+          column[:usage] = :new_field
           column[:kind] = :text
           return
         end
       end
 
       if found
-        column[:use_as] = :new_field
+        column[:usage] = :new_field
         column[:kind] = :numeric
       else
-        column[:use_as] = :ignore
+        column[:usage] = :ignore
       end
     end
 
