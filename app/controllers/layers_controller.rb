@@ -28,6 +28,7 @@ class LayersController < ApplicationController
     layer.user = current_user
     layer.save!
     current_user.layer_count += 1
+    current_user.update_successful_outcome_status
     current_user.save!
     render json: layer.as_json(include: :fields)
   end

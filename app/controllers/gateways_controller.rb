@@ -11,6 +11,7 @@ class GatewaysController < ApplicationController
   def create
     channel = current_user.channels.create params[:gateway]
     current_user.gateway_count += 1
+    current_user.update_successful_outcome_status
     current_user.save!
     render json: channel.as_json
   end

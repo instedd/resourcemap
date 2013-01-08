@@ -10,7 +10,6 @@ class User < ActiveRecord::Base
   has_many :channels
   has_many :collections, through: :memberships, order: 'name ASC'
   has_one :user_snapshot
-  before_save :check_successful_outcome
 
   def create_collection(collection)
     return false unless collection.save
@@ -100,7 +99,7 @@ class User < ActiveRecord::Base
     channels.where("channels.is_enable=?", true)
   end
 
-  def check_successful_outcome
+  def update_successful_outcome_status
     self.success_outcome = layer_count? & collection_count? & site_count? & gateway_count?
   end
 end

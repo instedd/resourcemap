@@ -43,6 +43,7 @@ class CollectionsController < ApplicationController
   def create
     if current_user.create_collection collection
       current_user.collection_count += 1
+      current_user.update_successful_outcome_status
       current_user.save!
       redirect_to collection_path(collection), notice: "Collection #{collection.name} created"
     else
