@@ -1,0 +1,44 @@
+= will_paginate @analytics
+%table
+  %tr
+    %th{style: "width: 20px"}
+      Email
+    %th{style: "width: 140px"}
+      Singed Up
+    %th{style: "width: 220px"} 
+      Confirmed At
+    %th{style: "width: 120px"}
+      Singed In
+    %th{style: "width: 50px"}
+      Collections
+    %th{style: "width: 50px"}
+      Layers
+    %th{style: "width: 50px"}
+      Sites
+    %th{style: "width: 50px"}
+      Gateways
+    %th{style: "width: 20px"}
+      Successful Outcome
+  - @analytics.each do |analytic|
+    %tr
+      %td
+        = analytic.email
+      %td
+        = analytic.confirmation_sent_at
+      %td
+        = analytic.confirmed_at
+      %td
+        = analytic.sign_in_count
+      %td
+        = analytic.collection_count
+      %th
+        = analytic.layer_count
+      %th
+        = analytic.site_count
+      %th
+        = analytic.gateway_count
+      %th
+        - if analytic.success_outcome
+          %img{src: "/assets/check.png"}
+        - else
+          %img{src: "/assets/cross.png"}
