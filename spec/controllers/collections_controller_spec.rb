@@ -74,4 +74,16 @@ describe CollectionsController do
     end
 
   end
+
+  describe "analytic" do 
+    it 'should changed user.collection_count by 1' do
+      expect{ 
+        post :create, collection: { name: 'collection_1', icon: 'default'}
+      }.to change{
+        u = User.find user
+        u.collection_count
+      }.from(0).to(1)
+   
+    end
+  end
 end

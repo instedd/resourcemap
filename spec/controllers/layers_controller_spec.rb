@@ -34,5 +34,16 @@ describe LayersController do
     histories.last.layer_id.should eq(layer2.id)
 
   end
+  
+  describe 'analytic' do
+    it 'should changed user.layer_count by 1' do
+      expect {
+        post :create, layer: { name: 'layer_01', fields: [], ord: 1}, collection_id: collection.id
+      }.to change{
+        u = User.find user
+        u.layer_count
+      }.from(0).to(1)
+    end
+  end
 
 end
