@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130103090003) do
+ActiveRecord::Schema.define(:version => 20130108071310) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -287,6 +287,11 @@ ActiveRecord::Schema.define(:version => 20130103090003) do
     t.string   "unconfirmed_email"
     t.boolean  "is_super_user"
     t.string   "authentication_token"
+    t.integer  "collection_count",       :default => 0
+    t.integer  "layer_count",            :default => 0
+    t.integer  "site_count",             :default => 0
+    t.integer  "gateway_count",          :default => 0
+    t.boolean  "success_outcome"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
