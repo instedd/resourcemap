@@ -1,10 +1,10 @@
 onImportWizard ->
   class @Column
     constructor: (data) ->
-      @name = ko.observable data.name
+      @header = ko.observable data.header
 
       # How to use this column (new field? existing field? id? name? lat? lng? ignore?)
-      @usage = ko.observable data.usage
+      @usage = ko.observable data.use_as
 
       # For existing fields
       @layer = ko.observable(if data.layer_id then window.model.findLayer(data.layer_id) else null)
@@ -40,8 +40,8 @@ onImportWizard ->
 
     toJSON: =>
       json =
-        usage: @usage()
-        name: @name()
+        use_as: @usage()
+        header: @header()
       if @usage() == 'existing_field'
         json.field_id = @field().id
       if @usage() == 'new_field'
