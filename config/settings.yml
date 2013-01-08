@@ -2,11 +2,9 @@ mobile_id: off
 host: localhost:3000
 
 plugins:
-  threshold: off
-  snapshot: on
-  reminder: off
   
-  channels: off
-  reminders: off
+  snapshot: on
+  channels: on
+  reminders: on
   alerts: off
-  account_completeness: off
+  account_completeness: on
