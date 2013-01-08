@@ -14,7 +14,7 @@ gem 'resque-scheduler', :require => 'resque_scheduler'
 gem "nuntium_api", "~> 0.13", :require => "nuntium"
 gem 'ice_cube'
 gem 'knockoutjs-rails'
-
+gem 'will_paginate'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
