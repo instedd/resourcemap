@@ -9,7 +9,7 @@ ResourceMap::Application.routes.draw do
   match 'android/submission' => 'android#submission', :via => :post
   match 'collections/breadcrumbs' => 'collections#render_breadcrumbs', :via => :post
   match 'real-time-resource-tracking' => 'home#second_page', :via => :get
-  match 'analytics' => 'analytics#index', :via => :get
+  #match 'analytics' => 'analytics#index', :via => :get
 
   resources :repeats
   resources :collections do
@@ -100,11 +100,13 @@ ResourceMap::Application.routes.draw do
   end
 
   root :to => 'home#index'
-  resque_constraint = lambda do |request|
+
+  admin_constraint = lambda do |request|
     request.env['warden'].authenticate? and request.env['warden'].user.is_super_user?
   end
 
-  constraints resque_constraint do
+  constraints admin_constraint do
     mount Resque::Server, :at => "/admin/resque"
+    match 'analytics' => 'analytics#index', :via => :get
   end
 end
