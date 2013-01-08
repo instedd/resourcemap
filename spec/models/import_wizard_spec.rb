@@ -726,8 +726,8 @@ describe ImportWizard do
     second_line.should include({:value=>"Dad, inv", :error=>"Invalid option in select_many field"})
     second_line.should include({:value=>"inval", :error=>"Invalid option in hierarchy field"})
     second_line.should include({:value=>"999", :error=>"Non-existent site-id in site field"})
-    second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user field"})
-    second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email field"})
+    second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user email address in user field"})
+    second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email address in email field"})
 
     ImportWizard.delete_file(user, collection)
   end
@@ -779,8 +779,8 @@ describe ImportWizard do
      #hierarchy fields cannot be created using import wizard
      second_line.should include({:value=>"inval", :error=> "Hierarchy fields can only be created via web in the Layers page"})
      second_line.should include({:value=>"999", :error=>"Non-existent site-id in site field"})
-     second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user-email in user field"})
-     second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email value in email field"})
+     second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user email address in user field"})
+     second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email address in email field"})
 
      ImportWizard.delete_file(user, collection)
   end
