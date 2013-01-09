@@ -74,10 +74,6 @@ module Field::ValidationConcern
     Integer(value)
   end
 
-  def integer?(string)
-    true if Integer(string) rescue false
-  end
-
   def check_date_format(value)
     Site.format_date_iso_string(Time.strptime(value, '%m/%d/%Y')) rescue (raise "Invalid date value in #{code} field")
   end

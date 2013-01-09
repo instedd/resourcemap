@@ -22,8 +22,12 @@ class SearchParser < Hash
       # Skip whitespace
       s.scan(/\s+/)
 
+
+      #Scan decimal number
+      key = s.scan(/-?\d+.\d+/)
+
       # Get next work
-      key = s.scan(/\w+/)
+      key = s.scan(/\w+/) if key.nil?
 
       # Check if there's a colon so we have key:...
       # (but not key://)

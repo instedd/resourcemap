@@ -69,4 +69,29 @@ describe SearchParser do
     s = SearchParser.new(';')
     s.search.should eq(';')
   end
+
+  it "parses location coordinates" do
+    s = SearchParser.new('-32.123')
+    s.search.should eq('-32.123')
+  end
+
+  it "parses word hyphen word" do
+    s = SearchParser.new('my-site')
+    s.search.should eq('my - site')
+  end
+
+  it "parses word dot number" do
+    s = SearchParser.new('MySite.32')
+    s.search.should eq('MySite . 32')
+  end
+
+  it "parses number dot word" do
+    s = SearchParser.new('32.MySite')
+    s.search.should eq('32 . MySite')
+  end
+
+  it "parses decimal number space word" do
+    s = SearchParser.new('32.3 foo')
+    s.search.should eq('32.3 foo')
+  end
 end
