@@ -304,7 +304,7 @@ describe Search do
   context "geo" do
     let!(:site1) { collection.sites.make lat: 10, lng: 20}
     let!(:site2) { collection.sites.make lat: 15.321, lng: 25.123}
-    let!(:site3) { collection.sites.make lat: 40, lng: 60}
+    let!(:site3) { collection.sites.make lat: 40, lng: -60.1}
 
     it "searches by box" do
       assert_results collection.new_search.box(19, 9, 26, 16), site1, site2
@@ -328,6 +328,7 @@ describe Search do
 
     it "full text searches by lat" do
       assert_results collection.new_search.full_text_search("15.3"), site2
+      assert_results collection.new_search.full_text_search("-60.1"), site3
     end
 
     it "full text searches by lng" do

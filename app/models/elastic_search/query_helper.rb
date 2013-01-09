@@ -104,7 +104,7 @@ module ElasticSearch::QueryHelper
      # that is, we don't want to search prefixes, we want to search an exact number.
      # That's why we don't append a start.
       if text.integer?
-         text
+        text
       else
         # Lucene doesn't support searching for "foo ba*":
         # http://wiki.apache.org/lucene-java/LuceneFAQ#Can_I_combine_wildcard_and_phrase_search.2C_e.g._.22foo_ba.2A.22.3F

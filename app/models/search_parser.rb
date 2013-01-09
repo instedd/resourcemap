@@ -22,9 +22,8 @@ class SearchParser < Hash
       # Skip whitespace
       s.scan(/\s+/)
 
-
-      #Scan decimal number
-      key = s.scan(/-?\d+.\d+/)
+      #Scan decimal number for location full-text-searches
+      key = scan_decimal_number(s)
 
       # Get next work
       key = s.scan(/\w+/) if key.nil?
@@ -46,6 +45,17 @@ class SearchParser < Hash
       # Just a word to add to the search
       add_to_search key
     end
+  end
+
+  def scan_decimal_number(string_scanner)
+    # Is string_scanner a location that starts with hyphen?
+    key_with_hyphen = string_scanner.scan(/-\d+.\d+/)
+    #Remove hyphen
+    key = key_with_hyphen[1..-1] if key_with_hyphen
+
+    #Is string_scanner a location
+    key = string_scanner.scan(/\d+.\d+/) if key.nil?
+    key
   end
 
   def add_to_search(value)

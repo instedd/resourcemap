@@ -70,9 +70,14 @@ describe SearchParser do
     s.search.should eq(';')
   end
 
-  it "parses location coordinates" do
+  it "parses location coordinate without hyphen" do
+    s = SearchParser.new('32.123')
+    s.search.should eq('32.123')
+  end
+
+  it "parses location coordinate with hyphen" do
     s = SearchParser.new('-32.123')
-    s.search.should eq('-32.123')
+    s.search.should eq('32.123')
   end
 
   it "parses word hyphen word" do
