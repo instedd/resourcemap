@@ -1,0 +1,107 @@
+.homepage
+  .right
+    .illustration
+  %h1.home{:style => "margin-top: 0px;"} Make better decisions
+  %p.sub{:style => "font-size: 26px;"} Track Food Prices and Supply Levels in Real Time
+  
+  %p{:style => "font-size: 16px;"}
+    %span.r-arrow{:style => "margin-left: 4px"} 
+    %span{:style => "font-weight:bold;"}   
+      Free:
+    Use it for free in the cloud OR download the code, it’s open source!
+  %p{:style => "font-size: 16px;"}
+    %span.r-arrow{:style => "margin-left: 4px"}
+    %span{:style => "font-weight:bold;"}   
+      Insightful: 
+    Gain insight into the location & distribution of food supplies 
+  %p{:style => "font-size: 16px;"}
+    %span.r-arrow{:style => "margin-left: 4px"}
+    %span{:style => "font-weight:bold;"}   
+      Collaborative: 
+    Your team can record, track and analyze food prices and supplies 
+  %p{:style => "font-size: 16px;"}
+    %span.r-arrow{:style => "margin-left: 4px"}
+    %span{:style => "font-weight:bold;"}   
+      SMS Enabled: 
+    Use SMS to query, update or receive alerts from the system 
+  %p{:style => "font-size: 16px;"}
+    %span.r-arrow{:style => "margin-left: 4px"}
+    %span{:style => "font-weight:bold;"}   
+      Map Ready: 
+    See everything on the map for a birds-eye view
+
+  %br/
+
+  - if current_user
+    %p
+      =link_button_to 'View your collections', collections_path, :class => "orange" , :style => "font-size: 24px; height: 52px; width: 260px;margin: auto;"
+
+    %p
+  - else
+    %p
+      = link_button_to "Try it now, it's free!", new_user_registration_path, :class => "orange", :style => "font-size: 24px; height: 52px; width: 220px;margin: auto;"
+  .clear
+  / #container
+  .home-middle-bar{:style => "margin: 25px auto 20px;"}
+    .benefits
+      %ul#benefits-container
+        %li
+          %span.get-update.left
+          %h3 Get updates
+          %p as they happen, using a live map or text message request
+          %br{:clear => "all"}/
+        %li
+          %span.visualize-and-update.left
+          %h3 Visualize and update
+          %p resource allocations without a complex and expensive GIS
+          %br{:clear => "all"}/
+        %li
+          %span.update.left
+          %h3 Update
+          %p resource data from any text messaging-capable phone
+          %br{:clear => "all"}/
+        %li
+          %span.identify.left
+          %h3 Identify
+          %p distribution patterns and anomalies with visual mapping and trend analysis
+          %br{:clear => "all"}/
+        %li
+          %span.receive.left
+          %h3 Receive
+          %p important alerts instantly and address them proactively
+          %br{:clear => "all"}/
+        %li
+          %span.collaborate.left
+          %h3 Collaborate
+          %p easily on resource allocation decisions
+          %br{:clear => "all"}/
+        %li
+          %span.maintain.left
+          %h3 Maintain
+          %p complete control over the visibility of resource allocation data
+          %br{:clear => "all"}/
+        %li
+          %span.i48grad-free.left
+          %h3 Free
+          %p for anyone to use to help increase their social impact
+          %br{:clear => "all"}/
+
+        %li
+          %span.i48grad-openSource.left
+          %h3 Open Source
+          %p code for developers to use to improve its design and functionality
+          %br{:clear => "all"}/
+      / #benefits-container
+    / #benefits
+  / #home-middle-bar
+  #container
+    %h1 What can I use it for?
+    %p.desc{:style => "margin:0 0 30px !important;"}
+      Accurately tracking and allocating resources is critical to getting the  most from every asset at your disposal. Resource Map can help you maximize your resource allocation and usage. 
+    .left.w45{:style => "width: auto !important;"}
+      %h2 Monitoring Food Prices and Supply Levels
+      .icon-container.left
+        %span.monitoring-food-price
+      %p{:style => "font-size: 16px;"} 
+        Whether you're helping economically  disadvantaged people find nutritious, fresh, and affordable produce,  managing food banks, or simply trying to chart the most popular edibles  in a given area, Resource Map makes it easy. And since Resource Map can  be updated using almost any cellular phone, your resource data is always  just as fresh as the food.
+    .clear
