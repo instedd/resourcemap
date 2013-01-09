@@ -32,13 +32,6 @@
         = raw "All sites will be imported as new. If you want to modify the existing ones #{link_to "go back", :back, :class => 'black'} to the previous page."
     //ko
 
-    /ko if: (validationErrors() && validationErrors().hasErrors())
-    %ul
-      / ko foreach: validationErrors().errorsForUI()
-      %li{ko(text: 'description')}
-      %span{ko(text: 'more_info')}
-      //ko
-    //ko
 
     .box.nopadd.h50
       .tablescroll{style: 'margin-top: 0'}
@@ -51,12 +44,12 @@
             %tr
               / ko foreach: columns()
               %th
-                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'error().length > 0'}, attr: {error: 'error'}, class: 'iconClass', text: :header, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
+                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'error().length > 0'}, attr: {error: 'error'}, class: 'iconClass', text: :name, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
               //ko
           %tbody
             / ko foreach: sites()
             %tr
-              / ko foreach: siteColumns
+              / ko foreach: $data
               %td{ko(css: {error: 'error'}, text: 'value', attr: { error: 'error' } ) }
               //ko
               //ko
@@ -64,7 +57,7 @@
 
     #columnUsageTemplate{ko(with: :selectedColumn), style:'display: none;'}
       %h2
-        %span{ko(text: 'header')}
+        %span{ko(text: 'name')}
         Column Settings
       %hr
       %div{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
