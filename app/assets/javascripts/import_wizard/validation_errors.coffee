@@ -22,7 +22,11 @@ onImportWizard ->
                 error_description.description = "Duplicated column with label #{errorId}"
                 error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
               when 'duplicated_usage'
-                error_description.description = "Duplicated column with usage #{errorId}"
+                field = window.model.findField(errorId)
+                if field
+                  error_description.description = "Duplicated column with usage 'existing field' #{field.name}"
+                else
+                  error_description.description = "Duplicated column with usage #{errorId}"
                 error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
               when 'existing_code'
                 error_description.description = "There is an existing field with code #{errorId} in your collection"

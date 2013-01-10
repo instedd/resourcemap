@@ -1,6 +1,10 @@
 describe 'ValidationErrors', ->
   beforeEach ->
     window.runOnCallbacks 'importWizard'
+    window.model = new MainViewModel
+    layers = [{id: 1, name: "layer 1", fields: [{id: 1, name: "field 1", kind: 'text', code: 'field1'}] }]
+    columns =[{name: "field 1", usage: "name"}]
+    window.model.initialize(1, layers, columns)
 
   it 'should evaluate if there are errors in @errors', ->
     errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
@@ -45,6 +49,10 @@ describe 'ValidationErrors', ->
   it "should generate redeable errors for duplicated usage for default usages (lat, lng, name or id)", ->
     proc_duplicated_usage = (errors, column_name) -> errors.duplicated_usage = {lat: [0, 1]}
     check_duplicated_field_assertion('usage', 'lat', proc_duplicated_usage)
+
+  it "should generate redeable errors for duplicated usage for existing_field", ->
+    proc_duplicated_usage = (errors, column_name) -> errors.duplicated_usage = {'1': [0, 1]}
+    check_duplicated_field_assertion('usage', "'existing field' field 1", proc_duplicated_usage)
 
   it "should generate redeable errors for existing code", ->
     proc_existing_code = (errors, column_name) -> errors.existing_code = {text_column: [0, 1]}

@@ -48,6 +48,11 @@ onImportWizard ->
     findLayer: (id) =>
       (layer for layer in @layers when layer.id == id)[0]
 
+    findField: (id) =>
+      for layer in @layers
+        field = layer.findField(id) unless field
+      field
+
     refreshColumnsPopups: ->
        $('.column_header').not(".error_column").RemoveBubblePopup()
        $('.error_column').each (index) ->
