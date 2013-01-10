@@ -62,3 +62,15 @@ describe 'ValidationErrors', ->
     proc_existing_label = (errors, column_name) -> errors.existing_label = {text_column: [0, 1]}
     check_existing_field_assertion('label', 'text_column', proc_existing_label)
 
+  it "should generate redeable errors for hierarchy field found", ->
+    errors = {hierarchy_field_found:[]}
+    errors.hierarchy_field_found = {new_hierarchy_columns: [1, 2, 3]}
+    val_errors = new ValidationErrors(errors)
+    redeable_errors = val_errors.errorsForUI()
+    expect(redeable_errors.length).toBe(1)
+    first_error = redeable_errors[0]
+    expect(first_error.error_kind).toBe("hierarchy_field_found")
+    expect(first_error.description).toBe("Hierarchy fields can only be created via web in the Layers page")
+    expect(first_error.columns).toEqual([1,2,3])
+    expect(first_error.more_info).toEqual('Column numbers: 1,2,3')
+

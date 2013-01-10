@@ -34,6 +34,9 @@ onImportWizard ->
               when 'existing_label'
                 error_description.description = "There is an existing field with label #{errorId} in your collection"
                 error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
+              when 'hierarchy_field_found'
+                error_description.description = "Hierarchy fields can only be created via web in the Layers page"
+                error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
               else
                 error_description.description = "TBD"
                 error_description.more_info = "TBD"

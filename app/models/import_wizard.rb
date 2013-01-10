@@ -76,10 +76,10 @@ class ImportWizard
       sites_errors[:duplicated_usage].update(calculate_duplicated(proc_existing_fields, :field_id))
 
       sites_errors[:data_errors] = []
-      sites_errors[:hierarchy_field_found] = []
+      sites_errors[:hierarchy_field_found] = [{:new_hierarchy_columns => []}]
       csv_columns.each_with_index do |csv_column, csv_column_number|
         column_spec = columns_spec[csv_column_number]
-        sites_errors[:hierarchy_field_found] << csv_column_number if column_spec[:use_as] == 'new_field' && column_spec[:kind] == 'hierarchy'
+        sites_errors[:hierarchy_field_found].new_hierarchy_columns << csv_column_number if column_spec[:use_as] == 'new_field' && column_spec[:kind] == 'hierarchy'
         errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number)
         sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
       end
