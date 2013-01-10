@@ -1,7 +1,7 @@
 require 'spec_helper'
 describe ReminderTask do
   let!(:users) { [User.make(:email => 'user@instedd.org', :password => '1234567', :phone_number => '855123456789'), User.make(:email => 'demo@instedd.org', :password => '1234567', :phone_number => '855123333444')]}
-  let!(:collection) { Collection.make :plugins => {'reminders' => {}} }
+  let!(:collection) { Collection.make }
   let!(:layer) { collection.layers.make }
   let!(:phone_field) { layer.fields.make :code => 'phone', :kind => 'phone' } 
   let!(:email_field) { layer.fields.make :code => 'email', :kind => 'email'} 

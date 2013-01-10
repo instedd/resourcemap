@@ -5,7 +5,7 @@ describe Api::CollectionsController do
   render_views
 
   let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make_unsaved) }
+  let!(:collection) { user.create_collection(Collection.make) }
   let!(:layer) { collection.layers.make }
 
   let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Site::AlertConcerns do 
   let!(:user) { User.make }
-  let!(:collection) { user.create_collection Collection.make :plugins => {"alerts" => {}} }
+  let!(:collection) { user.create_collection Collection.make }
   let!(:layer) { collection.layers.make }
   let!(:bed_field) { layer.fields.make :code => 'bed' }
   let!(:phone_field) { layer.fields.make :code => 'phone' } 

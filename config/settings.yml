@@ -6,5 +6,5 @@ plugins:
   snapshot: on
   channels: on
   reminders: on
-  alerts: off
+  alerts: on
   account_completeness: on
