@@ -9,6 +9,8 @@ ResourceMap::Application.routes.draw do
   match 'android/submission' => 'android#submission', :via => :post
   match 'collections/breadcrumbs' => 'collections#render_breadcrumbs', :via => :post
   match 'real-time-resource-tracking' => 'home#second_page', :via => :get
+  match 'track-medical-supplies-and-personnel'=> 'home#medical_page', :via => :get
+  match 'track-food-prices-and-supplies' => 'home#food_page', :via => :get
   #match 'analytics' => 'analytics#index', :via => :get
 
   resources :repeats
