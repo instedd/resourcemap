@@ -25,10 +25,10 @@ onImportWizard ->
                 error_description.description = "Duplicated column with usage #{errorId}"
                 error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
               when 'existing_code'
-                error_description.description = "The is an existing field with code #{errorId} in your collection"
+                error_description.description = "There is an existing field with code #{errorId} in your collection"
                 error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
               when 'existing_label'
-                error_description.description = "The is an existing field with label #{errorId} in your collection"
+                error_description.description = "There is an existing field with label #{errorId} in your collection"
                 error_description.more_info = "Column numbers: #{errorColumns.join(',')}"
               else
                 error_description.description = "TBD"
