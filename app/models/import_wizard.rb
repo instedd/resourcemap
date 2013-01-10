@@ -76,15 +76,24 @@ class ImportWizard
       sites_errors[:duplicated_usage].update(calculate_duplicated(proc_existing_fields, :field_id))
 
       sites_errors[:data_errors] = []
-      sites_errors[:hierarchy_field_found] = [{:new_hierarchy_columns => []}]
+      sites_errors[:hierarchy_field_found] = []
       csv_columns.each_with_index do |csv_column, csv_column_number|
         column_spec = columns_spec[csv_column_number]
-        sites_errors[:hierarchy_field_found].new_hierarchy_columns << csv_column_number if column_spec[:use_as] == 'new_field' && column_spec[:kind] == 'hierarchy'
+        sites_errors[:hierarchy_field_found] = add_new_hierarchy_error(csv_column_number, sites_errors[:hierarchy_field_found]) if column_spec[:use_as] == 'new_field' && column_spec[:kind] == 'hierarchy'
         errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number)
         sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
       end
 
       sites_errors
+    end
+
+    def add_new_hierarchy_error(csv_column_number, hierarchy_errors)
+      if hierarchy_errors.length >0 && hierarchy_errors[0][:new_hierarchy_columns].length >0
+        hierarchy_errors[0][:new_hierarchy_columns] << csv_column_number
+      else
+        hierarchy_errors = [{:new_hierarchy_columns => [csv_column_number]}]
+      end
+      hierarchy_errors
     end
 
     def get_sites(user, collection, columns_spec, page)

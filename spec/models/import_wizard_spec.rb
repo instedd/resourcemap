@@ -797,7 +797,7 @@ describe ImportWizard do
 
     sites_errors = sites[:errors]
 
-    sites_errors[:hierarchy_field_found].should eq([4])
+    sites_errors[:hierarchy_field_found].should eq([{:new_hierarchy_columns=>[4]}])
     sites_errors[:duplicated_code].should eq({})
     sites_errors[:duplicated_label].should eq({})
     sites_errors[:existing_code].should eq({})
