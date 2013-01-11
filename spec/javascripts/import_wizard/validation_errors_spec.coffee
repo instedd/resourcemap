@@ -74,3 +74,20 @@ describe 'ValidationErrors', ->
     expect(first_error.columns).toEqual([1,2,3])
     expect(first_error.more_info).toEqual('Column numbers: 1,2,3')
 
+  it "should generate redeable errors data errors", ->
+    errors = {data_errors:[]}
+    errors.data_errors = [{description: "Invalid option in many field", column: 4, rows: [1,2]}, {description: "Invalid numeric value in text field", column: 1, rows: [1]}]
+    val_errors = new ValidationErrors(errors)
+    redeable_errors = val_errors.errorsForUI()
+    expect(redeable_errors.length).toBe(2)
+    first_error = redeable_errors[0]
+    expect(first_error.error_kind).toBe("data_errors")
+    expect(first_error.description).toBe("2 rows does not match column number 4 type. Error message: 'Invalid option in many field'")
+    expect(first_error.columns).toEqual([4])
+    expect(first_error.more_info).toEqual('Rows numbers: 1,2')
+    second_error = redeable_errors[1]
+    expect(second_error.error_kind).toBe("data_errors")
+    expect(second_error.description).toBe("1 rows does not match column number 1 type. Error message: 'Invalid numeric value in text field'")
+    expect(second_error.columns).toEqual([1])
+    expect(second_error.more_info).toEqual('Rows numbers: 1')
+
