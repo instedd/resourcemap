@@ -77,6 +77,7 @@ class ImportWizard
 
       sites_errors[:data_errors] = []
       sites_errors[:hierarchy_field_found] = []
+
       csv_columns.each_with_index do |csv_column, csv_column_number|
         column_spec = columns_spec[csv_column_number]
         sites_errors[:hierarchy_field_found] = add_new_hierarchy_error(csv_column_number, sites_errors[:hierarchy_field_found]) if column_spec[:use_as] == 'new_field' && column_spec[:kind] == 'hierarchy'
@@ -352,7 +353,7 @@ class ImportWizard
 
     def validate_column(user, collection, column_spec, fields, csv_column, column_number)
       if column_spec[:use_as].to_sym == :existing_field
-        field = fields.detect{|e| e.id == column_spec[:field_id]}
+        field = fields.detect{|e| e.id.to_s == column_spec[:field_id].to_s}
       end
       validated_csv_column = []
       csv_column.each_with_index do |csv_field_value, field_number|

@@ -758,6 +758,24 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
 
+  it "should get sites & errors for invalid existing fields if field_id is string" do
+    csv_string = CSV.generate do |csv|
+      csv <<  ['Numeric']
+      csv << ['invalid']
+    end
+
+     specs = [
+       {header: 'Numeric', use_as: 'existing_field', field_id: "#{numeric.id}"},
+     ]
+
+     ImportWizard.import user, collection, csv_string
+     errors = (ImportWizard.validate_sites_with_columns user, collection, specs)[:errors]
+
+     data_errors = errors[:data_errors]
+     data_errors.length.should eq(1)
+  end
+
+
   it "should get error for invalid new fields" do
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
