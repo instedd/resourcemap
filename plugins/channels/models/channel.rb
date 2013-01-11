@@ -6,8 +6,6 @@ class Channel < ActiveRecord::Base
   validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :advanced_setup
   validates :ticket_code, :presence => {:on => :create}, :if => :basic_setup
     
-  serialize :share_collections
-  #attr_accessible :channel_name, :collection_id, :is_enable, :is_manual_configuration, :name, :password, :share_collections
   after_create  :register_nuntium_channel
   after_update  :update_nuntium_channel 
   after_destroy :delete_nuntium_channel 
@@ -33,14 +31,13 @@ class Channel < ActiveRecord::Base
       :configuration => { 
         :password => self.password,
         :friendly_name => self.name
-        #:owner_layer_id => self.collection_id
       }
     }
   
     config.merge!({
       :ticket_code => self.ticket_code, 
       :ticket_message => "This phone will be used for updates and queries on all collections.",
-    }) unless is_manual_configuration
+    }) unless basic_setup
     handle_nuntium_channel_response Nuntium.new_from_config.create_channel(config)
     # Use plain sql query to skip update callback execution
     Channel.update_all({:password => self.password, :nuntium_channel_name => self.nuntium_channel_name}, {:id => self.id})
@@ -71,7 +68,6 @@ class Channel < ActiveRecord::Base
       :restrictions => '',
       :configuration => { 
         :friendly_name => self.name,
-        #:owner_layer_id => self.collection_id,
         :password => self.password
       })
   end

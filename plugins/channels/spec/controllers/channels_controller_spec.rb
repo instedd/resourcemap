@@ -5,7 +5,7 @@ describe ChannelsController do
     include Devise::TestHelpers
     let!(:user) { User.make }
     let!(:collection) { user.create_collection(Collection.make_unsaved) }
-    let!(:channel) { Channel.create(name: 'Mobitel', collection_id: collection.id, ticket_code: 'abcd') }
+    let!(:channel) { Channel.create(name: 'Mobitel', ticket_code: 'abcd') }
     before(:each) { sign_in user }
 
 
@@ -18,7 +18,7 @@ describe ChannelsController do
     
     it 'should create one new channel' do
       expect { 
-        post :create, collection_id: collection.id, channel: {"collection_id"=>collection.id, "name"=>"Mobitel1", "is_share"=>"false", "is_manual_configuration"=>"true", "password"=>"12345"}  
+        post :create, collection_id: collection.id, channel: {"collection_id"=>collection.id, "name"=>"Mobitel1", "password"=>"12345"}  
       }.to change { Channel.count }.by 1 
     end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130108071310) do
+ActiveRecord::Schema.define(:version => 20130111035843) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -30,13 +30,9 @@ ActiveRecord::Schema.define(:version => 20130108071310) do
     t.string   "name"
     t.boolean  "is_enable"
     t.string   "password"
-    t.integer  "collection_id"
     t.string   "nuntium_channel_name"
-    t.boolean  "is_manual_configuration"
-    t.boolean  "is_share"
-    t.text     "share_collections"
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
     t.integer  "user_id"
     t.boolean  "basic_setup"
     t.boolean  "advanced_setup"
@@ -178,7 +174,6 @@ ActiveRecord::Schema.define(:version => 20130108071310) do
   create_table "share_channels", :force => true do |t|
     t.integer  "channel_id"
     t.integer  "collection_id"
-    t.boolean  "status"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
