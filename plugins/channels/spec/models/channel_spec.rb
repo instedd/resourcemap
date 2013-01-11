@@ -32,7 +32,7 @@ describe Channel do
     end
   end
   
-  describe 'when is_manual_configuration == false' do
+  describe 'when basic_setup == true' do
     before(:each) do
       @channel = Channel.new name: 'abcd', ticket_code: '', basic_setup: true
     end
