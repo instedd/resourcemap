@@ -1,0 +1,39 @@
+.tablewrapp
+  %table.GralTable
+    %tr
+      %th.members-tree{style: '-webkit-border-radius:8px 0 0 0;-moz-border-radius:8px 0 0 0;'} Layer &rarr; Member
+      %th Can Update?
+    /ko foreach: layers
+    %tr{:style => 'height:32px'}
+      %td{ko(click: :toggleExpanded), style: 'cursor:pointer'}
+        %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+        %span{ko(text: :name)}
+      /ko if: !$root.admin()
+      %td.center{ko(text: :allReadUI)}
+      %td.center{ko(text: :allWriteUI)}
+      //ko
+      /ko if: $root.admin()
+      %td.center
+        %span{ko(attr: {:class => :allRead}, click: :toggleAllRead)}
+      %td.center
+        %span{ko(attr: {:class => :allWrite}, click: :toggleAllWrite)}
+      //ko
+    /ko if: expanded
+    /ko foreach: membershipLayerLinks
+    %tr{:style => 'height:32px'}
+      %td
+        %span{ko(text: 'membership.userDisplayName()'), style: 'margin-left:20px'}
+      /ko if: !$root.admin() || membership.isCurrentUser()
+      %td.center{ko(text: :canReadUI)}
+      %td.center{ko(text: :canWriteUI)}
+      //ko
+      /ko if: $root.admin() && !membership.isCurrentUser()
+      %td.center
+        %input{ko(checked: :canRead), type: :checkbox}
+      %td.center
+        %input{ko(checked: :canWrite), type: :checkbox}
+      //ko
+      %td
+    //ko
+    //ko
+    //ko

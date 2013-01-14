@@ -1,0 +1,26 @@
+.tablewrapp
+  %table.GralTable
+    %tr
+      %th.members-tree{style: '-webkit-border-radius:8px 0 0 0;-moz-border-radius:8px 0 0 0;'} Member &rarr; Site &rarr; Layer
+      %th.members-permission None
+      %th.members-permission Read
+      %th.members-permission Update
+      %th.members-permission Admin
+      %th{style: 'width:200px;'}
+    /ko foreach: memberships
+    /ko if: advancedMode()
+    = render 'collections/members/advanced_mode'
+
+    /ko if: !advancedMode()
+    = render 'collections/members/default_mode'
+    //ko
+
+    //ko
+  - if collection_admin?
+    %tr{:style => 'height:32px'}
+      %td
+        %button.cadd#add_member Add member
+      %td#autocomplete_container{style: 'width: 380px;'}
+        = text_field_tag :member_email, '', :placeholder => 'Search by email...'
+      %td
+      %td
