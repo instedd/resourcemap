@@ -33,12 +33,17 @@
     //ko
 
     /ko if: (validationErrors() && validationErrors().hasErrors())
-    %ul
-      / ko foreach: validationErrors().errorsForUI()
-      %li{ko(text: 'description')}
-      %span{ko(text: 'more_info')}
-      //ko
+    .box.error_description
+      %h2 Resolve this conflicts in order to complete the upload
+      %ul
+        / ko foreach: validationErrors().errorsForUI()
+        %li
+          %span{ko(text: 'description')}
+          .moreInfo{ko(text: 'more_info')}
+        //ko
     //ko
+
+    %br
 
     .box.nopadd.h50
       .tablescroll{style: 'margin-top: 0'}
