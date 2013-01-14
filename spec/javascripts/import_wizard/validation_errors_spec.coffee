@@ -96,7 +96,7 @@ describe 'ValidationErrors', ->
 
   it "should generate redeable errors data errors", ->
     errors = {data_errors:[]}
-    errors.data_errors = [{description: "Some options in column 4 don't exist.", column: 4, rows: [1,2], example: ""}, {description: "Some of the values in column 1 are not valid for the type numeric.", column: 1, rows: [1], example: "Values must be integers."}]
+    errors.data_errors = [{description: "Some options in column 4 don't exist.", column: 4, rows: [1,2], example: "", type: "options"}, {description: "Some of the values in column 1 are not valid for the type numeric.", column: 1, rows: [1], type: 'numeric values', example: "Values must be integers."}]
     val_errors = new ValidationErrors(errors)
     redeable_errors = val_errors.errorsForUI()
     expect(redeable_errors.length).toBe(2)
@@ -105,10 +105,10 @@ describe 'ValidationErrors', ->
 
     expect(first_error.description).toBe("There are 2 errors in column 4.")
     expect(first_error.columns).toEqual([4])
-    expect(first_error.more_info).toEqual("Some options in column 4 don't exist. To fix this, either change the column's type or edit your CSV so that all rows hold valid dates. The invalid dates are in the following rows: 1 and 2.")
+    expect(first_error.more_info).toEqual("Some options in column 4 don't exist. To fix this, either change the column's type or edit your CSV so that all rows hold valid options. The invalid options are in the following rows: 1 and 2.")
     second_error = redeable_errors[1]
     expect(second_error.error_kind).toEqual("data_errors")
     expect(second_error.description).toEqual("There are 1 errors in column 1.")
     expect(second_error.columns).toEqual([1])
-    expect(second_error.more_info).toEqual("Some of the values in column 1 are not valid for the type numeric. To fix this, either change the column's type or edit your CSV so that all rows hold valid dates. Values must be integers. The invalid dates are in the following rows: 1.")
+    expect(second_error.more_info).toEqual("Some of the values in column 1 are not valid for the type numeric. To fix this, either change the column's type or edit your CSV so that all rows hold valid numeric values. Values must be integers. The invalid numeric values are in the following rows: 1.")
 

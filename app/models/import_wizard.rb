@@ -371,10 +371,25 @@ class ImportWizard
         if error_type[0]
           # For the moment we only have one kind of error for each column.
           field_type = if field then field.kind else column_spec[:kind] end
-          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: field_type, example: hint_for_type(field_type) }
+          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: type_value(field_type), example: hint_for_type(field_type) }
         end
       end
       grouped_errors
+    end
+
+    def type_value(field_type)
+      case field_type
+        when 'numeric'
+          "numeric values"
+        when 'select_one', 'select_many', 'hierarchy'
+          "option values"
+        when 'date'
+          "dates"
+        when 'user', 'email'
+          "email addresses"
+        when 'site'
+          "site ids"
+      end
     end
 
     def hint_for_type(field_type)
