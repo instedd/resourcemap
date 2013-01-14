@@ -23,10 +23,10 @@ describe ImportWizard do
     end
 
     specs = [
-      {name: 'resmap-id', usage: 'id'},
-      {name: 'Name', usage: 'name'},
-      {name: 'phone', usage: 'existing_field', field_id: phone.id},
-      {name: 'email', usage: 'existing_field', field_id: email.id}
+      {header: 'resmap-id', use_as: 'id'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'phone', use_as: 'existing_field', field_id: phone.id},
+      {header: 'email', use_as: 'existing_field', field_id: email.id}
       ]
 
     ImportWizard.import user, collection, csv_string
@@ -69,10 +69,10 @@ describe ImportWizard do
     end
 
    specs = [
-      {name: 'resmap-id', usage: 'id'},
-      {name: 'Name', usage: 'name'},
-      {name: 'phone', usage: 'existing_field', field_id: phone.id},
-      {name: 'email', usage: 'existing_field', field_id: email.id}
+      {header: 'resmap-id', use_as: 'id'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'phone', use_as: 'existing_field', field_id: phone.id},
+      {header: 'email', use_as: 'existing_field', field_id: email.id}
       ]
 
     ImportWizard.import user, collection, csv_string

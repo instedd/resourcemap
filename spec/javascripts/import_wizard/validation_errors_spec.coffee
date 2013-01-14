@@ -82,7 +82,6 @@ describe 'ValidationErrors', ->
     proc_duplicated_usage = (errors, column_name) -> errors.duplicated_usage = {'1': [0, 1]}
     check_duplicated_usage('usage', "field field 1", proc_duplicated_usage)
 
-
   it "should generate redeable errors for hierarchy field found", ->
     errors = {hierarchy_field_found:[]}
     errors.hierarchy_field_found = {new_hierarchy_columns: [1, 2, 3]}
@@ -97,7 +96,7 @@ describe 'ValidationErrors', ->
 
   it "should generate redeable errors data errors", ->
     errors = {data_errors:[]}
-    errors.data_errors = [{description: "Invalid option in many field", column: 4, rows: [1,2]}, {description: "Invalid numeric value in text field", column: 1, rows: [1]}]
+    errors.data_errors = [{description: "Some options in column 4 don't exist.", column: 4, rows: [1,2]}, {description: "Some of the values in column 1 are not valid for the type numeric.", column: 1, rows: [1]}]
     val_errors = new ValidationErrors(errors)
     redeable_errors = val_errors.errorsForUI()
     expect(redeable_errors.length).toBe(2)
@@ -106,10 +105,10 @@ describe 'ValidationErrors', ->
 
     expect(first_error.description).toBe("There are 2 errors in column 4.")
     expect(first_error.columns).toEqual([4])
-    expect(first_error.more_info).toEqual('Rows numbers: 1,2')
+    expect(first_error.more_info).toEqual("Some options in column 4 don't exist. To fix this, either change the column's type or edit your CSV so that all rows hold valid dates. The invalid dates are in the following rows: 1 and 2.")
     second_error = redeable_errors[1]
     expect(second_error.error_kind).toBe("data_errors")
     expect(second_error.description).toBe("There are 1 errors in column 1.")
     expect(second_error.columns).toEqual([1])
-    expect(second_error.more_info).toEqual('Rows numbers: 1')
+    expect(second_error.more_info).toEqual("Some of the values in column 1 are not valid for the type numeric. To fix this, either change the column's type or edit your CSV so that all rows hold valid dates. The invalid dates are in the following rows: 1.")
 

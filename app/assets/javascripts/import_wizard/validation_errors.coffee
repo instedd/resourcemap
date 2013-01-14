@@ -13,9 +13,7 @@ onImportWizard ->
       for errorType,errors of @errors
         if !$.isEmptyObject(errors)
           for errorId, errorColumns of errors
-            console.log(errorColumns)
             error_description = {error_kind: errorType, columns: errorColumns}
-            console.log(error_description.columns)
             switch errorType
               when 'duplicated_code'
                 error_description.description = "There is more than one column with code #{errorId}."
@@ -46,7 +44,6 @@ onImportWizard ->
                 error = errorColumns
                 error_description.columns = [error.column]
                 error_description.description = "There are #{error.rows.length} errors in column #{error.column}."
-                error_description.more_info = "Rows numbers: #{window.toSentence(error.rows)}."
+                error_description.more_info = "#{error.description} To fix this, either change the column's type or edit your CSV so that all rows hold valid dates. The invalid dates are in the following rows: #{window.toSentence(error.rows)}."
             errorsForUI.push(error_description)
-            console.log(errorsForUI)
       errorsForUI

@@ -359,7 +359,9 @@ class ImportWizard
         begin
           validate_column_value(column_spec, csv_field_value, field, collection)
         rescue => ex
-          validated_csv_column << {description: ex.message, row: field_number}
+          field_type = if field then field.kind else column_spec[:kind] end
+          description = error_description_for_type(field, column_spec, field_type)
+          validated_csv_column << {description: description, row: field_number, type: field_type}
         end
       end
 
@@ -368,10 +370,30 @@ class ImportWizard
       validated_columns_grouped.each do |error_type|
         if error_type[0]
           # For the moment we only have one kind of error for each column.
-          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}}
+          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: error_type[1].first[:type]}
         end
       end
       grouped_errors
+    end
+
+    def error_description_for_type(field, column_spec, field_type)
+      column_index = column_spec[:index]
+      description = case field_type
+      when 'site'
+        "Some site ids in column #{column_index} don't match any existing site in this collection."
+      when 'select_many', 'select_one', 'hierarchy'
+        "Some options in column #{column_index} don't exist."
+      when 'user'
+        "Some email addresses in column #{column_index} don't belong to any member of this collection."
+      else
+        "Some of the values in column #{column_index} are not valid for the type #{field_type}."
+      end
+
+      if  field_type == 'hierarchy' && !field #New hierarchy field
+        "Hierarchy fields can only be created via web in the Layers page."
+      else
+        description
+      end
     end
 
     def calculate_duplicated(selection_block, groping_field)
