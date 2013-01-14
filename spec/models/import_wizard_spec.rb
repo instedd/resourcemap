@@ -759,6 +759,27 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
 
+  it "should be include hints for format errors" do
+    email_field = layer.fields.make :code => 'email', :kind => 'email'
+
+    csv_string = CSV.generate do |csv|
+      csv << ['numeric', 'date', 'email']
+      csv << ['11', '12/26/1988', 'email@mail.com']
+      csv << ['invalid11', '23/1/234', 'email@ma@il.com']
+    end
+
+    ImportWizard.import user, collection, csv_string
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    sites_errors = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:errors]
+
+    data_errors = sites_errors[:data_errors]
+
+    data_errors[0][:example].should eq("Values must be integers.")
+    data_errors[1][:example].should eq("Example of valid date: 1/25/2013.")
+    data_errors[2][:example].should eq("Example of valid email: myemail@resourcemap.com.")
+
+  end
+
   it "should get sites & errors for invalid existing fields if field_id is string" do
     csv_string = CSV.generate do |csv|
       csv <<  ['Numeric']
@@ -774,8 +795,8 @@ describe ImportWizard do
 
      data_errors = errors[:data_errors]
      data_errors.length.should eq(1)
-  end
 
+  end
 
   it "should get error for invalid new fields" do
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235

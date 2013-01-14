@@ -40,10 +40,13 @@ onImportWizard ->
                 error_description.more_info = "Column numbers: #{window.toSentence(errorColumns)}."
               when 'data_errors'
                 # In this case errorColumns contains an object with the following structure:
-                # {description: “Error description”, column: 1, rows: [1, 3, 5, 6]}
+                # {description: “Error description”, column: 1, rows: [1, 3, 5, 6], example: "Hint"}
                 error = errorColumns
                 error_description.columns = [error.column]
                 error_description.description = "There are #{error.rows.length} errors in column #{error.column}."
-                error_description.more_info = "#{error.description} To fix this, either change the column's type or edit your CSV so that all rows hold valid dates. The invalid dates are in the following rows: #{window.toSentence(error.rows)}."
+                error_description.more_info = "#{error.description} To fix this, either change the column's type or edit your CSV so that all rows hold valid dates."
+                if error.example
+                  error_description.more_info = error_description.more_info + " " + error.example
+                error_description.more_info = error_description.more_info + " The invalid dates are in the following rows: #{window.toSentence(error.rows)}."
             errorsForUI.push(error_description)
       errorsForUI

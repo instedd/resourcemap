@@ -361,7 +361,7 @@ class ImportWizard
         rescue => ex
           field_type = if field then field.kind else column_spec[:kind] end
           description = error_description_for_type(field, column_spec, field_type)
-          validated_csv_column << {description: description, row: field_number, type: field_type}
+          validated_csv_column << {description: description, row: field_number}
         end
       end
 
@@ -370,10 +370,22 @@ class ImportWizard
       validated_columns_grouped.each do |error_type|
         if error_type[0]
           # For the moment we only have one kind of error for each column.
-          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: error_type[1].first[:type]}
+          field_type = if field then field.kind else column_spec[:kind] end
+          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: field_type, example: hint_for_type(field_type) }
         end
       end
       grouped_errors
+    end
+
+    def hint_for_type(field_type)
+      case field_type
+      when 'numeric'
+        "Values must be integers."
+      when 'date'
+        "Example of valid date: 1/25/2013."
+      when 'email'
+        "Example of valid email: myemail@resourcemap.com."
+      end
     end
 
     def error_description_for_type(field, column_spec, field_type)
