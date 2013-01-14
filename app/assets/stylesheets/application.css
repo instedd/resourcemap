@@ -189,3 +189,11 @@
 .settings-form label {
   padding-bottom:5px;
 }
+
+.GralTable th.members-tree {
+  border:1px solid white;
+  color:#7F7F7F;
+  background-color:#D0D0D0;
+  background-image:none;
+  min-width:200px;
+}

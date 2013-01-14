@@ -22,9 +22,7 @@
     .tablewrapp
       %table.GralTable
         %tr
-          - if collection_admin?
-            %th{:style => 'min-width:120px'}
-          %th Name
+          %th.members-tree{style: '-webkit-border-radius:8px 0 0 0;-moz-border-radius:8px 0 0 0;'} Member &rarr; Site &rarr; Layer
           %th Admin?
           %th Can Read?
           %th Can Update?
