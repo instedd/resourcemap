@@ -50,7 +50,6 @@ class ImportWizard
     end
 
     def calculate_errors(user, collection, columns_spec, csv_columns, header)
-      #This is the new error model
       #Add index to each column spec
       columns_spec.each_with_index do |column_spec, column_index|
         column_spec[:index] = column_index
