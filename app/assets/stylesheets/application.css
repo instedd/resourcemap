@@ -210,8 +210,9 @@
   min-width:200px;
 }
 
-.members-permission {
+.GralTable th.members-permission {
   width:50px;
+  text-align: center;
 }
 
 input[type='checkbox'] {
@@ -232,7 +233,7 @@ input[type='checkbox']:disabled {
   background-color: white !important;
 }
 
-input[type='checkbox']:active, input[type='checkbox']:checked:active {
+input[type='checkbox']:active, input[type='checkbox']:focus, input[type='checkbox']:checked:active {
     padding: 8px;
     border-radius: 4px;
     top: 1px;
@@ -309,7 +310,7 @@ input[type='radio']:checked {
     box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
-input[type='radio']:active, input[type='radio']:checked:active {
+input[type='radio']:active, input[type='radio']:focus, input[type='radio']:checked:active {
   padding: 7px;
   border-radius: 50px;
   top: 1px;
