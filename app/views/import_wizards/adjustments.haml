@@ -123,10 +123,10 @@
     %span{style: 'color:red'} Sorry, something failed during the import. Please contact InSTEDD for support.
     //ko
     /ko if: !importing() && !importError()
-    /ko if: valid()
+    /ko if: !validationErrors() || (validationErrors() && !validationErrors().hasErrors())
     %button.grey{ko(click: :startImport)} Start importing
     //ko
-    /ko if: !valid()
+    /ko if: (validationErrors() && validationErrors().hasErrors())
     %span.error Fix the errors to start importing
     //ko
     //ko

@@ -51,18 +51,6 @@ onImportWizard ->
         json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json
 
-
-    # validateColumn: () =>
-    #
-    #     # Should not be repeated values in columns
-    #     if (@kind() == 'select_one' || @kind() == 'select_many') && !(@selectKind() == 'both')
-    #       columns = columns.filter((c) => c.label() == @label() && c.code() == @code() && c.kind() == @kind())
-    #       if !(columns.length == 2 && ((columns[0].selectKind() == 'code' && columns[1].selectKind() == 'label') || (columns[0].selectKind() == 'label' && columns[1].selectKind() == 'code') ))
-    #         return "You must choose a single column to be the Label and a single colunm to be the Code of property #{@name()}"
-    #     else
-
-
-
     computeIconClass: =>
       kind = switch @usage()
         when 'existing_field' then @field().kind
