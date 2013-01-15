@@ -12,7 +12,8 @@ onImportWizard ->
 
       @sites = ko.observableArray()
 
-      @hasId = ko.observable false
+      @hasId = ko.computed =>
+        window.arrayAny(@columns(), (c) => c.usage() == 'id')
 
       @error = ko.computed =>
         window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error().length > 0)

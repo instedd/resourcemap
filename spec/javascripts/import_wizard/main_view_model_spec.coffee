@@ -39,7 +39,7 @@ describe 'ImportWizard', ->
       @model.initialize(1, [], @columns)
       expect(@model.hasId()).toBe(false)
 
-    it 'imported sites should have id when site is computed if site has a column id', ->
+    it 'imported sites should have id if site has a column  with usage id', ->
       @model.initialize(1, @layers, @columns)
       expect(@model.hasId()).toBe(false)
       columns = [{header: "resmap-id", use_as: "id"}]
