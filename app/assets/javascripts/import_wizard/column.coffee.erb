@@ -23,18 +23,15 @@ onImportWizard ->
 
       @kind.subscribe  =>
         @iconClass(@computeIconClass())
-        window.model.validateSites(this)
 
       @field.subscribe =>
         @iconClass(@computeIconClass())
-        window.model.validateSites(this)
 
       @usage.subscribe =>
         # If usage change is because this column is the model.selectedColumn and fancybox it's open
         $('.fancybox').resize()
         if !(@usage() == 'existing_field' || @usage() == 'new_field')
           @iconClass(@computeIconClass())
-          window.model.validateSites(this)
 
       @error = ko.observableArray([])
 

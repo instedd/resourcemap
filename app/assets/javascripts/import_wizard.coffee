@@ -23,5 +23,8 @@ onImportWizard -> if $('#import-wizard-main').length > 0
         $('h2').removeClass('loading')
         $('.hidden-until-loaded').show()
         $(".fancybox").fancybox({
-          minWidth: '450px'
-          })
+          minWidth: '450px',
+          afterClose: ->
+            window.model.validateSites(window.model.selectedColumn())
+        })
+
