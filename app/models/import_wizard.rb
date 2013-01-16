@@ -409,7 +409,7 @@ class ImportWizard
       when 'site'
         "Some site ids in column #{column_index + 1} don't match any existing site in this collection."
       when 'select_many', 'select_one', 'hierarchy'
-        "Some options in column #{column_index + 1} don't exist."
+        "Some option values in column #{column_index + 1} don't exist."
       when 'user'
         "Some email addresses in column #{column_index + 1} don't belong to any member of this collection."
       else

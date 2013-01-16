@@ -728,17 +728,17 @@ describe ImportWizard do
     data_errors[0][:column].should eq(1)
     data_errors[0][:rows].should eq([1, 2])
 
-    data_errors[1][:description].should eq("Some options in column 3 don't exist.")
+    data_errors[1][:description].should eq("Some option values in column 3 don't exist.")
     data_errors[1][:column].should eq(2)
     data_errors[1][:type].should eq('option values')
     data_errors[1][:rows].should eq([1, 2])
 
-    data_errors[2][:description].should eq("Some options in column 4 don't exist.")
+    data_errors[2][:description].should eq("Some option values in column 4 don't exist.")
     data_errors[2][:column].should eq(3)
     data_errors[2][:type].should eq('option values')
     data_errors[2][:rows].should eq([1, 2])
 
-    data_errors[3][:description].should eq("Some options in column 5 don't exist.")
+    data_errors[3][:description].should eq("Some option values in column 5 don't exist.")
     data_errors[3][:column].should eq(4)
     data_errors[3][:type].should eq('option values')
     data_errors[3][:rows].should eq([1, 2])
