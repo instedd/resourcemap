@@ -52,6 +52,7 @@ onImportWizard ->
                 error_description.more_info = "#{error.description} To fix this, either change the column's type or edit your CSV so that all rows hold valid #{error.type}."
                 if error.example
                   error_description.more_info = error_description.more_info + " " + error.example
-                error_description.more_info = error_description.more_info + " The invalid #{error.type} are in the following rows: #{@toIndex1BasedSentence(error.rows)}."
+                if error.rows.length < 25
+                  error_description.more_info = error_description.more_info + " The invalid #{error.type} are in the following rows: #{@toIndex1BasedSentence(error.rows)}."
             errorsForUI.push(error_description)
       errorsForUI
