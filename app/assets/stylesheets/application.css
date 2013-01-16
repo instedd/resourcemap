@@ -207,12 +207,32 @@
   color:#555555;
   background-color:#D0D0D0;
   background-image:none;
-  min-width:200px;
+  /*width:50px;*/
 }
 
-.GralTable th.members-permission {
-  width:50px;
+.GralTable td.member {
+  /*width:100px;*/
+}
+
+.GralTable th.members-permission, td.members-permission {
+  /*width:50px;*/
   text-align: center;
+}
+
+.GralTable tr.membersFirstRow td {
+  padding-top:10px;
+  height:30px;
+}
+
+.GralTable tr.membersRow td {
+  height:32px;
+}
+
+.members-collapse-icon {
+  position:relative;
+  top:1px;
+  width:11px;
+  height:11px;
 }
 
 input[type='checkbox'] {

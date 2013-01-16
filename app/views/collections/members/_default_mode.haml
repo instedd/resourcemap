@@ -1,34 +1,17 @@
-%tr{:style => 'height:32px'}
-  %td{ko(click: :toggleExpanded), style: 'cursor:pointer'}
-    %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+%tr{ko(css: { :membersFirstRow => '$index() == 0', :membersRow => '$index() > 0' })}
+  %td.member{ko(click: :toggleExpanded), style: 'cursor:pointer;'}
+    %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"})}
     %span{ko(text: :userDisplayName)}
-  - if collection_admin?
-    /ko if: isCurrentUser()
-    %td{ko(html: :adminUI)}
-    //ko
-    /ko if: !isCurrentUser()
-    %td
-      %input{ko(checked: :admin), type: :checkbox}
-    //ko
-  - else
-    %td{ko(html: :adminUI)}
-
-  /ko if: !$root.admin() || isCurrentUser()
-  %td{ko(text: :allReadUI)}
-  %td{ko(text: :allWriteUI)}
-  //ko
-  /ko if: $root.admin() && !isCurrentUser()
+  /Old piece started here
+  %td.members-permission
+    %input{type: 'radio', name: 'foo'}
+  %td.members-permission
+    %input{type: 'radio', name: 'foo'}
+  %td.members-permission
+    %input{type: 'radio', name: 'foo'}
+  %td.members-permission
+    %input{type: 'radio', name: 'foo'}
   %td
-    %span{ko(attr: {:class => :allRead}, click: :toggleAllRead)}
-  %td
-    %span{ko(attr: {:class => :allWrite}, click: :toggleAllWrite)}
-  //ko
-  %td
-    - if collection_admin?
-      /ko if: !isCurrentUser()
-      = ko_link_to 'advanced', 'advancedModeOn', class: 'icon fedit black'
-      = ko_link_to 'delete', '$root.destroyMembership', class: 'icon fdelete black'
-      //ko
 /ko if: expanded
 /ko foreach: membershipLayerLinks
 %tr{:style => 'height:32px'}
