@@ -3,7 +3,7 @@
   <!-- ko foreach: sites -->
   %tr
     %td
-      %div{ko(style: {width: "'' + (272 - ($parent.level + 1) * 20 - 30) + 'px'", marginLeft: "'' + (($parent.level + 1) * 20 + 6) + 'px'"}, css: {greyback: "$data == $root.selectedSite()"}), style: 'padding-left:2px;margin-top:5px;margin-left:8px;width:240px;'}
+      %div{ko(style: {width: "'' + (272 - ($parent.level + 1) * 20 - 30) + 'px'", marginLeft: "'' + (($parent.level + 1) * 20 + 6) + 'px'"}, css: {greyback: "$data == $root.selectedSite()"}), style: 'padding-left:2px;margin-top:5px;margin-left:8px;width:220px;'}
         %p{ko(click: '$root.selectSite'), style: 'cursor: pointer'}
           %span.stat-r
           %span{ko(html: :highlightedName)}
