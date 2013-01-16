@@ -111,3 +111,22 @@ describe 'ValidationErrors', ->
     expect(second_error.columns).toEqual([1])
     expect(second_error.more_info).toEqual("Some of the values in column 2 are not valid for the type numeric. To fix this, either change the column's type or edit your CSV so that all rows hold valid numeric values. Values must be integers. The invalid numeric values are in the following rows: 2.")
 
+  it 'should generate messages in singular in existing_code when only one column has issues', ->
+    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+    errors.existing_code = {text_column: [0]}
+    val_errors = new ValidationErrors(errors)
+    redeable_errors = val_errors.errorsForUI()
+    expect(redeable_errors.length).toBe(1)
+    first_error = redeable_errors[0]
+    expect(first_error.columns).toEqual([0])
+    expect(first_error.more_info).toEqual("Column 1 has code text_column. To fix this issue, change its code.")
+
+  it 'should generate messages in singular in existing_label when only one column has issues', ->
+    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+    errors.existing_label = {text_column: [0]}
+    val_errors = new ValidationErrors(errors)
+    redeable_errors = val_errors.errorsForUI()
+    expect(redeable_errors.length).toBe(1)
+    first_error = redeable_errors[0]
+    expect(first_error.columns).toEqual([0])
+    expect(first_error.more_info).toEqual("Column 1 has name text_column. To fix this issue, change its name.")

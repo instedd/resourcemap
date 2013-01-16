@@ -36,10 +36,16 @@ onImportWizard ->
                 error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} are marked as #{duplicated}. To fix this issue, leave only one of them assigned as '#{duplicated}' and modify the rest."
               when 'existing_code'
                 error_description.description = "There is already a field with code #{errorId} in this collection."
-                error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have code #{errorId}. To fix this issue, change all their codes."
+                if errorColumns.length >1
+                  error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have code #{errorId}. To fix this issue, change all their codes."
+                else
+                  error_description.more_info = "Column #{errorColumns[0] + 1} has code #{errorId}. To fix this issue, change its code."
               when 'existing_label'
                 error_description.description = "There is already a field with name #{errorId} in this collection."
-                error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have name #{errorId}. To fix this issue, change all their names."
+                if errorColumns.length >1
+                  error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have name #{errorId}. To fix this issue, change all their names."
+                else
+                  error_description.more_info = "Column #{errorColumns[0] + 1} has name #{errorId}. To fix this issue, change its name."
               when 'hierarchy_field_found'
                 error_description.description = "Hierarchy fields can only be created via web in the Layers page."
                 error_description.more_info = "Column numbers: #{@toIndex1BasedSentence(errorColumns)}."
