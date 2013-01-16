@@ -407,13 +407,13 @@ class ImportWizard
       column_index = column_spec[:index]
       description = case field_type
       when 'site'
-        "Some site ids in column #{column_index} don't match any existing site in this collection."
+        "Some site ids in column #{column_index + 1} don't match any existing site in this collection."
       when 'select_many', 'select_one', 'hierarchy'
-        "Some options in column #{column_index} don't exist."
+        "Some options in column #{column_index + 1} don't exist."
       when 'user'
-        "Some email addresses in column #{column_index} don't belong to any member of this collection."
+        "Some email addresses in column #{column_index + 1} don't belong to any member of this collection."
       else
-        "Some of the values in column #{column_index} are not valid for the type #{field_type}."
+        "Some of the values in column #{column_index + 1} are not valid for the type #{field_type}."
       end
 
       if  field_type == 'hierarchy' && !field #New hierarchy field

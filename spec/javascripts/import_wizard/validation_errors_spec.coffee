@@ -27,7 +27,7 @@ describe 'ValidationErrors', ->
       expect(first_error.error_kind).toBe("duplicated_#{error_type}")
     expect(first_error.description).toBe("There is more than one column with #{error_type} #{column_name}.")
     expect(first_error.columns).toEqual([0,1])
-    expect(first_error.more_info).toEqual("Columns 0 and 1 have #{error_type} #{column_name}. To fix this issue, leave only one with that #{error_type} and modify the rest.")
+    expect(first_error.more_info).toEqual("Columns 1 and 2 have #{error_type} #{column_name}. To fix this issue, leave only one with that #{error_type} and modify the rest.")
 
   check_existing_field_assertion = (error_type, column_name, proc) ->
     errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
@@ -43,7 +43,7 @@ describe 'ValidationErrors', ->
 
     expect(first_error.description).toBe("There is already a field with #{error_type} #{column_name} in this collection.")
     expect(first_error.columns).toEqual([0,1])
-    expect(first_error.more_info).toEqual("Columns 0 and 1 have #{error_type} #{column_name}. To fix this issue, change all their #{error_type}s.")
+    expect(first_error.more_info).toEqual("Columns 1 and 2 have #{error_type} #{column_name}. To fix this issue, change all their #{error_type}s.")
 
   check_duplicated_usage = (error_type, column_name, proc) ->
     errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
@@ -56,7 +56,7 @@ describe 'ValidationErrors', ->
     expect(first_error.error_kind).toBe("duplicated_#{error_type}")
     expect(first_error.description).toBe("Only one column can be the #{column_name}.")
     expect(first_error.columns).toEqual([0,1])
-    expect(first_error.more_info).toEqual("Columns 0 and 1 are marked as #{column_name}. To fix this issue, leave only one of them assigned as '#{column_name}' and modify the rest.")
+    expect(first_error.more_info).toEqual("Columns 1 and 2 are marked as #{column_name}. To fix this issue, leave only one of them assigned as '#{column_name}' and modify the rest.")
 
   it "should generate redeable errors for duplicated code", ->
     proc_duplicated_code = (errors) -> errors.duplicated_code = {text_column: [0, 1]}
@@ -92,23 +92,22 @@ describe 'ValidationErrors', ->
     expect(first_error.error_kind).toBe("hierarchy_field_found")
     expect(first_error.description).toBe("Hierarchy fields can only be created via web in the Layers page.")
     expect(first_error.columns).toEqual([1,2,3])
-    expect(first_error.more_info).toEqual('Column numbers: 1, 2 and 3.')
+    expect(first_error.more_info).toEqual('Column numbers: 2, 3 and 4.')
 
   it "should generate redeable errors data errors", ->
     errors = {data_errors:[]}
-    errors.data_errors = [{description: "Some options in column 4 don't exist.", column: 4, rows: [1,2], example: "", type: "options"}, {description: "Some of the values in column 1 are not valid for the type numeric.", column: 1, rows: [1], type: 'numeric values', example: "Values must be integers."}]
+    errors.data_errors = [{description: "Some options in column 5 don't exist.", column: 4, rows: [1,2], example: "", type: "options"}, {description: "Some of the values in column 2 are not valid for the type numeric.", column: 1, rows: [1], type: 'numeric values', example: "Values must be integers."}]
     val_errors = new ValidationErrors(errors)
     redeable_errors = val_errors.errorsForUI()
     expect(redeable_errors.length).toBe(2)
     first_error = redeable_errors[0]
     expect(first_error.error_kind).toBe("data_errors")
-
-    expect(first_error.description).toBe("There are 2 errors in column 4.")
+    expect(first_error.description).toBe("There are 2 errors in column 5.")
     expect(first_error.columns).toEqual([4])
-    expect(first_error.more_info).toEqual("Some options in column 4 don't exist. To fix this, either change the column's type or edit your CSV so that all rows hold valid options. The invalid options are in the following rows: 1 and 2.")
+    expect(first_error.more_info).toEqual("Some options in column 5 don't exist. To fix this, either change the column's type or edit your CSV so that all rows hold valid options. The invalid options are in the following rows: 2 and 3.")
     second_error = redeable_errors[1]
     expect(second_error.error_kind).toEqual("data_errors")
-    expect(second_error.description).toEqual("There are 1 errors in column 1.")
+    expect(second_error.description).toEqual("There are 1 errors in column 2.")
     expect(second_error.columns).toEqual([1])
-    expect(second_error.more_info).toEqual("Some of the values in column 1 are not valid for the type numeric. To fix this, either change the column's type or edit your CSV so that all rows hold valid numeric values. Values must be integers. The invalid numeric values are in the following rows: 1.")
+    expect(second_error.more_info).toEqual("Some of the values in column 2 are not valid for the type numeric. To fix this, either change the column's type or edit your CSV so that all rows hold valid numeric values. Values must be integers. The invalid numeric values are in the following rows: 2.")
 
