@@ -1,0 +1,16 @@
+/ko foreach: membershipLayerLinks
+%tr{:style => 'height:32px'}
+  %td
+    %span{ko(text: 'membership.userDisplayName()'), style: 'margin-left:20px'}
+  /ko if: !$root.admin() || membership.isCurrentUser()
+  %td.center{ko(text: :canReadUI)}
+  %td.center{ko(text: :canWriteUI)}
+  //ko
+  /ko if: $root.admin() && !membership.isCurrentUser()
+  %td.center
+    %input{ko(checked: :canRead), type: :checkbox}
+  %td.center
+    %input{ko(checked: :canWrite), type: :checkbox}
+  //ko
+  %td
+//ko

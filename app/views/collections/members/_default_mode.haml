@@ -1,22 +1,27 @@
+/ViewModel is an instance of Membership defined in membership.coffee
+/Methods related to expansion are in class Membership's super class: Expandable.
+/Membership includes AdvancedMembershipMode.
+
 %tr{ko(css: { :membersFirstRow => '$index() == 0', :membersRow => '$index() > 0' })}
   %td.member{ko(click: :toggleExpanded), style: 'cursor:pointer;'}
     %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"})}
     %span{ko(text: :userDisplayName)}
-  /Old piece started here
+  /No permission
   %td.members-permission
-    %input{type: 'radio', name: 'foo'}
+    %input{ko(checked: false, enable: false), type: :radio}
+  /Read permission
   %td.members-permission
-    %input{type: 'radio', name: 'foo'}
+    %input{ko(checked: :canOnlyRead, enable: :isNotAdmin), type: :radio}
+  /Update permission
   %td.members-permission
-    %input{type: 'radio', name: 'foo'}
+    %input{ko(checked: :canOnlyReadAndUpdate, enable: :isNotAdmin), type: :radio}
+  /Admin permission
   %td.members-permission
-    %input{type: 'radio', name: 'foo'}
+    %input{ko(checked: :isAdmin, enable: :isNotAdmin), type: :radio}
   %td
 /ko if: expanded
 /ko foreach: membershipLayerLinks
 %tr{:style => 'height:32px'}
-  - if collection_admin?
-    %td
   %td
     %span{ko(text: 'layer.name()'), style: 'margin-left:20px'}
   %td
