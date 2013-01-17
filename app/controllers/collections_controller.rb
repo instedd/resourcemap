@@ -17,6 +17,7 @@ class CollectionsController < ApplicationController
         collections.all.each do |collection|
           attrs = collection.attributes
           attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
+          attrs["is_admin"] = collection.memberships.find_by_user_id(current_user.id).admin
           collections_with_snapshot = collections_with_snapshot + [attrs]
         end
         format.json {render json: collections_with_snapshot }

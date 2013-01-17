@@ -69,7 +69,8 @@
     %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
     %span
     %span{ko(text: :name)}
-    %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+
+    %button.fconfiguration.right{ko(click: '$root.editCollection', visible: :is_admin), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
   .tablescroll.sites
