@@ -15,15 +15,15 @@ onImportWizard -> if $('#import-wizard-main').length > 0
 
       ko.applyBindings window.model
 
-      #$.get "/collections/#{collectionId}/import_wizard_get_visible_sites.json", { page: 1 }, (sites) =>
-        #window.model.sites(sites)
-
       $.post "/collections/#{collectionId}/import_wizard/validate_sites_with_columns.json", {columns: JSON.stringify(columns)}, (preview) =>
-        window.model.sites(preview.sites)
+
+        window.model.loadSites(preview)
 
         $('#generating_preview').hide()
         $('h2').removeClass('loading')
         $('.hidden-until-loaded').show()
         $(".fancybox").fancybox({
-          minWidth: '450px'
-          })
+          minWidth: '450px',
+          afterClose: ->
+            window.model.validateSites(window.model.selectedColumn())
+        })

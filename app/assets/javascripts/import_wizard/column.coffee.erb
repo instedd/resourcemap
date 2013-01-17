@@ -1,10 +1,10 @@
 onImportWizard ->
   class @Column
     constructor: (data) ->
-      @name = ko.observable data.name
+      @header = ko.observable data.header
 
       # How to use this column (new field? existing field? id? name? lat? lng? ignore?)
-      @usage = ko.observable data.usage
+      @usage = ko.observable data.use_as
 
       # For existing fields
       @layer = ko.observable(if data.layer_id then window.model.findLayer(data.layer_id) else null)
@@ -23,25 +23,21 @@ onImportWizard ->
 
       @kind.subscribe  =>
         @iconClass(@computeIconClass())
-        window.model.validateSites(this)
 
       @field.subscribe =>
         @iconClass(@computeIconClass())
-        window.model.validateSites(this)
 
       @usage.subscribe =>
         # If usage change is because this column is the model.selectedColumn and fancybox it's open
         $('.fancybox').resize()
-        if !(@usage() == 'existing_field' || @usage() == 'new_field')
-          @iconClass(@computeIconClass())
-          window.model.validateSites(this)
+        @iconClass(@computeIconClass())
 
       @error = ko.observableArray([])
 
     toJSON: =>
       json =
-        usage: @usage()
-        name: @name()
+        use_as: @usage()
+        header: @header()
       if @usage() == 'existing_field'
         json.field_id = @field().id
       if @usage() == 'new_field'
@@ -51,18 +47,6 @@ onImportWizard ->
         json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       json
 
-
-    # validateColumn: () =>
-    #
-    #     # Should not be repeated values in columns
-    #     if (@kind() == 'select_one' || @kind() == 'select_many') && !(@selectKind() == 'both')
-    #       columns = columns.filter((c) => c.label() == @label() && c.code() == @code() && c.kind() == @kind())
-    #       if !(columns.length == 2 && ((columns[0].selectKind() == 'code' && columns[1].selectKind() == 'label') || (columns[0].selectKind() == 'label' && columns[1].selectKind() == 'code') ))
-    #         return "You must choose a single column to be the Label and a single colunm to be the Code of property #{@name()}"
-    #     else
-
-
-
     computeIconClass: =>
       kind = switch @usage()
         when 'existing_field' then @field().kind
@@ -71,7 +55,3 @@ onImportWizard ->
         when 'lng'then 'location'
         else @usage()
       "f#{kind}"
-
-
-
-

@@ -11,7 +11,6 @@ onCollections -> if $('#collections-main').length > 0
   $.get "/collections.json", {}, (collections) =>
     window.model = new MainViewModel(collections)
     ko.applyBindings window.model
-    console.log window.model
     window.model.processURL()
     window.model.isGatewayExist()
     $('#collections-dummy').remove()

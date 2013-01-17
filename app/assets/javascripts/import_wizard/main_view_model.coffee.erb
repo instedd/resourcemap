@@ -12,16 +12,22 @@ onImportWizard ->
 
       @sites = ko.observableArray()
 
-      @hasId = ko.observable false
-
-      @site = ko.computed => @computeSite()
+      @hasId = ko.computed =>
+        window.arrayAny(@columns(), (c) => c.usage() == 'id')
 
       @error = ko.computed =>
         window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error().length > 0)
 
+      @validationErrors = ko.observable()
+
       @valid = ko.computed => !@error()
       @importing = ko.observable false
       @importError = ko.observable false
+
+    loadSites: (preview) =>
+      sites = $.map(preview.sites, (x) -> new Site(x))
+      @sites(sites)
+      @validationErrors(new ValidationErrors(preview.errors))
 
     loadUsages: =>
       @usages = [new Usage('New field', 'new_field')]
@@ -41,40 +47,10 @@ onImportWizard ->
     findLayer: (id) =>
       (layer for layer in @layers when layer.id == id)[0]
 
-    refreshColumnsPopups: ->
-       $('.column_header').not(".error_column").RemoveBubblePopup()
-       $('.error_column').each (index) ->
-         $(this).CreateBubblePopup({
-         selectable: true,
-         position : 'top',
-         innerHtml: $(this).attr('error'),
-         innerHtmlStyle: {
-             color:'#000000',
-             'background-color' :'white'
-             },
-         themeName:  'bubble',
-         themePath:  '<%= InsteddRails.url %>/theme/images/'
-         });
-
-    refreshSitesPopups: ->
-      $('.error').each (index) ->
-        $(this).CreateBubblePopup({
-        selectable: true,
-        position : 'top',
-        innerHtml: $(this).attr('error'),
-        innerHtmlStyle: {
-            color:'#000000',
-            'background-color' :'white'
-            },
-        themeName:  'bubble',
-        themePath:  '<%= InsteddRails.url %>/theme/images/'
-        });
-
-
-    refreshBubblePopups: =>
-      # HTML is rendered after executing refreshColumnsPopups, so the popups don't get removed
-      setTimeout(@refreshColumnsPopups, 50)
-      @refreshSitesPopups()
+    findField: (id) =>
+      for layer in @layers
+        field = layer.findField(id) unless field
+      field
 
     selectColumn: (column) =>
       @selectedColumn(column)
@@ -82,18 +58,9 @@ onImportWizard ->
 
     validateSites:(modified_column) =>
       column = modified_column.toJSON()
-      $.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_column.json", {column: JSON.stringify(column)}, (preview_column) =>
-        for column_index, validated_value of preview_column
-          for site in @sites()
-            site_index = @sites().indexOf(site)
-            site.splice(column_index, 1, validated_value[site_index])
-
-        # @sites.valueHasMutated() does not work. If this solution has problems (like flickering) we will need to fill @sites with observable arrays instead of arrays
-        old_sites = @sites()
-        @sites([])
-        @sites(old_sites)
-
-        @refreshSitesPopups()
+      # Single column valiation is already implemented server side.
+      $.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_columns.json", {columns: JSON.stringify(@columns())}, (preview) =>
+        window.model.loadSites(preview)
 
     startImport: =>
       @importing(true)
@@ -106,110 +73,3 @@ onImportWizard ->
         error: =>
           @importing(false)
           @importError(true)
-
-    computeSite: =>
-      data = {name: null, properties: []}
-      propertiesByCode = {}
-      propertiesByField = {}
-      propertiesByLabel = {}
-      optionColumnByCodeAndLabel = {}
-
-      for column in @columns()
-
-        # Delete previous errors
-        column.error([])
-
-        if column.usage() == 'new_field'
-          column.error.push('Label cannot be blank') unless !!column.label()
-          column.error.push('Code cannot be blank') unless !!column.code()
-
-        if column.usage() == 'ignore'
-          continue
-
-        if column.usage() == 'id'
-          if data.id_column
-            column.error.push('You chose more than one column to be the ID of the site')
-          data.id_column = column
-          @hasId(true)
-          continue
-
-        if column.usage() == 'name'
-          if data.name_column
-            column.error.push('You chose more than one column to be the Name of the site')
-            data.name_column.error(['You chose more than one column to be the Name of the site'])
-          data.name_column = column
-          continue
-
-        if column.usage() == 'lat'
-          if data.lat_column
-            column.error.push('You chose more than one column to be the Lat of the site')
-            data.lat_column.error(['You chose more than one column to be the Lat of the site'])
-          data.lat_column = column
-          continue
-
-        if column.usage() == 'lng'
-           if data.lng_column
-             column.error.push('You chose more than one column to be the Longitude of the site')
-             data.lng_column.error(['You chose more than one column to be the Longitude of the site'])
-           data.lng_column = column
-           continue
-
-        do_not_add = false
-        propertyData =
-          column: column
-          kind: column.kind()
-
-        if column.usage() == 'new_field'
-          # Code and Label should not exist in collection's existing fields
-          fields = $.map(@layers, (l) -> l.fields)
-          if window.arrayAny(fields, (f) => f.name == column.label())
-            column.error.push("A field with label #{column.label()} already exists in collection's fields")
-          if window.arrayAny(fields, (f) => f.code == column.code())
-            column.error.push("A field with code #{column.code()} already exists in collection's fields")
-
-          if column.kind() == 'select_one' || column.kind() == 'select_many'
-            existing = propertiesByCode[column.code()]
-            if existing && existing.column.label() == column.label()
-              do_not_add = true
-              switch column.selectKind()
-                when 'code'
-                  existing.valueCode = true
-                when 'label'
-                  existing.valueLabel = true
-                when 'both'
-                  existing.valueCode = true
-                  existing.valueLabel = true
-            else
-              switch column.selectKind()
-                when 'code'
-                  propertyData.valueCode = true
-                when 'label'
-                  propertyData.valueLabel = true
-                when 'both'
-                  propertyData.valueCode = true
-                  propertyData.valueLabel = true
-        else
-          if propertiesByField[column.field()?.id]
-            propertiesByField[column.field()?.id].error(["You chose more than one column to be the existing '#{column.layer().name} - #{column.field().name}' field"])
-            column.error.push("You chose more than one column to be the existing '#{column.layer().name} - #{column.field().name}' field")
-          propertiesByField[column.field().id] = column if column.field()?.id
-
-        unless do_not_add
-          property = new Property(propertyData)
-          data.properties.push property
-
-        unless ((column.kind() == 'select_one' || column.kind() == 'select_many') && !(column.selectKind() == 'both'))
-          if propertiesByLabel[column.label()]
-            column.error.push("You chose more than one column with label #{column.label()}")
-          if propertiesByCode[column.code()]
-            column.error.push("You chose more than one column with code #{column.code()}")
-
-        propertiesByCode[column.code()] = property
-        propertiesByLabel[column.label()] = property
-
-      for property in data.properties
-        if column.usage() == 'new_field' && (property.kind == 'select_one' || property.kind == 'select_many')
-          property.column.error.push("You must choose a column to be the Code of property #{property.column.name()}") unless property.valueCode
-          property.column.error.push("You must choose a column to be the Label of property #{property.column.name()}") unless property.valueLabel
-
-      @refreshBubblePopups()

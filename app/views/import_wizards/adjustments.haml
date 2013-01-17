@@ -28,12 +28,25 @@
   #import-wizard-main.hidden-until-loaded
     /ko if: !hasId()
     - if collection.sites.exists?
-      .alert.box.flash_error.drop_shadow
+      .info-box.flash_error.drop_shadow
         = raw "All sites will be imported as new. If you want to modify the existing ones #{link_to "go back", :back, :class => 'black'} to the previous page."
+      %br
     //ko
 
+    /ko if: (validationErrors() && validationErrors().hasErrors())
+    .box.error_description
+      %h2 Resolve this conflicts in order to complete the upload
+      %ul
+        / ko foreach: validationErrors().errorsForUI()
+        %li
+          %span{ko(text: 'description')}
+          .moreInfo{ko(text: 'more_info')}
+        //ko
+    //ko
 
-    .box.nopadd.h50
+    %br
+
+    .box.nopadd
       .tablescroll{style: 'margin-top: 0'}
         %table.GralTable.fht-table.fht-table-init{style: 'table-layout: fixed;'}
           %colgroup
@@ -44,12 +57,12 @@
             %tr
               / ko foreach: columns()
               %th
-                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'error().length > 0'}, attr: {error: 'error'}, class: 'iconClass', text: :name, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
+                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'error().length > 0'}, attr: {error: 'error'}, class: 'iconClass', text: :header, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
               //ko
           %tbody
             / ko foreach: sites()
             %tr
-              / ko foreach: $data
+              / ko foreach: siteColumns
               %td{ko(css: {error: 'error'}, text: 'value', attr: { error: 'error' } ) }
               //ko
               //ko
@@ -57,10 +70,10 @@
 
     #columnUsageTemplate{ko(with: :selectedColumn), style:'display: none;'}
       %h2
-        %span{ko(text: 'name')}
+        %span{ko(text: 'header')}
         Column Settings
       %hr
-      %div{ko(css: {ignored: "usage() == 'ignore' || usage() == 'id'"})}
+      %div
         %div
           /ko if: usage() == 'id'
           - content = "Internal ResourceMap ID"
@@ -83,7 +96,7 @@
         %div
           /ko if: usage() == 'new_field'
           %label Field Type:
-          %div
+          #field-type-options
             - i = 0
             - Field::Kinds.delete_if{|e| e == "hierarchy"}.each do |field_name|
               - i = i+1
@@ -111,10 +124,10 @@
     %span{style: 'color:red'} Sorry, something failed during the import. Please contact InSTEDD for support.
     //ko
     /ko if: !importing() && !importError()
-    /ko if: valid()
+    /ko if: !validationErrors() || (validationErrors() && !validationErrors().hasErrors())
     %button.grey{ko(click: :startImport)} Start importing
     //ko
-    /ko if: !valid()
+    /ko if: (validationErrors() && validationErrors().hasErrors())
     %span.error Fix the errors to start importing
     //ko
     //ko
