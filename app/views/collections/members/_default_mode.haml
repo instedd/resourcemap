@@ -1,20 +1,19 @@
 /ViewModel is an instance of Membership defined in membership.coffee
 /Methods related to expansion are in class Membership's super class: Expandable.
 /Membership includes AdvancedMembershipMode.
-
 %tr{ko(css: { :membersFirstRow => '$index() == 0', :membersRow => '$index() > 0' })}
   %td.member{ko(click: :toggleExpanded), style: 'cursor:pointer;'}
     %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"})}
     %span{ko(text: :userDisplayName)}
   /No permission
   %td.members-permission
-    %input{ko(checked: false, enable: false), type: :radio}
+    %input{ko(checked: :someLayersNone, enable: :isNotAdmin, css: { partially_selected: '!allLayersNone()' }), type: :radio}
   /Read permission
   %td.members-permission
-    %input{ko(checked: :canOnlyRead, enable: :isNotAdmin), type: :radio}
+    %input{ko(checked: :someLayersRead, enable: :isNotAdmin, css: { partially_selected: '!allLayersRead()' }), type: :radio}
   /Update permission
   %td.members-permission
-    %input{ko(checked: :canOnlyReadAndUpdate, enable: :isNotAdmin), type: :radio}
+    %input{ko(checked: :someLayersWrite, enable: :isNotAdmin, css: { partially_selected: '!allLayersUpdate()' }), type: :radio}
   /Admin permission
   %td.members-permission
     %input{ko(checked: :isAdmin, enable: :isNotAdmin), type: :radio}

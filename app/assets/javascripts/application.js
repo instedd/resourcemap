@@ -22,4 +22,5 @@
 //= require autocomplete-tagfield
 //= require knockout
 //= require jquery.fancybox
+//= require lodash
 //= require_tree .

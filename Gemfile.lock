@@ -110,6 +110,8 @@ GEM
       rb-fchange (~> 0.0.5)
       rb-fsevent (~> 0.9.1)
       rb-inotify (~> 0.8.8)
+    lodash-rails (0.10.0)
+      railties (~> 3.1)
     machinist (1.0.6)
     mail (2.4.4)
       i18n (>= 0.4.0)
@@ -266,6 +268,7 @@ DEPENDENCIES
   jasminerice
   jquery-rails
   knockoutjs-rails
+  lodash-rails
   machinist (= 1.0.6)
   mysql2
   nuntium_api (~> 0.13)
