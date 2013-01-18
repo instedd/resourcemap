@@ -4,7 +4,7 @@ class Activity < ActiveRecord::Base
     'layer' => %w(created changed deleted),
     'site' => %w(created changed deleted)
   }
-  Kinds = Activity::ItemTypesAndActions.map { |item_type, actions| actions.map { |action| "#{item_type},#{action}" } }.flatten
+  Kinds = Activity::ItemTypesAndActions.map { |item_type, actions| actions.map { |action| "#{item_type},#{action}" } }.flatten.freeze
 
   belongs_to :collection
   belongs_to :user
