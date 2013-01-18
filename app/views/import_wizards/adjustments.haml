@@ -97,7 +97,7 @@
           %label Field Type:
           #field-type-options
             - i = 0
-            - Field::Kinds.delete_if{|e| e == "hierarchy"}.each do |field_name|
+            - Field::Kinds.select{|e| e != "hierarchy"}.each do |field_name|
               - i = i+1
               %span.field_option.left{ko(click: "function() { kind('#{field_name}') }"), style: "width: 25%;"}
                 %button.icon_button{ko(css: {active: "kind() == '#{field_name}'"}), class: "f#{field_name}"}
