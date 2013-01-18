@@ -18,7 +18,7 @@ describe 'ValidationErrors', ->
     errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
     proc(errors)
     val_errors = new ValidationErrors(errors)
-    redeable_errors = val_errors.errorsForUI()
+    redeable_errors = val_errors.processErrors()
     expect(redeable_errors.length).toBe(1)
     first_error = redeable_errors[0]
     if error_type == 'name'
@@ -33,7 +33,7 @@ describe 'ValidationErrors', ->
     errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
     proc(errors)
     val_errors = new ValidationErrors(errors)
-    redeable_errors = val_errors.errorsForUI()
+    redeable_errors = val_errors.processErrors()
     expect(redeable_errors.length).toBe(1)
     first_error = redeable_errors[0]
     if error_type == 'name'
@@ -49,7 +49,7 @@ describe 'ValidationErrors', ->
     errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
     proc(errors)
     val_errors = new ValidationErrors(errors)
-    redeable_errors = val_errors.errorsForUI()
+    redeable_errors = val_errors.processErrors()
     expect(redeable_errors.length).toBe(1)
     first_error = redeable_errors[0]
 
@@ -86,7 +86,7 @@ describe 'ValidationErrors', ->
     errors = {hierarchy_field_found:[]}
     errors.hierarchy_field_found = {new_hierarchy_columns: [1, 2, 3]}
     val_errors = new ValidationErrors(errors)
-    redeable_errors = val_errors.errorsForUI()
+    redeable_errors = val_errors.processErrors()
     expect(redeable_errors.length).toBe(1)
     first_error = redeable_errors[0]
     expect(first_error.error_kind).toBe("hierarchy_field_found")
@@ -98,7 +98,7 @@ describe 'ValidationErrors', ->
     errors = {data_errors:[]}
     errors.data_errors = [{description: "Some options in column 5 don't exist.", column: 4, rows: [1,2], example: "", type: "options"}, {description: "Some of the values in column 2 are not valid for the type numeric.", column: 1, rows: [1], type: 'numeric values', example: "Values must be integers."}]
     val_errors = new ValidationErrors(errors)
-    redeable_errors = val_errors.errorsForUI()
+    redeable_errors = val_errors.processErrors()
     expect(redeable_errors.length).toBe(2)
     first_error = redeable_errors[0]
     expect(first_error.error_kind).toBe("data_errors")
@@ -115,7 +115,7 @@ describe 'ValidationErrors', ->
     errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
     errors.existing_code = {text_column: [0]}
     val_errors = new ValidationErrors(errors)
-    redeable_errors = val_errors.errorsForUI()
+    redeable_errors = val_errors.processErrors()
     expect(redeable_errors.length).toBe(1)
     first_error = redeable_errors[0]
     expect(first_error.columns).toEqual([0])
@@ -125,8 +125,30 @@ describe 'ValidationErrors', ->
     errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
     errors.existing_label = {text_column: [0]}
     val_errors = new ValidationErrors(errors)
-    redeable_errors = val_errors.errorsForUI()
+    redeable_errors = val_errors.processErrors()
     expect(redeable_errors.length).toBe(1)
     first_error = redeable_errors[0]
     expect(first_error.columns).toEqual([0])
     expect(first_error.more_info).toEqual("Column 1 has name text_column. To fix this issue, change its name.")
+
+  it 'should filter errors for a column', ->
+    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+    errors.existing_code = {text_column: [0,1]}
+    errors.duplicated_label = {other_column: [1, 2]}
+    errors.data_errors = [{description: "Some options in column 5 don't exist.", column: 0, rows: [1,2], example: "", type: "options"}, {description: "Some of the values in column 2 are not valid for the type numeric.", column: 1, rows: [1], type: 'numeric values', example: "Values must be integers."}]
+    errors.duplicated_code = {text_column: [0, 1]}
+    val_errors = new ValidationErrors(errors)
+    errors_for_column_0 = val_errors.errorsForColumn(0)
+    expect(errors_for_column_0.length).toBe(3)
+    errors_for_column_2 = val_errors.errorsForColumn(2)
+    expect(errors_for_column_2.length).toBe(1)
+    errors_for_column_3 = val_errors.errorsForColumn(3)
+    expect(errors_for_column_3.length).toBe(0)
+
+
+
+
+
+
+
+

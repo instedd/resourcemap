@@ -1,7 +1,9 @@
 onImportWizard ->
   class @ValidationErrors
     constructor: (data) ->
+      #private variables
       @errors = data
+      @errorsByType = @processErrors()
 
     hasErrors: =>
       for errorKey,errorValue of @errors
@@ -9,11 +11,17 @@ onImportWizard ->
       return false
 
     toIndex1BasedSentence: (index_array) =>
-      index_array = $.map index_array, (e) => e+1
+      index_array = $.map index_array, (index) => index + 1
       window.toSentence(index_array)
 
-    errorsForUI: =>
-      errorsForUI = []
+    summarizedErrorList: =>
+      $.map @errorsByType, (e) => {description: e.description, more_info: e.more_info}
+
+    errorsForColumn: (column_index) =>
+      (error for error in @errorsByType when $.inArray(column_index, error.columns) != -1)
+
+    processErrors: =>
+      errorsByType = []
       for errorType,errors of @errors
         if !$.isEmptyObject(errors)
           for errorId, errorColumns of errors
@@ -59,5 +67,6 @@ onImportWizard ->
                   error_description.more_info = error_description.more_info + " " + error.example
                 if error.rows.length < 25
                   error_description.more_info = error_description.more_info + " The invalid #{error.type} are in the following rows: #{@toIndex1BasedSentence(error.rows)}."
-            errorsForUI.push(error_description)
-      errorsForUI
+            errorsByType.push(error_description)
+      errorsByType
+

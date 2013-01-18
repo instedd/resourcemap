@@ -1,6 +1,5 @@
 :css
   .ignored, .ignored input, .ignored select { color: grey; }
-  .error, .error_column { color: red; }
 
 = render '/tabs'
 
@@ -37,7 +36,7 @@
     .box.error_description
       %h2 Resolve this conflicts in order to complete the upload
       %ul
-        / ko foreach: validationErrors().errorsForUI()
+        / ko foreach: validationErrors().summarizedErrorList()
         %li
           %span{ko(text: 'description')}
           .moreInfo{ko(text: 'more_info')}
@@ -57,7 +56,7 @@
             %tr
               / ko foreach: columns()
               %th
-                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'error().length > 0'}, attr: {error: 'error'}, class: 'iconClass', text: :header, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
+                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'errors().length > 0'}, class: 'iconClass', text: :header, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
               //ko
           %tbody
             / ko foreach: sites()

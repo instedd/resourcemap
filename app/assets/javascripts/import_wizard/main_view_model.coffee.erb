@@ -6,7 +6,7 @@ onImportWizard ->
     initialize: (collectionId, layers, columns) ->
       @collectionId = collectionId
       @layers = $.map(layers, (x) -> new Layer(x))
-      @columns = ko.observableArray $.map(columns, (x) -> new Column(x))
+      @columns = ko.observableArray $.map(columns,  (x, index) -> new Column(x, index))
       @selectedColumn = ko.observable()
       @loadUsages()
 
@@ -16,13 +16,21 @@ onImportWizard ->
         window.arrayAny(@columns(), (c) => c.usage() == 'id')
 
       @error = ko.computed =>
-        window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.error().length > 0)
+        window.arrayAny(@sites(), (s) => window.arrayAny(s, (f) => f.error)) || window.arrayAny(@columns(), (c) => c.errors().length > 0)
 
       @validationErrors = ko.observable()
+
+      @validationErrors.subscribe  =>
+        @recalculateErrorsForColumns()
 
       @valid = ko.computed => !@error()
       @importing = ko.observable false
       @importError = ko.observable false
+
+    recalculateErrorsForColumns: =>
+      for column in @columns()
+        new_errors = @validationErrors().errorsForColumn(column.index)
+        column.errors(new_errors)
 
     loadSites: (preview) =>
       sites = $.map(preview.sites, (x) -> new Site(x))

@@ -31,12 +31,18 @@
   <%=   ".f#{name} {" %>
       <%= "background:url(/assets/fields_small_buttons/f#{name}.png) no-repeat;" %>
   }
+  <%=   ".f#{name}.error_column {" %>
+      <%= "background:url(/assets/fields_small_buttons/errors/f#{name}.png) no-repeat;" %>
+  }
 <% end %>
 
 
 <% ['name', 'id', 'location', 'ignore'].each do |name| %>
   <%=   ".f#{name} {" %>
       <%= "background:url(/assets/fields_small_buttons/f#{name}.png) no-repeat;" %>
+  }
+  <%=   ".f#{name}.error_column {" %>
+      <%= "background:url(/assets/fields_small_buttons/errors/f#{name}.png) no-repeat;" %>
   }
 <% end %>
 
