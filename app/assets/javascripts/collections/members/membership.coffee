@@ -15,7 +15,7 @@ class @Membership extends Expandable
     @admin.subscribe (newValue) =>
       $.post "/collections/#{collectionId}/memberships/#{@userId()}/#{if newValue then 'set' else 'unset'}_admin.json"
 
-    @someLayersNone = ko.computed => _.some @layers, (l) => not l.read() and not l.write()
+    @someLayersNone = ko.computed => _.some @layers(), (l) => not l.read() and not l.write()
 
   initializeLinks: =>
     @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
