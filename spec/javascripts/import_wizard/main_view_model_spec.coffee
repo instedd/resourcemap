@@ -63,8 +63,3 @@ describe 'ImportWizard', ->
       errors.existing_code = {text_column: [0]}
       @model.validationErrors(new ValidationErrors(errors))
       expect(@model.columns()[0].errors().length).toBe(1)
-
-
-
-
-

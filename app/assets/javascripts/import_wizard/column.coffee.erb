@@ -31,7 +31,8 @@ onImportWizard ->
       @usage.subscribe =>
         # If usage change is because this column is the model.selectedColumn and fancybox it's open
         $('.fancybox').resize()
-        @iconClass(@computeIconClass())
+        if !(@usage() == 'existing_field' || @usage() == 'new_field')
+          @iconClass(@computeIconClass())
 
       @errors = ko.observableArray []
 
