@@ -28,13 +28,23 @@
       %th.members-permission Update
       %th.members-permission Admin
       %th
+    %tr{ :class => :membersFirstRow }
+      %td
+      %td
+      %td
+      %td
+      %td
+      %td
     /ko foreach: memberships
-    /ko if: advancedMode()
-    = render 'collections/members/advanced_mode'
+    %tr{ko(css: { :expandedMember => :expanded }), :class => :membersRow}
+      /ko if: expanded
+      = render 'collections/members/expanded_member'
+      //ko
 
-    /ko if: !advancedMode()
-    = render 'collections/members/default_mode'
-    //ko
+      /ko ifnot: expanded
+      = render 'collections/members/collapsed_member'
+      //ko
+
     //ko
 
   - if collection_admin?

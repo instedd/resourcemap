@@ -17,6 +17,8 @@ class @Membership extends Expandable
 
     @someLayersNone = ko.computed => _.some @layers(), (l) => not l.read() and not l.write()
 
+    @isNotAdmin = ko.computed => not @admin()
+
   initializeLinks: =>
     @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
     @initializeAllReadAllWrite()
