@@ -1,4 +1,7 @@
 %td.member{ko(click: :toggleExpanded), style: 'cursor:pointer;'}
-  %div
+  .memberCellContent
     %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"})}
     %span{ko(text: :userDisplayName)}
+  %hr{:class => :underlineExpandedMember}
+  .memberDetails
+    Default permissions for all sites

@@ -227,7 +227,6 @@
 }
 
 .GralTable tr.membersRow td {
-  height:32px;
   border:hidden;
 }
 
@@ -238,21 +237,39 @@
   height:11px;
 }
 
-.GralTable .expandedMember td {
-  padding:0px;
+.GralTable .expandedMember {
+  height:450px;
 }
 
-.expandedMember td div {
+.memberDetails {
+  height:429px;
+}
+
+.expandedMember td .memberCellContent {
   background-color: #EEEEEE;
-  height:100%;
   width:100%;
-  padding-top:8px;
+  height:21px;
+  padding-top:7px;
   padding-left:5px;
+}
+
+.expandedMember td.lastCell .memberCellContent {
+  height:23px;
+}
+
+.GralTable .expandedMember td {
+  padding:0px;
 }
 
 .GralTable .expandedMember .lastCell {
   padding-right:10px;
 }
+
+hr.underlineExpandedMember {
+  height:1px;
+  margin:1px;
+}
+
 
 /* END MEMBERS */
 
