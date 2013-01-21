@@ -1,15 +1,2 @@
-%td.member{ko(click: :toggleExpanded), style: 'cursor:pointer;'}
-  .memberCellContent
-    %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"})}
-    %span{ko(text: :userDisplayName)}
-
-  .memberDetails
-    %hr{:class => :underlineExpandedMember}
-    %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrowDown.png'"})}
-    %span.memberDetailsTitle
-      Default permissions for all sites
-    /ko foreach: $root.layers
-    .memberDetailsLayer{ko(text: 'name')}
-    //ko
 
 

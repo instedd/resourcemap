@@ -254,11 +254,18 @@
 .memberDetailsTitle {
   font-weight: bold;
   color: #545454;
+  text-align: center;
 }
 
 .memberDetailsLayer {
-  padding-top: 16px;
+  padding-top: 15px;
+  text-align: center;
+}
+
+.member .memberDetailsLayer {
+  padding-top: 25px;
   padding-left: 50px;
+  text-align: left;
 }
 
 .expandedMember td .memberCellContent {
@@ -288,6 +295,10 @@ hr.underlineExpandedMember {
   margin:0;
   margin-bottom:8px;
   background-color: white;
+}
+
+.member hr.underlineExpandedMember {
+  margin-bottom: 11px;
 }
 
 

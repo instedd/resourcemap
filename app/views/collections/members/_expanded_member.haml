@@ -1,20 +1,27 @@
-= render 'collections/members/collapsible_member'
-%td.permissionCell
+%td.member{ko(click: :toggleExpanded), style: 'cursor:pointer;'}
   .memberCellContent
+    %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"})}
+    %span{ko(text: :userDisplayName)}
+
   .memberDetails
     %hr{:class => :underlineExpandedMember}
-%td.permissionCell
-  .memberCellContent
-  .memberDetails
-    %hr{:class => :underlineExpandedMember}
-%td.permissionCell
-  .memberCellContent
-  .memberDetails
-    %hr{:class => :underlineExpandedMember}
-%td.permissionCell
-  .memberCellContent
-  .memberDetails
-    %hr{:class => :underlineExpandedMember}
-%td.lastCell
-  .memberCellContent
-  .memberDetails
+    %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrowDown.png'"})}
+    %span.memberDetailsTitle
+      Default permissions for all sites
+    /ko foreach: $root.layers
+    .memberDetailsLayer{ko(text: 'name')}
+    //ko
+  - ['None', 'Read', 'Update', 'Admin'].each do |permission|
+    %td.permissionCell
+      .memberCellContent
+      .memberDetails
+        %hr{:class => :underlineExpandedMember}
+        .memberDetailsTitle
+          %input{:type => 'radio'}
+        /ko foreach: $root.layers
+        .memberDetailsLayer
+          %input{:type => 'radio'}
+        //ko
+  %td.lastCell
+    .memberCellContent
+    .memberDetails
