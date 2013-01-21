@@ -11,6 +11,7 @@
     /ko foreach: $root.layers
     .memberDetailsLayer{ko(text: 'name')}
     //ko
+    .memberCustomPermissions
   - ['None', 'Read', 'Update', 'Admin'].each do |permission|
     %td.permissionCell
       .memberCellContent
@@ -22,6 +23,7 @@
         .memberDetailsLayer
           %input{:type => 'radio'}
         //ko
+        .memberCustomPermissions
   %td.lastCell
     .memberCellContent
     .memberDetails
