@@ -99,9 +99,12 @@ describe 'ImportWizard', ->
       expect(@model.visibleColumns().length).toBe 1
       expect(@model.showingColumns()).toBe 'with_errors'
 
-
-
-
-
-
-
+    it 'should load only sites & columns with usage=existing_field', ->
+      @model.showExistingColumns()
+      expect(@model.visibleSites().length).toBe 3
+      expect(@model.visibleSites()[0].siteColumns.length).toBe 1
+      expect(@model.visibleSites()[1].siteColumns.length).toBe 1
+      expect(@model.visibleSites()[2].siteColumns.length).toBe 1
+      expect(@model.visibleColumns().length).toBe 1
+      expect(@model.visibleColumns()[0].header()).toBe 'many'
+      expect(@model.showingColumns()).toBe 'existing'

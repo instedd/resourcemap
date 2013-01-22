@@ -46,8 +46,13 @@
       Show columns:
       %input#all-columns{ko(click: 'showAllColumns', checked: 'showingColumns'), type: :radio, value: 'all'}
       %label{:for => 'all-columns'} all
+      %input#new-columns{ko(click: 'showNewColumns', checked: 'showingColumns'), type: :radio, value: 'new'}
+      %label{:for => 'new-columns'} new
+      %input#existing-columns{ko(click: 'showExistingColumns', checked: 'showingColumns'), type: :radio, value: 'existing'}
+      %label{:for => 'existing-columns'} existing
       %input#columns-with-errors{ko(click: 'showColumnsWithErrors', checked: 'showingColumns'), type: :radio, value: 'with_errors'}
       %label{:for => 'columns-with-errors'} with errors
+
       %br/
     //ko
 

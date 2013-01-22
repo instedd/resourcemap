@@ -47,8 +47,8 @@ onImportWizard ->
     loadSites: (preview) =>
       sites = $.map(preview.sites, (x) -> new Site(x))
       @sites(sites)
-      @loadVisibleSites()
       @validationErrors(new ValidationErrors(preview.errors))
+      @loadVisibleSites()
 
     loadUsages: =>
       @usages = [new Usage('New field', 'new_field')]
@@ -94,6 +94,20 @@ onImportWizard ->
       @visibleColumns(with_errors)
       @loadVisibleSites()
       @showingColumns('with_errors')
+
+    showNewColumns: =>
+      new_columns = $.grep @columns(), (c, i) ->
+        c.usage() == 'new_field'
+      @visibleColumns(new_columns)
+      @loadVisibleSites()
+      @showingColumns('new')
+
+    showExistingColumns: =>
+      existing_columns = $.grep @columns(), (c, i) ->
+        c.usage() == 'existing_field'
+      @visibleColumns(existing_columns)
+      @loadVisibleSites()
+      @showingColumns('existing')
 
     startImport: =>
       @importing(true)
