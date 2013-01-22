@@ -63,3 +63,45 @@ describe 'ImportWizard', ->
       errors.existing_code = {text_column: [0]}
       @model.validationErrors(new ValidationErrors(errors))
       expect(@model.columns()[0].errors().length).toBe(1)
+
+  describe "ImportWizard Sites specs", ->
+    beforeEach ->
+      columns = [{header: "name", use_as: "name"}, {header: 'lat', use_as: 'lat'}, {layer_id: 1, field_id: 209, header: "many", use_as: "existing_field"}]
+      layers = [{id: 1, name: "layer 1", fields: [{id: 209, name: "Funding", kind: 'select_many', code: 'field1'}] }]
+      @model.initialize(1, layers, columns)
+      preview = {}
+      preview.errors = []
+      preview.sites = [[{value: 'Buenos Aires Hospital'}, {value: '-34.6036'}, {value: 'public'}],
+            [{value: 'New York Hospital'}, {value: '40.7142'}, {value: 'private'}],
+            [{value: 'Phnom Penh Hospital'}, {value: '11.5500'}, {value: 'public'}]]
+      @model.loadSites(preview)
+
+    it 'should load sites preview for all columns when we are not filtering by error columns', ->
+      expect(@model.visibleSites().length).toBe 3
+      expect(@model.visibleSites()[0].siteColumns.length).toBe 3
+      expect(@model.visibleSites()[1].siteColumns.length).toBe 3
+      expect(@model.visibleSites()[2].siteColumns.length).toBe 3
+      expect(@model.showingColumns()).toBe 'all'
+
+    it 'should load only sites & columns with error when filtering by error columns', ->
+      errors_for_column = [
+        columns: Array[2]
+        description: "Only one column can be the lat."
+        error_kind: "duplicated_usage"
+        more_info: "Columns 3 and 4 are marked as lat. To fix this issue, leave only one of them assigned as 'lat' and modify the rest."
+      ]
+      @model.columns()[0].errors(errors_for_column)
+      @model.showColumnsWithErrors()
+      expect(@model.visibleSites().length).toBe 3
+      expect(@model.visibleSites()[0].siteColumns.length).toBe 1
+      expect(@model.visibleSites()[1].siteColumns.length).toBe 1
+      expect(@model.visibleSites()[2].siteColumns.length).toBe 1
+      expect(@model.visibleColumns().length).toBe 1
+      expect(@model.showingColumns()).toBe 'with_errors'
+
+
+
+
+
+
+

@@ -41,6 +41,14 @@
           %span{ko(text: 'description')}
           .moreInfo{ko(text: 'more_info')}
         //ko
+    %br
+    .show_column_options
+      Show columns:
+      %input#all-columns{ko(click: 'showAllColumns', checked: 'showingColumns'), type: :radio, value: 'all'}
+      %label{:for => 'all-columns'} all
+      %input#columns-with-errors{ko(click: 'showColumnsWithErrors', checked: 'showingColumns'), type: :radio, value: 'with_errors'}
+      %label{:for => 'columns-with-errors'} with errors
+      %br/
     //ko
 
     %br
@@ -49,17 +57,17 @@
       .tablescroll{style: 'margin-top: 0'}
         %table.GralTable.fht-table.fht-table-init{style: 'table-layout: fixed;'}
           %colgroup
-            / ko foreach: columns()
+            / ko foreach: visibleColumns()
             %col{width: '150px'}
             //ko
           %thead
             %tr
-              / ko foreach: columns()
+              / ko foreach: visibleColumns()
               %th
                 %a.fancybox.column_header.icon_button{ko(css: {error_column: 'errors().length > 0'}, class: 'iconClass', text: :header, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
               //ko
           %tbody
-            / ko foreach: sites()
+            / ko foreach: visibleSites()
             %tr
               / ko foreach: siteColumns
               %td{ko(css: {error: 'error'}, text: 'value', attr: { error: 'error' } ) }
@@ -67,53 +75,8 @@
               //ko
             //ko
 
-    #columnUsageTemplate{ko(with: :selectedColumn), style:'display: none;'}
-      %h2
-        %span{ko(text: 'header')}
-        Column Settings
-      %hr
-      %div
-        %div
-          /ko if: usage() == 'id'
-          - content = "Internal ResourceMap ID"
-          //ko
-          /ko if: usage() != 'id'
-          - if collection_admin?
-            - content = 'import_wizards/adjusments/usage_options_for_admin'
-          - else
-            - content = 'import_wizards/adjusments/usage_options_for_non_admin'
-          //ko
-          = render 'import_wizards/adjusments/popup_row', :label => 'Use as:', :content => content
-          /ko if: usage() == 'existing_field'
-          = render 'import_wizards/adjusments/popup_row', :label => 'Layer:', :content => 'import_wizards/adjusments/existing_layer_options'
-          = render 'import_wizards/adjusments/popup_row', :label => 'Field:', :content => 'import_wizards/adjusments/existing_field_options'
-          //ko
-          /ko if: usage() == 'new_field'
-          = render 'import_wizards/adjusments/popup_row', :label => 'Field Code:', :content => 'import_wizards/adjusments/new_field_code'
-          = render 'import_wizards/adjusments/popup_row', :label => 'Field Name:', :content => 'import_wizards/adjusments/new_field_name'
-          //ko
-        %div
-          /ko if: usage() == 'new_field'
-          %label Field Type:
-          #field-type-options
-            - i = 0
-            - Field::Kinds.select{|e| e != "hierarchy"}.each do |field_name|
-              - i = i+1
-              %span.field_option.left{ko(click: "function() { kind('#{field_name}') }"), style: "width: 25%;"}
-                %button.icon_button{ko(css: {active: "kind() == '#{field_name}'"}), class: "f#{field_name}"}
-                  = field_name.titleize
-              - if i == 4
-                %br
-            .clear
-          /ko if: kind() == 'select_one' || kind() == 'select_many'
-          .box.alert
-            Please select what you want to update with this input:
-            %br
-            - [['Option code', 'code'], ['Option label', 'label'], ['Both the code and label', 'both']].each do |option|
-              = radio_button_tag 'select_kind_group', option[1], false, 'data-bind' => kov(checked: 'selectKind')
-              = label_tag "select_kind_group_#{option[1]}", option[0]
-          //ko
-          //ko
+    = render 'import_wizards/adjusments/column_usage_template'
+
 
     %br/
     /ko if: importing()

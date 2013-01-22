@@ -6,11 +6,15 @@ onImportWizard ->
     initialize: (collectionId, layers, columns) ->
       @collectionId = collectionId
       @layers = $.map(layers, (x) -> new Layer(x))
+
       @columns = ko.observableArray $.map(columns,  (x, index) -> new Column(x, index))
+      @visibleColumns = ko.observableArray @columns()
+      @sites = ko.observableArray()
+      @visibleSites = ko.observableArray()
+      @showingColumns = ko.observable('all')
+
       @selectedColumn = ko.observable()
       @loadUsages()
-
-      @sites = ko.observableArray()
 
       @hasId = ko.computed =>
         window.arrayAny(@columns(), (c) => c.usage() == 'id')
@@ -32,9 +36,18 @@ onImportWizard ->
         new_errors = @validationErrors().errorsForColumn(column.index)
         column.errors(new_errors)
 
+    loadVisibleSites: =>
+      visible_columns_indexes = $.map(@visibleColumns(), (c) -> c.index)
+      @visibleSites([])
+      for site in @sites()
+          new_site_columns = $.grep site.siteColumns, (s, i) ->
+            i in visible_columns_indexes
+          @visibleSites.push(new Site(new_site_columns))
+
     loadSites: (preview) =>
       sites = $.map(preview.sites, (x) -> new Site(x))
       @sites(sites)
+      @loadVisibleSites()
       @validationErrors(new ValidationErrors(preview.errors))
 
     loadUsages: =>
@@ -69,6 +82,18 @@ onImportWizard ->
       # Single column valiation is already implemented server side.
       $.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_columns.json", {columns: JSON.stringify(@columns())}, (preview) =>
         window.model.loadSites(preview)
+
+    showAllColumns: =>
+      @visibleColumns(@columns())
+      @visibleSites(@sites())
+      @showingColumns('all')
+
+    showColumnsWithErrors: =>
+      with_errors = $.grep @columns(), (c, i) ->
+        c.errors().length > 0
+      @visibleColumns(with_errors)
+      @loadVisibleSites()
+      @showingColumns('with_errors')
 
     startImport: =>
       @importing(true)

@@ -3,7 +3,7 @@ describe 'ValidationErrors', ->
     window.runOnCallbacks 'importWizard'
     window.model = new MainViewModel
     layers = [{id: 1, name: "layer 1", fields: [{id: 1, name: "field 1", kind: 'text', code: 'field1'}] }]
-    columns =[{name: "field 1", usage: "name"}]
+    columns =[{header: "field 1", use_as: "name"}]
     window.model.initialize(1, layers, columns)
 
   it 'should evaluate if there are errors in @errors', ->
