@@ -43,6 +43,18 @@
   width: 401px;
 }
 
+.homepage .food {
+  background: url("/assets/tracking_food.jpg") no-repeat scroll 0 0 transparent;
+  height: 260px;
+  width: 360px;
+}
+
+.homepage .medical {
+  background: url("/assets/tracking_medical.png") no-repeat scroll 0 0 transparent;
+  height: 200px;
+  width: 300px;
+}
+
 .get-update {
   background: url("/assets/get_update.png") no-repeat scroll center top transparent;
   display: inline-block;
