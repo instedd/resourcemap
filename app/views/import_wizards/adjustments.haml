@@ -42,6 +42,7 @@
           .moreInfo{ko(text: 'more_info')}
         //ko
     %br
+    //ko
     .show_column_options
       Show columns:
       %input#all-columns{ko(click: 'showAllColumns', checked: 'showingColumns'), type: :radio, value: 'all'}
@@ -52,9 +53,6 @@
       %label{:for => 'existing-columns'} existing
       %input#columns-with-errors{ko(click: 'showColumnsWithErrors', checked: 'showingColumns'), type: :radio, value: 'with_errors'}
       %label{:for => 'columns-with-errors'} with errors
-
-      %br/
-    //ko
 
     %br
 

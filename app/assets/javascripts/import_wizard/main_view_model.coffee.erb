@@ -45,6 +45,7 @@ onImportWizard ->
           @visibleSites.push(new Site(new_site_columns))
 
     loadSites: (preview) =>
+      # This method is called after server validations, after changing a column usage or after requesting the sites for the first time.
       sites = $.map(preview.sites, (x) -> new Site(x))
       @sites(sites)
       @validationErrors(new ValidationErrors(preview.errors))

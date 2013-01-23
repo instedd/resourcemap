@@ -8,9 +8,6 @@ describe 'ImportWizard', ->
     @columns =[{header: "field 1", use_as: "name"}]
     @model = window.model
 
-    window.Column::applyColumnBubble = () ->
-      true
-
   describe 'MainViewModel', ->
     it 'should load usages for no layer', ->
       @model.initialize(1, [], @columns)
@@ -108,3 +105,10 @@ describe 'ImportWizard', ->
       expect(@model.visibleColumns().length).toBe 1
       expect(@model.visibleColumns()[0].header()).toBe 'many'
       expect(@model.showingColumns()).toBe 'existing'
+
+    it 'shhould change column usage when corresponding visibleColumn usage changes', ->
+      @model.visibleColumns()[1].usage('lng')
+      expect(@model.visibleColumns()[1].usage()).toBe 'lng'
+      expect(@model.columns()[1].usage()).toBe 'lng'
+
+
