@@ -78,7 +78,7 @@ ResourceMap::Application.routes.draw do
   resources :activities, :only => [:index], :path => 'activity'
   resources :gateways do
     post 'status', :on => :member
-    post 'try' 
+    post 'try'
   end
 
   match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
@@ -91,7 +91,10 @@ ResourceMap::Application.routes.draw do
     get 'sites/:id' => 'sites#show', as: :site
     get 'activity' => 'activities#index', as: :activity
     resources :tokens, :only => [:index, :destroy]
+  end
 
+  namespace :fred_api do
+    get 'v1/facilities/:id' => 'fred_api#show_facility', as: :show_facility
   end
 
   scope '/plugin' do

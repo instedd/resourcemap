@@ -75,7 +75,7 @@ class Search
 
   # Returns the results from ElasticSearch but with codes as keys and codes as
   # values (when applicable).
-  def api_results
+  def api_results(api_name = 'api')
 
     fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
 
@@ -85,7 +85,11 @@ class Search
         item['_source']['properties'].map do |es_code, value|
           field = fields_by_es_code[es_code]
            if field
-             [field.code, field.api_value(value)]
+             if api_name == 'fred_api'
+               [field.code, field.fred_api_value(value)]
+             else
+               [field.code, field.api_value(value)]
+             end
            end
         end
       ]
