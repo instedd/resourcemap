@@ -52,4 +52,20 @@ describe FredApi::FredApiController do
       json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
     end
   end
+
+  describe "GET list of facilities" do
+    let!(:site) { collection.sites.make }
+    let!(:site2) { collection.sites.make }
+
+    it 'should get the full list of facilities' do
+      get :facilities, format: 'json'
+      response.should be_success
+      response.content_type.should eq 'application/json'
+
+      json = JSON.parse response.body
+      json.length.should eq(2)
+    end
+
+  end
+
 end
