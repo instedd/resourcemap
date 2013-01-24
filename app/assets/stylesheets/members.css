@@ -1,0 +1,192 @@
+.GralTable th.members-tree {
+  border:1px solid white;
+  color:#555555;
+  background-color:#D0D0D0;
+  background-image:none;
+}
+
+.GralTable .expandedMember .member {
+  padding-left:5px;
+}
+
+.GralTable .expandedMember .permissionCell {
+}
+
+.GralTable .expandedMember .lastCell {
+}
+
+
+.GralTable th.members-permission, td.members-permission {
+  text-align: center;
+}
+
+.GralTable tr.membersFirstRow td {
+  padding-top:10px;
+  border:hidden;
+}
+
+.GralTable tr.membersRow td {
+  border:hidden;
+}
+
+.members-collapse-icon {
+  position:relative;
+  top:1px;
+  width:11px;
+  height:11px;
+}
+
+.GralTable .expandedMember {
+}
+
+.memberDetails {
+  background-color: #EEEEEE;
+  font-size: 12px;
+}
+
+.member .memberDetails {
+  padding-left:20px;
+}
+
+.memberDetailsTitle {
+  font-weight: bold;
+  color: #545454;
+  text-align: center;
+  height:20px;
+}
+
+.memberDetailsLayer {
+  padding-top: 15px;
+  text-align: center;
+  height: 19px;
+}
+
+.member .memberDetailsLayer {
+  padding-top: 23px;
+  padding-left: 50px;
+  text-align: left;
+  height: 9px;
+}
+
+.permissionCell .memberCellContent .permissionSummary {
+  color: #555555;
+  font-size: 12px;
+  text-align: center;
+  padding-right:5px;
+  margin-top:2px;
+}
+
+.expandedMember td .memberCellContent {
+  background-color: #EEEEEE;
+  width:100%;
+  height:21px;
+  padding-top:7px;
+  padding-left:5px;
+  padding-bottom:4px;
+}
+
+.expandedMember td.member .memberCellContent {
+  width:300px;
+}
+
+.expandedMember td .memberCellContent {
+  background-color: #EEEEEE;
+  width:60px;
+  height:21px;
+  padding-top:7px;
+  padding-left:5px;
+  padding-bottom:4px;
+}
+
+.expandedMember td.lastCell {
+  /*position: relative;*/
+}
+
+.expandedMember td.lastCell .lastCellContent {
+  background-color: #EEEEEE;
+}
+
+.expandedMember td.lastCell {
+  padding-bottom:5px;
+}
+
+.GralTable .expandedMember td {
+  padding:0px;
+}
+
+.GralTable .expandedMember .lastCell {
+  padding-right:5px;
+}
+
+hr.underlineExpandedMember {
+  height:1px;
+  margin:0;
+  margin-bottom:8px;
+  background-color: white;
+}
+
+.member hr.underlineExpandedMember {
+  margin-bottom: 11px;
+}
+
+.member .memberDetails .memberCustomPermissions hr.underlineExpandedMember {
+  margin-bottom: 0px;
+}
+
+.memberCustomPermissions {
+  background-color: #DEDEDE;
+  margin-top: 12px;
+  padding-top:12px;
+}
+
+.member .memberCustomPermissions {
+  margin-top:20px;
+  padding-left:14px;
+  padding-bottom: 8px;
+}
+
+.memberCustomPermissionsSites {
+  margin-top:8px;
+}
+
+.memberCustomPermissionsSite {
+  height:32px;
+}
+
+.memberCustomPermissionsSite .members-collapse-icon {
+  margin-top:8px;
+}
+
+.memberCustomPermissionsSiteName {
+  font-weight: normal;
+  color: #545454;
+  width:220px;
+  float:left;
+  margin-top: 10px;
+}
+
+.memberRemoveCustomPermissionSite {
+  float:right;
+}
+
+.memberCustomPermissionsSiteAdd input[type="text"] {
+  width:220px;
+}
+
+.memberCustomPermissionsSiteAdd input[type="text"]::-webkit-input-placeholder {
+  font-size:13px;
+}
+
+.memberCustomPermissionsSiteAdd {
+  margin-top:5px;
+}
+
+.memberCustomPermissionsSiteAdd .clist-add {
+  margin-bottom: 5px;
+  margin-top:2px;
+  float:right;
+}
+
+.memberRemove {
+  margin-top:5px;
+}

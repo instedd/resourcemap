@@ -1,9 +1,16 @@
+#= require collections/members/membership_layout
+
 class @Membership extends Expandable
   @include AdvancedMembershipMode
+  @include MembershipLayout
 
-  constructor: (data) ->
+  constructor: (root, data) ->
+    # Defined this before callModuleConstructors because it's used by MembershipLayout
+    @sitesWithCustomPermissions = ko.observableArray SiteCustomPermission.arrayFromJson(data?.sites)
+
     @callModuleConstructors(arguments)
     super
+
     @userId = ko.observable data?.user_id
     @userDisplayName = ko.observable data?.user_display_name
     @admin = ko.observable data?.admin
@@ -18,6 +25,11 @@ class @Membership extends Expandable
     @someLayersNone = ko.computed => _.some @layers(), (l) => not l.read() and not l.write()
 
     @isNotAdmin = ko.computed => not @admin()
+
+    @summaryNone = ko.computed => 'All'
+    @summaryRead = ko.computed => 'Some'
+    @summaryUpdate = ko.computed => 'All'
+    @summaryAdmin = ko.computed => ''
 
   initializeLinks: =>
     @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))

@@ -1,8 +1,11 @@
 class @MembershipsViewModel
   initialize: (admin, memberships, layers) ->
+    _self = @
+
     @selectedLayer = ko.observable()
     @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
-    @memberships = ko.observableArray $.map(memberships, (x) -> new Membership(x))
+
+    @memberships = ko.observableArray $.map(memberships, (x) -> new Membership(_self, x))
     @admin = ko.observable admin
 
     layer.initializeLinks() for layer in @layers()

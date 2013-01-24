@@ -1,5 +1,3 @@
-#= require_tree ./collections/members/.
-
 @initMemberships = (userId, collectionId, admin, layers) ->
   window.userId = userId
 

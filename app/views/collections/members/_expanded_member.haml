@@ -4,7 +4,7 @@
     %span{ko(text: :userDisplayName)}
 
   .memberDetails
-    %hr{:class => :underlineExpandedMember}
+    %hr.underlineExpandedMember
     %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrowDown.png'"})}
     %span.memberDetailsTitle
       Default permissions for all sites
@@ -12,18 +12,35 @@
     .memberDetailsLayer{ko(text: 'name')}
     //ko
     .memberCustomPermissions
+      %span.memberDetailsTitle
+        Custom permissions for 3 sites
+      .memberCustomPermissionsSites
+        /ko foreach: sitesWithCustomPermissions
+        .memberCustomPermissionsSite
+          .memberCustomPermissionsSiteName{ko(text: 'name')}
+          %button.clist-remove.memberRemoveCustomPermissionSite
+        %hr.underlineExpandedMember{'data-bind' => 'visible: $index() < $parent.sitesWithCustomPermissions().length - 1 '}
+        //ko
+      .memberCustomPermissionsSiteAdd
+        = text_field_tag :custom_site_permission, '', :placeholder => 'Add custom permissions for a site'
+        %button.clist-add
+    .memberRemove
+      = render './confirm_box', :action_code => 'delete-member', :action_description => 'Remove this member', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to remove this member from the collection?', :action_url => ''
+
+
   - ['None', 'Read', 'Update', 'Admin'].each do |permission|
     %td.permissionCell
       .memberCellContent
-      .memberDetails
-        %hr{:class => :underlineExpandedMember}
+        .permissionSummary{ko(text: "summary#{permission}")}
+      .memberDetails{ 'data-bind' => "style: { height: detailHeightPx() }"}
+        %hr.underlineExpandedMember
         .memberDetailsTitle
           %input{:type => 'radio'}
         /ko foreach: $root.layers
         .memberDetailsLayer
           %input{:type => 'radio'}
         //ko
-        .memberCustomPermissions
+        .memberCustomPermissions{ 'data-bind' => "style: { height: customPermissionsHeightPx() }"}
   %td.lastCell
-    .memberCellContent
-    .memberDetails
+    .lastCellContent{ 'data-bind' => "style: { height: lastCellContentHeightPx() }"}
+

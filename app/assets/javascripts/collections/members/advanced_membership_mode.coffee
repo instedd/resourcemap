@@ -1,34 +1,33 @@
 class @AdvancedMembershipMode
-  constructor: (data)->
-    @advancedMode = ko.observable(false)
+  @constructor: (root, data) ->
+    @advancedMode = ko.observable(true)
     @sitesRead = new MembershipPermission('read', data.sites?.read)
     @sitesUpdate = new MembershipPermission('update', data.sites?.write)
     @error = ko.computed => @sitesRead.error() or @sitesUpdate.error()
     @validAdvancedMembership = ko.computed => !@error()
 
-
-  advancedModeOn: =>
+  @advancedModeOn: ->
     @backupSitesPermission()
     @advancedMode(true)
 
-  saveSitesPermission: =>
+  @saveSitesPermission: ->
     $.post "/collections/#{collectionId}/sites_permission", sites_permission: user_id: @userId(), read: @sitesRead.toJson(), write: @sitesUpdate.toJson(), =>
       @deleteOriginalSitesPermission()
       @advancedMode(false)
 
-  cancelAdvancedMembership: =>
+  @cancelAdvancedMembership: ->
     @restoreSitesPermission()
     @advancedMode(false)
 
-  backupSitesPermission: =>
+  @backupSitesPermission: ->
     @originalSitesRead = @sitesRead.clone()
     @originalSitesUpdate = @sitesUpdate.clone()
 
-  restoreSitesPermission: =>
+  @restoreSitesPermission: ->
     @sitesRead = @originalSitesRead
     @sitesUpdate = @originalSitesUpdate
     @deleteOriginalSitesPermission()
 
-  deleteOriginalSitesPermission: =>
+  @deleteOriginalSitesPermission: ->
     delete @originalSitesRead
     delete @originalSitesUpdate
