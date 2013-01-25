@@ -455,6 +455,12 @@ describe Search do
       result = search.sort('name', false).results
       result.map { |x| x['_id'].to_i } .should eq([site2.id, site1.id])
     end
+
+    it "sorts by multiple fields" do
+      site3 = collection.sites.make :name => 'Esther Goris', :properties => {numeric.es_code => 2}
+      result = search.sort_multiple({'name' => true, numeric.code => false}).results
+      result.map { |x| x['_id'].to_i } .should eq([site1.id, site3.id, site2.id])
+    end
   end
 
   context "location missing" do
