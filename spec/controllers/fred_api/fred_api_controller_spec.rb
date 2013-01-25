@@ -7,17 +7,17 @@ describe FredApi::FredApiController do
   let!(:collection) { user.create_collection(Collection.make_unsaved) }
   let!(:layer) { collection.layers.make }
 
+  # We test only the field types supported by FRED API
+  let!(:text) { layer.fields.make :code => 'manager', :kind => 'text' }
+  let!(:numeric) { layer.fields.make :code => 'numBeds', :kind => 'numeric' }
+  let!(:select_many) { layer.fields.make :code => 'services', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'XR', 'label' => 'X-ray'}, {'id' => 2, 'code' => 'OBG', 'label' => 'Gynecology'}]} }
+  let!(:date) { layer.fields.make :code => 'inagurationDay', :kind => 'date' }
+
   before(:each) { sign_in user }
 
   describe "GET facility" do
 
     let!(:site) { collection.sites.make }
-
-    # We test only the field types supported by FRED API
-    let!(:text) { layer.fields.make :code => 'manager', :kind => 'text' }
-    let!(:numeric) { layer.fields.make :code => 'numBeds', :kind => 'numeric' }
-    let!(:select_many) { layer.fields.make :code => 'services', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'XR', 'label' => 'X-ray'}, {'id' => 2, 'code' => 'OBG', 'label' => 'Gynecology'}]} }
-    let!(:date) { layer.fields.make :code => 'inagurationDay', :kind => 'date' }
 
     let!(:site_with_properties) { collection.sites.make :properties => {
       text.es_code => "Mrs. Liz",
@@ -53,9 +53,9 @@ describe FredApi::FredApiController do
     end
   end
 
-  describe "GET list of facilities" do
-    let!(:site) { collection.sites.make }
-    let!(:site2) { collection.sites.make }
+  describe "query list of facilities" do
+    let!(:site1) { collection.sites.make name: 'Site A', properties:{ date.es_code => "2012-10-24T00:00:00Z"} }
+    let!(:site2) { collection.sites.make name: 'Site B', properties:{ date.es_code => "2012-10-25T00:00:00Z"} }
 
     it 'should get the full list of facilities' do
       get :facilities, format: 'json'
@@ -64,6 +64,33 @@ describe FredApi::FredApiController do
 
       json = JSON.parse response.body
       json.length.should eq(2)
+    end
+
+    it 'should sort the list of facilities by name asc' do
+      get :facilities, format: 'json', sortAsc: 'name'
+
+      json = JSON.parse response.body
+      json.length.should eq(2)
+      json[0]["name"].should eq(site1.name)
+      json[1]["name"].should eq(site2.name)
+    end
+
+    it 'should sort the list of facilities by name desc' do
+      get :facilities, format: 'json', sortDesc: 'name'
+
+      json = JSON.parse response.body
+      json.length.should eq(2)
+      json[0]["name"].should eq(site2.name)
+      json[1]["name"].should eq(site1.name)
+    end
+
+    it 'should sort the list of facilities by property date' do
+      get :facilities, format: 'json', sortDesc: 'inagurationDay'
+
+      json = JSON.parse response.body
+      json.length.should eq(2)
+      json[0]["name"].should eq(site2.name)
+      json[1]["name"].should eq(site1.name)
     end
 
   end

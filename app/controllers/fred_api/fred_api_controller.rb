@@ -25,6 +25,12 @@ class FredApi::FredApiController < ApplicationController
     collection = current_user.collections.reorder('created_at asc').first
 
     search = collection.new_search current_user_id: current_user.id
+
+    search.use_codes_instead_of_es_codes
+
+    search.sort params[:sortAsc], true if params[:sortAsc]
+    search.sort params[:sortDesc], false if params[:sortDesc]
+
     facilities = search.api_results('fred_api')
 
     respond_to do |format|
