@@ -93,6 +93,17 @@ describe FredApi::FredApiController do
       json[1]["name"].should eq(site1.name)
     end
 
+    it 'should limit the number of facilities returned and the offset for the query' do
+      get :facilities, format: 'json', limit: 1
+      json = JSON.parse response.body
+      json.length.should eq(1)
+      json[0]["name"].should eq(site1.name)
+      get :facilities, format: 'json', limit: 1, offset: 1
+      json = JSON.parse response.body
+      json.length.should eq(1)
+      json[0]["name"].should eq(site2.name)
+    end
+
   end
 
 end
