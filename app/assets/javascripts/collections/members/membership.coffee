@@ -10,7 +10,10 @@ class @Membership extends Expandable
     @userId = ko.observable data?.user_id
     @userDisplayName = ko.observable data?.user_display_name
     @admin = ko.observable data?.admin
-    @layers = ko.observableArray $.map(data?.layers ? [], (x) => new LayerMembership(x))
+
+    rootLayers = data?.layers ? []
+    @layers = ko.observableArray $.map(root.layers(), (x) => new LayerMembership(x, rootLayers))
+
     @sitesWithCustomPermissions = ko.observableArray SiteCustomPermission.arrayFromJson(data?.sites)
 
     @callModuleConstructors(arguments)
@@ -30,9 +33,9 @@ class @Membership extends Expandable
       return 'Some' if some permitted
       return '' if none permitted
 
-    nonePermission = (l) => not l.read() and not l.write()
-    readPermission = (l) => l.read() and not l.write()
-    writePermission = (l) => l.write()
+    nonePermission = (l) => not @admin() and not l.read() and not l.write()
+    readPermission = (l) => not @admin() and l.read() and not l.write()
+    writePermission = (l) => @admin() or l.write()
 
     @adminUI = ko.computed => if @admin() then "<b>Yes</b>" else "No"
     @isCurrentUser = ko.computed => window.userId == @userId()
