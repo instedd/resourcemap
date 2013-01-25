@@ -76,6 +76,14 @@
   margin-top:2px;
 }
 
+.permissionCell .memberCellContent .permissionSummary.summaryAll {
+  font-weight: bold;
+}
+
+.permissionCell .memberCellContent .permissionSummary.summarySome {
+  font-style: italic;
+}
+
 .expandedMember td .memberCellContent {
   background-color: #EEEEEE;
   width:100%;

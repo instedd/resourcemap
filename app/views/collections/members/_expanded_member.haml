@@ -31,7 +31,7 @@
   - ['None', 'Read', 'Update', 'Admin'].each do |permission|
     %td.permissionCell
       .memberCellContent
-        .permissionSummary{ko(text: "summary#{permission}")}
+        .permissionSummary{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
       .memberDetails{ 'data-bind' => "style: { height: detailHeightPx() }"}
         %hr.underlineExpandedMember
         .memberDetailsTitle
