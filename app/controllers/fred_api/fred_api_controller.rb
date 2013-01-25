@@ -28,8 +28,14 @@ class FredApi::FredApiController < ApplicationController
 
     search.use_codes_instead_of_es_codes
 
+    # Sort can only be performed by a single field
     search.sort params[:sortAsc], true if params[:sortAsc]
     search.sort params[:sortDesc], false if params[:sortDesc]
+
+    offset = params[:offset] ?  params[:offset] : 0
+    search.offset offset
+    limit = params[:limit] ? params[:limit] : 25
+    search.limit limit
 
     facilities = search.api_results('fred_api')
 
