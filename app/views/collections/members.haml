@@ -36,10 +36,12 @@
       %td
       %td
     /ko foreach: memberships
+    /ko ifnot: isCurrentUser
     %tr{ko(css: { :expandedMember => :expanded }), :class => :membersRow}
       /ko if: expanded
       = render 'collections/members/expanded_member'
       //ko
+
 
       /ko ifnot: expanded
       = render 'collections/members/collapsed_member'
@@ -47,6 +49,6 @@
     %tr
       %td{:colspan => 6, :style => 'height:5px;'}
     //ko
-
+    //ko
   - if collection_admin?
     = render 'collections/members/add_member'
