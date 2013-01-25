@@ -28,19 +28,27 @@
       = render './confirm_box', :action_code => 'delete-member', :action_description => 'Remove this member', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to remove this member from the collection?', :action_url => ''
 
 
-  - ['None', 'Read', 'Update', 'Admin'].each do |permission|
+  - ['None', 'Read', 'Update'].each do |permission|
     %td.permissionCell
       .memberCellContent
         .permissionSummary{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
-      .memberDetails{ 'data-bind' => "style: { height: detailHeightPx() }"}
+      .memberDetails{ko(style: "{ height: detailHeightPx() }")}
         %hr.underlineExpandedMember
         .memberDetailsTitle
-          %input{:type => 'radio'}
-        /ko foreach: $root.layers
+          %input{ko(disable: :admin), :type => 'radio'}
+        /ko foreach: layers
         .memberDetailsLayer
-          %input{:type => 'radio'}
+          %input{ko(disable: "$parent.admin()"), :type => 'radio'}
         //ko
         .memberCustomPermissions{ 'data-bind' => "style: { height: customPermissionsHeightPx() }"}
+
+  %td.permissionCell
+    .memberCellContent
+      %div{:style => 'text-align:center;padding-right:5px;'}
+        %input{ko(checked: :admin), type: :checkbox}
+    .memberDetails{ko(style: "{ height: detailHeightPx() }")}
+      %hr.underlineExpandedMember
+
   %td.lastCell
     .lastCellContent{ 'data-bind' => "style: { height: lastCellContentHeightPx() }"}
 

@@ -41,7 +41,7 @@ class @Membership extends Expandable
     @isCurrentUser = ko.computed => window.userId == @userId()
 
     @admin.subscribe (newValue) =>
-      $.post "/collections/#{collectionId}/memberships/#{@userId()}/#{if newValue then 'set' else 'unset'}_admin.json"
+      $.post "/collections/#{root.collectionId()}/memberships/#{@userId()}/#{if newValue then 'set' else 'unset'}_admin.json"
 
     @someLayersNone = ko.computed => some nonePermission
 

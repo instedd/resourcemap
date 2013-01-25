@@ -3,7 +3,7 @@
 
   $.get "/collections/#{collectionId}/memberships.json", (memberships) ->
     window.model = new MembershipsViewModel
-    window.model.initialize admin, memberships, layers
+    window.model.initialize admin, memberships, layers, collectionId
     ko.applyBindings window.model
 
     $member_email = $('#member_email')

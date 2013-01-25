@@ -2,6 +2,7 @@ class @LayerMembership
   constructor: (layer, layer_memberships) ->
     layer_membership = _.find layer_memberships, (l) -> l.layer_id == layer.id()
 
+    @layerName = ko.observable layer.name
     @layerId = ko.observable layer.id
 
     if layer_membership?

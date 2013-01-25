@@ -1,6 +1,8 @@
 class @MembershipsViewModel
-  initialize: (admin, memberships, layers) ->
+  initialize: (admin, memberships, layers, collectionId) ->
     _self = @
+
+    @collectionId = ko.observable(collectionId)
 
     @selectedLayer = ko.observable()
     @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
