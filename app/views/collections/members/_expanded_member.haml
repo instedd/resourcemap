@@ -35,10 +35,10 @@
       .memberDetails{ko(style: "{ height: detailHeightPx() }")}
         %hr.underlineExpandedMember
         .memberDetailsTitle
-          %input{ko(disable: :admin, checked: "allLayers#{permission}", :name => :userId), :value => "all", :type => 'radio'}
+          %input{ko(disable: :admin, checked: "allLayers#{permission}", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
         /ko foreach: layers
         .memberDetailsLayer
-          %input{ko(disable: "$parent.admin()"), :type => 'radio'}
+          %input{ko(disable: "$parent.admin()", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
         //ko
         .memberCustomPermissions{ 'data-bind' => "style: { height: customPermissionsHeightPx() }"}
 

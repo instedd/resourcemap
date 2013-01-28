@@ -12,7 +12,7 @@ class @Membership extends Expandable
     @admin = ko.observable data?.admin
 
     rootLayers = data?.layers ? []
-    @layers = ko.observableArray $.map(root.layers(), (x) => new LayerMembership(x, rootLayers))
+    @layers = ko.observableArray $.map(root.layers(), (x) => new LayerMembership(x, rootLayers, _self))
 
     @sitesWithCustomPermissions = ko.observableArray SiteCustomPermission.arrayFromJson(data?.sites)
 
@@ -36,7 +36,6 @@ class @Membership extends Expandable
     nonePermission = (l) => not @admin() and not l.read() and not l.write()
     readPermission = (l) => not @admin() and l.read() and not l.write()
     writePermission = (l) => @admin() or l.write()
-
 
     @adminUI = ko.computed => if @admin() then "<b>Yes</b>" else "No"
     @isCurrentUser = ko.computed => window.userId == @userId()
