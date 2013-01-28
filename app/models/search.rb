@@ -45,7 +45,6 @@ class Search
   end
 
   def sort_multiple(sort_list)
-    #Keys contains es_codes
     sort_list.each_pair do |es_code, ascendent|
       sort(es_code, ascendent)
     end
@@ -89,6 +88,7 @@ class Search
     fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
 
     items = results()
+
     items.each do |item|
       item['_source']['properties'] = Hash[
         item['_source']['properties'].map do |es_code, value|

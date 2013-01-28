@@ -104,6 +104,44 @@ describe FredApi::FredApiController do
       json[0]["name"].should eq(site2.name)
     end
 
+    it 'should select only default fields' do
+      get :facilities, format: 'json', fields: "name,id"
+      json = JSON.parse response.body
+      json.length.should eq(2)
+      json[0].length.should eq(2)
+      json[0]['name'].should eq(site1.name)
+      json[0]['id'].should eq(site1.id)
+
+      json[1].length.should eq(2)
+      json[1]['name'].should eq(site2.name)
+      json[1]['id'].should eq(site2.id)
+    end
+
+    it 'should select default and custom fields' do
+      get :facilities, format: 'json', fields: "name,properties:inagurationDay"
+      json = JSON.parse response.body
+      json.length.should eq(2)
+      json[0].length.should eq(2)
+      json[0]['name'].should eq(site1.name)
+      json[0]['properties']['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+
+      json[1].length.should eq(2)
+      json[1]['name'].should eq(site2.name)
+      json[1]['properties']['inagurationDay'].should eq("2012-10-25T00:00:00Z")
+    end
+
+   it 'should return all fields (default and custom) when parameter allProperties is set' do
+      get :facilities, format: 'json', allProperties: true
+      json = JSON.parse response.body
+      json.length.should eq(2)
+      json[0].length.should eq(8)
+      json[0]['properties'].length.should eq(1)
+
+      json[1].length.should eq(8)
+      json[1]['properties'].length.should eq(1)
+    end
+
+
   end
 
 end
