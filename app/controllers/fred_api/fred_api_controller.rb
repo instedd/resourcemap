@@ -35,7 +35,11 @@ class FredApi::FredApiController < ApplicationController
     offset = params[:offset] ?  params[:offset] : 0
     search.offset offset
     limit = params[:limit] ? params[:limit] : 25
-    search.limit limit
+    if limit == 'off'
+      search.unlimited
+    else
+      search.limit limit
+    end
 
     #Perform queries
     except_params = [:action, :controller, :format, :id, :updated_since, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active]
