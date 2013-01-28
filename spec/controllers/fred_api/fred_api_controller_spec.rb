@@ -141,6 +141,38 @@ describe FredApi::FredApiController do
       json[1]['properties'].length.should eq(1)
     end
 
+    describe "Filtering Facilities" do
+
+      it "should filter by name" do
+        get :facilities, format: 'json', name: site1.name
+        json = JSON.parse response.body
+        json.length.should eq(1)
+        json[0]['name'].should eq(site1.name)
+      end
+
+      it "should filter by id" do
+        get :facilities, format: 'json', id: site1.id
+        json = JSON.parse response.body
+        json.length.should eq(1)
+        json[0]['id'].should eq(site1.id)
+      end
+
+      it "should filter by coordinates" do
+        get :facilities, format: 'json', coordinates: [site1.lng.to_f, site1.lat.to_f]
+        json = JSON.parse response.body
+        json.length.should eq(1)
+        json[0]['id'].should eq(site1.id)
+      end
+
+      it "should filter by active" do
+        #All ResourceMap facilities are active, because ResourceMap does not implement logical deletion yet
+        get :facilities, format: 'json', active: false
+        json = JSON.parse response.body
+        json.length.should eq(0)
+      end
+
+    end
+
 
   end
 

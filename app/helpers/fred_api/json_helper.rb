@@ -14,7 +14,7 @@ module FredApi::JsonHelper
       obj[:coordinates] = [source['location']['lon'], source['location']['lat']]
     end
 
-    # ResourceMap do not implement logical deletion yet. Thus all facilities are active.
+    # ResourceMap does not implement logical deletion yet. Thus all facilities are active.
     obj[:active] = true
 
     obj[:url] = url_for(:controller => 'fred_api', :action => 'show_facility',:format => :json, :id => source['id'])

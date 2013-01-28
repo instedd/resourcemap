@@ -37,8 +37,21 @@ class FredApi::FredApiController < ApplicationController
     limit = params[:limit] ? params[:limit] : 25
     search.limit limit
 
+    #Perform queries
+    except_params = [:action, :controller, :format, :id, :updated_since, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active]
+
+    # Query by Core Properties
+    search.name(params[:name]) if params[:name]
+    search.id(params[:id]) if params[:id]
+    search.radius(params[:coordinates][1], params[:coordinates][0], 1) if params[:coordinates]
+
+    # Query by Extended Properties
+    search.where params.except(*except_params)
+
     #Format result
     facilities = search.api_results('fred_api')
+    #Hack: All facilities are active. If param[:active]=false then no results should be returned
+    facilities = [] if params[:active] == false
 
     fred_json_facilities = facilities.map {|facility| fred_facility_format facility}
 

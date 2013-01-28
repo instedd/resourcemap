@@ -20,6 +20,10 @@ module SearchBase
     @search.filter :prefix, name: name.downcase
   end
 
+  def name(name)
+    @search.filter :term, name_not_analyzed: name
+  end
+
   def eq(field, value)
 
     validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
