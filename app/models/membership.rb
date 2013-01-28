@@ -14,13 +14,26 @@ class Membership < ActiveRecord::Base
   end
 
   def set_layer_access(options = {})
-    read =  options[:verb].to_s == 'read' ? options[:access] : nil
-    write = options[:verb].to_s == 'write' ? options[:access] : nil
+    intent = options[:verb].to_s
+
+    read = nil
+    write = nil
+
+    if intent == 'read'
+      read = options[:access]
+      # If the intent is to set read permissions, we assume write permissions have to be denied.
+      write = false
+    elsif intent == 'write'
+      write = options[:access]
+      # Write permissions imply read permissions.
+      read = true if write
+    end
 
     lm = collection.layer_memberships.where(:layer_id => options[:layer_id], :user_id => user_id).first
     if lm
       lm.read = read unless read.nil?
       lm.write = write unless write.nil?
+
       if lm.read || lm.write
         lm.save!
       else

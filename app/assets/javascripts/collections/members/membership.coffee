@@ -37,6 +37,7 @@ class @Membership extends Expandable
     readPermission = (l) => not @admin() and l.read() and not l.write()
     writePermission = (l) => @admin() or l.write()
 
+
     @adminUI = ko.computed => if @admin() then "<b>Yes</b>" else "No"
     @isCurrentUser = ko.computed => window.userId == @userId()
 
@@ -45,17 +46,40 @@ class @Membership extends Expandable
 
     @someLayersNone = ko.computed => some nonePermission
 
-    @allLayersNone = ko.computed => all nonePermission
-    @allLayersRead = ko.computed => all readPermission
-    @allLayersUpdate = ko.computed
+    @allLayersNone = ko.computed
       read: =>
-        return 'all' if all writePermission
+        return 'all' if all nonePermission
         ''
       write: (val) =>
+        return unless val
+
         _self = @
         _.each @layers(), (layer) ->
-          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'write', access: val}, =>
-            layer.write(val)
+          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'read', access: false}, =>
+            layer.read false
+            layer.write false
+
+    @allLayersRead = ko.computed
+      read: => return 'all' if all readPermission; ''
+      write: (val) =>
+        return unless val
+
+        _self = @
+        _.each @layers(), (layer) ->
+          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'read', access: true}, =>
+            layer.read true
+            layer.write false
+
+    @allLayersUpdate = ko.computed
+      read: => return 'all' if all writePermission; ''
+      write: (val) =>
+        return unless val
+
+        _self = @
+        _.each @layers(), (layer) ->
+          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'write', access: true}, =>
+            layer.write true
+            layer.read true
 
     @isNotAdmin = ko.computed => not @admin()
 
