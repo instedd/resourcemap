@@ -45,6 +45,18 @@ class @Membership extends Expandable
 
     @someLayersNone = ko.computed => some nonePermission
 
+    @allLayersNone = ko.computed => all nonePermission
+    @allLayersRead = ko.computed => all readPermission
+    @allLayersUpdate = ko.computed
+      read: =>
+        return 'all' if all writePermission
+        ''
+      write: (val) =>
+        _self = @
+        _.each @layers(), (layer) ->
+          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'write', access: val}, =>
+            layer.write(val)
+
     @isNotAdmin = ko.computed => not @admin()
 
     @summaryNone = ko.computed => summarize nonePermission

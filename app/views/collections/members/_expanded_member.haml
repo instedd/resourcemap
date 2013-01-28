@@ -35,7 +35,7 @@
       .memberDetails{ko(style: "{ height: detailHeightPx() }")}
         %hr.underlineExpandedMember
         .memberDetailsTitle
-          %input{ko(disable: :admin), :type => 'radio'}
+          %input{ko(disable: :admin, checked: "allLayers#{permission}"), :name => 'set_all_layers', :value => "all", :type => 'radio'}
         /ko foreach: layers
         .memberDetailsLayer
           %input{ko(disable: "$parent.admin()"), :type => 'radio'}
