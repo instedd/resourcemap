@@ -5,6 +5,13 @@ class @SiteCustomPermission
     @can_read = ko.observable read
     @can_write = ko.observable write
 
+  @findBySiteName: (sitePermissions, site_name) ->
+    _.find sitePermissions, (perm) -> perm.name() == site_name
+
+  @findBySiteId: (sitePermissions, site_id) ->
+    _.find sitePermissions, (perm) -> perm.id() == site_id
+
+
   # Expect "sitePermissions" to be an object like:
   #   "write":
   #     "all_sites": false

@@ -103,9 +103,25 @@ class @Membership extends Expandable
     #Setup autocomplete to add custom permissions per site
     $custom_permissions_autocomplete = $("##{@customPermissionsAutocompleteId()} #custom_site_permission")
 
-    @valueUI = ko.observable ''
-
     @searchSitesUrl = ko.observable "/collections/#{@collectionId()}/sites_by_term.json"
+
+    @customSite = ko.observable ''
+
+    @createCustomPermissionForSite = () =>
+      if $.trim(@customSite()).length > 0
+        # TODO: filter results so that they don't include already added sites.
+        # Until we do that, we'll just ignore attempts to create duplicates... :(
+        return if SiteCustomPermission.findBySiteName(@sitesWithCustomPermissions(), @customSite())?
+
+        $.get "#{@searchSitesUrl()}?term=#{@customSite()}", { term: @customSite() }, (data) ->
+          # Check that a site with that name exists
+          _.each data, (s) ->
+            if s.name == _self.customSite()
+              new_permission = new SiteCustomPermission s.id, s.name, false, false
+              _self.sitesWithCustomPermissions.push new_permission
+              _self.customSite("")
+
+    @removeCustomPermission = (site_permission) => @sitesWithCustomPermissions.remove site_permission
 
 
   initializeLinks: =>
