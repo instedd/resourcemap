@@ -164,6 +164,28 @@ describe FredApi::FredApiController do
         json[0]['id'].should eq(site1.id)
       end
 
+      it "should filter by updated_at" do
+        #this query has a 2 seconds bound
+        sleep 3
+        site3 = collection.sites.make name: 'Site C'
+        iso_updated_at = Time.zone.parse(site3.updated_at.to_s).utc.iso8601
+        get :facilities, format: 'json', updatedAt: iso_updated_at
+        json = JSON.parse response.body
+        json.length.should eq(1)
+        json[0]['id'].should eq(site3.id)
+      end
+
+      it "should filter by created_at" do
+        #this query has a 2 seconds bound
+        sleep 3
+        site3 = collection.sites.make name: 'Site C'
+        iso_created_at = Time.zone.parse(site3.created_at.to_s).utc.iso8601
+        get :facilities, format: 'json', createdAt: iso_created_at
+        json = JSON.parse response.body
+        json.length.should eq(1)
+        json[0]['id'].should eq(site3.id)
+      end
+
       it "should filter by active" do
         #All ResourceMap facilities are active, because ResourceMap does not implement logical deletion yet
         get :facilities, format: 'json', active: false

@@ -9,7 +9,6 @@ module FredApi::JsonHelper
 
     obj[:createdAt] = format_date_to_iso_string(source['created_at'])
     obj[:updatedAt] = format_date_to_iso_string(source['updated_at'])
-
     if source['location']
       obj[:coordinates] = [source['location']['lon'], source['location']['lat']]
     end

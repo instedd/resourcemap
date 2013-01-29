@@ -122,6 +122,24 @@ module SearchBase
     self
   end
 
+  def date_query(iso_string, field_name)
+    # We use a 2 seconds range, not the exact date, because this would be very restrictive
+    time = Time.strptime(iso_string, '%Y-%m-%dT%H:%M:%S%z')
+    time_upper_bound = time + 1.second
+    time_lower_bound = time - 1.second
+    @search.filter :range, field_name.to_sym => {gte: Site.format_date(time_lower_bound)}
+    @search.filter :range, field_name.to_sym => {lte: Site.format_date(time_upper_bound)}
+    self
+  end
+
+  def updated_at(iso_string)
+    date_query(iso_string, 'updated_at')
+  end
+
+  def created_at(iso_string)
+    date_query(iso_string, 'created_at')
+  end
+
   def full_text_search(text)
     query = ElasticSearch::QueryHelper.full_text_search(text, @search, collection, fields)
     add_query query if query

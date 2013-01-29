@@ -46,7 +46,7 @@ group :test do
   gem 'ci_reporter'
   gem 'resque_spec'
   gem 'pry'
-  gem 'pry-nav'
+  gem 'pry-debugger'
 end
 
 # To use ActiveModel has_secure_password
