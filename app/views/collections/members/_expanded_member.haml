@@ -18,7 +18,7 @@
         .memberCustomPermissionsSite
           .memberCustomPermissionsSiteName{ko(text: 'name')}
           %button.clist-remove.memberRemoveCustomPermissionSite{ko(click: "$parent.removeCustomPermission")}
-        %hr.underlineExpandedMember{'data-bind' => 'visible: $index() < $parent.sitesWithCustomPermissions().length - 1 '}
+        %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
         //ko
       .memberCustomPermissionsSiteAdd{ko(attr: { "id" => "customPermissionsAutocompleteId()" })}
         %input.autocomplete-site-input.ux-search{ ko(autocomplete: :customSite, value: :customSite, valueUpdate: :afterkeydown, source: "searchSitesUrl()"), type: :text, placeholder: 'Add custom permissions for site' }
@@ -39,7 +39,14 @@
         .memberDetailsLayer
           %input{ko(disable: "$parent.admin()", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
         //ko
-        .memberCustomPermissions{ 'data-bind' => "style: { height: customPermissionsHeightPx() }"}
+        .memberCustomPermissions{ko(style: "{ height: customPermissionsHeightPx() }")}
+          .memberCustomPermissionsSites
+          /ko foreach: sitesWithCustomPermissions
+          .memberCustomPermissionsSite
+            %input{ko(disable: "$parent.admin", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
+          %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
+          //ko
+
 
   %td.permissionCell
     .memberCellContent
@@ -49,5 +56,5 @@
       %hr.underlineExpandedMember
 
   %td.lastCell
-    .lastCellContent{ 'data-bind' => "style: { height: lastCellContentHeightPx() }"}
+    .lastCellContent{ ko(style: "{ height: lastCellContentHeightPx() }")}
 

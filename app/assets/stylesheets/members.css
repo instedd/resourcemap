@@ -137,7 +137,7 @@ hr.underlineExpandedMember {
   margin-bottom: 11px;
 }
 
-.member .memberDetails .memberCustomPermissions hr.underlineExpandedMember {
+.memberDetails .memberCustomPermissions hr.underlineExpandedMember {
   margin-bottom: 0px;
 }
 
@@ -153,12 +153,30 @@ hr.underlineExpandedMember {
   padding-bottom: 8px;
 }
 
+.permissionCell .memberCustomPermissions {
+  margin-top: 12px;
+  padding-bottom: 8px;
+}
+
 .memberCustomPermissionsSites {
   margin-top:8px;
 }
 
+.permissionCell .memberCustomPermissionsSites {
+  height:15px;
+}
+
 .memberCustomPermissionsSite {
   height:32px;
+}
+
+.permissionCell .memberCustomPermissionsSite  {
+  text-align: center;
+  margin-top:0px;
+}
+
+.permissionCell .memberCustomPermissionsSite input[type="radio"] {
+  margin-top: 8px;
 }
 
 .memberCustomPermissionsSite .members-collapse-icon {

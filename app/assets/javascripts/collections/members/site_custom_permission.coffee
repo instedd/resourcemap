@@ -5,6 +5,10 @@ class @SiteCustomPermission
     @can_read = ko.observable read
     @can_write = ko.observable write
 
+    @noneChecked = ko.computed => not @can_read() and not @can_write()
+    @readChecked = ko.computed => @can_read() and not @can_write()
+    @updateChecked = ko.computed => @can_write()
+
   @findBySiteName: (sitePermissions, site_name) ->
     _.find sitePermissions, (perm) -> perm.name() == site_name
 
