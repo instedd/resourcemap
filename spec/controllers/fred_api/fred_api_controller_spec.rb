@@ -193,6 +193,17 @@ describe FredApi::FredApiController do
         json.length.should eq(0)
       end
 
+      it "should filter by updated since" do
+        sleep 3
+        iso_before_update = Time.zone.now.utc.iso8601
+        site1.name = "Site A New"
+        site1.save!
+        get :facilities, format: 'json', updatedSince: iso_before_update
+        json = JSON.parse response.body
+        json.length.should eq(1)
+        json[0]['id'].should eq(site1.id)
+      end
+
     end
 
 

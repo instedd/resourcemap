@@ -42,7 +42,7 @@ class FredApi::FredApiController < ApplicationController
     end
 
     #Perform queries
-    except_params = [:action, :controller, :format, :id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt]
+    except_params = [:action, :controller, :format, :id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince]
 
     # Query by Core Properties
     search.name(params[:name]) if params[:name]
@@ -50,6 +50,9 @@ class FredApi::FredApiController < ApplicationController
     search.radius(params[:coordinates][1], params[:coordinates][0], 1) if params[:coordinates]
     search.updated_at(params[:updatedAt]) if params[:updatedAt]
     search.created_at(params[:createdAt]) if params[:createdAt]
+
+    # Query by updatedSince
+    search.updated_since(params[:updatedSince]) if params[:updatedSince]
 
     # Query by Extended Properties
     search.where params.except(*except_params)

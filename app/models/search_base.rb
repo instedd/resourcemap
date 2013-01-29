@@ -118,6 +118,15 @@ module SearchBase
 
   def after(time)
     time = parse_time(time)
+    updated_since_query(time)
+  end
+
+  def updated_since(iso_string)
+    time = Time.strptime(iso_string, '%Y-%m-%dT%H:%M:%S%z')
+    updated_since_query(time)
+  end
+
+  def updated_since_query(time)
     @search.filter :range, updated_at: {gte: Site.format_date(time)}
     self
   end
