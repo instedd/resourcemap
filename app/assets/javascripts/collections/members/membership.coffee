@@ -10,6 +10,7 @@ class @Membership extends Expandable
     @userId = ko.observable data?.user_id
     @userDisplayName = ko.observable data?.user_display_name
     @admin = ko.observable data?.admin
+    @collectionId = ko.observable root.collectionId()
 
     rootLayers = data?.layers ? []
     @layers = ko.observableArray $.map(root.layers(), (x) => new LayerMembership(x, rootLayers, _self))
@@ -54,9 +55,10 @@ class @Membership extends Expandable
 
         _self = @
         _.each @layers(), (layer) ->
-          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'read', access: false}, =>
-            layer.read false
-            layer.write false
+          layer.read false
+          layer.write false
+          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'read', access: false}
+
 
     @allLayersRead = ko.computed
       read: => return 'all' if all readPermission; ''
@@ -65,9 +67,10 @@ class @Membership extends Expandable
 
         _self = @
         _.each @layers(), (layer) ->
-          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'read', access: true}, =>
-            layer.read true
-            layer.write false
+          layer.read true
+          layer.write false
+          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'read', access: true}
+
 
     @allLayersUpdate = ko.computed
       read: => return 'all' if all writePermission; ''
@@ -76,9 +79,9 @@ class @Membership extends Expandable
 
         _self = @
         _.each @layers(), (layer) ->
-          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'write', access: true}, =>
-            layer.write true
-            layer.read true
+          layer.write true
+          layer.read true
+          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'write', access: true}
 
     @isNotAdmin = ko.computed => not @admin()
 
