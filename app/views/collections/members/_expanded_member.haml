@@ -1,4 +1,4 @@
-%td.member{ko(click: :toggleExpanded), style: 'cursor:pointer;'}
+%td.member{style: 'cursor:pointer;'}
   .memberCellContent
     %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"})}
     %span{ko(text: :userDisplayName)}
@@ -20,8 +20,8 @@
           %button.clist-remove.memberRemoveCustomPermissionSite
         %hr.underlineExpandedMember{'data-bind' => 'visible: $index() < $parent.sitesWithCustomPermissions().length - 1 '}
         //ko
-      .memberCustomPermissionsSiteAdd
-        = text_field_tag :custom_site_permission, '', :placeholder => 'Add custom permissions for a site'
+      .memberCustomPermissionsSiteAdd{ko(attr: { "id" => "customPermissionsAutocompleteId()" })}
+        %input.autocomplete-site-input.ux-search{ ko(autocomplete: :valueUI, value: :valueUI, valueUpdate: :afterkeydown, source: "searchSitesUrl()"), type: :text, placeholder: 'Add custom permissions for site' }
         %button.clist-add
     .memberRemove
       = render './confirm_box', :action_code => 'delete-member', :action_description => 'Remove this member', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to remove this member from the collection?', :action_url => ''

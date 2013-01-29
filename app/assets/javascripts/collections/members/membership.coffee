@@ -98,6 +98,16 @@ class @Membership extends Expandable
       else
         "Custom permissions for #{@sitesWithCustomPermissions().length} sites"
 
+    @customPermissionsAutocompleteId = ko.computed => "autocomplete_#{@userId()}"
+
+    #Setup autocomplete to add custom permissions per site
+    $custom_permissions_autocomplete = $("##{@customPermissionsAutocompleteId()} #custom_site_permission")
+
+    @valueUI = ko.observable ''
+
+    @searchSitesUrl = ko.observable "/collections/#{@collectionId()}/sites_by_term.json"
+
+
   initializeLinks: =>
     @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
     @initializeAllReadAllWrite()
