@@ -90,6 +90,13 @@ class @Membership extends Expandable
     @summaryUpdate = ko.computed => summarize writePermission
     @summaryAdmin = ko.computed => ''
 
+    @site_permissions_title = ko.computed =>
+      if @sitesWithCustomPermissions().length == 0
+        "Custom permissions for sites"
+      else if @sitesWithCustomPermissions().length == 1
+        "Custom permissions for 1 site"
+      else
+        "Custom permissions for #{@sitesWithCustomPermissions().length} sites"
 
   initializeLinks: =>
     @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))

@@ -12,8 +12,7 @@
     .memberDetailsLayer{ko(text: 'name')}
     //ko
     .memberCustomPermissions
-      %span.memberDetailsTitle
-        Custom permissions for 3 sites
+      %span.memberDetailsTitle{ko(text: 'site_permissions_title')}
       .memberCustomPermissionsSites
         /ko foreach: sitesWithCustomPermissions
         .memberCustomPermissionsSite
