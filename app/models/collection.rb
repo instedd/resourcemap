@@ -67,6 +67,8 @@ class Collection < ActiveRecord::Base
     end
     if membership.admin?
       target_fields = target_fields.all
+    elsif user.is_guest
+      target_fields = target_fields.all
     else
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
@@ -107,7 +109,7 @@ class Collection < ActiveRecord::Base
           kind: field.kind,
           config: field.config,
           ord: field.ord,
-          writeable: !lms || lms[field.layer_id].write,
+          writeable: user.is_guest ? false : !lms || lms[field.layer_id].write
         }
       end
     end
