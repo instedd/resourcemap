@@ -206,7 +206,16 @@ describe FredApi::FredApiController do
 
     end
 
-
   end
+
+  describe "delete facility" do
+    it "should delete facility" do
+      site3 = collection.sites.make name: 'Site C'
+      delete :delete_facility, id: site3.id
+      sites = Site.find_by_name 'Site C'
+      sites.should be(nil)
+    end
+  end
+
 
 end

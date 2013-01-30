@@ -1,5 +1,9 @@
 module FredApi::JsonHelper
 
+  def url_for_facility(id)
+    url_for(:controller => 'fred_api', :action => 'show_facility',:format => :json, :id => id)
+  end
+
   def fred_facility_format(result)
     source = result['_source']
 
@@ -16,7 +20,7 @@ module FredApi::JsonHelper
     # ResourceMap does not implement logical deletion yet. Thus all facilities are active.
     obj[:active] = true
 
-    obj[:url] = url_for(:controller => 'fred_api', :action => 'show_facility',:format => :json, :id => source['id'])
+    obj[:url] = url_for_facility(source['id'])
 
     obj[:properties] = source['properties']
 

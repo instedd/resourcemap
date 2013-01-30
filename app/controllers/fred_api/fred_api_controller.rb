@@ -19,6 +19,12 @@ class FredApi::FredApiController < ApplicationController
     end
   end
 
+  def delete_facility
+    site.user = current_user
+    site.destroy
+    render json: url_for_facility(site.id)
+  end
+
   def facilities
     # We assume that FRED API users will only have one collection.
     # In case they have more than one collection, we will query the first created.

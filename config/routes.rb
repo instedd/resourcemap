@@ -96,6 +96,7 @@ ResourceMap::Application.routes.draw do
   namespace :fred_api do
     get 'v1/facilities/:id' => 'fred_api#show_facility', as: :show_facility
     get 'v1/facilities'  => 'fred_api#facilities', as: :facilities
+    delete 'v1/facilities/:id' => 'fred_api#delete_facility', as: :delete_facility
   end
 
   scope '/plugin' do
