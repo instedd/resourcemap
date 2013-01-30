@@ -17,7 +17,6 @@ class CollectionsController < ApplicationController
         collections.all.each do |collection|
           attrs = collection.attributes
           attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
-          attrs["is_admin"] = collection.memberships.find_by_user_id(current_user.id).admin
           collections_with_snapshot = collections_with_snapshot + [attrs]
         end
         format.json {render json: collections_with_snapshot }
@@ -54,9 +53,9 @@ class CollectionsController < ApplicationController
 
   def update
     if collection.update_attributes params[:collection]
-      
+
       if collection.public
-        guest_user = User.find_by_email 'guest@resourcemap.org' 
+        guest_user = User.find_by_email 'guest@resourcemap.org'
         guest_user.memberships.create! collection_id: collection.id, admin: false
       end
 

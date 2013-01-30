@@ -13,7 +13,7 @@
           %td
             %div{style: "width:230px;overflow:hidden;"}
               %input{ko(checked: :checked), type: :checkbox, style: 'position:relative;'}
-              %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor: pointer;width:205px;overflow:hidden;display:block;float:right;'}" 
+              %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor: pointer;width:205px;overflow:hidden;display:block;float:right;'}"
             <!-- ko if: currentSnapshot -->
             .snapshot_on.right{style: 'padding-right:0'}
               .i18g-snapshot
@@ -26,26 +26,26 @@
         <!-- /ko -->
     %br{:clear => "all"}/
     - if Settings.is_on? :account_completeness
-      -# acount completeness  
+      -# acount completeness
       #profile-main{style: 'display:none'}
         .box.plain.orange{ko(visible: 'collections().length < 1 || (!$root.isExist())'), :style => 'padding:5px; display:none;background-color: #B6D7A8;border: 0px'}
           .sbox.grey.StateDisplay{style: 'margin: 0px;padding: 0px;background-color: #FFFFFF'}
             .values{style: 'padding: 0px;margin: 4px 0 4px 0;font-size: 12px;line-height: 12px;width: 100%;'}
-               
+
               <!-- ko if: collections().length < 1 && (!$root.isExist()) -->
               .M{style: 'padding: 0px; width: 75px; height: 15px; border: solid 1px; background-color: #FFFFFF; float: left;margin-left: 13px;'}
                 %span.Fill{style: 'width: 0%; background-color: #38761D; height: 15px'}/
               .R
                 %span{style: 'font-weight:bold; color: #000000;letter-spacing: 0em; margin-top: 3px; font-size:10px;'} 0% Account Setup Completeness
               <!-- /ko -->
-              
+
               <!-- ko if: (collections().length < 1 && $root.isExist()) || (collections().length > 0 && (!$root.isExist()))-->
               .M{style: 'padding: 0px; width: 75px; height: 15px; border: solid 1px; background-color: #FFFFFF; float: left;margin-left: 13px;'}
                 %span.Fill{style: 'width: 50%; background-color: #38761D; height: 15px'}/
               .R
                 %span{style: 'font-weight:bold; color: #000000;letter-spacing: 0em; margin-top: 3px; font-size:10px;'} 50% Account Setup Completeness
               <!-- /ko -->
-              .L 
+              .L
                 <!-- ko if: collections().length < 1 -->
                 %button.fadd{ko(click: '$root.createCollection'),type: "button", style: 'width:250px'}
                   %span{style: 'float:left; font-size: 12px'} Create Your First Collection (+50%)
@@ -71,7 +71,7 @@
     %span
     %span{ko(text: :name)}
     - if !current_user.is_guest
-      %button.fconfiguration.right{ko(click: '$root.editCollection', visible: :is_admin), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+      %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
   .tablescroll.sites
