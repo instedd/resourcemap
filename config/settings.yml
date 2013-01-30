@@ -1,8 +1,9 @@
 mobile_id: off
 host: localhost:3000
+public_collection: on
 
 plugins:
-  
+
   snapshot: on
   channels: on
   reminders: on
