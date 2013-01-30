@@ -10,9 +10,10 @@
   = section "Home", root_path(explicit: true), :home
   - if user_signed_in?
     = section "Collections", collections_path, :collections
-    = section "Activity", activities_path, :activities
-    - if Settings.is_on? :channels
-      = section "SMS Gateways", gateways_path, :gateways
+    - if !current_user.is_guest 
+      = section "Activity", activities_path, :activities
+      - if Settings.is_on? :channels
+        = section "SMS Gateways", gateways_path, :gateways
   -#= section "Tour", '', :tour
   -#= section "Community", '', :community
   -#= section "Help", '', :help
@@ -20,20 +21,27 @@
   %ul.RightMenu
     - if user_signed_in?
       %li
-        #User
-          = current_user.email
-          %br
-          %br
-          .container
-            %ul
-              %li= link_to 'Settings', edit_user_registration_path
-            %hr/
-            %ul
-              %li
-                %a{:href => "mailto:support@instedd.org?subject=[#{application_name.underscore}-bug]"} Report a bug
-              %li= link_to "Sign Out", destroy_user_session_path, method: :delete
-      %li
-        = link_to '', edit_user_registration_path, class: 'fsettings'
+        - if !current_user.is_guest 
+          #User
+            = current_user.email
+            %br
+            %br
+            .container
+              %ul
+                %li= link_to 'Settings', edit_user_registration_path
+              %hr/
+              %ul
+                %li
+                  %a{:href => "mailto:support@instedd.org?subject=[#{application_name.underscore}-bug]"} Report a bug
+                %li= link_to "Sign Out", destroy_user_session_path, method: :delete
+      
+      - if !current_user.is_guest 
+        %li
+          = link_to '', edit_user_registration_path, class: 'fsettings'
+      - else
+        %li
+          = link_to "Create account", new_user_registration_path, class: 'fedit'
+
     - else
       %li
         = link_to "Create account", new_user_registration_path, class: 'fedit'

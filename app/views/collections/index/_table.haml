@@ -32,10 +32,12 @@
 <!-- ko with: currentCollection -->
 .tableheader.expanded{style: 'height:34px;'}
   %div
-    %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
+    - if !current_user.is_guest
+      %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
     %span
     %span{ko(text: :name)}
-    %button.fconfiguration.right{ko(click: '$root.editCollection', visible: :is_admin), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+    - if !current_user.is_guest 
+      %button.fconfiguration.right{ko(click: '$root.editCollection', visible: :is_admin), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
   = render 'collections/index/export'
   .mapheader.right
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
@@ -93,7 +95,8 @@
   <!-- /ko -->
 .tablebottom
   <!-- ko if: !currentSnapshot-->
-  %button.flocation{ko(click: '$root.createSite')} Create Site
+  - if !current_user.is_guest
+    %button.flocation{ko(click: '$root.createSite')} Create Site
   <!-- /ko -->
 <!-- /ko -->
 <!-- /ko -->

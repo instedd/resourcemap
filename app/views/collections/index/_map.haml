@@ -66,11 +66,12 @@
   <!-- ko if: !editingSite() -->
   <!-- ko with: currentCollection -->
   .tableheader
-    %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
+    - if !current_user.is_guest
+      %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
     %span
     %span{ko(text: :name)}
-
-    %button.fconfiguration.right{ko(click: '$root.editCollection', visible: :is_admin), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+    - if !current_user.is_guest
+      %button.fconfiguration.right{ko(click: '$root.editCollection', visible: :is_admin), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
   .tablescroll.sites
@@ -93,7 +94,8 @@
         <!-- /ko -->
   .tablebottom
     <!-- ko if: !currentSnapshot-->
-    %button.flocation{ko(click: '$root.createSite')} Create Site
+    - if !current_user.is_guest
+      %button.flocation{ko(click: '$root.createSite')} Create Site
     <!-- /ko -->
 
   <!-- /ko -->
@@ -225,8 +227,9 @@
               / /ko
     <!-- ko if: !$root.currentSnapshot() -->
     .tablebottom
-      = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
-      = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
+      - if !current_user.is_guest
+        = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
+        = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
     <!-- /ko -->
 
   <!-- /ko -->
