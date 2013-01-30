@@ -13,6 +13,7 @@ class Search
     @search = collection.new_tire_search(options)
     @snapshot_id = options[:snapshot_id]
     @current_user = User.find options[:current_user_id] if options[:current_user_id]
+    @sort_list = {}
     @from = 0
   end
 
@@ -33,11 +34,20 @@ class Search
 
   def sort(es_code, ascendent = true)
     if es_code == 'id' || es_code == 'name' || es_code == 'name_not_analyzed'
-      @sort = es_code == 'name' ? 'name_not_analyzed' : es_code
+      sort = es_code == 'name' ? 'name_not_analyzed' : es_code
     else
-      @sort = decode(es_code)
+      sort = decode(es_code)
     end
-    @sort_ascendent = ascendent ? nil : 'desc'
+    @sort = true
+    ascendant = ascendent ? 'asc' : 'desc'
+    @sort_list[sort] = ascendant
+    self
+  end
+
+  def sort_multiple(sort_list)
+    sort_list.each_pair do |es_code, ascendent|
+      sort(es_code, ascendent)
+    end
     self
   end
 
@@ -50,11 +60,9 @@ class Search
   # and so are values (when applicable).
   def results
     apply_queries
-
+    sort_list = @sort_list
     if @sort
-      sort = @sort
-      sort_ascendent = @sort_ascendent
-      @search.sort { by sort, sort_ascendent }
+      @search.sort { by sort_list }
     else
       @search.sort { by 'name_not_analyzed' }
     end
@@ -80,6 +88,7 @@ class Search
     fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
 
     items = results()
+
     items.each do |item|
       item['_source']['properties'] = Hash[
         item['_source']['properties'].map do |es_code, value|
