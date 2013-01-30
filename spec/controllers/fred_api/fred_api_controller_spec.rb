@@ -212,10 +212,10 @@ describe FredApi::FredApiController do
     it "should delete facility" do
       site3 = collection.sites.make name: 'Site C'
       delete :delete_facility, id: site3.id
+      response.body.should eq("http://test.host/fred_api/v1/facilities/#{site3.id}.json")
       sites = Site.find_by_name 'Site C'
       sites.should be(nil)
     end
   end
-
 
 end
