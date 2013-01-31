@@ -1,8 +1,4 @@
-#= require collections/members/membership_layout
-
 class @Membership extends Expandable
-  @include MembershipLayout
-
   constructor: (root, data) ->
     _self = @
 

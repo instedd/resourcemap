@@ -1,60 +1,87 @@
-%td.member{style: 'cursor:pointer;'}
-  .memberCellContent
-    %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"})}
-    %span{ko(text: :userDisplayName)}
+%td.member{style: 'cursor:pointer;', colspan: 6}
+  .memberHeaderRow
+    .memberHeaderColumn
+      %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"})}
+      %span{ko(text: :userDisplayName)}
 
-  .memberDetails
-    %hr.underlineExpandedMember
-    %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrowDown.png'"})}
-    %span.memberDetailsTitle
-      Default permissions for all sites
-    /ko foreach: $root.layers
-    .memberDetailsLayer{ko(text: 'name')}
-    //ko
-    .memberCustomPermissions
-      %span.memberDetailsTitle{ko(text: 'site_permissions_title')}
-      .memberCustomPermissionsSites
-        /ko foreach: sitesWithCustomPermissions
-        .memberCustomPermissionsSite
-          .memberCustomPermissionsSiteName{ko(text: 'name')}
-          %button.clist-remove.memberRemoveCustomPermissionSite{ko(click: "$parent.removeCustomPermission")}
+    - ['None', 'Read', 'Update'].each do |permission|
+      .permissionColumn{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
+
+    .permissionColumn.admin
+      %input{ko(checked: :admin), type: :checkbox}
+    .lastColumn
+
+  .defaultLayerPermissionsRow
+    .memberHeaderColumn
+      %hr.underlineExpandedMember
+      .defaultLayerPermissionsTitle
+        %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrowDown.png'"})}
+        %span.memberDetailsTitle
+          Default permissions for all sites
+
+    - ['None', 'Read', 'Update'].each do |permission|
+      .permissionColumn
+        %hr.underlineExpandedMember
+          %input{ko(disable: :admin, checked: "allLayers#{permission}", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
+
+    .permissionColumn.admin
+      %hr.underlineExpandedMember
+    .lastColumn
+
+
+  /ko foreach: layers
+  .layerRow
+    .memberHeaderColumn{ko(text: "layerName()")}
+    - ['None', 'Read', 'Update'].each do |permission|
+      .permissionColumn
+        %input{ko(disable: "$parent.admin()", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
+    .permissionColumn.admin
+    .lastColumn
+  //ko
+
+  .customPermissionsTitleRow
+    .memberHeaderColumn
+      .frame
+        .memberDetailsTitle{ko(text: 'site_permissions_title')}
+    - ['None', 'Read', 'Update'].each do |permission|
+      .permissionColumn
+        .frame
+    .permissionColumn.admin
+      .frame
+    .lastColumn
+
+  /ko foreach: sitesWithCustomPermissions
+  .customPermissionRow
+    .memberHeaderColumn
+      .frame
+        .memberCustomPermissionsSiteName{ko(text: 'name')}
+        %button.clist-remove.memberRemoveCustomPermissionSite{ko(click: "$parent.removeCustomPermission")}
         %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
-        //ko
-      .memberCustomPermissionsSiteAdd{ko(attr: { "id" => "customPermissionsAutocompleteId()" })}
+    - ['None', 'Read', 'Update'].each do |permission|
+      .permissionColumn
+        .frame
+          %input{ko(disable: "$parent.admin", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
+        %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
+    .permissionColumn.admin
+      .frame
+        %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
+    .lastColumn
+  //ko
+
+  .addCustomPermissionRow{ko(attr: { "id" => "customPermissionsAutocompleteId()" })}
+    .memberHeaderColumn
+      .frame
         %input.autocomplete-site-input.ux-search{ ko(autocomplete: :customSite, value: :customSite, valueUpdate: :afterkeydown, source: "searchSitesUrl()"), type: :text, placeholder: 'Add custom permissions for site' }
         %button.clist-add{ko(click: :createCustomPermissionForSite)}
-    .memberRemove
+    - ['None', 'Read', 'Update'].each do |permission|
+      .permissionColumn
+    .permissionColumn.admin
+    .lastColumn
+
+  .removeMemberRow
+    .memberHeaderColumn
       = render './confirm_box', :action_code => 'delete-member', :action_description => 'Remove this member', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to remove this member from the collection?', :action_url => ''
-
-
-  - ['None', 'Read', 'Update'].each do |permission|
-    %td.permissionCell
-      .memberCellContent
-        .permissionSummary{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
-      .memberDetails{ko(style: "{ height: detailHeightPx() }")}
-        %hr.underlineExpandedMember
-        .memberDetailsTitle
-          %input{ko(disable: :admin, checked: "allLayers#{permission}", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
-        /ko foreach: layers
-        .memberDetailsLayer
-          %input{ko(disable: "$parent.admin()", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
-        //ko
-        .memberCustomPermissions{ko(style: "{ height: customPermissionsHeightPx() }")}
-          .memberCustomPermissionsSites
-          /ko foreach: sitesWithCustomPermissions
-          .memberCustomPermissionsSite
-            %input{ko(disable: "$parent.admin", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
-          %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
-          //ko
-
-
-  %td.permissionCell
-    .memberCellContent
-      %div{:style => 'text-align:center;padding-right:5px;'}
-        %input{ko(checked: :admin), type: :checkbox}
-    .memberDetails{ko(style: "{ height: detailHeightPx() }")}
-      %hr.underlineExpandedMember
-
-  %td.lastCell
-    .lastCellContent{ ko(style: "{ height: lastCellContentHeightPx() }")}
-
+    - ['None', 'Read', 'Update'].each do |permission|
+      .permissionColumn
+    .permissionColumn.admin
+    .lastColumn

@@ -9,13 +9,6 @@
   padding-left:5px;
 }
 
-.GralTable .expandedMember .permissionCell {
-}
-
-.GralTable .expandedMember .lastCell {
-}
-
-
 .GralTable th.members-permission, td.members-permission {
   text-align: center;
 }
@@ -36,84 +29,6 @@
   height:11px;
 }
 
-.GralTable .expandedMember {
-}
-
-.memberDetails {
-  background-color: #EEEEEE;
-  font-size: 12px;
-}
-
-.member .memberDetails {
-  padding-left:20px;
-}
-
-.memberDetailsTitle {
-  font-weight: bold;
-  color: #545454;
-  text-align: center;
-  height:20px;
-}
-
-.memberDetailsLayer {
-  padding-top: 15px;
-  text-align: center;
-  height: 19px;
-}
-
-.member .memberDetailsLayer {
-  padding-top: 23px;
-  padding-left: 50px;
-  text-align: left;
-  height: 9px;
-}
-
-.permissionCell .memberCellContent .permissionSummary {
-  color: #555555;
-  font-size: 12px;
-  text-align: center;
-  padding-right:5px;
-  margin-top:2px;
-}
-
-.permissionCell .memberCellContent .permissionSummary.summaryAll {
-  font-weight: bold;
-}
-
-.permissionCell .memberCellContent .permissionSummary.summarySome {
-  font-style: italic;
-}
-
-.expandedMember td .memberCellContent {
-  background-color: #EEEEEE;
-  width:100%;
-  height:21px;
-  padding-top:7px;
-  padding-left:5px;
-  padding-bottom:4px;
-}
-
-.expandedMember td.member .memberCellContent {
-  width:300px;
-}
-
-.expandedMember td .memberCellContent {
-  background-color: #EEEEEE;
-  width:60px;
-  height:21px;
-  padding-top:7px;
-  padding-left:5px;
-  padding-bottom:4px;
-}
-
-.expandedMember td.lastCell {
-  /*position: relative;*/
-}
-
-.expandedMember td.lastCell .lastCellContent {
-  background-color: #EEEEEE;
-}
-
 .expandedMember td.lastCell {
   padding-bottom:5px;
 }
@@ -129,41 +44,7 @@
 hr.underlineExpandedMember {
   height:1px;
   margin:0;
-  margin-bottom:8px;
   background-color: white;
-}
-
-.member hr.underlineExpandedMember {
-  margin-bottom: 11px;
-}
-
-.memberDetails .memberCustomPermissions hr.underlineExpandedMember {
-  margin-bottom: 0px;
-}
-
-.memberCustomPermissions {
-  background-color: #DEDEDE;
-  margin-top: 12px;
-  padding-top:12px;
-}
-
-.member .memberCustomPermissions {
-  margin-top:20px;
-  padding-left:14px;
-  padding-bottom: 8px;
-}
-
-.permissionCell .memberCustomPermissions {
-  margin-top: 12px;
-  padding-bottom: 8px;
-}
-
-.memberCustomPermissionsSites {
-  margin-top:8px;
-}
-
-.permissionCell .memberCustomPermissionsSites {
-  height:15px;
 }
 
 .memberCustomPermissionsSite {
@@ -195,24 +76,188 @@ hr.underlineExpandedMember {
   float:right;
 }
 
-.memberCustomPermissionsSiteAdd input[type="text"] {
-  width:220px;
+.memberHeaderRow, .defaultLayerPermissionsRow, .layerRow, .customPermissionsTitleRow, .customPermissionRow, .addCustomPermissionRow, .removeMemberRow {
+  height:32px;
+  background-color: #FFFFFF;
 }
 
-.memberCustomPermissionsSiteAdd input[type="text"]::-webkit-input-placeholder {
-  font-size:13px;
+.memberHeaderRow .permissionColumn {
+  height:23px;
+  padding-top: 9px;
 }
 
-.memberCustomPermissionsSiteAdd {
-  margin-top:5px;
+.permissionColumn {
+  width:60px;
+  height:32px;
+  float: left;
+  text-align: center;
+  color: #555555;
+  font-size: 12px;
 }
 
-.memberCustomPermissionsSiteAdd .clist-add {
-  margin-bottom: 5px;
-  margin-top:2px;
+.permissionColumn input[type="radio"] {
+  margin-top:8px;
+}
+
+.memberHeaderRow .permissionColumn.admin {
+  padding-top:7px;
+  height:25px;
+  margin-top: 0px;
+}
+
+.memberHeaderRow .permissionColumn.summaryAll {
+  font-weight: bold;
+}
+
+.memberHeaderRow .permissionColumn.summarySome {
+  font-style: italic;
+}
+
+.lastColumn {
+  height:32px;
+  width:408px;
+  padding-right:6px;
+  float:left;
+}
+
+.memberHeaderColumn {
+  width:290px;
+  height:32px;
+  float: left;
+  padding-left:6px;
+  background-color: #EEEEEE;
+  font-size: 12px;
+}
+
+.memberHeaderRow .memberHeaderColumn {
+  height:26px;
+  padding-top:6px;
+  font-size: 14px
+}
+
+.permissionColumn, .lastColumn {
+  background-color: #EEEEEE;
+}
+
+.defaultLayerPermissionsRow .memberHeaderColumn {
+  width:277px;
+  padding-left:19px;
+}
+
+.defaultLayerPermissionsTitle {
+  margin-top:8px;
+}
+
+.memberDetailsTitle {
+  font-weight: bold;
+  color: #545454;
+  text-align: center;
+  height:21px;
+  margin-left:5px;
+}
+
+.layerRow .memberHeaderColumn {
+  width:223px;
+  height:21px;
+  padding-top:11px;
+  padding-left: 73px;
+}
+
+.customPermissionsTitleRow .memberHeaderColumn {
+  height:24px;
+  padding-top: 8px;
+}
+
+.frame {
+  margin-left: 6px;
+  background-color: #DEDEDE;
+}
+
+.customPermissionsTitleRow .frame {
+  height:14px;
+  padding-top: 10px;
+}
+
+.customPermissionsTitleRow .permissionColumn {
+  height:24px;
+  padding-top:8px;
+}
+
+.customPermissionsTitleRow .permissionColumn .frame {
+  margin-left: 0px;
+}
+
+
+.customPermissionsTitleRow .memberHeaderColumn .frame .memberDetailsTitle {
+  text-align: left;
+  padding-left: 6px
+}
+
+.customPermissionRow .frame {
+  height: 32px;
+  padding-left:12px;
+}
+
+.customPermissionRow .permissionColumn {
+  background-color: #DEDEDE;
+}
+
+.customPermissionRow hr.underlineExpandedMember {
+  width:272px;
+  float:left;
+  z-index: 1;
+}
+
+.customPermissionRow .permissionColumn hr.underlineExpandedMember {
+  width:60px;
+}
+
+.customPermissionRow .permissionColumn .frame {
+  padding-left:0px;
+  margin-left:0px;
+  position: relative;
+}
+
+.customPermissionRow .permissionColumn.admin hr.underlineExpandedMember {
+  position: absolute;
+  bottom: 0px;
+  margin-bottom: -1px;
+  width:52px;
+}
+
+.addCustomPermissionRow .memberHeaderColumn .frame {
+  padding-left:8px;
+  height:32px;
+}
+
+.addCustomPermissionRow .autocomplete-site-input {
+  float:left;
+  width:240px;
+}
+
+.addCustomPermissionRow .clist-add {
   float:right;
+  margin-top:3px;
 }
 
-.memberRemove {
-  margin-top:5px;
+.addCustomPermissionRow .permissionColumn {
+  background-color: #DEDEDE;
 }
+
+.removeMemberRow .permissionColumn {
+  padding-bottom:5px;
+  padding-top: 5px;
+}
+
+.removeMemberRow .lastColumn {
+  padding-bottom:5px;
+  padding-top: 5px;
+}
+
+.removeMemberRow .memberHeaderColumn {
+  padding-bottom:5px;
+  padding-top: 5px;
+  padding-left:18px;
+  width:278px;
+}
+
