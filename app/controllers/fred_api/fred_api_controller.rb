@@ -1,5 +1,7 @@
 class FredApi::FredApiController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :authenticate_collection_user!
+  before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :delete_facility]
   before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility]
 
   around_filter :rescue_with_status_codes
@@ -11,6 +13,13 @@ class FredApi::FredApiController < ApplicationController
   include FredApi::JsonHelper
 
   expose(:site)
+  expose(:collection) {Collection.find params[:collection_id] }
+
+  def verify_site_belongs_to_collection!
+    if !collection.sites.include? site
+      render json: { message: "Facility #{site.id} do not belong to collection #{collection.id}"}, status: 409
+    end
+  end
 
   def rescue_with_status_codes
     yield
@@ -19,7 +28,7 @@ class FredApi::FredApiController < ApplicationController
   end
 
   def show_facility
-    search = site.collection.new_search current_user_id: current_user.id
+    search = collection.new_search current_user_id: current_user.id
     search.id(site.id)
     results = search.api_results('fred_api')
 
@@ -38,10 +47,6 @@ class FredApi::FredApiController < ApplicationController
   end
 
   def facilities
-    # We assume that FRED API users will only have one collection.
-    # In case they have more than one collection, we will query the first created.
-    collection = current_user.collections.reorder('created_at asc').first
-
     search = collection.new_search current_user_id: current_user.id
 
     search.use_codes_instead_of_es_codes
@@ -60,7 +65,7 @@ class FredApi::FredApiController < ApplicationController
     end
 
     #Perform queries
-    except_params = [:action, :controller, :format, :id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince]
+    except_params = [:action, :controller, :format, :id, :collection_id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince]
 
     # Query by Core Properties
     search.name(params[:name]) if params[:name]

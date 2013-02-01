@@ -4,7 +4,7 @@ describe FredApi::FredApiController do
   include Devise::TestHelpers
 
   let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make_unsaved) }
+  let!(:collection) { user.create_collection(Collection.make) }
   let!(:layer) { collection.layers.make }
 
   # We test only the field types supported by FRED API
@@ -27,7 +27,7 @@ describe FredApi::FredApiController do
     }}
 
     it 'should get default fields' do
-      get :show_facility, id: site.id, format: 'json'
+      get :show_facility, id: site.id, format: 'json', collection_id: collection.id
       response.content_type.should eq 'application/json'
 
       json = JSON.parse response.body
@@ -36,12 +36,12 @@ describe FredApi::FredApiController do
       json["coordinates"][0].should eq(site.lng)
       json["coordinates"][1].should eq(site.lat)
       json["active"].should eq(true)
-      json["url"].should eq("http://test.host/fred_api/v1/facilities/#{site.id}.json")
+      json["url"].should eq("http://test.host/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
 
     end
 
     it 'should get extended properties' do
-      get :show_facility, id: site_with_properties.id, format: 'json'
+      get :show_facility, id: site_with_properties.id, format: 'json', collection_id: collection.id
 
       json = JSON.parse response.body
       json["properties"].length.should eq(4)
@@ -57,7 +57,7 @@ describe FredApi::FredApiController do
     let!(:site2) { collection.sites.make name: 'Site B', properties:{ date.es_code => "2012-10-25T00:00:00Z"} }
 
     it 'should get the full list of facilities' do
-      get :facilities, format: 'json'
+      get :facilities, format: 'json', collection_id: collection.id
       response.should be_success
       response.content_type.should eq 'application/json'
 
@@ -66,7 +66,7 @@ describe FredApi::FredApiController do
     end
 
     it 'should sort the list of facilities by name asc' do
-      get :facilities, format: 'json', sortAsc: 'name'
+      get :facilities, format: 'json', sortAsc: 'name', collection_id: collection.id
 
       json = JSON.parse response.body
       json.length.should eq(2)
@@ -75,7 +75,7 @@ describe FredApi::FredApiController do
     end
 
     it 'should sort the list of facilities by name desc' do
-      get :facilities, format: 'json', sortDesc: 'name'
+      get :facilities, format: 'json', sortDesc: 'name', collection_id: collection.id
 
       json = JSON.parse response.body
       json.length.should eq(2)
@@ -84,7 +84,7 @@ describe FredApi::FredApiController do
     end
 
     it 'should sort the list of facilities by property date' do
-      get :facilities, format: 'json', sortDesc: 'inagurationDay'
+      get :facilities, format: 'json', sortDesc: 'inagurationDay', collection_id: collection.id
 
       json = JSON.parse response.body
       json.length.should eq(2)
@@ -93,18 +93,18 @@ describe FredApi::FredApiController do
     end
 
     it 'should limit the number of facilities returned and the offset for the query' do
-      get :facilities, format: 'json', limit: 1
+      get :facilities, format: 'json', limit: 1, collection_id: collection.id
       json = JSON.parse response.body
       json.length.should eq(1)
       json[0]["name"].should eq(site1.name)
-      get :facilities, format: 'json', limit: 1, offset: 1
+      get :facilities, format: 'json', limit: 1, offset: 1, collection_id: collection.id
       json = JSON.parse response.body
       json.length.should eq(1)
       json[0]["name"].should eq(site2.name)
     end
 
     it 'should select only default fields' do
-      get :facilities, format: 'json', fields: "name,id"
+      get :facilities, format: 'json', fields: "name,id", collection_id: collection.id
       json = JSON.parse response.body
       json.length.should eq(2)
       json[0].length.should eq(2)
@@ -117,7 +117,7 @@ describe FredApi::FredApiController do
     end
 
     it 'should select default and custom fields' do
-      get :facilities, format: 'json', fields: "name,properties:inagurationDay"
+      get :facilities, format: 'json', fields: "name,properties:inagurationDay", collection_id: collection.id
       json = JSON.parse response.body
       json.length.should eq(2)
       json[0].length.should eq(2)
@@ -130,7 +130,7 @@ describe FredApi::FredApiController do
     end
 
    it 'should return all fields (default and custom) when parameter allProperties is set' do
-      get :facilities, format: 'json', allProperties: true
+      get :facilities, format: 'json', allProperties: true, collection_id: collection.id
       json = JSON.parse response.body
       json.length.should eq(2)
       json[0].length.should eq(8)
@@ -143,21 +143,21 @@ describe FredApi::FredApiController do
     describe "Filtering Facilities" do
 
       it "should filter by name" do
-        get :facilities, format: 'json', name: site1.name
+        get :facilities, format: 'json', name: site1.name, collection_id: collection.id
         json = JSON.parse response.body
         json.length.should eq(1)
         json[0]['name'].should eq(site1.name)
       end
 
       it "should filter by id" do
-        get :facilities, format: 'json', id: site1.id
+        get :facilities, format: 'json', id: site1.id, collection_id: collection.id
         json = JSON.parse response.body
         json.length.should eq(1)
         json[0]['id'].should eq(site1.id)
       end
 
       it "should filter by coordinates" do
-        get :facilities, format: 'json', coordinates: [site1.lng.to_f, site1.lat.to_f]
+        get :facilities, format: 'json', coordinates: [site1.lng.to_f, site1.lat.to_f], collection_id: collection.id
         json = JSON.parse response.body
         json.length.should eq(1)
         json[0]['id'].should eq(site1.id)
@@ -168,7 +168,7 @@ describe FredApi::FredApiController do
         sleep 3
         site3 = collection.sites.make name: 'Site C'
         iso_updated_at = Time.zone.parse(site3.updated_at.to_s).utc.iso8601
-        get :facilities, format: 'json', updatedAt: iso_updated_at
+        get :facilities, format: 'json', updatedAt: iso_updated_at, collection_id: collection.id
         json = JSON.parse response.body
         json.length.should eq(1)
         json[0]['id'].should eq(site3.id)
@@ -179,7 +179,7 @@ describe FredApi::FredApiController do
         sleep 3
         site3 = collection.sites.make name: 'Site C'
         iso_created_at = Time.zone.parse(site3.created_at.to_s).utc.iso8601
-        get :facilities, format: 'json', createdAt: iso_created_at
+        get :facilities, format: 'json', createdAt: iso_created_at, collection_id: collection.id
         json = JSON.parse response.body
         json.length.should eq(1)
         json[0]['id'].should eq(site3.id)
@@ -187,7 +187,7 @@ describe FredApi::FredApiController do
 
       it "should filter by active" do
         #All ResourceMap facilities are active, because ResourceMap does not implement logical deletion yet
-        get :facilities, format: 'json', active: false
+        get :facilities, format: 'json', active: false, collection_id: collection.id
         json = JSON.parse response.body
         json.length.should eq(0)
       end
@@ -197,7 +197,7 @@ describe FredApi::FredApiController do
         iso_before_update = Time.zone.now.utc.iso8601
         site1.name = "Site A New"
         site1.save!
-        get :facilities, format: 'json', updatedSince: iso_before_update
+        get :facilities, format: 'json', updatedSince: iso_before_update, collection_id: collection.id
         json = JSON.parse response.body
         json.length.should eq(1)
         json[0]['id'].should eq(site1.id)
@@ -210,8 +210,8 @@ describe FredApi::FredApiController do
   describe "delete facility" do
     it "should delete facility" do
       site3 = collection.sites.make name: 'Site C'
-      delete :delete_facility, id: site3.id
-      response.body.should eq("http://test.host/fred_api/v1/facilities/#{site3.id}.json")
+      delete :delete_facility, id: site3.id, collection_id: collection.id
+      response.body.should eq("http://test.host/collections/#{collection.id}/fred_api/v1/facilities/#{site3.id}.json")
       sites = Site.find_by_name 'Site C'
       sites.should be(nil)
     end
@@ -220,19 +220,19 @@ describe FredApi::FredApiController do
   describe "http status codes" do
     let!(:site) { collection.sites.make }
     it "should return 200 in a valid request" do
-      get :show_facility, id: site.id, format: 'json'
+      get :show_facility, id: site.id, format: 'json', collection_id: collection.id
       response.should be_success
     end
 
     it "should return 401 if the user is not signed_in" do
       sign_out user
-      get :show_facility, id: site.id, format: 'json'
+      get :show_facility, id: site.id, format: 'json', collection_id: collection.id
       response.status.should eq(401)
     end
 
     it "should return 401 if the user is not signed_in" do
       sign_out user
-      get :show_facility, id: site.id, format: 'json'
+      get :show_facility, id: site.id, format: 'json', collection_id: collection.id
       response.status.should eq(401)
     end
 
@@ -240,17 +240,30 @@ describe FredApi::FredApiController do
       user2 = User.make
       sign_out user
       sign_in user2
-      get :show_facility, id: site.id, format: 'json'
+      get :show_facility, id: site.id, format: 'json', collection_id: collection.id
       response.status.should eq(403)
     end
 
+    it "should return 403 if user is do not have permission to access the collection" do
+      collection2 = Collection.make
+      get :show_facility, id: site.id, format: 'json', collection_id: collection2.id
+      response.status.should eq(403)
+    end
+
+    it "should return 409 if the site do not belong to the collection" do
+      collection2 = Collection.make
+      user.create_collection(collection2)
+      get :show_facility, id: site.id, format: 'json', collection_id: collection2.id
+      response.status.should eq(409)
+    end
+
     it "should return 404 if the requested site does not exist" do
-      get :show_facility, id: 12355259, format: 'json'
+      get :show_facility, id: 12355259, format: 'json', collection_id: collection.id
       response.status.should eq(404)
     end
 
     it "should return 422 if a non existing field is included in the query" do
-      get :facilities, format: 'json', invalid: "option"
+      get :facilities, format: 'json', invalid: "option", collection_id: collection.id
       response.status.should eq(422)
     end
   end

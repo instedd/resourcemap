@@ -93,11 +93,9 @@ ResourceMap::Application.routes.draw do
     resources :tokens, :only => [:index, :destroy]
   end
 
-  namespace :fred_api do
-    get 'v1/facilities/:id' => 'fred_api#show_facility', as: :show_facility
-    get 'v1/facilities'  => 'fred_api#facilities', as: :facilities
-    delete 'v1/facilities/:id' => 'fred_api#delete_facility', as: :delete_facility
-  end
+  match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api/fred_api#show_facility', :via => :get, as: :show_facility
+  match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api/fred_api#facilities', :via => :get, as: :facilities
+  match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api/fred_api#delete_facility', :via => :delete, as: :delete_facility
 
   scope '/plugin' do
     Plugin.all.each do |plugin|

@@ -43,6 +43,10 @@ class ApplicationController < ActionController::Base
     stored_location_for(resource) || collections_path
   end
 
+  def authenticate_collection_user!
+    head :forbidden unless current_user.belongs_to?(collection)
+  end
+
   def authenticate_collection_admin!
     head :forbidden unless current_user.admins?(collection)
   end
