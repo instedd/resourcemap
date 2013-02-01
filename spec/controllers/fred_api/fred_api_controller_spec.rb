@@ -28,7 +28,6 @@ describe FredApi::FredApiController do
 
     it 'should get default fields' do
       get :show_facility, id: site.id, format: 'json'
-      response.should be_success
       response.content_type.should eq 'application/json'
 
       json = JSON.parse response.body
@@ -215,6 +214,44 @@ describe FredApi::FredApiController do
       response.body.should eq("http://test.host/fred_api/v1/facilities/#{site3.id}.json")
       sites = Site.find_by_name 'Site C'
       sites.should be(nil)
+    end
+  end
+
+  describe "http status codes" do
+    let!(:site) { collection.sites.make }
+    it "should return 200 in a valid request" do
+      get :show_facility, id: site.id, format: 'json'
+      response.should be_success
+    end
+
+    it "should return 401 if the user is not signed_in" do
+      sign_out user
+      get :show_facility, id: site.id, format: 'json'
+      response.status.should eq(401)
+    end
+
+    it "should return 401 if the user is not signed_in" do
+      sign_out user
+      get :show_facility, id: site.id, format: 'json'
+      response.status.should eq(401)
+    end
+
+    it "should return 403 if user is do not have permission to access the site" do
+      user2 = User.make
+      sign_out user
+      sign_in user2
+      get :show_facility, id: site.id, format: 'json'
+      response.status.should eq(403)
+    end
+
+    it "should return 404 if the requested site does not exist" do
+      get :show_facility, id: 12355259, format: 'json'
+      response.status.should eq(404)
+    end
+
+    it "should return 422 if a non existing field is included in the query" do
+      get :facilities, format: 'json', invalid: "option"
+      response.status.should eq(422)
     end
   end
 

@@ -21,8 +21,8 @@ class ApplicationController < ActionController::Base
   def current_user_or_guest
     if user_signed_in?
       return if !current_user.try(:is_guest)
-    end 
-    
+    end
+
     if params.has_key? "collection"
       return if !Collection.find(params["collection"]).public
       u = User.find_by_is_guest true
@@ -38,17 +38,17 @@ class ApplicationController < ActionController::Base
       end
     end
   end
-  
+
   def after_sign_in_path_for(resource)
     stored_location_for(resource) || collections_path
   end
 
   def authenticate_collection_admin!
-    head :unauthorized unless current_user.admins?(collection)
+    head :forbidden unless current_user.admins?(collection)
   end
 
   def authenticate_site_user!
-    head :unauthorized unless current_user.belongs_to?(site.collection)
+    head :forbidden unless current_user.belongs_to?(site.collection)
   end
 
   def show_collections_breadcrumb

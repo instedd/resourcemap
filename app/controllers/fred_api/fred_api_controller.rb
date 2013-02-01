@@ -1,10 +1,22 @@
 class FredApi::FredApiController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :authenticate_site_user!, :only => [:show_facility]
+  before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility]
+
+  around_filter :rescue_with_status_codes
+
+  rescue_from ActiveRecord::RecordNotFound do |x|
+    render json: { message: "Record not found"}, :status => 404, :layout => false
+  end
 
   include FredApi::JsonHelper
 
   expose(:site)
+
+  def rescue_with_status_codes
+    yield
+  rescue => ex
+    render json: { message: ex.message}, status: 422
+  end
 
   def show_facility
     search = site.collection.new_search current_user_id: current_user.id
