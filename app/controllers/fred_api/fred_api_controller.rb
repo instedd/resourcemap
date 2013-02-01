@@ -83,7 +83,7 @@ class FredApi::FredApiController < ApplicationController
     #Format result
     facilities = search.api_results('fred_api')
     #Hack: All facilities are active. If param[:active]=false then no results should be returned
-    facilities = [] if params[:active] == false
+    facilities = [] if params[:active].to_s == false.to_s
 
     fred_json_facilities = facilities.map {|facility| fred_facility_format facility}
 

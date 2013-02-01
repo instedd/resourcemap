@@ -187,7 +187,7 @@ describe FredApi::FredApiController do
 
       it "should filter by active" do
         #All ResourceMap facilities are active, because ResourceMap does not implement logical deletion yet
-        get :facilities, format: 'json', active: false, collection_id: collection.id
+        get :facilities, format: 'json', active: 'false', collection_id: collection.id
         json = JSON.parse response.body
         json.length.should eq(0)
       end
