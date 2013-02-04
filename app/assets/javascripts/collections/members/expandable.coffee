@@ -1,6 +1,6 @@
 class @Expandable extends Module
   constructor: ->
-    @expanded = ko.observable true
+    @expanded = ko.observable false
 
   toggleExpanded: => @expanded(!@expanded())
 

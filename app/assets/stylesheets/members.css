@@ -115,7 +115,7 @@ hr.underlineExpandedMember {
 
 .lastColumn {
   height:32px;
-  width:408px;
+  width:406px;
   padding-right:6px;
   float:left;
 }
@@ -262,6 +262,11 @@ hr.underlineExpandedMember {
   padding-bottom:5px;
   padding-top: 5px;
   padding-left:18px;
-  width:932px;
+  width:930px;
   height: auto !important;
+}
+
+.memberHeaderColumn.collapsed, .permissionColumn.collapsed, .permissionColumn.admin.collapsed, .lastColumn.collapsed {
+  background-color: white;
+  border-bottom: 1px #EEEEEE solid;
 }
