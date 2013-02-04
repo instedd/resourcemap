@@ -49,5 +49,5 @@
       %td{:colspan => 6, :style => 'height:5px;'}
     //ko
     //ko
-  - if collection_admin?
-    = render 'collections/members/add_member'
+    - if collection_admin?
+      = render 'collections/members/add_member'
