@@ -146,10 +146,6 @@ class @Membership extends Expandable
     $.post "/collections/#{@collectionId()}/memberships/#{@userId()}.json", {_method: 'delete'}, =>
       @root.memberships.remove @
 
-  initializeLinks: =>
-    @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
-    @initializeAllReadAllWrite()
-
   findLayerMembership: (layer) =>
     lm = @layers().filter((x) -> x.layerId() == layer.id())
     if lm.length > 0 then lm[0] else null

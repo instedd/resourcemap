@@ -13,7 +13,6 @@
         $.post "/collections/#{collectionId}/memberships.json", {email: email}, (data) ->
           if data.status == 'added'
             new_member = new Membership(window.model, { user_id: data.user_id, user_display_name: data.user_display_name })
-            new_member.initializeLinks()
             window.model.memberships.push new_member
             $member_email.val('')
 
