@@ -36,7 +36,7 @@ class @SiteCustomPermission
           "false"
       write: =>
         @can_read true
-        @can_write false
+        @can_write true
         @membership.saveCustomSitePermissions()
 
 

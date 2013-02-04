@@ -114,11 +114,13 @@ class @Membership extends Expandable
           _.each data, (s) ->
             if s.name == _self.customSite()
 
-              new_permission = new SiteCustomPermission s.id, s.name, false, false
+              new_permission = new SiteCustomPermission s.id, s.name, false, false, _self
               _self.sitesWithCustomPermissions.push new_permission
               _self.customSite("")
 
-    @removeCustomPermission = (site_permission) => @sitesWithCustomPermissions.remove site_permission
+    @removeCustomPermission = (site_permission) =>
+      @sitesWithCustomPermissions.remove site_permission
+      @saveCustomSitePermissions()
 
   initializeLinks: =>
     @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
