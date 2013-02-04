@@ -125,6 +125,17 @@ class @Membership extends Expandable
       @sitesWithCustomPermissions.remove site_permission
       @saveCustomSitePermissions()
 
+    @defaultLayerPermissionsExpanded = ko.observable true
+
+    @defaultLayerPermissionsArrow = (base_uri) =>
+      if @defaultLayerPermissionsExpanded()
+        "#{base_uri}/theme/images/icons/misc/black/arrowDown.png"
+      else
+        "#{base_uri}/theme/images/icons/misc/black/arrowRight.png"
+
+  toggleDefaultLayerPermissions: =>
+    @defaultLayerPermissionsExpanded(not @defaultLayerPermissionsExpanded())
+
   open_confirm: =>
     @confirming true
 

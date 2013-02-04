@@ -14,8 +14,8 @@
   .defaultLayerPermissionsRow
     .memberHeaderColumn
       %hr.underlineExpandedMember
-      .defaultLayerPermissionsTitle
-        %img.members-collapse-icon{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrowDown.png'"})}
+      .defaultLayerPermissionsTitle{ko(click: :toggleDefaultLayerPermissions)}
+        %img.members-collapse-icon{ko(attr: {src: "defaultLayerPermissionsArrow('#{InsteddRails.url}')" })}
         %span.memberDetailsTitle
           Default permissions for all sites
 
@@ -28,7 +28,7 @@
       %hr.underlineExpandedMember
     .lastColumn
 
-
+  /ko if: defaultLayerPermissionsExpanded
   /ko foreach: layers
   .layerRow
     .memberHeaderColumn{ko(text: "layerName()")}
@@ -37,6 +37,7 @@
         %input{ko(disable: "$parent.admin()", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
     .permissionColumn.admin
     .lastColumn
+  //ko
   //ko
 
   .customPermissionsTitleRow
