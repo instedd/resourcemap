@@ -28,17 +28,3 @@ class @Expandable extends Module
       when 'tristate-partial' then '---'
       when 'tristate-checked' then 'Yes'
       when 'tristate-unchecked' then 'No'
-
-  toggleAllRead: =>
-    switch @allRead()
-      when 'tristate-partial', 'tristate-unchecked'
-        link.canRead(true) for link in @membershipLayerLinks()
-      else
-        link.canRead(false) for link in @membershipLayerLinks()
-
-  toggleAllWrite: =>
-    switch @allWrite()
-      when 'tristate-partial', 'tristate-unchecked'
-        link.canWrite(true) for link in @membershipLayerLinks()
-      else
-        link.canWrite(false) for link in @membershipLayerLinks()
