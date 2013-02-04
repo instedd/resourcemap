@@ -71,7 +71,7 @@
   .addCustomPermissionRow{ko(attr: { "id" => "customPermissionsAutocompleteId()" })}
     .memberHeaderColumn
       .frame
-        %input.autocomplete-site-input.ux-search{ ko(autocomplete: :customSite, value: :customSite, valueUpdate: :afterkeydown, source: "searchSitesUrl()"), type: :text, placeholder: 'Add custom permissions for site' }
+        %input.autocomplete-site-input.ux-search{ ko(autocomplete: :customSite, value: :customSite, valueUpdate: :afterkeydown, source: "searchSitesUrl()", event: {keydown: :keyPress, blur: :save}), type: :text, placeholder: 'Add custom permissions for site' }
         %button.clist-add{ko(click: :createCustomPermissionForSite)}
     - ['None', 'Read', 'Update'].each do |permission|
       .permissionColumn

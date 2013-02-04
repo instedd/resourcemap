@@ -1,13 +1,44 @@
 class @SiteCustomPermission
-  constructor: (id, name, read, write) ->
+  constructor: (id, name, read, write, membership) ->
+    @membership = membership
     @id = ko.observable id
     @name = ko.observable name
     @can_read = ko.observable read
     @can_write = ko.observable write
 
-    @noneChecked = ko.computed => not @can_read() and not @can_write()
-    @readChecked = ko.computed => @can_read() and not @can_write()
-    @updateChecked = ko.computed => @can_write()
+    @noneChecked = ko.computed
+      read: =>
+        if not @can_read() and not @can_write()
+          "true"
+        else
+          "false"
+      write: =>
+        @can_read false
+        @can_write false
+        @membership.saveCustomSitePermissions()
+
+    @readChecked = ko.computed
+      read: =>
+        if @can_read() and not @can_write()
+          "true"
+        else
+          "false"
+      write: =>
+        @can_read true
+        @can_write false
+        @membership.saveCustomSitePermissions()
+
+    @updateChecked = ko.computed
+      read: =>
+        if @can_write()
+          "true"
+        else
+          "false"
+      write: =>
+        @can_read true
+        @can_write false
+        @membership.saveCustomSitePermissions()
+
 
   @findBySiteName: (sitePermissions, site_name) ->
     _.find sitePermissions, (perm) -> perm.name() == site_name
@@ -16,6 +47,14 @@ class @SiteCustomPermission
     _.find sitePermissions, (perm) -> perm.id() == site_id
 
 
+  @summarizeRead: (sitePermissions) ->
+    read_sites = ({ "id": p.id(), "name": p.name() } for p in sitePermissions when p.can_read())
+    { "all_sites": read_sites.length == 0, "some_sites": read_sites }
+
+  @summarizeWrite: (sitePermissions) ->
+    write_sites = ({ "id": p.id(), "name": p.name() } for p in sitePermissions when p.can_write())
+    { "all_sites": write_sites.length == 0, "some_sites": write_sites }
+
   # Expect "sitePermissions" to be an object like:
   #   "write":
   #     "all_sites": false
@@ -23,7 +62,7 @@ class @SiteCustomPermission
   #   "read":
   #     "all_sites": true
   #     "some_sites": []
-  @arrayFromJson: (sitePermissions) ->
+  @arrayFromJson: (sitePermissions, membership) ->
     write = (p) =>
       _.any(sitePermissions.write.some_sites, (s) -> s.id == p.id())
 
@@ -41,14 +80,15 @@ class @SiteCustomPermission
 
     # Create a SiteCustomPermission instance for each site listed in read.some_sites
     unless can_read_all
-      permissions = (new SiteCustomPermission site.id, site.name, true, can_write_all for site in sitePermissions.read.some_sites)
+      permissions = (new SiteCustomPermission(site.id, site.name, true, can_write_all, membership) for site in sitePermissions.read.some_sites)
 
     unless can_write_all
       # Set write to true for all sites listed in write.some_sites that were also in read.some_sites
       permission.can_write(true) for permission in permissions when write(permission)
 
       # Create SiteCustomPermission instance for each site listed in write.some_sites that was not already created
-      permissions = permissions.concat(new SiteCustomPermission site.id, site.name, true, true for site in sitePermissions.write.some_sites when not_in(permissions, site.id))
+      permissions = permissions.concat(new SiteCustomPermission(site.id, site.name, true, true,membership) for site in sitePermissions.write.some_sites when not_in(permissions, site.id))
 
     permissions
+
 
