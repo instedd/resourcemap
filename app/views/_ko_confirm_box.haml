@@ -1,0 +1,22 @@
+-# This partial expects some parameters:
+
+-# action_code : a code that's used to disambiguate in case more than one instance of this partial view is used in the same page. We just need this to create html element ids. This is right: 'i-ll-delete-something'. This is wrong: 'i ll delete something'.
+
+-# action_description : the description of the action that get's executed once the user confirms. It's shown as is to the user. Example: 'Delete contacts'
+
+-# icon_class : a class name referring to the icon to be used. It's shown to the user together with the action_description. Example: 'fdelete'
+
+-# confirm_action_prompt : when the user clicks the initial action button, we display a grey box and ask her to confirm. We expect confirm_action_prompt to be a question to double check with user. Example: 'Are you sure you want to delete all your contacts?'
+
+-# action_url : a URL that will cause the confirmed action to be executed. Example: '/collections/4'
+%a{ko(click: :open_confirm, visible: "!confirming()"), :class => "icon #{icon_class} black"}
+  = action_description
+%div.sbox.grey{ko(visible: :confirming), style: 'display:none;width:372px;'}
+  %div.icon.fclose.black{ko(click: :close_confirm), style: 'width:24px;float:left;background-position: 0 -60px;'}
+  %div{style: 'margin-top:8px;margin-left:28px;'}
+    = confirm_action_prompt
+    %hr
+  %div{style:'height:37px;'}
+    %a{ko(click: :confirm), :class => "button white right"}
+      = 'Confirm'
+    %a.grey.right{ko(click: :close_confirm), :style => 'margin-top:13px; margin-right:10px;'} Cancel

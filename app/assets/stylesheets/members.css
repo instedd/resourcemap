@@ -76,7 +76,7 @@ hr.underlineExpandedMember {
   float:right;
 }
 
-.memberHeaderRow, .defaultLayerPermissionsRow, .layerRow, .customPermissionsTitleRow, .customPermissionRow, .addCustomPermissionRow, .removeMemberRow {
+.memberHeaderRow, .defaultLayerPermissionsRow, .layerRow, .customPermissionsTitleRow, .customPermissionRow, .addCustomPermissionRow {
   height:32px;
   background-color: #FFFFFF;
 }
@@ -244,6 +244,10 @@ hr.underlineExpandedMember {
   background-color: #DEDEDE;
 }
 
+.removeMemberRow {
+  height: auto !important;
+}
+
 .removeMemberRow .permissionColumn {
   padding-bottom:5px;
   padding-top: 5px;
@@ -258,6 +262,6 @@ hr.underlineExpandedMember {
   padding-bottom:5px;
   padding-top: 5px;
   padding-left:18px;
-  width:278px;
+  width:932px;
+  height: auto !important;
 }
-

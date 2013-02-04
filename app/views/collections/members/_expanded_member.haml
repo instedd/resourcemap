@@ -80,8 +80,4 @@
 
   .removeMemberRow
     .memberHeaderColumn
-      = render './confirm_box', :action_code => 'delete-member', :action_description => 'Remove this member', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to remove this member from the collection?', :action_url => ''
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-    .permissionColumn.admin
-    .lastColumn
+      = render './ko_confirm_box', :action_description => 'Remove this member', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to remove this member from the collection?'

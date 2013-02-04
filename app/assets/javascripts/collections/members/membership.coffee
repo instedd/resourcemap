@@ -1,6 +1,7 @@
 class @Membership extends Expandable
   constructor: (root, data) ->
     _self = @
+    @root = root
 
     # Defined this before callModuleConstructors because it's used by MembershipLayout
     @userId = ko.observable data?.user_id
@@ -103,6 +104,8 @@ class @Membership extends Expandable
 
     @customSite = ko.observable ''
 
+    @confirming = ko.observable false
+
     @createCustomPermissionForSite = () =>
       if $.trim(@customSite()).length > 0
         # TODO: filter results so that they don't include already added sites.
@@ -121,6 +124,16 @@ class @Membership extends Expandable
     @removeCustomPermission = (site_permission) =>
       @sitesWithCustomPermissions.remove site_permission
       @saveCustomSitePermissions()
+
+  open_confirm: =>
+    @confirming true
+
+  close_confirm: =>
+    @confirming false
+
+  confirm: =>
+    $.post "/collections/#{@collectionId()}/memberships/#{@userId()}.json", {_method: 'delete'}, =>
+      @root.memberships.remove @
 
   initializeLinks: =>
     @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
