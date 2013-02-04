@@ -27,7 +27,8 @@ class SitesController < ApplicationController
   end
 
   def create
-    site = collection.sites.create(JSON.parse(params[:site]).merge(user: current_user))
+    validated_site = validate_site_properties(params[:site])
+    site = collection.sites.create(validated_site.merge(user: current_user))
     current_user.site_count += 1
     current_user.update_successful_outcome_status
     current_user.save!
@@ -35,9 +36,10 @@ class SitesController < ApplicationController
   end
 
   def update
+    validated_site = validate_site_properties(params[:site])
     site.user = current_user
     site.properties_will_change!
-    site.update_attributes! JSON.parse(params[:site])
+    site.update_attributes! validated_site
     render json: site
   end
 
@@ -79,5 +81,21 @@ class SitesController < ApplicationController
     site.user = current_user
     site.destroy
     render json: site
+  end
+
+  private
+
+  def validate_site_properties(site_param)
+    fields = collection.fields
+    properties = JSON.parse(site_param)["properties"]
+    validated_properties = {}
+    properties.each_pair do |es_code, value|
+      field = fields.where_es_code_is es_code
+      validated_value = field.apply_format_update_validation(value, false, collection)
+      validated_properties["#{es_code}"] = validated_value
+    end
+    validated_site = JSON.parse(site_param)
+    validated_site["properties"] = validated_properties
+    validated_site
   end
 end
