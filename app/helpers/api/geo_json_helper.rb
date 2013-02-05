@@ -27,8 +27,8 @@ module Api::GeoJsonHelper
     obj[:properties] = (props = {})
 
     props[:name] = source['name']
-    props[:createdAt] = Site.parse_date(source['created_at'])
-    props[:updatedAt] = Site.parse_date(source['updated_at'])
+    props[:createdAt] = Site.parse_time(source['created_at'])
+    props[:updatedAt] = Site.parse_time(source['updated_at'])
     props[:properties] = source['properties']
 
     obj

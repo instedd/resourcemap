@@ -214,6 +214,22 @@ describe FredApi::FredApiController do
         json[0]['id'].should eq(site1.id.to_s)
       end
 
+      it "should filter by updated since with arbitrary updated_at velues" do
+        site1.destroy
+        site2.destroy
+        stub_time Time.iso8601("2013-02-04T21:25:27Z").to_s
+        site3 = collection.sites.make name: 'Site C'
+        stub_time Time.iso8601("2013-02-04T22:55:53Z").to_s
+        site4 = collection.sites.make name: 'Site D'
+        stub_time Time.iso8601("2013-02-04T22:55:59Z").to_s
+        site5 = collection.sites.make name: 'Site E'
+        get :facilities, format: 'json', updatedSince: "2013-02-04T22:55:53Z", collection_id: collection.id
+        json = (JSON.parse response.body)["facilities"]
+        json.length.should eq(2)
+        json[0]['id'].should eq(site4.id.to_s)
+        json[1]['id'].should eq(site5.id.to_s)
+      end
+
     end
 
   end

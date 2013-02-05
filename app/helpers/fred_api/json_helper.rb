@@ -11,8 +11,8 @@ module FredApi::JsonHelper
     obj[:id] = source['id'].to_s
     obj[:name] = source['name']
 
-    obj[:createdAt] = format_date_to_iso_string(source['created_at'])
-    obj[:updatedAt] = format_date_to_iso_string(source['updated_at'])
+    obj[:createdAt] = format_time_to_iso_string(source['created_at'])
+    obj[:updatedAt] = format_time_to_iso_string(source['updated_at'])
     if source['location']
       obj[:coordinates] = [source['location']['lon'], source['location']['lat']]
     end
@@ -29,8 +29,8 @@ module FredApi::JsonHelper
 
   private
 
-  def format_date_to_iso_string(rails_format_date_sting)
-    date = Site.parse_date(rails_format_date_sting)
-    Site.format_date_iso_string(date)
+  def format_time_to_iso_string(es_format_date_sting)
+    date = Site.parse_time(es_format_date_sting)
+    date.iso8601
   end
 end

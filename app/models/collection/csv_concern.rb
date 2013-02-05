@@ -25,7 +25,7 @@ module Collection::CsvConcern
         fields.each do |field|
           row << Array(source['properties'][field.code]).join(", ")
         end
-        row << Site.parse_date(source['updated_at']).rfc822
+        row << Site.iso_string_to_rfc822(source['updated_at'])
         csv << row
       end
     end

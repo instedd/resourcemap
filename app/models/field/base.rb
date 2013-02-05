@@ -72,7 +72,7 @@ module Field::Base
     elsif hierarchy?
       return value
     elsif date?
-      return value.to_time.strftime("%m/%d/%Y")
+      return Site.iso_string_to_mdy(value)
     else
       return value
     end
@@ -94,7 +94,7 @@ module Field::Base
     elsif hierarchy?
       return find_hierarchy_value value
     elsif date?
-      return value.to_time.strftime("%m/%d/%Y")
+      return Site.iso_string_to_mdy(value)
     else
       return value
     end
@@ -115,7 +115,7 @@ module Field::Base
     elsif numeric?
       value = -39.2
     elsif date?
-      value = Site.format_date_iso_string(Time.strptime '4/23/1851', '%m/%d/%Y')
+      value = Site.format_date_iso_string(Site.parse_date('4/23/1851'))
     elsif user?
       return '' if user.nil?
       value = user.email

@@ -37,7 +37,7 @@ describe Field do
 
     it "for dates is a date" do
       field = Field.make kind: 'date'
-      expect { Time.strptime field.sample_value, '%m/%d/%Y' }.to_not raise_error
+      expect { Site.parse_date(field.sample_value) }.to_not raise_error
     end
 
     it "for user is a string" do
