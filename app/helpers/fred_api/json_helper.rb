@@ -8,7 +8,7 @@ module FredApi::JsonHelper
     source = result['_source']
 
     obj = {}
-    obj[:id] = source['id']
+    obj[:id] = source['id'].to_s
     obj[:name] = source['name']
 
     obj[:createdAt] = format_date_to_iso_string(source['created_at'])

@@ -122,7 +122,7 @@ module SearchBase
   end
 
   def updated_since(iso_string)
-    time = Time.strptime(iso_string, '%Y-%m-%dT%H:%M:%S%z')
+    time = Time.iso8601(iso_string)
     updated_since_query(time)
   end
 
@@ -133,7 +133,7 @@ module SearchBase
 
   def date_query(iso_string, field_name)
     # We use a 2 seconds range, not the exact date, because this would be very restrictive
-    time = Time.strptime(iso_string, '%Y-%m-%dT%H:%M:%S%z')
+    time = Time.iso8601(iso_string)
     time_upper_bound = time + 1.second
     time_lower_bound = time - 1.second
     @search.filter :range, field_name.to_sym => {gte: Site.format_date(time_lower_bound)}

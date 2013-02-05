@@ -92,7 +92,7 @@ class FredApi::FredApiController < ApplicationController
     fred_json_facilities = select_properties(fred_json_facilities, parse_fields(params[:fields])) if params[:fields]
 
     respond_to do |format|
-      format.json { render json: fred_json_facilities}
+      format.json { render json: {facilities: fred_json_facilities} }
     end
 
   end

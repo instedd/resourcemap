@@ -8,12 +8,12 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
   has_many :memberships
   has_many :channels
-  has_many :collections, through: :memberships, order: 'name ASC'
+  has_many :collections, through: :memberships, order: 'collections.name ASC'
   has_one :user_snapshot
 
   def create_collection(collection)
     return false unless collection.save
-    
+
     if collection.public
       u = User.find_by_is_guest true
       u.memberships.create! collection_id: collection.id, admin: false
@@ -97,9 +97,9 @@ class User < ActiveRecord::Base
   end
 
   def get_gateway
-    channels.first 
+    channels.first
   end
-  
+
   def active_gateway
     channels.where("channels.is_enable=?", true)
   end

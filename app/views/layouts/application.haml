@@ -10,7 +10,7 @@
   = section "Home", root_path(explicit: true), :home
   - if user_signed_in?
     = section "Collections", collections_path, :collections
-    - if !current_user.is_guest 
+    - if !current_user.is_guest
       = section "Activity", activities_path, :activities
       - if Settings.is_on? :channels
         = section "SMS Gateways", gateways_path, :gateways
@@ -21,7 +21,7 @@
   %ul.RightMenu
     - if user_signed_in?
       %li
-        - if !current_user.is_guest 
+        - if !current_user.is_guest
           #User
             = current_user.email
             %br
@@ -34,8 +34,8 @@
                 %li
                   %a{:href => "mailto:support@instedd.org?subject=[#{application_name.underscore}-bug]"} Report a bug
                 %li= link_to "Sign Out", destroy_user_session_path, method: :delete
-      
-      - if !current_user.is_guest 
+
+      - if !current_user.is_guest
         %li
           = link_to '', edit_user_registration_path, class: 'fsettings'
       - else
