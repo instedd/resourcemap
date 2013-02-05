@@ -48,16 +48,16 @@
             .feditor-top
             .feditor-container
               .rightbuttons{style:'width:250px;'}
-                %button.fdelete{ko(click: "$root.deleteField"), style:'margin-top:0px;float:right;'}
+                %button.fdelete{ko(click: "$root.deleteField"), style:'margin-top:0px;float:right;', title: 'Remove field'}
                 .btupdn{style: 'float:right;'}
-                  %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'margin-top:0'}
-                  %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'})}
+                  %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'margin-top:0', title: 'Move field up'}
+                  %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'}), title: 'Move field down'}
                 .change_layer{style:'float:right;position:relative;top:4px;width:180px;'}
                   %a{ko(click: 'selectingLayerClick', attr: '{id: name}'), style: 'float:right', href: '#'} Move to layer...
                   = select_tag :layer, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', event: '{ change: selectingLayerSelect }'), :style => "display: none; position:relative;float:right;"
 
               .feditor-button{style: 'margin-top:-5px;'}
-                %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"})}
+                %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"}), title: 'Select field'}
               .feditor-content
                 %h1{ko(text: :name)}
                 -# This is to make the h1 occupy the vertical space even if no name is set yet
@@ -80,7 +80,7 @@
                 - Field::BaseKinds.each do |field|
                   - i += 1
                   %span{ko(click: "function() { $root.newField('#{field[:name]}') }")}
-                    %button{ class: field[:css_class] }
+                    %button{ class: field[:css_class], title: "Add new #{field[:name].titleize.downcase} field" }
                     %br/
                     = field[:name].titleize
                   - if i == 5
@@ -88,7 +88,7 @@
                     %br/
                 - Field::PluginKinds.each do |name, kind|
                   %span{ko(click: "function() { $root.newField('#{name}') }")}
-                    %button{ class: kind[:css_class] }
+                    %button{ class: kind[:css_class], title: "Add new #{name.downcase} field"}
                     %br/
                     = name.titleize
 
@@ -120,12 +120,12 @@
               %input.arrowinput{ko(visible: :editing, hasfocus: true, value: :code, valueUpdate: :afterkeydown, event: {keypress: :keyPress, blur: '$root.optionBlur'}), type: :text, style: 'position:relative;top:1px'}
               %span.arrowgrey{ko(visible: '!editing()', click: :edit, text: :code), style: 'cursor:pointer;position:relative;top:-1px'}
               %input.ux-clist{ko(value: :label, valueUpdate: :afterkeydown, event: {blur: '$root.optionBlur'}), type: :text, style: 'width: 150px !important'}
-              %button.clist-remove{ko(click: '$root.removeOption')}
+              %button.clist-remove{ko(click: '$root.removeOption'), title: 'Remove option'}
             //ko
             %li{ko(with: '$root.newOption()')}
               %input.arrowinput{ko(value: :code, hasfocus: :hasFocus, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Code", style: 'position:relative;top:2px'}
               %input.ux-text{ko(value: :label, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Label", style: 'width: 150px !important'}
-              %button.clist-add{ko(click: '$root.addOption', enable: '$root.optionValid')}
+              %button.clist-add{ko(click: '$root.addOption', enable: '$root.optionValid'), title: 'Add option'}
           //ko
           /ko if: kind() == 'hierarchy'
           %hr/
@@ -167,7 +167,7 @@
           Saving layer, please wait...
           / /ko
           / ko if: !$root.savingLayer()
-          %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button} Save
+          %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button, title: 'Save layer'} Save layer
           %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'} Cancel
           / /ko
           / ko if: !valid()
@@ -187,11 +187,11 @@
         .rightbuttons
           / ko if: !$root.savingLayer() && !$root.currentLayer()
           .btupdn
-            %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'})}
-            %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'})}
+            %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'}), title: 'Move layer up'}
+            %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'}), title: 'Move layer down'}
           / /ko
           / ko if: !$root.savingLayer() && !$root.currentLayer()
-          %button.fdelete{ko(click: '$root.deleteLayer')}
+          %button.fdelete{ko(click: '$root.deleteLayer'), title: 'Remove layer'}
           / /ko
 
       .middlebuttons
@@ -201,7 +201,7 @@
 
       - if !current_snapshot && collection_admin?
         /ko if: !$root.savingLayer()
-        %button.farrow{ko(click: '$root.editLayer'), style:'margin-bottom:0px;margin-top:0px'} Edit
+        %button.farrow{ko(click: '$root.editLayer'), style:'margin-bottom:0px;margin-top:0px', title: 'Edit layer'} Edit
         //ko
     //ko
 
@@ -214,6 +214,6 @@
       .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none;'}
         %span{style:'padding-top:6px;'}
           = 'Add layer'
-        %button.cadd.right{type: :button, style: 'margin-top:3px;margin-right:0px;'}
+        %button.cadd.right{type: :button, style: 'margin-top:3px;margin-right:0px;', title: 'Add new layer'}
         %br{clear: :all}
       //ko
