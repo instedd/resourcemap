@@ -10,9 +10,6 @@ class @MembershipsViewModel
     @memberships = ko.observableArray $.map(memberships, (x) -> new Membership(_self, x))
     @admin = ko.observable admin
 
-    layer.initializeLinks() for layer in @layers()
-    membership.initializeLinks() for membership in @memberships()
-
     @groupBy = ko.observable("Users")
     @groupByOptions = ["Users", "Layers"]
 

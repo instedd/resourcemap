@@ -1,0 +1,12 @@
+%td.member{style: 'cursor:pointer;', colspan: 6}
+  .memberHeaderRow
+    .memberHeaderColumn.collapsed
+      %img.members-collapse-icon{ko(click: :toggleExpanded, attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrowRight.png'"})}
+      %span{ko(text: :userDisplayName, click: :toggleExpanded)}
+
+    - ['None', 'Read', 'Update'].each do |permission|
+      .permissionColumn.collapsed{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
+
+    .permissionColumn.admin.collapsed
+      %input{ko(checked: :admin), type: :checkbox}
+    .lastColumn.collapsed

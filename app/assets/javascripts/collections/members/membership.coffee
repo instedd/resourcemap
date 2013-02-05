@@ -125,6 +125,17 @@ class @Membership extends Expandable
       @sitesWithCustomPermissions.remove site_permission
       @saveCustomSitePermissions()
 
+    @defaultLayerPermissionsExpanded = ko.observable true
+
+    @defaultLayerPermissionsArrow = (base_uri) =>
+      if @defaultLayerPermissionsExpanded()
+        "#{base_uri}/theme/images/icons/misc/black/arrowDown.png"
+      else
+        "#{base_uri}/theme/images/icons/misc/black/arrowRight.png"
+
+  toggleDefaultLayerPermissions: =>
+    @defaultLayerPermissionsExpanded(not @defaultLayerPermissionsExpanded())
+
   open_confirm: =>
     @confirming true
 
@@ -134,10 +145,6 @@ class @Membership extends Expandable
   confirm: =>
     $.post "/collections/#{@collectionId()}/memberships/#{@userId()}.json", {_method: 'delete'}, =>
       @root.memberships.remove @
-
-  initializeLinks: =>
-    @membershipLayerLinks = ko.observableArray $.map(window.model.layers(), (x) => new MembershipLayerLink(@, x))
-    @initializeAllReadAllWrite()
 
   findLayerMembership: (layer) =>
     lm = @layers().filter((x) -> x.layerId() == layer.id())
