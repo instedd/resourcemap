@@ -110,6 +110,7 @@ onLayers ->
         layer_id: @layer().id()
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId} if @isOptionsKind()
       json.config = {hierarchy: @hierarchy()} if @kind() == 'hierarchy'
+      json.attributes = $.map(@attributes(), (x) -> x.toJSON()) if @kindIsText()
       json
 
     toggleAdvancedExpanded: =>
