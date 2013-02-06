@@ -50,6 +50,14 @@ describe FredApi::FredApiController do
       json["properties"]['services'].should eq(['XR', 'OBG'])
       json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
     end
+
+    it "should convert time in different timezone to UTC" do
+      stub_time Time.iso8601("2013-02-04T20:25:27-03:00").to_s
+      site2 = collection.sites.make name: 'Arg Site'
+      get :show_facility, id: site2.id, format: 'json', collection_id: collection.id
+      json = JSON.parse response.body
+      json["createdAt"].should eq("2013-02-04T23:25:27Z")
+    end
   end
 
   describe "query list of facilities" do

@@ -30,7 +30,7 @@ module FredApi::JsonHelper
   private
 
   def format_time_to_iso_string(es_format_date_sting)
-    date = Site.parse_time(es_format_date_sting)
+    date = Site.parse_time(es_format_date_sting).utc
     date.iso8601
   end
 end
