@@ -33,6 +33,12 @@
       %input.ux-text{ko(value: :label, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addOption'}), placeholder: "Label", style: 'width: 150px !important'}
       %button.clist-add{ko(click: '$root.addOption', enable: '$root.optionValid'), title: 'Add option'}
   //ko
+
+  /ko if: kindIsText
+  = render 'layers/advanced_field_editor'
+  //ko
+
+
   /ko if: kind() == 'hierarchy'
   %hr/
   %label{ko(css: {error: :hierarchyError})} Hierarchy

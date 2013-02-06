@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130130022624) do
+ActiveRecord::Schema.define(:version => 20130206200434) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(:version => 20130130022624) do
     t.datetime "updated_at",    :null => false
     t.text     "config"
     t.integer  "ord"
+    t.text     "attributes"
   end
 
   create_table "layer_histories", :force => true do |t|

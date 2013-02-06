@@ -18,7 +18,10 @@ onLayers ->
       @initHierarchyItems() if @hierarchy()
       @hasFocus = ko.observable(false)
       @isNew = ko.computed =>  !@id()?
+
       @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
+      @kindIsText = ko.computed => @kind() == 'text'
+
       @uploadingHierarchy = ko.observable(false)
       @errorUploadingHierarchy = ko.observable(false)
       @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer().fields().indexOf(@) + 1}"
@@ -48,6 +51,10 @@ onLayers ->
       @error = ko.computed => @nameError() || @codeError() || @optionsError() || @hierarchyError()
       @valid = ko.computed => !@error()
 
+      @advancedExpanded = ko.observable false
+
+      @attributes = ko.observableArray []
+
     hasName: => $.trim(@name()).length > 0
 
     hasCode: => $.trim(@code()).length > 0
@@ -73,6 +80,9 @@ onLayers ->
       option.id @nextId
       @options.push option
       @nextId += 1
+
+    addAttribute: (attribute) =>
+      @attributes.push attribute
 
     buttonClass: =>
       FIELD_TYPES[@kind()].css_class
@@ -102,3 +112,5 @@ onLayers ->
       json.config = {hierarchy: @hierarchy()} if @kind() == 'hierarchy'
       json
 
+    toggleAdvancedExpanded: =>
+      @advancedExpanded(not @advancedExpanded())

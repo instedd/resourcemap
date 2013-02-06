@@ -5,9 +5,15 @@ onLayers ->
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @currentLayer = ko.observable()
       @currentField = ko.observable()
+
       @newOption = ko.observable(new Option)
+      @newAttribute = ko.observable(new Attribute)
+
       @optionValid = ko.computed =>
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
+
+      @attributeValid = ko.computed =>
+        $.trim(@newAttribute().key()).length > 0 && $.trim(@newAttribute().value()).length > 0 && not Attribute.find(@attributes, @newAttribute())
 
       @optionsLayers = ko.observableArray $.map(@layers(), (l) -> [[l.name(), l.id()]])
 
@@ -158,10 +164,20 @@ onLayers ->
         when 13 then @addOption()
         else true
 
+    newAttributeKeyPress: (field, event) =>
+      switch event.keyCode
+        when 13 then @addAttribute()
+        else true
+
     optionBlur: (option) =>
       option.editing(false)
       if $.trim(option.code()).length == 0 && $.trim(option.length()).length == 0
         @removeOption(option)
+
+    attributeBlur: (attribute) =>
+      attribute.editing(false)
+      if $.trim(attribute.code()).length == 0 && $.trim(attribute.length()).length == 0
+        @removeAttribute(attribute)
 
     addOption: =>
       return unless @optionValid()
@@ -171,9 +187,21 @@ onLayers ->
       option.hasFocus(true)
       @newOption(option)
 
+    addAttribute: =>
+      return unless @attributeValid()
+      @newAttribute().hasFocus = false
+      @currentField().addAttribute(@newAttribute())
+      attribute = new Attribute
+      attribute.hasFocus(true)
+      @newAttribute(attribute)
+
     removeOption: (option) =>
       @currentField().options.remove(option)
       @newOption().hasFocus(true)
+
+    removeAttribute: (attribute) =>
+      @currentField().attributes.remove(attribute)
+      @newAttribute().hasFocus(true)
 
     startUploadHierarchy: =>
       @currentField().uploadingHierarchy(true)
