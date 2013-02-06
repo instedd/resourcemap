@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130206203928) do
+ActiveRecord::Schema.define(:version => 20130206210407) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(:version => 20130206203928) do
     t.datetime "valid_since"
     t.datetime "valid_to"
     t.integer  "field_id"
+    t.text     "metadata"
   end
 
   add_index "field_histories", ["field_id"], :name => "index_field_histories_on_field_id"
@@ -77,11 +78,11 @@ ActiveRecord::Schema.define(:version => 20130206203928) do
     t.string   "name"
     t.string   "code"
     t.string   "kind"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.text     "config"
     t.integer  "ord"
-    t.text     "field_attributes"
+    t.text     "metadata"
   end
 
   create_table "layer_histories", :force => true do |t|
