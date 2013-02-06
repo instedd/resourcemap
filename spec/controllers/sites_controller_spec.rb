@@ -105,6 +105,27 @@ describe SitesController do
     validate_site_property_value(new_site, email_field, "myemail@mail.com")
   end
 
+  describe 'updating site' do
+
+    it 'should update only name' do
+      site_params = {:name => "new site"}.to_json
+      post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+
+      response.should be_success
+      new_site = Site.find_by_name "new site"
+      new_site.should be
+    end
+
+    it 'should update a single property' do
+      site_params = {:properties => { text.es_code => "new text" }}.to_json
+      post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+
+      response.should be_success
+      new_site = Site.find_by_name site.name
+      new_site.properties[text.es_code.to_s]
+    end
+  end
+
   def validate_site_property_value(site, property, value)
     site.reload
     site.properties["#{property.es_code}"].should eq(value)

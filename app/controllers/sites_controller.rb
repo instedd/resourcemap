@@ -87,7 +87,7 @@ class SitesController < ApplicationController
 
   def validate_site_properties(site_param)
     fields = collection.fields
-    properties = JSON.parse(site_param)["properties"]
+    properties = JSON.parse(site_param)["properties"] || {}
     validated_properties = {}
     properties.each_pair do |es_code, value|
       field = fields.where_es_code_is es_code
