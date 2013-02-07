@@ -94,6 +94,7 @@ class LayersController < ApplicationController
   # That way we preserve existing fields and we can know if their codes change, to trigger a reindex
   def fix_layer_fields_for_update
     fields = layer.fields
+
     fields_ids = fields.map(&:id).compact
     new_ids = params[:layer][:fields_attributes].values.map { |x| x[:id].try(:to_i) }.compact
     removed_fields_ids = fields_ids - new_ids

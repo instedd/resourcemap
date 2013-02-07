@@ -40,14 +40,14 @@ group :test, :development do
   gem 'rvm-capistrano', '1.2.2'
   gem 'jasminerice'
   gem 'guard-jasmine'
+  gem 'pry'
+  gem 'pry-debugger'
 end
 
 group :test do
   gem 'shoulda-matchers'
   gem 'ci_reporter'
   gem 'resque_spec'
-  gem 'pry'
-  gem 'pry-debugger'
 end
 
 # To use ActiveModel has_secure_password
