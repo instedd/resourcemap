@@ -9,10 +9,12 @@ onLayers ->
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
       @ord = ko.observable data?.ord
+
       @options = if data.config?.options?
                    ko.observableArray($.map(data.config.options, (x) -> new Option(x)))
                  else
                    ko.observableArray()
+
       @nextId = data.config?.next_id || @options().length + 1
       @hierarchy = ko.observable data.config?.hierarchy
       @initHierarchyItems() if @hierarchy()
@@ -53,7 +55,10 @@ onLayers ->
 
       @advancedExpanded = ko.observable false
 
-      @attributes = ko.observableArray []
+      @attributes = if data.metadata?
+                      ko.observableArray($.map(data.metadata, (x) -> new Attribute(x)))
+                    else
+                      ko.observableArray()
 
     hasName: => $.trim(@name()).length > 0
 
