@@ -8,6 +8,7 @@ describe FredApi::FredApiController do
   let!(:layer) { collection.layers.make }
 
   # We test only the field types supported by FRED API
+  # Id fields are tested below
   let!(:text) { layer.fields.make :code => 'manager', :kind => 'text' }
   let!(:numeric) { layer.fields.make :code => 'numBeds', :kind => 'numeric' }
   let!(:select_many) { layer.fields.make :code => 'services', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'XR', 'label' => 'X-ray'}, {'id' => 2, 'code' => 'OBG', 'label' => 'Gynecology'}]} }
@@ -141,10 +142,7 @@ describe FredApi::FredApiController do
       get :facilities, format: 'json', allProperties: true, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(2)
-      json[0].length.should eq(8)
       json[0]['properties'].length.should eq(1)
-
-      json[1].length.should eq(8)
       json[1]['properties'].length.should eq(1)
     end
 
@@ -301,6 +299,26 @@ describe FredApi::FredApiController do
       get :facilities, format: 'json', invalid: "option", collection_id: collection.id
       response.status.should eq(422)
     end
+  end
+
+  describe "External Facility Identifiers" do
+    let!(:moh_id) {layer.fields.make :code => 'moh-id', :kind => 'text', :metadata => { 'agency' => "MOH", 'context' => "DHIS" }}
+
+     let!(:site_with_metadata) { collection.sites.make :properties => {
+        moh_id.es_code => "53adf",
+        date.es_code => "2012-10-24T00:00:00Z",
+      }}
+
+    it "should return identifiers in single facility query" do
+      get :show_facility, id: site_with_metadata.id, format: 'json', collection_id: collection.id
+      json = JSON.parse response.body
+
+      json["name"].should eq(site_with_metadata.name)
+      json["id"].should eq("#{site_with_metadata.id}")
+      json["identifiers"].length.should eq(1)
+      json["identifiers"][0].should eq({"agency" => "MOH", "context" => "DHIS", "id"=> "53adf"})
+    end
+
   end
 
 end

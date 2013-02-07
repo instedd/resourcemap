@@ -2,6 +2,7 @@ class Field < ActiveRecord::Base
   include Field::Base
   include Field::TireConcern
   include Field::ValidationConcern
+  include Field::FredApiConcern
 
   include HistoryConcern
 
@@ -16,6 +17,8 @@ class Field < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => :collection_id
 
   serialize :config
+  serialize :metadata
+
 
   before_save :set_collection_id_to_layer_id, :unless => :collection_id?
   def set_collection_id_to_layer_id

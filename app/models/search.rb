@@ -84,24 +84,33 @@ class Search
   # Returns the results from ElasticSearch but with codes as keys and codes as
   # values (when applicable).
   def api_results(api_name = 'api')
+    visible_fields = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id)
 
-    fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
+    fields_by_es_code = visible_fields.index_by &:es_code
 
     items = results()
 
+    identifiers = visible_fields.select{ |f| f.metadata && f.metadata['context'] && f.metadata['agency'] }
+
     items.each do |item|
-      item['_source']['properties'] = Hash[
-        item['_source']['properties'].map do |es_code, value|
-          field = fields_by_es_code[es_code]
-           if field
-             if api_name == 'fred_api'
-               [field.code, field.fred_api_value(value)]
-             else
-               [field.code, field.api_value(value)]
-             end
-           end
+      properties = item['_source']['properties']
+      item['_source']['identifiers'] = []
+      item['_source']['properties'] = {}
+
+      properties.each_pair do |es_code, value|
+        field = fields_by_es_code[es_code]
+        if field
+          if api_name == 'fred_api'
+            if field.identifier?
+              item['_source']['identifiers'] << {:agency => field.metadata['agency'], :context => field.metadata['context'] , :id => value}
+            end
+            item['_source']['properties'][field.code] = field.fred_api_value(value)
+          else
+            item['_source']['properties'][field.code] = field.api_value(value)
+          end
         end
-      ]
+      end
+
     end
 
     items

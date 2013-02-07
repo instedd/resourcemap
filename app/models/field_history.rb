@@ -7,6 +7,7 @@ class FieldHistory < ActiveRecord::Base
   belongs_to :layer
 
   serialize :config
+  serialize :metadata
 
   def es_code
     field_id.to_s

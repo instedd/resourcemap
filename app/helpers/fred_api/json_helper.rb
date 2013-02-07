@@ -22,6 +22,8 @@ module FredApi::JsonHelper
 
     obj[:url] = url_for_facility(source['id'])
 
+    obj[:identifiers] = source['identifiers']
+
     obj[:properties] = source['properties']
 
     obj
