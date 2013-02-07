@@ -13,7 +13,7 @@ onLayers ->
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
       @attributeValid = ko.computed =>
-        $.trim(@newAttribute().key()).length > 0 && $.trim(@newAttribute().value()).length > 0 && not Attribute.find(@attributes, @newAttribute())
+        $.trim(@newAttribute().key()).length > 0 && $.trim(@newAttribute().value()).length > 0 && not Attribute.find(@currentField().attributes(), @newAttribute())
 
       @optionsLayers = ko.observableArray $.map(@layers(), (l) -> [[l.name(), l.id()]])
 

@@ -17,3 +17,6 @@ onLayers ->
       key: @key()
       value: @value()
 
+    @find: (list, attribute) ->
+      _.find list, (a) -> (a.key() == attribute.key()) and (a.value() == attribute.value())
+
