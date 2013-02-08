@@ -14,8 +14,6 @@ class SitesController < ApplicationController
     search.offset params[:offset]
     search.limit params[:limit]
 
-    binding.pry
-
     render json: search.ui_results.map { |x| x['_source'] }
   end
 
