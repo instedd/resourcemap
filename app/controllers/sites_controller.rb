@@ -13,6 +13,9 @@ class SitesController < ApplicationController
     search.name_start_with params[:name] if params[:name].present?
     search.offset params[:offset]
     search.limit params[:limit]
+
+    binding.pry
+
     render json: search.ui_results.map { |x| x['_source'] }
   end
 
@@ -44,6 +47,7 @@ class SitesController < ApplicationController
   end
 
   def update_property
+    binding.pry
     field = site.collection.fields.where_es_code_is params[:es_code]
 
     return head :forbidden unless current_user.can_write_field? field, site.collection, params[:es_code]

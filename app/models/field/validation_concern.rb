@@ -70,8 +70,17 @@ module Field::ValidationConcern
   end
 
   def check_valid_numeric_value(value)
-    raise "Invalid numeric value in #{code} field" unless value.integer?
-    Integer(value)
+    feedback = "Invalid numeric value in #{code} field"
+    about_decimals = "This numeric field is configured not to allow decimal values."
+
+    if config['allows_decimals']
+      raise "#{feedback}. #{about_decimals}" unless value.real?
+      Float(value)
+    else
+      raise "#{feedback}. #{about_decimals}" if !value.integer? && value.real?
+      raise feedback unless value.integer?
+      Integer(value)
+    end
   end
 
   def check_date_format(value)

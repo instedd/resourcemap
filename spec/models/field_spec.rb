@@ -172,9 +172,17 @@ describe Field do
 
       let!(:layer) { collection.layers.make }
       let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
-      let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+      let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric', :config => {} }
+
+      let!(:numeric_with_decimals) {
+        layer.fields.make :code => 'numeric_with_decimals', :kind => 'numeric', :config => {
+          :allows_decimals => true }.with_indifferent_access
+        }
+
       let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+
       let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+
       config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
       let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
       let!(:site_field) { layer.fields.make :code => 'site', :kind => 'site' }
@@ -184,11 +192,21 @@ describe Field do
 
       let!(:site) {collection.sites.make name: 'Foo old', id: 1234, properties: {} }
 
-
       it "should validate format for numeric field" do
         numeric.apply_format_update_validation(2, false, collection).should be(2)
         numeric.apply_format_update_validation("2", false, collection).should be(2)
         expect { numeric.apply_format_update_validation("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.code} field")
+      end
+
+      it "should not allow decimals" do
+        expect { numeric.apply_format_update_validation("2.3", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.code} field. This numeric field is configured not to allow decimal values.")
+
+        expect { numeric.apply_format_update_validation(2.3, false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.code} field. This numeric field is configured not to allow decimal values.")
+      end
+
+      it "should allow decimals" do
+        numeric_with_decimals.apply_format_update_validation("2.3", false, collection).should == 2.3
+        numeric_with_decimals.apply_format_update_validation(2.3, false, collection).should == 2.3
       end
 
       it "should validate format for date field" do

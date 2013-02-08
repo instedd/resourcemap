@@ -78,7 +78,7 @@ describe Api::CollectionsController do
 
     it "should retrieve sites under certain item in a hierarchy field" do
       get :show, id: collection.id, format: 'json', hierarchy.code => { under: 'Dad' }
-      response.should be_success 
+      response.should be_success
       json = JSON.parse response.body
       json["sites"].length.should eq(2)
       json["sites"][0]["id"].should eq(site2.id)
@@ -147,7 +147,9 @@ describe Api::CollectionsController do
       csv.length.should eq(3)
 
       csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, select_one.code, select_many.code, hierarchy.code, site_ref.code, date.code, director.code, 'last updated'])
+
       csv.should include [site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "", "", "bro", "", "", "", site2.updated_at.to_datetime.rfc822]
+
       csv.should include [site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'one', 'one, two', 'dad', site2.id.to_s, '10/24/2012', user.email, site.updated_at.to_datetime.rfc822]
     end
   end
