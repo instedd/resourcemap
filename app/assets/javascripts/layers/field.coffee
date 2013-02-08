@@ -6,6 +6,7 @@ onLayers ->
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
+
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
       @ord = ko.observable data?.ord
@@ -23,6 +24,9 @@ onLayers ->
 
       @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
       @kindIsText = ko.computed => @kind() == 'text'
+      @kindIsNumeric = ko.computed => @kind() == 'numeric'
+
+      @allows_decimals = ko.observable data?.config?.allows_decimals
 
       @uploadingHierarchy = ko.observable(false)
       @errorUploadingHierarchy = ko.observable(false)
@@ -115,6 +119,7 @@ onLayers ->
         layer_id: @layer().id()
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId} if @isOptionsKind()
       json.config = {hierarchy: @hierarchy()} if @kind() == 'hierarchy'
+      json.config = {allows_decimals: @allows_decimals()} if @kindIsNumeric()
       json.metadata = $.map(@attributes(), (x) -> x.toJSON()) if @kindIsText()
       json
 
