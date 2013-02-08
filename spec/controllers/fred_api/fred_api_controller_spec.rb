@@ -302,7 +302,7 @@ describe FredApi::FredApiController do
   end
 
   describe "External Facility Identifiers" do
-    let!(:moh_id) {layer.fields.make :code => 'moh-id', :kind => 'text', :metadata => { 'agency' => "MOH", 'context' => "DHIS" }}
+    let!(:moh_id) {layer.fields.make :code => 'moh-id', :kind => 'text', :metadata =>  {"0"=>{"key"=>"context", "value"=>"MOH"}, "1"=>{"key"=>"agency", "value"=>"DHIS"} } }
 
      let!(:site_with_metadata) { collection.sites.make :properties => {
         moh_id.es_code => "53adf",
@@ -316,7 +316,7 @@ describe FredApi::FredApiController do
       json["name"].should eq(site_with_metadata.name)
       json["id"].should eq("#{site_with_metadata.id}")
       json["identifiers"].length.should eq(1)
-      json["identifiers"][0].should eq({"agency" => "MOH", "context" => "DHIS", "id"=> "53adf"})
+      json["identifiers"][0].should eq({"context" => "MOH", "agency" => "DHIS", "id"=> "53adf"})
     end
 
   end

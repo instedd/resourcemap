@@ -90,8 +90,6 @@ class Search
 
     items = results()
 
-    identifiers = visible_fields.select{ |f| f.metadata && f.metadata['context'] && f.metadata['agency'] }
-
     items.each do |item|
       properties = item['_source']['properties']
       item['_source']['identifiers'] = []
@@ -102,7 +100,7 @@ class Search
         if field
           if api_name == 'fred_api'
             if field.identifier?
-              item['_source']['identifiers'] << {:agency => field.metadata['agency'], :context => field.metadata['context'] , :id => value}
+              item['_source']['identifiers'] << {:agency => field.agency, :context => field.context , :id => value}
             end
             item['_source']['properties'][field.code] = field.fred_api_value(value)
           else
