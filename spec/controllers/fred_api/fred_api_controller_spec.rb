@@ -319,6 +319,17 @@ describe FredApi::FredApiController do
       json["identifiers"][0].should eq({"context" => "MOH", "agency" => "DHIS", "id"=> "53adf"})
     end
 
+    it "creation of identifiers field should be case insensitive" do
+      id_case_insensitive = layer.fields.make :code => 'moh-id-case-insensitive', :kind => 'text', :metadata =>  {"0"=>{"key"=>"Context", "value"=>"MOH2"}, "1"=>{"key"=>"AGency", "value"=>"DHIS2"} }
+      site_with_2_ids = collection.sites.make :properties => {
+          moh_id.es_code => "53adf",
+          date.es_code => "2012-10-24T00:00:00Z",
+          id_case_insensitive.es_code => "23415"
+        }
+      get :show_facility, id: site_with_2_ids.id, format: 'json', collection_id: collection.id
+      json = JSON.parse response.body
+      json["identifiers"].length.should eq(2)
+    end
   end
 
 end
