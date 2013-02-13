@@ -26,7 +26,7 @@ onLayers ->
       @kindIsText = ko.computed => @kind() == 'text'
       @kindIsNumeric = ko.computed => @kind() == 'numeric'
 
-      @allows_decimals = ko.observable data?.config?.allows_decimals == true
+      @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
 
       @uploadingHierarchy = ko.observable(false)
       @errorUploadingHierarchy = ko.observable(false)
@@ -119,7 +119,7 @@ onLayers ->
         layer_id: @layer().id()
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId} if @isOptionsKind()
       json.config = {hierarchy: @hierarchy()} if @kind() == 'hierarchy'
-      json.config = {allows_decimals: @allows_decimals() == "true"} if @kindIsNumeric()
+      json.config = {allows_decimals: @allowsDecimals()} if @kindIsNumeric()
       json.metadata = $.map(@attributes(), (x) -> x.toJSON()) if @kindIsText()
       json
 

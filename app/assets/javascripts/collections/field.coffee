@@ -10,6 +10,8 @@ onCollections ->
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
       @writeable = @originalWriteable = data?.writeable
 
+      @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
+
       @value = ko.observable()
       @hasValue = ko.computed => @value() && (if @kind == 'select_many' then @value().length > 0 else @value())
 

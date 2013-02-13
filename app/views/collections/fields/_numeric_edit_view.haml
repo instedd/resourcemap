@@ -1,6 +1,16 @@
 - if single_editing_mode
-  = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
+  /ko if: allowsDecimals()
+  = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, html: { step: "any"}
+  //ko
+  /ko if: !allowsDecimals()
+  = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, html: { step: 1}
+  //ko
 - else
-  = ko_number_field_tag :value, html: {class: 'right w20'}
+  /ko if: allowsDecimals()
+  = ko_number_field_tag :value, html: {class: 'right w20', step: "any"}
+  //ko
+  /ko if: !allowsDecimals()
+  = ko_number_field_tag :value, html: {class: 'right w20', step: 1}
+  //ko
   .clear
 

@@ -40,7 +40,7 @@ module Field::Base
   end
 
   def allow_decimals?
-    config['allows_decimals'] if config
+    config && config['allows_decimals'] == "true"
   end
 
   def strongly_type(value)
