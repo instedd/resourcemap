@@ -176,7 +176,7 @@ describe Field do
 
       let!(:numeric_with_decimals) {
         layer.fields.make :code => 'numeric_with_decimals', :kind => 'numeric', :config => {
-          :allows_decimals => true }.with_indifferent_access
+          :allows_decimals => "true" }.with_indifferent_access
         }
 
       let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
