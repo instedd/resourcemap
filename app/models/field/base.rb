@@ -39,9 +39,13 @@ module Field::Base
     numeric? || select_one? || select_many?
   end
 
+  def allow_decimals?
+    config['allows_decimals'] if config
+  end
+
   def strongly_type(value)
     if stored_as_number?
-      value.is_a?(Array) ? value.map(&:to_i_or_f) : value.to_i_or_f
+      value.is_a?(Array) ? value.map(&:to_i_or_f) : value.to_s.to_i_or_f
     else
       value
     end

@@ -73,7 +73,7 @@ module Field::ValidationConcern
     feedback = "Invalid numeric value in #{code} field"
     about_decimals = "This numeric field is configured not to allow decimal values."
 
-    if config['allows_decimals']
+    if allow_decimals?
       raise "#{feedback}. #{about_decimals}" unless value.real?
       Float(value)
     else

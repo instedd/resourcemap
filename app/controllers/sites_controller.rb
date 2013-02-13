@@ -45,7 +45,6 @@ class SitesController < ApplicationController
   end
 
   def update_property
-    binding.pry
     field = site.collection.fields.where_es_code_is params[:es_code]
 
     return head :forbidden unless current_user.can_write_field? field, site.collection, params[:es_code]
