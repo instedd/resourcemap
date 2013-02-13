@@ -7,7 +7,9 @@ describe 'Membership', ->
       "layers": []
       "sites": {}
 
-    @rootViewModelStub = layers: -> [ { id: ->  53 }, { id: -> 56 }, { id: -> 58 } ]
+    @rootViewModelStub =
+      layers: -> [ { id: ->  53 }, { id: -> 56 }, { id: -> 58 } ]
+      collectionId: -> 12
 
     spyOn(SiteCustomPermission, 'arrayFromJson').andReturn []
 
