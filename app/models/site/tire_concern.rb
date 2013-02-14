@@ -34,7 +34,7 @@ module Site::TireConcern
     end
 
     def iso_string_to_mdy(iso_string)
-      iso_string.to_time.strftime("%m/%d/%Y")
+      Time.iso8601(iso_string).strftime("%m/%d/%Y")
     end
 
     def parse_date(date_string_value)

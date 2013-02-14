@@ -28,15 +28,14 @@ describe SitesController do
     expect {  post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number' }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.code} field")
     post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2'
     validate_site_property_value(site, numeric, 2)
-
   end
 
-  it "should validate format for date field" do
+  it "should validate format for date field support both mm/dd/YYY and iso8601" do
     post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "11/27/2012"
     validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
+    post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "2012-11-27T00:00:00Z"
+    validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
     expect { post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "117"}.to raise_error(RuntimeError, "Invalid date value in #{date.code} field")
-    expect { post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "2012-11-27T00:00:00Z"}.to raise_error(RuntimeError, "Invalid date value in #{date.code} field")
-
   end
 
   it "should validate format for hierarchy field" do

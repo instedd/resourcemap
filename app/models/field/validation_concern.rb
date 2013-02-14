@@ -84,7 +84,14 @@ module Field::ValidationConcern
   end
 
   def check_date_format(value)
-    Site.format_date_iso_string(Site.parse_date(value)) rescue (raise "Invalid date value in #{code} field")
+    # Convert to mm/dd/YYYY if the value is already an iso8601 string
+    begin
+      mdy_array = *value.split('/')
+      mdy_value = [mdy_array[2], mdy_array[0], mdy_array[1]].map(&:to_i)
+      value = Site.iso_string_to_mdy(value) unless Date.valid_date? *mdy_value
+      Site.format_date_iso_string(Site.parse_date(value))
+    rescue (raise "Invalid date value in #{code} field")
+    end
   end
 
   def parse_date_from(value)
