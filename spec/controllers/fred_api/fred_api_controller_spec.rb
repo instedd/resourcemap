@@ -330,6 +330,50 @@ describe FredApi::FredApiController do
       json = JSON.parse response.body
       json["identifiers"].length.should eq(2)
     end
+
+    it 'should filter by identifier' do
+      get :facilities, format: 'json',  collection_id: collection.id, "identifiers.id" => "53adf"
+      json = (JSON.parse response.body)["facilities"]
+      json.length.should eq(1)
+      json[0]['id'].should eq("#{site_with_metadata.id}")
+    end
+
+    it 'should filter by identifier and agency' do
+      get :facilities, format: 'json',  collection_id: collection.id, "identifiers.agency" => "DHIS", "identifiers.id" => "53adf"
+      json = (JSON.parse response.body)["facilities"]
+      json.length.should eq(1)
+      json[0]['id'].should eq("#{site_with_metadata.id}")
+    end
+
+    it 'should filter by identifier and context' do
+      get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf"
+      json = (JSON.parse response.body)["facilities"]
+      json.length.should eq(1)
+      json[0]['id'].should eq("#{site_with_metadata.id}")
+    end
+
+    it 'should filter by identifier, context and agency' do
+      get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf", "identifiers.agency" => "DHIS"
+      json = (JSON.parse response.body)["facilities"]
+      json.length.should eq(1)
+      json[0]['id'].should eq("#{site_with_metadata.id}")
+    end
+
+    it 'sholud return an empty list if the id does not match' do get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "invalid", "identifiers.agency" => "DHIS"
+      json = (JSON.parse response.body)["facilities"]
+      json.length.should eq(0)
+    end
+
+    it 'sholud return an empty list if the context does not match any identifier' do get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "invalid", "identifiers.id" => "53adf", "identifiers.agency" => "DHIS"
+      json = (JSON.parse response.body)["facilities"]
+      json.length.should eq(0)
+    end
+
+    it 'sholud return an empty list if the agency does not match any identifier' do get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf", "identifiers.agency" => "invalid"
+      json = (JSON.parse response.body)["facilities"]
+      json.length.should eq(0)
+    end
+
   end
 
 end

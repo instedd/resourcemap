@@ -65,7 +65,7 @@ class FredApi::FredApiController < ApplicationController
     end
 
     #Perform queries
-    except_params = [:action, :controller, :format, :id, :collection_id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince]
+    except_params = [:action, :controller, :format, :id, :collection_id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince, "identifiers.id", "identifiers.agency", "identifiers.context"]
 
     # Query by Core Properties
     search.name(params[:name]) if params[:name]
@@ -79,6 +79,17 @@ class FredApi::FredApiController < ApplicationController
 
     # Query by Extended Properties
     search.where params.except(*except_params)
+
+    # Query by identifiers
+    if params["identifiers.context"] && params["identifiers.id"] && params["identifiers.agency"]
+      search.identifier_context_agency_and_id(params["identifiers.context"], params["identifiers.agency"], params["identifiers.id"])
+    elsif params["identifiers.agency"] && params["identifiers.id"]
+      search.identifier_agency_and_id(params["identifiers.agency"], params["identifiers.id"])
+    elsif params["identifiers.context"] && params["identifiers.id"]
+      search.identifier_context_and_id(params["identifiers.context"], params["identifiers.id"])
+    elsif params["identifiers.id"]
+      search.identifier_id(params["identifiers.id"])
+    end
 
     #Format result
     facilities = search.api_results('fred_api')
