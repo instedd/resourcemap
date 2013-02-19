@@ -15,20 +15,14 @@ gem "nuntium_api", "~> 0.13", :require => "nuntium"
 gem 'ice_cube'
 gem 'knockoutjs-rails'
 gem 'will_paginate'
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer'
-
-  gem 'uglifier', '>= 1.0.3'
-  gem 'lodash-rails'
-end
-
 gem 'jquery-rails'
+gem 'foreman'
+
+group :test do
+  gem 'shoulda-matchers'
+  gem 'ci_reporter'
+  gem 'resque_spec'
+end
 
 group :test, :development do
   gem 'rspec'
@@ -44,22 +38,16 @@ group :test, :development do
   gem 'pry-debugger'
 end
 
-group :test do
-  gem 'shoulda-matchers'
-  gem 'ci_reporter'
-  gem 'resque_spec'
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
+
+  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  gem 'therubyracer'
+
+  gem 'uglifier', '>= 1.0.3'
+  gem 'lodash-rails'
 end
 
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
-
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
-
-# Use unicorn as the web server
-# gem 'unicorn'
-
-# To use debugger
-# gem 'ruby-debug19', :require => 'ruby-debug'
-
-gem 'foreman'
