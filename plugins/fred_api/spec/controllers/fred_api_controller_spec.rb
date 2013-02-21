@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FredApi::FredApiController do
+describe FredApiController do
   include Devise::TestHelpers
 
   let!(:user) { User.make }
@@ -29,6 +29,7 @@ describe FredApi::FredApiController do
 
     it 'should get default fields' do
       get :show_facility, id: site.id, format: 'json', collection_id: collection.id
+      response.should be_ok
       response.content_type.should eq 'application/json'
 
       json = JSON.parse response.body
@@ -37,7 +38,7 @@ describe FredApi::FredApiController do
       json["coordinates"][0].should eq(site.lng)
       json["coordinates"][1].should eq(site.lat)
       json["active"].should eq(true)
-      json["url"].should eq("http://test.host/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      json["url"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
 
     end
 
@@ -244,7 +245,7 @@ describe FredApi::FredApiController do
     it "should delete facility" do
       site3 = collection.sites.make name: 'Site C'
       delete :delete_facility, id: site3.id, collection_id: collection.id
-      response.body.should eq("http://test.host/collections/#{collection.id}/fred_api/v1/facilities/#{site3.id}.json")
+      response.body.should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site3.id}.json")
       sites = Site.find_by_name 'Site C'
       sites.should be(nil)
     end
@@ -331,7 +332,7 @@ describe FredApi::FredApiController do
       json["identifiers"].length.should eq(2)
     end
 
-    it 'should filter by identifier' do
+    it 'should filter by identifier', focus: true do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.id" => "53adf"
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)

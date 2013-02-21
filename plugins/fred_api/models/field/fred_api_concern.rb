@@ -15,4 +15,12 @@ module Field::FredApiConcern
     metadata.select{|i, e| e["key"].downcase == "agency"}.values[0]["value"]
   end
 
+  def fred_api_value(value)
+    if date?
+      # Values are stored in ISO 8601 format.
+      value
+    else
+      api_value(value)
+    end
+  end
 end

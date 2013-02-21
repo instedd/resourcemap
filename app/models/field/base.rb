@@ -51,15 +51,6 @@ module Field::Base
     end
   end
 
-  def fred_api_value(value)
-    if date?
-      # Values are stored in ISO 8601 format.
-      value
-    else
-      api_value(value)
-    end
-  end
-
   def api_value(value)
     if select_one?
       option = config['options'].find { |o| o['id'] == value }

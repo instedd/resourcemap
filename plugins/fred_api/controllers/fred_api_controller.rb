@@ -1,4 +1,4 @@
-class FredApi::FredApiController < ApplicationController
+class FredApiController < ApplicationController
   before_filter :authenticate_user!
   before_filter :authenticate_collection_user!
   before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :delete_facility]
@@ -10,10 +10,8 @@ class FredApi::FredApiController < ApplicationController
     render json: { message: "Record not found"}, :status => 404, :layout => false
   end
 
-  include FredApi::JsonHelper
-
   expose(:site)
-  expose(:collection) {Collection.find params[:collection_id] }
+  expose(:collection) { Collection.find params[:collection_id] }
 
   def verify_site_belongs_to_collection!
     if !collection.sites.include? site
@@ -30,7 +28,7 @@ class FredApi::FredApiController < ApplicationController
   def show_facility
     search = collection.new_search current_user_id: current_user.id
     search.id(site.id)
-    results = search.api_results('fred_api')
+    results = search.fred_api_results
 
     # ID is unique. We should only get one result here.
     facility = results[0]
@@ -92,7 +90,7 @@ class FredApi::FredApiController < ApplicationController
     end
 
     #Format result
-    facilities = search.api_results('fred_api')
+    facilities = search.fred_api_results
     #Hack: All facilities are active. If param[:active]=false then no results should be returned
     facilities = [] if params[:active].to_s == false.to_s
 
@@ -129,4 +127,37 @@ class FredApi::FredApiController < ApplicationController
     { default: field_list_match[0].split(',') , custom: field_list_match[2].split(',')}
   end
 
+  def url_for_facility(id)
+    url_for(:controller => 'fred_api', :action => 'show_facility',:format => :json, :id => id)
+  end
+
+  def fred_facility_format(result)
+    source = result['_source']
+
+    obj = {}
+    obj[:id] = source['id'].to_s
+    obj[:name] = source['name']
+
+    obj[:createdAt] = format_time_to_iso_string(source['created_at'])
+    obj[:updatedAt] = format_time_to_iso_string(source['updated_at'])
+    if source['location']
+      obj[:coordinates] = [source['location']['lon'], source['location']['lat']]
+    end
+
+    # ResourceMap does not implement logical deletion yet. Thus all facilities are active.
+    obj[:active] = true
+
+    obj[:url] = url_for_facility(source['id'])
+
+    obj[:identifiers] = source['identifiers']
+
+    obj[:properties] = source['properties']
+
+    obj
+  end
+
+  def format_time_to_iso_string(es_format_date_sting)
+    date = Site.parse_time(es_format_date_sting).utc
+    date.iso8601
+  end
 end

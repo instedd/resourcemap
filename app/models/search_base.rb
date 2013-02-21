@@ -6,8 +6,6 @@
 #
 # Before executing the search you must invoke apply_queries.
 module SearchBase
-  include SearchBaseFredApi
-
   def use_codes_instead_of_es_codes
     @use_codes_instead_of_es_codes = true
     self
