@@ -1,4 +1,12 @@
 class FredApi::Plugin < Plugin
+  field_type \
+    name: 'identifier',
+    css_class: 'lalert',
+    small_css_class: 'salert',
+    edit_view: 'fields/identifier_edit_view',
+    property_editor: 'fields/identifier_editor',
+    sample_value: 'XYZ123'
+
   extend_model \
     class: Field,
     with: Field::FredApiConcern

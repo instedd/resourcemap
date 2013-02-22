@@ -13,7 +13,7 @@ onLayers ->
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
       @attributeValid = ko.computed =>
-        $.trim(@newAttribute().key()).length > 0 && $.trim(@newAttribute().value()).length > 0 && not Attribute.find(@currentField().attributes(), @newAttribute())
+        $.trim(@newAttribute().key()).length > 0 && $.trim(@newAttribute().value()).length > 0 && not Attribute.find(@currentField().impl().attributes(), @newAttribute())
 
       @optionsLayers = ko.observableArray $.map(@layers(), (l) -> [[l.name(), l.id()]])
 
@@ -182,7 +182,7 @@ onLayers ->
     addOption: =>
       return unless @optionValid()
       @newOption().hasFocus = false
-      @currentField().addOption(@newOption())
+      @currentField().impl().addOption(@newOption())
       option = new Option
       option.hasFocus(true)
       @newOption(option)
@@ -190,28 +190,28 @@ onLayers ->
     addAttribute: =>
       return unless @attributeValid()
       @newAttribute().hasFocus = false
-      @currentField().addAttribute(@newAttribute())
+      @currentField().impl().addAttribute(@newAttribute())
       attribute = new Attribute
       attribute.hasFocus(true)
       @newAttribute(attribute)
 
     removeOption: (option) =>
-      @currentField().options.remove(option)
+      @currentField().impl().options.remove(option)
       @newOption().hasFocus(true)
 
     removeAttribute: (attribute) =>
-      @currentField().attributes.remove(attribute)
+      @currentField().impl().attributes.remove(attribute)
       @newAttribute().hasFocus(true)
 
     startUploadHierarchy: =>
-      @currentField().uploadingHierarchy(true)
+      @currentField().impl().uploadingHierarchy(true)
 
     hierarchyUploaded: (hierarchy) =>
-      @currentField().setHierarchy(hierarchy)
+      @currentField().impl().setHierarchy(hierarchy)
 
     errorUploadingHierarchy: (hierarchy_errors) =>
-      @currentField().uploadingHierarchy(false)
-      @currentField().errorUploadingHierarchy(true)
+      @currentField().impl().uploadingHierarchy(false)
+      @currentField().impl().errorUploadingHierarchy(true)
 
       $('.error_description_bubble').CreateBubblePopup({
         selectable: true,

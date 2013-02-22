@@ -9,3 +9,4 @@ plugins:
   reminders: on
   alerts: on
   account_completeness: on
+  fred_api: on
