@@ -4,15 +4,15 @@ module Field::FredApiConcern
   # metadata: {"0"=>{"key"=>"context", "value"=>"MOH"}, "1"=>{"key"=>"agency", "value"=>"DHIS"}}
 
   def identifier?
-    metadata && metadata.any?{|index, element| element["key"].downcase == "agency"} && metadata.any?{|index, element| element["key"].downcase == "context"}
+    kind == 'identifier'
   end
 
   def context
-    metadata.select{|i, e| e["key"].downcase == "context"}.values[0]["value"]
+    config['context']
   end
 
   def agency
-    metadata.select{|i, e| e["key"].downcase == "agency"}.values[0]["value"]
+    config['agency']
   end
 
   def fred_api_value(value)
