@@ -281,7 +281,7 @@ class ImportWizard
                   when 'date'
                     site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
                 end
-                if Field::PluginKinds.has_key? existing_field.kind
+                if Field::plugin_kinds.has_key? existing_field.kind
                   site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
                 end
               end

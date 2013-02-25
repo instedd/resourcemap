@@ -9,7 +9,7 @@ class Field < ActiveRecord::Base
   belongs_to :layer
 
   validates_presence_of :ord
-  validates_inclusion_of :kind, :in => Kinds
+  validates_inclusion_of :kind, :in => proc { kinds() }
   validates_presence_of :code
   validates_exclusion_of :code, :in => ['lat', 'long', 'name', 'resmap-id', 'last updated']
   validates_uniqueness_of :code, :scope => :collection_id

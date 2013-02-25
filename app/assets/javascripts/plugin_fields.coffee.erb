@@ -1,1 +1,1 @@
-@PLUGIN_FIELDS = [<%= Field::PluginKinds.map { |name, _| "'#{name}'" }.join ', ' %>]
+@PLUGIN_FIELDS = [<%= Field::plugin_kinds.map { |name, _| "'#{name}'" }.join ', ' %>]

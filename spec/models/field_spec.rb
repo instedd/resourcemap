@@ -136,7 +136,7 @@ describe Field do
   end
 
   describe "core field type" do
-    subject { Field::Kinds - Field::PluginKinds.keys }
+    subject { Field::kinds - Field::plugin_kinds.keys }
 
     it { should have(8).items }
     it { should include 'text' }

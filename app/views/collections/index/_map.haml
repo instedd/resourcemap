@@ -139,7 +139,7 @@
                 %span.value{ko(text: :valueUI)}
                 <!-- /ko -->
                 <!-- ko if: writeable -->
-                - Field::Kinds.each do |kind|
+                - Field::kinds.each do |kind|
                   <!-- ko if: kind == '#{kind}' -->
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: false }
                   <!-- /ko -->
@@ -216,7 +216,7 @@
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: editing() -->
-                - Field::Kinds.each do |kind|
+                - Field::kinds.each do |kind|
                   <!-- ko if: kind == '#{kind}' -->
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: true }
                   <!-- /ko -->
