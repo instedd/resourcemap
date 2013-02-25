@@ -32,10 +32,6 @@
           createMembership(ui.item.label)
       appendTo: '#autocomplete_container'
 
-    $member_email.keydown (event) ->
-      if event.keyCode == 13
-        createMembership()
-
     $('#add_member').click -> createMembership()
 
     $('.hidden-until-loaded').show()
