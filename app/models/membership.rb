@@ -9,6 +9,9 @@ class Membership < ActiveRecord::Base
   has_one :write_sites_permission, dependent: :destroy
 
   before_destroy :destroy_collection_memberships
+
+  validates :user_id, :uniqueness => { scope: :collection_id, message: "membership already exists" }
+
   def destroy_collection_memberships
     collection.layer_memberships.where(:user_id => user_id).destroy_all
   end

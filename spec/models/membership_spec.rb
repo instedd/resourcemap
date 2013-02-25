@@ -22,6 +22,11 @@ describe Membership do
       membership.sites_permission.should include(write: write_permission)
     end
 
+    it "should not allow more than one membership per collection and user" do
+      user.memberships.create! :collection_id => collection.id
+      expect { user.memberships.create!(:collection_id => collection.id) }.to raise_error
+    end
+
     context "when user is collection admin" do
       it "should allow read for all sites" do
         membership.admin = true
