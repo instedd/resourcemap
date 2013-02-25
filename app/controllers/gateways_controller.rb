@@ -30,8 +30,7 @@ class GatewaysController < ApplicationController
 
   def try
     channel = Channel.find params[:gateway_id]
-    puts channel.to_json 
-    SmsNuntium.notify_sms [params[:phone_number]], 'Welcome to resource map!', channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name
+    SmsNuntium.notify_sms [params[:phone_number]], 'Welcome to resource map!', channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
     render json: channel.as_json
   end
   

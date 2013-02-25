@@ -87,6 +87,10 @@ class CollectionsController < ApplicationController
     add_breadcrumb "Settings", collection_settings_path(collection)
   end
 
+  def quotas
+    add_breadcrumb "Quotas", collection_settings_path(collection)
+  end
+
   def destroy
     if params[:only_sites]
       collection.delete_sites_and_activities
@@ -228,5 +232,19 @@ class CollectionsController < ApplicationController
   def register_gateways
     collection.channels = Channel.find params["gateways"]
     render json: collection.as_json
+  end
+
+  def message_quota
+    date = Date.today
+    case params[:filter_type]
+    when "week"
+      start_date = date - 7
+    when "month"
+      start_date = date.prev_month
+    else
+      start_date = date.prev_year
+    end
+    ms = collection.messages.where("is_send = true and created_at between ? and ?", start_date, Time.now)
+    render json: {status: 200, remain_quota: collection.quota, sended_message: ms.length }
   end
 end

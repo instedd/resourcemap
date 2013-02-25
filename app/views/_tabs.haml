@@ -10,3 +10,5 @@
   = tab "Import wizard", collection_import_wizard_path(collection)
   = tab "Settings", collection_settings_path(collection)
   = render_hook collection, :collection_tab, :collection => collection
+  - if Settings.is_on? :channels  
+    = tab "Quotas", collection_quotas_path(collection)

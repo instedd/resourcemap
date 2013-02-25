@@ -1,0 +1,31 @@
+= render '/tabs'
+:javascript
+  $(document).ready(function(){ 
+  match = window.location.toString().match(/\/collections\/(\d+)\/quotas/)
+  var collectionId = parseInt(match[1])  
+  refresh_data(); 
+  $("#filter_type").change(function(){
+    refresh_data();
+  });
+  function refresh_data(){
+    $.get("/collections/" + collectionId + "/message_quota.json", {filter_type:  this.value}, function(resp){
+      $(".remain_quota").text(resp.remain_quota);
+      $(".sended_message").text(resp.sended_message);
+    });
+  };
+  });
+.tabsline.quotas-form
+  %h2 Quotas
+  %p Set SMS quota for individual collection
+  %br/
+
+
+  .field
+    = label_tag "", nil, class: "sended_message", style: "float:left"
+    = label_tag "  messages where send last", nil, style: "float:left;width:175px;margin-left:5px;"
+    = select_tag "filter_type", options_for_select([["Week","week"],["Month","month"],["Year","year"]])
+    %br
+    = label_tag "this collection remain:"
+    = label_tag "", nil, class: "remain_quota", style: "float:left"
+    = label_tag "messages", nil, style: "margin-left:25px;"
+  %br{clear: :all}

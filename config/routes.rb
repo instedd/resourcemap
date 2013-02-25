@@ -16,6 +16,7 @@ ResourceMap::Application.routes.draw do
   resources :repeats
   resources :collections do
     post :register_gateways
+    get  :message_quota
     get :sites_by_term
     resources :sites
     resources :layers do
@@ -40,6 +41,7 @@ ResourceMap::Application.routes.draw do
 
     get 'members'
     get 'settings'
+    get 'quotas'
     get 'csv_template'
     get 'max_value_of_property'
 
@@ -76,6 +78,7 @@ ResourceMap::Application.routes.draw do
   end
 
   resources :activities, :only => [:index], :path => 'activity'
+  resources :quotas
   resources :gateways do
     post 'status', :on => :member
     post 'try'
@@ -114,5 +117,6 @@ ResourceMap::Application.routes.draw do
   constraints admin_constraint do
     mount Resque::Server, :at => "/admin/resque"
     match 'analytics' => 'analytics#index', :via => :get
+    match 'quota' => 'quota#index', via: :get
   end
 end

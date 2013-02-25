@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130206210407) do
+ActiveRecord::Schema.define(:version => 20130220030926) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -43,8 +43,8 @@ ActiveRecord::Schema.define(:version => 20130206210407) do
     t.string   "name"
     t.text     "description"
     t.boolean  "public"
-    t.datetime "created_at",                                 :null => false
-    t.datetime "updated_at",                                 :null => false
+    t.datetime "created_at",                                                :null => false
+    t.datetime "updated_at",                                                :null => false
     t.decimal  "lat",         :precision => 10, :scale => 6
     t.decimal  "lng",         :precision => 10, :scale => 6
     t.decimal  "min_lat",     :precision => 10, :scale => 6
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(:version => 20130206210407) do
     t.decimal  "max_lat",     :precision => 10, :scale => 6
     t.decimal  "max_lng",     :precision => 10, :scale => 6
     t.string   "icon"
+    t.integer  "quota",                                      :default => 0
   end
 
   create_table "field_histories", :force => true do |t|
@@ -136,10 +137,11 @@ ActiveRecord::Schema.define(:version => 20130206210407) do
     t.string   "to"
     t.string   "subject"
     t.string   "body"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.text     "reply"
     t.integer  "collection_id"
+    t.boolean  "is_send",       :default => false
   end
 
   create_table "prefixes", :force => true do |t|

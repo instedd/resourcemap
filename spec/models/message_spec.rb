@@ -73,4 +73,24 @@ describe Message do
       message.visit command, nil
     end
   end
+
+  describe "message log" do 
+    let(:collection) { Collection.make quota: 10 } 
+    it 'should change collection.quota after log  message' do
+      expect{ 
+        Message.log [{from: '123456', to: '123456', body: 'hello resourcemap'}], collection.id
+      }.to change{
+        c = Collection.find collection.id 
+        c.quota
+      }.from(10).to(9)
+    end
+
+
+    it "shouldn't change collection.quota after create new message with property is_send == false" do
+      message = Message.new from: '123456', to: '123456', body: 'hello resourcemap', is_send: false, collection_id: collection.id
+      c = Collection.find collection.id 
+      c.quota.should eq collection.quota
+    end
+
+  end
 end

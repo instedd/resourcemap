@@ -14,6 +14,8 @@
       = section "Activity", activities_path, :activities
       - if Settings.is_on? :channels
         = section "SMS Gateways", gateways_path, :gateways
+      - if current_user.is_super_user
+        = section "Quota", quotas_path, :quotas
   -#= section "Tour", '', :tour
   -#= section "Community", '', :community
   -#= section "Help", '', :help

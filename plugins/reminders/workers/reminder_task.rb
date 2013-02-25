@@ -15,7 +15,7 @@ class ReminderTask
       suggested_channel = active_gateway.nil?? Channel.default_nuntium_name : active_gateway.nuntium_channel_name
       users_phone_number = users_phone_number.flatten.compact 
       users_email = users_email.flatten.compact
-      Resque.enqueue SmsTask, users_phone_number, message_reminder,suggested_channel unless users_phone_number.empty?
+      Resque.enqueue SmsTask, users_phone_number, message_reminder,suggested_channel, reminder.collection.id unless users_phone_number.empty?
       Resque.enqueue EmailTask, users_email, message_reminder, "[ResourceMap] Reminder Notification"  unless users_email.empty?
     end
   end

@@ -1,0 +1,39 @@
+= form_tag('/quotas') do 
+  :javascript
+    $(document).ready(function(){ 
+      
+      $("#collection_id").change(function(){
+        if(this.value != ""){
+          refreshData(this.value);
+        }else{
+          $(".current_quota").text("0");
+        }
+      });
+
+      function refreshData(value){
+        $.get("/quotas/" + value + ".json", function(resp){
+          $(".current_quota").text(resp["quota"]);
+        });
+      };
+    });
+  %h1 Quota
+  .tabsline
+    .field
+      = label_tag "Collection"
+      %p
+        please select collection to set message quota
+      = select_tag 'collection_id', options_for_select(@collections.collect{ |u| [u.name, u.icon, u.id] }), :prompt => "Please select collection!" 
+    
+    %br{clear: :all}
+    .field 
+      =label_tag "Current Quota"
+      =label_tag "0", nil, class: "current_quota" 
+    %br{clear: :all}
+    .field
+      = label_tag "Quota"
+      %p 
+        set message quota to the selected collection
+      = text_field_tag 'quota','' , placeholder: 'Enter your quota number!', class: "w30"
+    %br{clear: :all}
+    .field
+      = submit_tag 'Save'
