@@ -10,8 +10,7 @@
     %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
     <!-- /ko --> 
     %p 
-      %a{href: 'gateways_path'} 
-        Click here to configure your SMS gateways
+      = link_to "Click here to configure your SMS gateways", gateways_path
     .bottom-actions
       %button.white{ ko(click: '$root.saveChannel') } Save
       = link_to 'or cancel', collections_path, :style => 'text-decoration:underline;color:'
