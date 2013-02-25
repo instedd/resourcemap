@@ -1,8 +1,6 @@
 module Field::FredApiConcern
   extend ActiveSupport::Concern
 
-  # metadata: {"0"=>{"key"=>"context", "value"=>"MOH"}, "1"=>{"key"=>"agency", "value"=>"DHIS"}}
-
   def identifier?
     kind == 'identifier'
   end
