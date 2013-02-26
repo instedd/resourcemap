@@ -23,7 +23,11 @@ module Collection::CsvConcern
 
         row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
         fields.each do |field|
-          row << Array(source['properties'][field.code]).join(", ")
+          if field.kind == 'yes_no'
+            row << (Field.is_yes?(source['properties'][field.code]) ? 'yes' : 'no')
+          else
+            row << Array(source['properties'][field.code]).join(", ")
+          end
         end
         row << Site.iso_string_to_rfc822(source['updated_at'])
         csv << row

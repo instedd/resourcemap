@@ -4,7 +4,7 @@ module Field::ValidationConcern
   def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
     check_precense_of_value(value)
     if kind == 'yes_no'
-      validated_value = apply_format_update_validation(value, use_codes_instead_of_es_codes, nil)
+      validated_value = Field.is_yes?(value)
     elsif kind == 'numeric'
       validated_value = check_valid_numeric_value(value)
     elsif kind == 'date'
@@ -23,7 +23,7 @@ module Field::ValidationConcern
 
   def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
     if kind == 'yes_no'
-      validated_value = value == true || value == 1 || value == 'yes' || value == 'true' || value == '1'
+      validated_value = Field.is_yes?(value)
     elsif value.blank?
       validated_value = nil
     elsif kind == 'numeric'
@@ -56,6 +56,12 @@ module Field::ValidationConcern
       options.map { |item| item[:name] }
     else
       options.map { |item| item[:id] }
+    end
+  end
+
+  module ClassMethods
+    def is_yes?(value)
+      value == true || value == 1 || value == 'yes' || value == 'true' || value == '1'
     end
   end
 

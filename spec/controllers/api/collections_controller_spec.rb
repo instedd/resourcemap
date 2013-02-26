@@ -10,6 +10,7 @@ describe Api::CollectionsController do
 
   let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
   let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+  let!(:yes_no) { layer.fields.make :code => 'yes_no', :kind => 'yes_no' }
   let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   config_hierarchy = [{ id: 'dad', name: 'Dad', sub: [{id: 'son', name: 'Son'}, {id: 'bro', name: 'Bro'}]}]
@@ -23,6 +24,7 @@ describe Api::CollectionsController do
   let!(:site) { collection.sites.make  :name => "Site B", :properties => {
     text.es_code => 'foo',
     numeric.es_code => 1,
+    yes_no.es_code => true,
     select_one.es_code => 1,
     select_many.es_code => [1, 2],
     hierarchy.es_code => 'dad',
@@ -60,9 +62,10 @@ describe Api::CollectionsController do
       json["sites"][1]["lat"].should eq(site.lat)
       json["sites"][1]["long"].should eq(site.lng)
 
-      json["sites"][1]["properties"].length.should eq(8)
+      json["sites"][1]["properties"].length.should eq(9)
 
       json["sites"][1]["properties"][text.code].should eq(site.properties[text.es_code])
+      json["sites"][1]["properties"][yes_no.code].should be_true
       json["sites"][1]["properties"][numeric.code].should eq(site.properties[numeric.es_code])
       json["sites"][1]["properties"][select_one.code].should eq('one')
       json["sites"][1]["properties"][select_many.code].should eq(['one', 'two'])
@@ -115,10 +118,11 @@ describe Api::CollectionsController do
       rss["rss"]["channel"]["item"][1]["guid"].should eq(api_site_url site, format: 'rss')
 
 
-      rss["rss"]["channel"]["item"][1]["properties"].length.should eq(8)
+      rss["rss"]["channel"]["item"][1]["properties"].length.should eq(9)
 
       rss["rss"]["channel"]["item"][1]["properties"][text.code].should eq(site.properties[text.es_code])
       rss["rss"]["channel"]["item"][1]["properties"][numeric.code].should eq(site.properties[numeric.es_code].to_s)
+      rss["rss"]["channel"]["item"][1]["properties"][yes_no.code].should eq('true')
       rss["rss"]["channel"]["item"][1]["properties"][select_one.code].should eq('one')
       rss["rss"]["channel"]["item"][1]["properties"][select_many.code].length.should eq(1)
       rss["rss"]["channel"]["item"][1]["properties"][select_many.code]['option'].length.should eq(2)
@@ -146,11 +150,11 @@ describe Api::CollectionsController do
 
       csv.length.should eq(3)
 
-      csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, select_one.code, select_many.code, hierarchy.code, site_ref.code, date.code, director.code, 'last updated'])
+      csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, yes_no.code, select_one.code, select_many.code, hierarchy.code, site_ref.code, date.code, director.code, 'last updated'])
 
-      csv.should include [site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "", "", "bro", "", "", "", site2.updated_at.to_datetime.rfc822]
+      csv.should include [site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "bro", "", "", "", site2.updated_at.to_datetime.rfc822]
 
-      csv.should include [site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'one', 'one, two', 'dad', site2.id.to_s, '10/24/2012', user.email, site.updated_at.to_datetime.rfc822]
+      csv.should include [site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'yes', 'one', 'one, two', 'dad', site2.id.to_s, '10/24/2012', user.email, site.updated_at.to_datetime.rfc822]
     end
   end
 
