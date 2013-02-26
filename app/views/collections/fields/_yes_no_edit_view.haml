@@ -1,0 +1,8 @@
+- if single_editing_mode
+  %input{ko(checked: 'value'), type: 'checkbox'}
+  %button{ko(click: :save)} OK
+  %button{ko(click: :exit)} Cancel
+- else
+  %input{ko(checked: 'value'), type: 'checkbox', class: 'right w20'}
+  .clear
+

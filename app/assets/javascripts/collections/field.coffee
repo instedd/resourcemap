@@ -13,7 +13,11 @@ onCollections ->
       @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
 
       @value = ko.observable()
-      @hasValue = ko.computed => @value() && (if @kind == 'select_many' then @value().length > 0 else @value())
+      @hasValue = ko.computed =>
+        if @kind == 'yes_no'
+          true
+        else
+          @value() && (if @kind == 'select_many' then @value().length > 0 else @value())
 
       @valueUI =  ko.computed
        read: =>  @valueUIFor(@value())
@@ -60,7 +64,9 @@ onCollections ->
     # The value of the UI.
     # If it's a select one or many, we need to get the label from the option code.
     valueUIFor: (value) =>
-      if @kind == 'select_one'
+      if @kind == 'yes_no'
+        if value then 'yes' else 'no'
+      else if @kind == 'select_one'
         if value then @labelFor(value) else ''
       else if @kind == 'select_many'
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''

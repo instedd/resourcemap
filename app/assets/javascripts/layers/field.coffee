@@ -104,6 +104,8 @@ onLayers ->
     toJSON: (json) =>
       json.config = {allows_decimals: @allowsDecimals()}
 
+  class @Field_yes_no extends @FieldImpl
+
   class @FieldSelect extends @FieldImpl
     constructor: (field) ->
       super(field)

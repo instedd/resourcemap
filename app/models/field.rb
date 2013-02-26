@@ -18,7 +18,6 @@ class Field < ActiveRecord::Base
   serialize :config
   serialize :metadata
 
-
   before_save :set_collection_id_to_layer_id, :unless => :collection_id?
   def set_collection_id_to_layer_id
     self.collection_id = layer.collection_id if layer

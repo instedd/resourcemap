@@ -8,6 +8,7 @@ module Field::Base
   BaseKinds = [
    { name: 'text', css_class: 'ltext', small_css_class: 'stext' },
    { name: 'numeric', css_class: 'lnumber', small_css_class: 'snumeric' },
+   { name: 'yes_no', css_class: 'lreport', small_css_class: 'stext' },
    { name: 'select_one', css_class: 'lsingleoption', small_css_class: 'sselect_one' },
    { name: 'select_many', css_class: 'lmultipleoptions', small_css_class: 'sselect_many' },
    { name: 'hierarchy', css_class: 'lhierarchy', small_css_class: 'shierarchy' },
