@@ -111,4 +111,9 @@ ResourceMap::Application.routes.draw do
     mount Resque::Server, :at => "/admin/resque"
     match 'analytics' => 'analytics#index', :via => :get
   end
+
+  # TODO: deprecate later
+  match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#show_facility', :via => :get
+  match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#facilities', :via => :get
+  match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#delete_facility', :via => :delete
 end
