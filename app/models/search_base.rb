@@ -25,11 +25,12 @@ module SearchBase
   end
 
   def eq(field, value)
-
     validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
     query_key = field.es_code
 
-    if field.kind == 'date'
+    if field.kind == 'yes_no'
+      @search.filter :term, query_key => Field.yes?(value)
+    elsif field.kind == 'date'
       date_field_range(query_key, validated_value)
     elsif field.kind == 'hierarchy' and value.is_a? Array
       @search.filter :terms, query_key => validated_value

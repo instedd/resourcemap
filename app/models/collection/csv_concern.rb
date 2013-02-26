@@ -24,7 +24,7 @@ module Collection::CsvConcern
         row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
         fields.each do |field|
           if field.kind == 'yes_no'
-            row << (Field.is_yes?(source['properties'][field.code]) ? 'yes' : 'no')
+            row << (Field.yes?(source['properties'][field.code]) ? 'yes' : 'no')
           else
             row << Array(source['properties'][field.code]).join(", ")
           end

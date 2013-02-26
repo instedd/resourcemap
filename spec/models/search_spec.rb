@@ -573,6 +573,25 @@ describe Search do
     end
   end
 
+  context 'filter by yes_no' do
+    let!(:cool) { layer.fields.make code: 'cool', kind: 'yes_no' }
+
+    let!(:site1) { collection.sites.make properties: { cool.es_code => true } }
+    let!(:site2) { collection.sites.make properties: { cool.es_code => false } }
+
+    it "should filter by 'yes'" do
+      search = collection.new_search
+      search.where cool.es_code => 'yes'
+      assert_results search, site1
+    end
+
+    it "should filter by 'no'" do
+      search = collection.new_search
+      search.where cool.es_code => 'no'
+      assert_results search, site2
+    end
+  end
+
   context 'hierarchy parameter for select_kind and hierarchy fields' do
     let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
     let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }

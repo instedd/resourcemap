@@ -60,7 +60,7 @@ module Field::Base
 
   def api_value(value)
     if yes_no?
-      Field.is_yes?(value)
+      Field.yes?(value)
     elsif select_one?
       option = config['options'].find { |o| o['id'] == value }
       return option ? option['code'] : value
