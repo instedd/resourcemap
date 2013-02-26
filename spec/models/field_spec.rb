@@ -135,21 +135,6 @@ describe Field do
     end
   end
 
-  describe "core field type" do
-    subject { Field::kinds - Field::plugin_kinds.keys }
-
-    it { should have(8).items }
-    it { should include 'text' }
-    it { should include 'numeric' }
-    it { should include 'select_one' }
-    it { should include 'select_many' }
-    it { should include 'hierarchy' }
-    it { should include 'user' }
-    it { should include 'date' }
-    it { should include 'site' }
-
-  end
-
   describe "validations" do
     let!(:user) { User.make }
     let!(:collection) { user.create_collection Collection.make_unsaved }
