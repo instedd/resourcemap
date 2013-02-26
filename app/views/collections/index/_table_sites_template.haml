@@ -13,11 +13,11 @@
     %td.padded
       %span{ko(text: :safe_lng)}
     <!-- ko foreach: $root.currentCollection().fields() -->
-    <!-- ko if: $parent.properties()[$data.esCode] -->
+    <!-- ko if: hasValue() -->
     %td.padded
       %span{ko(attr: "{ title: $parent.highlightedPropertyValue($data) }", text: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
     <!-- /ko -->
-    <!-- ko if: !$parent.properties()[$data.esCode] -->
+    <!-- ko if: !hasValue() -->
     %td.padded
     <!-- /ko -->
     <!-- /ko -->
