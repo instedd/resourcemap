@@ -66,6 +66,13 @@
       %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
 
+      <!-- ko if: kind == 'yes_no' -->
+      %select{ko(value: '$root.expandedRefinePropertyValue')}
+        %option{value: 'yes'} is 'yes'
+        %option{value: 'no'} is 'no'
+      %a.button.white{ko(click: '$root.filterByProperty')} OK
+      <!-- /ko -->
+
       <!-- ko if: kind == 'numeric' -->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
         %option{value: '='} equals
