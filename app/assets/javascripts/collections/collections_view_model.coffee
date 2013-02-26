@@ -32,7 +32,7 @@ onCollections ->
 
       @rewriteUrl()
 
-      $('.BreadCrumb').load("collections/breadcrumbs", {})
+      $('.BreadCrumb').load("/collections/breadcrumbs", {})
 
       window.setTimeout(window.adjustContainerSize, 100)
 
@@ -70,7 +70,7 @@ onCollections ->
           @rewriteUrl()
         window.adjustContainerSize()
 
-      $('.BreadCrumb').load("collections/breadcrumbs", { collection_id: collection.id })
+      $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
 
 

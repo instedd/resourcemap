@@ -11,7 +11,7 @@ onCollections ->
         return
 
       @siteMembershipInitialized = true
-      $.get "collections/#{@id}/sites_permission", {}, (data) =>
+      $.get "/collections/#{@id}/sites_permission", {}, (data) =>
         @sitesPermission = new SitesPermission(data)
         callback() if typeof(callback) is 'function'
 

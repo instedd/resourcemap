@@ -17,7 +17,7 @@ onCollections ->
         params["site_id"] = @selectedSite().id()
       params["collection_id"] = @currentCollection().id if @currentCollection()
 
-      $('.BreadCrumb').load("collections/breadcrumbs", params)
+      $('.BreadCrumb').load("/collections/breadcrumbs", params)
 
     @editingSiteLocation: ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
