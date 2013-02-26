@@ -1,8 +1,8 @@
 class FredApi::Plugin < Plugin
   field_type \
     name: 'identifier',
-    css_class: 'lalert',
-    small_css_class: 'salert',
+    css_class: 'lgovernment',
+    small_css_class: 'sgovernment',
     edit_view: 'fields/identifier_edit_view',
     property_editor: 'fields/identifier_editor',
     sample_value: 'XYZ123'
