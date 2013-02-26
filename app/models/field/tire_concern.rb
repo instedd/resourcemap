@@ -3,6 +3,8 @@ module Field::TireConcern
 
   def index_mapping
     case
+    when kind == 'yes_no'
+      { type: :boolean }
     when stored_as_number?
       { type: :long }
     when stored_as_date?
