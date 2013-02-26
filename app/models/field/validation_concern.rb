@@ -61,7 +61,7 @@ module Field::ValidationConcern
 
   module ClassMethods
     def yes?(value)
-      value == true || value == 1 || value == 'yes' || value == 'true' || value == '1'
+      value == true || value == 1 || !!(value =~ /\A(yes|true|1)\Z/i)
     end
   end
 
