@@ -74,21 +74,15 @@
             .feditor-add-container
               .feditor-add-content
                 %h1 Add form field
-                - i = 0
-                - Field::BaseKinds.each do |field|
-                  - i += 1
-                  %span{ko(click: "function() { $root.newField('#{field[:name]}') }")}
-                    %button{ class: field[:css_class], title: "Add new #{field[:name].titleize.downcase} field" }
-                    %br/
-                    = field[:name].titleize
-                  - if i == 6
-                    %br/
-                    %br/
-                - Field::plugin_kinds.each do |name, kind|
-                  %span{ko(click: "function() { $root.newField('#{name}') }")}
-                    %button{ class: kind[:css_class], title: "Add new #{name.downcase} field"}
-                    %br/
-                    = name.titleize
+                - Field::BaseKinds.clone.concat(Field::plugin_kinds.map{|k,v| v}).in_groups_of(6).each do |field_row|
+                  .feditor-field-type-row
+                  - field_row.each do |field|
+                    %span{ko(click: "function() { $root.newField('#{field[:name]}') }")}
+                      %button{ style: "margin-left:10px; margin-bottom:4px;", class: field[:css_class], title: "Add new #{field[:name].titleize.downcase} field" }
+                      %br/
+                      = field[:name].titleize
+                  %br/
+                  %br/
 
         = render 'layers/field_editor'
 
