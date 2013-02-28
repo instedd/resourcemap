@@ -6,11 +6,11 @@ module Field::FredApiConcern
   end
 
   def context
-    config['context']
+    config['context'] rescue nil
   end
 
   def agency
-    config['agency']
+    config['agency'] rescue nil
   end
 
   def fred_api_value(value)

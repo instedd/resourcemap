@@ -26,22 +26,28 @@ class FredApiController < ApplicationController
   end
 
   def show_facility
-    search = collection.new_search current_user_id: current_user.id
-    search.id(site.id)
-    results = search.fred_api_results
-
-    # ID is unique. We should only get one result here.
-    facility = results[0]
-
-    respond_to do |format|
-      format.json { render json: fred_facility_format(facility) }
-    end
+    render json: find_facility_and_apply_fred_format(site.id)
   end
 
   def delete_facility
     site.user = current_user
     site.destroy
     render json: url_for_facility(site.id)
+  end
+
+  def create_facility
+    facility_params = params.except(*[:action, :controller, :format, :collection_id])
+    if ["id","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
+      render  json: { message: "Invalid Paramaters: The id, url, createdAt, and updatedAt core properties cannot be changed by the client."}, status: 400
+      return
+    end
+    if facility_params.include? "active"
+      render  json: { message: "Not Implemented: ResourceMap does not implement logical deletion of facilities yet. All facilities have status=active."}, status: 400
+      return
+    end
+    validated_facility = validate_site_params(facility_params)
+    facility = collection.sites.create!(validated_facility.merge(user: current_user))
+    render json: find_facility_and_apply_fred_format(facility.id), status: :created, :location => url_for_facility(facility.id)
   end
 
   def facilities
@@ -94,7 +100,7 @@ class FredApiController < ApplicationController
     #Hack: All facilities are active. If param[:active]=false then no results should be returned
     facilities = [] if params[:active].to_s == false.to_s
 
-    fred_json_facilities = facilities.map {|facility| fred_facility_format facility}
+    fred_json_facilities = facilities.map {|facility| fred_facility_format_from_ES facility}
 
     # Selection is made in memory for simplicity
     # In the future we could use ES method fields, but the response has different structure.
@@ -107,6 +113,52 @@ class FredApiController < ApplicationController
   end
 
   private
+
+  def find_facility_and_apply_fred_format(id)
+    search = collection.new_search current_user_id: current_user.id
+    search.id(id)
+    results = search.fred_api_results
+
+    # ID is unique. We should only get one result here.
+    facility = results[0]
+
+    fred_facility_format_from_ES(facility)
+  end
+
+  def validate_site_params(facility_param)
+    fields = collection.fields
+    properties = facility_param["properties"] || {}
+    identifiers = facility_param["identifiers"] || []
+
+    validated_properties = {}
+    properties.each_pair do |code, value|
+      field = fields.find_by_code code
+      validated_value = field.apply_format_update_validation(value, true, collection)
+      validated_properties["#{field.es_code}"] = validated_value
+    end
+
+    identifiers_fields = collection.fields.find_all{|f| f.identifier?}
+    identifiers.each do |identifier|
+      field = identifiers_fields.find{|f| f.context == identifier["context"] && f.agency == identifier["agency"] }
+      if field
+        validated_value = field.apply_format_update_validation(identifier["id"], true, collection)
+        validated_properties["#{field.es_code}"] = validated_value
+      end
+    end
+
+    lat = facility_param["coordinates"][1] if facility_param["coordinates"]
+    lng = facility_param["coordinates"][0] if facility_param["coordinates"]
+
+    facility_param.delete "coordinates"
+    facility_param.delete "identifiers"
+
+    validated_site = facility_param
+    validated_site["properties"] = validated_properties
+    validated_site["lat"] = lat
+    validated_site["lng"] = lng
+
+    validated_site
+  end
 
   def select_properties(facilities, fields_list)
     filtered_facilities = []
@@ -131,7 +183,7 @@ class FredApiController < ApplicationController
     url_for(:controller => 'fred_api', :action => 'show_facility',:format => :json, :id => id)
   end
 
-  def fred_facility_format(result)
+  def fred_facility_format_from_ES(result)
     source = result['_source']
 
     obj = {}
