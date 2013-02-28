@@ -313,6 +313,11 @@ describe FredApiController do
       date.es_code => "2012-10-24T00:00:00Z",
     }}
 
+    it "should return 404 if the facility does not exist" do
+      put :update_facility, collection_id: collection.id, id: "124566", :name => "Kakamega HC 2"
+      response.status.should eq(404)
+    end
+
     it "should update name" do
       put :update_facility, collection_id: collection.id, id: site.id, :name => "Kakamega HC 2"
       response.status.should eq(200)
