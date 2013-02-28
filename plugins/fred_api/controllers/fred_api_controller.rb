@@ -7,7 +7,7 @@ class FredApiController < ApplicationController
   around_filter :rescue_with_status_codes
 
   rescue_from ActiveRecord::RecordNotFound do |x|
-    render json: { message: "Record not found"}, :status => 404, :layout => false
+    render json: { code: "404 Not Found", message: "Resource not found" }, :status => 404, :layout => false
   end
 
   expose(:site)

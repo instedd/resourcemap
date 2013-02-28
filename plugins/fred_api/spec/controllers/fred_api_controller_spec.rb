@@ -294,6 +294,9 @@ describe FredApiController do
     it "should return 404 if the requested site does not exist" do
       get :show_facility, id: 12355259, format: 'json', collection_id: collection.id
       response.status.should eq(404)
+      json = JSON.parse response.body
+      json['code'].should eq('404 Not Found')
+      json['message'].should eq('Resource not found')
     end
 
     it "should return 422 if a non existing field is included in the query" do
