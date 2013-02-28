@@ -1,8 +1,8 @@
 class FredApiController < ApplicationController
   before_filter :authenticate_user!
   before_filter :authenticate_collection_user!
-  before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :delete_facility]
-  before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility]
+  before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :delete_facility, :update_facility]
+  before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility, :update_facility]
 
   around_filter :rescue_with_status_codes
 
@@ -33,6 +33,23 @@ class FredApiController < ApplicationController
     site.user = current_user
     site.destroy
     render json: url_for_facility(site.id)
+  end
+
+  def update_facility
+    facility_params = params.except(*[:action, :controller, :format, :collection_id, :id])
+    if ["id","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
+      render  json: { message: "Invalid Paramaters: The id, url, createdAt, and updatedAt core properties cannot be changed by the client."}, status: 400
+      return
+    end
+    if facility_params.include? "active"
+      render  json: { message: "Not Implemented: ResourceMap does not implement logical deletion of facilities yet. All facilities have status=active."}, status: 400
+      return
+    end
+    validated_facility = validate_site_params(facility_params)
+    site.user = current_user
+    site.properties_will_change!
+    site.update_attributes! validated_facility
+    render json: find_facility_and_apply_fred_format(site.id), status: :ok, :location => url_for_facility(site.id)
   end
 
   def create_facility

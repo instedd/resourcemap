@@ -302,6 +302,72 @@ describe FredApiController do
     end
   end
 
+  describe "should update facility" do
+    let!(:site) { collection.sites.make :name => "Kakamega HC", :properties => {
+      text.es_code => "Mrs. Liz",
+      numeric.es_code => 55,
+      select_many.es_code => [1, 2],
+      date.es_code => "2012-10-24T00:00:00Z",
+    }}
+
+    it "should update name" do
+      put :update_facility, collection_id: collection.id, id: site.id, :name => "Kakamega HC 2"
+      response.status.should eq(200)
+      updated_site = Site.find site.id
+      updated_site.name.should eq("Kakamega HC 2")
+    end
+
+   it "should return 400 if id, url, createdAt or updatedAt are present in the query params" do
+      put :update_facility, collection_id: collection.id, id: site.id, name: 'Kakamega HC', url: "sda"
+      response.status.should eq(400)
+      put :update_facility, collection_id: collection.id, id: site.id, name: 'Kakamega HC', createdAt: "sda"
+      response.status.should eq(400)
+      put :update_facility, collection_id: collection.id, id: site.id, name: 'Kakamega HC', updatedAt: "sda"
+      response.status.should eq(400)
+    end
+
+    it "should update  coordinates" do
+      put :update_facility, collection_id: collection.id, id: site.id, coordinates: [76.9,34.2]
+      response.status.should eq(200)
+      json = JSON.parse response.body
+      json["name"].should eq('Kakamega HC')
+      json["coordinates"][0].should eq(76.9)
+      json["coordinates"][1].should eq(34.2)
+      updated_site = Site.find site.id
+      updated_site.lat.to_f.should eq(34.2)
+      updated_site.lng.to_f.should eq(76.9)
+    end
+
+    it "should update properties" do
+      put :update_facility, collection_id: collection.id, id: site.id, :properties => {
+      "manager" => "Mrs. Liz 2",
+      "numBeds" => 552,
+      "services" => ['OBG'],
+      "inagurationDay" => "2013-10-24T00:00:00Z"
+      }
+      response.status.should eq(200)
+      json = JSON.parse response.body
+      json["properties"].length.should eq(4)
+      json["properties"]['manager'].should eq("Mrs. Liz 2")
+      json["properties"]['numBeds'].should eq(552)
+      json["properties"]['services'].should eq(['OBG'])
+      json["properties"]['inagurationDay'].should eq("2013-10-24T00:00:00Z")
+    end
+
+    it "should update identifiers" do
+      moh_id = layer.fields.make :code => 'moh-id', :kind => 'identifier', :config => {"context" => "MOH", "agency" => "DHIS"}
+
+      put :update_facility, collection_id: collection.id, id: site.id, :identifiers => [
+        {"agency"=> "DHIS",
+        "context"=>"MOH",
+        "id"=> "1234"}]
+
+      response.status.should eq(200)
+      json = JSON.parse response.body
+      json['identifiers'][0].should eq({"context" => "MOH", "agency" => "DHIS", "id"=> "1234"})
+    end
+  end
+
   describe "Should create facility" do
     it "should not create a facility without a name" do
       post :create_facility, collection_id: collection.id

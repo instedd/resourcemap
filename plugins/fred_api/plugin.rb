@@ -20,5 +20,6 @@ class FredApi::Plugin < Plugin
     match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#facilities', :via => :get, as: :facilities
     match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#delete_facility', :via => :delete, as: :delete_facility
     match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#create_facility', :via => :post, as: :create_facility
+    match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#update_facility', :via => :put, as: :update_facility
   }
 end
