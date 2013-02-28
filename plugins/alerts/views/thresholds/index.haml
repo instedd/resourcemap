@@ -51,7 +51,7 @@
           <!-- /ko -->
           ,change icon to:
           %br
-          .alert-icon{"data-bind" => "style: { margin: '5px 0px 0px 0px', borderColor:color }"}
+          .alert-icon
             %img{"data-bind" => "attr: { src:iconUrl }" }
           -# %span.stat{"data-bind" => "style: { backgroundColor:icon }" }
           %br
@@ -125,20 +125,15 @@
         Add another condition
       %hr
       %br
-      .alert-icon{"data-bind" => "style: { borderColor:color }"}
+      .alert-icon
         %img{"data-bind" => "attr: { src:iconUrl }" }
       .color-palette
         %label Change site display on map
         %br
-        %button.fred.fsize{ ko( click: "setIcon.bind($data, '#b30b0b')") }
-        %button.forange.fsize{ ko( click: "setIcon.bind($data, '#c2720f')") }
-        %button.fyellow.fsize{ ko( click: "setIcon.bind($data, '#c2b30f')") }
+        %button.forange.fsize{ ko( click: "setIcon.bind($data, '#ff6f21')") }
+        %button.fyellow.fsize{ ko( click: "setIcon.bind($data, '#ffc01f')") }
         %button.fgreen.fsize{ ko( click: "setIcon.bind($data, '#128e4e')") }
-        %button.fcyan.fsize{ ko( click: "setIcon.bind($data, '#00baba')") }
-        %button.fblue.fsize{ ko( click: "setIcon.bind($data, '#1c388c')") }
-        %button.fpurple.fsize{ ko( click: "setIcon.bind($data, '#5f1c8c')") }
-        %button.fblack.fsize{ ko( click: "setIcon.bind($data, '#000000')") }
-        %button.fgrey.fsize{ ko( click: "setIcon.bind($data, '#9e9e9e')") }
+        %button.fcyan.fsize{ ko( click: "setIcon.bind($data, '#5ec8bd')") }
       %br
       %hr
       %br

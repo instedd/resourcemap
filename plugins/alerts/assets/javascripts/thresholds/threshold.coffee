@@ -21,7 +21,7 @@ onThresholds -
       @ord = ko.observable data?.ord
       @color = ko.observable(data?.color)
       @icon = ko.observable(collectionIcon ? "default")
-      @iconUrl = ko.computed => "/assets/resmap_#{@icon()}.png"
+      @iconUrl = ko.computed => "/assets/markers/resmap_#{@color().replace('#','')}_#{@icon()}.png"
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
       @propertyNameError = ko.computed =>
         if $.trim(@propertyName()).length > 0

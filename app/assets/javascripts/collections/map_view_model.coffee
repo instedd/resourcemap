@@ -10,7 +10,6 @@ onCollections ->
 
       @reloadMapSitesAutomatically = true
       @clusters = {}
-      @alertMarkers = {}
       @siteIds = {}
       @disambiguationPaths = {}
       @ghostMarkers = []
@@ -79,7 +78,6 @@ onCollections ->
 
       @markers = {}
       @clusters = {}
-      @alertMarkers = {}
       @showingMap(true)
 
       # This fixes problems when changing from fullscreen expanded to table view and then going back to map view
@@ -192,78 +190,57 @@ onCollections ->
       # Add markers if they are not already on the map
       for site in sites
         dataSiteIds[site.id] = site.id
-        if site.alert == 'true'
-          if @alertMarkers[site.id]
-            if site.highlighted
-              @alertMarkers[site.id].setTarget()
+        if @markers[site.id]
+          if site.highlighted
+            @setMarkerIcon @markers[site.id], 'target'
           else
-            if site.id == oldSelectedSiteId
-              @alertMarkers[site.id] = @oldSelectedSite.alertMarker
-              @alertMarkers[site.id].site = site
-              @alertMarkers[site.id].setActive(false)
-              if @oldSelectedSite.marker
-                @alertMarkers[site.id].setMap(@map)
-                @oldSelectedSite.deleteMarker()
-              else
-                @oldSelectedSite.deleteAlertMarker false
-              delete @oldSelectedSite
-            else
-              @createAlert(site)
-            localId = @alertMarkers[site.id].siteId = site.id
-            @alertMarkers[localId].setupListeners()
+            @setMarkerIcon @markers[site.id], (if @editingSite() then 'inactive' else 'active')
         else
-          if @markers[site.id]
-            if site.highlighted
-              @setMarkerIcon @markers[site.id], 'target'
-            else
-              @setMarkerIcon @markers[site.id], (if @editingSite() then 'inactive' else 'active')
+          if site.id == oldSelectedSiteId
+            @markers[site.id] = @oldSelectedSite.marker
+            @markers[site.id].site = site
+            @deleteMarkerListeners site.id
+            @setMarkerIcon @markers[site.id], (if @editingSite() then 'inactive' else 'active')
+            @oldSelectedSite.deleteMarker false
+            delete @oldSelectedSite
           else
-            if site.id == oldSelectedSiteId
-              @markers[site.id] = @oldSelectedSite.marker
-              @markers[site.id].site = site
-              @deleteMarkerListeners site.id
-              @setMarkerIcon @markers[site.id], 'active'
-              @oldSelectedSite.deleteMarker false
-              delete @oldSelectedSite
-            else
-              position = new google.maps.LatLng(site.lat, site.lng)
-              if site.ghost_radius?
-                projection = @map.dummyOverlay.getProjection()
-                pointInPixels = projection.fromLatLngToContainerPixel(position)
-                pointInPixels.x += 40 * Math.cos(site.ghost_radius)
-                pointInPixels.y += 40 * Math.sin(site.ghost_radius)
-                position = projection.fromContainerPixelToLatLng(pointInPixels)
+            position = new google.maps.LatLng(site.lat, site.lng)
+            if site.ghost_radius?
+              projection = @map.dummyOverlay.getProjection()
+              pointInPixels = projection.fromLatLngToContainerPixel(position)
+              pointInPixels.x += 40 * Math.cos(site.ghost_radius)
+              pointInPixels.y += 40 * Math.sin(site.ghost_radius)
+              position = projection.fromContainerPixelToLatLng(pointInPixels)
 
-                disambiguationPath = new google.maps.Polyline(
-                  path: [position, new google.maps.LatLng(site.lat, site.lng)]
-                  strokeColor: "#O"
-                  strokeOpacity: 1.0
-                  strokeWeight: 2
-                )
-                @storeDisambiguationPath(site.id, disambiguationPath)
+              disambiguationPath = new google.maps.Polyline(
+                path: [position, new google.maps.LatLng(site.lat, site.lng)]
+                strokeColor: "#O"
+                strokeOpacity: 1.0
+                strokeWeight: 2
+              )
+              @storeDisambiguationPath(site.id, disambiguationPath)
 
-              markerOptions =
-                map: @map
-                position: position
-                zIndex: @zIndex(site.lat)
-                optimized: false
+            markerOptions =
+              map: @map
+              position: position
+              zIndex: @zIndex(site.lat)
+              optimized: false
+            newMarker = new google.maps.Marker markerOptions
+            newMarker.name = site.name
+            newMarker.site = site
+            @setMarkerIcon newMarker, (if @editingSite() then 'inactive' else 'active')
 
-              newMarker = new google.maps.Marker markerOptions
-              newMarker.name = site.name
-              newMarker.site = site
-              @setMarkerIcon newMarker, 'active'
+            # Show site in grey if editing a site (but not if it's the one being edited)
+            if editing
+              @setMarkerIcon newMarker, 'inactive'
+            else if (selectedSiteId && selectedSiteId == site.id)
+              @setMarkerIcon newMarker, 'target'
 
-              # Show site in grey if editing a site (but not if it's the one being edited)
-              if editing
-                @setMarkerIcon newMarker, 'inactive'
-              else if (selectedSiteId && selectedSiteId == site.id)
-                @setMarkerIcon newMarker, 'target'
+            newMarker.collectionId = site.collection_id
 
-              newMarker.collectionId = site.collection_id
-
-              @markers[site.id] = newMarker
-            localId = @markers[site.id].siteId = site.id
-            do (localId) => @setupMarkerListeners @markers[localId], localId
+            @markers[site.id] = newMarker
+          localId = @markers[site.id].siteId = site.id
+          do (localId) => @setupMarkerListeners @markers[localId], localId
 
       # Determine which markers need to be removed from the map
       toRemove = []
@@ -274,19 +251,9 @@ onCollections ->
       for siteId in toRemove
         @deleteMarker siteId
 
-      toRemoveAlert = []
-      for siteId, alert of @alertMarkers
-        toRemoveAlert.push siteId unless dataSiteIds[siteId]
-
-      for siteId in toRemoveAlert
-        @deleteAlert siteId
-
       if @oldSelectedSite
         if @oldSelectedSite.id() != selectedSiteId
-          if @oldSelectedSite.alert()
-            @oldSelectedSite.deleteAlertMarker()
-          else
-            @oldSelectedSite.deleteMarker()
+          @oldSelectedSite.deleteMarker()
           delete @oldSelectedSite
 
     @setupMarkerListeners: (marker, localId) ->
@@ -334,11 +301,6 @@ onCollections ->
       editingSiteId = @editingSite()?.id()?.toString()
       for siteId, marker of @markers
         @setMarkerIcon marker, (if editingSiteId == siteId then 'target' else 'inactive')
-      for siteId, marker of @alertMarkers
-        if editingSiteId == siteId
-          marker.setTarget()
-        else
-          marker.setInactive()
       for clusterId, cluster of @clusters
         cluster.setInactive()
 
@@ -349,11 +311,6 @@ onCollections ->
           @setMarkerIcon marker, 'target'
         else
           @setMarkerIcon marker, 'active'
-      for siteId, marker of @alertMarkers
-        if selectedSiteId == siteId
-          marker.setTarget()
-        else
-          marker.setActive()
 
       for clusterId, cluster of @clusters
         cluster.setActive()
@@ -401,31 +358,12 @@ onCollections ->
           google.maps.event.removeListener @markers[siteId]["#{listener}Listener"]
           delete @markers[siteId]["#{listener}Listener"]
 
-    @deleteAlertMarkerListeners: (siteId) ->
-      for listener in ['divDown', 'divUp']
-        if @alertMarkers[siteId]["#{listener}Listener"]
-          google.maps.event.removeListener @alertMarkers[siteId]["#{listener}Listener"]
-          delete @alertMarkers[siteId]["#{listener}Listener"]
-
-    @setupAlertMarkerListeners: (alertMarker, siteId) ->
-      alertMarker.divDownListener = google.maps.event.addDomListener alertMarker.divDownListener, 'mousedown', (event) =>
-        @editSiteFromMarker localId, marker.collectionId
-
     @createCluster: (cluster) ->
       @clusters[cluster.id] = new Cluster @map, cluster
-
-    @createAlert: (alert) ->
-      @alertMarkers[alert.id] = new Alert @map, alert
 
     @deleteCluster: (id) ->
       @clusters[id].setMap null
       delete @clusters[id]
-
-    @deleteAlert: (id, removeFromMap = true) ->
-      return unless @alertMarkers[id]
-      @alertMarkers[id].setMap null if removeFromMap
-      @deleteAlertMarkerListeners id
-      delete @alertMarkers[id]
 
     @zIndex: (lat) ->
       bounds = @map.getBounds()
@@ -440,8 +378,6 @@ onCollections ->
         marker.setZIndex(@zIndex(marker.getPosition().lat()))
       for clusterId, cluster of @clusters
         cluster.adjustZIndex()
-      for alertId, alert of @alertMarkers
-        alert.adjustZIndex()
 
     @updateSitesCount: ->
       count = 0

@@ -127,10 +127,7 @@ onCollections ->
         if @editingSite()
           # Unselect site if it's not on the tree
           @editingSite().editingLocation(false)
-          if @editingSite().alert()
-            @editingSite().deleteAlertMarker() unless @editingSite().id()
-          else
-            @editingSite().deleteMarker() unless @editingSite().id()
+          @editingSite().deleteMarker() unless @editingSite().id()
           @editingSite(null)
           window.model.setAllMarkersActive()
           if @goBackToTable
@@ -153,10 +150,7 @@ onCollections ->
         @currentCollection().removeSite(@editingSite())
         $.post "/sites/#{@editingSite().id()}", {_method: 'delete'}, =>
           @currentCollection().fetchLocation()
-          if @editingSite().alert()
-            @editingSite().deleteAlertMarker()
-          else
-            @editingSite().deleteMarker()
+          @editingSite().deleteMarker()
           @exitSite()
           @reloadMapSites() if @showingMap()
 
@@ -165,11 +159,7 @@ onCollections ->
           @selectedHierarchy(null)
       if @showingMap()
         if @selectedSite()
-          if @selectedSite().alert()
-            @oldSelectedSite = @selectedSite()
-            @selectedSite().alertMarker.setActive()
-            @selectedSite().alertMarker.adjustZIndex()
-          else if @selectedSite().marker
+          if @selectedSite().marker
             @oldSelectedSite = @selectedSite()
             @setMarkerIcon @selectedSite().marker, 'active'
             @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
@@ -184,22 +174,13 @@ onCollections ->
           @selectedSite().selected(true)
           if @selectedSite().id() && @selectedSite().hasLocation()
             # Again, all these checks are to prevent flickering
-            if @selectedSite().alert()
-              if @alertMarkers[@selectedSite().id()]
-                @selectedSite().alertMarker = @alertMarkers[@selectedSite().id()]
-                @selectedSite().alertMarker.adjustZIndex()
-                @selectedSite().alertMarker.setTarget()
-                @deleteAlert @selectedSite().id(), false
-              else
-                @selectedSite().createAlert()
+            if @markers[@selectedSite().id()]
+              @selectedSite().marker = @markers[@selectedSite().id()]
+              @selectedSite().marker.setZIndex(200000)
+              @setMarkerIcon @selectedSite().marker, 'target'
+              @deleteMarker @selectedSite().id(), false
             else
-              if @markers[@selectedSite().id()]
-                @selectedSite().marker = @markers[@selectedSite().id()]
-                @selectedSite().marker.setZIndex(200000)
-                @setMarkerIcon @selectedSite().marker, 'target'
-                @deleteMarker @selectedSite().id(), false
-              else
-                @selectedSite().createMarker()
+              @selectedSite().createMarker()
             @selectedSite().panToPosition()
           else if @oldSelectedSite
             @oldSelectedSite.deleteMarker()
