@@ -21,7 +21,7 @@ onThresholds -
       @ord = ko.observable data?.ord
       @color = ko.observable(data?.color)
       @icon = ko.observable(collectionIcon ? "default")
-      @iconUrl = ko.computed => "/assets/markers/resmap_#{@color().replace('#','')}_#{@icon()}.png"
+      @iconUrl = ko.computed => "/assets/markers/resmap_#{@alertMarker(@color())}_#{@icon()}.png"
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
       @propertyNameError = ko.computed =>
         if $.trim(@propertyName()).length > 0
@@ -92,3 +92,30 @@ onThresholds -
 
     addFieldNameToMessageNotification:(field) =>
       @messageNotification(@messageNotification() + ' [' + field.name() + ']')
+    
+    # will removed it as soon as possible 
+    # we changed color code but on ES not change so we need this method 
+    alertMarker: (color_code) ->
+      switch color_code
+        when '#b30b0b'
+          'b01c21'
+        when '#c2720f'
+          'ff6f21'
+        when '#c2b30f'
+          'ffc01f'
+        when '#128e4e'
+          '128e4e'
+        when '#00baba'
+          '5ec8bd'
+        when '#1c388c'
+          '3875d7'
+        when '#5f1c8c'
+          'ffc01f'
+        when '#000000'
+          'ffc01f'
+        when '#9e9e9e'
+          'ffc01f'
+        else
+          color_code.replace('#', '')
+
+

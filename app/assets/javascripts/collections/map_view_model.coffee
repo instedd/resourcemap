@@ -332,6 +332,35 @@ onCollections ->
            '_target'
         else
           ''
+    # will removed it as soon as possible 
+    # we changed color code but on ES not change so we need this method 
+    @alertMarker: (color_code) ->
+      switch color_code
+        when '#b30b0b'
+          'b01c21'
+        when '#c2720f'
+          'ff6f21'
+        when '#c2b30f'
+          'ffc01f'
+        when '#128e4e'
+          '128e4e'
+        when '#00baba'
+          '5ec8bd'
+        when '#1c388c'
+          '3875d7'
+        when '#5f1c8c'
+          'ffc01f'
+        when '#000000'
+          'ffc01f'
+        when '#9e9e9e'
+          'ffc01f'
+        else
+          color_code.replace('#', '')
+
+
+
+
+
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap

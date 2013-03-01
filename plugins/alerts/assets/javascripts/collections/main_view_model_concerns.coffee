@@ -19,7 +19,7 @@ onCollections ->
 
     @setMarkerIconWithAlerts: (marker, icon) ->
       if marker.site && marker.site.alert == 'true' && icon == 'active'
-        marker.setIcon @markerImage 'markers/resmap_' + marker.site.color.replace('#','')  + '_' + marker.site.icon + @endingUrl(icon) + '.png'
+        marker.setIcon @markerImage 'markers/resmap_' + @alertMarker(marker.site.color)  + '_' + marker.site.icon + @endingUrl(icon) + '.png'
         #marker.setIcon @markerImage marker.site.icon
         marker.setShadow null
       else
