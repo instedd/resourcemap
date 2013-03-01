@@ -135,21 +135,6 @@ describe Field do
     end
   end
 
-  describe "core field type" do
-    subject { Field::Kinds - Field::PluginKinds.keys }
-
-    it { should have(8).items }
-    it { should include 'text' }
-    it { should include 'numeric' }
-    it { should include 'select_one' }
-    it { should include 'select_many' }
-    it { should include 'hierarchy' }
-    it { should include 'user' }
-    it { should include 'date' }
-    it { should include 'site' }
-
-  end
-
   describe "validations" do
     let!(:user) { User.make }
     let!(:collection) { user.create_collection Collection.make_unsaved }
@@ -169,10 +154,10 @@ describe Field do
     end
 
     describe "apply_format_update_validation" do
-
       let!(:layer) { collection.layers.make }
       let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
       let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric', :config => {} }
+      let!(:yes_no) { layer.fields.make :code => 'yes_no', :kind => 'yes_no'}
 
       let!(:numeric_with_decimals) {
         layer.fields.make :code => 'numeric_with_decimals', :kind => 'numeric', :config => {
@@ -196,6 +181,17 @@ describe Field do
         numeric.apply_format_update_validation(2, false, collection).should be(2)
         numeric.apply_format_update_validation("2", false, collection).should be(2)
         expect { numeric.apply_format_update_validation("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.code} field")
+      end
+
+      it "should validate format for yes_no field" do
+        yes_no.apply_format_update_validation(true, false, collection).should be_true
+        yes_no.apply_format_update_validation(1, false, collection).should be_true
+        yes_no.apply_format_update_validation("true", false, collection).should be_true
+        yes_no.apply_format_update_validation("yes", false, collection).should be_true
+        yes_no.apply_format_update_validation("1", false, collection).should be_true
+        yes_no.apply_format_update_validation(0, false, collection).should be_false
+        yes_no.apply_format_update_validation("0", false, collection).should be_false
+        yes_no.apply_format_update_validation("false", false, collection).should be_false
       end
 
       it "should not allow decimals" do

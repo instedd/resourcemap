@@ -79,6 +79,21 @@ onCollections ->
         when '>=' then str += " is greater than or equal to "
       str += "#{@value}"
 
+  class @FilterByYesNoProperty extends Filter
+    constructor: (field, value) ->
+      @field = field
+      @value = value
+
+    setQueryParams: (options, api = false) =>
+      code = @field.codeForLink(api)
+      options[code] = if @value == 'yes' then 'yes' else 'no'
+
+    description: =>
+      if @value == 'yes'
+        " is 'yes'"
+      else
+        " is 'no'"
+
   class @FilterByDateProperty extends Filter
     constructor: (field, valueFrom, valueTo) ->
       @field = field

@@ -2,7 +2,6 @@ class Field < ActiveRecord::Base
   include Field::Base
   include Field::TireConcern
   include Field::ValidationConcern
-  include Field::FredApiConcern
 
   include HistoryConcern
 
@@ -10,7 +9,7 @@ class Field < ActiveRecord::Base
   belongs_to :layer
 
   validates_presence_of :ord
-  validates_inclusion_of :kind, :in => Kinds
+  validates_inclusion_of :kind, :in => proc { kinds() }
   validates_presence_of :code
   validates_exclusion_of :code, :in => ['lat', 'long', 'name', 'resmap-id', 'last updated']
   validates_uniqueness_of :code, :scope => :collection_id
@@ -18,7 +17,6 @@ class Field < ActiveRecord::Base
 
   serialize :config
   serialize :metadata
-
 
   before_save :set_collection_id_to_layer_id, :unless => :collection_id?
   def set_collection_id_to_layer_id

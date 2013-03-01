@@ -4,7 +4,7 @@
     css_class: '<%= kind[:css_class] %>'
     small_css_class: '<%= kind[:small_css_class] %>'
 <% end %>
-<% Field::PluginKinds.each do |name, kind| %>
+<% Field::plugin_kinds.each do |name, kind| %>
   '<%= name %>':
     css_class:'<%= kind[:css_class] %>'
     small_css_class: '<%= kind[:small_css_class] %>'

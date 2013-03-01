@@ -8,6 +8,7 @@ module Field::Base
   BaseKinds = [
    { name: 'text', css_class: 'ltext', small_css_class: 'stext' },
    { name: 'numeric', css_class: 'lnumber', small_css_class: 'snumeric' },
+   { name: 'yes_no', css_class: 'lyesno', small_css_class: 'syes_no' },
    { name: 'select_one', css_class: 'lsingleoption', small_css_class: 'sselect_one' },
    { name: 'select_many', css_class: 'lmultipleoptions', small_css_class: 'sselect_many' },
    { name: 'hierarchy', css_class: 'lhierarchy', small_css_class: 'shierarchy' },
@@ -15,12 +16,18 @@ module Field::Base
    { name: 'site', css_class: 'lsite', small_css_class: 'ssite' },
    { name: 'user', css_class: 'luser', small_css_class: 'suser' }]
 
-  PluginKinds = Plugin.hooks(:field_type).index_by { |h| h[:name] }
+  BaseKinds.each do |base_kind|
+    class_eval %Q(def #{base_kind[:name]}?; kind == '#{base_kind[:name]}'; end)
+  end
 
-  Kinds = (BaseKinds.map{|k| k[:name]} | PluginKinds.keys).sort.freeze
+  module ClassMethods
+    def plugin_kinds
+       Plugin.hooks(:field_type).index_by { |h| h[:name] }
+    end
 
-  Kinds.each do |kind|
-    class_eval %Q(def #{kind}?; kind == '#{kind}'; end)
+    def kinds
+      (BaseKinds.map{|k| k[:name]} | plugin_kinds.keys).sort.freeze
+    end
   end
 
   def select_kind?
@@ -28,7 +35,7 @@ module Field::Base
   end
 
   def plugin?
-    PluginKinds.has_key? kind
+    self.class.plugin_kinds.has_key? kind
   end
 
   def stored_as_date?
@@ -51,17 +58,10 @@ module Field::Base
     end
   end
 
-  def fred_api_value(value)
-    if date?
-      # Values are stored in ISO 8601 format.
-      value
-    else
-      api_value(value)
-    end
-  end
-
   def api_value(value)
-    if select_one?
+    if yes_no?
+      Field.yes?(value)
+    elsif select_one?
       option = config['options'].find { |o| o['id'] == value }
       return option ? option['code'] : value
     elsif select_many?
@@ -106,7 +106,7 @@ module Field::Base
 
   def sample_value(user = nil)
     if plugin?
-      kind_config = PluginKinds[kind]
+      kind_config = self.class.plugin_kinds()[kind]
       if kind_config.has_key? :sample_value
         return kind_config[:sample_value]
       else

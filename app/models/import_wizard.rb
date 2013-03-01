@@ -252,7 +252,7 @@ class ImportWizard
                 site.properties[existing_field] = nil
               else
                 case existing_field.kind
-                  when 'numeric', 'text', 'site', 'user'
+                  when 'numeric', 'text', 'site', 'user', 'yes_no'
                     site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
                   when 'select_one'
                     existing_option = existing_field.config['options'].find { |x| x['code'] == value }
@@ -281,7 +281,7 @@ class ImportWizard
                   when 'date'
                     site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
                 end
-                if Field::PluginKinds.has_key? existing_field.kind
+                if Field::plugin_kinds.has_key? existing_field.kind
                   site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
                 end
               end

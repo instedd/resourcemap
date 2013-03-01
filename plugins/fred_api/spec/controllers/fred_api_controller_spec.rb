@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FredApi::FredApiController do
+describe FredApiController do
   include Devise::TestHelpers
 
   let!(:user) { User.make }
@@ -29,6 +29,7 @@ describe FredApi::FredApiController do
 
     it 'should get default fields' do
       get :show_facility, id: site.id, format: 'json', collection_id: collection.id
+      response.should be_ok
       response.content_type.should eq 'application/json'
 
       json = JSON.parse response.body
@@ -37,7 +38,7 @@ describe FredApi::FredApiController do
       json["coordinates"][0].should eq(site.lng)
       json["coordinates"][1].should eq(site.lat)
       json["active"].should eq(true)
-      json["url"].should eq("http://test.host/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      json["url"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
 
     end
 
@@ -244,7 +245,7 @@ describe FredApi::FredApiController do
     it "should delete facility" do
       site3 = collection.sites.make name: 'Site C'
       delete :delete_facility, id: site3.id, collection_id: collection.id
-      response.body.should eq("http://test.host/collections/#{collection.id}/fred_api/v1/facilities/#{site3.id}.json")
+      response.body.should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site3.id}.json")
       sites = Site.find_by_name 'Site C'
       sites.should be(nil)
     end
@@ -293,6 +294,9 @@ describe FredApi::FredApiController do
     it "should return 404 if the requested site does not exist" do
       get :show_facility, id: 12355259, format: 'json', collection_id: collection.id
       response.status.should eq(404)
+      json = JSON.parse response.body
+      json['code'].should eq('404 Not Found')
+      json['message'].should eq('Resource not found')
     end
 
     it "should return 422 if a non existing field is included in the query" do
@@ -301,8 +305,162 @@ describe FredApi::FredApiController do
     end
   end
 
+  describe "should update facility" do
+    let!(:site) { collection.sites.make :name => "Kakamega HC", :properties => {
+      text.es_code => "Mrs. Liz",
+      numeric.es_code => 55,
+      select_many.es_code => [1, 2],
+      date.es_code => "2012-10-24T00:00:00Z",
+    }}
+
+    it "should return 404 if the facility does not exist" do
+      put :update_facility, collection_id: collection.id, id: "124566", :name => "Kakamega HC 2"
+      response.status.should eq(404)
+    end
+
+    it "should update name" do
+      put :update_facility, collection_id: collection.id, id: site.id, :name => "Kakamega HC 2"
+      response.status.should eq(200)
+      updated_site = Site.find site.id
+      updated_site.name.should eq("Kakamega HC 2")
+    end
+
+   it "should return 400 if id, url, createdAt or updatedAt are present in the query params" do
+      put :update_facility, collection_id: collection.id, id: site.id, name: 'Kakamega HC', url: "sda"
+      response.status.should eq(400)
+      put :update_facility, collection_id: collection.id, id: site.id, name: 'Kakamega HC', createdAt: "sda"
+      response.status.should eq(400)
+      put :update_facility, collection_id: collection.id, id: site.id, name: 'Kakamega HC', updatedAt: "sda"
+      response.status.should eq(400)
+    end
+
+    it "should update  coordinates" do
+      put :update_facility, collection_id: collection.id, id: site.id, coordinates: [76.9,34.2]
+      response.status.should eq(200)
+      json = JSON.parse response.body
+      json["name"].should eq('Kakamega HC')
+      json["coordinates"][0].should eq(76.9)
+      json["coordinates"][1].should eq(34.2)
+      updated_site = Site.find site.id
+      updated_site.lat.to_f.should eq(34.2)
+      updated_site.lng.to_f.should eq(76.9)
+    end
+
+    it "should update properties" do
+      put :update_facility, collection_id: collection.id, id: site.id, :properties => {
+      "manager" => "Mrs. Liz 2",
+      "numBeds" => 552,
+      "services" => ['OBG'],
+      "inagurationDay" => "2013-10-24T00:00:00Z"
+      }
+      response.status.should eq(200)
+      json = JSON.parse response.body
+      json["properties"].length.should eq(4)
+      json["properties"]['manager'].should eq("Mrs. Liz 2")
+      json["properties"]['numBeds'].should eq(552)
+      json["properties"]['services'].should eq(['OBG'])
+      json["properties"]['inagurationDay'].should eq("2013-10-24T00:00:00Z")
+    end
+
+    it "should update identifiers" do
+      moh_id = layer.fields.make :code => 'moh-id', :kind => 'identifier', :config => {"context" => "MOH", "agency" => "DHIS"}
+
+      put :update_facility, collection_id: collection.id, id: site.id, :identifiers => [
+        {"agency"=> "DHIS",
+        "context"=>"MOH",
+        "id"=> "1234"}]
+
+      response.status.should eq(200)
+      json = JSON.parse response.body
+      json['identifiers'][0].should eq({"context" => "MOH", "agency" => "DHIS", "id"=> "1234"})
+    end
+  end
+
+  describe "Should create facility" do
+    it "should not create a facility without a name" do
+      post :create_facility, collection_id: collection.id
+      response.status.should eq(422)
+    end
+
+    it "should create facility with name" do
+      post :create_facility, collection_id: collection.id, name: 'Kakamega HC'
+      response.status.should eq(201)
+      site = Site.find_by_name 'Kakamega HC'
+      site.should be
+      response.location.should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      json = JSON.parse response.body
+      json["name"].should eq(site.name)
+      json["id"].should eq("#{site.id}")
+      json["active"].should eq(true)
+      json["url"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+    end
+
+    it "should return 400 if id, url, createdAt or updatedAt are present in the query params" do
+      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', id: 234
+      response.status.should eq(400)
+      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', url: "sda"
+      response.status.should eq(400)
+      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', createdAt: "sda"
+      response.status.should eq(400)
+      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', updatedAt: "sda"
+      response.status.should eq(400)
+    end
+
+    # Resourcemap do not consider sites with the same name as duplicated
+    pending "should return 409 for facilities with duplicated names" do
+      site = collection.sites.create :name => "Duplicated name"
+      post :create_facility, collection_id: collection.id, name: "Duplicated name"
+      response.status.should eq(409)
+    end
+
+    it "should create facility with coordinates" do
+      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', coordinates: [76.9,34.2]
+      response.status.should eq(201)
+      json = JSON.parse response.body
+      json["name"].should eq('Kakamega HC')
+      json["coordinates"][0].should eq(76.9)
+      json["coordinates"][1].should eq(34.2)
+    end
+
+    it "should create a facility with properties" do
+       post :create_facility, collection_id: collection.id, name: 'Kakamega HC', :properties => {
+        "manager" => "Mrs. Liz",
+        "numBeds" => 55,
+        "services" => ['XR', 'OBG'],
+        "inagurationDay" => "2012-10-24T00:00:00Z"
+      }
+
+      response.status.should eq(201)
+      json = JSON.parse response.body
+      json["properties"].length.should eq(4)
+      json["properties"]['manager'].should eq("Mrs. Liz")
+      json["properties"]['numBeds'].should eq(55)
+      json["properties"]['services'].should eq(['XR', 'OBG'])
+      json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+
+    end
+
+    it "should create a facility with identifiers" do
+      moh_id = layer.fields.make :code => 'moh-id', :kind => 'identifier', :config => {"context" => "MOH", "agency" => "DHIS"}
+      moh_id2 = layer.fields.make :code => 'moh-id2', :kind => 'identifier', :config => {"context" => "MOH2", "agency" => "DHIS2"}
+
+      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', :identifiers => [
+        {"agency"=> "DHIS",
+        "context"=>"MOH",
+        "id"=> "123"},
+        {"agency"=> "DHIS2",
+        "context"=> "MOH2",
+        "id"=>"124"}]
+
+      response.status.should eq(201)
+      json = JSON.parse response.body
+      json['identifiers'][0].should eq({"context" => "MOH", "agency" => "DHIS", "id"=> "123"})
+      json['identifiers'][1].should eq({"context" => "MOH2", "agency" => "DHIS2", "id"=> "124"})
+    end
+  end
+
   describe "External Facility Identifiers" do
-    let!(:moh_id) {layer.fields.make :code => 'moh-id', :kind => 'text', :metadata =>  {"0"=>{"key"=>"context", "value"=>"MOH"}, "1"=>{"key"=>"agency", "value"=>"DHIS"} } }
+    let!(:moh_id) {layer.fields.make :code => 'moh-id', :kind => 'identifier', :config => {"context" => "MOH", "agency" => "DHIS"} }
 
      let!(:site_with_metadata) { collection.sites.make :properties => {
         moh_id.es_code => "53adf",
@@ -319,19 +477,7 @@ describe FredApi::FredApiController do
       json["identifiers"][0].should eq({"context" => "MOH", "agency" => "DHIS", "id"=> "53adf"})
     end
 
-    it "creation of identifiers field should be case insensitive" do
-      id_case_insensitive = layer.fields.make :code => 'moh-id-case-insensitive', :kind => 'text', :metadata =>  {"0"=>{"key"=>"Context", "value"=>"MOH2"}, "1"=>{"key"=>"AGency", "value"=>"DHIS2"} }
-      site_with_2_ids = collection.sites.make :properties => {
-          moh_id.es_code => "53adf",
-          date.es_code => "2012-10-24T00:00:00Z",
-          id_case_insensitive.es_code => "23415"
-        }
-      get :show_facility, id: site_with_2_ids.id, format: 'json', collection_id: collection.id
-      json = JSON.parse response.body
-      json["identifiers"].length.should eq(2)
-    end
-
-    it 'should filter by identifier' do
+    it 'should filter by identifier', focus: true do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.id" => "53adf"
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)

@@ -6,63 +6,30 @@ onLayers ->
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
+      @config = data?.config
+      @metadata = data?.metadata
 
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
       @ord = ko.observable data?.ord
 
-      @options = if data.config?.options?
-                   ko.observableArray($.map(data.config.options, (x) -> new Option(x)))
-                 else
-                   ko.observableArray()
-
-      @nextId = data.config?.next_id || @options().length + 1
-      @hierarchy = ko.observable data.config?.hierarchy
-      @initHierarchyItems() if @hierarchy()
       @hasFocus = ko.observable(false)
       @isNew = ko.computed =>  !@id()?
 
-      @isOptionsKind = ko.computed => @kind() == 'select_one' || @kind() == 'select_many'
-      @kindIsText = ko.computed => @kind() == 'text'
-      @kindIsNumeric = ko.computed => @kind() == 'numeric'
-
-      @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
-
-      @uploadingHierarchy = ko.observable(false)
-      @errorUploadingHierarchy = ko.observable(false)
       @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer().fields().indexOf(@) + 1}"
+
+      # Tried doing "@impl = ko.computed" but updates were triggering too often
+      @impl = ko.observable eval("new Field_#{@kind()}(_this)")
+      @kind.subscribe => @impl eval("new Field_#{@kind()}(_this)")
+
       @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
       @codeError = ko.computed =>
         if !@hasCode() then return "the field #{@fieldErrorDescription()} is missing a Code"
         if (@code() in ['lat', 'long', 'name', 'resmap-id', 'last updated']) then return "the field #{@fieldErrorDescription()} code is reserved"
         null
 
-      @optionsError = ko.computed =>
-        return null unless @isOptionsKind()
-
-        if @options().length > 0
-          codes = []
-          labels = []
-          for option in @options()
-            return "duplicated option code '#{option.code()}' for field #{@name()}" if codes.indexOf(option.code()) >= 0
-            return "duplicated option label '#{option.label()}' for field #{@name()}" if labels.indexOf(option.label()) >= 0
-            codes.push option.code()
-            labels.push option.label()
-          null
-        else
-          "the field '#{@name()}' must have at least one option"
-      @hierarchyError = ko.computed =>
-        return null unless @kind() == 'hierarchy'
-        if @hierarchy() && @hierarchy().length > 0 then null else "the field #{@fieldErrorDescription()} is missing the Hierarchy"
-      @error = ko.computed => @nameError() || @codeError() || @optionsError() || @hierarchyError()
+      @error = ko.computed => @nameError() || @codeError() || @impl().error()
       @valid = ko.computed => !@error()
-
-      @advancedExpanded = ko.observable false
-
-      @attributes = if data.metadata?
-                      ko.observableArray($.map(data.metadata, (x) -> new Attribute(x)))
-                    else
-                      ko.observableArray()
 
     hasName: => $.trim(@name()).length > 0
 
@@ -85,28 +52,11 @@ onLayers ->
       $("select[id='#{@name()}']").toggle()
       @selecting = v
 
-    addOption: (option) =>
-      option.id @nextId
-      @options.push option
-      @nextId += 1
-
-    addAttribute: (attribute) =>
-      @attributes.push attribute
-
     buttonClass: =>
       FIELD_TYPES[@kind()].css_class
 
     iconClass: =>
       FIELD_TYPES[@kind()].small_css_class
-
-    setHierarchy: (hierarchy) =>
-      @hierarchy(hierarchy)
-      @initHierarchyItems()
-      @uploadingHierarchy(false)
-      @errorUploadingHierarchy(false)
-
-    initHierarchyItems: =>
-      @hierarchyItems = ko.observableArray $.map(@hierarchy(), (x) -> new HierarchyItem(x))
 
     toJSON: =>
       @code(@code().trim())
@@ -117,11 +67,109 @@ onLayers ->
         kind: @kind()
         ord: @ord()
         layer_id: @layer().id()
-      json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId} if @isOptionsKind()
-      json.config = {hierarchy: @hierarchy()} if @kind() == 'hierarchy'
-      json.config = {allows_decimals: @allowsDecimals()} if @kindIsNumeric()
-      json.metadata = $.map(@attributes(), (x) -> x.toJSON()) if @kindIsText()
+      @impl().toJSON(json)
       json
+
+  class @FieldImpl
+    constructor: (field) ->
+      @field = field
+      @error = -> null
+
+    toJSON: (json) =>
+
+  class @Field_text extends @FieldImpl
+    constructor: (field) ->
+      super(field)
+      @attributes = if field.metadata?
+                      ko.observableArray($.map(field.metadata, (x) -> new Attribute(x)))
+                    else
+                      ko.observableArray()
+      @advancedExpanded = ko.observable false
 
     toggleAdvancedExpanded: =>
       @advancedExpanded(not @advancedExpanded())
+
+    addAttribute: (attribute) =>
+      @attributes.push attribute
+
+    toJSON: (json) =>
+      json.metadata = $.map(@attributes(), (x) -> x.toJSON())
+
+  class @Field_numeric extends @FieldImpl
+    constructor: (field) ->
+      super(field)
+
+      @allowsDecimals = ko.observable field?.config?.allows_decimals == 'true'
+
+    toJSON: (json) =>
+      json.config = {allows_decimals: @allowsDecimals()}
+
+  class @Field_yes_no extends @FieldImpl
+
+  class @FieldSelect extends @FieldImpl
+    constructor: (field) ->
+      super(field)
+      @options = if field.config?.options?
+                   ko.observableArray($.map(field.config.options, (x) -> new Option(x)))
+                 else
+                   ko.observableArray()
+      @nextId = field.config?.next_id || @options().length + 1
+      @error = ko.computed =>
+        if @options().length > 0
+          codes = []
+          labels = []
+          for option in @options()
+            return "duplicated option code '#{option.code()}' for field #{@field.name()}" if codes.indexOf(option.code()) >= 0
+            return "duplicated option label '#{option.label()}' for field #{@field.name()}" if labels.indexOf(option.label()) >= 0
+            codes.push option.code()
+            labels.push option.label()
+          null
+        else
+          "the field '#{@field.name()}' must have at least one option"
+
+    addOption: (option) =>
+      option.id @nextId
+      @options.push option
+      @nextId += 1
+
+    toJSON: (json) =>
+      json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId}
+
+  class @Field_select_one extends @FieldSelect
+    constructor: (field) ->
+      super(field)
+
+  class @Field_select_many extends @FieldSelect
+    constructor: (field) ->
+      super(field)
+
+  class @Field_hierarchy extends @FieldImpl
+    constructor: (field) ->
+      super(field)
+      @hierarchy = ko.observable field.config?.hierarchy
+      @uploadingHierarchy = ko.observable(false)
+      @errorUploadingHierarchy = ko.observable(false)
+      @initHierarchyItems() if @hierarchy()
+      @error = ko.computed =>
+        if @hierarchy() && @hierarchy().length > 0
+          null
+        else
+          "the field #{@field.fieldErrorDescription()} is missing the Hierarchy"
+
+    setHierarchy: (hierarchy) =>
+      @hierarchy(hierarchy)
+      @initHierarchyItems()
+      @uploadingHierarchy(false)
+      @errorUploadingHierarchy(false)
+
+    initHierarchyItems: =>
+      @hierarchyItems = ko.observableArray $.map(@hierarchy(), (x) -> new HierarchyItem(x))
+
+    toJSON: (json) =>
+      json.config = {hierarchy: @hierarchy()}
+
+  class @Field_date extends @FieldImpl
+
+  class @Field_site extends @FieldImpl
+
+  class @Field_user extends @FieldImpl

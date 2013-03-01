@@ -1,18 +1,14 @@
 .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField', style: {marginTop: '$root.currentFieldMarginTop'}), style: 'position:relative'}
   %p.title Type
   %p.smalltext The data type to fill in this field.
-  /ko if: isNew()
-  = select_tag :kind, options_for_select(Field::Kinds.map { |kind_name| [kind_name.titleize, kind_name] }), 'data-bind' => kov(value: :kind)
-  //ko
-  /ko if: !isNew()
   %div{"data-bind" => "text: kind_titleize"}
-  //ko
 
-  /ko if: kindIsNumeric()
+  /ko if: kind() == 'numeric'
   %br/
   %div
-    %input{ko(checked: :allowsDecimals), type: 'checkbox', style: 'float:left;'}
-    %div{style: 'width:200px; float:left; margin-top: 1px; color: #555555;'} Allow decimal numbers
+    %label
+      %input{ko(checked: 'impl().allowsDecimals'), type: 'checkbox', style: 'float:left;'}
+      %div{style: 'width:200px; float:left; margin-top: 1px; color: #555555;'} Allow decimal numbers
   %br/
   //ko
 
@@ -25,12 +21,12 @@
   %p.smalltext The abbreviation used to report via SMS.
   = ko_text_field_tag :code, css: {error: :codeError}
 
-  /ko if: isOptionsKind
+  /ko if: kind() == 'select_one' || kind() == 'select_many'
   %hr/
-  %label{ko(css: {error: :optionsError})} Options
+  %label{ko(css: {error: 'impl().optionsError'})} Options
   %p.smalltext Possible values for this field.
   %ul.mclist.w40{style: 'width: 282px !important'}
-    /ko foreach: options
+    /ko foreach: impl().options
     %li
       %input.arrowinput{ko(visible: :editing, hasfocus: true, value: :code, valueUpdate: :afterkeydown, event: {keypress: :keyPress, blur: '$root.optionBlur'}), type: :text, style: 'position:relative;top:1px'}
       %span.arrowgrey{ko(visible: '!editing()', click: :edit, text: :code), style: 'cursor:pointer;position:relative;top:-1px'}
@@ -43,39 +39,39 @@
       %button.clist-add{ko(click: '$root.addOption', enable: '$root.optionValid'), title: 'Add option'}
   //ko
 
-  /ko if: kindIsText
+  /ko if: kind() == 'text'
   = render 'layers/advanced_field_editor'
   //ko
 
 
   /ko if: kind() == 'hierarchy'
   %hr/
-  %label{ko(css: {error: :hierarchyError})} Hierarchy
+  %label{ko(css: {error: 'impl().hierarchyError'})} Hierarchy
   %p.smalltext Upload a CSV: ID, ParentID, ItemName
   %form.hierarchy_form{action: collection_decode_hierarchy_csv_path(collection), method: :post, enctype: 'multipart/form-data', target: 'hierarchy_iframe', style: 'margin-top:6px;margin-bottom:10px'}
     %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
     %input.hierarchy_upload{type: :file, name: :file}
   %iframe#hierarchy_iframe{name: 'hierarchy_iframe', style: 'display:none'}
-  /ko if: errorUploadingHierarchy()
+  /ko if: impl().errorUploadingHierarchy()
   %p
     There was
     = link_to "an error", "#", :class => 'error_description_bubble'
     processing the hierarchy file
   //ko
-  /ko if: uploadingHierarchy()
+  /ko if: impl().uploadingHierarchy()
   Uploading, please wait...
   //ko
-  /ko if: !uploadingHierarchy() && hierarchy()
+  /ko if: !impl().uploadingHierarchy() && impl().hierarchy()
   .hierarchy-container
-    /ko template: {name: 'hierarchy-items-template', with: hierarchyItems}
+    /ko template: {name: 'hierarchy-items-template', foreach: impl().hierarchyItems}
     //ko
   //ko
   //ko
-  - Field::PluginKinds.each do |name, kind|
+  - Field::plugin_kinds.each do |name, kind|
     - if kind[:property_editor]
-      /ko if: kind() == '#{name}'
+      <!-- ko if: kind() == '#{name}' -->
       = render kind[:property_editor]
-      //ko
+      <!-- /ko -->
   %br/
   %br/
 

@@ -1,15 +1,15 @@
 %hr/
-%img.members-collapse-icon{ko(click: :toggleAdvancedExpanded, attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (advancedExpanded() ? 'Down' : 'Right') + '.png'"})}
-%label{ko(click: :toggleAdvancedExpanded)} Advanced
+%img.members-collapse-icon{ko(click: 'impl().toggleAdvancedExpanded', attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (impl().advancedExpanded() ? 'Down' : 'Right') + '.png'"})}
+%label{ko(click: 'impl().toggleAdvancedExpanded')} Advanced
 
-/ko if: advancedExpanded()
+/ko if: impl().advancedExpanded()
 %br/
 %br/
 %label Attributes
 %p.smalltext Field semantics, usually meaningful to external systems that depend on Resource Map
 
 %ul.mclist.w40{style: 'width: 282px !important'}
-  /ko foreach: attributes
+  /ko foreach: impl().attributes
   %li
     %input.arrowinput{ko(visible: :editing, hasfocus: true, value: :key, valueUpdate: :afterkeydown, event: {keypress: :keyPress, blur: '$root.attributeBlur'}), type: :text, style: 'position:relative;top:1px'}
     %span.arrowgrey{ko(visible: '!editing()', click: :edit, text: :key), style: 'cursor:pointer;position:relative;top:-1px'}
@@ -17,7 +17,7 @@
     %button.clist-remove{ko(click: '$root.removeAttribute'), title: 'Remove attribute'}
   //ko
   %li{ko(with: '$root.newAttribute()')}
-    %input.arrowinput{ko(value: :key, hasfocus: :hasFocus, valueUpdate: :afterkeydown, event: {keypress: '$root.newOptionKeyPress', blur: '$root.addAttribute'}), placeholder: "Key", style: 'position:relative;top:2px'}
+    %input.arrowinput{ko(value: :key, hasfocus: :hasFocus, valueUpdate: :afterkeydown, event: {keypress: '$root.newAttributeKeyPress', blur: '$root.addAttribute'}), placeholder: "Key", style: 'position:relative;top:2px'}
     %input.ux-text{ko(value: :value, valueUpdate: :afterkeydown, event: {keypress: '$root.newAttributeKeyPress', blur: '$root.addAttribute'}), placeholder: "Value", style: 'width: 150px !important'}
     %button.clist-add{ko(click: '$root.addAttribute', enable: '$root.attributeValid'), title: 'Add attribute'}
 //ko

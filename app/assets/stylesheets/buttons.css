@@ -299,6 +299,5 @@ button::-moz-focus-inner {
   }
   .field {
     display: inline-block;
-    float: left;
     margin-right: 5px;
   }

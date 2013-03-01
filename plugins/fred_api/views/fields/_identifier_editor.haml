@@ -1,0 +1,8 @@
+%hr/
+%label{ko(css: {error: 'impl().agencyError'})} Agency
+%p.smalltext The organization for which this identifier is meaningful
+= ko_text_field_tag 'impl().agency', css: {error: 'impl().agencyError'}
+%hr/
+%label{ko(css: {error: 'impl().contextError'})} Context
+%p.smalltext The context in which the agency uses this identifier
+= ko_text_field_tag 'impl().context', css: {error: 'impl().contextError'}

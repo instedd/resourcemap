@@ -129,6 +129,8 @@ onCollections ->
           new FilterBySiteProperty(field, @expandedRefinePropertyValue(), id)
         when 'numeric'
           new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue())
+        when 'yes_no'
+          new FilterByYesNoProperty(field, @expandedRefinePropertyValue())
         when 'select_one', 'select_many'
           @expandedRefinePropertyValue(parseInt(@expandedRefinePropertyValue()))
           valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0].label
@@ -138,7 +140,7 @@ onCollections ->
         when 'hierarchy'
           new FilterByHierarchyProperty(field, 'under', @expandedRefinePropertyHierarchy().id, @expandedRefinePropertyHierarchy().name)
         else
-          throw "Unknown field kind"
+          throw "Unknown field kind: #{field.kind}"
 
     @expandedRefinePropertyValueKeyPress: (model, event) ->
       switch event.keyCode

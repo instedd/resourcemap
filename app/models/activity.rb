@@ -167,7 +167,9 @@ class Activity < ActiveRecord::Base
   end
 
   def format_value(field, value)
-    if field && field.select_one?
+    if field && field.yes_no?
+      value == 'true' || value == '1' ? 'yes' : 'no'
+    elsif field && field.select_one?
       format_option field, value
     elsif field && field.select_many? && value.is_a?(Array)
       value.map { |v| format_option field, v }

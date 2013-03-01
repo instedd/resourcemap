@@ -96,10 +96,6 @@ ResourceMap::Application.routes.draw do
     resources :tokens, :only => [:index, :destroy]
   end
 
-  match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api/fred_api#show_facility', :via => :get, as: :show_facility
-  match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api/fred_api#facilities', :via => :get, as: :facilities
-  match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api/fred_api#delete_facility', :via => :delete, as: :delete_facility
-
   scope '/plugin' do
     Plugin.all.each do |plugin|
       scope plugin.name do
@@ -119,4 +115,13 @@ ResourceMap::Application.routes.draw do
     match 'analytics' => 'analytics#index', :via => :get
     match 'quota' => 'quota#index', via: :get
   end
+
+  # TODO: deprecate later
+  match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#show_facility', :via => :get
+  match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#facilities', :via => :get
+  match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#delete_facility', :via => :delete
+  match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#create_facility', :via => :post
+  match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#update_facility', :via => :put
+
+
 end

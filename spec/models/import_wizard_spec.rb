@@ -11,6 +11,7 @@ describe ImportWizard do
 
   let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
   let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+  let!(:yes_no) { layer.fields.make :code => 'yes_no', :kind => 'yes_no' }
   let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
@@ -486,6 +487,7 @@ describe ImportWizard do
     site1 = collection.sites.make name: 'Foo old', id: 1234, properties: {
       text.es_code => 'coco',
       numeric.es_code => 10,
+      yes_no.es_code => true,
       select_one.es_code => 1,
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
@@ -498,8 +500,8 @@ describe ImportWizard do
 
 
     csv_string = CSV.generate do |csv|
-      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
-      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two', 'Dad',  1235, '12/26/1988', 'user2@email.com']
+      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Yes no', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
+      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'no', 'two', 'two', 'Dad',  1235, '12/26/1988', 'user2@email.com']
     end
 
     specs = [
@@ -507,6 +509,7 @@ describe ImportWizard do
       {header: 'Name', use_as: 'name'},
       {header: 'Text', use_as: 'existing_field', field_id: text.id},
       {header: 'Numeric', use_as: 'existing_field', field_id: numeric.id},
+      {header: 'Yes no', use_as: 'existing_field', field_id: yes_no.id},
       {header: 'Select One', use_as: 'existing_field', field_id: select_one.id},
       {header: 'Select Many', use_as: 'existing_field', field_id: select_many.id},
       {header: 'Hierarchy', use_as: 'existing_field', field_id: hierarchy.id},
@@ -523,7 +526,7 @@ describe ImportWizard do
     layers[0].name.should eq(layer.name)
 
     fields = layers[0].fields.all
-    fields.length.should eq(8)
+    fields.length.should eq(9)
 
     sites = collection.sites.all
     sites.length.should eq(2)
@@ -533,6 +536,7 @@ describe ImportWizard do
     site1.properties.should eq({
       text.es_code => 'new val',
       numeric.es_code => 11,
+      yes_no.es_code => false,
       select_one.es_code => 2,
       select_many.es_code => [2],
       hierarchy.es_code => '60',
@@ -586,7 +590,7 @@ describe ImportWizard do
     layers[0].name.should eq(layer.name)
 
     fields = layers[0].fields.all
-    fields.length.should eq(8)
+    fields.length.should eq(9)
 
     sites = collection.sites.all
     sites.length.should eq(2)
@@ -621,8 +625,8 @@ describe ImportWizard do
     site2 = collection.sites.make name: 'Bar old', properties: {}, id: 1235
 
     csv_string = CSV.generate do |csv|
-      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Site', 'Date', 'User', 'Email', 'Phone']
-      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'two', 'two, one',  1235, '12/26/1988', 'user2@email.com', 'new@email.com', '1456']
+      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Yes no', 'Select One', 'Select Many', 'Site', 'Date', 'User', 'Email', 'Phone']
+      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'no', 'two', 'two, one',  1235, '12/26/1988', 'user2@email.com', 'new@email.com', '1456']
     end
 
     specs = [
@@ -630,6 +634,7 @@ describe ImportWizard do
       {header: 'Name', use_as: 'name'},
       {header: 'Text', use_as: 'new_field', kind: 'text', code: 'new_text'},
       {header: 'Numeric', use_as: 'new_field', kind: 'numeric', code: 'new_numeric'},
+      {header: 'Yes no', use_as: 'new_field', kind: 'yes_no', code: 'new_yes_no'},
       {header: 'Select One', use_as: 'new_field', kind: 'select_one', code: 'new_select_one', label: 'New Select One', selectKind: 'both'},
       {header: 'Select Many', use_as: 'new_field', kind: 'select_many', code: 'new_select_many', label: 'New Select Many', selectKind: 'both'},
       {header: 'Site', use_as: 'new_field', kind: 'site', code: 'new_site'},
@@ -648,14 +653,15 @@ describe ImportWizard do
     new_layer = layers.detect{|l| l.name == "Import wizard"}
 
     fields = new_layer.fields.all
-    fields.length.should eq(9)
+    fields.length.should eq(10)
 
     sites = collection.sites.all
     sites.length.should eq(2)
 
     site1.reload
     site1.name.should eq('Foo new')
-    site1.properties.length.should eq(9)
+    site1.properties.length.should eq(10)
+    site1.properties[yes_no.es_code].should be_false
 
     site2.reload
     site2.name.should eq('Bar old')

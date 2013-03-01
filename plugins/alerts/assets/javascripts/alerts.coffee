@@ -11,7 +11,7 @@ onThresholds -> if $('#thresholds-main').length > 0
 
   $.get "/collections/#{collectionId}.json", (collection) ->
     window.model.collectionIcon = collection.icon
-  
+
   $.get "/collections/#{collectionId}/fields.json", (layers) ->
     fields = $.map(layers, (layer) -> layer.fields)
     window.model.compareFields $.map fields, (field) -> new Field field unless field.kind == 'hierarchy' || field.kind == 'user' || field.kind == 'email' || field.kind == 'phone' || field.kind == 'select_many'
