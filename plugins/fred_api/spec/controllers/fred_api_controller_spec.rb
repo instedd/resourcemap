@@ -319,23 +319,30 @@ describe FredApiController do
     end
 
     it "should update name" do
-      put :update_facility, collection_id: collection.id, id: site.id, :name => "Kakamega HC 2"
+      request.env["RAW_POST_DATA"] = { :name => "Kakamega HC 2" }.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
       response.status.should eq(200)
       updated_site = Site.find site.id
       updated_site.name.should eq("Kakamega HC 2")
     end
 
    it "should return 400 if id, url, createdAt or updatedAt are present in the query params" do
-      put :update_facility, collection_id: collection.id, id: site.id, name: 'Kakamega HC', url: "sda"
+     request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', url: "sda" }.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
       response.status.should eq(400)
-      put :update_facility, collection_id: collection.id, id: site.id, name: 'Kakamega HC', createdAt: "sda"
+
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', createdAt: "sda" }.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
       response.status.should eq(400)
-      put :update_facility, collection_id: collection.id, id: site.id, name: 'Kakamega HC', updatedAt: "sda"
+
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', updatedAt: "sda" }.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
       response.status.should eq(400)
     end
 
     it "should update  coordinates" do
-      put :update_facility, collection_id: collection.id, id: site.id, coordinates: [76.9,34.2]
+      request.env["RAW_POST_DATA"] = {coordinates: [76.9,34.2]}.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
       response.status.should eq(200)
       json = JSON.parse response.body
       json["name"].should eq('Kakamega HC')
@@ -347,12 +354,16 @@ describe FredApiController do
     end
 
     it "should update properties" do
-      put :update_facility, collection_id: collection.id, id: site.id, :properties => {
-      "manager" => "Mrs. Liz 2",
-      "numBeds" => 552,
-      "services" => ['OBG'],
-      "inagurationDay" => "2013-10-24T00:00:00Z"
+      json_data = {
+      :manager => "Mrs. Liz 2",
+      :numBeds => 552,
+      :services => ["OBG"],
+      :inagurationDay => "2013-10-24T00:00:00Z"
       }
+
+      request.env["RAW_POST_DATA"] = {properties: json_data}.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
+
       response.status.should eq(200)
       json = JSON.parse response.body
       json["properties"].length.should eq(4)
@@ -365,10 +376,12 @@ describe FredApiController do
     it "should update identifiers" do
       moh_id = layer.fields.make :code => 'moh-id', :kind => 'identifier', :config => {"context" => "MOH", "agency" => "DHIS"}
 
-      put :update_facility, collection_id: collection.id, id: site.id, :identifiers => [
+      request.env["RAW_POST_DATA"] = {:identifiers => [
         {"agency"=> "DHIS",
         "context"=>"MOH",
-        "id"=> "1234"}]
+        "id"=> "1234"}] }.to_json
+
+      put :update_facility, collection_id: collection.id, id: site.id
 
       response.status.should eq(200)
       json = JSON.parse response.body
@@ -383,7 +396,8 @@ describe FredApiController do
     end
 
     it "should create facility with name" do
-      post :create_facility, collection_id: collection.id, name: 'Kakamega HC'
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC' }.to_json
+      post :create_facility, collection_id: collection.id
       response.status.should eq(201)
       site = Site.find_by_name 'Kakamega HC'
       site.should be
@@ -396,25 +410,34 @@ describe FredApiController do
     end
 
     it "should return 400 if id, url, createdAt or updatedAt are present in the query params" do
-      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', id: 234
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', id: 234 }.to_json
+      post :create_facility, collection_id: collection.id
       response.status.should eq(400)
-      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', url: "sda"
+
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', url: "sda" }.to_json
+      post :create_facility, collection_id: collection.id
       response.status.should eq(400)
-      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', createdAt: "sda"
+
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', createdAt: "sda" }.to_json
+      post :create_facility, collection_id: collection.id
       response.status.should eq(400)
-      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', updatedAt: "sda"
+
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', updatedAt: "sda" }.to_json
+      post :create_facility, collection_id: collection.id
       response.status.should eq(400)
     end
 
     # Resourcemap do not consider sites with the same name as duplicated
     pending "should return 409 for facilities with duplicated names" do
       site = collection.sites.create :name => "Duplicated name"
-      post :create_facility, collection_id: collection.id, name: "Duplicated name"
+      request.env["RAW_POST_DATA"] = { name: "Duplicated name" }.to_json
+      post :create_facility, collection_id: collection.id
       response.status.should eq(409)
     end
 
     it "should create facility with coordinates" do
-      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', coordinates: [76.9,34.2]
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', coordinates: [76.9,34.2] }.to_json
+      post :create_facility, collection_id: collection.id
       response.status.should eq(201)
       json = JSON.parse response.body
       json["name"].should eq('Kakamega HC')
@@ -423,12 +446,13 @@ describe FredApiController do
     end
 
     it "should create a facility with properties" do
-       post :create_facility, collection_id: collection.id, name: 'Kakamega HC', :properties => {
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :properties => {
         "manager" => "Mrs. Liz",
         "numBeds" => 55,
         "services" => ['XR', 'OBG'],
         "inagurationDay" => "2012-10-24T00:00:00Z"
-      }
+      } }.to_json
+      post :create_facility, collection_id: collection.id
 
       response.status.should eq(201)
       json = JSON.parse response.body
@@ -444,13 +468,14 @@ describe FredApiController do
       moh_id = layer.fields.make :code => 'moh-id', :kind => 'identifier', :config => {"context" => "MOH", "agency" => "DHIS"}
       moh_id2 = layer.fields.make :code => 'moh-id2', :kind => 'identifier', :config => {"context" => "MOH2", "agency" => "DHIS2"}
 
-      post :create_facility, collection_id: collection.id, name: 'Kakamega HC', :identifiers => [
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :identifiers => [
         {"agency"=> "DHIS",
         "context"=>"MOH",
         "id"=> "123"},
         {"agency"=> "DHIS2",
         "context"=> "MOH2",
-        "id"=>"124"}]
+        "id"=>"124"}] }.to_json
+      post :create_facility, collection_id: collection.id
 
       response.status.should eq(201)
       json = JSON.parse response.body

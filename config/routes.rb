@@ -121,7 +121,7 @@ ResourceMap::Application.routes.draw do
   match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#facilities', :via => :get
   match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#delete_facility', :via => :delete
   match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#create_facility', :via => :post
-  match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#update_facility', :via => :put
+  match 'collections/:collection_id/fred_api/v1/facilities/:id(.:format)' => 'fred_api#update_facility', :via => :put
 
 
 end
