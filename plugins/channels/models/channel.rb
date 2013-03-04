@@ -103,7 +103,7 @@ class Channel < ActiveRecord::Base
   
   def gateway_url
     config = Nuntium.config 
-    config['url'] + '/' + config['application'] + '/qst'
+    config['url'] + '/' + config['account'] + '/qst'
   end
   
   def self.default_nuntium_name
