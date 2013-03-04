@@ -1,6 +1,9 @@
 :css
   .ignored, .ignored input, .ignored select { color: grey; }
 
+:javascript
+  window.kinds = #{Field::kinds}
+
 = render '/tabs'
 
 .tabsline

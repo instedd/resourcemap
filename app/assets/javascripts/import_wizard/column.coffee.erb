@@ -1,46 +1,57 @@
 onImportWizard ->
-  class @Column
+  class @Column extends Module
+    @include Rollbackable
+
     constructor: (data, index) ->
-      @header = ko.observable data.header
+      @header = ko.observable()
       @index = index
 
       # How to use this column (new field? existing field? id? name? lat? lng? ignore?)
-      @usage = ko.observable data.use_as
+      @usage = ko.observable()
 
       # For existing fields
-      @layer = ko.observable(if data.layer_id then window.model.findLayer(data.layer_id) else null)
-      @field = ko.observable(if @layer() then @layer().findField(data.field_id) else null)
+      @layer = ko.observable()
+      @field = ko.observable()
 
       # For new fields
-      @kind = ko.observable data.kind
-      @code = ko.observable data.code
-      @label = ko.observable data.label
+      @kind = ko.observable()
+      @code = ko.observable()
+      @label = ko.observable()
 
       # For new select_one or select_many fields
-      @selectKind = ko.observable 'both'
+      @selectKind = ko.observable()
 
       @iconClass = ko.observable()
-      @iconClass(@computeIconClass())
 
-      @kind.subscribe  =>
-        @iconClass(@computeIconClass())
+      @kind.subscribe => @iconClass(@computeIconClass())
 
-      @field.subscribe =>
-        @iconClass(@computeIconClass())
+      @field.subscribe => @iconClass(@computeIconClass())
 
-      @usage.subscribe =>
-        # If usage change is because this column is the model.selectedColumn and fancybox it's open
-        $('.fancybox').resize()
-        if !(@usage() == 'existing_field' || @usage() == 'new_field')
-          @iconClass(@computeIconClass())
+      @errors = ko.observableArray()
 
-      @errors = ko.observableArray []
+      @callModuleConstructors(arguments)
+
+    update: (data) =>
+      @usage data.use_as
+      @header data.header
+
+      @layer(if data.layer_id then window.model.findLayer(data.layer_id) else null)
+      @field(if @layer() then @layer().findField(data.field_id) else null)
+
+      @kind data.kind
+      @code data.code
+      @label data.label
+
+      @selectKind(if @kind() == 'select_one' || @kind() == 'select_many' then data.selectKind else null)
+      @iconClass @computeIconClass()
+      @errors []
 
     toJSON: =>
       json =
         use_as: @usage()
         header: @header()
       if @usage() == 'existing_field'
+        json.layer_id = @layer().id
         json.field_id = @field().id
       if @usage() == 'new_field'
         json.kind = @kind()
@@ -57,3 +68,12 @@ onImportWizard ->
         when 'lng'then 'location'
         else @usage()
       "f#{kind}"
+
+    saveAndClose: =>
+      $.fancybox.close()
+      @commit()
+
+    discardAndClose: =>
+      $.fancybox.close()
+      @rollback()
+

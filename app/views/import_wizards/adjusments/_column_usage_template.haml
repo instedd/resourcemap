@@ -1,4 +1,4 @@
-#columnUsageTemplate{ko(with: :selectedColumn), style:'display: none;'}
+#columnUsageTemplate{ko(with: :selectedColumn), style:'display: none; height: 300px;'}
   %h2
     %span{ko(text: 'header')}
     Column Settings
@@ -15,6 +15,13 @@
         - content = 'import_wizards/adjusments/usage_options_for_non_admin'
       //ko
       = render 'import_wizards/adjusments/popup_row', :label => 'Use as:', :content => content
+
+      %div
+      /ko if: usage() == 'new_field'
+      - content = 'import_wizards/adjusments/field_type_options'
+      = render 'import_wizards/adjusments/popup_row', :label => 'Field Type:', :content => content
+      //ko
+
       /ko if: usage() == 'existing_field'
       = render 'import_wizards/adjusments/popup_row', :label => 'Layer:', :content => 'import_wizards/adjusments/existing_layer_options'
       = render 'import_wizards/adjusments/popup_row', :label => 'Field:', :content => 'import_wizards/adjusments/existing_field_options'
@@ -22,26 +29,21 @@
       /ko if: usage() == 'new_field'
       = render 'import_wizards/adjusments/popup_row', :label => 'Field Code:', :content => 'import_wizards/adjusments/new_field_code'
       = render 'import_wizards/adjusments/popup_row', :label => 'Field Name:', :content => 'import_wizards/adjusments/new_field_name'
-      //ko
-    %div
-      /ko if: usage() == 'new_field'
-      %label Field Type:
-      #field-type-options
-        - i = 0
-        - Field::kinds.select{|e| e != "hierarchy"}.each do |field_name|
-          - i = i+1
-          %span.field_option.left{ko(click: "function() { kind('#{field_name}') }"), style: "width: 25%;"}
-            %button.icon_button{ko(css: {active: "kind() == '#{field_name}'"}), class: "f#{field_name}"}
-              = field_name.titleize
-          - if i == 4
-            %br
-        .clear
+
       /ko if: kind() == 'select_one' || kind() == 'select_many'
       .box.alert
         Please select what you want to update with this input:
         %br
-        - [['Option code', 'code'], ['Option label', 'label'], ['Both the code and label', 'both']].each do |option|
+        - [['Option code', 'code'], ['Option label', 'label'], ['Both code and label', 'both']].each do |option|
           = radio_button_tag 'select_kind_group', option[1], false, 'data-bind' => kov(checked: 'selectKind')
           = label_tag "select_kind_group_#{option[1]}", option[0]
       //ko
       //ko
+  %div{style: 'bottom:0px;position:absolute;width:100%;'}
+    %hr
+    %button.grey.right{ko(click: 'saveAndClose'), style: 'margin-left:10px;'}
+      Apply
+    %a.right{ko(click: 'discardAndClose'), style: 'margin-top:12px;'}
+      Cancel
+
+
