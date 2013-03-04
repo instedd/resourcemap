@@ -56,7 +56,7 @@ class CollectionsController < ApplicationController
 
       if collection.public
         guest_user = User.find_by_email 'guest@resourcemap.org'
-        guest_user.memberships.create! collection_id: collection.id, admin: false
+        guest_user.register_guest_membership(collection.id)
       end
 
       collection.recreate_index

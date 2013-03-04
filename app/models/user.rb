@@ -107,4 +107,9 @@ class User < ActiveRecord::Base
   def update_successful_outcome_status
     self.success_outcome = layer_count? & collection_count? & site_count? & gateway_count?
   end
+
+  def register_guest_membership(collection_id)
+    membership = self.memberships.find_by_collection_id collection_id
+    self.memberships.create! collection_id: collection_id, admin: false  if(!membership)
+  end
 end
