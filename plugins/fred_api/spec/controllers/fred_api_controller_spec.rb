@@ -353,6 +353,15 @@ describe FredApiController do
       updated_site.lng.to_f.should eq(76.9)
     end
 
+    it "should ignore active param in facility creation" do
+      request.env["RAW_POST_DATA"] = { active: 'false' }.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
+      response.status.should eq(200)
+      json = JSON.parse response.body
+      json["name"].should eq('Kakamega HC')
+      json["active"].should eq(true)
+    end
+
     it "should update properties" do
       json_data = {
       :manager => "Mrs. Liz 2",
@@ -433,6 +442,25 @@ describe FredApiController do
       request.env["RAW_POST_DATA"] = { name: "Duplicated name" }.to_json
       post :create_facility, collection_id: collection.id
       response.status.should eq(409)
+    end
+
+    it "should create facility with coordinates" do
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', coordinates: [76.9,34.2] }.to_json
+      post :create_facility, collection_id: collection.id
+      response.status.should eq(201)
+      json = JSON.parse response.body
+      json["name"].should eq('Kakamega HC')
+      json["coordinates"][0].should eq(76.9)
+      json["coordinates"][1].should eq(34.2)
+    end
+
+    it "should ignore active param in facility creation" do
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', active: 'false' }.to_json
+      post :create_facility, collection_id: collection.id
+      response.status.should eq(201)
+      json = JSON.parse response.body
+      json["name"].should eq('Kakamega HC')
+      json["active"].should eq(true)
     end
 
     it "should create facility with coordinates" do
