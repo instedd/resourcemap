@@ -77,7 +77,7 @@ describe User do
       @site  = @collection.sites.make
       @layer = @collection.layers.create(:name => "health center")
       @properties =[{:code=>"AB", :value=>"26"}]
-      Field.create(:collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1, :kind => "numeric")
+      @field = Field.create(:collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1, :kind => "numeric")
     end
 
     it "should be able to view and update layer" do
@@ -96,6 +96,15 @@ describe User do
 
       it "should return false when user don't have write permission on layer" do
         @user.validate_layer_write_permission(@site, @properties).should be_false
+      end
+
+      it "should return true when two field have the same code 'AB' but difference collection_id" do
+        @collection1 = Collection.make
+        @layer1 = @collection1.layers.create(:name => "school")
+        @field1 = Field.create(:collection_id => @collection1.id, :layer_id => @layer1.id, :code => "AB", :ord => 1, :kind => "numeric")
+        @site1  = @collection1.sites.make
+        @collection1.layer_memberships.create( :layer_id => @layer1.id, :read => true, :user_id => @user.id, :write => true)
+        @user.validate_layer_write_permission(@site1, @properties).should be_true
       end
     end
 

@@ -74,7 +74,7 @@ class User < ActiveRecord::Base
 
   def validate_layer_write_permission(site, properties)
     properties.each do |prop|
-      field = Field.find_by_code(prop.values[0].to_s)
+      field = Field.where("code=? && collection_id=?", prop.values[0].to_s, site.collection_id).first
       return false if field.nil?
       lm = LayerMembership.where(user_id: self.id, collection_id: site.collection_id, layer_id: field.layer_id).first
       return false if lm.nil?
@@ -84,7 +84,7 @@ class User < ActiveRecord::Base
   end
 
   def validate_layer_read_permission(collection, field_code)
-    field = Field.find_by_code field_code
+    field = Field.where("code=? && collection_id=?", field_code, collection.id).first
     return false if field.nil?
     lm = LayerMembership.where(user_id: self.id, collection_id: collection.id, layer_id: field.layer_id).first
     return false if lm.nil?
