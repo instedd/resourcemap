@@ -10,6 +10,7 @@ module Site::AlertConcerns
     if alert != nil
       extended_properties[:alert] = true
       extended_properties[:color] = alert.color
+      extended_properties[:ord] = alert.ord
       if alert.is_notify
         phone_numbers = notification_numbers alert
         emails = notification_emails alert

@@ -4,7 +4,7 @@ class Clusterer
   def initialize(zoom)
     @zoom = zoom
     @width, @height = self.class.cell_size_for zoom
-    @clusters = Hash.new { |h, k| h[k] = {lat_sum: 0, lng_sum: 0, count: 0, min_lat: 90, max_lat: -90, min_lng: 180, max_lng: -180, highlighted: false } }
+    @clusters = Hash.new { |h, k| h[k] = {lat_sum: 0, lng_sum: 0, alert: false, status: true, ord: 100, count: 0, min_lat: 90, max_lat: -90, min_lng: 180, max_lng: -180, highlighted: false } }
     @sites = []
     @clustering_enabled = @zoom < 20
     @highlight = {}
@@ -31,16 +31,18 @@ class Clusterer
       x, y = cell_for site
       cluster = @clusters["#{x}:#{y}"]
       cluster[:id] = "#{@zoom}:#{x}:#{y}"
+      cluster[:collection_id] ||= site[:collection_id]
       cluster[:count] += 1
       cluster[:min_lat] = lat if lat < cluster[:min_lat]
       cluster[:min_lng] = lng if lng < cluster[:min_lng]
       cluster[:max_lat] = lat if lat > cluster[:max_lat]
       cluster[:max_lng] = lng if lng > cluster[:max_lng]
+      cluster[:status] = false if site[:collection_id] != cluster[:collection_id]
+      cluster[:icon] = site[:icon] ? site[:icon] : ''
       cluster[:lat_sum] += lat
       cluster[:lng_sum] += lng
       cluster[:highlighted] ||= !site[:property].nil? && !@highlight[:hierachies_selected].nil? &&
                                   (site[:property] & @highlight[:hierachies_selected]).present?
-
       Plugin.hooks(:clusterer).each do |clusterer|
         clusterer[:map].call site, cluster
       end
@@ -79,7 +81,9 @@ class Clusterer
             min_lng: cluster[:min_lng],
             max_lat: cluster[:max_lat],
             max_lng: cluster[:max_lng],
+            icon: cluster[:status] ? cluster[:icon] : 'default',
             count: count,
+            status: cluster[:status],
             highlighted: cluster[:highlighted]
           }
 

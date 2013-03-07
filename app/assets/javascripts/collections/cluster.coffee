@@ -48,6 +48,8 @@ onCollections ->
       @countDownListener = google.maps.event.addDomListener @countClick, 'mousedown', listenerDownCallback
       @countUpListener = google.maps.event.addDomListener @countClick, 'mouseup', listenerUpCallback
 
+      @setMarkerIcon(@div, @data.icon, @data.color, @data.alert) if @data.status 
+    
     draw: =>
       pos = @getProjection().fromLatLngToDivPixel @position
       @div.style.left = @divClick.style.left = "#{pos.x - 17}px"
@@ -61,7 +63,7 @@ onCollections ->
       @digits = 0 if @digits < 0
       @countDiv.style.left = @countClick.style.left = "#{pos.x - 12 - @digits}px"
       @countDiv.style.top = @countClick.style.top = "#{pos.y + 2}px"
-
+    
       if @startAs
         $(@div).addClass(@startAs)
         delete @startAs
@@ -123,3 +125,35 @@ onCollections ->
       zIndex = window.model.zIndex(@position.lat())
       @div.style.zIndex = zIndex if @div
       @countDiv.style.zIndex = zIndex - 10 if @countDiv
+
+    setMarkerIcon:(marker, icon, color, alert) =>
+      if alert
+        marker.style.backgroundImage = "url(/assets/markers/resmap_#{@alertMarker(color)}_#{icon}.png)" 
+      else
+        marker.style.backgroundImage = "url(/assets/resmap_#{icon}.png)" 
+
+    alertMarker: (color_code) ->
+      switch color_code
+        when '#b30b0b'
+          'b01c21'
+        when '#c2720f'
+          'ff6f21'
+        when '#c2b30f'
+          'ffc01f'
+        when '#128e4e'
+          '128e4e'
+        when '#00baba'
+          '5ec8bd'
+        when '#1c388c'
+          '3875d7'
+        when '#5f1c8c'
+          'ffc01f'
+        when '#000000'
+          'ffc01f'
+        when '#9e9e9e'
+          'ffc01f'
+        else
+          color_code.replace('#', '')
+
+
+

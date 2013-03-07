@@ -357,10 +357,6 @@ onCollections ->
         else
           color_code.replace('#', '')
 
-
-
-
-
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap
