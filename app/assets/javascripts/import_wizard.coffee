@@ -11,7 +11,7 @@ onImportWizard -> if $('#import-wizard-main').length > 0
 
     $.get "/collections/#{collectionId}/import_wizard/guess_columns_spec.json", {}, (columns) =>
       window.model = new MainViewModel
-      window.model.initialize collectionId, layers, columns
+      window.model.initialize collectionId, layers, columns, window.kinds
 
       ko.applyBindings window.model
 
