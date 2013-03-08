@@ -5,9 +5,9 @@ describe "layer access" do
   let!(:user) { User.make }
   let!(:membership) { Membership.create! user_id: user.id, collection_id: collection.id }
   let!(:layer1) { collection.layers.make }
-  let!(:field1) { layer1.fields.make collection_id: collection.id }
+  let!(:field1) { layer1.text_fields.make collection_id: collection.id }
   let!(:layer2) { collection.layers.make }
-  let!(:field2) { layer2.fields.make collection_id: collection.id }
+  let!(:field2) { layer2.text_fields.make collection_id: collection.id }
 
   context "fields for user" do
     it "only returns fields that can be read" do

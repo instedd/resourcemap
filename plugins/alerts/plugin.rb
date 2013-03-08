@@ -11,6 +11,7 @@ class Alerts::Plugin < Plugin
     class: Site,
     with: Site::AlertConcerns
 
+  Field::EmailField
   field_type \
     name: 'email',
     css_class: 'lmessage',
@@ -18,6 +19,7 @@ class Alerts::Plugin < Plugin
     edit_view: 'fields/email_edit_view',
     sample_value: 'an@email.com'
 
+  Field::PhoneField
   field_type \
     name: 'phone',
     css_class: 'lphone',

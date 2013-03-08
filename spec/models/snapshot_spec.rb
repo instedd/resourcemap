@@ -13,13 +13,13 @@ describe Snapshot do
     stub_time '2011-01-01 10:00:00 -0500'
 
     layer = collection.layers.make
-    @field = layer.fields.make code: 'beds', kind: 'numeric'
+    @field = layer.numeric_fields.make code: 'beds'
 
     @site1 = collection.sites.make name: 'site1 last year'
     @site2 = collection.sites.make name: 'site2 last year'
 
     stub_time '2012-06-05 12:17:58 -0500'
-    @field2 = layer.fields.make code: 'beds2', kind: 'numeric'
+    @field2 = layer.numeric_fields.make code: 'beds2'
 
     @site3 = collection.sites.make name: 'site3 today'
     @site4 = collection.sites.make name: 'site4 today'

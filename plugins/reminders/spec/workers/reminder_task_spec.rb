@@ -3,8 +3,8 @@ describe ReminderTask do
   let!(:users) { [User.make(:email => 'user@instedd.org', :password => '1234567', :phone_number => '855123456789'), User.make(:email => 'demo@instedd.org', :password => '1234567', :phone_number => '855123333444')]}
   let!(:collection) { Collection.make }
   let!(:layer) { collection.layers.make }
-  let!(:phone_field) { layer.fields.make :code => 'phone', :kind => 'phone' } 
-  let!(:email_field) { layer.fields.make :code => 'email', :kind => 'email'} 
+  let!(:phone_field) { layer.phone_fields.make :code => 'phone' } 
+  let!(:email_field) { layer.email_fields.make :code => 'email'} 
   
   let!(:site) { collection.sites.make :properties => {phone_field.es_code => users[0].phone_number, email_field.es_code => users[0].email}} 
  

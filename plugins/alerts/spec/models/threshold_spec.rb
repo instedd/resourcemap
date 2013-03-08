@@ -9,8 +9,8 @@ describe Threshold do
   let!(:user) { User.make }
   let!(:collection) { user.create_collection Collection.make }
   let!(:layer) { collection.layers.make }
-  let!(:beds) { layer.fields.make id: 1, code: 'beds', kind: 'numeric' }
-  let!(:doctors) { layer.fields.make id: 2, code: 'doctors', kind: 'numeric' }
+  let!(:beds) { layer.numeric_fields.make id: 1, code: 'beds'}
+  let!(:doctors) { layer.numeric_fields.make id: 2, code: 'doctors' }
   let!(:options) { [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}] }
 
   it "should convert conditions' value to int if the field is int" do
@@ -59,7 +59,7 @@ describe Threshold do
   end
 
   describe "should test text field" do
-    let!(:field) { layer.fields.make code: 'txt', kind: 'text' }
+    let!(:field) { layer.text_fields.make code: 'txt' }
 
     it "for equality" do
       threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 'hello'}]
@@ -73,7 +73,7 @@ describe Threshold do
   end
 
   it "should test select_one field for equality" do
-    field = layer.fields.make code: 'one', kind: 'select_one', config: {options: options}
+    field = layer.select_one_fields.make code: 'one', config: {options: options}
     threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 1}]
 
     expect { threshold.test({field.es_code => 1}) }.to throw_symbol :threshold, threshold
@@ -81,7 +81,7 @@ describe Threshold do
   end
 
   it "should test select_many field for equality" do
-    field = layer.fields.make code: 'many', kind: 'select_many', config: {options: options}
+    field = layer.select_many_fields.make code: 'many', config: {options: options}
     threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 2}]
 
     expect { threshold.test({field.es_code => 1}) }.to_not throw_symbol

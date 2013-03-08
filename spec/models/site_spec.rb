@@ -3,18 +3,23 @@ require 'spec_helper'
 describe Site do
   let(:user) { User.make }
   it { should belong_to :collection }
+
+  def history_concern_class
+    described_class
+  end
+
   it_behaves_like "it includes History::Concern"
 
   let(:collection) { Collection.make }
   let(:layer) { collection.layers.make }
-  let(:room) { layer.fields.make name: 'room'  }
-  let(:desk) { layer.fields.make name: 'desk'  }
-  let(:creation) { layer.fields.make name: 'creation', kind: 'date' }
+  let(:room) { layer.numeric_fields.make name: 'room'  }
+  let(:desk) { layer.text_fields.make name: 'desk'  }
+  let(:creation) { layer.date_fields.make name: 'creation'}
 
   let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '2012-09-22T03:00:00.000Z' } }
 
   it "return as a hash of field_name and its value" do
-    site.human_properties.should eq({'room' => '50', 'desk' => 'bla bla', 'creation' => '09/22/2012' })
+    site.human_properties.should eq({'room' => 50, 'desk' => 'bla bla', 'creation' => '09/22/2012' })
   end
 
   describe "create or update from hash" do

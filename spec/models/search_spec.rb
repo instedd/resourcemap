@@ -6,11 +6,11 @@ describe Search do
   let!(:layer) { collection.layers.make }
 
   context "search by property" do
-    let!(:beds) { layer.fields.make code: 'beds', kind: 'numeric' }
-    let!(:tables) { layer.fields.make code: 'tables', kind: 'numeric' }
-    let!(:first_name) { layer.fields.make code: 'first_name', kind: 'text' }
-    let!(:country) { layer.fields.make code: 'country', kind: 'text' }
-    let!(:hierarchy) { layer.fields.make code: 'hie', kind: 'hierarchy', config: { "hierarchy" => [{ 'id' => 1, 'name' => 'root'}] } }
+    let!(:beds) { layer.numeric_fields.make code: 'beds' }
+    let!(:tables) { layer.numeric_fields.make code: 'tables' }
+    let!(:first_name) { layer.text_fields.make code: 'first_name' }
+    let!(:country) { layer.text_fields.make code: 'country' }
+    let!(:hierarchy) { layer.hierarchy_fields.make code: 'hie', config: { "hierarchy" => [{ 'id' => 1, 'name' => 'root'}] } }
 
 
     let!(:site1) { collection.sites.make properties:
@@ -88,7 +88,7 @@ describe Search do
     end
 
     context "full text search" do
-      let!(:population_source) { layer.fields.make :code => 'population_source', :kind => 'text' }
+      let!(:population_source) { layer.text_fields.make :code => 'population_source' }
 
       it "searches by equality with text" do
         a_site = collection.sites.make :properties => {population_source.es_code => "National Census"}
@@ -247,8 +247,8 @@ describe Search do
 
   context "full text search" do
     let!(:layer) { collection.layers.make }
-    let!(:prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}, {'id' => 3, 'code' => 'baz', 'label' => 'COCO'}]} }
-    let!(:beds) { layer.fields.make :kind => 'numeric', :code => 'beds' }
+    let!(:prop) { layer.select_one_fields.make :code => 'prop', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}, {'id' => 3, 'code' => 'baz', 'label' => 'COCO'}]} }
+    let!(:beds) { layer.numeric_fields.make :code => 'beds' }
     let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds.es_code => 8, prop.es_code => 1} }
     let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds.es_code => 10, prop.es_code => 2} }
     let!(:site3) { collection.sites.make :name => "Cordoba bar Buenos", :properties => {beds.es_code => 20, prop.es_code => 3} }
@@ -337,10 +337,10 @@ describe Search do
   end
 
   context "results format" do
-    let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
-    let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
-    let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-    let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let!(:text) { layer.text_fields.make :code => 'text' }
+    let!(:numeric) { layer.numeric_fields.make :code => 'numeric' }
+    let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
 
     let!(:site1) { collection.sites.make :lat => 1, :lng => 2, :properties => {text.es_code => 'foo', numeric.es_code => 1, select_one.es_code => 1, select_many.es_code => [1, 2]} }
 
@@ -424,7 +424,7 @@ describe Search do
   end
 
   context "sort" do
-    let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+    let!(:numeric) { layer.numeric_fields.make :code => 'numeric' }
 
     let!(:site1) { collection.sites.make :name => 'Brian Adams', :properties => {numeric.es_code => 2} }
     let!(:site2) { collection.sites.make :name => 'Esther Goris', :properties => {numeric.es_code => 1} }
@@ -475,8 +475,8 @@ describe Search do
   end
 
   context "filter by date field range" do
-    let!(:creation) { layer.fields.make code: 'creation', kind: 'date' }
-    let!(:inaguration) { layer.fields.make code: 'inaguration', kind: 'date' }
+    let!(:creation) { layer.date_fields.make code: 'creation' }
+    let!(:inaguration) { layer.date_fields.make code: 'inaguration' }
 
     let!(:site1) { collection.sites.make :name => 'b', properties: { creation.es_code =>"2012-09-07T00:00:00.000Z", inaguration.es_code =>"2012-09-23T00:00:00.000Z"} }
     let!(:site2) { collection.sites.make :name => 'a', properties: { creation.es_code =>"2013-09-07T00:00:00.000Z", inaguration.es_code =>"2012-09-23T00:00:00.000Z"} }
@@ -519,8 +519,8 @@ describe Search do
   end
 
   context 'filter by hierarchy' do
-    let!(:unit) { layer.fields.make code: 'unit', kind: 'hierarchy', 'config' => {'hierarchy' => [{'id' => 1, 'name' => 'Buenos Aires', 'sub' => [{ 'id' => 2, 'name' => 'Vicente Lopez'}]}, {'id' => 3, 'name' => 'Formosa'}]} }
-    let!(:first_name) { layer.fields.make code: 'first_name', kind: 'text' }
+    let!(:unit) { layer.hierarchy_fields.make code: 'unit', 'config' => {'hierarchy' => [{'id' => 1, 'name' => 'Buenos Aires', 'sub' => [{ 'id' => 2, 'name' => 'Vicente Lopez'}]}, {'id' => 3, 'name' => 'Formosa'}]} }
+    let!(:first_name) { layer.text_fields.make code: 'first_name'}
 
     let!(:site1) { collection.sites.make properties:
       { first_name.es_code => "At Buenos Aires", unit.es_code => 1 }  }
@@ -574,7 +574,7 @@ describe Search do
   end
 
   context 'filter by yes_no' do
-    let!(:cool) { layer.fields.make code: 'cool', kind: 'yes_no' }
+    let!(:cool) { layer.yes_no_fields.make code: 'cool'}
 
     let!(:site1) { collection.sites.make properties: { cool.es_code => true } }
     let!(:site2) { collection.sites.make properties: { cool.es_code => false } }
@@ -593,10 +593,10 @@ describe Search do
   end
 
   context 'hierarchy parameter for select_kind and hierarchy fields' do
-    let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-    let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-    let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+    let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
 
     let!(:site1) { collection.sites.make properties:
      { select_one.es_code => "1", select_many.es_code => [1, 2], hierarchy.es_code => '100'}  }

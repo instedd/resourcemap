@@ -25,7 +25,7 @@ module HistoryConcern
       end
     end
     history["valid_since"] = updated_at
-    history[self.class.name.foreign_key] = id
+    history[self.history_concern_foreign_key] = id
     history.save!
     history
   end

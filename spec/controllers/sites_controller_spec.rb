@@ -9,16 +9,16 @@ describe SitesController do
 
   let!(:site) { collection.sites.make id: 1234}
 
-  let!(:text) { layer.fields.make code: 'text', kind: 'text' }
-  let(:numeric) { layer.fields.make code: 'n', kind: 'numeric' }
-  let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-  let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:text) { layer.text_fields.make code: 'text'}
+  let(:numeric) { layer.numeric_fields.make code: 'n' }
+  let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-  let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
-  let!(:site_field) { layer.fields.make :code => 'site', :kind => 'site' }
-  let!(:date) { layer.fields.make :code => 'date', :kind => 'date' }
-  let!(:director) { layer.fields.make :code => 'user', :kind => 'user' }
-  let!(:email_field) { layer.fields.make :code => 'email', :kind => 'email' }
+  let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+  let!(:site_field) { layer.site_fields.make :code => 'site' }
+  let!(:date) { layer.date_fields.make :code => 'date' }
+  let!(:director) { layer.user_fields.make :code => 'user' }
+  let!(:email_field) { layer.email_fields.make :code => 'email' }
 
   before(:each) { sign_in user }
 

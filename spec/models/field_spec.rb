@@ -1,13 +1,26 @@
 require 'spec_helper'
 
 describe Field do
-  it { should belong_to :collection }
-  it { should belong_to :layer }
+  def history_concern_class
+    Field::TextField
+  end
+
+  def history_concern_foreign_key
+    'field_id'
+  end
+
+  def history_concern_histories
+    'field_histories'
+  end
+
+  def history_concern_class_foreign_key
+    'field_id'
+  end
 
   it_behaves_like "it includes History::Concern"
 
   it "sanitizes options" do
-    field = Field.make config: {options: [{code: 'foo', label: 'bar'}]}.with_indifferent_access
+    field = Field::SelectOneField.make config: {options: [{code: 'foo', label: 'bar'}]}.with_indifferent_access
     field.config.class.should eq(Hash)
     field.config['options'].each do |option|
       option.class.should eq(Hash)
@@ -15,7 +28,7 @@ describe Field do
   end
 
   it "sanitizes hierarchy" do
-    field = Field.make config: {hierarchy: [{sub: [{}.with_indifferent_access]}]}.with_indifferent_access
+    field = Field::HierarchyField.make config: {hierarchy: [{sub: [{}.with_indifferent_access]}]}.with_indifferent_access
     field.config.class.should eq(Hash)
     field.config['hierarchy'].each do |item|
       item.class.should eq(Hash)
@@ -25,37 +38,37 @@ describe Field do
 
   describe "sample value" do
     it "for text are strings" do
-      field = Field.make kind: 'text'
+      field = Field::TextField.make
       field.sample_value.should be_an_instance_of String
       field.sample_value.length.should be > 0
     end
 
     it "for numbers is a number" do
-      field = Field.make kind: 'numeric'
+      field = Field::NumericField.make
       field.sample_value.should be_a_kind_of Numeric
     end
 
     it "for dates is a date" do
-      field = Field.make kind: 'date'
+      field = Field::DateField.make
       expect { Site.parse_date(field.sample_value) }.to_not raise_error
     end
 
     it "for user is a string" do
       user = User.make email: 'an@email.com'
-      field = Field.make kind: 'user'
+      field = Field::UserField.make
       field.sample_value(user).should == (user.email)
     end
 
     it "for 'select one' is one of the choices" do
       config_options = [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}]
-      field = Field.make kind: 'select_one', config: { options: config_options }.with_indifferent_access
+      field = Field::SelectOneField.make config: { options: config_options }.with_indifferent_access
       codes = config_options.map { |o| o[:code] }
       codes.should include field.sample_value
     end
 
     it "for 'select many' are among the choices" do
       config_options = [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}, {id: 3, code: 'three', label: 'Three'}]
-      field = Field.make kind: 'select_many', config: { options: config_options }.with_indifferent_access
+      field = Field::SelectManyField.make config: { options: config_options }.with_indifferent_access
       codes = config_options.map { |o| o[:code] }
       field.sample_value.length.should be > 0
       field.sample_value.each do |option|
@@ -65,27 +78,27 @@ describe Field do
 
     it "for hierarchy is a valid item" do
       config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}]}]
-      field = Field.make kind: 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+      field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
       # This isn't right: if you change the config_hierarchy, the next line has to be changed as well
       [0, 1].should include field.sample_value
     end
 
     it "for email and phone is a string" do
-      field = Field.make kind: 'email'
+      field = Field::EmailField.make
       field.sample_value.should be_an_instance_of String
 
-      field = Field.make kind: 'phone'
+      field = Field::PhoneField.make
       field.sample_value.should be_an_instance_of String
     end
 
     it "for fields with no config should be the empty string" do
-      field = Field.make kind: 'select_many', config: {}
+      field = Field::SelectManyField.make config: {}
       field.sample_value.should == ''
 
-      field = Field.make kind: 'select_one', config: {}
+      field = Field::SelectOneField.make config: {}
       field.sample_value.should == ''
 
-      field = Field.make kind: 'hierarchy', config: {}
+      field = Field::HierarchyField.make config: {}
       field.sample_value.should == ''
     end
   end
@@ -94,7 +107,7 @@ describe Field do
     let!(:config_options) { [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}] }
 
     describe "select_many" do
-      let!(:field) { Field.make kind: 'select_many', config: {options: config_options} }
+      let!(:field) { Field::SelectManyField.make config: {options: config_options} }
 
       it "should convert value to integer" do
         field.strongly_type('1').should eq 1
@@ -108,29 +121,29 @@ describe Field do
   end
 
   it "should have kind 'user'" do
-    Field.make(kind: 'user').should be_valid
+    Field::UserField.make.should be_valid
   end
 
   it "should have kind 'email'" do
-    Field.make(kind: 'email').should be_valid
+    Field::EmailField.make.should be_valid
   end
 
   describe "generate hierarchy options" do
     it "for empty hierarchy" do
       config_hierarchy = []
-      field = Field.make kind: 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+      field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
       field.hierarchy_options.should eq([])
     end
 
     it "for hierarchy with one level" do
       config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}]}]
-      field = Field.make kind: 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+      field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
       field.hierarchy_options.should eq([{:id=>0, :name=>"root"}, {:id=>1, :name=>"child"}])
     end
 
     it "for hierarchy with one level two childs" do
       config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}, {id: 2, name: 'child2'}]}]
-      field = Field.make kind: 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+      field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
       field.hierarchy_options.should eq([{:id=>0, :name=>"root"}, {:id=>1, :name=>"child"}, {:id=>2, :name=>"child2"}])
     end
   end
@@ -141,39 +154,39 @@ describe Field do
 
     ['name', 'code'].each do |parameter|
       it "should validate uniqueness of #{parameter} in collection" do
-        beds = collection.fields.make :kind => 'text', parameter.to_sym => 'beds'
-        beds2 = collection.fields.make_unsaved :kind => 'text', parameter.to_sym => 'beds'
+        beds = collection.text_fields.make parameter.to_sym => 'beds'
+        beds2 = collection.text_fields.make_unsaved parameter.to_sym => 'beds'
 
         beds2.should_not be_valid
 
         collection2 = Collection.make
 
-        beds3 = collection2.fields.make_unsaved :kind =>'text', parameter.to_sym => 'beds'
+        beds3 = collection2.text_fields.make_unsaved parameter.to_sym => 'beds'
         beds3.should be_valid
       end
     end
 
     describe "apply_format_update_validation" do
       let!(:layer) { collection.layers.make }
-      let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
-      let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric', :config => {} }
-      let!(:yes_no) { layer.fields.make :code => 'yes_no', :kind => 'yes_no'}
+      let!(:text) { layer.text_fields.make :code => 'text' }
+      let!(:numeric) { layer.numeric_fields.make :code => 'numeric', :config => {} }
+      let!(:yes_no) { layer.yes_no_fields.make :code => 'yes_no'}
 
       let!(:numeric_with_decimals) {
-        layer.fields.make :code => 'numeric_with_decimals', :kind => 'numeric', :config => {
+        layer.numeric_fields.make :code => 'numeric_with_decimals', :config => {
           :allows_decimals => "true" }.with_indifferent_access
         }
 
-      let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+      let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
 
-      let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+      let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
 
       config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-      let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
-      let!(:site_field) { layer.fields.make :code => 'site', :kind => 'site' }
-      let!(:date) { layer.fields.make :code => 'date', :kind => 'date' }
-      let!(:director) { layer.fields.make :code => 'user', :kind => 'user' }
-      let!(:email_field) { layer.fields.make :code => 'email', :kind => 'email' }
+      let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+      let!(:site_field) { layer.site_fields.make :code => 'site'}
+      let!(:date) { layer.date_fields.make :code => 'date' }
+      let!(:director) { layer.user_fields.make :code => 'user' }
+      let!(:email_field) { layer.email_fields.make :code => 'email' }
 
       let!(:site) {collection.sites.make name: 'Foo old', id: 1234, properties: {} }
 

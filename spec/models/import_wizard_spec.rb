@@ -9,16 +9,16 @@ describe ImportWizard do
 
   let!(:layer) { collection.layers.make }
 
-  let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
-  let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
-  let!(:yes_no) { layer.fields.make :code => 'yes_no', :kind => 'yes_no' }
-  let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-  let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:text) { layer.text_fields.make :code => 'text' }
+  let!(:numeric) { layer.numeric_fields.make :code => 'numeric'}
+  let!(:yes_no) { layer.yes_no_fields.make :code => 'yes_no' }
+  let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-  let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
-  let!(:site) { layer.fields.make :code => 'site', :kind => 'site' }
-  let!(:date) { layer.fields.make :code => 'date', :kind => 'date' }
-  let!(:director) { layer.fields.make :code => 'user', :kind => 'user' }
+  let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+  let!(:site) { layer.site_fields.make :code => 'site'}
+  let!(:date) { layer.date_fields.make :code => 'date' }
+  let!(:director) { layer.user_fields.make :code => 'user' }
 
   it "imports with name, lat, lon and one new numeric property" do
     csv_string = CSV.generate do |csv|
@@ -669,7 +669,7 @@ describe ImportWizard do
   end
 
   it "should guess column spec for existing fields" do
-    email_field = layer.fields.make :code => 'email', :kind => 'email'
+    email_field = layer.email_fields.make :code => 'email'
 
     csv_string = CSV.generate do |csv|
      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
@@ -699,7 +699,7 @@ describe ImportWizard do
   end
 
   it "should get sites & errors for invalid existing fields" do
-    email_field = layer.fields.make :code => 'email', :kind => 'email'
+    email_field = layer.email_fields.make :code => 'email'
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
     csv_string = CSV.generate do |csv|
@@ -772,7 +772,7 @@ describe ImportWizard do
   end
 
   it "should be include hints for format errors" do
-    email_field = layer.fields.make :code => 'email', :kind => 'email'
+    email_field = layer.email_fields.make :code => 'email'
 
     csv_string = CSV.generate do |csv|
       csv << ['numeric', 'date', 'email']
@@ -888,7 +888,7 @@ describe ImportWizard do
 
 
   it "should not create fields with duplicated name or code" do
-    layer.fields.make :code => 'new_field', :kind => 'numeric', :name => 'Existing field'
+    layer.numeric_fields.make :code => 'new_field', :name => 'Existing field'
 
     csv_string = CSV.generate do |csv|
      csv << ['text']
@@ -912,57 +912,6 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
 
-  # One column validation is not completed yet
-  pending "should validate only one column" do
-    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
-
-     csv_string = CSV.generate do |csv|
-       csv << ['text', 'numeric ', ' select_one', 'select_many ', ' hierarchy', 'site', 'date', 'user', 'email']
-       csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
-       csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
-     end
-
-     ImportWizard.import user, collection, csv_string
-
-     column_spec = {header: 'numeric', use_as: 'new_field', kind: 'numeric', code: 'numeric'}
-
-     sites = ImportWizard.validate_sites_with_column user, collection, column_spec
-     sites_values = sites[:sites]
-
-     sites_errors = sites[:errors]
-
-     data_errors = sites_errors[:data_errors]
-     data_errors.length.should eq(1)
-
-     data_errors[0][:description].should eq("Invalid numeric value in numeric field")
-     data_errors[0][:column].should eq(1)
-     data_errors[0][:rows].should eq([1])
-
-     ImportWizard.delete_file(user, collection)
-  end
-
-  it "should not show errors if usage is ignore" do
-   site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
-
-    csv_string = CSV.generate do |csv|
-      csv << ['text', 'numeric ', ' select_one', 'select_many ', ' hierarchy', 'site', 'date', 'user', 'email']
-      csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
-      csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
-    end
-
-    ImportWizard.import user, collection, csv_string
-
-    column_spec = {header: 'numeric', use_as: 'ignore'}
-    sites_preview_one_column = (ImportWizard.validate_sites_with_column user, collection, column_spec)
-
-    sites_preview = sites_preview_one_column[:sites]
-    sites_preview.should  == [{:value=>"11"}, {:value=>"invalid11"}]
-    sites_errors = sites_preview_one_column[:errors]
-
-    sites_errors[:data_errors].should == []
-
-    ImportWizard.delete_file(user, collection)
-  end
 
   ['lat', 'lng', 'name', 'id'].each do |usage|
     it "should return validation errors when more than one column is selected to be #{usage}" do
@@ -1057,9 +1006,9 @@ describe ImportWizard do
   ['code', 'label'].each do |value|
     it "should return validation errors when there is existing_field with duplicated #{value}" do
       if value == 'label'
-        repeated = layer.fields.make "name" => "repeated"
+        repeated = layer.text_fields.make "name" => "repeated"
       else
-        repeated = layer.fields.make "#{value}" => "repeated"
+        repeated = layer.text_fields.make "#{value}" => "repeated"
       end
 
       csv_string = CSV.generate do |csv|

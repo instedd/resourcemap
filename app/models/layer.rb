@@ -6,7 +6,6 @@ class Layer < ActiveRecord::Base
   has_many :fields, order: 'ord', dependent: :destroy
   has_many :field_histories, order: 'ord', dependent: :destroy
 
-
   accepts_nested_attributes_for :fields, :allow_destroy => true
 
   validates_presence_of :ord
@@ -76,10 +75,14 @@ class Layer < ActiveRecord::Base
     Activity.create! item_type: 'layer', action: 'deleted', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name}
   end
 
+  def history_concern_foreign_key
+    self.class.name.foreign_key
+  end
+
   # Returns the next ord value for a field that is going to be created
   def next_field_ord
-    field = fields.select('max(ord) as o').first
-    field ? field['o'].to_i + 1 : 1
+    field = fields.pluck('max(ord) as o').first
+    field ? field.to_i + 1 : 1
   end
 
   private

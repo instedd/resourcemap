@@ -1,10 +1,6 @@
 module Field::Base
   extend ActiveSupport::Concern
 
-  # [
-  #   { :name => 'email', :css_class => 'lmessage' }
-  # ]
-
   BaseKinds = [
    { name: 'text', css_class: 'ltext', small_css_class: 'stext' },
    { name: 'numeric', css_class: 'lnumber', small_css_class: 'snumeric' },

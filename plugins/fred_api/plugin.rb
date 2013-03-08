@@ -1,4 +1,5 @@
 class FredApi::Plugin < Plugin
+  Field::IdentifierField
   field_type \
     name: 'identifier',
     css_class: 'lgovernment',

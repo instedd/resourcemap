@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Site::TireConcern do
   let!(:collection) { Collection.make }
   let!(:layer) { collection.layers.make }
-  let!(:beds_field) { layer.fields.make :code => 'beds' }
-  let!(:tables_field) { layer.fields.make :code => 'tables' }
+  let!(:beds_field) { layer.numeric_fields.make :code => 'beds' }
+  let!(:tables_field) { layer.numeric_fields.make :code => 'tables' }
   let!(:threshold) { collection.thresholds.make is_all_site: true, message_notification: "alert", conditions: [ {field: beds_field.es_code, op: 'lt', value: 10} ] }
 
   it "stores in index after create" do

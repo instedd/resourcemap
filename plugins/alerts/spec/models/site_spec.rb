@@ -5,7 +5,7 @@ describe Site do
   let!(:user) { User.make }
   let!(:collection) { user.create_collection Collection.make(selected_plugins: ['alerts']) }
   let!(:layer) { collection.layers.make }
-  let!(:beds_field) { layer.fields.make code: 'beds', kind: 'numeric' }
+  let!(:beds_field) { layer.numeric_fields.make code: 'beds' }
   let!(:threshold) { collection.thresholds.make is_all_site: true,
     is_all_condition: true,
     conditions: [ {field: beds_field.es_code, op: :gt, value: '10'} ],
@@ -23,8 +23,8 @@ describe Site do
   end
 
   describe "get notification numbers" do
-    let!(:telephone) { layer.fields.make code: 'tel', kind: 'phone' }
-    let!(:owner) { layer.fields.make code: 'owner', kind: 'user' }
+    let!(:telephone) { layer.phone_fields.make code: 'tel'}
+    let!(:owner) { layer.user_fields.make code: 'owner'}
     let!(:user_2) { User.make }
     let!(:alert) { collection.thresholds.make phone_notification: {members: [user.id], fields: [telephone.es_code], users: [owner.es_code]} }
     let!(:site) { collection.sites.make properties: {telephone.es_code => '123456', owner.es_code => user_2.email} }
@@ -77,8 +77,8 @@ describe Site do
   end
 
   describe "get notification emails" do
-    let!(:email) { layer.fields.make code: 'email', kind: 'email' }
-    let!(:owner) { layer.fields.make code: 'owner', kind: 'user' }
+    let!(:email) { layer.email_fields.make code: 'email'}
+    let!(:owner) { layer.user_fields.make code: 'owner' }
     let!(:user_2) { User.make }
     let!(:alert) { collection.thresholds.make email_notification: {members: [user.id], fields: [email.es_code], users: [owner.es_code]} }
     let!(:site) { collection.sites.make properties: {email.es_code => 'info@example.com', owner.es_code => user_2.email} }

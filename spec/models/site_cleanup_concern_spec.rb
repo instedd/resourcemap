@@ -4,9 +4,9 @@ describe Site::CleanupConcern do
   let!(:user) { User.make }
   let!(:collection) { user.create_collection Collection.make_unsaved }
   let!(:layer) { collection.layers.make user: user }
-  let!(:prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
-  let!(:beds) { layer.fields.make :kind => 'numeric', :code => 'beds' }
-  let!(:many) { layer.fields.make :kind => 'select_many', :code => 'many', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+  let!(:prop) { layer.select_one_fields.make :code => 'prop', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+  let!(:beds) { layer.numeric_fields.make :code => 'beds' }
+  let!(:many) { layer.select_many_fields.make :code => 'many', :config => {'options' => [{'code' => 'foo', 'label' => 'A glass of water'}, {'code' => 'bar', 'label' => 'A bottle of wine'}]} }
 
   it "converts properties values to int if the field is int" do
     site = collection.sites.make properties: {beds.es_code => '123'}

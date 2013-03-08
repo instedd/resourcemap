@@ -8,16 +8,16 @@ describe Api::CollectionsController do
   let!(:collection) { user.create_collection(Collection.make) }
   let!(:layer) { collection.layers.make }
 
-  let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
-  let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
-  let!(:yes_no) { layer.fields.make :code => 'yes_no', :kind => 'yes_no' }
-  let!(:select_one) { layer.fields.make :code => 'select_one', :kind => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-  let!(:select_many) { layer.fields.make :code => 'select_many', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:text) { layer.text_fields.make :code => 'text'}
+  let!(:numeric) { layer.numeric_fields.make :code => 'numeric' }
+  let!(:yes_no) { layer.yes_no_fields.make :code => 'yes_no'}
+  let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   config_hierarchy = [{ id: 'dad', name: 'Dad', sub: [{id: 'son', name: 'Son'}, {id: 'bro', name: 'Bro'}]}]
-  let!(:hierarchy) { layer.fields.make :code => 'hierarchy', :kind => 'hierarchy',  config: { hierarchy: config_hierarchy }.with_indifferent_access }
-  let!(:site_ref) { layer.fields.make :code => 'site', :kind => 'site' }
-  let!(:date) { layer.fields.make :code => 'date', :kind => 'date' }
-  let!(:director) { layer.fields.make :code => 'user', :kind => 'user' }
+  let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy',  config: { hierarchy: config_hierarchy }.with_indifferent_access }
+  let!(:site_ref) { layer.site_fields.make :code => 'site' }
+  let!(:date) { layer.date_fields.make :code => 'date' }
+  let!(:director) { layer.user_fields.make :code => 'user'}
 
   let!(:site2) {collection.sites.make :name => "Site A", properties: { hierarchy.es_code => 'bro' } }
 

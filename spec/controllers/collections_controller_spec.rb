@@ -43,8 +43,8 @@ describe CollectionsController do
       before(:each) do
         layer = collection.layers.make
 
-        text = layer.fields.make :code => 'text', :kind => 'text'
-        numeric = layer.fields.make :code => 'numeric', :kind => 'numeric'
+        text = layer.text_fields.make :code => 'text'
+        numeric = layer.numeric_fields.make :code => 'numeric'
 
         @site1 = collection.sites.make :name => "site1", :properties => {text.es_code => 'foo', numeric.es_code => 1 }
         @site2 = collection.sites.make :name => "osite2", :properties => {text.es_code => 'bar', numeric.es_code => 2 }

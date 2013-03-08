@@ -5,8 +5,8 @@ describe ImportWizard do
   let!(:collection) { user.create_collection Collection.make_unsaved }
   let!(:layer) { collection.layers.make }
 
-  let!(:phone) { layer.fields.make :code => 'phone', :kind => 'phone' }
-  let!(:email) { layer.fields.make :code => 'email', :kind => 'email' }
+  let!(:phone) { layer.phone_fields.make :code => 'phone' }
+  let!(:email) { layer.email_fields.make :code => 'email' }
 
   it "should update all property values" do
     site1 = collection.sites.make name: 'Foo old', properties: {

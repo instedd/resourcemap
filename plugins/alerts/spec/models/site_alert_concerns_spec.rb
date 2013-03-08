@@ -4,10 +4,10 @@ describe Site::AlertConcerns do
   let!(:user) { User.make }
   let!(:collection) { user.create_collection Collection.make }
   let!(:layer) { collection.layers.make }
-  let!(:bed_field) { layer.fields.make :code => 'bed' }
-  let!(:phone_field) { layer.fields.make :code => 'phone' } 
-  let!(:email_field) { layer.fields.make :code => 'email' } 
-  let!(:user_field) { layer.fields.make :code => 'user' } 
+  let!(:bed_field) { layer.numeric_fields.make :code => 'bed' }
+  let!(:phone_field) { layer.phone_fields.make :code => 'phone' } 
+  let!(:email_field) { layer.email_fields.make :code => 'email' } 
+  let!(:user_field) { layer.user_fields.make :code => 'user' } 
   let!(:site1) { collection.sites.make :properties => { bed_field.es_code => 15, phone_field.es_code => '123456', email_field.es_code => 'foo@example.com', user_field.es_code => user.email}} 
   let!(:user_2) { User.make }
   let!(:user_3) { User.make }

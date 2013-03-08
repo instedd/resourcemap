@@ -9,10 +9,10 @@ describe FredApiController do
 
   # We test only the field types supported by FRED API
   # Id fields are tested below
-  let!(:text) { layer.fields.make :code => 'manager', :kind => 'text' }
-  let!(:numeric) { layer.fields.make :code => 'numBeds', :kind => 'numeric' }
-  let!(:select_many) { layer.fields.make :code => 'services', :kind => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'XR', 'label' => 'X-ray'}, {'id' => 2, 'code' => 'OBG', 'label' => 'Gynecology'}]} }
-  let!(:date) { layer.fields.make :code => 'inagurationDay', :kind => 'date' }
+  let!(:text) { layer.text_fields.make :code => 'manager' }
+  let!(:numeric) { layer.numeric_fields.make :code => 'numBeds'}
+  let!(:select_many) { layer.select_many_fields.make :code => 'services', :config => {'options' => [{'id' => 1, 'code' => 'XR', 'label' => 'X-ray'}, {'id' => 2, 'code' => 'OBG', 'label' => 'Gynecology'}]} }
+  let!(:date) { layer.date_fields.make :code => 'inagurationDay'}
 
   before(:each) { sign_in user }
 
@@ -383,7 +383,7 @@ describe FredApiController do
     end
 
     it "should update identifiers" do
-      moh_id = layer.fields.make :code => 'moh-id', :kind => 'identifier', :config => {"context" => "MOH", "agency" => "DHIS"}
+      moh_id = layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS"}
 
       request.env["RAW_POST_DATA"] = {:identifiers => [
         {"agency"=> "DHIS",
@@ -493,8 +493,8 @@ describe FredApiController do
     end
 
     it "should create a facility with identifiers" do
-      moh_id = layer.fields.make :code => 'moh-id', :kind => 'identifier', :config => {"context" => "MOH", "agency" => "DHIS"}
-      moh_id2 = layer.fields.make :code => 'moh-id2', :kind => 'identifier', :config => {"context" => "MOH2", "agency" => "DHIS2"}
+      moh_id = layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS"}
+      moh_id2 = layer.identifier_fields.make :code => 'moh-id2', :config => {"context" => "MOH2", "agency" => "DHIS2"}
 
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :identifiers => [
         {"agency"=> "DHIS",
@@ -513,7 +513,7 @@ describe FredApiController do
   end
 
   describe "External Facility Identifiers" do
-    let!(:moh_id) {layer.fields.make :code => 'moh-id', :kind => 'identifier', :config => {"context" => "MOH", "agency" => "DHIS"} }
+    let!(:moh_id) {layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS"} }
 
      let!(:site_with_metadata) { collection.sites.make :properties => {
         moh_id.es_code => "53adf",

@@ -82,8 +82,8 @@ describe MapSearch do
 
   context "full text search" do
     let!(:layer) { collection.layers.make }
-    let!(:field_prop) { layer.fields.make :kind => 'select_one', :code => 'prop', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}, {'id' => 3, 'code' => 'baz', 'label' => 'COCO'}]} }
-    let!(:field_beds) { layer.fields.make :kind => 'numeric', :code => 'beds' }
+    let!(:field_prop) { layer.select_one_fields.make :code => 'prop', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}, {'id' => 3, 'code' => 'baz', 'label' => 'COCO'}]} }
+    let!(:field_beds) { layer.numeric_fields.make  :code => 'beds' }
     let!(:prop) { field_prop.es_code }
     let!(:beds) { field_beds.es_code }
     let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds => 8, prop => 1} }

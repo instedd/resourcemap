@@ -12,6 +12,10 @@ class Site < ActiveRecord::Base
 
   serialize :properties, Hash
 
+  def history_concern_foreign_key
+    self.class.name.foreign_key
+  end
+
   def extended_properties
     @extended_properties ||= Hash.new
   end

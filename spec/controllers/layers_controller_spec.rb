@@ -8,7 +8,7 @@ describe LayersController do
   let!(:collection) { user.create_collection(Collection.make) }
   let!(:layer) {Layer.make collection: collection, user: user}
   let!(:layer2) {Layer.make collection: collection, user: user}
-  let!(:numeric) {Field.make layer: layer, collection: layer.collection, kind: "numeric"}
+  let!(:numeric) {layer.numeric_fields.make }
 
   before(:each) {sign_in user}
 

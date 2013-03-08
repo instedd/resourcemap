@@ -83,7 +83,7 @@ describe User do
     it "should be able to view and update layer" do
       @collection.memberships.create(:user => @user, :admin => false)
       @collection.layer_memberships.create( :layer_id => @layer.id, :read => true, :user_id => @user.id, :write => true)
-      Field.create(:collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1, :kind => "numeric")
+      Field::NumericField.create :collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1
       @user.can_view?(@collection, @properties[0][:code]).should be_true
       @user.can_update?(@site, @properties).should be_true
     end

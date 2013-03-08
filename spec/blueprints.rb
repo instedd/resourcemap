@@ -47,15 +47,14 @@ Layer.blueprint do
   user { User.make }
 end
 
-Field.blueprint do
-  # First specify the layer, then the collection must always be that of the layer
-  layer
-  collection { layer.collection }
-
-  name
-  code { Sham.name }
-  kind {'text' }
-  ord { layer.next_field_ord }
+Field.subclasses.each do |field_kind|
+  field_kind.name.constantize.blueprint do
+    layer
+    collection { layer.collection }
+    name
+    code { Sham.name }
+    ord { layer.next_field_ord }
+  end
 end
 
 Activity.blueprint do

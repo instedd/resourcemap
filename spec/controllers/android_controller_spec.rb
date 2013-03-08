@@ -7,8 +7,8 @@ describe AndroidController do
   let!(:collection2) { user.collections.make }
   let!(:layer) { collection1.layers.make }
 
-  let!(:text) { layer.fields.make :code => 'text', :kind => 'text' }
-  let!(:numeric) { layer.fields.make :code => 'numeric', :kind => 'numeric' }
+  let!(:text) { layer.text_fields.make :code => 'text' }
+  let!(:numeric) { layer.numeric_fields.make :code => 'numeric'}
 
   before(:each) {sign_in user}
 

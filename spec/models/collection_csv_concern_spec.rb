@@ -26,7 +26,7 @@ describe Collection::CsvConcern do
 
   it "should print date as MM/DD/YYYY" do
     layer = collection.layers.make
-    date = layer.fields.make :code => 'date', :kind => 'date'
+    date = layer.date_fields.make :code => 'date'
     collection.memberships.make :user => user
     site = collection.sites.make :properties => {date.es_code => '1985-10-19T03:00:00.000Z'}
 
@@ -44,9 +44,9 @@ describe Collection::CsvConcern do
       layer_invisible = collection.layers.make
       layer_writable = collection.layers.make
 
-      date_visible = layer_visible.fields.make :code => 'date_visible', :kind => 'date'
-      date_invisible = layer_invisible.fields.make :code => 'date_invisible', :kind => 'date'
-      date_writable = layer_writable.fields.make :code => 'date_writable', :kind => 'date'
+      date_visible = layer_visible.date_fields.make :code => 'date_visible'
+      date_invisible = layer_invisible.date_fields.make :code => 'date_invisible'
+      date_writable = layer_writable.date_fields.make :code => 'date_writable'
 
       membership = collection.memberships.make :user => user2
       membership.admin = false

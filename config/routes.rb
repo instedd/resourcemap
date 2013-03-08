@@ -64,7 +64,6 @@ ResourceMap::Application.routes.draw do
        get 'guess_columns_spec'
        post 'execute'
        post 'validate_sites_with_columns'
-       post 'validate_sites_with_column'
        get 'get_visible_sites/:page' => 'import_wizards#get_visible_sites'
      end
 

@@ -24,31 +24,6 @@ class ImportWizard
       validated_data
     end
 
-    def validate_sites_with_column(user, collection, column_spec)
-      column_spec = column_spec.with_indifferent_access
-      csv = CSV.read file_for(user, collection)
-      csv[0].map!{|r| r.strip}
-      column_index = csv[0].index(column_spec[:header])
-      csv_column = csv[1 .. -1].transpose[column_index]
-
-      sites = csv_column.map{|csv_field_value| {value: csv_field_value}}
-
-      #TODO: Refactor this duplicated code
-      sites_errors = {}
-      sites_errors[:hierarchy_field_found] = []
-      sites_errors[:usage_missing] = []
-      sites_errors[:data_errors] = []
-
-      #At this point we asume that no columns with duplicated usage or columns with duplicated/existing code or label are found in column_specs.
-      #This validations are performed client side
-
-      sites_errors[:hierarchy_field_found] << column_index if column_spec[:use_as] == 'new_field' && column_spec[:kind] == 'hierarchy'
-      errors_for_column = validate_column(user, collection, column_spec, collection.fields, csv_column, column_index)
-      sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
-
-      { sites: sites, errors: sites_errors}
-    end
-
     def calculate_errors(user, collection, columns_spec, csv_columns, header)
       #Add index to each column spec
       columns_spec.each_with_index do |column_spec, column_index|

@@ -100,7 +100,11 @@ describe Activity do
 
       field = layer.fields.last
 
-      layer.update_attributes! fields_attributes: [{id: field.id, code: 'one', name: 'One', kind: 'select_one', config: {'options' => [{'code' => '2', 'label' => 'Two'}]}, ord: 1}]
+      begin
+        layer.update_attributes! fields_attributes: [{id: field.id, code: 'one', name: 'One', kind: 'select_one', config: {'options' => [{'code' => '2', 'label' => 'Two'}]}, ord: 1}]
+      rescue Exception => ex
+        puts ex.backtrace
+      end
 
       assert_activity 'layer', 'changed',
         'collection_id' => collection.id,
