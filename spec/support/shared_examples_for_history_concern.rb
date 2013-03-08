@@ -86,12 +86,7 @@ shared_examples "it includes History::Concern" do
 
     date = '2011-01-01 10:00:00 -0500'.to_time
 
-    histories_class = if respond_to history_concern_histories
-      history_concern_histories
-    else
-      "#{history_concern_class}_histories"
-    end
-    histories = collection.send(histories_class.downcase).at_date(date)
+    histories = collection.send(history_concern_histories.downcase).at_date(date)
     histories.count.should eq(2)
   end
 
@@ -99,13 +94,6 @@ shared_examples "it includes History::Concern" do
     model.attributes.keys.each do |key|
       model[key].should eq(history[key]) unless ['id', 'created_at', 'updated_at'].include? key
     end
-
-    foreign_key = if respond_to history_concern_foreign_key
-      history_concern_class_foreign_key()
-    else
-      model.class.name.foreign_key
-    end
-
-    history[foreign_key].should eq(model.id)
+    history[history_concern_foreign_key].should eq(model.id)
   end
 end
