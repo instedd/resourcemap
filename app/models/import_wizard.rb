@@ -332,7 +332,9 @@ class ImportWizard
       validated_csv_column = []
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
-          validate_column_value(column_spec, csv_field_value, field, collection)
+          if column_spec[:use_as].to_sym == :existing_field || column_spec[:use_as].to_sym == :new_field
+            validate_column_value(column_spec, csv_field_value, field, collection)
+          end
         rescue => ex
           field_type = if field then field.kind else column_spec[:kind] end
           description = error_description_for_type(field, column_spec, field_type)

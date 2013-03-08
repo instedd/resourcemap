@@ -82,7 +82,6 @@ onImportWizard ->
 
     validateSites:(modified_column) =>
       column = modified_column.toJSON()
-      # Single column valiation is already implemented server side.
       $.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_columns.json", {columns: JSON.stringify(@columns())}, (preview) =>
         window.model.loadSites(preview)
 

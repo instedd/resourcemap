@@ -53,7 +53,7 @@ describe ImportWizard do
     site2.name.should eq('Bar old')
     site2.properties.should eq({phone.es_code => '855123456789'})
   end
-
+  
   it "should delete all property values" do
     site1 = collection.sites.make name: 'Foo old', properties: {
       phone.es_code => '855123456789',
@@ -96,5 +96,7 @@ describe ImportWizard do
     site2.name.should eq('Bar old')
     site2.properties.should eq({phone.es_code => '855123456789'})
   end
+
+  
 
 end

@@ -1033,4 +1033,45 @@ describe ImportWizard do
     end
   end
 
+  it "should not show errors if usage is ignore" do
+
+   csv_string = CSV.generate do |csv|
+     csv << ['numeric ']
+     csv << ['11']
+     csv << ['invalid11']
+   end
+
+   ImportWizard.import user, collection, csv_string
+
+   columns_spec = [{header: 'numeric', use_as: 'ignore', kind: 'ignore'}]
+   validated_sites = (ImportWizard.validate_sites_with_columns user, collection, columns_spec)
+   
+   sites_preview = validated_sites[:sites]
+   sites_preview.should  == [[{:value=>"11"}], [{:value=>"invalid11"}]]
+   sites_errors = validated_sites[:errors]
+
+   sites_errors[:data_errors].should == []
+
+   ImportWizard.delete_file(user, collection)
+ end
+
+  it "should not generate a data error when updating a default property" do 
+    site1 = collection.sites.make name: 'Foo old'
+
+    csv_string = CSV.generate do |csv|
+      csv << ['resmap-id', 'Name']
+      csv << ["#{site1.id}", 'Foo new']
+    end
+
+    specs = [
+      {header: 'resmap-id', use_as: 'id', kind: 'id'},
+      {header: 'Name', use_as: 'name', kind: 'name'}]
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+    sites_errors[:data_errors].should == []
+
+    ImportWizard.delete_file(user, collection)
+  end
 end
