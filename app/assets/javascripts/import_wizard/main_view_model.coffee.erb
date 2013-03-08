@@ -4,7 +4,7 @@ onImportWizard ->
 
   class @MainViewModel
     initialize: (collectionId, layers, columns, field_kinds) ->
-      @field_kinds = field_kinds.filter (k) -> k != 'hierarchy'
+      @field_kinds = _.filter field_kinds, (k) -> k != 'hierarchy'
 
       @collectionId = collectionId
       @layers = $.map(layers, (x) -> new Layer(x))
