@@ -38,6 +38,11 @@ class Field < ActiveRecord::Base
     collection.update_mapping
   end
 
+  # inheritance_column added to json
+  def serializable_hash(options = {})
+    { "kind" => kind }.merge super
+  end
+
   class << self
     def new_with_cast(*field_data, &b)
       hash = field_data.first
@@ -76,9 +81,9 @@ class Field < ActiveRecord::Base
   end
 
   def assign_attributes(new_attributes, options = {})
-    if (new_kind = (new_attributes["kind"] || new_attributes[:kind])) 
+    if (new_kind = (new_attributes["kind"] || new_attributes[:kind]))
       if new_kind == kind
-        new_attributes.delete "kind"  
+        new_attributes.delete "kind"
         new_attributes.delete :kind
       else
         raise "Cannot change field's kind"
