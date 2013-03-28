@@ -98,7 +98,9 @@ class FredApiController < ApplicationController
     search.updated_since(params[:updatedSince]) if params[:updatedSince]
 
     # Query by Extended Properties
-    search.where params.except(*except_params)
+    params_query = params.except(*except_params)
+    property_params = remove_prefix_form_properties_params(params_query)
+    search.where property_params
 
     # Query by identifiers
     if params["identifiers.context"] && params["identifiers.id"] && params["identifiers.agency"]
@@ -129,6 +131,15 @@ class FredApiController < ApplicationController
   end
 
   private
+
+  # Remove 'properties.' prefix form params
+  def remove_prefix_form_properties_params(params_query)
+    res = {}
+    params_query.each_pair do |key, val| 
+      res[key.gsub(/properties./, "")] = val 
+    end
+    res
+  end
 
   def find_facility_and_apply_fred_format(id)
     search = collection.new_search current_user_id: current_user.id
