@@ -96,23 +96,6 @@ class Field < ActiveRecord::Base
     'field_id'
   end
 
-  def hierarchy_options_codes
-    hierarchy_options.map {|option| option[:id]}
-  end
-
-  def hierarchy_options
-    options = []
-    config['hierarchy'].each do |option|
-      add_option_to_options(options, option)
-    end
-    options
-  end
-
-  def find_hierarchy_id_by_name(value)
-    option = hierarchy_options.find {|opt| opt[:name] == value}
-    option[:id] if option
-  end
-
   private
 
   def add_option_to_options(options, option)

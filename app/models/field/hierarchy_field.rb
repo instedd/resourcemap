@@ -20,6 +20,23 @@ class Field::HierarchyField < Field
     end
   end
 
+  def hierarchy_options_codes
+    hierarchy_options.map {|option| option[:id]}
+  end
+
+  def hierarchy_options
+    options = []
+    config['hierarchy'].each do |option|
+      add_option_to_options(options, option)
+    end
+    options
+  end
+
+  def find_hierarchy_id_by_name(value)
+    option = hierarchy_options.find {|opt| opt[:name] == value}
+    option[:id] if option
+  end
+
 	private
 
 	def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
