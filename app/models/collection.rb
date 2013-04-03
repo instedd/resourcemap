@@ -3,6 +3,8 @@ class Collection < ActiveRecord::Base
   include Collection::GeomConcern
   include Collection::TireConcern
   include Collection::PluginsConcern
+  include Collection::ImportLayersSchemaConcern
+
 
   validates_presence_of :name
 
