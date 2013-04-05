@@ -24,6 +24,15 @@ class Field::HierarchyField < Field
     hierarchy_options.map {|option| option[:id]}
   end
 
+  def hierarchy_options_names
+    hierarchy_options.map {|option| option[:name]}
+  end
+
+  def hierarchy_options_names_samples
+    hierarchy_options_names.take(3).join(", ")
+  end
+
+
   def hierarchy_options
     options = []
     config['hierarchy'].each do |option|

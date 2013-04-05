@@ -769,9 +769,9 @@ describe ImportWizard do
     data_errors[2][:type].should eq('option values')
     data_errors[2][:rows].should eq([1, 2])
 
-    data_errors[3][:description].should eq("Some option values in column 5 don't exist.")
+    data_errors[3][:description].should eq("Some values in column 5 don't exist in the corresponding hierarchy.")
     data_errors[3][:column].should eq(4)
-    data_errors[3][:type].should eq('option values')
+    data_errors[3][:type].should eq('values that can be found in the defined hierarchy')
     data_errors[3][:rows].should eq([1, 2])
 
     data_errors[4][:description].should eq("Some site ids in column 6 don't match any existing site in this collection.")
@@ -800,9 +800,9 @@ describe ImportWizard do
     email_field = layer.email_fields.make :code => 'email'
 
     csv_string = CSV.generate do |csv|
-      csv << ['numeric', 'date', 'email']
-      csv << ['11', '12/26/1988', 'email@mail.com']
-      csv << ['invalid11', '23/1/234', 'email@ma@il.com']
+      csv << ['numeric', 'date', 'email', 'hierarchy']
+      csv << ['11', '12/26/1988', 'email@mail.com', 'Dad']
+      csv << ['invalid11', '23/1/234', 'email@ma@il.com', 'invalid']
     end
 
     ImportWizard.import user, collection, csv_string
@@ -814,7 +814,7 @@ describe ImportWizard do
     data_errors[0][:example].should eq("Values must be integers.")
     data_errors[1][:example].should eq("Example of valid date: 1/25/2013.")
     data_errors[2][:example].should eq("Example of valid email: myemail@resourcemap.com.")
-
+    data_errors[3][:example].should eq("Some valid values for this hierarchy are: Dad, Son, Bro.")
   end
 
   it "should get sites & errors for invalid existing fields if field_id is string" do

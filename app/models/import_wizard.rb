@@ -348,7 +348,7 @@ class ImportWizard
         if error_type[0]
           # For the moment we only have one kind of error for each column.
           field_type = if field then field.kind else column_spec[:kind] end
-          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: type_value(field_type), example: hint_for_type(field_type) }
+          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: type_value(field_type), example: hint_for_type(field_type, field) }
         end
       end
       grouped_errors
@@ -358,8 +358,10 @@ class ImportWizard
       case field_type
         when 'numeric'
           "numeric values"
-        when 'select_one', 'select_many', 'hierarchy'
+        when 'select_one', 'select_many'
           "option values"
+        when 'hierarchy'
+          "values that can be found in the defined hierarchy"
         when 'date'
           "dates"
         when 'user', 'email'
@@ -369,8 +371,10 @@ class ImportWizard
       end
     end
 
-    def hint_for_type(field_type)
+    def hint_for_type(field_type, field)
       case field_type
+      when 'hierarchy'
+        if field then "Some valid values for this hierarchy are: #{field.hierarchy_options_names_samples}." end
       when 'numeric'
         "Values must be integers."
       when 'date'
@@ -385,8 +389,10 @@ class ImportWizard
       description = case field_type
       when 'site'
         "Some site ids in column #{column_index + 1} don't match any existing site in this collection."
-      when 'select_many', 'select_one', 'hierarchy'
+      when 'select_many', 'select_one'
         "Some option values in column #{column_index + 1} don't exist."
+      when 'hierarchy'
+        "Some values in column #{column_index + 1} don't exist in the corresponding hierarchy."
       when 'user'
         "Some email addresses in column #{column_index + 1} don't belong to any member of this collection."
       else
