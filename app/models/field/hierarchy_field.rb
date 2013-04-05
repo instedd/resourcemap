@@ -37,6 +37,11 @@ class Field::HierarchyField < Field
     option[:id] if option
   end
 
+  def find_hierarchy_name_by_id(value)
+    option = hierarchy_options.find {|opt| opt[:id] == value}
+    option[:name] if option
+  end
+
 	private
 
 	def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])

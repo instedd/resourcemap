@@ -400,7 +400,7 @@ describe ImportWizard do
     sites[1].properties.should eq({select_many.es_code => [2, 4]})
   end
 
-  it "should update hierarchy fields in bulk update" do
+  it "should update hierarchy fields in bulk update using name" do
      csv_string = CSV.generate do |csv|
         csv << ['Name', 'Column']
         csv << ['Foo', 'Son']
@@ -423,8 +423,33 @@ describe ImportWizard do
 
       sites[1].name.should eq('Bar')
       sites[1].properties.should eq({hierarchy.es_code => "101"})
-
   end
+
+  it "should update hierarchy fields in bulk update using id" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Column']
+      csv << ['Foo', '100']
+      csv << ['Bar', '101']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: hierarchy.id},
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    collection.layers.all.should eq([layer])
+    sites = collection.sites.all
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({hierarchy.es_code => "100"})
+
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({hierarchy.es_code => "101"})
+  end
+
 
   it "imports with name and existing date property" do
      csv_string = CSV.generate do |csv|

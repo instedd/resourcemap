@@ -41,6 +41,7 @@ module Field::ValidationConcern
     if kind == 'hierarchy'
       if use_codes_instead_of_es_codes
         value_id = find_hierarchy_id_by_name(value)
+        value_id = value if value_id.nil? && !find_hierarchy_name_by_id(value).nil?
       else
         value_id = value unless !hierarchy_options_codes.include? value
       end
