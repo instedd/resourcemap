@@ -4,7 +4,8 @@
 
 .tabsline
   #thresholds-main.hidden-until-loaded{ ko(css: { ready: :isReady }) }
-    %h2 Alert
+    - if collection_admin? 
+      %h2 Alert
     <!-- ko foreach :thresholds -->
     <!-- ko if: $data != $root.currentThreshold() -->
     .box.grey.w60
@@ -202,11 +203,12 @@
     %br/
     <!-- /ko -->
 
-    <!-- ko if: fields().length == 0 -->
-    Please
-    %strong add Layers
-    first before managing your thresholds.
-    <!-- /ko -->
+    - if collection_admin? 
+      <!-- ko if: fields().length == 0 -->
+      Please
+      %strong add Layers
+      first before managing your thresholds.
+      <!-- /ko -->
 
     -# New threshold link
     <!-- ko if: fields().length -->
