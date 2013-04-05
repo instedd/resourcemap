@@ -38,6 +38,11 @@ class Field < ActiveRecord::Base
     collection.update_mapping
   end
 
+  # inheritance_column added to json
+  def serializable_hash(options = {})
+    { "kind" => kind }.merge super
+  end
+
   class << self
     def new_with_cast(*field_data, &b)
       hash = field_data.first
@@ -76,9 +81,9 @@ class Field < ActiveRecord::Base
   end
 
   def assign_attributes(new_attributes, options = {})
-    if (new_kind = (new_attributes["kind"] || new_attributes[:kind])) 
+    if (new_kind = (new_attributes["kind"] || new_attributes[:kind]))
       if new_kind == kind
-        new_attributes.delete "kind"  
+        new_attributes.delete "kind"
         new_attributes.delete :kind
       else
         raise "Cannot change field's kind"
@@ -89,23 +94,6 @@ class Field < ActiveRecord::Base
 
   def history_concern_foreign_key
     'field_id'
-  end
-
-  def hierarchy_options_codes
-    hierarchy_options.map {|option| option[:id]}
-  end
-
-  def hierarchy_options
-    options = []
-    config['hierarchy'].each do |option|
-      add_option_to_options(options, option)
-    end
-    options
-  end
-
-  def find_hierarchy_id_by_name(value)
-    option = hierarchy_options.find {|opt| opt[:name] == value}
-    option[:id] if option
   end
 
   private

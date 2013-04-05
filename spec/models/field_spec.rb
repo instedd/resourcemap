@@ -36,6 +36,12 @@ describe Field do
     end
   end
 
+  it 'should include kind in json' do
+    field = Field::SelectOneField.make config: {options: [{code: 'foo', label: 'bar'}]}.with_indifferent_access
+    json = JSON.parse field.to_json
+    json["kind"].should eq('select_one')
+  end
+
   describe "sample value" do
     it "for text are strings" do
       field = Field::TextField.make
