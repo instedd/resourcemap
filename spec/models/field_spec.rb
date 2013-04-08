@@ -85,8 +85,7 @@ describe Field do
     it "for hierarchy is a valid item" do
       config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}]}]
       field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
-      # This isn't right: if you change the config_hierarchy, the next line has to be changed as well
-      [0, 1].should include field.sample_value
+      ['root', 'child'].should include field.sample_value
     end
 
     it "for email and phone is a string" do

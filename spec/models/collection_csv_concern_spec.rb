@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe Collection::CsvConcern do
   let(:user) { User.make }
-  let(:collection) { Collection.make }
+  let(:collection) { user.create_collection Collection.make }
+  let!(:layer) { collection.layers.make }
+
 
   it "imports csv" do
     collection.import_csv user, %(
@@ -25,14 +27,22 @@ describe Collection::CsvConcern do
   end
 
   it "should print date as MM/DD/YYYY" do
-    layer = collection.layers.make
     date = layer.date_fields.make :code => 'date'
-    collection.memberships.make :user => user
     site = collection.sites.make :properties => {date.es_code => '1985-10-19T03:00:00.000Z'}
 
     csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
 
     csv[1][4].should eq('10/19/1985')
+  end
+
+  it "should download hiearchy value as Name" do
+    config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+ 
+    site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
+
+    csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
+    csv[1][4].should eq('Son')
   end
 
   describe "generate sample csv" do

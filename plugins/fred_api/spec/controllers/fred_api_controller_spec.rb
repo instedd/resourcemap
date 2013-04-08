@@ -102,15 +102,31 @@
         json[1]["name"].should eq(site1.name)
       end
 
-      it 'should limit the number of facilities returned and the offset for the query' do
-        get :facilities, format: 'json', limit: 1, collection_id: collection.id
-        json = (JSON.parse response.body)["facilities"]
-        json.length.should eq(1)
-        json[0]["name"].should eq(site1.name)
-        get :facilities, format: 'json', limit: 1, offset: 1, collection_id: collection.id
-        json = (JSON.parse response.body)["facilities"]
-        json.length.should eq(1)
-        json[0]["name"].should eq(site2.name)
+      describe 'limit' do
+        (3..100).each do |i|
+          let!("site#{i}".to_sym) { collection.sites.make name: "Site C#{i}", properties:{ date.es_code => "2012-10-26T00:00:00Z"} }
+        end
+
+        it 'should limit the number of facilities returned and the offset for the query' do
+          get :facilities, format: 'json', limit: 1, collection_id: collection.id
+          json = (JSON.parse response.body)["facilities"]
+          json.length.should eq(1)
+          json[0]["name"].should eq(site1.name)
+          get :facilities, format: 'json', limit: 1, offset: 1, collection_id: collection.id
+          json = (JSON.parse response.body)["facilities"]
+          json.length.should eq(1)
+          json[0]["name"].should eq(site2.name)
+        end
+
+        it 'should not limit the number of facilities when limit=off' do
+
+
+          get :facilities, format: 'json', limit: "off", collection_id: collection.id
+          json = (JSON.parse response.body)["facilities"]
+
+          # 98 sites created inside this test case, and 2 under "query list of facilities" describe scope
+          json.length.should eq(100)
+        end
       end
 
       it 'should select only default fields' do
@@ -445,7 +461,7 @@
         response.status.should eq(400)
       end
 
-      # Resourcemap do not consider sites with the same name as duplicated
+      # Resourcemap does not consider sites with the same name as duplicated
       pending "should return 409 for facilities with duplicated names" do
         site = collection.sites.create :name => "Duplicated name"
         request.env["RAW_POST_DATA"] = { name: "Duplicated name" }.to_json

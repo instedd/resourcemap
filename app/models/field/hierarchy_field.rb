@@ -24,6 +24,15 @@ class Field::HierarchyField < Field
     hierarchy_options.map {|option| option[:id]}
   end
 
+  def hierarchy_options_names
+    hierarchy_options.map {|option| option[:name]}
+  end
+
+  def hierarchy_options_names_samples
+    hierarchy_options_names.take(3).join(", ")
+  end
+
+
   def hierarchy_options
     options = []
     config['hierarchy'].each do |option|
@@ -35,6 +44,11 @@ class Field::HierarchyField < Field
   def find_hierarchy_id_by_name(value)
     option = hierarchy_options.find {|opt| opt[:name] == value}
     option[:id] if option
+  end
+
+  def find_hierarchy_name_by_id(value)
+    option = hierarchy_options.find {|opt| opt[:id] == value}
+    option[:name] if option
   end
 
 	private
