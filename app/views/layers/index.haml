@@ -117,7 +117,8 @@
             %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'}), title: 'Move layer down'}
           / /ko
           / ko if: !$root.savingLayer() && !$root.currentLayer()
-          %button.fdelete{ko(click: '$root.deleteLayer'), title: 'Remove layer'}
+          - if !current_snapshot && collection_admin?
+            %button.fdelete{ko(click: '$root.deleteLayer'), title: 'Remove layer'}
           / /ko
 
       .middlebuttons
