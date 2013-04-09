@@ -589,6 +589,19 @@ describe FredApiController do
       json['identifiers'][1].should eq({"context" => "MOH2", "agency" => "DHIS2", "id"=> "124"})
     end
 
+    it "should return descriptive error if an invalid identifier field supplied" do
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :identifiers => [
+        {"agency"=> "DHIS",
+        "context"=>"MOH",
+        "id"=> "123"}
+      ] }.to_json
+      
+      post :create_facility, collection_id: collection.id
+      response.status.should eq(400)
+      json = JSON.parse response.body
+      json["message"].should eq("Invalid Parameters: Cannot find Identifier Field with context equal to 'MOH' and agency equal to 'DHIS' in Collection's Layers.")
+    end
+
     it "should create a facility with uuid" do 
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :uuid => "c57f5866-f8cb-44b0-8fa5-109aa14ed822" }.to_json
       post :create_facility, collection_id: collection.id

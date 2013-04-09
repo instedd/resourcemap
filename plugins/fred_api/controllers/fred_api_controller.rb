@@ -174,6 +174,11 @@ class FredApiController < ApplicationController
     identifiers_fields = collection.fields.find_all{|f| f.identifier?}
     identifiers.each do |identifier|
       field = identifiers_fields.find{|f| f.context == identifier["context"] && f.agency == identifier["agency"] }
+
+      if field.nil?
+        raise "Invalid Parameters: Cannot find Identifier Field with context equal to '#{identifier["context"]}' and agency equal to '#{identifier["agency"]}' in Collection's Layers."
+      end
+
       if field
         validated_value = field.apply_format_update_validation(identifier["id"], true, collection)
         validated_properties["#{field.es_code}"] = validated_value
