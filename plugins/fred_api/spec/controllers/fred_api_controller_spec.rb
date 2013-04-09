@@ -558,7 +558,16 @@ describe FredApiController do
       json["properties"]['numBeds'].should eq(55)
       json["properties"]['services'].should eq(['XR', 'OBG'])
       json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+    end
 
+    it "should return descriptive error if an invalid property code is supplied" do
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :properties => {
+        "invalid" => "Mrs. Liz",
+      } }.to_json
+      post :create_facility, collection_id: collection.id
+      response.status.should eq(400)
+      json = JSON.parse response.body
+      json["message"].should eq("Invalid Parameters: Cannot find Field with code equal to 'invalid' in Collection's Layers.")
     end
 
     it "should create a facility with identifiers" do
@@ -596,6 +605,7 @@ describe FredApiController do
       json["message"].should eq("Validation failed: Uuid is not valid")
       (Site.find_by_name 'Kakamega HC').should be_nil
     end
+
   end
 
   describe "External Facility Identifiers" do

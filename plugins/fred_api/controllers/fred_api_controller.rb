@@ -161,8 +161,14 @@ class FredApiController < ApplicationController
     validated_properties = {}
     properties.each_pair do |code, value|
       field = fields.find_by_code code
+
+      if field.nil?
+        raise "Invalid Parameters: Cannot find Field with code equal to '#{code}' in Collection's Layers."
+      end
+
       validated_value = field.apply_format_update_validation(value, true, collection)
       validated_properties["#{field.es_code}"] = validated_value
+
     end
 
     identifiers_fields = collection.fields.find_all{|f| f.identifier?}
