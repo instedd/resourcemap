@@ -8,6 +8,7 @@ module Site::IndexUtils
       id: site_id,
       name: site.name,
       id_with_prefix: site.id_with_prefix,
+      uuid: site.uuid,
       name_not_analyzed: site.name,
       type: :site,
       properties: site.properties,
@@ -37,6 +38,7 @@ module Site::IndexUtils
       properties: {
         name: { type: :string },
         id_with_prefix: { type: :string },
+        uuid: { type: :string, index: :not_analyzed },
         name_not_analyzed: { type: :string, index: :not_analyzed },
         location: { type: :geo_point },
         lat_analyzed: { type: :string },

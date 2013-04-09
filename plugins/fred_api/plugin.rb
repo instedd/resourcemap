@@ -16,6 +16,11 @@ class FredApi::Plugin < Plugin
     class: Search,
     with: Search::FredApiConcern
 
+  extend_model \
+    class: Site,
+    with: Site::UuidConcern
+
+
   routes {
     match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#show_facility', :via => :get, as: :show_facility
     match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#facilities', :via => :get, as: :facilities

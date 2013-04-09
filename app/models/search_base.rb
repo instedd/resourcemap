@@ -24,6 +24,10 @@ module SearchBase
     @search.filter :term, name_not_analyzed: name
   end
 
+  def uuid(uuid)
+    @search.filter :term, uuid: uuid
+  end
+
   def eq(field, value)
     validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
     query_key = field.es_code

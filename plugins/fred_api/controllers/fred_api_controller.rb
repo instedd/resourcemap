@@ -4,11 +4,11 @@ class FredApiController < ApplicationController
   before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :delete_facility, :update_facility]
   before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility, :update_facility]
 
-  around_filter :rescue_with_status_codes
-
-  rescue_from ActiveRecord::RecordNotFound do |x|
-    render json: { code: "404 Not Found", message: "Resource not found" }, :status => 404, :layout => false
-  end
+  rescue_from Exception, :with => :default_rescue
+  rescue_from RuntimeError, :with => :rescue_record_invalid
+  rescue_from ActionController::RoutingError, :with => :rescue_record_not_found
+  rescue_from ActiveRecord::RecordNotFound, :with => :rescue_record_not_found
+  rescue_from ActiveRecord::RecordInvalid, :with => :rescue_record_invalid
 
   expose(:site)
   expose(:collection) { Collection.find params[:collection_id] }
@@ -17,12 +17,6 @@ class FredApiController < ApplicationController
     if !collection.sites.include? site
       render json: { message: "Facility #{site.id} do not belong to collection #{collection.id}"}, status: 409
     end
-  end
-
-  def rescue_with_status_codes
-    yield
-  rescue => ex
-    render json: { message: ex.message}, status: 422
   end
 
   def show_facility
@@ -42,6 +36,10 @@ class FredApiController < ApplicationController
       render  json: { message: "Invalid Paramaters: The id, url, createdAt, and updatedAt core properties cannot be changed by the client."}, status: 400
       return
     end
+    if facility_params.include? "uuid"
+      render  json: { message: "Invalid Paramaters:  The UUID for a facility should remain constant and should never be changed."}, status: 400
+      return
+    end
     if facility_params.include? "active"
       facility_params.delete("active")
     end
@@ -53,7 +51,8 @@ class FredApiController < ApplicationController
   end
 
   def create_facility
-    facility_params = JSON.parse request.raw_post
+    raw_post = request.raw_post.empty? ? "{}" : request.raw_post
+    facility_params = JSON.parse raw_post
     if ["id","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
       render  json: { message: "Invalid Paramaters: The id, url, createdAt, and updatedAt core properties cannot be changed by the client."}, status: 400
       return
@@ -85,11 +84,13 @@ class FredApiController < ApplicationController
     end
 
     #Perform queries
-    except_params = [:action, :controller, :format, :id, :collection_id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince, "identifiers.id", "identifiers.agency", "identifiers.context"]
+    except_params = [:action, :controller, :format, :id, :collection_id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince, "identifiers.id", "identifiers.agency", "identifiers.context", :uuid]
 
     # Query by Core Properties
     search.name(params[:name]) if params[:name]
     search.id(params[:id]) if params[:id]
+    search.uuid(params[:uuid]) if params[:uuid]
+
     search.radius(params[:coordinates][1], params[:coordinates][0], 1) if params[:coordinates]
     search.updated_at(params[:updatedAt]) if params[:updatedAt]
     search.created_at(params[:createdAt]) if params[:createdAt]
@@ -216,6 +217,7 @@ class FredApiController < ApplicationController
     obj = {}
     obj[:id] = source['id'].to_s
     obj[:name] = source['name']
+    obj[:uuid] = source['uuid']
 
     obj[:createdAt] = format_time_to_iso_string(source['created_at'])
     obj[:updatedAt] = format_time_to_iso_string(source['updated_at'])
@@ -238,5 +240,17 @@ class FredApiController < ApplicationController
   def format_time_to_iso_string(es_format_date_sting)
     date = Site.parse_time(es_format_date_sting).utc
     date.iso8601
+  end
+
+  def rescue_record_invalid(ex)
+    render json: {code: "400 Record Invalid", message: "#{ex.message}"}, :status => 400, :layout => false
+  end
+
+  def default_rescue(ex)
+    render json: { message: ex.message}, status: 500
+  end
+
+  def rescue_record_not_found(ex)
+    render json: { code: "404 Not Found", message: "Resource not found" }, :status => 404, :layout => false
   end
 end
