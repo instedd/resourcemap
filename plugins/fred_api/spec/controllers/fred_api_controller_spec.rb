@@ -453,7 +453,7 @@ describe FredApiController do
       put :update_facility, collection_id: collection.id, id: site.id
       response.status.should eq(400)
       json = JSON.parse response.body
-      json["message"].should eq("Invalid Paramaters:  The UUID for a facility should remain constant and should never be changed.")
+      json["message"].should eq("Invalid Paramaters: The id, uuid, url, createdAt and updatedAt core properties cannot be changed by the client.")
       #check that site uuid does not change
       updated_site = Site.find site.id
       updated_site.uuid.should eq(prev_uuid)

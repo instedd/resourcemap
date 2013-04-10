@@ -30,19 +30,13 @@ class FredApiController < ApplicationController
   end
 
   def update_facility
-    facility_params = JSON.parse request.raw_post
+    raw_post = request.raw_post.empty? ? "{}" : request.raw_post
+    facility_params = JSON.parse raw_post
 
-    if ["id","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
-      render  json: { message: "Invalid Paramaters: The id, url, createdAt, and updatedAt core properties cannot be changed by the client."}, status: 400
-      return
-    end
-    if facility_params.include? "uuid"
-      render  json: { message: "Invalid Paramaters:  The UUID for a facility should remain constant and should never be changed."}, status: 400
-      return
-    end
-    if facility_params.include? "active"
-      facility_params.delete("active")
-    end
+    if ["id","uuid","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
+      render  json: { message: "Invalid Paramaters: The id, uuid, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400
+      return  
+    end 
     validated_facility = validate_site_params(facility_params)
     site.user = current_user
     site.properties_will_change!
@@ -54,11 +48,8 @@ class FredApiController < ApplicationController
     raw_post = request.raw_post.empty? ? "{}" : request.raw_post
     facility_params = JSON.parse raw_post
     if ["id","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
-      render  json: { message: "Invalid Paramaters: The id, url, createdAt, and updatedAt core properties cannot be changed by the client."}, status: 400
+      render  json: { message: "Invalid Paramaters: The id, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400
       return
-    end
-    if facility_params.include? "active"
-      facility_params.delete("active")
     end
     validated_facility = validate_site_params(facility_params)
     facility = collection.sites.create!(validated_facility.merge(user: current_user))
@@ -154,6 +145,11 @@ class FredApiController < ApplicationController
   end
 
   def validate_site_params(facility_param)
+
+    if facility_param.include? "active"
+      facility_param.delete("active")
+    end
+
     fields = collection.fields
     properties = facility_param["properties"] || {}
     identifiers = facility_param["identifiers"] || []
@@ -257,7 +253,7 @@ class FredApiController < ApplicationController
   end
 
   def default_rescue(ex)
-    render json: { message: ex.message}, status: 500
+    render json: {code: "500 Internal Server Error",  message: "#{ex.message}"}, status: 500, :layout => false
   end
 
   def rescue_record_not_found(ex)
