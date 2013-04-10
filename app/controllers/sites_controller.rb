@@ -24,7 +24,9 @@ class SitesController < ApplicationController
       search = collection.new_search current_user_id: current_user.id
     end
     search.id params[:id]
-    render json: search.ui_results.first['_source']
+    # If site does not exists, return empty object
+    result = search.ui_results.first['_source'] rescue {}
+    render json: result
   end
 
   def create

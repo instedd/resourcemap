@@ -69,9 +69,13 @@ onCollections ->
         $.get "/collections/#{collectionId}/sites/#{siteId}.json", {}, (data) =>
           @loadingSite(false)
           collection = window.model.findCollectionById(collectionId)
-          site = new Site(collection, data)
-          site = collection.addSite(site)
-          @selectSite site
+          # Data will be empty if site is not found
+          if !$.isEmptyObject(data)
+            site = new Site(collection, data)
+            site = collection.addSite(site)
+            @selectSite site
+          else
+            @enterCollection(collection)
 
     @editSiteFromMarker: (siteId, collectionId) ->
       @exitSite() if @editingSite()
