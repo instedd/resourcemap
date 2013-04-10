@@ -49,7 +49,7 @@ describe 'Threshold', ->
 
   describe 'without data', ->
     beforeEach ->
-      @threshold = new Threshold {is_all_site: true, is_all_condition: true, is_notify: true, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}}
+      @threshold = new Threshold {is_all_site: true, is_all_condition: true, is_notify: true, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, color: "#128e4e"}
 
     it 'should default threshold have no conditions', ->
       expect(@threshold.conditions().length).toEqual 0

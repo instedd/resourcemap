@@ -13,7 +13,7 @@ describe 'MainViewModel', ->
 
   describe 'cancel threshold', ->
     beforeEach ->
-      @threshold = new Threshold email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], is_all_site: true, is_all_condition: true, is_notify: true
+      @threshold = new Threshold email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], is_all_site: "true", is_all_condition: "true", is_notify: "true", color: "#128e4e"
       @model.thresholds.push @threshold
       @model.currentThreshold @threshold
       #@model.editThreshold(@threshold) commented this line because off add clearUnsavedThreshold method in threshold_main_view_model.editThreshold
@@ -31,7 +31,7 @@ describe 'MainViewModel', ->
 
   describe 'clear threshold', ->
     beforeEach ->
-      @threshold = new Threshold phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], is_all_site: true, is_all_condition: true, is_notify: true
+      @threshold = new Threshold email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], is_all_site: "true", is_all_condition: "true", is_notify: "true", color: "#128e4e" 
       @model.thresholds.push @threshold
 
     it 'should clear unsaved threshold', ->
@@ -109,9 +109,7 @@ describe 'MainViewModel', ->
 
   describe 'delete threshold', ->
     beforeEach ->
-      @threshold = new Threshold  phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, id: 1, conditions: [], is_all_site: true, is_all_condition: true, is_notify: true
-
-
+      @threshold = new Threshold email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, conditions: [], is_all_site: "true", is_all_condition: "true", is_notify: "true", color: "#128e4e"
       @model.thresholds.push @threshold
 
     it 'should show confirm dialog', ->
@@ -127,8 +125,8 @@ describe 'MainViewModel', ->
 
   describe 'move threshold', ->
     beforeEach ->
-      @threshold_1 = new Threshold id: 1, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, ord: 1, collection_id: @collectionId, is_all_site: true, is_all_condition: true, is_notify: true
-      @threshold_2 = new Threshold id: 2, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, ord: 2, collection_id: @collectionId, is_all_site: true, is_all_condition: true, is_notify: true
+      @threshold_1 = new Threshold id: 1, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, ord: 1, collection_id: @collectionId, is_all_site: true, is_all_condition: true, is_notify: true, color: "#128e4e"
+      @threshold_2 = new Threshold id: 2, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, ord: 2, collection_id: @collectionId, is_all_site: true, is_all_condition: true, is_notify: true, color: "#128e4e"
       @model.thresholds [ @threshold_1, @threshold_2 ]
       spyOn($, 'post')
 
