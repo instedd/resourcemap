@@ -11,8 +11,8 @@ describe 'Layer', ->
         @model.newLayer()
 
       it 'should create new field', ->
-        @model.newField 'kind'
-        expect(@model.currentField().kind()).toEqual 'kind'
+        @model.newField 'text'
+        expect(@model.currentField().kind()).toEqual 'text'
 
 
 
