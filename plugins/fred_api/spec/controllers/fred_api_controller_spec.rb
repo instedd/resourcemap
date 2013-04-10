@@ -34,9 +34,9 @@ describe FredApiController do
 
       json = JSON.parse response.body
       json["name"].should eq(site.name)
-      json["id"].should eq("#{site.id}")
       json["coordinates"][0].should eq(site.lng)
       json["coordinates"][1].should eq(site.lat)
+      json['uuid'].should eq(site.uuid)
       json["active"].should eq(true)
       json["url"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
 
@@ -61,7 +61,7 @@ describe FredApiController do
       json["createdAt"].should eq("2013-02-04T23:25:27Z")
     end
 
-    it "should return UUID" do
+    it "should return valid UUID" do
       get :show_facility, id: site_with_properties.id, format: 'json', collection_id: collection.id
       json = JSON.parse response.body
       json['uuid'].should be
@@ -139,16 +139,18 @@ describe FredApiController do
     end
 
     it 'should select only default fields' do
-      get :facilities, format: 'json', fields: "name,id", collection_id: collection.id
+      get :facilities, format: 'json', fields: "name,updatedAt", collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(2)
       json[0].length.should eq(2)
       json[0]['name'].should eq(site1.name)
-      json[0]['id'].should eq(site1.id.to_s)
+      iso_updated_at = Time.zone.parse(site1.updated_at.to_s).utc.iso8601
+      json[0]['updatedAt'].should eq(iso_updated_at)
 
       json[1].length.should eq(2)
       json[1]['name'].should eq(site2.name)
-      json[1]['id'].should eq(site2.id.to_s)
+      iso_updated_at = Time.zone.parse(site2.updated_at.to_s).utc.iso8601
+      json[1]['updatedAt'].should eq(iso_updated_at)
     end
 
     it 'should select default and custom fields' do
@@ -199,18 +201,11 @@ describe FredApiController do
       json[0]['name'].should eq(site1.name)
     end
 
-    it "should filter by id" do
-      get :facilities, format: 'json', id: site1.id, collection_id: collection.id
-      json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['id'].should eq(site1.id.to_s)
-    end
-
     it "should filter by coordinates" do
       get :facilities, format: 'json', coordinates: [site1.lng.to_f, site1.lat.to_f], collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)
-      json[0]['id'].should eq(site1.id.to_s)
+      json[0]['uuid'].should eq(site1.uuid)
     end
 
     it "should filter by updated_at" do
@@ -221,7 +216,7 @@ describe FredApiController do
       get :facilities, format: 'json', updatedAt: iso_updated_at, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)
-      json[0]['id'].should eq(site3.id.to_s)
+      json[0]['uuid'].should eq(site3.uuid)
     end
 
     it "should filter by created_at" do
@@ -232,7 +227,7 @@ describe FredApiController do
       get :facilities, format: 'json', createdAt: iso_created_at, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)
-      json[0]['id'].should eq(site3.id.to_s)
+      json[0]['uuid'].should eq(site3.uuid)
     end
 
     it "should filter by active" do
@@ -250,7 +245,7 @@ describe FredApiController do
       get :facilities, format: 'json', updatedSince: iso_before_update, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)
-      json[0]['id'].should eq(site1.id.to_s)
+      json[0]['uuid'].should eq(site1.uuid)
     end
 
     it "should filter by updated since with miliseconds" do
@@ -261,7 +256,7 @@ describe FredApiController do
       get :facilities, format: 'json', updatedSince: iso_before_update, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)
-      json[0]['id'].should eq(site1.id.to_s)
+      json[0]['uuid'].should eq(site1.uuid)
     end
 
     it "should filter by updated since with arbitrary updated_at velues" do
@@ -276,8 +271,8 @@ describe FredApiController do
       get :facilities, format: 'json', updatedSince: "2013-02-04T22:55:53Z", collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(2)
-      json[0]['id'].should eq(site4.id.to_s)
-      json[1]['id'].should eq(site5.id.to_s)
+      json[0]['uuid'].should eq(site4.uuid)
+      json[1]['uuid'].should eq(site5.uuid)
     end
 
     it "should filter by property with 'properties.' prefix" do
@@ -482,7 +477,7 @@ describe FredApiController do
       response.location.should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
       json = JSON.parse response.body
       json["name"].should eq(site.name)
-      json["id"].should eq("#{site.id}")
+      json["uuid"].should eq("#{site.uuid}")
       json["active"].should eq(true)
       json["url"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
     end
@@ -595,7 +590,7 @@ describe FredApiController do
         "context"=>"MOH",
         "id"=> "123"}
       ] }.to_json
-      
+
       post :create_facility, collection_id: collection.id
       response.status.should eq(400)
       json = JSON.parse response.body
@@ -634,7 +629,7 @@ describe FredApiController do
       json = JSON.parse response.body
 
       json["name"].should eq(site_with_metadata.name)
-      json["id"].should eq("#{site_with_metadata.id}")
+      json["uuid"].should eq("#{site_with_metadata.uuid}")
       json["identifiers"].length.should eq(1)
       json["identifiers"][0].should eq({"context" => "MOH", "agency" => "DHIS", "id"=> "53adf"})
     end
@@ -643,28 +638,28 @@ describe FredApiController do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.id" => "53adf"
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)
-      json[0]['id'].should eq("#{site_with_metadata.id}")
+      json[0]['uuid'].should eq("#{site_with_metadata.uuid}")
     end
 
     it 'should filter by identifier and agency' do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.agency" => "DHIS", "identifiers.id" => "53adf"
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)
-      json[0]['id'].should eq("#{site_with_metadata.id}")
+      json[0]['uuid'].should eq("#{site_with_metadata.uuid}")
     end
 
     it 'should filter by identifier and context' do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf"
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)
-      json[0]['id'].should eq("#{site_with_metadata.id}")
+      json[0]['uuid'].should eq("#{site_with_metadata.uuid}")
     end
 
     it 'should filter by identifier, context and agency' do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf", "identifiers.agency" => "DHIS"
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(1)
-      json[0]['id'].should eq("#{site_with_metadata.id}")
+      json[0]['uuid'].should eq("#{site_with_metadata.uuid}")
     end
 
     it 'sholud return an empty list if the id does not match' do get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "invalid", "identifiers.agency" => "DHIS"

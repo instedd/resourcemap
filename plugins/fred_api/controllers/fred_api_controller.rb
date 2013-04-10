@@ -226,7 +226,6 @@ class FredApiController < ApplicationController
     source = result['_source']
 
     obj = {}
-    obj[:id] = source['id'].to_s
     obj[:name] = source['name']
     obj[:uuid] = source['uuid']
 
