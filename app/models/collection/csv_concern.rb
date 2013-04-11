@@ -120,7 +120,11 @@ module Collection::CsvConcern
     # Add to parents
     items.each do |order, item|
       if item[:parent].present? && !item[:error].present?
-        parent = items.first{|key, hash| hash[:id] == item[:parent]}[1]
+        parent_candidates = items.select{|key, hash| hash[:id] == item[:parent]}
+
+        if parent_candidates
+          parent = parent_candidates.first[1]
+        end
 
         if parent
           parent[:sub] ||= []
