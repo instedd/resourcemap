@@ -5,7 +5,7 @@ class FredApiController < ApplicationController
   before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility, :update_facility]
 
   rescue_from Exception, :with => :default_rescue
-  rescue_from RuntimeError, :with => :rescue_record_invalid
+  rescue_from RuntimeError, :with => :rescue_runtime_error
   rescue_from ActionController::RoutingError, :with => :rescue_record_not_found
   rescue_from ActiveRecord::RecordNotFound, :with => :rescue_record_not_found
   rescue_from ActiveRecord::RecordInvalid, :with => :rescue_record_invalid
@@ -249,6 +249,14 @@ class FredApiController < ApplicationController
   end
 
   def rescue_record_invalid(ex)
+    if ex.record.errors[:uuid].include?("has already been taken")
+      render json: {code: "409 Conflict", message: "Duplicated facility: UUID has already been taken in this collection."}, :status => 409, :layout => false
+    else
+      render json: {code: "400 Record Invalid", message: "#{ex.message}"}, :status => 400, :layout => false
+    end
+  end
+
+  def rescue_runtime_error(ex)
     render json: {code: "400 Record Invalid", message: "#{ex.message}"}, :status => 400, :layout => false
   end
 

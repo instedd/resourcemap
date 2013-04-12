@@ -4,6 +4,7 @@ module Site::UuidConcern
   included do
   	validates :uuid, :presence => true, :unchangeable => true
   	validate :validate_uuid_format
+    validates :uuid, :uniqueness => { :scope => :collection_id }
 
  		before_validation :set_uuid, :on => :create
 	end

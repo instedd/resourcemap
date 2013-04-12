@@ -614,6 +614,15 @@ describe FredApiController do
       (Site.find_by_name 'Kakamega HC').should be_nil
     end
 
+    it "should return 409 if facility uuid is duplicated in the collection" do
+      site = collection.sites.make
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :uuid => site.uuid }.to_json
+      post :create_facility, collection_id: collection.id
+      response.status.should eq(409)
+      json = JSON.parse response.body
+      json["message"].should eq("Duplicated facility: UUID has already been taken in this collection.")
+    end
+
   end
 
   describe "External Facility Identifiers" do

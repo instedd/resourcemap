@@ -28,4 +28,12 @@ describe Site do
 		site.errors.messages[:uuid].should include("cannot be changed once assigned")
 	end
 
+	it "should not create site with duplicated uuid through collection" do
+		collection = Collection.make
+		site2 = collection.sites.make 
+		site = collection.sites.make_unsaved uuid: site2.uuid
+		site.should be_invalid
+		site.errors.messages[:uuid].should include("has already been taken")
+	end
+
 end
