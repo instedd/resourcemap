@@ -116,10 +116,11 @@ class @Membership extends Expandable
           # Check that a site with that name exists
           _.each data, (s) ->
             if s.name == _self.customSite()
-
               new_permission = new SiteCustomPermission s.id, s.name, false, false, _self
               _self.sitesWithCustomPermissions.push new_permission
-              _self.customSite("")
+              _self.customSite ""
+              _self.saveCustomSitePermissions()
+
 
     @removeCustomPermission = (site_permission) =>
       @sitesWithCustomPermissions.remove site_permission
@@ -153,7 +154,7 @@ class @Membership extends Expandable
   keyPress: (field, event) =>
     switch event.keyCode
       when 13
-        @saveCustomSitePermissions()
+        @createCustomPermissionForSite()
       when 27 then @exit()
       else true
 

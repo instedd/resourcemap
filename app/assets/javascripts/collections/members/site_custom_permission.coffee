@@ -48,12 +48,16 @@ class @SiteCustomPermission
 
 
   @summarizeRead: (sitePermissions) ->
+    read_sites = []
     read_sites = ({ "id": p.id(), "name": p.name() } for p in sitePermissions when p.can_read())
     { "all_sites": read_sites.length == 0, "some_sites": read_sites }
 
   @summarizeWrite: (sitePermissions) ->
+    read_summary = @summarizeRead sitePermissions
+
+    write_sites = []
     write_sites = ({ "id": p.id(), "name": p.name() } for p in sitePermissions when p.can_write())
-    { "all_sites": write_sites.length == 0, "some_sites": write_sites }
+    { "all_sites": write_sites.length == 0 and read_summary["all_sites"], "some_sites": write_sites }
 
   # Expect "sitePermissions" to be an object like:
   #   "write":
