@@ -2,16 +2,12 @@ module Membership::SitesPermissionConcern
   extend ActiveSupport::Concern
 
   def update_sites_permission(sites_permission = {})
-    p sites_permission
-
     sites_permission.each do |type, permission|
       if permission[:some_sites].is_a? Hash
         permission[:some_sites] = permission[:some_sites].values
       elsif not permission[:some_sites]
         permission[:some_sites] = []
       end
-
-      p permission
 
       self.find_or_build_sites_permission(type).update_attributes permission
     end
