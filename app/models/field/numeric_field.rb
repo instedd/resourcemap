@@ -12,7 +12,7 @@ class Field::NumericField < Field
 	private
 
 	def check_valid_numeric_value(value)
-    feedback = "Invalid numeric value in #{code} field"
+    feedback = "Invalid numeric value in field #{code}"
     about_decimals = "This numeric field is configured not to allow decimal values."
 
     if allow_decimals?

@@ -198,7 +198,7 @@ describe Field do
       it "should validate format for numeric field" do
         numeric.apply_format_update_validation(2, false, collection).should be(2)
         numeric.apply_format_update_validation("2", false, collection).should be(2)
-        expect { numeric.apply_format_update_validation("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.code} field")
+        expect { numeric.apply_format_update_validation("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field #{numeric.code}")
       end
 
       it "should validate format for yes_no field" do
@@ -213,9 +213,9 @@ describe Field do
       end
 
       it "should not allow decimals" do
-        expect { numeric.apply_format_update_validation("2.3", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.code} field. This numeric field is configured not to allow decimal values.")
+        expect { numeric.apply_format_update_validation("2.3", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field #{numeric.code}. This numeric field is configured not to allow decimal values.")
 
-        expect { numeric.apply_format_update_validation(2.3, false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.code} field. This numeric field is configured not to allow decimal values.")
+        expect { numeric.apply_format_update_validation(2.3, false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field #{numeric.code}. This numeric field is configured not to allow decimal values.")
       end
 
       it "should allow decimals" do
@@ -225,45 +225,45 @@ describe Field do
 
       it "should validate format for date field" do
         date.apply_format_update_validation("11/27/2012", false, collection).should == "2012-11-27T00:00:00Z"
-        expect { date.apply_format_update_validation("11/27", false, collection) }.to raise_error(RuntimeError, "Invalid date value in #{date.code} field")
-        expect { date.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid date value in #{date.code} field")
+        expect { date.apply_format_update_validation("11/27", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}")
+        expect { date.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}")
       end
 
       it "should validate format for hierarchy field" do
         hierarchy.apply_format_update_validation("101", false, collection).should == "101"
-        expect { hierarchy.apply_format_update_validation("Dad", false, collection) }.to raise_error(RuntimeError, "Invalid option in #{hierarchy.code} field")
-        expect { hierarchy.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in #{hierarchy.code} field")
+        expect { hierarchy.apply_format_update_validation("Dad", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{hierarchy.code}")
+        expect { hierarchy.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{hierarchy.code}")
       end
 
       it "should validate format for select_one field" do
         select_one.apply_format_update_validation(1, false, collection).should == 1
         select_one.apply_format_update_validation("1", false, collection).should == "1"
-        expect { select_one.apply_format_update_validation("one", false, collection) }.to raise_error(RuntimeError, "Invalid option in #{select_one.code} field")
-        expect { select_one.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in #{select_one.code} field")
+        expect { select_one.apply_format_update_validation("one", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_one.code}")
+        expect { select_one.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_one.code}")
       end
 
       it "should validate format for select_many field" do
         select_many.apply_format_update_validation([2], false, collection).should == [2]
         select_many.apply_format_update_validation(["2", "1"], false, collection).should == ["2", "1"]
-        expect { select_many.apply_format_update_validation(["two",], false, collection) }.to raise_error(RuntimeError, "Invalid option in #{select_many.code} field")
-        expect { select_many.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in #{select_many.code} field")
+        expect { select_many.apply_format_update_validation(["two",], false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_many.code}")
+        expect { select_many.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_many.code}")
       end
 
       it "should validate format for site field" do
         site_field.apply_format_update_validation(1234, false, collection).should == 1234
         site_field.apply_format_update_validation("1234", false, collection).should == "1234"
-        expect { site_field.apply_format_update_validation(124, false, collection) }.to raise_error(RuntimeError, "Non-existent site-id in #{site_field.code} field")
-        expect { site_field.apply_format_update_validation("124inv", false, collection) }.to raise_error(RuntimeError, "Non-existent site-id in #{site_field.code} field")
+        expect { site_field.apply_format_update_validation(124, false, collection) }.to raise_error(RuntimeError, "Non-existent site-id in field #{site_field.code}")
+        expect { site_field.apply_format_update_validation("124inv", false, collection) }.to raise_error(RuntimeError, "Non-existent site-id in field #{site_field.code}")
       end
 
       it "should validate format for user field" do
         director.apply_format_update_validation(user.email, false, collection).should == user.email
-        expect { director.apply_format_update_validation("inexisting@email.com", false, collection) }.to raise_error(RuntimeError, "Non-existent user email address in #{director.code} field")
+        expect { director.apply_format_update_validation("inexisting@email.com", false, collection) }.to raise_error(RuntimeError, "Non-existent user email address in field #{director.code}")
       end
 
       it "should validate format for email field" do
         email_field.apply_format_update_validation("valid@email.com", false, collection).should == "valid@email.com"
-        expect { email_field.apply_format_update_validation("s@@email.c.om", false, collection) }.to raise_error(RuntimeError, "Invalid email address in #{email_field.code} field")
+        expect { email_field.apply_format_update_validation("s@@email.c.om", false, collection) }.to raise_error(RuntimeError, "Invalid email address in field #{email_field.code}")
       end
     end
   end

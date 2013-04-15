@@ -60,7 +60,7 @@ class SitesController < ApplicationController
       render json: site, :status => 200, :layout => false
     rescue => ex
       #rescue field validations
-      render json: {:error_message => ex.message }, :status => 400, :layout => false
+      render json: {:error_message => ex.message }, :layout => false
     end
   end
 

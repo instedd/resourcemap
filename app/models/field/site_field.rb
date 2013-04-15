@@ -10,7 +10,7 @@ class Field::SiteField < Field
     site_ids = collection.sites.map{|s| s.id.to_s}
 
     if !site_ids.include? site_id.to_s
-      raise "Non-existent site-id in #{code} field"
+      raise "Non-existent site-id in field #{code}"
     end
     site_id
   end

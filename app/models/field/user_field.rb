@@ -10,7 +10,7 @@ class Field::UserField < Field
     user_emails = collection.users.map {|u| u.email}
 
     if !user_emails.include? user_email
-      raise "Non-existent user email address in #{code} field"
+      raise "Non-existent user email address in field #{code}"
     end
     user_email
   end

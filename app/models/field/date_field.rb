@@ -20,14 +20,14 @@ class Field::DateField < Field
       mdy_value = [mdy_array[2], mdy_array[0], mdy_array[1]].map(&:to_i)
       value = Site.iso_string_to_mdy(value) unless Date.valid_date? *mdy_value
       Site.format_date_iso_string(Site.parse_date(value))
-    rescue (raise "Invalid date value in #{code} field")
+    rescue (raise "Invalid date value in field #{code}")
     end
   end
 
   def parse_date_from(value)
     match = (value.match /(.*),/)
     if match.nil?
-      raise "Invalid date value in #{code} field"
+      raise "Invalid date value in field #{code}"
     end
     match.captures[0]
   end
@@ -35,7 +35,7 @@ class Field::DateField < Field
   def parse_date_to(value)
     match = (value.match /,(.*)/)
     if match.nil?
-      raise "Invalid date value in #{code} field"
+      raise "Invalid date value in field #{code}"
     end
     match.captures[0]
   end

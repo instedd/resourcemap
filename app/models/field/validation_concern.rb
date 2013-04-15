@@ -62,7 +62,7 @@ module Field::ValidationConcern
         value_id = value if config["options"].any?{|opt| opt["id"].to_s == value.to_s}
       end
     end
-    raise "Invalid option in #{code} field" if value_id.nil?
+    raise "Invalid option in field #{code}" if value_id.nil?
     value_id
   end
 

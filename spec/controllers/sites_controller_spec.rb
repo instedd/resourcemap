@@ -27,7 +27,7 @@ describe SitesController do
   it 'should validate format for numeric field' do
     post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number' 
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid numeric value in #{numeric.code} field")
+    json["error_message"].should eq("Invalid numeric value in field #{numeric.code}")
     post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2'
     validate_site_property_value(site, numeric, 2)
   end
@@ -39,7 +39,7 @@ describe SitesController do
     validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
     post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "117"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid date value in #{date.code} field")
+    json["error_message"].should eq("Invalid date value in field #{date.code}")
   end
 
   it "should validate format for hierarchy field" do
@@ -47,7 +47,7 @@ describe SitesController do
     validate_site_property_value(site, hierarchy, "101")
     post :update_property, site_id: site.id, format: 'json', es_code: hierarchy.es_code, value: "Dad"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid option in #{hierarchy.code} field")
+    json["error_message"].should eq("Invalid option in field #{hierarchy.code}")
   end
 
   it "should validate format for select_one field" do
@@ -55,7 +55,7 @@ describe SitesController do
     validate_site_property_value(site, select_one, 1)
     post :update_property, site_id: site.id, format: 'json', es_code: select_one.es_code, value: "one" 
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid option in #{select_one.code} field")
+    json["error_message"].should eq("Invalid option in field #{select_one.code}")
   end
 
   it "should validate format for select_many field" do
@@ -65,7 +65,7 @@ describe SitesController do
     validate_site_property_value(site, select_many, [2, 1])
     post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "[two,]"  
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid option in #{select_many.code} field")
+    json["error_message"].should eq("Invalid option in field #{select_many.code}")
   end
 
   it "should validate format for site field" do
@@ -73,7 +73,7 @@ describe SitesController do
     validate_site_property_value(site, site_field, "1234")
     post :update_property, site_id: site.id, format: 'json', es_code: site_field.es_code, value: 23
     json = JSON.parse response.body
-    json["error_message"].should eq("Non-existent site-id in #{site_field.code} field")
+    json["error_message"].should eq("Non-existent site-id in field #{site_field.code}")
   end
 
   it "should validate format for user field" do
@@ -81,7 +81,7 @@ describe SitesController do
     validate_site_property_value(site, director, user.email)
     post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com" 
     json = JSON.parse response.body
-    json["error_message"].should eq("Non-existent user email address in #{director.code} field")
+    json["error_message"].should eq("Non-existent user email address in field #{director.code}")
   end
 
   it "should validate format for email field" do
@@ -89,7 +89,7 @@ describe SitesController do
     validate_site_property_value(site, email_field, "valid@email.com")
     post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "v3@@e.mail.c.om"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid email address in #{email_field.code} field")
+    json["error_message"].should eq("Invalid email address in field #{email_field.code}")
   end
 
   it 'should create a new site' do
