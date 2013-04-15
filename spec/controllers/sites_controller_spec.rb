@@ -25,7 +25,9 @@ describe SitesController do
   #TODO: Move this functionality to api and rescue validation-exceptions with response_code = 400 and a 'check api doc' message
 
   it 'should validate format for numeric field' do
-    expect {  post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number' }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.code} field")
+    post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number' 
+    json = JSON.parse response.body
+    json["error_message"].should eq("Invalid numeric value in #{numeric.code} field")
     post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2'
     validate_site_property_value(site, numeric, 2)
   end
@@ -35,19 +37,25 @@ describe SitesController do
     validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
     post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "2012-11-27T00:00:00Z"
     validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
-    expect { post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "117"}.to raise_error(RuntimeError, "Invalid date value in #{date.code} field")
+    post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "117"
+    json = JSON.parse response.body
+    json["error_message"].should eq("Invalid date value in #{date.code} field")
   end
 
   it "should validate format for hierarchy field" do
     post :update_property, site_id: site.id, format: 'json', es_code: hierarchy.es_code, value: "101"
     validate_site_property_value(site, hierarchy, "101")
-    expect { post :update_property, site_id: site.id, format: 'json', es_code: hierarchy.es_code, value: "Dad"}.to raise_error(RuntimeError, "Invalid option in #{hierarchy.code} field")
+    post :update_property, site_id: site.id, format: 'json', es_code: hierarchy.es_code, value: "Dad"
+    json = JSON.parse response.body
+    json["error_message"].should eq("Invalid option in #{hierarchy.code} field")
   end
 
   it "should validate format for select_one field" do
     post :update_property, site_id: site.id, format: 'json', es_code: select_one.es_code, value: "1"
     validate_site_property_value(site, select_one, 1)
-    expect { post :update_property, site_id: site.id, format: 'json', es_code: select_one.es_code, value: "one" }.to raise_error(RuntimeError, "Invalid option in #{select_one.code} field")
+    post :update_property, site_id: site.id, format: 'json', es_code: select_one.es_code, value: "one" 
+    json = JSON.parse response.body
+    json["error_message"].should eq("Invalid option in #{select_one.code} field")
   end
 
   it "should validate format for select_many field" do
@@ -55,25 +63,33 @@ describe SitesController do
     validate_site_property_value(site, select_many, [1])
     post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: ["2", "1"]
     validate_site_property_value(site, select_many, [2, 1])
-    expect { post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "[two,]"  }.to raise_error(RuntimeError, "Invalid option in #{select_many.code} field")
+    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "[two,]"  
+    json = JSON.parse response.body
+    json["error_message"].should eq("Invalid option in #{select_many.code} field")
   end
 
   it "should validate format for site field" do
     post :update_property, site_id: site.id, format: 'json', es_code: site_field.es_code, value: "1234"
     validate_site_property_value(site, site_field, "1234")
-    expect { post :update_property, site_id: site.id, format: 'json', es_code: site_field.es_code, value: 23}.to raise_error(RuntimeError, "Non-existent site-id in #{site_field.code} field")
+    post :update_property, site_id: site.id, format: 'json', es_code: site_field.es_code, value: 23
+    json = JSON.parse response.body
+    json["error_message"].should eq("Non-existent site-id in #{site_field.code} field")
   end
 
   it "should validate format for user field" do
     post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: user.email
     validate_site_property_value(site, director, user.email)
-    expect { post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com" }.to raise_error(RuntimeError, "Non-existent user email address in #{director.code} field")
+    post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com" 
+    json = JSON.parse response.body
+    json["error_message"].should eq("Non-existent user email address in #{director.code} field")
   end
 
   it "should validate format for email field" do
     post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "valid@email.com"
     validate_site_property_value(site, email_field, "valid@email.com")
-    expect {  post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "v3@@e.mail.c.om"}.to raise_error(RuntimeError, "Invalid email address in #{email_field.code} field")
+    post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "v3@@e.mail.c.om"
+    json = JSON.parse response.body
+    json["error_message"].should eq("Invalid email address in #{email_field.code} field")
   end
 
   it 'should create a new site' do

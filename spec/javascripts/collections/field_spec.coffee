@@ -73,6 +73,12 @@ describe 'Collection', ->
 
         expect(window.model.editingSite().updateProperty).toHaveBeenCalledWith('1', 123)
 
+      it 'should have error if an error_message is set', ->
+        expect(@field.error()).toBeFalsy()
+        @field.error_message("Invalid Option")
+        expect(@field.error()).toBeTruthy()
+
+
     describe 'Numeric Field', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'beds', name: 'Available beds', kind: 'numeric' }

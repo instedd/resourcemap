@@ -54,9 +54,14 @@ class SitesController < ApplicationController
     site.user = current_user
     site.properties_will_change!
 
-    site.properties[params[:es_code]] = field.apply_format_update_validation(params[:value], false, site.collection)
-    site.save!
-    render json: site
+    begin
+      site.properties[params[:es_code]] = field.apply_format_update_validation(params[:value], false, site.collection)
+      site.save!
+      render json: site, :status => 200, :layout => false
+    rescue => ex
+      #rescue field validations
+      render json: {:error_message => ex.message }, :status => 400, :layout => false
+    end
   end
 
   def search
