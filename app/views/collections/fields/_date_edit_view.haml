@@ -1,5 +1,5 @@
 - if single_editing_mode
-  = ko_html_field_tag :valueUI, hasfocus: true, event: {keydown: :keyPress, blur: :closeDatePickerAndSave}, attr: {id: "'date-input-' + esCode"}, html: {class: 'ux-datepicker'}
+  = ko_html_field_tag :valueUI, hasfocus: true, event: {keydown: :keyPress, blur: :closeDatePickerAndSave}, attr: {id: "'date-input-' + esCode"}, css: { error: :error }, html: {class: 'ux-datepicker'}
 - else
   = ko_html_field_tag :valueUI, attr: {id: "'date-input-' + esCode"}, html: {class: 'ux-datepicker right w20'}
   .clear

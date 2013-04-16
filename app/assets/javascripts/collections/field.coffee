@@ -57,8 +57,8 @@ onCollections ->
 
       @editing = ko.observable false
       @expanded = ko.observable false # For select_many
-      @error_message = ko.observable ""
-      @error = ko.computed => !!@error_message()
+      @errorMessage = ko.observable ""
+      @error = ko.computed => !!@errorMessage()
 
 
     codeForLink: (api = false) =>

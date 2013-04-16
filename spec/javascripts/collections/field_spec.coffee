@@ -73,9 +73,9 @@ describe 'Collection', ->
 
         expect(window.model.editingSite().updateProperty).toHaveBeenCalledWith('1', 123)
 
-      it 'should have error if an error_message is set', ->
+      it 'should have error if an errorMessage is set', ->
         expect(@field.error()).toBeFalsy()
-        @field.error_message("Invalid Option")
+        @field.errorMessage("Invalid Option")
         expect(@field.error()).toBeTruthy()
 
 

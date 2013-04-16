@@ -195,7 +195,8 @@
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
               %div{style: 'margin-bottom:14px'}
-                %label{ko(text: "name + '(' + code + '):'")}
+                %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
+                %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
                 <!-- ko if: hasValue() && !error() -->
                 <!-- ko if: writeable -->
                 %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer'}
@@ -219,9 +220,6 @@
                 - Field::kinds.each do |kind|
                   <!-- ko if: kind == '#{kind}' -->
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: true }
-                  <!-- ko if: error() --> 
-                  %label.error.white-space-normal{ko(text: :error_message)}
-                  <!-- /ko -->
                   <!-- /ko -->
                 <!-- /ko -->
               <!-- /ko -->

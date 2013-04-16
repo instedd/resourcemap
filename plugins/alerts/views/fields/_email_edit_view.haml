@@ -1,5 +1,5 @@
 - if single_editing_mode
-  %input{ ko(value: :value, valueUpdate: :afterkeydown, event: {keydown: :keyPress, blur: :save}, hasfocus: true), type: :email }
+  %input{ ko(value: :value, valueUpdate: :afterkeydown, event: {keydown: :keyPress, blur: :save}, css: { error: :error }, hasfocus: true), type: :email }
 - else
   %input.right.w20{ ko(value: :value), type: :email }
   .clear

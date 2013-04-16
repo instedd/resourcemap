@@ -1,0 +1,29 @@
+ko.bindingHandlers.validationPopover =
+  init: (element, valueAccessor, allBindingsAccessor, viewModel) ->
+    value = ko.utils.unwrapObservable(valueAccessor())
+    $(element).parent().CreateBubblePopup({
+      innerHtml: value,
+      themeName:  'bubble',
+      themePath:  '<%= InsteddRails.url %>/theme/images/',
+      position: 'right',
+      innerHtmlStyle: {
+        'color':'#000000',
+        'background-color' :'white'
+        },
+    })
+
+  update: (element, valueAccessor, allBindingsAccessor, viewModel) ->
+    value = ko.utils.unwrapObservable(valueAccessor())
+    $(element).parent().HideAllBubblePopups()
+    $(element).parent().RemoveBubblePopup()
+    if !!value
+      $(element).parent().CreateBubblePopup({
+        innerHtml: value,
+        themeName: 'bubble'
+        themePath:  '<%= InsteddRails.url %>/theme/images/',
+        position: 'right',
+        innerHtmlStyle: {
+          'color': '#000000',
+          'background-color':'white'
+        },
+      })

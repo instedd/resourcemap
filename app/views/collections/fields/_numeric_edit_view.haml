@@ -1,9 +1,9 @@
 - if single_editing_mode
   /ko if: allowsDecimals()
-  = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, html: { step: "any"}
+  = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, css: { error: :error }, html: { step: "any"}
   //ko
   /ko if: !allowsDecimals()
-  = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, html: { step: 1}
+  = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, css: { error: :error }, html: { step: 1}
   //ko
 - else
   /ko if: allowsDecimals()

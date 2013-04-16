@@ -60,9 +60,9 @@ onCollections ->
       $.post("/sites/#{@id()}/update_property.json", {es_code: esCode, value: value}, (data) =>
         if data.error_message
           #Validation failed
-          field.error_message(data.error_message)
+          field.errorMessage(data.error_message)
         else
-          field.error_message("")
+          field.errorMessage("")
           @propagateUpdatedAt(data.updated_at))
 
     copyPropertiesFromCollection: (collection) =>

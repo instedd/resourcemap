@@ -1,5 +1,5 @@
 - if single_editing_mode
-  = ko_text_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}
+  = ko_text_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, css: { error: :error }
 - else
   = ko_text_field_tag :value, html: {class: 'right w20'}
   .clear

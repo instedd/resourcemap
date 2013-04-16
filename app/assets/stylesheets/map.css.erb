@@ -176,7 +176,18 @@
   padding: 4px;
 }
 
-/* To override inherited platform-common value (only white-space-normal is not specific enough) */
-label.error.white-space-normal {
-  white-space:normal;
+label.error.field-name {
+  padding-left: 0px;
+  background: none;
+}
+
+.field-name sup {
+  font-size: 10px;
+  margin-left: 2px;
+  letter-spacing: 0.1em;
+  color: #999;
+}
+
+.field-name.error sup {
+  color: #ff6600;
 }
