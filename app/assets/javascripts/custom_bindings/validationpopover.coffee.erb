@@ -1,6 +1,7 @@
 ko.bindingHandlers.validationPopover =
   init: (element, valueAccessor, allBindingsAccessor, viewModel) ->
     value = ko.utils.unwrapObservable(valueAccessor())
+    $(element).parent().addClass("error-icon-right")
     $(element).parent().CreateBubblePopup({
       innerHtml: value,
       themeName:  'bubble',
@@ -16,7 +17,9 @@ ko.bindingHandlers.validationPopover =
     value = ko.utils.unwrapObservable(valueAccessor())
     $(element).parent().HideAllBubblePopups()
     $(element).parent().RemoveBubblePopup()
+    $(element).parent().removeClass("error-icon-right")
     if !!value
+      $(element).parent().addClass("error-icon-right")
       $(element).parent().CreateBubblePopup({
         innerHtml: value,
         themeName: 'bubble'
