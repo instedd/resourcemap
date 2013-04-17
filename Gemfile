@@ -37,6 +37,8 @@ group :test, :development do
   gem 'guard-jasmine'
   gem 'pry'
   gem 'pry-debugger'
+  gem 'selenium-webdriver'
+  gem 'nokogiri'
 end
 
 # Gems used only for assets and not required
