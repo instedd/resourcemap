@@ -23,6 +23,8 @@ group :test do
   gem 'shoulda-matchers'
   gem 'ci_reporter'
   gem 'resque_spec'
+  gem 'selenium-webdriver'
+  gem 'nokogiri'
 end
 
 group :test, :development do
@@ -37,8 +39,6 @@ group :test, :development do
   gem 'guard-jasmine'
   gem 'pry'
   gem 'pry-debugger'
-  gem 'selenium-webdriver'
-  gem 'nokogiri'
 end
 
 # Gems used only for assets and not required
