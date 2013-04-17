@@ -49,7 +49,7 @@ onCollections ->
           remaining = if @value()
             @options.filter((x) => @value()?.indexOf(x.id) == -1 && x.label.toLowerCase().indexOf(@filter().toLowerCase()) == 0)
           else
-            @options
+            @options.filter((x) => x.label.toLowerCase().indexOf(@filter().toLowerCase()) == 0)
           remaining[0].selected(true) if remaining.length > 0
           remaining
       else

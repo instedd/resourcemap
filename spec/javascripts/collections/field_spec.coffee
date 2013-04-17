@@ -176,6 +176,15 @@ describe 'Collection', ->
         expect(@field.value()).toEqual([1])
         expect(@field.remainingOptions()).toEqual([@field.options[1], @field.options[2]])
 
+      it 'remainingOptions should be full when no filter is set', ->
+        @field.filter('')
+        expect(@field.remainingOptions()).toEqual([@field.options[0], @field.options[1], @field.options[2]])
+
+      it 'should filter options', ->
+        @field.filter('Red')
+        expect(@field.remainingOptions()).toEqual([@field.options[0]])
+
+
     describe 'Date Field', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'creation', name: 'Creation', kind: 'date' }

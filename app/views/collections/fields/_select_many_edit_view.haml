@@ -4,7 +4,7 @@
       %span{ko(text: '$parent.labelFor($data)')}
       %a x
   .superblyTagfieldClearer
-  %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
+  %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:220px'}
   %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
     %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
       %a{ko(text: :label, click: '$parent.selectOption')}
@@ -22,7 +22,7 @@
   <!-- /ko -->
   .superblyTagfieldClearer
     <!-- ko if: expanded() -->
-    %input{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:100%'}
+    %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}), type: :text, style: 'width:100%'}
     %ul.taglist.box{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px;width:100%'}
       %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
         %a{ko(text: :label, click: '$parent.selectOption')}
