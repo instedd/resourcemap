@@ -57,14 +57,28 @@ onCollections ->
 
       @properties()[esCode] = value
 
-      $.post("/sites/#{@id()}/update_property.json", {es_code: esCode, value: value}, (data) =>
-        if data.error_message
-          #Validation failed
-          field.errorMessage(data.error_message)
-        else
+      $.ajax({
+        type: "POST",
+        url: "/sites/#{@id()}/update_property.json",
+        data: {es_code: esCode, value: value},
+        success: ((data) =>
           field.errorMessage("")
-          @propagateUpdatedAt(data.updated_at))
-
+          @propagateUpdatedAt(data.updated_at)),
+        # This prevent ajaxError global handler from being triggered.
+        global: false
+      })
+      .fail((data) =>
+        responseMessage = JSON.parse(data.responseText)
+        if data.status == 422 && responseMessage && responseMessage.error_message
+          # Validation error
+          field.errorMessage(responseMessage.error_message) 
+        else
+          # We are not calling ajaxError global handler.
+          # If an error with status != 422 is returned we need to show an error message.
+          # TODO: Is there a way to call ajaxError manually?
+          $.status.showError('Unexpected error occurred, please refresh the page.');
+        )
+          
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
 
