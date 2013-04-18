@@ -26,6 +26,7 @@ group :test do
   gem 'selenium-webdriver'
   gem 'nokogiri'
   gem 'capybara'
+  gem 'database_cleaner'
 end
 
 group :test, :development do
