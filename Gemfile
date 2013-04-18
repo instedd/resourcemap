@@ -25,6 +25,7 @@ group :test do
   gem 'resque_spec'
   gem 'selenium-webdriver'
   gem 'nokogiri'
+  gem 'capybara'
 end
 
 group :test, :development do
