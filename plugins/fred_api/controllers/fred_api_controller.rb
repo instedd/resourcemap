@@ -234,7 +234,7 @@ class FredApiController < ApplicationController
     # ResourceMap does not implement logical deletion yet. Thus all facilities are active.
     obj[:active] = true
 
-    obj[:url] = url_for_facility(source['id'])
+    obj[:href] = url_for_facility(source['id'])
 
     obj[:identifiers] = source['identifiers']
 

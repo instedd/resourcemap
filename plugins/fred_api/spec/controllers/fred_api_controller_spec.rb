@@ -38,7 +38,7 @@ describe FredApiController do
       json["coordinates"][1].should eq(site.lat)
       json['uuid'].should eq(site.uuid)
       json["active"].should eq(true)
-      json["url"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      json["href"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
 
     end
 
@@ -479,7 +479,7 @@ describe FredApiController do
       json["name"].should eq(site.name)
       json["uuid"].should eq("#{site.uuid}")
       json["active"].should eq(true)
-      json["url"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      json["href"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
     end
 
     it "should return 400 if id, url, createdAt or updatedAt are present in the query params" do
