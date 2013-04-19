@@ -22,6 +22,7 @@ RSpec.configure do |config|
 
   ###########
   #capybara
+  config.include Warden::Test::Helpers
   config.include Capybara::DSL,           example_group: { file_path: config.escaped_path(%w[spec integration])}
   config.include Capybara::CustomFinders, example_group: { file_path: config.escaped_path(%w[spec integration])}
   #config.include Capybara::AccountHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
@@ -30,6 +31,7 @@ RSpec.configure do |config|
   #config.include Capybara::MailHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
   config.filter_run_excluding(js: true)   unless config.filter_manager.inclusions[:js]
 
+  Warden.test_mode!
   
   Capybara.default_wait_time = 5
   Capybara.javascript_driver = :selenium
