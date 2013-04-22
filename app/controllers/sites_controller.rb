@@ -93,11 +93,11 @@ class SitesController < ApplicationController
   private
 
   def validate_site_properties(site_param)
-    fields = collection.fields
+    fields = collection.fields.all
     properties = JSON.parse(site_param)["properties"] || {}
     validated_properties = {}
     properties.each_pair do |es_code, value|
-      field = fields.where_es_code_is es_code
+      field = fields.select { |field| field.es_code == es_code }.first
       validated_value = field.apply_format_update_validation(value, false, collection)
       validated_properties["#{es_code}"] = validated_value
     end
