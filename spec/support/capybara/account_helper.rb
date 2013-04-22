@@ -1,0 +1,4 @@
+module Capybara::AccountHelper
+
+  
+end

@@ -1,0 +1,4 @@
+module Capybara::MailHelper
+
+
+end
