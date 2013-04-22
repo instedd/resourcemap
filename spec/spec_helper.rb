@@ -25,10 +25,10 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers
   config.include Capybara::DSL,           example_group: { file_path: config.escaped_path(%w[spec integration])}
   config.include Capybara::CustomFinders, example_group: { file_path: config.escaped_path(%w[spec integration])}
-  #config.include Capybara::AccountHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
-  #config.include Capybara::CollectionsHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
-  #config.include Capybara::SettingsHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
-  #config.include Capybara::MailHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
+  config.include Capybara::AccountHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
+  config.include Capybara::CollectionHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
+  config.include Capybara::SettingsHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
+  config.include Capybara::MailHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
   config.filter_run_excluding(js: true)   unless config.filter_manager.inclusions[:js]
 
   Warden.test_mode!

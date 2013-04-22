@@ -1,0 +1,4 @@
+module Capybara::SettingsHelper
+
+  
+end
