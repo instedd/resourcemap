@@ -30,6 +30,7 @@ end
 
 Collection.blueprint do
   name
+  icon {'default'}
 end
 
 Site.blueprint do
