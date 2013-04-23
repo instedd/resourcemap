@@ -15,7 +15,7 @@ gem "nuntium_api", "~> 0.13", :require => "nuntium"
 gem 'ice_cube'
 gem 'knockoutjs-rails'
 gem 'will_paginate'
-gem 'jquery-rails'
+gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
 gem 'uuidtools'
 
