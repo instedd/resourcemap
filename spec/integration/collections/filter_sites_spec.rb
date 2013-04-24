@@ -14,4 +14,5 @@ describe "filter_sites" do
     login_as (user)
     visit collections_path
   end
+  
 end
