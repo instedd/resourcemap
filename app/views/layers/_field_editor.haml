@@ -15,7 +15,7 @@
   %hr/
   %label{ko(css: {error: :nameError})} Name
   %p.smalltext The name of this field as it is presented.
-  = ko_text_field_tag :name, hasfocus: :hasFocus, css: {error: :nameError}
+  = ko_text_field_tag :name, hasfocus: :hasFocus, css: {error: :nameError}, html: { id: 'field_name'}
   %hr/
   %label{ko(css: {error: :codeError})} Code
   %p.smalltext The abbreviation used to report via SMS.
