@@ -10,12 +10,12 @@ module Capybara::CollectionHelper
     collection.sites.make(:name => 'Health Center', :lng => 14.3574, :lat => 26.7574)
   end
 
-  def create_layer_for
-  	Layer.make(collection_id: 1, :name => 'Central Hospital Layer 1')
+  def create_layer_for(collection)
+    collection.layers.make(:name => 'Central Hospital Layer 1')
   end
 
-  def create_field_for
-  	Field::TextField.make(:name => 'Central Hospital Layer 1 Field', collection_id: 1, layer_id: 1)
+  def create_field_for (layer)
+  	layer.text_fields.make(:name => 'Central Hospital Layer 1 Field', :code => 'CHL1F')
   end
 
 end
