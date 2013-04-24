@@ -9,6 +9,12 @@ describe "edit_site" do
     create_site_for (collection)
     login_as (user)
     visit collections_path
-    sleep 30
+    find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
+    find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
+    click_link 'Edit Site'
+    sleep 2
+  	fill_in 'locationText', :with => '-37.991902, -57.602087'
+  	click_button 'Done'
+  	page.should_not have_content ('26.7574, 14.3574')
   end
 end

@@ -10,6 +10,14 @@ describe "edit_field" do
     field = create_field_for (layer)
     login_as (@user)
     visit collections_path
+    page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
+    page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[1]/button[2]').click
+    click_link "Layers"
+    click_button "Edit"
+    fill_in 'field_name', :with => 'Test Field'
+    sleep 10
+    click_button 'Save layer'
+    page.save_screenshot 'Edit_field.png'
+    page.should have_content "Layer 'Central Hospital Layer 1' successfully saved"
   end
-
 end
