@@ -9,7 +9,7 @@ describe "bulk_upload" do
     visit collections_path
   	page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
   	page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[1]/button[2]').click
-	click_link "Upload it for bulk sites updates"
+	  click_link "Upload it for bulk sites updates"
   	sleep 3
   	page.has_content? ('#upload')
   	page.attach_file 'upload', 'Pesca_sites.csv'
