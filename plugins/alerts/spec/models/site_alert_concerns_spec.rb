@@ -11,6 +11,11 @@ describe Site::AlertConcerns do
   let!(:site1) { collection.sites.make :properties => { bed_field.es_code => 15, phone_field.es_code => '123456', email_field.es_code => 'foo@example.com', user_field.es_code => user.email}} 
   let!(:user_2) { User.make }
   let!(:user_3) { User.make }
+
+  before(:each) do
+    collection.memberships.create! :user_id => user_2.id
+    collection.memberships.create! :user_id => user_3.id
+  end
   
   describe "add new site" do 
     describe "when hit threshold" do
@@ -53,6 +58,7 @@ describe Site::AlertConcerns do
       describe "send email and sms to all selected fields, members and users" do
         let!(:threshold){ collection.thresholds.make is_notify: true, is_all_site: true, email_notification: {members: [user.id], fields: [email_field.es_code], users: [user_field.es_code]}, phone_notification: { members: [user.id], fields: [phone_field.es_code], users: [user_field.es_code]}, message_notification: "alert sms", conditions: [ field: bed_field.es_code, op: :lt, value: 10 ]}
         let!(:site) {collection.sites.make :properties => {bed_field.es_code => 5, phone_field.es_code => '123456', email_field.es_code => 'foo@example.com', user_field.es_code => user_2.email}}
+        
         it "should add sms_que into Resque.enqueue" do 
           SmsTask.should have_queued([user.phone_number, '123456', user_2.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
         end
@@ -71,7 +77,7 @@ describe Site::AlertConcerns do
         before(:each) do
           ResqueSpec.reset!
           site1.properties = {bed_field.es_code => 5, user_field.es_code => user_2.email}
-          site1.save
+          site1.save!
         end
         
         it "should add sms_que into Resque.enqueue" do 
@@ -88,7 +94,7 @@ describe Site::AlertConcerns do
         before(:each) do
           ResqueSpec.reset!
           site1.properties = {bed_field.es_code => 15}
-          site1.save 
+          site1.save!
         end
         it "should add sms_que into Resque.enqueue" do 
           SmsTask.should have_queued([user.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
@@ -104,7 +110,7 @@ describe Site::AlertConcerns do
         before(:each) do
           ResqueSpec.reset!
           site1.properties = {bed_field.es_code => 5, phone_field.es_code => user_2.phone_number, email_field.es_code => user_3.email}
-          site1.save 
+          site1.save!
         end
         it "should add sms_que into Resque.enqueue" do 
           SmsTask.should have_queued([user_2.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
@@ -120,7 +126,7 @@ describe Site::AlertConcerns do
         before(:each) do
           ResqueSpec.reset!
           site1.properties = {bed_field.es_code => 5, phone_field.es_code => user_2.phone_number, email_field.es_code => user_2.email, user_field.es_code => user_3.email}
-          site1.save
+          site1.save!
         end
         it "should add sms_que into Resque.enqueue" do 
           SmsTask.should have_queued([user.phone_number, user_2.phone_number, user_3.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)

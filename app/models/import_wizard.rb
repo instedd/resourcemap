@@ -96,7 +96,7 @@ class ImportWizard
       existing_fields = collection.fields.index_by &:id
 
       # Validate new fields
-      validate_columns(collection, columns_spec)
+      validate_columns_does_not_exist_in_collection(collection, columns_spec)
 
       # Read all the CSV to memory
       rows = CSV.read file_for(user, collection)
@@ -179,89 +179,60 @@ class ImportWizard
 
           case spec[:use_as]
           when 'new_field'
-            value = validate_format_value(spec, value, collection)
+
+            # New hierarchy fields cannot be created via import wizard
+            if spec[:kind] == 'hierarchy'
+              raise "Hierarchy fields can only be created via web in the Layers page"
+            end
 
             # For select one and many we need to collect the fields options
-            if spec[:kind] == 'select_one' || spec[:kind] == 'select_many'
-              field = fields[spec[:code]]
-              field.config ||= {'options' => [], 'next_id' => 1}
+            if spec[:kind] == 'select_one'  || spec[:kind] == 'select_many'
 
-              code = nil
-              label = nil
-
-              # Compute code and label based on the selectKind
-              case spec[:selectKind]
-              when 'code'
-                next unless spec[:related]
-
-                code = value
-                label = row[spec[:related][:index]]
-              when 'label'
-                # Processing just the code is enough
-                next
-              when 'both'
-                code = value
-                label = value
+              # For select_one fields each value will be only one option 
+              # and for select_many fields we may create more than one option per value
+              options_to_be_created = if spec[:kind] == 'select_many'
+                value.split(',').map{|v| v.strip}
+              else
+                [value]
               end
 
-              # Add to options, if not already present
-              if code.present? && label.present?
-                existing = field.config['options'].find{|x| x['code'] == code}
-                if existing
-                  value = existing['id']
-                else
-                  value = field.config['next_id']
-                  field.config['options'] << {'id' => field.config['next_id'], 'code' => code, 'label' => label}
-                  field.config['next_id'] += 1
+              options_to_be_created.each do |option|
+                field = fields[spec[:code]]
+                field.config ||= {'options' => [], 'next_id' => 1}
+
+                code = nil
+                label = nil
+
+                # Compute code and label based on the selectKind
+                case spec[:selectKind]
+                when 'code'
+                  next unless spec[:related]
+
+                  code = option
+                  label = row[spec[:related][:index]]
+                when 'label'
+                  # Processing just the code is enough
+                  next
+                when 'both'
+                  code = option
+                  label = option
+                end
+
+                # Add to options, if not already present
+                if code.present? && label.present?
+                  existing = field.config['options'].find{|x| x['code'] == code}
+                  if !existing
+                    field.config['options'] << {'id' => field.config['next_id'], 'code' => code, 'label' => label}
+                    field.config['next_id'] += 1
+                  end
                 end
               end
             end
 
             field = fields[spec[:code]]
-            site.properties[field] = field.strongly_type value
-
-          when 'existing_field'
-            existing_field = existing_fields[spec[:field_id].to_i]
-            if existing_field
-              if value.blank?
-                site.properties[existing_field] = nil
-              else
-                case existing_field.kind
-                  when 'numeric', 'text', 'site', 'user', 'yes_no'
-                    site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
-                  when 'select_one'
-                    existing_option = existing_field.config['options'].find { |x| x['code'] == value }
-                    if existing_option
-                      site.properties[existing_field] = existing_option['id']
-                    else
-                      site.properties[existing_field] = existing_field.config['next_id']
-                      existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => value, 'label' => value}
-                      existing_field.config['next_id'] += 1
-                    end
-                  when 'select_many'
-                    site.properties[existing_field] = []
-                    value.split(',').each do |v|
-                      v = v.strip
-                      existing_option = existing_field.config['options'].find { |x| x['code'] == v }
-                      if existing_option
-                        site.properties[existing_field] << existing_option['id']
-                      else
-                        site.properties[existing_field] << existing_field.config['next_id']
-                        existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => v, 'label' => v}
-                        existing_field.config['next_id'] += 1
-                      end
-                    end
-                  when 'hierarchy'
-                    site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
-                  when 'date'
-                    site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
-                end
-                if Field::plugin_kinds.has_key? existing_field.kind
-                  site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
-                end
-              end
-              fields[existing_field.code] = existing_field
-            end
+            site.use_codes_instead_of_es_codes = true
+            site.properties_will_change!
+            site.properties[field.code] = value
 
           when 'name'
             site.name = value
@@ -269,7 +240,49 @@ class ImportWizard
             site.lat = value
           when 'lng'
             site.lng = value
+
+
+          when 'existing_field'
+            existing_field = existing_fields[spec[:field_id].to_i]
+            if existing_field
+              site.use_codes_instead_of_es_codes = true
+
+              case existing_field.kind
+                when 'select_one'
+
+                  # Add option to field options if it doesnt exists
+                  existing_option = existing_field.config['options'].find { |x| x['code'] == value }
+                  if !existing_option
+                    existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => value, 'label' => value}
+                    existing_field.config['next_id'] += 1
+                  end
+
+                  site.properties_will_change!
+                  site.properties[existing_field.code] = value
+
+                when 'select_many'
+                  site.properties[existing_field.code] = []
+                  value.split(',').each do |v|
+                    v = v.strip
+
+                    # Add option to field options if it doesnt exists
+                    existing_option = existing_field.config['options'].find { |x| x['code'] == v }
+                    if !existing_option
+                      existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => v, 'label' => v}
+                      existing_field.config['next_id'] += 1
+                    end
+
+                    site.properties_will_change!
+                    site.properties[existing_field.code] << v
+                  end
+                else
+                  site.properties_will_change!
+                  site.properties[existing_field.code] = value
+              end
+              fields[existing_field] = existing_field
+            end
           end
+
         end
       end
 
@@ -287,8 +300,8 @@ class ImportWizard
         # Force computing bounds and such in memory, so a thousand callbacks are not called
         collection.compute_geometry_in_memory
 
-        # Need to change site properties from code to field.es_code
-        sites.each { |site| site.properties = Hash[site.properties.map { |k, v| [k.is_a?(Field) ? k.es_code : k, v] }] }
+        # Reload collection in order to invalidate cached collection.fields copy and to load the new ones
+        collection.fields.reload
 
         # This will update the existing sites
         sites.each { |site| site.save! unless site.new_record? }
@@ -305,7 +318,7 @@ class ImportWizard
       File.delete(file_for(user, collection))
     end
 
-    def validate_columns(collection, columns_spec)
+    def validate_columns_does_not_exist_in_collection(collection, columns_spec)
       collection_fields = collection.fields.all(:include => :layer)
       columns_spec.each do |col_spec|
         if col_spec[:use_as] == 'new_field'
@@ -455,9 +468,9 @@ class ImportWizard
         # options will be created
         return field_value
       end
-
+  
       column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
-
+  
       sample_field = Field.new kind: column_spec[:kind], code: column_header
       sample_field.apply_format_update_validation(field_value, true, collection)
     end

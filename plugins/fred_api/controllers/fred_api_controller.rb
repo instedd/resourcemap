@@ -37,10 +37,13 @@ class FredApiController < ApplicationController
       render  json: { message: "Invalid Paramaters: The id, uuid, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400
       return  
     end 
-    validated_facility = validate_site_params(facility_params)
+    facility_params = validate_site_params(facility_params)
+
+    site.use_codes_instead_of_es_codes = true
     site.user = current_user
     site.properties_will_change!
-    site.update_attributes! validated_facility
+    site.update_attributes! facility_params
+
     render json: find_facility_and_apply_fred_format(site.id), status: :ok, :location => url_for_facility(site.id)
   end
 
@@ -51,8 +54,10 @@ class FredApiController < ApplicationController
       render  json: { message: "Invalid Paramaters: The id, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400
       return
     end
-    validated_facility = validate_site_params(facility_params)
-    facility = collection.sites.create!(validated_facility.merge(user: current_user))
+    facility_params = validate_site_params(facility_params)
+    facility = collection.sites.new
+    facility.use_codes_instead_of_es_codes = true
+    facility.update_attributes! facility_params.merge(user: current_user)
     render json: find_facility_and_apply_fred_format(facility.id), status: :created, :location => url_for_facility(facility.id)
   end
 
@@ -150,36 +155,17 @@ class FredApiController < ApplicationController
       facility_param.delete("active")
     end
 
-    fields = collection.fields
+    fields = collection.fields.index_by(&:code)
     properties = facility_param["properties"] || {}
-    identifiers = facility_param["identifiers"] || []
 
-    validated_properties = {}
     properties.each_pair do |code, value|
-      field = fields.find_by_code code
-
+      field = fields[code]
       if field.nil?
         raise "Invalid Parameters: Cannot find Field with code equal to '#{code}' in Collection's Layers."
       end
-
-      validated_value = field.apply_format_update_validation(value, true, collection)
-      validated_properties["#{field.es_code}"] = validated_value
-
     end
 
-    identifiers_fields = collection.fields.find_all{|f| f.identifier?}
-    identifiers.each do |identifier|
-      field = identifiers_fields.find{|f| f.context == identifier["context"] && f.agency == identifier["agency"] }
-
-      if field.nil?
-        raise "Invalid Parameters: Cannot find Identifier Field with context equal to '#{identifier["context"]}' and agency equal to '#{identifier["agency"]}' in Collection's Layers."
-      end
-
-      if field
-        validated_value = field.apply_format_update_validation(identifier["id"], true, collection)
-        validated_properties["#{field.es_code}"] = validated_value
-      end
-    end
+    properties_with_identifiers = properties.merge(convert_to_properties(facility_param["identifiers"]))
 
     lat = facility_param["coordinates"][1] if facility_param["coordinates"]
     lng = facility_param["coordinates"][0] if facility_param["coordinates"]
@@ -188,11 +174,23 @@ class FredApiController < ApplicationController
     facility_param.delete "identifiers"
 
     validated_site = facility_param
-    validated_site["properties"] = validated_properties
+    validated_site["properties"] = properties_with_identifiers
     validated_site["lat"] = lat
     validated_site["lng"] = lng
 
     validated_site
+  end
+
+  def convert_to_properties(params_idetifiers)
+    identifiers = params_idetifiers || []
+    as_properties = {}
+    identifiers_fields = collection.fields.find_all{|f| f.identifier?}
+    identifiers.each do |identifier|
+      field = identifiers_fields.find{|f| f.context == identifier["context"] && f.agency == identifier["agency"] }
+      raise "Invalid Parameters: Cannot find Identifier Field with context equal to '#{identifier["context"]}' and agency equal to '#{identifier["agency"]}' in Collection's Layers." if field.nil?
+      as_properties["#{field.code}"] = identifier["id"]
+    end
+    as_properties
   end
 
   def select_properties(facilities, fields_list)
@@ -261,6 +259,7 @@ class FredApiController < ApplicationController
   end
 
   def default_rescue(ex)
+    puts ex.message
     render json: {code: "500 Internal Server Error",  message: "#{ex.message}"}, status: 500, :layout => false
   end
 

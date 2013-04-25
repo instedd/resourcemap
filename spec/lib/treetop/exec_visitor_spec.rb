@@ -124,6 +124,7 @@ describe ExecVisitor, "Process update command" do
     @f1 = @layer.numeric_fields.make(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1)
     @f2 = @layer.numeric_fields.make(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1)
     @site = @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
+    @site.user = @user
     @collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
     @node = parser.parse('dyrm u AB1 ambulances=15,doctors=20').command
     @node.sender = @user
@@ -181,7 +182,7 @@ describe ExecVisitor, "Process update command" do
   it "should update field Ambulance to 15 and Doctor to 20" do
     @visitor.visit_update_command(@node).should == ExecVisitor::MSG[:update_successfully]
     site = Site.find_by_id_with_prefix('AB1')
-    site.properties[@f1.id.to_s].to_i.should == 15
-    site.properties[@f2.id.to_s].to_i.should == 20
+    site.properties[@f1.es_code].to_i.should == 15
+    site.properties[@f2.es_code].to_i.should == 20
   end
 end

@@ -201,7 +201,7 @@ describe Api::CollectionsController do
     it "should validate hierarchy existing option" do
       get :show, id: collection.id, format: 'csv', hierarchy.code => ["invalid"]
       response.response_code.should be(400)
-      response.body.should include("Invalid option in field hierarchy")
+      response.body.should include("Invalid hierarchy option in field hierarchy")
       get :show, id: collection.id, format: 'csv', hierarchy.code => ["Dad"]
       response.response_code.should be(200)
     end

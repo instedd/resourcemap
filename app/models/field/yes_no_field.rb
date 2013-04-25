@@ -6,7 +6,7 @@ class Field::YesNoField < Field
 	end
 
 	def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
-		value.blank? ? nil : Field.yes?(value)
+		(value == nil || value == '') ? nil : Field.yes?(value)
 	end
 
 end

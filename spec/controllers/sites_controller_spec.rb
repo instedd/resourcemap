@@ -47,7 +47,7 @@ describe SitesController do
     validate_site_property_value(site, hierarchy, "101")
     post :update_property, site_id: site.id, format: 'json', es_code: hierarchy.es_code, value: "Dad"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid option in field #{hierarchy.code}")
+    json["error_message"].should eq("Invalid hierarchy option in field #{hierarchy.code}")
   end
 
   it "should validate format for select_one field" do

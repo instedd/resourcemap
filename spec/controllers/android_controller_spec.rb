@@ -32,14 +32,14 @@ describe AndroidController do
         <lat type='float'>11.53<\/lat>
         <lng type='float'>104.93<\/lng>
         <existing-fields>
-          <field-14>
-            <field-id>14<\/field-id>
+          <field-#{text.id}>
+            <field-id>#{text.id}<\/field-id>
             <value>Who know?<\/value>
-          <\/field-14>
-          <field-15>
-            <field-id>15<\/field-id>
+          <\/field-#{text.id}>
+          <field-#{numeric.id}>
+            <field-id>#{numeric.id}<\/field-id>
             <value>10<\/value>
-          <\/field-15>
+          <\/field-#{numeric.id}>
         <\/existing-fields>
       <\/site>"
 

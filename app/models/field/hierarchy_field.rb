@@ -32,7 +32,6 @@ class Field::HierarchyField < Field
     hierarchy_options_names.take(3).join(", ")
   end
 
-
   def hierarchy_options
     options = []
     config['hierarchy'].each do |option|
@@ -52,6 +51,18 @@ class Field::HierarchyField < Field
   end
 
 	private
+
+  def check_option_exists(value, use_codes_instead_of_es_codes)
+    value_id = nil
+    if use_codes_instead_of_es_codes
+      value_id = find_hierarchy_id_by_name(value)
+      value_id = value if value_id.nil? && !find_hierarchy_name_by_id(value).nil?
+    else
+      value_id = value unless !hierarchy_options_codes.map{|o|o.to_s}.include? value.to_s
+    end
+    raise "Invalid hierarchy option in field #{code}" if value_id.nil?
+    value_id
+  end
 
 	def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
     start_at.each do |item|

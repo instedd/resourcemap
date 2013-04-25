@@ -516,17 +516,17 @@ describe ImportWizard do
       select_one.es_code => 1,
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
-      site.es_code => 1234,
       date.es_code => "2012-10-24T03:00:00.000Z",
       director.es_code => user.email
     }
+    site1.properties[site.es_code] = site1.id
 
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
 
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Yes no', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
-      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'no', 'two', 'two', 'Dad',  1235, '12/26/1988', 'user2@email.com']
+      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'no', 'two', 'two, one', 'Dad',  1235, '12/26/1988', 'user2@email.com']
     end
 
     specs = [
@@ -563,7 +563,7 @@ describe ImportWizard do
       numeric.es_code => 11,
       yes_no.es_code => false,
       select_one.es_code => 2,
-      select_many.es_code => [2],
+      select_many.es_code => [2, 1],
       hierarchy.es_code => '60',
       site.es_code => '1235',
       date.es_code => "1988-12-26T00:00:00Z",
@@ -582,10 +582,11 @@ describe ImportWizard do
       select_one.es_code => 1,
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
-      site.es_code => 1234,
       date.es_code => "2012-10-24T03:00:00.000Z",
       director.es_code => user.email
     }
+    site1.properties[site.es_code] = site1.id
+
 
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
@@ -926,13 +927,13 @@ describe ImportWizard do
       {header: 'Text', use_as: 'new_field', kind: 'text', code: 'text', label: 'Non Existing field'},
     ]
 
-    expect {ImportWizard.validate_columns collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with code 'text' already exists in the layer named #{layer.name}")
+    expect {ImportWizard.validate_columns_does_not_exist_in_collection collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with code 'text' already exists in the layer named #{layer.name}")
 
     column_spec = [
      {header: 'Text', use_as: 'new_field', kind: 'text', code: 'newtext', label: 'Existing field'},
     ]
 
-    expect {ImportWizard.validate_columns collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
+    expect {ImportWizard.validate_columns_does_not_exist_in_collection collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
 
     ImportWizard.delete_file(user, collection)
   end

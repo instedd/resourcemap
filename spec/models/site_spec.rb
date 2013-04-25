@@ -30,6 +30,14 @@ describe Site do
     site.human_properties.should eq({'room' => 50, 'desk' => 'bla bla', 'creation' => '09/22/2012' })
   end
 
+  it "should save yes_no property with value 'false' "  do
+    yes_no_field = layer.yes_no_fields.make :code => 'X Ray machine'
+    site.properties[yes_no_field.es_code] = false
+    site.save!
+    site.reload
+    site.properties[yes_no_field.es_code].should eq(false)
+  end
+
   describe "create or update from hash" do
     before(:each) do
       @hash = { "collection_id" => layer.collection.id,

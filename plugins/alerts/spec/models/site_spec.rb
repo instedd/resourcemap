@@ -26,6 +26,7 @@ describe Site do
     let!(:telephone) { layer.phone_fields.make code: 'tel'}
     let!(:owner) { layer.user_fields.make code: 'owner'}
     let!(:user_2) { User.make }
+    let!(:membership) { collection.memberships.create! :user_id => user_2.id }
     let!(:alert) { collection.thresholds.make phone_notification: {members: [user.id], fields: [telephone.es_code], users: [owner.es_code]} }
     let!(:site) { collection.sites.make properties: {telephone.es_code => '123456', owner.es_code => user_2.email} }
 
@@ -80,6 +81,7 @@ describe Site do
     let!(:email) { layer.email_fields.make code: 'email'}
     let!(:owner) { layer.user_fields.make code: 'owner' }
     let!(:user_2) { User.make }
+    let!(:membership) { collection.memberships.create! :user_id => user_2.id }
     let!(:alert) { collection.thresholds.make email_notification: {members: [user.id], fields: [email.es_code], users: [owner.es_code]} }
     let!(:site) { collection.sites.make properties: {email.es_code => 'info@example.com', owner.es_code => user_2.email} }
 

@@ -43,7 +43,7 @@ module Field::Base
   end
 
   def allow_decimals?
-    config && config['allows_decimals'] == "true"
+    config && config.with_indifferent_access[:allows_decimals] == "true"
   end
 
   def strongly_type(value)

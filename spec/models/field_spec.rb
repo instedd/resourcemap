@@ -231,20 +231,20 @@ describe Field do
 
       it "should validate format for hierarchy field" do
         hierarchy.apply_format_update_validation("101", false, collection).should == "101"
-        expect { hierarchy.apply_format_update_validation("Dad", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{hierarchy.code}")
-        expect { hierarchy.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{hierarchy.code}")
+        expect { hierarchy.apply_format_update_validation("Dad", false, collection) }.to raise_error(RuntimeError, "Invalid hierarchy option in field #{hierarchy.code}")
+        expect { hierarchy.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid hierarchy option in field #{hierarchy.code}")
       end
 
       it "should validate format for select_one field" do
         select_one.apply_format_update_validation(1, false, collection).should == 1
-        select_one.apply_format_update_validation("1", false, collection).should == "1"
+        select_one.apply_format_update_validation("1", false, collection).should == 1
         expect { select_one.apply_format_update_validation("one", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_one.code}")
         expect { select_one.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_one.code}")
       end
 
       it "should validate format for select_many field" do
         select_many.apply_format_update_validation([2], false, collection).should == [2]
-        select_many.apply_format_update_validation(["2", "1"], false, collection).should == ["2", "1"]
+        select_many.apply_format_update_validation(["2", "1"], false, collection).should == [2, 1]
         expect { select_many.apply_format_update_validation(["two",], false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_many.code}")
         expect { select_many.apply_format_update_validation("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_many.code}")
       end
