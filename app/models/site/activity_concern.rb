@@ -42,7 +42,6 @@ module Site::ActivityConcern
     end
 
     if site_changes.present?
-      binding.pry
       Activity.create! item_type: 'site', action: 'changed', collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => @name_was || name, 'changes' => site_changes}
     end
   end
