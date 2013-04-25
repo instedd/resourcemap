@@ -15,6 +15,7 @@ describe "edit_site" do
     sleep 2
   	fill_in 'locationText', :with => '-37.991902, -57.602087'
   	click_button 'Done'
+  	sleep 5
   	page.should_not have_content ('26.7574, 14.3574')
   end
 end

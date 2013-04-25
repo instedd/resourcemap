@@ -12,7 +12,7 @@ describe "create_site" do
   	fill_in 'name', :with => 'New site'
   	fill_in 'locationText', :with => '-37.991902, -57.602087'
   	click_button 'Done'
-  	sleep 1
+  	sleep 5
   	page.save_screenshot 'Create site.png'
   	page.should have_content "Site 'New site' successfully created"
   end
