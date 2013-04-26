@@ -111,12 +111,6 @@ onCollections ->
 
     post: (json, callback) =>
 
-      callback_new_site = (data) =>
-          @propagateUpdatedAt(data.updated_at)
-          @id(data.id)
-          @idWithPrefix(data.id_with_prefix)
-          $.status.showNotice "Site '#{@name()}' successfully created", 2000
-
       data = {site: JSON.stringify json}
       if @id()
         $.ajax({
@@ -154,6 +148,9 @@ onCollections ->
             for field in @collection.fields()
               field.errorMessage("")
             @propagateUpdatedAt(data.updated_at)
+            @id(data.id)
+            @idWithPrefix(data.id_with_prefix)
+            $.status.showNotice "Site '#{@name()}' successfully created", 2000
             callback(data) if callback && typeof(callback) == 'function' )
           # This prevent ajaxError global handler from being triggered.
           global: false
