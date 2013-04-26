@@ -113,7 +113,10 @@ onCollections ->
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
 
-      @editingSite().post @editingSite().toJSON(), callback
+      if @editingSite().id()
+        @editingSite().update_site(@editingSite().toJSON(), callback)
+      else
+        @editingSite().create_site(@editingSite().toJSON(), callback)
 
     @exitSite: ->
       if !@editingSite()?.inEditMode()

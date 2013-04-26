@@ -109,11 +109,9 @@ onCollections ->
 
             field.value(value)
 
-    post: (json, callback) =>
-
+    update_site: (json, callback) =>
       data = {site: JSON.stringify json}
-      if @id()
-        $.ajax({
+      $.ajax({
           type: "PUT",
           url: "/collections/#{@collection.id}/sites/#{@id()}.json",
           data: data,
@@ -139,8 +137,10 @@ onCollections ->
             # TODO: Is there a way to call ajaxError manually?
             $.status.showError('Unexpected error occurred, please refresh the page.');
           )
-      else
-        $.ajax({
+
+    create_site: (json, callback) =>
+      data = {site: JSON.stringify json}
+      $.ajax({
           type: "POST",
           url: "/collections/#{@collection.id}/sites",
           data: data,
@@ -168,7 +168,7 @@ onCollections ->
             # If an error with status != 422 is returned we need to show an error message.
             # TODO: Is there a way to call ajaxError manually?
             $.status.showError('Unexpected error occurred, please refresh the page.');
-          )
+          )        
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
