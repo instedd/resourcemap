@@ -31,19 +31,29 @@ class SitesController < ApplicationController
 
   def create
     site_params = JSON.parse params[:site]
-    site = collection.sites.create(site_params.merge(user: current_user))
-    current_user.site_count += 1
-    current_user.update_successful_outcome_status
-    current_user.save!
-    render json: site
+    site = collection.sites.new(site_params.merge(user: current_user))
+    if site.valid?
+      site.save!
+      current_user.site_count += 1
+      current_user.update_successful_outcome_status
+      current_user.save!
+      render json: site, :layout => false
+    else
+      render json: site.errors.messages, status: :unprocessable_entity, :layout => false
+    end
   end
 
   def update
     site_params = JSON.parse params[:site]
     site.user = current_user
     site.properties_will_change!
-    site.update_attributes! site_params
-    render json: site
+    site.attributes = site_params
+    if site.valid?
+      site.save!
+      render json: site, :layout => false
+    else
+      render json: site.errors.messages, status: :unprocessable_entity, :layout => false
+    end
   end
 
   def update_property

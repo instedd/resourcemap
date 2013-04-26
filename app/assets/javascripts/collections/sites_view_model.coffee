@@ -97,6 +97,7 @@ onCollections ->
     @saveSite: ->
       return unless @editingSite().valid()
 
+      callback = (data) =>
         @currentCollection().reloadSites()
 
         @editingSite().updatedAt(data.updated_at)
@@ -112,7 +113,7 @@ onCollections ->
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
 
-      @editingSite().post @editingSite().toJSON()
+      @editingSite().post @editingSite().toJSON(), callback
 
     @exitSite: ->
       if !@editingSite()?.inEditMode()

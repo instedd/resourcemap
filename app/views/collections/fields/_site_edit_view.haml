@@ -1,6 +1,6 @@
 - if single_editing_mode
-  %input.autocomplete-site-input.ux-search{ ko(autocomplete: :valueUI, value: :valueUI, hasfocus: true, event: {keydown: :keyPress, blur: :save}, valueUpdate: :afterkeydown, source: "$root.currentCollection().searchSitesUrl()"), type: :text }
+  %input.autocomplete-site-input.ux-search{ ko(autocomplete: :valueUI, value: :valueUI, hasfocus: true, event: {keydown: :keyPress, blur: :save}, valueUpdate: :afterkeydown, source: "$root.currentCollection().searchSitesUrl()", css: { error: :error }), type: :text  }
 - else
-  %input.autocomplete-site-input.ux-search.right.w20{ ko(autocomplete: :valueUI, value: :valueUI, source: "$root.currentCollection().searchSitesUrl()", valueUpdate: 'afterkeydown'), type: :text }
+  %input.autocomplete-site-input.ux-search.right.w20{ ko(autocomplete: :valueUI, value: :valueUI, source: "$root.currentCollection().searchSitesUrl()", valueUpdate: 'afterkeydown', css: { error: :error }), type: :text }
   .clear
 

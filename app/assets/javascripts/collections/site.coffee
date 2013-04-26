@@ -109,12 +109,9 @@ onCollections ->
 
             field.value(value)
 
-    post: (json) =>
-      callback_udpate = (data) =>
-        @propagateUpdatedAt(data.updated_at)
+    post: (json, callback) =>
 
       callback_new_site = (data) =>
-
           @propagateUpdatedAt(data.updated_at)
           @id(data.id)
           @idWithPrefix(data.id_with_prefix)
@@ -122,10 +119,59 @@ onCollections ->
 
       data = {site: JSON.stringify json}
       if @id()
-        data._method = 'put'
-        $.post "/collections/#{@collection.id}/sites/#{@id()}.json", data, callback_udpate, 'json'
+        $.ajax({
+          type: "PUT",
+          url: "/collections/#{@collection.id}/sites/#{@id()}.json",
+          data: data,
+          success: ((data) =>
+            for field in @collection.fields()
+              field.errorMessage("")
+            @propagateUpdatedAt(data.updated_at)
+            callback(data) if callback && typeof(callback) == 'function' )
+          # This prevent ajaxError global handler from being triggered.
+          global: false
+        }).fail((data) =>
+          propertyErrors = JSON.parse(data.responseText)["properties"]
+          for field in @collection.fields()
+              field.errorMessage("")
+          if data.status == 422 && propertyErrors
+            for prop in propertyErrors 
+              for es_code, value of prop
+                f = @collection.findFieldByEsCode(es_code)
+                f.errorMessage(value)
+          else
+            # We are not calling ajaxError global handler.
+            # If an error with status != 422 is returned we need to show an error message.
+            # TODO: Is there a way to call ajaxError manually?
+            $.status.showError('Unexpected error occurred, please refresh the page.');
+          )
       else
-        $.post "/collections/#{@collection.id}/sites", data, callback_new_site
+        $.ajax({
+          type: "POST",
+          url: "/collections/#{@collection.id}/sites",
+          data: data,
+          success: ((data) =>
+            for field in @collection.fields()
+              field.errorMessage("")
+            @propagateUpdatedAt(data.updated_at)
+            callback(data) if callback && typeof(callback) == 'function' )
+          # This prevent ajaxError global handler from being triggered.
+          global: false
+        }).fail((data) =>
+          propertyErrors = JSON.parse(data.responseText)["properties"]
+          for field in @collection.fields()
+              field.errorMessage("")
+          if data.status == 422 && propertyErrors
+            for prop in propertyErrors 
+              for es_code, value of prop
+                f = @collection.findFieldByEsCode(es_code)
+                f.errorMessage(value)
+          else
+            # We are not calling ajaxError global handler.
+            # If an error with status != 422 is returned we need to show an error message.
+            # TODO: Is there a way to call ajaxError manually?
+            $.status.showError('Unexpected error occurred, please refresh the page.');
+          )
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)

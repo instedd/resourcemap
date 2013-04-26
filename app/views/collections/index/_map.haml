@@ -134,6 +134,7 @@
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
               %div
+                %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
                 <!-- ko if: !writeable -->
                 %span.value{ko(text: :valueUI)}
