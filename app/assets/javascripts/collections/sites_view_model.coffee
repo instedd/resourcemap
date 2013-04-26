@@ -97,12 +97,6 @@ onCollections ->
     @saveSite: ->
       return unless @editingSite().valid()
 
-      callback = (data) =>
-        unless @editingSite().id()
-          @editingSite().id(data.id)
-          @editingSite().idWithPrefix(data.id_with_prefix)
-          $.status.showNotice "Site '#{@editingSite().name()}' successfully created", 2000
-
         @currentCollection().reloadSites()
 
         @editingSite().updatedAt(data.updated_at)
@@ -118,7 +112,7 @@ onCollections ->
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
 
-      @editingSite().post @editingSite().toJSON(), callback
+      @editingSite().post @editingSite().toJSON()
 
     @exitSite: ->
       if !@editingSite()?.inEditMode()

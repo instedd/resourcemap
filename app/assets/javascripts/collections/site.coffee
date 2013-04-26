@@ -30,9 +30,10 @@ onCollections ->
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
-      @valid = ko.computed => @hasName()
+      @valid = ko.computed => @hasName() 
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
+
     hasLocation: => @position() != null
 
     hasName: => $.trim(@name()).length > 0
@@ -108,17 +109,23 @@ onCollections ->
 
             field.value(value)
 
-    post: (json, callback) =>
-      callback_with_updated_at = (data) =>
+    post: (json) =>
+      callback_udpate = (data) =>
         @propagateUpdatedAt(data.updated_at)
-        callback(data) if callback && typeof(callback) == 'function'
+
+      callback_new_site = (data) =>
+
+          @propagateUpdatedAt(data.updated_at)
+          @id(data.id)
+          @idWithPrefix(data.id_with_prefix)
+          $.status.showNotice "Site '#{@name()}' successfully created", 2000
 
       data = {site: JSON.stringify json}
       if @id()
         data._method = 'put'
-        $.post "/collections/#{@collection.id}/sites/#{@id()}.json", data, callback_with_updated_at, 'json'
+        $.post "/collections/#{@collection.id}/sites/#{@id()}.json", data, callback_udpate, 'json'
       else
-        $.post "/collections/#{@collection.id}/sites", data, callback_with_updated_at
+        $.post "/collections/#{@collection.id}/sites", data, callback_new_site
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
