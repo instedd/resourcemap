@@ -175,7 +175,7 @@ describe ExecVisitor, "Process update command" do
   it "should update property  of the site" do
     Site.should_receive(:find_by_id_with_prefix).with('AB1').and_return(@site)
     @visitor.should_receive(:can_update?).and_return(true)
-    @site.should_receive(:update_properties).with(@site, @node.sender, [{:code=>"ambulances", :value=>"15"}, {:code=>"doctors", :value=>"20"}])
+    @visitor.should_receive(:update_properties).with(@site, @node.sender, [{:code=>"ambulances", :value=>"15"}, {:code=>"doctors", :value=>"20"}])
     @visitor.visit_update_command(@node).should == ExecVisitor::MSG[:update_successfully]
   end
 

@@ -25,14 +25,6 @@ class Site < ActiveRecord::Base
     @extended_properties ||= Hash.new
   end
 
-  def update_properties(site, user, props)
-    props.each do |p|
-      field = Field.find_by_code(p.values[0])
-      site.properties[field.id.to_s] = p.values[1]
-    end
-    site.save!
-  end
-
   def human_properties
     fields = collection.fields.index_by(&:es_code)
 

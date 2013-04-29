@@ -51,7 +51,16 @@ def initialize(context={})
   
   def update(site, node, sender)
     properties = node_to_properties(node)
-		site.update_properties site, sender, properties
+    update_properties site, sender, properties
+  end
+
+  def update_properties(site, user, props)
+    site.user = user
+    props.each do |p|
+      field = Field.find_by_code(p.values[0])
+      site.properties[field.es_code] = p.values[1]
+    end
+    site.save!
   end
 
   def node_to_properties(node)
