@@ -103,7 +103,7 @@
 
   -# New Site or Edit Site form
   <!-- ko if: newOrEditSite -->
-  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
+  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), novalidate: 'novalidate', action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
     .tableheader.w30
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
@@ -157,7 +157,7 @@
 
   -# Show Site form
   <!-- ko if: showSite -->
-  %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline;width:100%'}
+  %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, novalidate: 'novalidate', style: 'display:inline;width:100%'}
     .tableheader.w30
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
