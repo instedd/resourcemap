@@ -1,9 +1,13 @@
 - content_for :head do
   :javascript
-    $(document).ajaxError(function(event, xhr, settings, error) {
-      if (xhr.status !== 0 && xhr.readyState !== 0) {
+    $.handleAjaxError = function(xhr) {
+      if (!xhr || (xhr.status !== 0 && xhr.readyState !== 0)) {
         $.status.showError('Unexpected error occurred, please refresh the page.');
       }
+    };
+    
+    $(document).ajaxError(function(event, xhr, settings, error) {
+      $.handleAjaxError(xhr)
     });
 
 - content_for :navigation do

@@ -65,20 +65,17 @@ onCollections ->
         success: ((data) =>
           field.errorMessage("")
           @propagateUpdatedAt(data.updated_at)),
-        # This prevent ajaxError global handler from being triggered.
         global: false
       })
       .fail((data) =>
-        responseMessage = JSON.parse(data.responseText)
-        if data.status == 422 && responseMessage && responseMessage.error_message
-          # Validation error
-          field.errorMessage(responseMessage.error_message) 
-        else
-          # We are not calling ajaxError global handler.
-          # If an error with status != 422 is returned we need to show an error message.
-          # TODO: Is there a way to call ajaxError manually?
-          $.status.showError('Unexpected error occurred, please refresh the page.');
-        )
+        try
+          responseMessage = JSON.parse(data.responseText) 
+          if data.status == 422 && responseMessage && responseMessage.error_message
+            field.errorMessage(responseMessage.error_message) 
+          else
+            $.handleAjaxError(data)
+        catch error
+          $.handleAjaxError(data))
           
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
@@ -120,23 +117,22 @@ onCollections ->
               field.errorMessage("")
             @propagateUpdatedAt(data.updated_at)
             callback(data) if callback && typeof(callback) == 'function' )
-          # This prevent ajaxError global handler from being triggered.
           global: false
         }).fail((data) =>
-          propertyErrors = JSON.parse(data.responseText)["properties"]
-          for field in @collection.fields()
-              field.errorMessage("")
-          if data.status == 422 && propertyErrors
-            for prop in propertyErrors 
-              for es_code, value of prop
-                f = @collection.findFieldByEsCode(es_code)
-                f.errorMessage(value)
-          else
-            # We are not calling ajaxError global handler.
-            # If an error with status != 422 is returned we need to show an error message.
-            # TODO: Is there a way to call ajaxError manually?
-            $.status.showError('Unexpected error occurred, please refresh the page.');
-          )
+          try
+            propertyErrors = JSON.parse(data.responseText)["properties"]
+            for field in @collection.fields()
+                field.errorMessage("")
+            if data.status == 422 && propertyErrors
+              for prop in propertyErrors 
+                for es_code, value of prop
+                  f = @collection.findFieldByEsCode(es_code)
+                  f.errorMessage(value)
+            else
+              $.handleAjaxError(data)
+          catch error
+              $.handleAjaxError(data))
+
 
     create_site: (json, callback) =>
       data = {site: JSON.stringify json}
@@ -152,23 +148,22 @@ onCollections ->
             @idWithPrefix(data.id_with_prefix)
             $.status.showNotice "Site '#{@name()}' successfully created", 2000
             callback(data) if callback && typeof(callback) == 'function' )
-          # This prevent ajaxError global handler from being triggered.
           global: false
         }).fail((data) =>
-          propertyErrors = JSON.parse(data.responseText)["properties"]
-          for field in @collection.fields()
-              field.errorMessage("")
-          if data.status == 422 && propertyErrors
-            for prop in propertyErrors 
-              for es_code, value of prop
-                f = @collection.findFieldByEsCode(es_code)
-                f.errorMessage(value)
-          else
-            # We are not calling ajaxError global handler.
-            # If an error with status != 422 is returned we need to show an error message.
-            # TODO: Is there a way to call ajaxError manually?
-            $.status.showError('Unexpected error occurred, please refresh the page.');
-          )        
+          try
+            propertyErrors = JSON.parse(data.responseText)["properties"]
+            for field in @collection.fields()
+                field.errorMessage("")
+            if data.status == 422 && propertyErrors
+              for prop in propertyErrors 
+                for es_code, value of prop
+                  f = @collection.findFieldByEsCode(es_code)
+                  f.errorMessage(value)
+            else
+              $.handleAjaxError(data)
+          catch error
+            $.handleAjaxError(data))
+  
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
