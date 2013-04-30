@@ -7,6 +7,7 @@ describe "change_tab_activity" do
     login_as (@user)
     visit collections_path
     click_link ('Activity')
+    sleep 3
     page.save_screenshot 'TabActivity'
     page.should have_content ('Activity')
   end
