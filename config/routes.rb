@@ -47,11 +47,9 @@ ResourceMap::Application.routes.draw do
 
     post 'upload_csv'
 
-    member do
-      post 'create_snapshot'
-      post 'load_snapshot'
-      post 'unload_current_snapshot'
-    end
+    post 'create_snapshot'
+    post 'load_snapshot'
+    post 'unload_current_snapshot'
 
     get 'recreate_index'
     get 'search'

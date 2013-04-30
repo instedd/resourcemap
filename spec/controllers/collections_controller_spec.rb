@@ -39,6 +39,12 @@ describe CollectionsController do
     res.should == "Error: Wrong format. Invalid column number in line 1.<br/>Error: Wrong format. Invalid column number in line 2."
   end
 
+  it "should not throw error when calling unload_current_snapshot and no snapshot is set" do
+    post :unload_current_snapshot, collection_id: collection.id
+    assert_nil flash[:notice]
+    assert_redirected_to collection_url(collection.id)
+  end
+
   describe "get ES resutls" do
       before(:each) do
         layer = collection.layers.make
