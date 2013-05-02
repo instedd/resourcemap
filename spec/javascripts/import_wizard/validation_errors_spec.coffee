@@ -7,7 +7,7 @@ describe 'ValidationErrors', ->
     window.model.initialize(1, layers, columns)
 
   it 'should evaluate if there are errors in @errors', ->
-    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], duplicated_usage: [], data_errors: []}
     empty_val_errors = new ValidationErrors(errors)
     expect(empty_val_errors.hasErrors()).toBe(false)
     errors.duplicated_code = {'text_column':[0, 1]}
@@ -15,7 +15,7 @@ describe 'ValidationErrors', ->
     expect(val_errors.hasErrors()).toBe(true)
 
   check_duplicated_field_assertion = (error_type, column_name, proc) ->
-    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], duplicated_usage: [], data_errors: []}
     proc(errors)
     val_errors = new ValidationErrors(errors)
     redeable_errors = val_errors.processErrors()
@@ -30,7 +30,7 @@ describe 'ValidationErrors', ->
     expect(first_error.more_info).toEqual("Columns 1 and 2 have #{error_type} #{column_name}. To fix this issue, leave only one with that #{error_type} and modify the rest.")
 
   check_existing_field_assertion = (error_type, column_name, proc) ->
-    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], duplicated_usage: [], data_errors: []}
     proc(errors)
     val_errors = new ValidationErrors(errors)
     redeable_errors = val_errors.processErrors()
@@ -46,7 +46,7 @@ describe 'ValidationErrors', ->
     expect(first_error.more_info).toEqual("Columns 1 and 2 have #{error_type} #{column_name}. To fix this issue, change all their #{error_type}s.")
 
   check_duplicated_usage = (error_type, column_name, proc) ->
-    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], duplicated_usage: [], data_errors: []}
     proc(errors)
     val_errors = new ValidationErrors(errors)
     redeable_errors = val_errors.processErrors()
@@ -57,6 +57,30 @@ describe 'ValidationErrors', ->
     expect(first_error.description).toBe("Only one column can be the #{column_name}.")
     expect(first_error.columns).toEqual([0,1])
     expect(first_error.more_info).toEqual("Columns 1 and 2 are marked as #{column_name}. To fix this issue, leave only one of them assigned as '#{column_name}' and modify the rest.")
+
+  check_missing_element_assertion_plural = (missing_element, proc) ->
+    errors = {missing_label:[], missing_code: []}
+    proc(errors)
+    val_errors = new ValidationErrors(errors)
+    redeable_errors = val_errors.processErrors()
+    expect(redeable_errors.length).toBe(1)
+    first_error = redeable_errors[0]
+    expect(first_error.error_kind).toBe("missing_#{missing_element}")
+    expect(first_error.description).toBe("Columns 2, 3 and 4 are missing the field's #{missing_element}.")
+    expect(first_error.columns).toEqual([1,2,3])
+    expect(first_error.more_info).toEqual("Columns 2, 3 and 4 are missing the field's #{missing_element}, which is required for new fields. To fix this issue, add a #{missing_element} for each of these columns.")
+
+  check_missing_element_assertion = (missing_element, proc) ->
+    errors = {missing_label:[], missing_code: []}
+    proc(errors)
+    val_errors = new ValidationErrors(errors)
+    redeable_errors = val_errors.processErrors()
+    expect(redeable_errors.length).toBe(1)
+    first_error = redeable_errors[0]
+    expect(first_error.error_kind).toBe("missing_#{missing_element}")
+    expect(first_error.description).toBe("Column 2 is missing the field's #{missing_element}.")
+    expect(first_error.columns).toEqual([1])
+    expect(first_error.more_info).toEqual("Column 2 is missing the field's #{missing_element}, which is required for new fields. To fix this issue, add a #{missing_element} for this column.")
 
   it "should generate redeable errors for duplicated code", ->
     proc_duplicated_code = (errors) -> errors.duplicated_code = {text_column: [0, 1]}
@@ -94,6 +118,22 @@ describe 'ValidationErrors', ->
     expect(first_error.columns).toEqual([1,2,3])
     expect(first_error.more_info).toEqual('Column numbers: 2, 3 and 4.')
 
+  it "should generate redeable errors for more than one label missing for new fields", ->
+    proc_missing_label = (errors, column_name) -> errors.missing_label = {columns:[1, 2, 3]}
+    check_missing_element_assertion_plural('label', proc_missing_label)
+
+  it "should generate redeable errors for more than one code missing for new fields", ->
+    proc_missing_code = (errors, column_name) -> errors.missing_code = {columns:[1, 2, 3]}
+    check_missing_element_assertion_plural('code', proc_missing_code)
+
+  it "should generate redeable errors one label missing for new fields", ->
+    proc_missing_label = (errors, column_name) -> errors.missing_label = {columns:[1]}
+    check_missing_element_assertion('label', proc_missing_label)
+
+  it "should generate redeable errors one code missing for new fields", ->
+    proc_missing_code = (errors, column_name) -> errors.missing_code = {colunms:[1]}
+    check_missing_element_assertion('code', proc_missing_code)
+
   it "should generate redeable errors data errors", ->
     errors = {data_errors:[]}
     errors.data_errors = [{description: "Some options in column 5 don't exist.", column: 4, rows: [1,2], example: "", type: "options"}, {description: "Some of the values in column 2 are not valid for the type numeric.", column: 1, rows: [1], type: 'numeric values', example: "Values must be integers."}]
@@ -112,7 +152,7 @@ describe 'ValidationErrors', ->
     expect(second_error.more_info).toEqual("Some of the values in column 2 are not valid for the type numeric. To fix this, either change the column's type or edit your CSV so that all rows hold valid numeric values. Values must be integers. The invalid numeric values are in the following rows: 2.")
 
   it 'should generate messages in singular in existing_code when only one column has issues', ->
-    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], duplicated_usage: [], data_errors: []}
     errors.existing_code = {text_column: [0]}
     val_errors = new ValidationErrors(errors)
     redeable_errors = val_errors.processErrors()
@@ -122,7 +162,7 @@ describe 'ValidationErrors', ->
     expect(first_error.more_info).toEqual("Column 1 has code text_column. To fix this issue, change its code.")
 
   it 'should generate messages in singular in existing_label when only one column has issues', ->
-    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], duplicated_usage: [], data_errors: []}
     errors.existing_label = {text_column: [0]}
     val_errors = new ValidationErrors(errors)
     redeable_errors = val_errors.processErrors()
@@ -132,7 +172,7 @@ describe 'ValidationErrors', ->
     expect(first_error.more_info).toEqual("Column 1 has name text_column. To fix this issue, change its name.")
 
   it 'should filter errors for a column', ->
-    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+    errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], duplicated_usage: [], data_errors: []}
     errors.existing_code = {text_column: [0,1]}
     errors.duplicated_label = {other_column: [1, 2]}
     errors.data_errors = [{description: "Some options in column 5 don't exist.", column: 0, rows: [1,2], example: "", type: "options"}, {description: "Some of the values in column 2 are not valid for the type numeric.", column: 1, rows: [1], type: 'numeric values', example: "Values must be integers."}]

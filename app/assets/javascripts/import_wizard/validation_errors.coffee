@@ -33,6 +33,20 @@ onImportWizard ->
               when 'duplicated_label'
                 error_description.description = "There is more than one column with name #{errorId}."
                 error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have name #{errorId}. To fix this issue, leave only one with that name and modify the rest."
+              when 'missing_code'
+                if errorColumns.length >1
+                  error_description.description = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's code."
+                  error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's code, which is required for new fields. To fix this issue, add a code for each of these columns."
+                else
+                  error_description.description = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's code."
+                  error_description.more_info = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's code, which is required for new fields. To fix this issue, add a code for this column."
+              when 'missing_label'
+                if errorColumns.length >1
+                  error_description.description = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's label."
+                  error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's label, which is required for new fields. To fix this issue, add a label for each of these columns."
+                else
+                  error_description.description = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's label."
+                  error_description.more_info = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's label, which is required for new fields. To fix this issue, add a label for this column."
               when 'duplicated_usage'
                 field = window.model.findField(errorId)
                 if field

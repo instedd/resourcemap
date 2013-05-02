@@ -56,7 +56,7 @@ describe 'ImportWizard', ->
     it 'should change errors in columns if validationErrors changes', ->
       @model.initialize(1, @layers, @columns)
       expect(@model.columns()[0].errors().length).toBe(0)
-      errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], usage_missing:[], duplicated_usage: [], data_errors: []}
+      errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], duplicated_usage: [], data_errors: []}
       errors.existing_code = {text_column: [0]}
       @model.validationErrors(new ValidationErrors(errors))
       expect(@model.columns()[0].errors().length).toBe(1)

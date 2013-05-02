@@ -880,7 +880,6 @@ describe ImportWizard do
     sites_errors[:duplicated_label].should eq({})
     sites_errors[:existing_code].should eq({})
     sites_errors[:existing_label].should eq({})
-    sites_errors[:usage_missing].should eq([])
 
     data_errors = sites_errors[:data_errors]
     data_errors.length.should eq(6)
@@ -1100,4 +1099,48 @@ describe ImportWizard do
 
     ImportWizard.delete_file(user, collection)
   end
+
+  # Otherwise a missmatch will be generated 
+  it 'should not bypass columns with an empty value in the first row' do
+    csv_string = CSV.generate do |csv|
+      csv << ['0', '' , '']
+      csv << ['1', '0', 'label2']
+    end
+
+    ImportWizard.import user, collection, csv_string
+    column_spec = ImportWizard.guess_columns_spec user, collection
+
+    column_spec.length.should eq(3)
+    column_spec[1][:header].should eq("")
+    column_spec[1][:code].should eq("")
+    column_spec[1][:label].should eq("")
+    column_spec[1][:use_as].should eq(:new_field)
+    column_spec[2][:header].should eq("")
+    column_spec[2][:code].should eq("")
+    column_spec[2][:label].should eq("")
+    column_spec[2][:use_as].should eq(:new_field)
+
+    ImportWizard.delete_file(user, collection)
+  end
+
+  it 'should missing label and code in new fields' do 
+    csv_string = CSV.generate do |csv|
+      csv << ['0', '' , '']
+      csv << ['1', '0', 'label2']
+    end
+
+    specs = [
+      {:header=>"0", :kind=>:numeric, :code=>"0", :label=>"0", :use_as=>:new_field}, 
+      {:header=>"", :kind=>:text, :code=>"", :label=>"", :use_as=>:new_field},
+      {:header=>"", :kind=>:text, :code=>"", :label=>"", :use_as=>:new_field}]
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+    sites_errors[:missing_label].should eq(:columns => [1,2])
+    sites_errors[:missing_code].should eq(:columns => [1,2])
+
+    ImportWizard.delete_file(user, collection)
+  end
+    
 end
