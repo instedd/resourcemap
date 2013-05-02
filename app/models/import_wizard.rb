@@ -16,7 +16,7 @@ class ImportWizard
       validated_data = {}
       csv = CSV.read file_for(user, collection)
       csv_columns = csv[1.. -1].transpose
-      csv[0].map!{|r| r.strip}
+      csv[0].map!{|r| r.strip if r}
 
       validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
       # TODO: implement pagination
@@ -492,9 +492,18 @@ class ImportWizard
 
     def to_columns(collection, rows, admin)
       fields = collection.fields.index_by &:code
+      columns_initial_guess = []
 
-      columns = rows[0].map{|x| {:header => x.strip, :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
-      columns.each_with_index do |column, i|
+      rows[0].each do |header|
+        column_spec = {}
+        column_spec[:header] = header ? header.strip : ''
+        column_spec[:kind] = :text
+        column_spec[:code] = header ? header.downcase.gsub(/\s+/, '') : ''
+        column_spec[:label] = header ? header.titleize : ''
+        columns_initial_guess << column_spec
+      end
+
+      columns_initial_guess.each_with_index do |column, i|
         guess_column_usage(column, fields, rows, i, admin)
       end
     end

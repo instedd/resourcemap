@@ -1123,6 +1123,28 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
 
+  it 'should not fail if header has a nil value' do
+    csv_string = CSV.generate do |csv|
+      csv << ['0', nil , nil]
+      csv << ['1', '0', 'label2']
+    end
+
+    ImportWizard.import user, collection, csv_string
+    column_spec = ImportWizard.guess_columns_spec user, collection
+
+    column_spec.length.should eq(3)
+    column_spec[1][:header].should eq("")
+    column_spec[1][:code].should eq("")
+    column_spec[1][:label].should eq("")
+    column_spec[1][:use_as].should eq(:new_field)
+    column_spec[2][:header].should eq("")
+    column_spec[2][:code].should eq("")
+    column_spec[2][:label].should eq("")
+    column_spec[2][:use_as].should eq(:new_field)
+
+    ImportWizard.delete_file(user, collection)
+  end
+
   it 'should missing label and code in new fields' do 
     csv_string = CSV.generate do |csv|
       csv << ['0', '' , '']
