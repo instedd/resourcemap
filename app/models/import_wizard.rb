@@ -49,6 +49,9 @@ class ImportWizard
       proc_existing_fields = Proc.new{columns_spec.select{|spec| spec[:use_as].to_s == 'existing_field'}}
       sites_errors[:duplicated_usage].update(calculate_duplicated(proc_existing_fields, :field_id))
 
+      #Name is mandatory
+      sites_errors[:missing_name] = {:use_as => 'name'} if !(columns_spec.any?{|spec| spec[:use_as].to_s == 'name'})
+
       sites_errors[:data_errors] = []
       sites_errors[:hierarchy_field_found] = []
 

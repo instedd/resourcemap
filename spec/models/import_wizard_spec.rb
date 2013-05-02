@@ -1145,7 +1145,7 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
 
-  it 'should missing label and code in new fields' do 
+  it 'should not fail if label and code are missing in new fields' do 
     csv_string = CSV.generate do |csv|
       csv << ['0', '' , '']
       csv << ['1', '0', 'label2']
@@ -1165,4 +1165,30 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
     
+  it "should validate presence of name in column specs" do 
+    csv_string = CSV.generate do |csv|
+      csv << ['numeric']
+      csv << ['11']
+    end
+
+    specs = [{:header=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"numeric", :use_as=>:new_field}]
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+    sites_errors[:missing_name].should_not be_blank
+
+    ImportWizard.delete_file(user, collection)
+
+
+    specs = [{:header=>"numeric", :use_as=>:name}]
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+    sites_errors[:missing_name].should be_blank
+
+    ImportWizard.delete_file(user, collection)
+
+  end
 end

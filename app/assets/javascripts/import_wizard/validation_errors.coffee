@@ -27,6 +27,9 @@ onImportWizard ->
           for errorId, errorColumns of errors
             error_description = {error_kind: errorType, columns: errorColumns}
             switch errorType
+              when 'missing_name'
+                error_description.description = "Please select a column to be used as 'Name'"
+                error_description.more_info = "You need to select a column to be used as 'Name' of the sites in order to continue with the upload."
               when 'duplicated_code'
                 error_description.description = "There is more than one column with code #{errorId}."
                 error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have code #{errorId}. To fix this issue, leave only one with that code and modify the rest."
