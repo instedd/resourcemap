@@ -11,14 +11,10 @@ class User < ActiveRecord::Base
   has_many :collections, through: :memberships, order: 'collections.name ASC'
   has_one :user_snapshot
 
+  attr_accessor :is_guest
+
   def create_collection(collection)
     return false unless collection.save
-
-    if collection.public
-      u = User.find_by_is_guest true
-      u.memberships.create! collection_id: collection.id, admin: false
-    end
-
     memberships.create! collection_id: collection.id, admin: true
     collection.register_gateways_under_user_owner(self)
     collection
@@ -106,10 +102,5 @@ class User < ActiveRecord::Base
 
   def update_successful_outcome_status
     self.success_outcome = layer_count? & collection_count? & site_count? & gateway_count?
-  end
-
-  def register_guest_membership(collection_id)
-    membership = self.memberships.find_by_collection_id collection_id
-    self.memberships.create! collection_id: collection_id, admin: false  if(!membership)
   end
 end

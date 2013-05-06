@@ -70,8 +70,6 @@ class Collection < ActiveRecord::Base
     end
     if membership.admin?
       target_fields = target_fields.all
-    elsif user.is_guest
-      target_fields = target_fields.all
     else
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm

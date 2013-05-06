@@ -3,7 +3,6 @@ require 'spec_helper'
 describe CollectionsController do
   include Devise::TestHelpers
   render_views
-  let!(:guest_user) { User.make is_guest: true }
   let!(:user) { User.make }
   let!(:collection) { user.create_collection(Collection.make public: true) }
 
@@ -84,19 +83,6 @@ describe CollectionsController do
         u.collection_count
       }.from(0).to(1)
    
-    end
-  end
-
-  describe "public access" do
-    before(:each) { sign_out :user }
-    it 'should login as guest automatically with passed parameter collection' do
-      get :index, collection: collection.id
-      response.should be_success
-    end
-
-    it 'should login failed without passed parameter collection' do
-      get :index
-      response.should_not be_success
     end
   end
 end

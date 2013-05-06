@@ -1,6 +1,7 @@
 class CollectionsController < ApplicationController
-  before_filter :current_user_or_guest, :only => [:index]
+
   before_filter :authenticate_user!
+  #load_and_authorize_resource
   before_filter :authenticate_collection_admin!, :only => [:destroy, :create_snapshot]
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
@@ -10,7 +11,7 @@ class CollectionsController < ApplicationController
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
-      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if !current_user.is_guest
+      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html
         collections_with_snapshot = []
@@ -25,7 +26,7 @@ class CollectionsController < ApplicationController
   end
 
   def render_breadcrumbs
-    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if !current_user.is_guest
+    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
     if params.has_key? :collection_id
       add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
@@ -53,12 +54,6 @@ class CollectionsController < ApplicationController
 
   def update
     if collection.update_attributes params[:collection]
-
-      if collection.public
-        guest_user = User.find_by_email 'guest@resourcemap.org'
-        guest_user.register_guest_membership(collection.id)
-      end
-
       collection.recreate_index
       redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
     else
