@@ -1,6 +1,6 @@
 - if single_editing_mode
-  = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, css: { error: :error }, html: {step: "any"}
+  = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, css: { error: :error }, html: {step: "any"}, attr: {id: "'numeric-input-' + code"}
 - else
-  = ko_number_field_tag :value, css: { error: :error }, html: {class: 'right w20', step: "any"}
+  = ko_number_field_tag :value, css: { error: :error }, html: {class: 'right w20', step: "any"}, attr: {id: "'numeric-input-' + code"}
   .clear
 
