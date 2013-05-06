@@ -18,6 +18,10 @@ class ApplicationController < ActionController::Base
     render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true
   end
 
+  rescue_from CanCan::AccessDenied do |exception|
+    render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
+  end
+
   def after_sign_in_path_for(resource)
     stored_location_for(resource) || collections_path
   end

@@ -71,8 +71,26 @@ describe CollectionsController do
       json[0]["name"].should eq(@site2.name)
       json[0]["value"].should eq(@site2.name)
     end
-
   end
+
+  describe "Permissions" do
+    it 'should return forbidden on delete if user is not collection admin' do
+      user2 = User.make
+      sign_out user
+      sign_in user2
+      delete :destroy, id: collection.id
+      response.status.should eq(403)
+    end
+
+    it 'should return forbidden on delete if user is not collection admin' do
+      user2 = User.make
+      sign_out user
+      sign_in user2
+      post :create_snapshot, id: collection.id, snapshot: {name: 'my snapshot'}
+      response.status.should eq(403)
+    end
+  end
+
 
   describe "analytic" do 
     it 'should changed user.collection_count by 1' do

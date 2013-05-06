@@ -2,30 +2,34 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    # Define abilities for the passed in user here. For example:
-    #
+
     user ||= User.new :is_guest => true
 
-    # can :manage, Collection do |collection|
-    #   user.admins?(collection)
-    # end
+    ### Collection ###
 
-    # The first argument to `can` is the action you are giving the user 
-    # permission to do.
-    # If you pass :manage it will apply to every action. Other common actions
-    # here are :read, :create, :update and :destroy.
-    #
-    # The second argument is the resource the user can perform the action on. 
-    # If you pass :all it will apply to every resource. Otherwise pass a Ruby
-    # class of the resource.
-    #
-    # The third argument is an optional hash of conditions to further filter the
-    # objects.
-    # For example, here the user can only update published articles.
-    #
-    #   can :update, Article, :published => true
-    #
-    # See the wiki for details:
-    # https://github.com/ryanb/cancan/wiki/Defining-Abilities
+    # Admin abilities
+    can :destroy, Collection, :memberships => { :user_id => user.id , :admin => true } 
+    can :create_snapshot, Collection, :memberships => { :user_id => user.id , :admin => true } 
+    can :recreate_index, Collection, :memberships => { :user_id => user.id , :admin => true } 
+
+    # Member Abilities
+    can :read, Collection, :memberships => { :user_id => user.id }
+    can :update, Collection, :memberships => { :user_id => user.id }
+    can :create, Collection, :memberships => { :user_id => user.id }
+    can :csv_template, Collection, :memberships => { :user_id => user.id }
+    can :upload_csv, Collection, :memberships => { :user_id => user.id }
+    can :unload_current_snapshot, Collection, :memberships => { :user_id => user.id }
+    can :load_snapshot, Collection, :memberships => { :user_id => user.id }
+    can :max_value_of_property, Collection, :memberships => { :user_id => user.id }
+    can :sites_by_term, Collection, :memberships => { :user_id => user.id }
+    can :search, Collection, :memberships => { :user_id => user.id }
+    can :decode_hierarchy_csv, Collection, :memberships => { :user_id => user.id }
+    can :register_gateways, Collection, :memberships => { :user_id => user.id }
+    can :message_quota, Collection, :memberships => { :user_id => user.id }
+    can :members, Collection, :memberships => { :user_id => user.id }
+    can :reminders, Collection, :memberships => { :user_id => user.id }
+    can :settings, Collection, :memberships => { :user_id => user.id }
+    can :quotas, Collection, :memberships => { :user_id => user.id }
+
   end
 end
