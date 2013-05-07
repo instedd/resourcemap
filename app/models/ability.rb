@@ -9,12 +9,13 @@ class Ability
 
     # Admin abilities
     can :destroy, Collection, :memberships => { :user_id => user.id , :admin => true } 
-    can :create_snapshot, Collection, :memberships => { :user_id => user.id , :admin => true } 
-    can :recreate_index, Collection, :memberships => { :user_id => user.id , :admin => true } 
+    can :create_snapshot, Collection, :memberships => { :user_id => user.id, :admin => true } 
+    can :recreate_index, Collection, :memberships => { :user_id => user.id, :admin => true } 
+    can :update, Collection, :memberships => { :user_id => user.id, :admin => true }
+
 
     # Member Abilities
     can :read, Collection, :memberships => { :user_id => user.id }
-    can :update, Collection, :memberships => { :user_id => user.id }
     can :create, Collection, :memberships => { :user_id => user.id }
     can :csv_template, Collection, :memberships => { :user_id => user.id }
     can :upload_csv, Collection, :memberships => { :user_id => user.id }
