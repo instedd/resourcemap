@@ -83,7 +83,7 @@ onCollections ->
       res
 
     unloadCurrentSnapshot: ->
-      $.post "/collections/#{@id}/collection_unload_current_snapshot.json", ->
+      $.post "/collections/#{@id}/unload_current_snapshot.json", ->
         window.location.reload()
 
     searchUsersUrl: -> "/collections/#{@id}/memberships/search.json"
