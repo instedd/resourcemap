@@ -15,7 +15,7 @@
 -if collection.snapshots.count > 0
   %table
     %tr
-      = form_tag(unload_current_snapshot_collection_path(collection)) do
+      = form_tag(collection_unload_current_snapshot(collection)) do
         %td.w30
           .snapshot_info{:class => if !current_snapshot then "active rounded" end}
             = radio_button_tag(:name, "", !current_snapshot, :onclick => "this.form.submit();")
@@ -24,7 +24,7 @@
 
     - collection.snapshots.each do |snapshot|
       %tr
-        = form_tag(load_snapshot_collection_path(collection)) do
+        = form_tag(collection_load_snapshot(collection)) do
           - is_current_snapshot = current_snapshot && current_snapshot.name == snapshot.name
           %td.w30
             .snapshot_info{:class => if is_current_snapshot then "active rounded" end}
