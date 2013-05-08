@@ -166,7 +166,7 @@ class ImportWizard
 
         site = nil
         site = collection.sites.find_by_id row[id_spec[:index]] if id_spec && row[id_spec[:index]].present?
-        site ||= collection.sites.new properties: {}, collection_id: collection.id
+        site ||= collection.sites.new properties: {}, collection_id: collection.id, from_import_wizard: true
 
         site.user = user
         sites << site

@@ -58,6 +58,32 @@ describe ImportWizard do
     sites[1].properties.should eq({fields[0].es_code => 20})
   end
 
+  it "import should calculate collection bounds from sites" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Lat', 'Lon']
+      csv << ['Foo', '30.0', '20.0']
+      csv << ['Bar', '40.0', '30.0']
+      csv << ['FooBar', '45.0', '40.0']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'}
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    collection.reload
+    collection.min_lat.to_f.should eq(30.0)
+    collection.max_lat.to_f.should eq(45.0)
+    collection.min_lng.to_f.should eq(20.0)
+    collection.max_lng.to_f.should eq(40.0)
+    collection.lat.to_f.should eq(37.5)
+    collection.lng.to_f.should eq(30.0)
+  end
+
   it "imports with name, lat, lon and one new numeric property and existing ID" do
     site1 = collection.sites.make name: 'Foo old', properties: {text.es_code => 'coco'}
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}
