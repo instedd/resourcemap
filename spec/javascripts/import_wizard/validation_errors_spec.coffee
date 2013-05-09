@@ -144,6 +144,16 @@ describe 'ValidationErrors', ->
     expect(error.description).toEqual("Please select a column to be used as 'Name'")
     expect(error.more_info).toEqual("You need to select a column to be used as 'Name' of the sites in order to continue with the upload.")
 
+ it 'should generate redeable errors for reserved code', ->
+    errors = {reserved_code: {name: [0]}}
+    val_errors = new ValidationErrors(errors)
+    redeable_errors = val_errors.processErrors()
+    expect(redeable_errors.length).toBe(1)
+    error = redeable_errors[0]
+    expect(error.error_kind).toEqual("reserved_code")
+    expect(error.description).toEqual("Reserved code 'name'. This code is reserved by ResourceMap and cannot be chosen for new fields.")
+    expect(error.more_info).toEqual("Column 1 has code 'name'. To fix this issue, change its code.")
+
   it "should generate redeable errors data errors", ->
     errors = {data_errors:[]}
     errors.data_errors = [{description: "Some options in column 5 don't exist.", column: 4, rows: [1,2], example: "", type: "options"}, {description: "Some of the values in column 2 are not valid for the type numeric.", column: 1, rows: [1], type: 'numeric values', example: "Values must be integers."}]

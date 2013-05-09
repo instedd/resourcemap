@@ -38,6 +38,8 @@ class ImportWizard
       sites_errors[:missing_label] = calculate_missing(proc_select_new_fields, 'label')
       sites_errors[:missing_code] = calculate_missing(proc_select_new_fields, 'code')
 
+      sites_errors[:reserved_code] = calculate_reserved_code(proc_select_new_fields)
+
       collection_fields = collection.fields.all(:include => :layer)
       sites_errors[:existing_code] = calculate_existing(columns_spec, collection_fields, 'code')
       sites_errors[:existing_label] = calculate_existing(columns_spec, collection_fields, 'label')
@@ -49,7 +51,7 @@ class ImportWizard
       proc_existing_fields = Proc.new{columns_spec.select{|spec| spec[:use_as].to_s == 'existing_field'}}
       sites_errors[:duplicated_usage].update(calculate_duplicated(proc_existing_fields, :field_id))
 
-      #Name is mandatory
+      # Name is mandatory
       sites_errors[:missing_name] = {:use_as => 'name'} if !(columns_spec.any?{|spec| spec[:use_as].to_s == 'name'})
 
       sites_errors[:data_errors] = []
@@ -348,7 +350,8 @@ class ImportWizard
       validated_csv_column = []
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
-          if column_spec[:use_as].to_sym == :existing_field || column_spec[:use_as].to_sym == :new_field
+          case column_spec[:use_as].to_sym
+          when :existing_field, :new_field
             validate_column_value(column_spec, csv_field_value, field, collection)
           end
         rescue => ex
@@ -432,6 +435,21 @@ class ImportWizard
         end
       end
       duplicated_columns
+    end
+
+    def calculate_reserved_code(selection_block)
+      spec_to_validate = selection_block.call()
+      invalid_columns = {}
+      spec_to_validate.each do |column_spec|
+        if Field.reserved_codes().include?(column_spec[:code])
+          if invalid_columns[column_spec[:code]]
+            invalid_columns[column_spec[:code]] << column_spec[:index]
+          else
+            invalid_columns[column_spec[:code]] = [column_spec[:index]]
+          end
+        end
+      end
+      invalid_columns
     end
 
     def calculate_missing(selection_block, missing_value)

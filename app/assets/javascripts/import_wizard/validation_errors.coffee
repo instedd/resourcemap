@@ -73,6 +73,12 @@ onImportWizard ->
               when 'hierarchy_field_found'
                 error_description.description = "Hierarchy fields can only be created via web in the Layers page."
                 error_description.more_info = "Column numbers: #{@toIndex1BasedSentence(errorColumns)}."
+              when 'reserved_code'
+                error_description.description = "Reserved code '#{errorId}'. This code is reserved by ResourceMap and cannot be chosen for new fields."
+                if errorColumns.length >1
+                  error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have code '#{errorId}'. To fix this issue, change all their codes."
+                else
+                  error_description.more_info = "Column #{errorColumns[0] + 1} has code #{errorId}. To fix this issue, change its code."
               when 'data_errors'
                 # In this case errorColumns contains an object with the following structure:
                 # {description: “Error description”, column: 1, rows: [1, 3, 5, 6], example: "Hint", type: 'numeric}

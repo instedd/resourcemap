@@ -1217,4 +1217,26 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
 
   end
+
+  Field.reserved_codes().each do |reserved_code|
+    it "should validate reserved code #{reserved_code} in new fields" do
+      csv_string = CSV.generate do |csv|
+        csv << ["#{reserved_code}"]
+        csv << ['11']
+      end
+
+      specs = [{:header=>"#{reserved_code}", :kind=>:text, :code=>"#{reserved_code}", :label=>"Label", :use_as=>:new_field}]
+
+      ImportWizard.import user, collection, csv_string
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+      sites_errors = sites_preview[:errors]
+      sites_errors[:reserved_code].should eq({"#{reserved_code}"=>[0]})
+      ImportWizard.delete_file(user, collection)
+
+    end
+  end
+
+  it "should validate ids belong to collection's sites if a column is marked to be used as 'id'" do
+  end
+
 end

@@ -13,12 +13,16 @@ class Field < ActiveRecord::Base
   validates_presence_of :ord
   validates_inclusion_of :kind, :in => proc { kinds() }
   validates_presence_of :code
-  validates_exclusion_of :code, :in => ['lat', 'long', 'name', 'resmap-id', 'last updated']
+  validates_exclusion_of :code, :in => proc { reserved_codes() }
   validates_uniqueness_of :code, :scope => :collection_id
   validates_uniqueness_of :name, :scope => :collection_id
 
   serialize :config
   serialize :metadata
+
+  def self.reserved_codes
+    ['lat', 'long', 'name', 'resmap-id', 'last updated']
+  end
 
   before_save :set_collection_id_to_layer_id, :unless => :collection_id?
   def set_collection_id_to_layer_id
