@@ -2,6 +2,11 @@ class ImportWizard
   TmpDir = "#{Rails.root}/tmp/import_wizard"
 
   class << self
+    def create_job(user, collection, columns_spec)
+      # Enqueue job with user_id, collection_id, serialized column_spec
+      Resque.enqueue ImportTask, user.id, collection.id, columns_spec
+    end
+
     def import(user, collection, contents)
       FileUtils.mkdir_p TmpDir
       File.open(file_for(user, collection), "wb") { |file| file << contents }
