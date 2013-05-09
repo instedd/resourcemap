@@ -31,7 +31,7 @@ class ImportWizardsController < ApplicationController
       render text: "Non-admin users can't create new fields", status: :unauthorized
     else
       # Enqueue job with user_id, collection_id, serialized column_spec
-      ImportWizard.execute(current_user, collection, params[:columns].values)
+      Resque.enqueue ImportTask, current_user.id, collection.id, params[:columns].values
       render :json => :ok
     end
   end
