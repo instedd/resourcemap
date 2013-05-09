@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/manastech/dist.git
+  revision: 1f84e438ff927377f8248de43bc7586b44677f27
+  specs:
+    dist (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -278,6 +284,7 @@ DEPENDENCIES
   database_cleaner
   decent_exposure
   devise
+  dist!
   faker
   foreman
   guard-jasmine

@@ -100,6 +100,16 @@ class ImportWizard
     end
 
     def execute(user, collection, columns_spec)
+      #Execute may be called with actual user and collection entities, or their ids.
+      if user.is_a?(User) && collection.is_a?(Collection)
+        execute_with_entities(user, collection, columns_spec)
+      else
+        #If the method's been called with ids instead of entities
+        execute_with_entities(User.find(user), Collection.find(collection), columns_spec)
+      end
+    end
+
+    def execute_with_entities(user, collection, columns_spec)
       # Easier manipulation
       columns_spec.map! &:with_indifferent_access
 
@@ -198,7 +208,7 @@ class ImportWizard
             # For select one and many we need to collect the fields options
             if spec[:kind] == 'select_one'  || spec[:kind] == 'select_many'
 
-              # For select_one fields each value will be only one option 
+              # For select_one fields each value will be only one option
               # and for select_many fields we may create more than one option per value
               options_to_be_created = if spec[:kind] == 'select_many'
                 value.split(',').map{|v| v.strip}
@@ -517,9 +527,9 @@ class ImportWizard
         # options will be created
         return field_value
       end
-  
+
       column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
-  
+
       sample_field = Field.new kind: column_spec[:kind], code: column_header
       sample_field.apply_format_update_validation(field_value, true, collection)
     end
