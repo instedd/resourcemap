@@ -6,6 +6,10 @@ class ImportWizardsController < ApplicationController
     ImportJob.last_in_status_pending_for current_user, collection
   }
 
+  expose(:finished_job) {
+    ImportJob.last_in_status_finished_for current_user, collection
+  }
+
   def index
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end

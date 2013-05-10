@@ -28,6 +28,10 @@ class ImportJob < ActiveRecord::Base
     last_in_status(:pending, user, collection)
   end
 
+  def self.last_in_status_finished_for(user, collection)
+    last_in_status(:finished, user, collection)
+  end
+
   def finish
     self.status = :finished
     self.finished_at = Time.now

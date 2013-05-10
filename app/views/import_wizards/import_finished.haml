@@ -1,1 +1,16 @@
-Import finished!
+:css
+  .ignored, .ignored input, .ignored select { color: grey; }
+
+:javascript
+  window.kinds = #{Field::kinds}
+
+= render '/tabs'
+
+.tabsline
+  %h2 Import wizard
+  %p Import finished!
+
+= "We finished importing all your data from file #{finished_job.original_filename}."
+%br
+%br
+= link_button_to 'Browse collection', collections_path + "?collection=#{collection.id}", :class => "grey" , :style => "margin: auto;"
