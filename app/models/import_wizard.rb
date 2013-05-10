@@ -2,12 +2,21 @@ class ImportWizard
   TmpDir = "#{Rails.root}/tmp/import_wizard"
 
   class << self
-    def create_job(user, collection, columns_spec)
+    def enqueue_job(user, collection, columns_spec)
+      # Move the corresponding ImportJob to status pending, since it'll be enqueued
+      import_job = ImportJob.last_in_status_file_uploaded_for user, collection
+      import_job.status = :pending
+      import_job.save!
+
       # Enqueue job with user_id, collection_id, serialized column_spec
       Resque.enqueue ImportTask, user.id, collection.id, columns_spec
     end
 
-    def import(user, collection, contents)
+    def import(user, collection, original_filename, contents)
+      # Store representation of import job in database to enable status tracking later
+      import_job = ImportJob.uploaded original_filename, user, collection
+      import_job.save!
+
       FileUtils.mkdir_p TmpDir
       File.open(file_for(user, collection), "wb") { |file| file << contents }
 
@@ -333,10 +342,13 @@ class ImportWizard
 
         # And this will create the new ones
         collection.save!
+
+        import_job = ImportJob.last_in_status_pending_for user, collection
+        import_job.finish
+        import_job.save!
       end
 
       delete_file(user, collection)
-
     end
 
     def delete_file(user, collection)

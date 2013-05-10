@@ -1,0 +1,27 @@
+:css
+  .ignored, .ignored input, .ignored select { color: grey; }
+
+:javascript
+  window.kinds = #{Field::kinds}
+
+= render '/tabs'
+
+.tabsline
+  %h2 Import wizard
+  %p Importing data
+
+= render 'steps', :step => 3
+
+%br
+
+#import-in-progress.loading
+  = "Importing..."
+
+%br
+
+.grey
+  %br
+  = "We are now importing the data from the #{import_job.original_filename} file you've uploaded #{time_ago_in_words(import_job.updated_at)} ago. Please take into account that the import process may take some minutes depending on the file's size."
+  %br
+  %br
+  You don't need to leave this window open while the data is imported, we'll take care of that for you. However, if you're still here when the importation ends, we'll let you know so you can start working on your new data right away.
