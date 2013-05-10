@@ -1237,6 +1237,23 @@ describe ImportWizard do
   end
 
   it "should validate ids belong to collection's sites if a column is marked to be used as 'id'" do
+    csv_string = CSV.generate do |csv|
+      csv << ["resmap-id"]
+      csv << ['']
+      csv << ['11']
+    end
+
+    specs = [{:header=>"resmap-id", :use_as=>:id}]
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+
+    sites_errors[:non_existent_site_id].length.should eq(1)
+    resmap_id_error = sites_errors[:non_existent_site_id][0]
+    resmap_id_error[:rows].should eq([1])
+    resmap_id_error[:column].should eq(0)
+    ImportWizard.delete_file(user, collection)
+
   end
 
 end

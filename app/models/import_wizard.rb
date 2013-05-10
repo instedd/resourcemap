@@ -54,6 +54,11 @@ class ImportWizard
       # Name is mandatory
       sites_errors[:missing_name] = {:use_as => 'name'} if !(columns_spec.any?{|spec| spec[:use_as].to_s == 'name'})
 
+      columns_used_as_id = columns_spec.select{|spec| spec[:use_as].to_s == 'id'}
+      # Only one column will be marked to be used as id
+      csv_column_used_as_id = csv_columns[columns_used_as_id.first[:index]] if columns_used_as_id.length > 0
+      sites_errors[:non_existent_site_id] = calculate_non_existent_site_id(collection.sites.map{|s| s.id}, csv_column_used_as_id, columns_used_as_id.first[:index]) if columns_used_as_id.length > 0
+
       sites_errors[:data_errors] = []
       sites_errors[:hierarchy_field_found] = []
 
@@ -342,6 +347,14 @@ class ImportWizard
     end
 
     private
+
+    def calculate_non_existent_site_id(valid_site_ids, csv_column, resmap_id_column_index)
+      invalid_ids = []
+      csv_column.each_with_index do |csv_field_value, field_number|
+        invalid_ids << field_number unless (csv_field_value.blank? || valid_site_ids.include?(csv_field_value))
+      end
+      [{rows: invalid_ids, column: resmap_id_column_index}] if invalid_ids.length >0
+    end
 
     def validate_column(user, collection, column_spec, fields, csv_column, column_number)
       if column_spec[:use_as].to_sym == :existing_field

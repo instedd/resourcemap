@@ -74,14 +74,25 @@ onImportWizard ->
                 error_description.description = "Hierarchy fields can only be created via web in the Layers page."
                 error_description.more_info = "Column numbers: #{@toIndex1BasedSentence(errorColumns)}."
               when 'reserved_code'
-                error_description.description = "Reserved code '#{errorId}'. This code is reserved by ResourceMap and cannot be chosen for new fields."
+                error_description.description = "Reserved code '#{errorId}'. ResourceMap uses the code 'resmap-id' to identify sites, thus it can't be used as a custom field code."
                 if errorColumns.length >1
                   error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have code '#{errorId}'. To fix this issue, change all their codes."
                 else
-                  error_description.more_info = "Column #{errorColumns[0] + 1} has code #{errorId}. To fix this issue, change its code."
+                  error_description.more_info = "Column #{errorColumns[0] + 1} has code '#{errorId}'. To fix this issue, change its code."
+              when 'non_existent_site_id'
+                # In this case errorColumns contains an object with the following structure:
+                # {column: 1, rows: [1, 3, 5, 6]} 
+                error = errorColumns
+                error_description.columns = [error.column]
+                error_description.description = "There are #{error.rows.length} issues with the values in column #{error.column + 1}."
+                error_description.more_info = "ResourceMap uses the name 'resmap-id' to identify sites, thus it can't be used as a custom field name."
+                error_description.more_info = error_description.more_info + "If you want to update sites information, all the values in the column 'resmap-id' must correspond to already existing sites in the collection, and new sites must be blank."
+                error_description.more_info = error_description.more_info + "If you just want to create new sites, please change the column's code from 'resmap-id' to something else."
+                if error.rows.length < 25
+                  error_description.more_info = error_description.more_info + "The non-existing site-id values are in the following rows: #{@toIndex1BasedSentence(error.rows)}."
               when 'data_errors'
                 # In this case errorColumns contains an object with the following structure:
-                # {description: “Error description”, column: 1, rows: [1, 3, 5, 6], example: "Hint", type: 'numeric}
+                # {description: “Error description”, column: 1, rows: [1, 3, 5, 6], example: "Hint", type: 'numeric'}
                 error = errorColumns
                 error_description.columns = [error.column]
                 error_description.description = "There are #{error.rows.length} errors in column #{error.column + 1}."
