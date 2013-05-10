@@ -31,7 +31,11 @@ class ImportWizardsController < ApplicationController
       render text: "Non-admin users can't create new fields", status: :unauthorized
     else
       ImportWizard.create_job current_user, collection, params[:columns].values
-      redirect_to collection_import_wizard_path(collection)
+      render json: :ok
     end
+  end
+
+  def import_in_progress
+    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
 end

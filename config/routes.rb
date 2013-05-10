@@ -63,6 +63,7 @@ ResourceMap::Application.routes.draw do
        post 'execute'
        post 'validate_sites_with_columns'
        get 'get_visible_sites/:page' => 'import_wizards#get_visible_sites'
+       get 'import_in_progress'
      end
 
   end

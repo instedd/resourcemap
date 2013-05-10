@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130422152123) do
+ActiveRecord::Schema.define(:version => 20130509204107) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -84,6 +84,14 @@ ActiveRecord::Schema.define(:version => 20130422152123) do
     t.text     "config"
     t.integer  "ord"
     t.text     "metadata"
+  end
+
+  create_table "import_jobs", :force => true do |t|
+    t.string   "status"
+    t.string   "original_filename"
+    t.datetime "finished_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "layer_histories", :force => true do |t|
