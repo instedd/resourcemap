@@ -11,6 +11,8 @@ class ImportWizardsController < ApplicationController
   }
 
   def index
+    return redirect_to import_in_progress_collection_import_wizard_path(collection) if import_job
+
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
 
