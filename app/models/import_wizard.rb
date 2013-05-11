@@ -3,10 +3,7 @@ class ImportWizard
 
   class << self
     def enqueue_job(user, collection, columns_spec)
-      # Move the corresponding ImportJob to status pending, since it'll be enqueued
-      import_job = ImportJob.last_in_status_file_uploaded_for user, collection
-      import_job.status = :pending
-      import_job.save!
+      mark_job_as_pending user, collection
 
       # Enqueue job with user_id, collection_id, serialized column_spec
       Resque.enqueue ImportTask, user.id, collection.id, columns_spec
@@ -371,6 +368,13 @@ class ImportWizard
           end
         end
       end
+    end
+
+    def mark_job_as_pending(user, collection)
+      # Move the corresponding ImportJob to status pending, since it'll be enqueued
+      import_job = ImportJob.last_in_status_file_uploaded_for user, collection
+      import_job.status = :pending
+      import_job.save!
     end
 
     private
