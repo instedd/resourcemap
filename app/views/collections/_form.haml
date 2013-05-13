@@ -20,16 +20,16 @@
 
   .field.w60
     = f.label :name
-    = f.text_field :name, :readonly => (cannot? :update, collection)
+    = f.text_field :name, :readonly => !creation && (cannot? :update, collection)
     - if f.object.errors[:name].present?
       %label.error= "Name #{f.object.errors[:name].join(', ')}"
   .field.w60
     = f.label :description
-    = f.text_area :description, rows: 3, :readonly => (cannot? :update, collection)
+    = f.text_area :description, rows: 3, :readonly =>  !creation && (cannot? :update, collection)
   - if Settings.is_on? :account_completeness
     .field.w60
       = f.label :public
-      = f.check_box :public, :readonly => (cannot? :update, collection)
+      = f.check_box :public, :disabled => !creation && (cannot? :update, collection)
 
   .field.w60
     %label
@@ -38,6 +38,6 @@
   .w60
   %br{clear: :all}
 
-  - if can? :update, collection
+  - if (creation || can?(:update, collection))
     = f.button 'Save', :class => 'white'
     = link_to 'Cancel', collections_path, :class=> 'grey'

@@ -4,7 +4,7 @@ class ImportWizard
   class << self
     def import(user, collection, contents)
       FileUtils.mkdir_p TmpDir
-      File.open(file_for(user, collection), "wb") { |file| file << contents }
+      File.open(file_for(user, collection), :encoding => 'utf-8') { |file| file << contents }
 
       # Just to validate its contents
       csv = CSV.new contents
@@ -14,7 +14,8 @@ class ImportWizard
     def validate_sites_with_columns(user, collection, columns_spec)
       columns_spec.map!{|c| c.with_indifferent_access}
       validated_data = {}
-      csv = CSV.read file_for(user, collection)
+      csv = CSV.read(file_for(user, collection), :encoding => ':utf-8')
+      binding.pry
       csv_columns = csv[1.. -1].transpose
       csv[0].map!{|r| r.strip}
 
@@ -72,7 +73,7 @@ class ImportWizard
     end
 
     def get_sites(user, collection, columns_spec, page)
-      csv = CSV.read file_for(user, collection)
+      csv = CSV.read(file_for(user, collection), :encoding => 'utf-8')
       csv_columns = csv[1 .. 11]
       processed_csv_columns = []
       csv_columns.each do |csv_column|
@@ -99,7 +100,7 @@ class ImportWizard
       validate_columns_does_not_exist_in_collection(collection, columns_spec)
 
       # Read all the CSV to memory
-      rows = CSV.read file_for(user, collection)
+      rows = CSV.read(file_for(user, collection), :encoding => 'utf-8')
 
       # Put the index of the row in the columns spec
       rows[0].each_with_index do |row, i|

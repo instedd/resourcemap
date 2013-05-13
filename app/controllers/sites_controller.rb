@@ -1,5 +1,8 @@
 class SitesController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :setup_guest_user, :if => Proc.new { collection.public }
+  before_filter :authenticate_user!, :except => [:index, :search], :unless => Proc.new { collection.public }
+
+  authorize_resource :only => [:index, :search], :decent_exposure => true
 
   expose(:sites) {if current_snapshot && collection then collection.site_histories.at_date(current_snapshot.date) else collection.sites end}
   expose(:site) { Site.find(params[:site_id] || params[:id]) }

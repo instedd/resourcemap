@@ -57,20 +57,22 @@
                 <!-- /ko -->
 
 
-  .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
-    %button.cadd{type: "button"}
-    %span.createCollection Create Collection
+  - if can? :create, Collection
+    .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
+      %button.cadd{type: "button"}
+      %span.createCollection Create Collection
   <!-- /ko -->
 
   -# Collection sites
   <!-- ko if: !editingSite() -->
   <!-- ko with: currentCollection -->
   .tableheader
-    - if !current_user.is_guest
+    - if can? :index, Collection
       %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
     %span
     %span{ko(text: :name)}
-    - if !current_user.is_guest
+    - #if can? :show, collection
+    - if current_user && !current_user.is_guest
       %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
@@ -94,7 +96,7 @@
         <!-- /ko -->
   .tablebottom
     <!-- ko if: !currentSnapshot-->
-    - if !current_user.is_guest
+    - if current_user && !current_user.is_guest
       %button.flocation{ko(click: '$root.createSite')} Create Site
     <!-- /ko -->
 
@@ -229,7 +231,8 @@
               / /ko
     <!-- ko if: !$root.currentSnapshot() -->
     .tablebottom
-      - if !current_user.is_guest
+      -# if (can? :edit, site)
+      - if current_user && !current_user.is_guest
         = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
         = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
     <!-- /ko -->

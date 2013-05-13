@@ -1,7 +1,11 @@
 class CollectionsController < ApplicationController
 
-  before_filter :authenticate_user!
-  load_and_authorize_resource :except => [:render_breadcrumbs, :new, :create]
+  before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
+  before_filter :authenticate_user!, :except => :index, :unless => Proc.new { collection && collection.public }
+
+  authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true
+  expose(:collections) { Collection.accessible_by(current_ability) }
+  expose(:collections_with_snapshot) { select_each_snapshot(collections) }
 
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
@@ -14,12 +18,6 @@ class CollectionsController < ApplicationController
       add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html
-        collections_with_snapshot = []
-        collections.all.each do |collection|
-          attrs = collection.attributes
-          attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
-          collections_with_snapshot = collections_with_snapshot + [attrs]
-        end
         format.json {render json: collections_with_snapshot }
       end
     end
@@ -134,6 +132,17 @@ class CollectionsController < ApplicationController
 
   def max_value_of_property
     render json: collection.max_value_of_property(params[:property])
+  end
+
+  def select_each_snapshot(collections)
+    collections_with_snapshot = []
+    collections.all.each do |collection|
+      attrs = collection.attributes
+      # If user is guest (=> current_user will be nil) she will not be able to load a snapshot. At least for the moment
+      attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name) rescue nil
+      collections_with_snapshot = collections_with_snapshot + [attrs]
+    end
+    collections_with_snapshot
   end
 
   def sites_by_term

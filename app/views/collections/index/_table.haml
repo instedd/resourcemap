@@ -32,11 +32,11 @@
 <!-- ko with: currentCollection -->
 .tableheader.expanded{style: 'height:34px;'}
   %div
-    - if !current_user.is_guest
+    - if can? :index, Collection
       %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
     %span
     %span{ko(text: :name)}
-    - if !current_user.is_guest
+    - if current_user && !current_user.is_guest
       %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
   = render 'collections/index/export'
   .mapheader.right
@@ -95,7 +95,7 @@
   <!-- /ko -->
 .tablebottom
   <!-- ko if: !currentSnapshot-->
-  - if !current_user.is_guest
+  - if can? :create, Site
     %button.flocation{ko(click: '$root.createSite')} Create Site
   <!-- /ko -->
 <!-- /ko -->

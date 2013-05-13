@@ -1,5 +1,7 @@
 class GatewaysController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :setup_guest_user, :only => :index
+  before_filter :authenticate_user!, :except => :index
+
   def index
     method = Channel.nuntium_info_methods
     respond_to do |format|

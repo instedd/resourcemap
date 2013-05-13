@@ -33,6 +33,12 @@ describe Ability do
 			it { user_ability.should_not be_able_to(:update, collection) }
 		end
 
+		describe "Public Collection Abilities" do
+			let!(:public_collection) { admin.create_collection Collection.make public: true}
 
+			it { user_ability.should_not be_able_to(:read, collection) }
+			
+		end
 	end
+
 end

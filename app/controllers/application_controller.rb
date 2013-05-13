@@ -1,9 +1,9 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  expose(:collections) { current_user.collections }
+  #expose(:collection) { (Collection.find(params[:collection] || params[:collection_id] || params[:id])) if params[:collection]|| params[:collection_id] || params[:id] }
   expose(:collection)
-  expose(:current_snapshot) { collection.snapshot_for(current_user) }
+  expose(:current_snapshot) { collection.snapshot_for(current_user) if current_user }
   expose(:collection_memberships) { collection.memberships.includes(:user) }
   expose(:layers) {if current_snapshot && collection then collection.layer_histories.at_date(current_snapshot.date) else collection.layers end}
   expose(:layer)
@@ -20,6 +20,14 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied do |exception|
     render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
+  end
+
+  def setup_guest_user
+    @guest_user = User.new is_guest: true
+  end
+
+  def current_user
+    super || @guest_user
   end
 
   def after_sign_in_path_for(resource)
