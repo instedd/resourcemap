@@ -124,7 +124,7 @@ class CollectionsController < ApplicationController
     current_snapshot && current_snapshot.user_snapshots.where(user_id: current_user.id).first.destroy
 
     respond_to do |format|
-      format.html { 
+      format.html {
         flash[:notice] = "Snapshot #{current_snapshot.name} unloaded" if current_snapshot
         redirect_to  collection_path(collection) }
       format.json { render json: :ok }
