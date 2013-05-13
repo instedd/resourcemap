@@ -43,6 +43,10 @@ group :test, :development do
   gem 'pry-debugger'
 end
 
+group :development do
+  gem 'dist', :git => 'git://github.com/manastech/dist.git'
+end
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

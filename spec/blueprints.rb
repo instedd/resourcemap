@@ -104,3 +104,9 @@ Membership.blueprint do
   collection
   admin { true }
 end
+
+ImportJob.blueprint do
+  user
+  collection
+  status
+end

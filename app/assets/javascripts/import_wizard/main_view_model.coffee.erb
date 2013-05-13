@@ -125,7 +125,7 @@ onImportWizard ->
         type: 'POST'
         data: {columns: columns},
         success: =>
-          window.location = "/collections?collection=#{@collectionId}"
+          window.location = "/collections/#{@collectionId}/import_wizard/import_in_progress"
         error: =>
           @importing(false)
           @importError(true)
