@@ -40,7 +40,7 @@ describe "collections" do
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     click_link 'Edit Site'
     sleep 10
-    page.uncheck('yesno')
+    page.uncheck('yes-no-input-y/n')
     #fill_in 'yesno', :with => 'ESTO ES UN TEXTO'
      sleep 30
     click_button 'Done'
