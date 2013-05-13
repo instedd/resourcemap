@@ -16,10 +16,11 @@ describe "sites" do
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     click_link 'Edit Site'
-    page.uncheck('yesno')
+    page.uncheck('yes-no-input-y/n')
     click_button 'Done'
     page.should_not have_content ('yes')
     page.should have_content ('no')
+    page.save_screenshot "Edit_site_yes_no_value.png"
   end
 
 end
