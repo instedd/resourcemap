@@ -182,7 +182,7 @@ onCollections ->
 
     saveName: =>
       if @hasName()
-        @post name: @name()
+        @update_site name: @name()
         @collection.reloadSites()
         @editingName(false)
       else
@@ -236,7 +236,7 @@ onCollections ->
       window.model.setAllMarkersActive()
 
       save = =>
-        @post lat: @lat(), lng: @lng(), (data) =>
+        @update_site lat: @lat(), lng: @lng(), (data) =>
           @collection.fetchLocation()
           @endEditLocationInMap(@extractPosition data)
 
