@@ -1,7 +1,8 @@
-set :application, 'resource_map'
-set :version, '1.0'
-set :maintainer, 'Martin Verzilli <mverzilli@manas.com.ar>'
-set :description, 'TODO: fill a description'
-set :summary, 'TODO: fill a summary'
+set :application, 'resourcemap'
+set :version, '2.0.1'
+set :maintainer, 'Carolina Hadad <chadad@manas.com.ar>'
+set :description, 'InSTEDD Resource Map'
+set :summary, description
 
 use :mail
+

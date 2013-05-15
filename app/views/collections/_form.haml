@@ -26,7 +26,7 @@
   .field.w60
     = f.label :description
     = f.text_area :description, rows: 3
-  - if Settings.is_on? :account_completeness
+  - if Settings.is_on? :public_collection
     .field.w60
       = f.label :public
       = f.check_box :public
