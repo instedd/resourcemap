@@ -1256,4 +1256,24 @@ describe ImportWizard do
 
   end
 
+  it "should not show errors for valid sites ids(numeric or text)" do
+    site1 = collection.sites.make name: 'Bar'
+    site2 = collection.sites.make name: 'Foo'
+
+    csv_string = CSV.generate do |csv|
+      csv << ["resmap-id"]
+      csv << ["#{site1.id}"]
+      csv << [site2.id]
+    end
+
+    specs = [{:header=>"resmap-id", :use_as=>:id}]
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+
+    sites_errors[:non_existent_site_id].should be(nil)
+    ImportWizard.delete_file(user, collection)
+
+  end
+
 end
