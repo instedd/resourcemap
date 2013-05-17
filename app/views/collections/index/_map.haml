@@ -66,8 +66,7 @@
   <!-- ko if: !editingSite() -->
   <!-- ko with: currentCollection -->
   .tableheader
-    - if !current_user.is_guest
-      %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
+    %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
     %span
     %span{ko(text: :name)}
     - if !current_user.is_guest
@@ -169,17 +168,26 @@
             %td
               %div{style: 'margin-bottom:14px'}
                 %label Name:
-                %span.value{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
+                - if current_user.is_guest
+                  %span.value{ko(text: :name, visible: '!editingName()')}
+                -else
+                  %span.value{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
                 <!-- ko if: editingName() -->
                 = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                 <!-- /ko -->
               %div{style: 'margin-bottom:14px'}
                 %label Location:
                 <!-- ko if: !hasLocation() -->
-                %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'} (no value)
+                - if current_user.is_guest
+                  %span.value{ko(visible: '!editingLocation()', style: 'color:grey;')} (no value)
+                - else
+                  %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'} (no value)
                 <!-- /ko -->
                 <!-- ko if: hasLocation() && !editingLocation() -->
-                %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
+                - if current_user.is_guest
+                  %span.value{ko(text: :locationText, visible: '!editingLocation()')}
+                - else
+                  %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
                 <!-- /ko -->
                 <!-- ko if: editingLocation() -->
                 = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search'}

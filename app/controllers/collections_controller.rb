@@ -55,10 +55,14 @@ class CollectionsController < ApplicationController
     if collection.update_attributes params[:collection]
 
       if collection.public
-        guest_user = if ((User.find_by_email 'guest@resourcemap.org') != nil)
-          User.find_by_email 'guest@resourcemap.org' 
+        u = User.find_by_email 'guest@resourcemap.org'
+        guest_user = if (u != nil)
+          u
         else
-          User.create!(email: 'guest@resourcemap.org', password: 'guest_resourcemap', is_guest: true)
+           u = User.new(email: 'guest@resourcemap.org', password: 'guest_resourcemap', is_guest: true)
+           u.skip_confirmation!
+           u.save
+           u
         end
         guest_user.register_guest_membership(collection.id)
       end
