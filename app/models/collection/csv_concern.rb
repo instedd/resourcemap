@@ -72,10 +72,6 @@ module Collection::CsvConcern
     end
   end
 
-  def read_hiearchy_csv_from_file(io_file)
-    CSV.read(io_file, :encoding => 'utf-8')
-  end
-
   def decode_hierarchy_csv(string)
 
     csv = CSV.parse(string)
