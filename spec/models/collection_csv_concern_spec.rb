@@ -95,6 +95,7 @@ describe Collection::CsvConcern do
       ])
     end
 
+
     it "decodes hierarchy csv" do
       json = collection.decode_hierarchy_csv %(
         ID, ParentID, ItemName
@@ -175,6 +176,21 @@ describe Collection::CsvConcern do
       json.should eq([
         {order: 1, id: '1', name: 'Site 1'},
         {order: 2, id: '2', name: 'Site 2'}
+      ])
+    end
+
+    it "gets an error if the parent does not exists" do
+      json = collection.decode_hierarchy_csv %(
+        ID, ParentID, ItemName
+        1,,Dispensary
+        2,,Health Centre
+        101,10,Lab Dispensary
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Dispensary', },
+        {order: 2, id: '2', name: 'Health Centre'},
+        {order: 3, error: 'Invalid parent value.', error_description: 'ParentID should match one of the Hierarchy ids'},
       ])
     end
 
