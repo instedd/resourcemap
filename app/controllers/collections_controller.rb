@@ -214,7 +214,9 @@ class CollectionsController < ApplicationController
   end
 
   def decode_hierarchy_csv
-    @hierarchy = collection.decode_hierarchy_csv(params[:file].path)
+    csv_string = File.read(params[:file].path, :encoding => 'utf-8')
+    csv = collection.read_hiearchy_csv_from_file(params[:file].path)
+    @hierarchy = collection.decode_hierarchy_csv(csv)
     @hierarchy_errors = CollectionsController.generate_error_description_list(@hierarchy)
     render layout: false
   end

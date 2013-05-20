@@ -72,9 +72,13 @@ module Collection::CsvConcern
     end
   end
 
-  def decode_hierarchy_csv(string_or_io)
+  def read_hiearchy_csv_from_file(io_file)
+    CSV.read(io_file, :encoding => 'utf-8')
+  end
 
-    csv = CSV.read(string_or_io, :encoding => 'utf-8')
+  def decode_hierarchy_csv(string)
+
+    csv = CSV.parse(string)
 
     # First read all items into a hash
     items = {}
