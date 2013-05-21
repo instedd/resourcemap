@@ -22,6 +22,9 @@ def acceptance_test(options ={},  &block)
         @driver.manage.timeouts.implicit_wait = 60
       end
 
+  before(:each) { sleep 5; puts "durmiendo" }
+
+
       after(:each) do
         @driver.quit
       end
