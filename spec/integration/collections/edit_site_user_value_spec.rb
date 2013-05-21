@@ -18,10 +18,13 @@ describe "collections" do
     click_link 'Edit Site'
     sleep 2
     fill_in 'user-input-user', :with => 'user@manas.com.ar'
+    sleep 2
     click_button 'Done'
     sleep 3 
     page.should_not have_content 'member@member.com'
+    sleep 2
     page.should have_content 'user@manas.com.ar'
+    sleep 2
     page.save_screenshot "Edit_site_user_value.png"
   end
 end

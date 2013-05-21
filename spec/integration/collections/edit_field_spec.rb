@@ -13,10 +13,13 @@ describe "edit_field" do
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[1]/button[2]').click
     click_link "Layers"
+    sleep 2
     click_button "Edit"
+    sleep 2
     fill_in 'field_name', :with => 'Test Field'
-    sleep 10
+    sleep 5
     click_button 'Save layer'
+    sleep 5
     page.save_screenshot 'Edit_field.png'
     page.should have_content "Layer 'Central Hospital Layer 1' successfully saved"
   end

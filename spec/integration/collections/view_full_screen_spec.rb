@@ -10,7 +10,8 @@ it "should change to full screen view", js:true do
     sleep 2
     find(:xpath, '//div[@id="right-panel"]/div[1]/button[1]').click
     sleep 2
-    page.save_screenshot 'Full screen view.png'
     page.has_content?("icon_button right frestore")
+    sleep 2
+    page.save_screenshot 'Full screen view.png'
   end
 end
