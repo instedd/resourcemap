@@ -9,6 +9,7 @@ describe "change_tab_activity" do
     click_link ('Activity')
     sleep 3
     page.save_screenshot 'TabActivity'
+    sleep 2
     page.should have_content ('Activity')
   end
 end
