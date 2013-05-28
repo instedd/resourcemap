@@ -2,16 +2,10 @@ class ImportWizardsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :show_properties_breadcrumb
 
-  expose(:import_job) {
-    ImportJob.last_in_status_pending_for current_user, collection
-  }
-
-  expose(:finished_job) {
-    ImportJob.last_in_status_finished_for current_user, collection
-  }
+  expose(:import_job) { ImportJob.last_for current_user, collection }
 
   def index
-    return redirect_to import_in_progress_collection_import_wizard_path(collection) if import_job
+    return redirect_to import_in_progress_collection_import_wizard_path(collection) if (import_job && (import_job.status_pending? || import_job.status_in_progress?))
 
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
@@ -46,7 +40,7 @@ class ImportWizardsController < ApplicationController
   end
 
   def import_in_progress
-    redirect_to import_finished_collection_import_wizard_path(collection) unless import_job
+    redirect_to import_finished_collection_import_wizard_path(collection) if import_job.status_finished?
 
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
@@ -55,8 +49,13 @@ class ImportWizardsController < ApplicationController
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
 
+  def cancel_pending_jobs
+    ImportWizard.cancel_pending_jobs(current_user, collection)
+    flash[:notice] = "Import canceled"
+    redirect_to collection_import_wizard_path
+  end
+
   def job_status
-    return render json: :pending if import_job
-    render json: :finished
+    render json: {:status => import_job.status}
   end
 end

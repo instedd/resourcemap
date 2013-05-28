@@ -23,3 +23,11 @@
   %br
   %br
   You don't need to leave this window open while the data is imported, we'll take care of that for you. However, if you're still here when the importation ends, we'll let you know so you can start working on your new data right away.
+
+%br
+%br
+
+.pending_jobs
+  = link_button_to 'Cancel import', cancel_pending_jobs_collection_import_wizard_path, :class => "grey" , :style => "margin: auto;"
+.in_progress{style: 'display: none'}
+  Import in progress.

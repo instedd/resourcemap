@@ -66,6 +66,7 @@ ResourceMap::Application.routes.draw do
        get 'import_in_progress'
        get 'import_finished'
        get 'job_status'
+       post 'cancel_pending_jobs'
      end
   end
 

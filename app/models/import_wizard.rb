@@ -9,10 +9,14 @@ class ImportWizard
       Resque.enqueue ImportTask, user.id, collection.id, columns_spec
     end
 
+    def cancel_pending_jobs(user, collection)
+      mark_job_as_canceled_by_user(user, collection)
+      delete_file(user, collection)
+    end
+
     def import(user, collection, original_filename, contents)
       # Store representation of import job in database to enable status tracking later
-      import_job = ImportJob.uploaded original_filename, user, collection
-      import_job.save!
+      ImportJob.uploaded original_filename, user, collection
 
       FileUtils.mkdir_p TmpDir
       File.open(file_for(user, collection), "wb") { |file| file << contents }
@@ -112,11 +116,18 @@ class ImportWizard
 
     def execute(user, collection, columns_spec)
       #Execute may be called with actual user and collection entities, or their ids.
-      if user.is_a?(User) && collection.is_a?(Collection)
-        execute_with_entities(user, collection, columns_spec)
-      else
+      if !(user.is_a?(User) && collection.is_a?(Collection))
         #If the method's been called with ids instead of entities
-        execute_with_entities(User.find(user), Collection.find(collection), columns_spec)
+        user = User.find(user)
+        collection = Collection.find(collection)
+      end
+
+      import_job = ImportJob.last_for user, collection
+
+      # Execution should continue only if the job is in status pending (user may canceled it)
+      if import_job.status == 'pending'
+        mark_job_as_in_progress(user, collection) 
+        execute_with_entities(user, collection, columns_spec)
       end
     end
 
@@ -340,9 +351,7 @@ class ImportWizard
         # And this will create the new ones
         collection.save!
 
-        import_job = ImportJob.last_in_status_pending_for user, collection
-        import_job.finish
-        import_job.save!
+        mark_job_as_finished(user, collection)
       end
 
       delete_file(user, collection)
@@ -372,9 +381,19 @@ class ImportWizard
 
     def mark_job_as_pending(user, collection)
       # Move the corresponding ImportJob to status pending, since it'll be enqueued
-      import_job = ImportJob.last_in_status_file_uploaded_for user, collection
-      import_job.status = :pending
-      import_job.save!
+      (ImportJob.last_for user, collection).pending
+    end
+
+    def mark_job_as_canceled_by_user(user, collection)
+      (ImportJob.last_for user, collection).canceled_by_user
+    end
+
+    def mark_job_as_in_progress(user, collection)
+      (ImportJob.last_for user, collection).in_progress
+    end
+
+    def mark_job_as_finished(user, collection)
+      (ImportJob.last_for user, collection).finish
     end
 
     private
