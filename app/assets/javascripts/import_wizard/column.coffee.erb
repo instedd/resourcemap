@@ -43,8 +43,6 @@ onImportWizard ->
       @label data.label
 
       @selectKind(if @kind() == 'select_one' || @kind() == 'select_many' then data.selectKind else null)
-      @iconClass @computeIconClass()
-      @errors []
 
     toJSON: =>
       json =
@@ -72,6 +70,7 @@ onImportWizard ->
     saveAndClose: =>
       $.fancybox.close()
       @commit()
+      window.model.validateSites()
 
     discardAndClose: =>
       $.fancybox.close()
