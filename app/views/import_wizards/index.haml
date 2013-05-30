@@ -8,6 +8,12 @@
   %p This wizard will guide you through importing a CSV file
   %br/
 
+  - if (import_job && import_job.status_finished?)
+    .grey
+      = "Note: your last import to this collection was based on a file named #{import_job.original_filename}, #{time_ago_in_words(import_job.finished_at)} ago."
+      .br
+      .br
+
   - if current_snapshot
     = render '/current_snapshot_message'
   - else

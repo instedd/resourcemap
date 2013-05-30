@@ -1,9 +1,9 @@
 require 'spec_helper' 
 
-describe "collections" do 
+describe "sites" do 
  
   it "should edit site Select many values", js:true do   
-    
+
     current_user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
     collection = create_collection_for (current_user)
     member = User.make(:email => 'member@member.com')
@@ -15,16 +15,17 @@ describe "collections" do
     visit collections_path
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
+    page.should_not have_content 'first'
     click_link 'Edit Site'
-    sleep 50
-    click_link "Add more"
-    find(:xpath, "//div[@class='tablescroll']/table/tbody/tr/td/div[12]/ul[@class='taglist']/li[1]/a").click
-    sleep 2
-    # select('first option', :from => 'select-one-input-selone')
-    # click_button 'Done'
-    # sleep 3 
-    # page.should_not have_content 'second option'
-    # page.should have_content 'first option'
-    # page.save_screenshot "Edit_site_selman_value.png"
+    sleep 5
+    find_by_id('Add more').click
+    fill_in 'select-many-input-selmany', :with => "first\n" 
+    sleep 5
+    click_button 'Done'
+    sleep 5
+    page.should have_content 'first'
+    page.save_screenshot "Edit_site_selman_value.png"
+    
   end
+
 end

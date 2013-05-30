@@ -35,7 +35,7 @@ describe ImportWizard do
       {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
@@ -72,7 +72,7 @@ describe ImportWizard do
       {header: 'Lon', use_as: 'lng'}
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     collection.reload
@@ -103,7 +103,7 @@ describe ImportWizard do
       {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
@@ -143,7 +143,7 @@ describe ImportWizard do
       {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
@@ -177,7 +177,7 @@ describe ImportWizard do
       {header: 'Visibility', use_as: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'both'},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
@@ -214,7 +214,7 @@ describe ImportWizard do
       {header: 'Visibility Code', use_as: 'new_field', kind: 'select_one', code: 'visibility', label: 'The visibility', selectKind: 'code'},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
@@ -249,7 +249,7 @@ describe ImportWizard do
       {header: 'Column', use_as: 'existing_field', field_id: text.id},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     collection.layers.all.should eq([layer])
@@ -277,7 +277,7 @@ describe ImportWizard do
       {header: 'Column', use_as: 'existing_field', field_id: numeric.id},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     collection.layers.all.should eq([layer])
@@ -305,7 +305,7 @@ describe ImportWizard do
       {header: 'Column', use_as: 'existing_field', field_id: select_one.id},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     collection.layers.all.should eq([layer])
@@ -333,7 +333,7 @@ describe ImportWizard do
       {header: 'Column', use_as: 'existing_field', field_id: select_one.id},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     collection.layers.all.should eq([layer])
@@ -372,7 +372,7 @@ describe ImportWizard do
       {header: 'Column', use_as: 'existing_field', field_id: select_many.id},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     collection.layers.all.should eq([layer])
@@ -400,7 +400,7 @@ describe ImportWizard do
       {header: 'Column', use_as: 'existing_field', field_id: select_many.id},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     collection.layers.all.should eq([layer])
@@ -438,7 +438,7 @@ describe ImportWizard do
         {header: 'Column', use_as: 'existing_field', field_id: hierarchy.id},
         ]
 
-      ImportWizard.import user, collection, csv_string
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, specs
 
       collection.layers.all.should eq([layer])
@@ -463,7 +463,7 @@ describe ImportWizard do
       {header: 'Column', use_as: 'existing_field', field_id: hierarchy.id},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     collection.layers.all.should eq([layer])
@@ -490,7 +490,7 @@ describe ImportWizard do
        {header: 'Column', use_as: 'existing_field', field_id: date.id},
        ]
 
-     ImportWizard.import user, collection, csv_string
+     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
      ImportWizard.execute user, collection, specs
 
      collection.layers.all.should eq([layer])
@@ -520,7 +520,7 @@ describe ImportWizard do
      {header: 'Column', use_as: 'existing_field', field_id: site.id},
      ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     collection.layers.all.should eq([layer])
@@ -569,7 +569,7 @@ describe ImportWizard do
       {header: 'User', use_as: 'existing_field', field_id: director.id},
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
@@ -634,7 +634,7 @@ describe ImportWizard do
      {header: 'User', use_as: 'existing_field', field_id: director.id},
      ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
@@ -666,7 +666,7 @@ describe ImportWizard do
       {header: 'Hierarchy', use_as: 'new_field', kind: 'hierarchy', code: 'new_hierarchy'},
     ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     expect { ImportWizard.execute(user, collection, specs) }.to raise_error
 
   end
@@ -696,7 +696,7 @@ describe ImportWizard do
       {header: 'Phone', use_as: 'new_field', kind: 'phone', code: 'new_phone'},
     ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
@@ -728,7 +728,7 @@ describe ImportWizard do
      csv << ["123", 'Foo old', '1.2', '3.4', '', '', 'two', 'two', 'uno',  1235, '12/26/1988', 'user2@email.com', 'email@mail.com']
     end
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
 
     column_spec.length.should eq(13)
@@ -761,7 +761,7 @@ describe ImportWizard do
       csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
     end
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
     processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
     sites_preview = processed_sites[:sites]
@@ -832,7 +832,7 @@ describe ImportWizard do
       csv << ['invalid11', '23/1/234', 'email@ma@il.com', 'invalid']
     end
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
     sites_errors = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:errors]
 
@@ -854,7 +854,7 @@ describe ImportWizard do
        {header: 'Numeric', use_as: 'existing_field', field_id: "#{numeric.id}"},
      ]
 
-     ImportWizard.import user, collection, csv_string
+     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
      errors = (ImportWizard.validate_sites_with_columns user, collection, specs)[:errors]
 
      data_errors = errors[:data_errors]
@@ -873,7 +873,7 @@ describe ImportWizard do
 
     end
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
 
     column_spec = [
      {header: 'Text', use_as: 'new_field', kind: 'text', code: 'text2', label: 'text2'},
@@ -946,7 +946,7 @@ describe ImportWizard do
      csv << ['new val']
     end
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
 
     column_spec = [
       {header: 'Text', use_as: 'new_field', kind: 'text', code: 'text', label: 'Non Existing field'},
@@ -976,7 +976,7 @@ describe ImportWizard do
        {header: 'Column 2', use_as:"#{usage}"}
        ]
 
-      ImportWizard.import user, collection, csv_string
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
 
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
 
@@ -998,7 +998,7 @@ describe ImportWizard do
      {header: 'Column 2', use_as: "existing_field", field_id: text.id}
      ]
 
-     ImportWizard.import user, collection, csv_string
+     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
 
      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
      sites_errors = sites_preview[:errors]
@@ -1019,7 +1019,7 @@ describe ImportWizard do
      {header: 'Column 2', use_as: "ignore"}
      ]
 
-     ImportWizard.import user, collection, csv_string
+     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
 
      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
 
@@ -1042,7 +1042,7 @@ describe ImportWizard do
        {header: 'Column 2', use_as: 'new_field', "#{value}" => "repeated" }
        ]
 
-      ImportWizard.import user, collection, csv_string
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
 
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
 
@@ -1072,7 +1072,7 @@ describe ImportWizard do
          {header: 'Column 2', use_as: 'new_field', "#{value}" => "repeated" }
          ]
 
-      ImportWizard.import user, collection, csv_string
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
 
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
 
@@ -1092,11 +1092,11 @@ describe ImportWizard do
      csv << ['invalid11']
    end
 
-   ImportWizard.import user, collection, csv_string
+   ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
 
    columns_spec = [{header: 'numeric', use_as: 'ignore', kind: 'ignore'}]
    validated_sites = (ImportWizard.validate_sites_with_columns user, collection, columns_spec)
-   
+
    sites_preview = validated_sites[:sites]
    sites_preview.should  == [[{:value=>"11"}], [{:value=>"invalid11"}]]
    sites_errors = validated_sites[:errors]
@@ -1106,7 +1106,7 @@ describe ImportWizard do
    ImportWizard.delete_file(user, collection)
  end
 
-  it "should not generate a data error when updating a default property" do 
+  it "should not generate a data error when updating a default property" do
     site1 = collection.sites.make name: 'Foo old'
 
     csv_string = CSV.generate do |csv|
@@ -1118,7 +1118,7 @@ describe ImportWizard do
       {header: 'resmap-id', use_as: 'id', kind: 'id'},
       {header: 'Name', use_as: 'name', kind: 'name'}]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
     sites_errors[:data_errors].should == []
@@ -1126,14 +1126,14 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
 
-  # Otherwise a missmatch will be generated 
+  # Otherwise a missmatch will be generated
   it 'should not bypass columns with an empty value in the first row' do
     csv_string = CSV.generate do |csv|
       csv << ['0', '' , '']
       csv << ['1', '0', 'label2']
     end
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
 
     column_spec.length.should eq(3)
@@ -1155,7 +1155,7 @@ describe ImportWizard do
       csv << ['1', '0', 'label2']
     end
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
 
     column_spec.length.should eq(3)
@@ -1171,18 +1171,18 @@ describe ImportWizard do
     ImportWizard.delete_file(user, collection)
   end
 
-  it 'should not fail if label and code are missing in new fields' do 
+  it 'should not fail if label and code are missing in new fields' do
     csv_string = CSV.generate do |csv|
       csv << ['0', '' , '']
       csv << ['1', '0', 'label2']
     end
 
     specs = [
-      {:header=>"0", :kind=>:numeric, :code=>"0", :label=>"0", :use_as=>:new_field}, 
+      {:header=>"0", :kind=>:numeric, :code=>"0", :label=>"0", :use_as=>:new_field},
       {:header=>"", :kind=>:text, :code=>"", :label=>"", :use_as=>:new_field},
       {:header=>"", :kind=>:text, :code=>"", :label=>"", :use_as=>:new_field}]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
     sites_errors[:missing_label].should eq(:columns => [1,2])
@@ -1190,8 +1190,8 @@ describe ImportWizard do
 
     ImportWizard.delete_file(user, collection)
   end
-    
-  it "should validate presence of name in column specs" do 
+
+  it "should validate presence of name in column specs" do
     csv_string = CSV.generate do |csv|
       csv << ['numeric']
       csv << ['11']
@@ -1199,7 +1199,7 @@ describe ImportWizard do
 
     specs = [{:header=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"numeric", :use_as=>:new_field}]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
     sites_errors[:missing_name].should_not be_blank
@@ -1209,7 +1209,7 @@ describe ImportWizard do
 
     specs = [{:header=>"numeric", :use_as=>:name}]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
     sites_errors[:missing_name].should be_blank
@@ -1227,7 +1227,7 @@ describe ImportWizard do
 
       specs = [{:header=>"#{reserved_code}", :kind=>:text, :code=>"#{reserved_code}", :label=>"Label", :use_as=>:new_field}]
 
-      ImportWizard.import user, collection, csv_string
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
       sites_errors = sites_preview[:errors]
       sites_errors[:reserved_code].should eq({"#{reserved_code}"=>[0]})
@@ -1244,7 +1244,7 @@ describe ImportWizard do
     end
 
     specs = [{:header=>"resmap-id", :use_as=>:id}]
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
 
@@ -1252,6 +1252,26 @@ describe ImportWizard do
     resmap_id_error = sites_errors[:non_existent_site_id][0]
     resmap_id_error[:rows].should eq([1])
     resmap_id_error[:column].should eq(0)
+    ImportWizard.delete_file(user, collection)
+
+  end
+
+  it "should not show errors for valid sites ids(numeric or text)" do
+    site1 = collection.sites.make name: 'Bar'
+    site2 = collection.sites.make name: 'Foo'
+
+    csv_string = CSV.generate do |csv|
+      csv << ["resmap-id"]
+      csv << ["#{site1.id}"]
+      csv << [site2.id]
+    end
+
+    specs = [{:header=>"resmap-id", :use_as=>:id}]
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+
+    sites_errors[:non_existent_site_id].should be(nil)
     ImportWizard.delete_file(user, collection)
 
   end

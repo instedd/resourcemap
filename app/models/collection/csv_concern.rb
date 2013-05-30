@@ -72,57 +72,21 @@ module Collection::CsvConcern
     end
   end
 
-  def decode_hierarchy_csv(string_or_io)
+  def decode_hierarchy_csv(string)
 
-    csv = CSV.new string_or_io, return_headers: false
+    csv = CSV.parse(string)
 
     # First read all items into a hash
-    items = {}
-    i = 0
+    # And validate it's content
+    items = validate_format(csv)
 
-    csv.each do |row|
-      item = {}
-      if row[0] == 'ID'
-        next
-      else
-        i = i+1
-        item[:order] = i
-
-        if row.length != 3
-          item[:error] = "Wrong format."
-          item[:error_description] = "Invalid column number"
-        else
-
-          #Check unique name
-          name = row[2].strip
-          if items.any?{|item| item.second[:name] == name}
-            item[:error] = "Invalid name."
-            item[:error_description] = "Hierarchy name should be unique"
-          else
-            #Check unique id
-            id = row[0].strip
-            if items.any?{|item| item.second[:id] == id}
-              item[:error] = "Invalid id."
-              item[:error_description] = "Hierarchy id should be unique"
-            else
-              item[:id] = id
-              item[:parent] = row[1].strip if row[1].present?
-              item[:name] = name
-            end
-          end
-        end
-
-        items[item[:order]] = item
-      end
-
-    end
 
     # Add to parents
     items.each do |order, item|
       if item[:parent].present? && !item[:error].present?
         parent_candidates = items.select{|key, hash| hash[:id] == item[:parent]}
 
-        if parent_candidates
+        if parent_candidates.any?
           parent = parent_candidates.first[1]
         end
 
@@ -150,6 +114,59 @@ module Collection::CsvConcern
     rescue Exception => ex
       return [{error: ex.message}]
 
+  end
+
+  def validate_format(csv)
+    i = 0
+    items = {}
+    csv.each do |row|
+      item = {}
+      if row[0] == 'ID'
+        next
+      else
+        i = i+1
+        item[:order] = i
+
+        if row.length != 3
+          item[:error] = "Wrong format."
+          item[:error_description] = "Invalid column number"
+        else
+
+          #Check unique name
+          name = row[2].strip
+          if items.any?{|item| item.second[:name] == name}
+            item[:error] = "Invalid name."
+            item[:error_description] = "Hierarchy name should be unique"
+            error = true
+          end
+          
+          #Check unique id
+          id = row[0].strip
+          if items.any?{|item| item.second[:id] == id}
+            item[:error] = "Invalid id."
+            item[:error_description] = "Hierarchy id should be unique"
+            error = true
+          end
+
+          #Check parent id exists
+          parent_id = row[1]
+          if(parent_id.present? && !csv.any?{|csv_row| csv_row[0].strip == parent_id.strip})
+            item[:error] = "Invalid parent value."
+            item[:error_description] = "ParentID should match one of the Hierarchy ids"
+            error = true
+          end
+
+          if !error
+            item[:id] = id
+            item[:parent] = row[1].strip if row[1].present?
+            item[:name] = name
+          end
+        end
+
+        items[item[:order]] = item
+      end
+    end
+    items
   end
 
   private

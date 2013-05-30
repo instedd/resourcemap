@@ -16,10 +16,12 @@ describe "filter_sites" do
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     find('.refine').click
     find(:xpath, '//div[@class="refine-popup box"]/div[3]').click
+    sleep 2
     find(:xpath, '//div[@class="refine-popup box"]/div[4]/input').set("fra")
+    sleep 2
     find(:xpath, '//div[@class="refine-popup box"]/div[4]/a').click
     sleep 3
-    page.save_screenshot 'Filter_sites.png'
     page.should have_content 'Show sites where Central Hospital Layer 1 Field starts with "fra" '
+    page.save_screenshot 'Filter_sites.png'
   end  
 end

@@ -25,5 +25,5 @@ onImportWizard -> if $('#import-wizard-main').length > 0
         $(".fancybox").fancybox({
           minWidth: '450px',
           afterClose: ->
-            window.model.validateSites(window.model.selectedColumn())
+            window.model.selectedColumn().discardAndClose()
         })

@@ -10,7 +10,8 @@ it "should change to table mode view", js:true do
     sleep 2
     find(:xpath, '//div[@id="right-panel"]/div[1]/button[2]').click
     sleep 2
-    page.save_screenshot 'Table view.png'
     has_content?("icon_button ftable right active")
+    sleep 2
+    page.save_screenshot 'Table view.png'
   end
 end

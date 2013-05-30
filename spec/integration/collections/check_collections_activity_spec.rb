@@ -16,10 +16,10 @@ describe "check_collections_activity" do
     find(:xpath, "//div[@class='tabsline']/table/tbody/tr[2]/td[1]/span[2]").click
     sleep 5
     page.should have_no_content ('mina@gutkowski.com')        
-    sleep 2
+    sleep 5
     find(:xpath, "//div[@class='tabsline']/table/tbody/tr[2]/td[1]/span[1]").click
     sleep 10
-    page.should have_content ('mina@gutkowski.com')        
+    page.has_content? ('mina@gutkowski.com')        
     page.save_screenshot 'check_collections_activity.png'
   end
 end

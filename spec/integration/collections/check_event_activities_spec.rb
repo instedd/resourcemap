@@ -16,11 +16,11 @@ describe "check_events_activity" do
     find(:xpath, "//div[@class='tabsline']/table/tbody/tr[2]/td[2]/span[2]").click
     sleep 5
     page.should have_no_content ('mina@gutkowski.com')
-    sleep 2
+    sleep 5
     find(:xpath, "//div[@class='tabsline']/table/tbody/tr[2]/td[2]/span[1]").click
-    sleep 5
-    page.should have_content ('mina@gutkowski.com')        
-    sleep 5
+    sleep 10
+    page.has_content? ('mina@gutkowski.com')        
+    sleep 2
     page.save_screenshot 'Check_events_activity.png'
   end
 end

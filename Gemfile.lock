@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/manastech/dist.git
+  revision: 79283f13f8c57ef944fd4175367624187890f2bd
+  specs:
+    dist (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -72,13 +78,15 @@ GEM
       railties (~> 3.1)
       warden (~> 1.2.1)
     diff-lcs (1.1.3)
+    dotenv (0.7.0)
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
     faker (1.0.1)
       i18n (~> 0.4)
     ffi (1.0.11)
-    foreman (0.51.0)
+    foreman (0.63.0)
+      dotenv (>= 0.7)
       thor (>= 0.13.6)
     guard (1.2.3)
       listen (>= 0.4.2)
@@ -240,7 +248,7 @@ GEM
       tilt (~> 1.1, != 1.3.0)
     therubyracer (0.10.1)
       libv8 (~> 3.3.10)
-    thor (0.17.0)
+    thor (0.18.1)
     tilt (1.3.3)
     tire (0.4.2)
       activemodel (>= 3.0)
@@ -280,6 +288,7 @@ DEPENDENCIES
   database_cleaner
   decent_exposure
   devise
+  dist!
   faker
   foreman
   guard-jasmine

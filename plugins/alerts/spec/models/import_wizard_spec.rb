@@ -29,7 +29,7 @@ describe ImportWizard do
       {header: 'email', use_as: 'existing_field', field_id: email.id}
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all
@@ -53,7 +53,7 @@ describe ImportWizard do
     site2.name.should eq('Bar old')
     site2.properties.should eq({phone.es_code => '855123456789'})
   end
-  
+
   it "should delete all property values" do
     site1 = collection.sites.make name: 'Foo old', properties: {
       phone.es_code => '855123456789',
@@ -75,7 +75,7 @@ describe ImportWizard do
       {header: 'email', use_as: 'existing_field', field_id: email.id}
       ]
 
-    ImportWizard.import user, collection, csv_string
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers.all

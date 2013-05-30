@@ -15,11 +15,13 @@ describe "search" do
     visit collections_path
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     fill_in 'search', :with => "Aida Rohan\n"
-    sleep 15
+    sleep 5
     page.save_screenshot 'Search.png'
+    sleep 3
     page.has_content? 'Aida Rohan'
     sleep 3
     page.should have_no_content 'Alek Ortiz'
+    sleep 2
   end
 end
 

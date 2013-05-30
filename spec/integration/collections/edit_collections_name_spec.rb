@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "create_site" do 
+describe "collections" do 
  
 it "should change a collection name", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')

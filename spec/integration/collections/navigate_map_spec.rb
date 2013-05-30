@@ -8,16 +8,27 @@ describe "navigate_map" do
     login_as (@user)
     visit collections_path
     find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[2]').click    
+    sleep 1
     find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[2]').click    
+ 	sleep 1
     find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[2]').click  
+    sleep 1
 	find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[3]').click  
+	sleep 1
 	find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[3]').click  
+	sleep 1
 	find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[3]').click  
+	sleep 1
 	find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[1]').click  
+	sleep 1
 	find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[1]').click  
+	sleep 1
 	find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[1]').click  
+	sleep 1
 	find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[4]').click  
+	sleep 1
 	find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[4]').click  
+	sleep 1
 	find(:xpath, '//div/div[@class="gmnoprint"][3]/div[@class="gmnoprint"][1]/div[@class="gmnoprint"][2]/div/div[4]').click  
 	sleep 2
   end

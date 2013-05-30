@@ -117,7 +117,7 @@ class CollectionsController < ApplicationController
     current_snapshot && current_snapshot.user_snapshots.where(user_id: current_user.id).first.destroy
 
     respond_to do |format|
-      format.html { 
+      format.html {
         flash[:notice] = "Snapshot #{current_snapshot.name} unloaded" if current_snapshot
         redirect_to  collection_path(collection) }
       format.json { render json: :ok }
@@ -210,7 +210,8 @@ class CollectionsController < ApplicationController
   end
 
   def decode_hierarchy_csv
-    @hierarchy = collection.decode_hierarchy_csv(params[:file].read)
+    csv_string = File.read(params[:file].path, :encoding => 'utf-8')
+    @hierarchy = collection.decode_hierarchy_csv(csv_string)
     @hierarchy_errors = CollectionsController.generate_error_description_list(@hierarchy)
     render layout: false
   end

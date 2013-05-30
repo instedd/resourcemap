@@ -87,10 +87,10 @@ onImportWizard ->
       @selectedColumn(column)
       true
 
-    validateSites:(modified_column) =>
-      column = modified_column.toJSON()
-      $.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_columns.json", {columns: JSON.stringify(@columns())}, (preview) =>
-        window.model.loadSites(preview)
+    validateSites: =>
+      if @columns
+        $.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_columns.json", {columns: JSON.stringify(@columns())}, (preview) =>
+          @loadSites(preview)
 
     showAllColumns: =>
       @visibleColumns(@columns())
@@ -125,7 +125,7 @@ onImportWizard ->
         type: 'POST'
         data: {columns: columns},
         success: =>
-          window.location = "/collections?collection=#{@collectionId}"
+          window.location = "/collections/#{@collectionId}/import_wizard/import_in_progress"
         error: =>
           @importing(false)
           @importError(true)
