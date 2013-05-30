@@ -16,6 +16,7 @@ class Site < ActiveRecord::Base
 
 
   attr_accessor :use_codes_instead_of_es_codes
+  attr_accessor :from_import_wizard
 
   def history_concern_foreign_key
     self.class.name.foreign_key

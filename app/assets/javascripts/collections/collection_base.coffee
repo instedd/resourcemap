@@ -86,3 +86,7 @@ onCollections ->
       $.post "/collections/#{@id}/unload_current_snapshot.json", ->
         window.location.reload()
 
+    searchUsersUrl: -> "/collections/#{@id}/memberships/search.json"
+
+    searchSitesUrl: -> "/collections/#{@id}/sites_by_term.json"
+

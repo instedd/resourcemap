@@ -1,6 +1,6 @@
 - if single_editing_mode
-  %select{ko(value: :value, options: :optionsUIIds, optionsText: 'function(o){return $data.labelFor(o)}', hasfocus: true, event: {change: :save, blur: :save})}
+  %select{ko(value: :value, options: :optionsUIIds, optionsText: 'function(o){return $data.labelFor(o)}', hasfocus: true, event: {change: :save, blur: :save}, attr: {id: "'select-one-input-' + code"})}
 - else
-  %select.right.w20{ko(value: :value, options: :optionsUIIds, optionsText: 'function(o){return $data.labelFor(o)}')}
+  %select.right.w20{ko(value: :value, options: :optionsUIIds, optionsText: 'function(o){return $data.labelFor(o)}', attr: {id: "'select-one-input-' + code"})}
   .clear
 

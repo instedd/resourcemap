@@ -42,8 +42,6 @@ onCollections ->
       else if @position()
         window.model.map.panTo @position()
 
-    searchUsersUrl: -> "/collections/#{@id}/memberships/search.json"
 
-    searchSitesUrl: -> "/collections/#{@id}/sites_by_term.json"
 
 

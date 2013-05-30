@@ -96,7 +96,4 @@ describe ImportWizard do
     site2.name.should eq('Bar old')
     site2.properties.should eq({phone.es_code => '855123456789'})
   end
-
-  
-
 end

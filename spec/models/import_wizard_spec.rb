@@ -58,6 +58,32 @@ describe ImportWizard do
     sites[1].properties.should eq({fields[0].es_code => 20})
   end
 
+  it "import should calculate collection bounds from sites" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Lat', 'Lon']
+      csv << ['Foo', '30.0', '20.0']
+      csv << ['Bar', '40.0', '30.0']
+      csv << ['FooBar', '45.0', '40.0']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'}
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    collection.reload
+    collection.min_lat.to_f.should eq(30.0)
+    collection.max_lat.to_f.should eq(45.0)
+    collection.min_lng.to_f.should eq(20.0)
+    collection.max_lng.to_f.should eq(40.0)
+    collection.lat.to_f.should eq(37.5)
+    collection.lng.to_f.should eq(30.0)
+  end
+
   it "imports with name, lat, lon and one new numeric property and existing ID" do
     site1 = collection.sites.make name: 'Foo old', properties: {text.es_code => 'coco'}
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}
@@ -880,7 +906,6 @@ describe ImportWizard do
     sites_errors[:duplicated_label].should eq({})
     sites_errors[:existing_code].should eq({})
     sites_errors[:existing_label].should eq({})
-    sites_errors[:usage_missing].should eq([])
 
     data_errors = sites_errors[:data_errors]
     data_errors.length.should eq(6)
@@ -1100,4 +1125,135 @@ describe ImportWizard do
 
     ImportWizard.delete_file(user, collection)
   end
+
+  # Otherwise a missmatch will be generated 
+  it 'should not bypass columns with an empty value in the first row' do
+    csv_string = CSV.generate do |csv|
+      csv << ['0', '' , '']
+      csv << ['1', '0', 'label2']
+    end
+
+    ImportWizard.import user, collection, csv_string
+    column_spec = ImportWizard.guess_columns_spec user, collection
+
+    column_spec.length.should eq(3)
+    column_spec[1][:header].should eq("")
+    column_spec[1][:code].should eq("")
+    column_spec[1][:label].should eq("")
+    column_spec[1][:use_as].should eq(:new_field)
+    column_spec[2][:header].should eq("")
+    column_spec[2][:code].should eq("")
+    column_spec[2][:label].should eq("")
+    column_spec[2][:use_as].should eq(:new_field)
+
+    ImportWizard.delete_file(user, collection)
+  end
+
+  it 'should not fail if header has a nil value' do
+    csv_string = CSV.generate do |csv|
+      csv << ['0', nil , nil]
+      csv << ['1', '0', 'label2']
+    end
+
+    ImportWizard.import user, collection, csv_string
+    column_spec = ImportWizard.guess_columns_spec user, collection
+
+    column_spec.length.should eq(3)
+    column_spec[1][:header].should eq("")
+    column_spec[1][:code].should eq("")
+    column_spec[1][:label].should eq("")
+    column_spec[1][:use_as].should eq(:new_field)
+    column_spec[2][:header].should eq("")
+    column_spec[2][:code].should eq("")
+    column_spec[2][:label].should eq("")
+    column_spec[2][:use_as].should eq(:new_field)
+
+    ImportWizard.delete_file(user, collection)
+  end
+
+  it 'should not fail if label and code are missing in new fields' do 
+    csv_string = CSV.generate do |csv|
+      csv << ['0', '' , '']
+      csv << ['1', '0', 'label2']
+    end
+
+    specs = [
+      {:header=>"0", :kind=>:numeric, :code=>"0", :label=>"0", :use_as=>:new_field}, 
+      {:header=>"", :kind=>:text, :code=>"", :label=>"", :use_as=>:new_field},
+      {:header=>"", :kind=>:text, :code=>"", :label=>"", :use_as=>:new_field}]
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+    sites_errors[:missing_label].should eq(:columns => [1,2])
+    sites_errors[:missing_code].should eq(:columns => [1,2])
+
+    ImportWizard.delete_file(user, collection)
+  end
+    
+  it "should validate presence of name in column specs" do 
+    csv_string = CSV.generate do |csv|
+      csv << ['numeric']
+      csv << ['11']
+    end
+
+    specs = [{:header=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"numeric", :use_as=>:new_field}]
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+    sites_errors[:missing_name].should_not be_blank
+
+    ImportWizard.delete_file(user, collection)
+
+
+    specs = [{:header=>"numeric", :use_as=>:name}]
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+    sites_errors[:missing_name].should be_blank
+
+    ImportWizard.delete_file(user, collection)
+
+  end
+
+  Field.reserved_codes().each do |reserved_code|
+    it "should validate reserved code #{reserved_code} in new fields" do
+      csv_string = CSV.generate do |csv|
+        csv << ["#{reserved_code}"]
+        csv << ['11']
+      end
+
+      specs = [{:header=>"#{reserved_code}", :kind=>:text, :code=>"#{reserved_code}", :label=>"Label", :use_as=>:new_field}]
+
+      ImportWizard.import user, collection, csv_string
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+      sites_errors = sites_preview[:errors]
+      sites_errors[:reserved_code].should eq({"#{reserved_code}"=>[0]})
+      ImportWizard.delete_file(user, collection)
+
+    end
+  end
+
+  it "should validate ids belong to collection's sites if a column is marked to be used as 'id'" do
+    csv_string = CSV.generate do |csv|
+      csv << ["resmap-id"]
+      csv << ['']
+      csv << ['11']
+    end
+
+    specs = [{:header=>"resmap-id", :use_as=>:id}]
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+
+    sites_errors[:non_existent_site_id].length.should eq(1)
+    resmap_id_error = sites_errors[:non_existent_site_id][0]
+    resmap_id_error[:rows].should eq([1])
+    resmap_id_error[:column].should eq(0)
+    ImportWizard.delete_file(user, collection)
+
+  end
+
 end

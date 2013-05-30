@@ -16,7 +16,7 @@ onImportWizard ->
       @showingColumns = ko.observable('all')
 
       @selectedColumn = ko.observable()
-      @loadUsages()
+      @loadUsages(@selectedColumn())
 
       @hasId = ko.computed =>
         window.arrayAny(@columns(), (c) => c.usage() == 'id')
@@ -53,7 +53,7 @@ onImportWizard ->
       @validationErrors(new ValidationErrors(preview.errors))
       @loadVisibleSites()
 
-    loadUsages: =>
+    loadUsages: (column) =>
       @usages = [new Usage('New field', 'new_field')]
       if @layers.length > 0
         @usages.push(new Usage('Existing field', 'existing_field'))
@@ -62,11 +62,17 @@ onImportWizard ->
       @usages.push(new Usage('Longitude', 'lng'))
       @usages.push(new Usage('Ignore', 'ignore'))
 
+      # The usage ID is not selectable by the user except for the cases in which the csv was downloaded from resourcemap
+      @usages.push(new Usage('resmap-id', 'id')) if column && column.header() == 'resmap-id'
+
       @selectableUsagesForAdmins = @usages.slice(0)
       # Non admins can't create new fields
       @selectableUsagesForNonAdmins = @usages.slice(1)
-      # The usage ID is not selectable by the user
-      @usages.push(new Usage('resmap-id', 'id'))
+
+      # If usage id is not added yet, we need to add it.
+      # This way is a valid column type but it's not selectable by the user unless the column has header 'resmap-id'
+      if !window.arrayAny(@usages, (u) -> u.name == 'resmap-id')
+        @usages.push(new Usage('resmap-id', 'id'))
 
     findLayer: (id) =>
       (layer for layer in @layers when layer.id == id)[0]
@@ -77,6 +83,7 @@ onImportWizard ->
       field
 
     selectColumn: (column) =>
+      @loadUsages(column)
       @selectedColumn(column)
       true
 

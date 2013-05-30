@@ -27,12 +27,29 @@ onImportWizard ->
           for errorId, errorColumns of errors
             error_description = {error_kind: errorType, columns: errorColumns}
             switch errorType
+              when 'missing_name'
+                error_description.description = "Please select a column to be used as 'Name'"
+                error_description.more_info = "You need to select a column to be used as 'Name' of the sites in order to continue with the upload."
               when 'duplicated_code'
                 error_description.description = "There is more than one column with code #{errorId}."
                 error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have code #{errorId}. To fix this issue, leave only one with that code and modify the rest."
               when 'duplicated_label'
                 error_description.description = "There is more than one column with name #{errorId}."
                 error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have name #{errorId}. To fix this issue, leave only one with that name and modify the rest."
+              when 'missing_code'
+                if errorColumns.length >1
+                  error_description.description = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's code."
+                  error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's code, which is required for new fields. To fix this issue, add a code for each of these columns."
+                else
+                  error_description.description = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's code."
+                  error_description.more_info = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's code, which is required for new fields. To fix this issue, add a code for this column."
+              when 'missing_label'
+                if errorColumns.length >1
+                  error_description.description = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's label."
+                  error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's label, which is required for new fields. To fix this issue, add a label for each of these columns."
+                else
+                  error_description.description = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's label."
+                  error_description.more_info = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's label, which is required for new fields. To fix this issue, add a label for this column."
               when 'duplicated_usage'
                 field = window.model.findField(errorId)
                 if field
@@ -56,9 +73,26 @@ onImportWizard ->
               when 'hierarchy_field_found'
                 error_description.description = "Hierarchy fields can only be created via web in the Layers page."
                 error_description.more_info = "Column numbers: #{@toIndex1BasedSentence(errorColumns)}."
+              when 'reserved_code'
+                error_description.description = "Reserved code '#{errorId}'. ResourceMap uses the code 'resmap-id' to identify sites, thus it can't be used as a custom field code."
+                if errorColumns.length >1
+                  error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have code '#{errorId}'. To fix this issue, change all their codes."
+                else
+                  error_description.more_info = "Column #{errorColumns[0] + 1} has code '#{errorId}'. To fix this issue, change its code."
+              when 'non_existent_site_id'
+                # In this case errorColumns contains an object with the following structure:
+                # {column: 1, rows: [1, 3, 5, 6]} 
+                error = errorColumns
+                error_description.columns = [error.column]
+                error_description.description = "There are #{error.rows.length} issues with the values in column #{error.column + 1}."
+                error_description.more_info = "ResourceMap uses the name 'resmap-id' to identify sites, thus it can't be used as a custom field name."
+                error_description.more_info = error_description.more_info + "If you want to update sites information, all the values in the column 'resmap-id' must correspond to already existing sites in the collection, and new sites must be blank."
+                error_description.more_info = error_description.more_info + "If you just want to create new sites, please change the column's code from 'resmap-id' to something else."
+                if error.rows.length < 25
+                  error_description.more_info = error_description.more_info + "The non-existing site-id values are in the following rows: #{@toIndex1BasedSentence(error.rows)}."
               when 'data_errors'
                 # In this case errorColumns contains an object with the following structure:
-                # {description: “Error description”, column: 1, rows: [1, 3, 5, 6], example: "Hint", type: 'numeric}
+                # {description: “Error description”, column: 1, rows: [1, 3, 5, 6], example: "Hint", type: 'numeric'}
                 error = errorColumns
                 error_description.columns = [error.column]
                 error_description.description = "There are #{error.rows.length} errors in column #{error.column + 1}."

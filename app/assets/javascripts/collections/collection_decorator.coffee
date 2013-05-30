@@ -7,7 +7,9 @@ onCollections ->
       # These three are because we are not calling super
       @constructorLocatable(lat: collection.lat(), lng: collection.lng())
       @constructorSitesContainer()
+      @constructorSitesMembership()
       @loadCurrentSnapshotMessage()
+
       @loadAllSites()
 
       @collection = collection
@@ -20,6 +22,7 @@ onCollections ->
       @fieldsInitialized = collection.fieldsInitialized
       @refineFields = collection.fields
       @groupByOptions = collection.groupByOptions
+      @sitesPermission = collection.sitesPermission
       @allSites(collection.allSites())
 
 

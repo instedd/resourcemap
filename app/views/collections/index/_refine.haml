@@ -5,9 +5,9 @@
 <!-- /ko -->
 .left.superblyTagItems
   <!-- ko foreach: filters() -->
-  %li.superblyTagItem{ko(click: '$root.removeFilter'), style: 'float:left;padding:3px;margin-right:4px;cursor:pointer'}
+  %li.superblyTagItem{style: 'float:left;padding:3px;margin-right:4px;cursor:pointer'}
     %span{ko(text: '$root.filterDescription($data)')}
-    %a x
+    %a{ko(click: '$root.removeFilter')} x
   <!-- /ko -->
   .refine{ko(click: 'toggleRefinePopup'), style: 'float:left;padding:3px;cursor:pointer;position:relative;top:1px'}
     <!-- ko if: filters().length == 0 -->

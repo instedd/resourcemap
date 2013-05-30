@@ -1,5 +1,5 @@
 - if single_editing_mode
-  %input{ ko(value: :value, valueUpdate: :afterkeydown, event: {keydown: :keyPress, blur: :save}), type: :tel, placeholder: "85512345678"}
+  %input{ ko(value: :value, valueUpdate: :afterkeydown, event: {keydown: :keyPress, blur: :save}, attr: {id: "'phone-input-' + code"}), type: :tel, placeholder: "85512345678"}
 - else
-  %input.right.w20{ ko(value: :value), type: :tel, placeholder: "85512345678" }
+  %input.right.w20{ ko(value: :value, attr: {id: "'phone-input-' + code"}), type: :tel, placeholder: "85512345678" }
   .clear

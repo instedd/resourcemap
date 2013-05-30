@@ -17,7 +17,7 @@ class ImportWizard
       csv = CSV.read(file_for(user, collection), :encoding => ':utf-8')
       binding.pry
       csv_columns = csv[1.. -1].transpose
-      csv[0].map!{|r| r.strip}
+      csv[0].map!{|r| r.strip if r}
 
       validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
       # TODO: implement pagination
@@ -33,22 +33,32 @@ class ImportWizard
 
       sites_errors = {}
 
-      proc_select_new_fields = Proc.new{columns_spec.select{|spec| spec[:use_as] == 'new_field'}}
+      proc_select_new_fields = Proc.new{columns_spec.select{|spec| spec[:use_as].to_s == 'new_field'}}
       sites_errors[:duplicated_code] = calculate_duplicated(proc_select_new_fields, 'code')
       sites_errors[:duplicated_label] = calculate_duplicated(proc_select_new_fields, 'label')
+      sites_errors[:missing_label] = calculate_missing(proc_select_new_fields, 'label')
+      sites_errors[:missing_code] = calculate_missing(proc_select_new_fields, 'code')
+
+      sites_errors[:reserved_code] = calculate_reserved_code(proc_select_new_fields)
 
       collection_fields = collection.fields.all(:include => :layer)
       sites_errors[:existing_code] = calculate_existing(columns_spec, collection_fields, 'code')
       sites_errors[:existing_label] = calculate_existing(columns_spec, collection_fields, 'label')
 
-      sites_errors[:usage_missing] = []
-
       # Calculate duplicated usage for default fields (lat, lng, id, name)
-      proc_default_usages = Proc.new{columns_spec.reject{|spec| spec[:use_as] == 'new_field' || spec[:use_as] == 'existing_field' || spec[:use_as] == 'ignore'}}
+      proc_default_usages = Proc.new{columns_spec.reject{|spec| spec[:use_as].to_s == 'new_field' || spec[:use_as].to_s == 'existing_field' || spec[:use_as].to_s == 'ignore'}}
       sites_errors[:duplicated_usage] = calculate_duplicated(proc_default_usages, :use_as)
       # Add duplicated-usage-error for existing_fields
-      proc_existing_fields = Proc.new{columns_spec.select{|spec| spec[:use_as] == 'existing_field'}}
+      proc_existing_fields = Proc.new{columns_spec.select{|spec| spec[:use_as].to_s == 'existing_field'}}
       sites_errors[:duplicated_usage].update(calculate_duplicated(proc_existing_fields, :field_id))
+
+      # Name is mandatory
+      sites_errors[:missing_name] = {:use_as => 'name'} if !(columns_spec.any?{|spec| spec[:use_as].to_s == 'name'})
+
+      columns_used_as_id = columns_spec.select{|spec| spec[:use_as].to_s == 'id'}
+      # Only one column will be marked to be used as id
+      csv_column_used_as_id = csv_columns[columns_used_as_id.first[:index]] if columns_used_as_id.length > 0
+      sites_errors[:non_existent_site_id] = calculate_non_existent_site_id(collection.sites.map{|s| s.id}, csv_column_used_as_id, columns_used_as_id.first[:index]) if columns_used_as_id.length > 0
 
       sites_errors[:data_errors] = []
       sites_errors[:hierarchy_field_found] = []
@@ -164,7 +174,7 @@ class ImportWizard
 
         site = nil
         site = collection.sites.find_by_id row[id_spec[:index]] if id_spec && row[id_spec[:index]].present?
-        site ||= collection.sites.new properties: {}, collection_id: collection.id
+        site ||= collection.sites.new properties: {}, collection_id: collection.id, from_import_wizard: true
 
         site.user = user
         sites << site
@@ -339,6 +349,14 @@ class ImportWizard
 
     private
 
+    def calculate_non_existent_site_id(valid_site_ids, csv_column, resmap_id_column_index)
+      invalid_ids = []
+      csv_column.each_with_index do |csv_field_value, field_number|
+        invalid_ids << field_number unless (csv_field_value.blank? || valid_site_ids.include?(csv_field_value))
+      end
+      [{rows: invalid_ids, column: resmap_id_column_index}] if invalid_ids.length >0
+    end
+
     def validate_column(user, collection, column_spec, fields, csv_column, column_number)
       if column_spec[:use_as].to_sym == :existing_field
         field = fields.detect{|e| e.id.to_s == column_spec[:field_id].to_s}
@@ -346,7 +364,8 @@ class ImportWizard
       validated_csv_column = []
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
-          if column_spec[:use_as].to_sym == :existing_field || column_spec[:use_as].to_sym == :new_field
+          case column_spec[:use_as].to_sym
+          when :existing_field, :new_field
             validate_column_value(column_spec, csv_field_value, field, collection)
           end
         rescue => ex
@@ -432,6 +451,36 @@ class ImportWizard
       duplicated_columns
     end
 
+    def calculate_reserved_code(selection_block)
+      spec_to_validate = selection_block.call()
+      invalid_columns = {}
+      spec_to_validate.each do |column_spec|
+        if Field.reserved_codes().include?(column_spec[:code])
+          if invalid_columns[column_spec[:code]]
+            invalid_columns[column_spec[:code]] << column_spec[:index]
+          else
+            invalid_columns[column_spec[:code]] = [column_spec[:index]]
+          end
+        end
+      end
+      invalid_columns
+    end
+
+    def calculate_missing(selection_block, missing_value)
+      spec_to_validate = selection_block.call()
+      missing_value_columns = []
+      spec_to_validate.each do |column_spec|
+        if column_spec[missing_value].blank?
+          if missing_value_columns.length >0
+            missing_value_columns << column_spec[:index]
+          else
+            missing_value_columns = [column_spec[:index]]
+          end
+        end
+      end
+      {:columns => missing_value_columns} if missing_value_columns.length >0
+    end
+
     def calculate_existing(columns_spec, collection_fields, grouping_field)
       spec_to_validate = columns_spec.select {|spec| spec[:use_as] == 'new_field'}
       existing_columns = {}
@@ -478,9 +527,18 @@ class ImportWizard
 
     def to_columns(collection, rows, admin)
       fields = collection.fields.index_by &:code
+      columns_initial_guess = []
 
-      columns = rows[0].select(&:present?).map{|x| {:header => x.strip, :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
-      columns.each_with_index do |column, i|
+      rows[0].each do |header|
+        column_spec = {}
+        column_spec[:header] = header ? header.strip : ''
+        column_spec[:kind] = :text
+        column_spec[:code] = header ? header.downcase.gsub(/\s+/, '') : ''
+        column_spec[:label] = header ? header.titleize : ''
+        columns_initial_guess << column_spec
+      end
+
+      columns_initial_guess.each_with_index do |column, i|
         guess_column_usage(column, fields, rows, i, admin)
       end
     end
