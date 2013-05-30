@@ -97,7 +97,7 @@ class Collection < ActiveRecord::Base
     end
 
     membership = user.membership_in self
-    if user.is_guest || !membership.admin?
+    if !user.is_guest && !membership.admin?
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
         hash

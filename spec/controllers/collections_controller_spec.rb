@@ -4,7 +4,7 @@ describe CollectionsController do
   include Devise::TestHelpers
   render_views
   let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make public: true) }
+  let!(:collection) { user.create_collection(Collection.make public: false) }
 
   before(:each) {sign_in user}
 
@@ -74,20 +74,36 @@ describe CollectionsController do
   end
 
   describe "Permissions" do
+    let!(:public_collection) { user.create_collection(Collection.make public: false) }
+    let!(:other_user) { User.make }
+
+
     it 'should return forbidden on delete if user is not collection admin' do
-      user2 = User.make
       sign_out user
-      sign_in user2
+      sign_in other_user
       delete :destroy, id: collection.id
       response.status.should eq(403)
     end
 
     it 'should return forbidden on delete if user is not collection admin' do
-      user2 = User.make
       sign_out user
-      sign_in user2
+      sign_in other_user
       post :create_snapshot, id: collection.id, snapshot: {name: 'my snapshot'}
       response.status.should eq(403)
+    end
+
+    it 'should redirect to login if a guest user tries to read a non-public collection' do
+      sign_out user
+      # Nobody signs in. 
+      # We are emulating the use case in which a guest user tries to read private collction
+      post :index, id: collection.id
+      response.status.should eq(401)
+    end
+
+    it 'should read a public collection if user is guest' do
+      sign_out user
+      post :index, id: public_collection.id
+      response.status.should eq(200)
     end
   end
 

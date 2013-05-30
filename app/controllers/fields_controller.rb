@@ -1,6 +1,6 @@
 class FieldsController < ApplicationController
-	before_filter :setup_guest_user, :except => :search, :if => Proc.new { collection.public }
-  before_filter :authenticate_user!, :except => :index, :unless => Proc.new { collection.public }
+	before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
+  before_filter :authenticate_user!, :unless => Proc.new { collection && collection.public }
 
   def index
     if current_snapshot

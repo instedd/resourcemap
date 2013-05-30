@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  #expose(:collection) { (Collection.find(params[:collection] || params[:collection_id] || params[:id])) if params[:collection]|| params[:collection_id] || params[:id] }
   expose(:collection)
   expose(:current_snapshot) { collection.snapshot_for(current_user) if current_user }
   expose(:collection_memberships) { collection.memberships.includes(:user) }
@@ -53,7 +52,7 @@ class ApplicationController < ActionController::Base
   def show_collection_breadcrumb
     show_collections_breadcrumb
     add_breadcrumb "Collections", collections_path
-    add_breadcrumb collection.name, collections_path + "?collection=#{collection.id}"
+    add_breadcrumb collection.name, collections_path + "?collection_id=#{collection.id}"
   end
 
   def show_properties_breadcrumb

@@ -1,5 +1,5 @@
 class SitesController < ApplicationController
-  before_filter :setup_guest_user, :if => Proc.new { collection.public }
+  before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
   before_filter :authenticate_user!, :except => [:index, :search], :unless => Proc.new { collection.public }
 
   authorize_resource :only => [:index, :search], :decent_exposure => true
@@ -11,7 +11,7 @@ class SitesController < ApplicationController
     if current_snapshot
       search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
     else
-      search = collection.new_search current_user_id: current_user.id
+      search = collection.new_search current_user: current_user
     end
     search.name_start_with params[:name] if params[:name].present?
     search.offset params[:offset]

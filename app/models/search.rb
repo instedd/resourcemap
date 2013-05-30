@@ -12,7 +12,11 @@ class Search
     @collection = collection
     @search = collection.new_tire_search(options)
     @snapshot_id = options[:snapshot_id]
-    @current_user = User.find options[:current_user_id] if options[:current_user_id]
+    if options[:current_user]
+      @current_user = options[:current_user]
+    else
+      @current_user = User.find options[:current_user_id] if options[:current_user_id]
+    end
     @sort_list = {}
     @from = 0
   end
@@ -109,7 +113,6 @@ class Search
   # Returns the results from ElasticSearch but with the location field
   # returned as lat/lng fields, and the date as a date object
   def ui_results
-
     fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
 
     items = results()
