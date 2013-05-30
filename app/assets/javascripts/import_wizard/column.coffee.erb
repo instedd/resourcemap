@@ -23,10 +23,6 @@ onImportWizard ->
 
       @iconClass = ko.observable()
 
-      @kind.subscribe => @iconClass(@computeIconClass())
-
-      @field.subscribe => @iconClass(@computeIconClass())
-
       @errors = ko.observableArray()
 
       @callModuleConstructors(arguments)
@@ -43,6 +39,8 @@ onImportWizard ->
       @label data.label
 
       @selectKind(if @kind() == 'select_one' || @kind() == 'select_many' then data.selectKind else null)
+
+      @iconClass(@computeIconClass())
 
     toJSON: =>
       json =
