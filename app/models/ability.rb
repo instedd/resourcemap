@@ -8,10 +8,8 @@ class Ability
     ### Collection ###
 
     # Admin abilities
-    can :destroy, Collection, :memberships => { :user_id => user.id , :admin => true } 
-    can :create_snapshot, Collection, :memberships => { :user_id => user.id, :admin => true } 
-    can :recreate_index, Collection, :memberships => { :user_id => user.id, :admin => true } 
-    can :update, Collection, :memberships => { :user_id => user.id, :admin => true }
+    can [:destroy, :create_snapshot, :recreate_index, :update], Collection, :memberships => { :user_id => user.id , :admin => true }
+    #can :create, Snapshot, :collection => {:memberships => { :user_id => user.id , :admin => true } }
 
     # User can read collection if she is a collection member or if the collection is public
     can [:read, :sites_by_term], Collection, :memberships => { :user_id => user.id }

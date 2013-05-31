@@ -80,37 +80,40 @@ describe CollectionsController do
   end
 
   describe "Permissions" do
-    let!(:public_collection) { user.create_collection(Collection.make public: false) }
-    let!(:other_user) { User.make }
+    let!(:public_collection) { user.create_collection(Collection.make public: true) }
+    let!(:not_member) { User.make }
+    let!(:member) { User.make }
 
+
+    before(:each) do
+      sign_out user
+      collection.memberships.create! :user_id => member.id, admin: false
+      public_collection.memberships.create! :user_id => member.id, admin: false
+    end
+
+    it 'should return not_found if user tries to delete a collection of which he is not member'  do
+      # Because he doesn't even have permission to read it
+      sign_in not_member
+      delete :destroy, id: collection.id
+      response.status.should eq(404)
+    end
 
     it 'should return forbidden on delete if user is not collection admin' do
-      sign_out user
-      sign_in other_user
+      sign_in member
       delete :destroy, id: collection.id
       response.status.should eq(403)
-    end
-
-    it 'should return forbidden on delete if user is not collection admin' do
-      sign_out user
-      sign_in other_user
-      post :create_snapshot, id: collection.id, snapshot: {name: 'my snapshot'}
+      delete :destroy, id: public_collection.id
       response.status.should eq(403)
     end
 
-    it 'should redirect to login if a guest user tries to read a non-public collection' do
-      sign_out user
-      # Nobody signs in. 
-      # We are emulating the use case in which a guest user tries to read private collction
-      post :index, id: collection.id
-      response.status.should eq(401)
+    it 'should return forbidden on create_snapshot if user is not collection admin' do
+      sign_in member
+      post :create_snapshot, collection_id: public_collection.id, snapshot: {name: 'my snapshot'}
+      response.status.should eq(403)
+      post :create_snapshot, collection_id: collection.id, snapshot: {name: 'my snapshot'}
+      response.status.should eq(403)
     end
 
-    it 'should read a public collection if user is guest' do
-      sign_out user
-      post :index, id: public_collection.id
-      response.status.should eq(200)
-    end
   end
 
 

@@ -1,9 +1,9 @@
 class CollectionsController < ApplicationController
 
   before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
-  before_filter :authenticate_user!, :except => :index, :unless => Proc.new { collection && collection.public }
+  before_filter :authenticate_user!, :except => :index, :unless => Proc.new {binding.pry; collection && collection.public }
 
-  authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true
+  authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
   expose(:collections) { Collection.accessible_by(current_ability) }
   expose(:collections_with_snapshot) { select_each_snapshot(collections) }
 
@@ -104,6 +104,7 @@ class CollectionsController < ApplicationController
   end
 
   def create_snapshot
+    binding.pry
     @snapshot = Snapshot.create(date: Time.now, name: params[:snapshot][:name], collection: collection)
     if @snapshot.valid?
       redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} created"

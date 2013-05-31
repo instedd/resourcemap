@@ -9,7 +9,7 @@ describe Ability do
 		let!(:user) { User.make }
 		let!(:member) { User.make }
 		let!(:collection) { admin.create_collection Collection.make }
-		let!(:membership) { collection.memberships.create! :user_id => member.id }
+		let!(:membership) { collection.memberships.create! :user_id => member.id, admin: false }
 
 		let!(:admin_ability) { Ability.new(admin)}
 		let!(:member_ability) { Ability.new(member)}

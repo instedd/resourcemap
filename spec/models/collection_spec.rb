@@ -137,8 +137,7 @@ describe Collection do
   
   describe 'gateway' do
     let(:admin_user) { User.make }
-    let(:collection_1) { admin_user.collections.make name: 'test'}
-    let!(:membership) { admin_user.memberships.make collection: collection_1 }
+    let(:collection_1) { admin_user.create_collection Collection.make name: 'test'}
     let!(:gateway) { admin_user.channels.make name: 'default', basic_setup: true, ticket_code: '2222'  }
     
     it 'should return user_owner of collection' do
