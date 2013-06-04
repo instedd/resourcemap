@@ -24,19 +24,11 @@ class Ability
     end
 
     # Member Abilities
-    can :csv_template, Collection, :memberships => { :user_id => user.id }
-    can :upload_csv, Collection, :memberships => { :user_id => user.id }
-    can :unload_current_snapshot, Collection, :memberships => { :user_id => user.id }
-    can :load_snapshot, Collection, :memberships => { :user_id => user.id }
+    can [:csv_template, :upload_csv, :unload_current_snapshot, :load_snapshot, :register_gateways, :message_quota, :members, :reminders, :settings, :quotas], Collection, :memberships => { :user_id => user.id }
+
+    # In progress
     can :max_value_of_property, Collection, :memberships => { :user_id => user.id }
     can :search, Collection, :memberships => { :user_id => user.id }
     can :decode_hierarchy_csv, Collection, :memberships => { :user_id => user.id }
-    can :register_gateways, Collection, :memberships => { :user_id => user.id }
-    can :message_quota, Collection, :memberships => { :user_id => user.id }
-    can :members, Collection, :memberships => { :user_id => user.id }
-    can :reminders, Collection, :memberships => { :user_id => user.id }
-    can :settings, Collection, :memberships => { :user_id => user.id }
-    can :quotas, Collection, :memberships => { :user_id => user.id }
-
   end
 end
