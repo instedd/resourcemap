@@ -50,6 +50,14 @@ describe Ability do
 			it { user_ability.should_not be_able_to(:update, collection) }
 
 		end
+
+		describe "Manage snapshots" do
+
+			it { admin_ability.should be_able_to(:create, (Snapshot.make collection: collection)) }
+			it { member_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
+			it { user_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
+			it { guest_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
+		end
 	end
 
 end
