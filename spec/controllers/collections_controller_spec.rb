@@ -91,11 +91,12 @@ describe CollectionsController do
       public_collection.memberships.create! :user_id => member.id, admin: false
     end
 
-    it 'should return not_found if user tries to delete a collection of which he is not member'  do
-      # Because he doesn't even have permission to read it
+    it 'should return forbidden in delete if user tries to delete a collection of which he is not member'  do
       sign_in not_member
       delete :destroy, id: collection.id
-      response.status.should eq(404)
+      response.status.should eq(403)
+      delete :destroy, id: public_collection.id
+      response.status.should eq(403)
     end
 
     it 'should return forbidden on delete if user is not collection admin' do
