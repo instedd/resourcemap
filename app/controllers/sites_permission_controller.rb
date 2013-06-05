@@ -6,7 +6,7 @@ class SitesPermissionController < ApplicationController
   before_filter :authenticate_user!, :unless => Proc.new { collection && collection.public }
 
   def index
-    membership = current_user.memberships.find_by_collection_id params[:collection_id]
+    membership = current_user.memberships.find{|m| m.collection_id == params[:collection_id].to_i}
     render json: membership.sites_permission
   end
 

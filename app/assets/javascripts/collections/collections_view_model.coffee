@@ -41,11 +41,11 @@ onCollections ->
       # value in an href (and this is done in the breadcrumb links).
       undefined
 
-    @enterCollection: (collection) ->
+    @enterCollection: (collection_id) ->
       @queryParams = $.url().param()
 
-      if typeof collection == 'string'
-        collection = @findCollectionById parseInt(collection)
+      if typeof collection_id == 'string'
+        collection = @findCollectionById parseInt(collection_id)
 
       @currentCollection collection
       @unselectSite() if @selectedSite()

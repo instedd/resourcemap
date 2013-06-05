@@ -81,7 +81,7 @@ onCollections ->
       showTable = false
       groupBy = null
 
-      if (value = $.url().param('collection') ? $.url().param('editing_collection')) and not @currentCollection()
+      if (value = $.url().param('collection_id') ? $.url().param('editing_collection')) and not @currentCollection()
         @enterCollection value
         return
 
@@ -105,7 +105,7 @@ onCollections ->
             selectedCollectionId = parseInt(value)
           when 'editing_site'
             editingSiteId = parseInt(value)
-          when 'editing_collection', 'collection'
+          when 'editing_collection', 'collection_id'
             editingCollectionId = parseInt(value)
           when '_table'
             showTable = true

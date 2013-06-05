@@ -22,7 +22,12 @@ class ApplicationController < ActionController::Base
   end
 
   def setup_guest_user
-    @guest_user = User.new is_guest: true
+    u = User.new is_guest: true
+    # Empty membership for the current collection
+    # This is used in SitesPermissionController.index 
+    # TODO: Manage permissions passing current_ability to client
+    u.memberships = [Membership.new(collection_id: collection.id)]
+    @guest_user = u
   end
 
   def current_user

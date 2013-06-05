@@ -1,10 +1,20 @@
 class CollectionsController < ApplicationController
 
-  before_filter :setup_guest_user, :if => Proc.new { !current_user && collection && collection.public }
-  before_filter :authenticate_user!, :except => :index, :unless => Proc.new { collection && collection.public }
+  before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
+  before_filter :authenticate_user!, :except => [:index, :render_breadcrumbs], :unless => Proc.new { collection && collection.public }
 
   authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
-  expose(:collections) { Collection.accessible_by(current_ability) }
+
+  expose(:collections) { 
+    if current_user && !current_user.is_guest
+      # public collections are accesible by all users
+      # here we only need the ones in which current_user is a member
+      current_user.collections.reject{|c| c.id.nil?}
+    else
+      Collection.accessible_by(current_ability)
+    end 
+  }
+
   expose(:collections_with_snapshot) { select_each_snapshot(collections) }
 
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
@@ -18,7 +28,7 @@ class CollectionsController < ApplicationController
       add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html
-        format.json {render json: collections_with_snapshot }
+        format.json { render json: collections_with_snapshot }
       end
     end
   end
@@ -138,7 +148,7 @@ class CollectionsController < ApplicationController
 
   def select_each_snapshot(collections)
     collections_with_snapshot = []
-    collections.all.each do |collection|
+    collections.each do |collection|
       attrs = collection.attributes
       # If user is guest (=> current_user will be nil) she will not be able to load a snapshot. At least for the moment
       attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name) rescue nil
@@ -149,9 +159,9 @@ class CollectionsController < ApplicationController
 
   def sites_by_term
     if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
+      search = collection.new_search snapshot_id: current_snapshot.id, current_user: current_user
     else
-      search = collection.new_search current_user_id: current_user.id
+      search = collection.new_search current_user: current_user
     end
 
     search.full_text_search params[:term] if params[:term]
@@ -171,9 +181,9 @@ class CollectionsController < ApplicationController
   def search
 
     if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
+      search = collection.new_search snapshot_id: current_snapshot.id, current_user: current_user
     else
-      search = collection.new_search current_user_id: current_user.id
+      search = collection.new_search current_user: current_user
     end
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search]
