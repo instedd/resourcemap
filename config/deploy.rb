@@ -61,7 +61,9 @@ before "deploy:start", "deploy:migrate"
 before "deploy:restart", "deploy:migrate"
 
 after "deploy:update_code", "deploy:symlink_configs"
-after "deploy:update_code", "deploy:generate_revision_and_version"
 
 after "deploy:update", "foreman:export"    # Export foreman scripts
+
+after "deploy:update", "deploy:generate_revision_and_version"
+
 after "deploy:restart", "foreman:restart"   # Restart application scripts
