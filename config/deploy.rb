@@ -30,7 +30,7 @@ namespace :deploy do
   end
 
   task :generate_revision_and_version do
-    run "cd #{current_path} && rake deploy:generate_revision_and_version"
+    run "cd #{current_path} && rake deploy:generate_revision_and_version RAILS_ENV=production"
   end
 end
 
