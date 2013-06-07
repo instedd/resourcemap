@@ -15,7 +15,6 @@ default_run_options[:pty] = true
 default_environment['TERM'] = ENV['TERM']
 
 after "deploy", "deploy:cleanup" # keep only the last 5 releases
-before "deploy",  "deploy:generate_revision_and_version"
 
 namespace :deploy do
   task :start do ; end
@@ -31,7 +30,7 @@ namespace :deploy do
   end
 
   task :generate_revision_and_version do
-    run "rake deploy:generate_revision_and_version"
+    run "cd #{current_path} && rake deploy:generate_revision_and_version"
   end
 end
 
@@ -62,6 +61,7 @@ before "deploy:start", "deploy:migrate"
 before "deploy:restart", "deploy:migrate"
 
 after "deploy:update_code", "deploy:symlink_configs"
+after "deploy:update_code", "deploy:generate_revision_and_version"
 
 after "deploy:update", "foreman:export"    # Export foreman scripts
 after "deploy:restart", "foreman:restart"   # Restart application scripts
