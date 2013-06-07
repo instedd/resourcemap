@@ -10,10 +10,12 @@ set :user, 'ubuntu'
 set :group, 'ubuntu'
 set :deploy_via, :remote_cache
 set :branch, `hg branch`.strip
+
 default_run_options[:pty] = true
 default_environment['TERM'] = ENV['TERM']
 
 after "deploy", "deploy:cleanup" # keep only the last 5 releases
+before "deploy",  "deploy:generate_revision_and_version"
 
 namespace :deploy do
   task :start do ; end
@@ -26,6 +28,10 @@ namespace :deploy do
     %W(settings.yml google_maps.key nuntium.yml).each do |file|
       run "ln -nfs #{shared_path}/#{file} #{release_path}/config/"
     end
+  end
+
+  task :generate_revision_and_version do
+    run "rake deploy:generate_revision_and_version"
   end
 end
 

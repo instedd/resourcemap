@@ -61,19 +61,7 @@ module ResourceMap
     config.action_mailer.delivery_method = :sendmail
     config.google_analytics = 'UA-17030081-1'
 
-    if Rails.env == 'development'
-      output = `hg log -l1`
-      mercurial_info = Hash[output.split("\n").map { |line| line.split(':', 2).map(&:strip) }]
-
-      File.open('REVISION', "w+") do |f|
-        f.write(mercurial_info["changeset"])
-      end
-
-      File.open('VERSION', "w+") do |f|
-        f.write(Date.parse(mercurial_info["date"]).strftime("%b %d %Y"))
-      end
-    end
-    config.version_name = File.read('VERSION').strip
-    config.revision = File.read('REVISION').strip
+    config.version_name = File.read('VERSION').strip rescue "Development"
+    config.revision = File.read('REVISION').strip rescue "Development"
   end
 end
