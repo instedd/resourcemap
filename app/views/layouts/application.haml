@@ -55,4 +55,6 @@
         = link_to "Log in", new_user_session_path, class: 'fuser'
 - content_for :footer_links do
   %a{:href => root_path} Home
+  %span.VersionRevision{style: "display: none;"} 
+    = ResourceMap::Application.config.revision 
 = render file: 'layouts/instedd_application'
