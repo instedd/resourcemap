@@ -9,21 +9,11 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def update
-    email_changed = current_user.email != params[:user][:email]
-    password_changed = !params[:user][:password].empty?
-    successfully_updated = if email_changed or password_changed
-      current_user.update_with_password(params[:user])
-    else
-      params[:user].delete(:current_password)
-      current_user.update_without_password(params[:user])
-    end
-    current_user.reset_authentication_token!
-    if successfully_updated
-      # Sign in the user bypassing validation in case his password changed
-      sign_in current_user, :bypass => true
+    if params[:user][:current_password].blank? && params[:user][:password].empty? && params[:user][:password_confirmation].empty?
+      current_user.update_attributes(params.slice(:phone_number))
       redirect_to collections_path, notice: "Account updated successfully"
     else
-      render "edit"
+      super
     end
   end
 
