@@ -123,8 +123,8 @@ class CollectionsController < ApplicationController
     if @snapshot.valid?
       redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} created"
     else
-      flash.now[:error] = "Snapshot could not be created"
-      render :show
+      flash[:error] = "Snapshot could not be created: #{@snapshot.errors.to_a.join ", "}"
+      redirect_to collection_path(collection)
     end
   end
 
