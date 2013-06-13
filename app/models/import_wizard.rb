@@ -29,7 +29,7 @@ class ImportWizard
     def validate_sites_with_columns(user, collection, columns_spec)
       columns_spec.map!{|c| c.with_indifferent_access}
       validated_data = {}
-      csv = CSV.read(file_for(user, collection), :encoding => 'utf-8')
+      csv = read_csv_for(user, collection)
       csv_columns = csv[1.. -1].transpose
       csv[0].map!{|r| r.strip if r}
 
@@ -97,7 +97,7 @@ class ImportWizard
     end
 
     def get_sites(user, collection, columns_spec, page)
-      csv = CSV.read(file_for(user, collection), :encoding => 'utf-8')
+      csv = read_csv_for(user, collection)
       csv_columns = csv[1 .. 11]
       processed_csv_columns = []
       csv_columns.each do |csv_column|
@@ -141,7 +141,7 @@ class ImportWizard
       validate_columns_does_not_exist_in_collection(collection, columns_spec)
 
       # Read all the CSV to memory
-      rows = CSV.read(file_for(user, collection), :encoding => 'utf-8')
+      rows = read_csv_for(user, collection)
 
       # Put the index of the row in the columns spec
       rows[0].each_with_index do |row, i|
@@ -664,6 +664,17 @@ class ImportWizard
       else
         column[:use_as] = :ignore
       end
+    end
+
+    def read_csv_for(user, collection)
+      csv = CSV.read(file_for(user, collection), :encoding => 'utf-8')
+
+      # Remove empty rows at the end
+      while (last = csv.last) && last.empty?
+        csv.pop
+      end
+
+      csv
     end
 
     def file_for(user, collection)

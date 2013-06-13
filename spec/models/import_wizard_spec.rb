@@ -1276,4 +1276,27 @@ describe ImportWizard do
 
   end
 
+  it "shouldn't fail with blank lines at the end" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Lat', 'Lon', 'Beds']
+      csv << ['Foo', '1.2', '3.4', '10']
+      csv << ['Bar', '5.6', '7.8', '20']
+      csv << []
+      csv << []
+      csv << []
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'},
+      {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    sites_errors = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:errors]
+    # do nothing (the test is that it shouldn't raise)
+  end
+
 end
