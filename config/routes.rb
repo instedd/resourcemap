@@ -65,8 +65,9 @@ ResourceMap::Application.routes.draw do
        get 'get_visible_sites/:page' => 'import_wizards#get_visible_sites'
        get 'import_in_progress'
        get 'import_finished'
+       get 'import_failed'
        get 'job_status'
-       post 'cancel_pending_jobs'
+       get 'cancel_pending_jobs'
      end
   end
 

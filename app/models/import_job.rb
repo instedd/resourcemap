@@ -2,7 +2,9 @@ class ImportJob < ActiveRecord::Base
   # The status field captures the lifecycle of an ImportJob. Currently it is:
   #
   # :file_uploaded => :pending
-  #                        => :in_progress => :finished 
+  #                        => :in_progress
+  #                            => :finished
+  #                            => :failed
   #                        => :canceled_by_user
   #
   # :file_uploaded: a CSV file has been uploaded, but the import process for it hasn't been executed yet.
@@ -44,7 +46,10 @@ class ImportJob < ActiveRecord::Base
   end
 
   def self.last_for(user, collection)
-    ImportJob.where(:collection_id => collection.id, :user_id => user.id).last
+    user = user.id if user.is_a?(User)
+    collection = collection.id if collection.is_a?(Collection)
+
+    ImportJob.where(:collection_id => collection, :user_id => user).last
   end
 
   def finish
@@ -54,7 +59,14 @@ class ImportJob < ActiveRecord::Base
     self.save!
   end
 
-  [:file_uploaded, :pending, :in_progress, :finished, :canceled_by_user].each do |status_value|
+  def failed(exception)
+    Rails.logger.error "Inconsistent status for job with id #{self.id}. Should be in status 'in_progress' before marking it as 'failed'" unless self.status_in_progress?
+    self.status = :failed
+    self.finished_at = Time.now
+    self.save!
+  end
+
+  [:file_uploaded, :pending, :in_progress, :finished, :failed, :canceled_by_user].each do |status_value|
     class_eval %Q(def status_#{status_value.to_s}?; self.status == '#{status_value.to_s}'; end)
   end
 

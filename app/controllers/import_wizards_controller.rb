@@ -49,6 +49,10 @@ class ImportWizardsController < ApplicationController
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
 
+  def import_failed
+    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
+  end
+
   def cancel_pending_jobs
     ImportWizard.cancel_pending_jobs(current_user, collection)
     flash[:notice] = "Import canceled"

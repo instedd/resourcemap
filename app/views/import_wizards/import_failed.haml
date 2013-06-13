@@ -1,0 +1,13 @@
+:css
+  .ignored, .ignored input, .ignored select { color: grey; }
+
+:javascript
+  window.kinds = #{Field::kinds}
+
+= render '/tabs'
+
+.tabsline
+  %h2 Import wizard
+  %p Import failed :-(
+
+We couldn't import your data from file #{import_job.original_filename}.

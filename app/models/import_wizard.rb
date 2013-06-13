@@ -126,7 +126,7 @@ class ImportWizard
 
       # Execution should continue only if the job is in status pending (user may canceled it)
       if import_job.status == 'pending'
-        mark_job_as_in_progress(user, collection) 
+        mark_job_as_in_progress(user, collection)
         execute_with_entities(user, collection, columns_spec)
       end
     end
