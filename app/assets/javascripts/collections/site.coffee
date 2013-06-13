@@ -30,7 +30,7 @@ onCollections ->
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
-      @valid = ko.computed => @hasName() 
+      @valid = ko.computed => @hasName()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
 
@@ -69,14 +69,14 @@ onCollections ->
       })
       .fail((data) =>
         try
-          responseMessage = JSON.parse(data.responseText) 
+          responseMessage = JSON.parse(data.responseText)
           if data.status == 422 && responseMessage && responseMessage.error_message
-            field.errorMessage(responseMessage.error_message) 
+            field.errorMessage(responseMessage.error_message)
           else
             $.handleAjaxError(data)
         catch error
           $.handleAjaxError(data))
-          
+
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
 
@@ -124,7 +124,7 @@ onCollections ->
             for field in @collection.fields()
                 field.errorMessage("")
             if data.status == 422 && propertyErrors
-              for prop in propertyErrors 
+              for prop in propertyErrors
                 for es_code, value of prop
                   f = @collection.findFieldByEsCode(es_code)
                   f.errorMessage(value)
@@ -155,7 +155,7 @@ onCollections ->
             for field in @collection.fields()
                 field.errorMessage("")
             if data.status == 422 && propertyErrors
-              for prop in propertyErrors 
+              for prop in propertyErrors
                 for es_code, value of prop
                   f = @collection.findFieldByEsCode(es_code)
                   f.errorMessage(value)
@@ -163,7 +163,7 @@ onCollections ->
               $.handleAjaxError(data)
           catch error
             $.handleAjaxError(data))
-  
+
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
@@ -250,9 +250,14 @@ onCollections ->
     newLocationKeyPress: (site, event) =>
       switch event.keyCode
         when 13
-          @moveLocation()
-          false
-        else true
+          if $.trim(@locationTextTemp).length == 0
+            @position(null)
+            return true
+          else
+            @moveLocation()
+            false
+        else
+          true
 
     moveLocation: =>
       callback = (position) =>
