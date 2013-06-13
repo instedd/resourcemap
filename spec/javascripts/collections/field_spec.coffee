@@ -126,7 +126,7 @@ describe 'Collection', ->
 
 
       it 'should have optionsIds', ->
-        expect(@field.optionsIds).toEqual([1, 2])
+        expect(@field.optionsIds).toEqual(['', 1, 2])
 
     describe 'Select Many Field', ->
       beforeEach ->

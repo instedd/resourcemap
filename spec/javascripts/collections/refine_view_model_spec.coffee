@@ -152,6 +152,8 @@ describe 'Collection', ->
             model.expandedRefineProperty @date_field.esCode
             @model.filterByProperty()
             expect(@model.filters().length).toEqual 1
+
+            model.expandedRefineProperty @date_field.esCode
             @model.filterByProperty()
             expect(@model.filters().length).toEqual 1
 
