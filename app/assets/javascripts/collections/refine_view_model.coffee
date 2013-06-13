@@ -94,8 +94,8 @@ onCollections ->
       !$.trim(@expandedRefinePropertyValue()) && (@anyDateParamenterAbsent() || @anyDateParameterWithInvalidFormat()) && !@expandedRefinePropertyHierarchy()
 
     @filterByProperty: ->
-      return if @notValueSelected()
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
+      return if field.kind != 'select_one' && @notValueSelected()
 
       filter = @filterFor(field)
       if field.kind == 'numeric'
@@ -133,7 +133,7 @@ onCollections ->
           new FilterByYesNoProperty(field, @expandedRefinePropertyValue())
         when 'select_one', 'select_many'
           @expandedRefinePropertyValue(parseInt(@expandedRefinePropertyValue()))
-          valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0].label
+          valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0]?.label
           new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel)
         when 'date'
           new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo())

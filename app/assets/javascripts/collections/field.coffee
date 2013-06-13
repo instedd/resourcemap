@@ -31,6 +31,7 @@ onCollections ->
                     []
         @optionsIds = $.map @options, (x) => x.id
         if @kind == 'select_one'
+          @optionsIds.unshift('')
           @optionsUI = [new Option {id: '', label: '(no value)' }].concat(@options)
           @optionsUIIds = $.map @optionsUI, (x) => x.id
         else

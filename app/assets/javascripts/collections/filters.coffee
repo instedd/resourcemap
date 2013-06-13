@@ -131,4 +131,7 @@ onCollections ->
       options[@field.codeForLink(api)] = @value
 
     description: =>
-      "where #{@field.name} is \"#{@valueLabel}\""
+      if @valueLabel
+        "where #{@field.name} is \"#{@valueLabel}\""
+      else
+        "where #{@field.name} has no value"

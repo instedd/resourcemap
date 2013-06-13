@@ -32,7 +32,9 @@ module SearchBase
     validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
     query_key = field.es_code
 
-    if field.kind == 'yes_no'
+    if validated_value.blank?
+      @search.filter :missing, {field: field.es_code}
+    elsif field.kind == 'yes_no'
       @search.filter :term, query_key => Field.yes?(value)
     elsif field.kind == 'date'
       date_field_range(query_key, validated_value)
@@ -40,11 +42,11 @@ module SearchBase
       @search.filter :terms, query_key => validated_value
     elsif field.select_kind?
       @search.filter :term, query_key => validated_value
-      self
     else
       @search.filter :term, query_key => value
-      self
     end
+
+    self
   end
 
   def under(field, value)
