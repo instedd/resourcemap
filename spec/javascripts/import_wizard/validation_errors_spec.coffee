@@ -27,9 +27,9 @@ describe 'ImportWizard', ->
         expect(first_error.error_kind).toBe("duplicated_label")
       else
         expect(first_error.error_kind).toBe("duplicated_#{error_type}")
-      expect(first_error.description).toBe("There is more than one column with #{error_type} #{column_name}.")
+      expect(first_error.description).toBe("There is more than one column with #{error_type} '#{column_name}'.")
       expect(first_error.columns).toEqual([0,1])
-      expect(first_error.more_info).toEqual("Columns 1 and 2 have #{error_type} #{column_name}. To fix this issue, leave only one with that #{error_type} and modify the rest.")
+      expect(first_error.more_info).toEqual("Columns 1 and 2 have the same #{error_type}. To fix this issue, leave only one with that #{error_type} and modify the rest.")
 
     check_existing_field_assertion = (error_type, column_name, proc) ->
       errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], duplicated_usage: [], data_errors: []}
@@ -68,6 +68,8 @@ describe 'ImportWizard', ->
       expect(redeable_errors.length).toBe(1)
       first_error = redeable_errors[0]
       expect(first_error.error_kind).toBe("missing_#{missing_element}")
+      if missing_element == 'label'
+        missing_element = 'name'
       expect(first_error.description).toBe("Columns 2, 3 and 4 are missing the field's #{missing_element}.")
       expect(first_error.columns).toEqual([1,2,3])
       expect(first_error.more_info).toEqual("Columns 2, 3 and 4 are missing the field's #{missing_element}, which is required for new fields. To fix this issue, add a #{missing_element} for each of these columns.")
@@ -80,6 +82,8 @@ describe 'ImportWizard', ->
       expect(redeable_errors.length).toBe(1)
       first_error = redeable_errors[0]
       expect(first_error.error_kind).toBe("missing_#{missing_element}")
+      if missing_element == 'label'
+        missing_element = 'name'
       expect(first_error.description).toBe("Column 2 is missing the field's #{missing_element}.")
       expect(first_error.columns).toEqual([1])
       expect(first_error.more_info).toEqual("Column 2 is missing the field's #{missing_element}, which is required for new fields. To fix this issue, add a #{missing_element} for this column.")

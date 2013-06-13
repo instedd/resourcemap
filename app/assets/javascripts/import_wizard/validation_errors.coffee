@@ -31,11 +31,11 @@ onImportWizard ->
                 error_description.description = "Please select a column to be used as 'Name'"
                 error_description.more_info = "You need to select a column to be used as 'Name' of the sites in order to continue with the upload."
               when 'duplicated_code'
-                error_description.description = "There is more than one column with code #{errorId}."
-                error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have code #{errorId}. To fix this issue, leave only one with that code and modify the rest."
+                error_description.description = "There is more than one column with code '#{errorId}'."
+                error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have the same code. To fix this issue, leave only one with that code and modify the rest."
               when 'duplicated_label'
-                error_description.description = "There is more than one column with name #{errorId}."
-                error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have name #{errorId}. To fix this issue, leave only one with that name and modify the rest."
+                error_description.description = "There is more than one column with name '#{errorId}'."
+                error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} have the same name. To fix this issue, leave only one with that name and modify the rest."
               when 'missing_code'
                 if errorColumns.length >1
                   error_description.description = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's code."
@@ -45,11 +45,11 @@ onImportWizard ->
                   error_description.more_info = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's code, which is required for new fields. To fix this issue, add a code for this column."
               when 'missing_label'
                 if errorColumns.length >1
-                  error_description.description = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's label."
-                  error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's label, which is required for new fields. To fix this issue, add a label for each of these columns."
+                  error_description.description = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's name."
+                  error_description.more_info = "Columns #{@toIndex1BasedSentence(errorColumns)} are missing the field's name, which is required for new fields. To fix this issue, add a name for each of these columns."
                 else
-                  error_description.description = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's label."
-                  error_description.more_info = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's label, which is required for new fields. To fix this issue, add a label for this column."
+                  error_description.description = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's name."
+                  error_description.more_info = "Column #{@toIndex1BasedSentence(errorColumns)} is missing the field's name, which is required for new fields. To fix this issue, add a name for this column."
               when 'duplicated_usage'
                 field = window.model.findField(errorId)
                 if field
