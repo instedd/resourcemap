@@ -2,7 +2,7 @@ module Field::ValidationConcern
   extend ActiveSupport::Concern
 
   def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
-    check_precense_of_value(value)
+    check_presence_of_value(value)
     value
   end
 
@@ -18,7 +18,7 @@ module Field::ValidationConcern
 
   private
 
-  def check_precense_of_value(value)
+  def check_presence_of_value(value)
     raise "Missing #{code} value" if value.blank?
   end
 
