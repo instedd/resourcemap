@@ -1,0 +1,18 @@
+= will_paginate failed_import_jobs
+
+%table{style: 'table-layout: fixed'}
+  %tr
+    %th Date
+    %th Original filename
+    %th Exception
+  - failed_import_jobs.each do |job|
+    %tr{style: 'vertical-align:top'}
+      %td
+        %nobr= job.created_at.strftime("%b %-d, %Y %H:%M")
+      %td
+        %nobr= job.original_filename
+      %td
+        %div{style: 'max-width:600px; max-height:200px; overflow:auto'}
+          %pre= job.exception
+
+= will_paginate failed_import_jobs

@@ -68,6 +68,7 @@ ResourceMap::Application.routes.draw do
        get 'import_failed'
        get 'job_status'
        get 'cancel_pending_jobs'
+       get 'logs'
      end
   end
 

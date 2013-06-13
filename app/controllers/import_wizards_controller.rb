@@ -1,8 +1,10 @@
 class ImportWizardsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :show_properties_breadcrumb
+  before_filter :authenticate_collection_admin!, only: :logs
 
   expose(:import_job) { ImportJob.last_for current_user, collection }
+  expose(:failed_import_jobs) { ImportJob.where(collection_id: collection.id).where(status: 'failed').order('id desc').page(params[:page]).per_page(10) }
 
   def index
     return redirect_to import_in_progress_collection_import_wizard_path(collection) if (import_job && (import_job.status_pending? || import_job.status_in_progress?))
@@ -61,5 +63,9 @@ class ImportWizardsController < ApplicationController
 
   def job_status
     render json: {:status => import_job.status}
+  end
+
+  def logs
+    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
 end
