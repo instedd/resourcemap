@@ -31,7 +31,7 @@
     /ko if: !hasId()
     - if collection.sites.exists?
       .info-box.flash_error.drop_shadow
-        = raw "All sites will be imported as new. If you want to modify the existing ones #{link_to "go back", :back, :class => 'black'} to the previous page."
+        = raw "All sites will be imported as new. If you want to modify the existing ones, follow the instructions in the #{link_to "previous page", :back, :class => 'black', :style => 'text-decoration:underline'}."
       %br
     //ko
 
