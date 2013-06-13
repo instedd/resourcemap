@@ -10,15 +10,17 @@
 
   - if (import_job && import_job.status_finished?)
     .grey
-      = "Note: your last import to this collection was based on a file named #{import_job.original_filename}, #{time_ago_in_words(import_job.finished_at)} ago."
-      .br
-      .br
+      Note: your last import to this collection was based on a file named #{import_job.original_filename}, #{time_ago_in_words(import_job.finished_at)} ago.
+      %br
+      %br
 
   - if (import_job && import_job.status_failed?)
     .grey
-      = "Note: your last import to this collection failed, and was based on a file named #{import_job.original_filename}, #{time_ago_in_words(import_job.finished_at)} ago."
-      .br
-      .br
+      Note: your last import to this collection failed, and was based on a file named #{import_job.original_filename}, #{time_ago_in_words(import_job.finished_at)} ago.
+      %br
+      Please contact InSTEDD for support.
+      %br
+      %br
 
   - if current_snapshot
     = render '/current_snapshot_message'

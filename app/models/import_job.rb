@@ -62,6 +62,7 @@ class ImportJob < ActiveRecord::Base
   def failed(exception)
     Rails.logger.error "Inconsistent status for job with id #{self.id}. Should be in status 'in_progress' before marking it as 'failed'" unless self.status_in_progress?
     self.status = :failed
+    self.exception = "#{exception.message}\n#{exception.backtrace.join "\n"}"
     self.finished_at = Time.now
     self.save!
   end
