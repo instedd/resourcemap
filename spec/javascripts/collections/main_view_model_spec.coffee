@@ -10,29 +10,19 @@ describe 'Collection', ->
       # ... when there's not a current collection
       expect(@model.shouldShowLocationMissingAlert()).toBe(false)
 
-      # ... when there's a current collection but it's empty
+      # ... when there's a current collection but no sites without location
       collection = new Collection id: 1
       @model.initialize [collection]
       @model.currentCollection collection
-      expect(@model.shouldShowLocationMissingAlert()).toBe(false)
-
-      # ... when there's a current collection with a site that has location
-      addSite siteWithLocation, collection
-      expect(@model.shouldShowLocationMissingAlert()).toBe(false)
-
-      # ... when there's a current collection with a site that
-      # has not location but we are already filtering them
-      addSite siteWithoutLocation, collection
-      @model.filters().push new FilterByLocationMissing()
+      @model.sitesWithoutLocation(false)
       expect(@model.shouldShowLocationMissingAlert()).toBe(false)
 
     it 'should show missing locations alert', ->
       collection = new Collection id: 1
       @model.initialize [collection]
       @model.currentCollection collection
-      addSite siteWithoutLocation, collection
+      @model.sitesWithoutLocation(true)
       expect(@model.shouldShowLocationMissingAlert()).toBe(true)
-
 
     addSite = (site, collection) ->
       collection.addSite site(collection)
