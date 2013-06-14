@@ -29,6 +29,9 @@ onCollections ->
       @initialize(collections)
 
     initialize: (collections) ->
+      @sitesCount = ko.observable(0)
+      @sitesWithoutLocation = ko.observable(false)
+
       @callModuleConstructors(arguments)
       @groupBy = ko.observable(@defaultGroupBy)
 
@@ -36,25 +39,26 @@ onCollections ->
       @groupBy.subscribe => @performSearchOrHierarchy()
 
       @shouldShowLocationMissingAlert = ko.computed =>
-        !@filteringByProperty(FilterByLocationMissing) && @currentCollection()?.sitesWithoutLocation().length > 0
-      @locationMissingAlertText = ko.computed =>
-        n = @currentCollection()?.sitesWithoutLocation().length
-        singular = n == 1
-        "There #{if singular then "is one site" else "are #{n} sites"} with no location set"
-
-      @showThemText = ko.computed =>
-        if @currentCollection()?.sitesWithoutLocation().length == 1
-          "Show it"
-        else
-          "Show them"
+        !@filteringByProperty(FilterByLocationMissing) && @sitesWithoutLocation()
 
       @processingURL = true
+
+      @updateSitesInfo()
 
       # We make sure all the methods in this model are correctly bound to "this".
       # Using Module and @include makes the methods in the included class not bound
       # to this, and they don't work when being invoked by knockout when interacting
       # with the view.
       @[k] = v.bind(@) for k, v of @ when v.bind? && !ko.isObservable(v)
+
+    updateSitesInfo: =>
+      if @currentCollection()
+        $.get "/collections/#{@currentCollection().id}/sites_info.json", {}, (data) =>
+          @sitesCount data.total
+          @sitesWithoutLocation data.no_location
+      else
+        @sitesCount(0)
+        @sitesWithoutLocation(false)
 
     defaultGroupBy: {esCode: '', name: 'None'}
 

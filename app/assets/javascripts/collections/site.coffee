@@ -239,6 +239,7 @@ onCollections ->
         @update_site lat: @lat(), lng: @lng(), (data) =>
           @collection.fetchLocation()
           @endEditLocationInMap(@extractPosition data)
+          window.model.updateSitesInfo()
 
       @parseLocation
         success: (position) => @position(position); save()

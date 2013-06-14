@@ -72,7 +72,7 @@ onCollections ->
 
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
-
+      window.model.updateSitesInfo()
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 

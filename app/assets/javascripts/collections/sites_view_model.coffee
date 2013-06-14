@@ -111,6 +111,8 @@ onCollections ->
           @editingSite().deleteMarker()
           @exitSite()
 
+        window.model.updateSitesInfo()
+
       @editingSite().copyPropertiesFromCollection(@currentCollection())
 
       if @editingSite().id()
@@ -155,6 +157,7 @@ onCollections ->
           @editingSite().deleteMarker()
           @exitSite()
           @reloadMapSites() if @showingMap()
+          window.model.updateSitesInfo()
 
     @selectSite: (site) ->
       if @selectedHierarchy()
