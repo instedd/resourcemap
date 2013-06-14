@@ -96,6 +96,8 @@ onImportWizard ->
 
     unblockTable: =>
       $(".show_column_options").find("input").removeAttr('disabled')
+      if $('.error_description').length > 0
+        $(window).scrollTop($('.error_description').position().top)
       $('#preview').unblock()
 
     validateSites: =>
