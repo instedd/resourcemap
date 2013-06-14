@@ -95,7 +95,7 @@ onImportWizard ->
                 # {description: “Error description”, column: 1, rows: [1, 3, 5, 6], example: "Hint", type: 'numeric'}
                 error = errorColumns
                 error_description.columns = [error.column]
-                error_description.description = "There are #{error.rows.length} errors in column #{error.column + 1}."
+                error_description.description = "There are #{error.rows.length} invalid values in column #{error.column + 1}."
                 error_description.more_info = "#{error.description} To fix this, either change the column's type or edit your CSV so that all rows hold valid #{error.type}."
                 if error.example
                   error_description.more_info = error_description.more_info + " " + error.example
