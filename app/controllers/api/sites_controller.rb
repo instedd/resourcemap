@@ -6,10 +6,10 @@ class Api::SitesController < ApplicationController
 
   expose(:site)
   expose(:collection) { site.collection }
-  expose(:current_snapshot) { collection.snapshot_for(current_user) }
 
   def show
     search = new_search
+
     search.id(site.id)
     @result = search.api_results[0]
 

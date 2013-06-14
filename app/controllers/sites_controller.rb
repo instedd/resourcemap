@@ -1,11 +1,12 @@
 class SitesController < ApplicationController
   before_filter :authenticate_user!
 
-  expose(:sites) {if current_snapshot && collection then collection.site_histories.at_date(current_snapshot.date) else collection.sites end}
+  expose(:sites) {if !current_user_snapshot.at_present? && collection then collection.site_histories.at_date(current_user_snapshot.snapshot.date) else collection.sites end}
   expose(:site) { Site.find(params[:site_id] || params[:id]) }
 
   def index
     search = new_search
+
     search.name_start_with params[:name] if params[:name].present?
     search.offset params[:offset]
     search.limit params[:limit]
@@ -15,6 +16,7 @@ class SitesController < ApplicationController
 
   def show
     search = new_search
+
     search.id params[:id]
     # If site does not exists, return empty object
     result = search.ui_results.first['_source'] rescue {}

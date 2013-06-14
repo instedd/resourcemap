@@ -1,6 +1,6 @@
 %p#snapshot_loaded_message
   %span.i18g-snapshot
-  = "You are currently viewing this collection's data as it was on snapshot #{current_snapshot.name}."
+  = "You are currently viewing this collection's data as it was on snapshot #{current_user_snapshot.snapshot.name}."
   To make changes, please
   = ( link_to 'go back to present time', collection_unload_current_snapshot_path(collection), :method => :post ) + '.'
 %br

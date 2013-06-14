@@ -129,22 +129,21 @@ class CollectionsController < ApplicationController
   end
 
   def unload_current_snapshot
-    current_snapshot && current_snapshot.user_snapshots.where(user_id: current_user.id).first.destroy
+    loaded_snapshot = current_user_snapshot.snapshot
+    current_user_snapshot.go_back_to_present!
 
     respond_to do |format|
       format.html {
-        flash[:notice] = "Snapshot #{current_snapshot.name} unloaded" if current_snapshot
+        flash[:notice] = "Snapshot #{loaded_snapshot.name} unloaded" if loaded_snapshot
         redirect_to  collection_path(collection) }
       format.json { render json: :ok }
     end
   end
 
   def load_snapshot
-    snp_to_load = collection.snapshots.where(name: params[:name]).first
-    if snp_to_load.user_snapshots.create user: current_user
+    if current_user_snapshot.go_to!(params[:name])
       redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} loaded"
     end
-
   end
 
   def max_value_of_property
@@ -153,6 +152,7 @@ class CollectionsController < ApplicationController
 
   def sites_by_term
     search = new_search
+
     search.full_text_search params[:term] if params[:term]
     search.select_fields(['id', 'name'])
     search.apply_queries
@@ -168,6 +168,7 @@ class CollectionsController < ApplicationController
 
   def search
     search = new_search
+
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search]
     search.offset params[:offset]

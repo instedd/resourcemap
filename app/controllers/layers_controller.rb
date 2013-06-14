@@ -10,15 +10,15 @@ class LayersController < ApplicationController
         add_breadcrumb "Properties", collection_path(collection)
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
-      if current_snapshot
+      if current_user_snapshot.at_present?
+        format.json { render json: layers.includes(:fields).all.as_json(include: :fields) }
+      else
         format.json {
           render json: layers
             .includes(:field_histories)
-            .where("field_histories.valid_since <= :date && (:date < field_histories.valid_to || field_histories.valid_to is null)", date: current_snapshot.date)
+            .where("field_histories.valid_since <= :date && (:date < field_histories.valid_to || field_histories.valid_to is null)", date: current_user_snapshot.snapshot.date)
             .as_json(include: :field_histories)
           }
-      else
-        format.json { render json: layers.includes(:fields).all.as_json(include: :fields) }
       end
     end
   end

@@ -3,21 +3,22 @@ class ApplicationController < ActionController::Base
 
   expose(:collections) { current_user.collections }
   expose(:collection)
-  expose(:current_snapshot) { collection.snapshot_for(current_user) }
+  expose(:current_user_snapshot) { UserSnapshot.for current_user, collection }
   expose(:collection_memberships) { collection.memberships.includes(:user) }
-  expose(:layers) {if current_snapshot && collection then collection.layer_histories.at_date(current_snapshot.date) else collection.layers end}
+  expose(:layers) {if !current_user_snapshot.at_present? && collection then collection.layer_histories.at_date(current_user_snapshot.snapshot.date) else collection.layers end}
   expose(:layer)
-  expose(:fields) {if current_snapshot && collection then collection.field_histories.at_date(current_snapshot.date) else collection.fields end}
+  expose(:fields) {if !current_user_snapshot.at_present? && collection then collection.field_histories.at_date(current_user_snapshot.snapshot.date) else collection.fields end}
   expose(:activities) { current_user.activities }
   expose(:thresholds) { collection.thresholds.order :ord }
   expose(:threshold)
   expose(:reminders) { collection.reminders }
   expose(:reminder)
+
   expose(:new_search_options) do
-    if current_snapshot
-      {snapshot_id: current_snapshot.id, current_user_id: current_user.id}
-    else
+    if current_user_snapshot.at_present?
       {current_user_id: current_user.id}
+    else
+      {snapshot_id: current_user_snapshot.snapshot.id, current_user_id: current_user.id}
     end
   end
   expose(:new_search) { collection.new_search new_search_options }

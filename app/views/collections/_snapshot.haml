@@ -17,15 +17,15 @@
     %tr
       = form_tag(collection_unload_current_snapshot_path(collection)) do
         %td.w30
-          .snapshot_info{:class => if !current_snapshot then "active rounded" end}
-            = radio_button_tag(:name, "", !current_snapshot, :onclick => "this.form.submit();")
+          .snapshot_info{:class => if current_user_snapshot.at_present? then "active rounded" end}
+            = radio_button_tag(:name, "", current_user_snapshot.at_present?, :onclick => "this.form.submit();")
             = label :name, "Present time"
         %td
 
     - collection.snapshots.each do |snapshot|
       %tr
         = form_tag(collection_load_snapshot_path(collection)) do
-          - is_current_snapshot = current_snapshot && current_snapshot.name == snapshot.name
+          - is_current_snapshot = !current_user_snapshot.at_present? && current_user_snapshot.snapshot.name == snapshot.name
           %td.w30
             .snapshot_info{:class => if is_current_snapshot then "active rounded" end}
               = radio_button_tag(:name, snapshot.name, is_current_snapshot, :onclick => "this.form.submit();")
