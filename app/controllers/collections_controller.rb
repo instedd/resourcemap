@@ -258,4 +258,26 @@ class CollectionsController < ApplicationController
     ms = collection.messages.where("is_send = true and created_at between ? and ?", start_date, Time.now)
     render json: {status: 200, remain_quota: collection.quota, sended_message: ms.length }
   end
+
+  def sites_info
+    if current_snapshot
+      options = {snapshot_id: current_snapshot.id, current_user_id: current_user.id}
+    else
+      options = {current_user_id: current_user.id}
+    end
+
+    total = collection.new_tire_count(options).value
+    no_location = collection.new_tire_count(options) do
+      filtered do
+        query { all }
+        filter :not, exists: {field: :location}
+      end
+    end.value
+
+    info = {}
+    info[:total] = total
+    info[:no_location] = no_location > 0
+
+    render json: info
+  end
 end

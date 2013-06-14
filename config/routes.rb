@@ -55,6 +55,8 @@ ResourceMap::Application.routes.draw do
     get 'search'
     post 'decode_hierarchy_csv'
 
+    get 'sites_info'
+
     resource :import_wizard, only: [] do
        get 'index'
        post 'upload_csv'

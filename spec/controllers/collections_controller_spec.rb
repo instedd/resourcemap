@@ -81,15 +81,15 @@ describe CollectionsController do
 
   end
 
-  describe "analytic" do 
+  describe "analytic" do
     it 'should changed user.collection_count by 1' do
-      expect{ 
+      expect{
         post :create, collection: { name: 'collection_1', icon: 'default'}
       }.to change{
         u = User.find user
         u.collection_count
       }.from(0).to(1)
-   
+
     end
   end
 
@@ -103,6 +103,31 @@ describe CollectionsController do
     it 'should login failed without passed parameter collection' do
       get :index
       response.should_not be_success
+    end
+  end
+
+  describe "sites info"  do
+    it "gets when all have location" do
+      collection.sites.make
+      collection.sites.make
+
+      get :sites_info, collection_id: collection.id
+
+      info = JSON.parse response.body
+      info["total"].should eq(2)
+      info["no_location"].should be_false
+    end
+
+    it "gets when some have no location" do
+      collection.sites.make
+      collection.sites.make
+      collection.sites.make lat: nil, lng: nil
+
+      get :sites_info, collection_id: collection.id
+
+      info = JSON.parse response.body
+      info["total"].should eq(3)
+      info["no_location"].should be_true
     end
   end
 end

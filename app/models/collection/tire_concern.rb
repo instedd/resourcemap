@@ -62,6 +62,10 @@ module Collection::TireConcern
     self.class.new_tire_search(id, options)
   end
 
+  def new_tire_count(options = {}, &block)
+    self.class.new_tire_count(id, options, &block)
+  end
+
   module ClassMethods
     INDEX_NAME_PREFIX = Rails.env == 'test' ? "collection_test" : "collection"
 
@@ -86,9 +90,11 @@ module Collection::TireConcern
     end
 
     def new_tire_search(*ids, options)
-      search = Tire::Search::Search.new ids.map{|id| index_name(id, options)}
-      search.filter :type, value: :site
-      search
+      Tire::Search::Search.new ids.map{|id| index_name(id, options)}, type: :site
+    end
+
+    def new_tire_count(*ids, options, &block)
+      Tire::Search::Count.new ids.map{|id| index_name(id, options)}, type: :site, &block
     end
   end
 end

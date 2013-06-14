@@ -181,7 +181,7 @@ class Collection < ActiveRecord::Base
   end
 
   def get_gateway_under_user_owner
-    get_user_owner.get_gateway 
+    get_user_owner.get_gateway
   end
 
   def register_gateways_under_user_owner(owner_user)
