@@ -87,10 +87,23 @@ onImportWizard ->
       @selectedColumn(column)
       true
 
+    blockTable: =>
+      $('#preview').block({
+        message: '<p class="loading box" id="validating_msg">Validating</p>'
+      })
+      $(".blockOverlay").addClass("box")
+      $(".show_column_options").find("input").attr('disabled', 'disabled')
+
+    unblockTable: =>
+      $(".show_column_options").find("input").removeAttr('disabled')
+      $('#preview').unblock()
+
     validateSites: =>
+      @blockTable()
       if @columns
         $.post "/collections/#{@collectionId}/import_wizard/validate_sites_with_columns.json", {columns: JSON.stringify(@columns())}, (preview) =>
           @loadSites(preview)
+          @unblockTable()
 
     showAllColumns: =>
       @visibleColumns(@columns())
