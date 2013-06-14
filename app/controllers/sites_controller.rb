@@ -5,11 +5,7 @@ class SitesController < ApplicationController
   expose(:site) { Site.find(params[:site_id] || params[:id]) }
 
   def index
-    if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
-    else
-      search = collection.new_search current_user_id: current_user.id
-    end
+    search = new_search
     search.name_start_with params[:name] if params[:name].present?
     search.offset params[:offset]
     search.limit params[:limit]
@@ -18,11 +14,7 @@ class SitesController < ApplicationController
   end
 
   def show
-    if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
-    else
-      search = collection.new_search current_user_id: current_user.id
-    end
+    search = new_search
     search.id params[:id]
     # If site does not exists, return empty object
     result = search.ui_results.first['_source'] rescue {}
@@ -99,5 +91,5 @@ class SitesController < ApplicationController
     site.destroy
     render json: site
   end
-  
+
 end

@@ -152,15 +152,9 @@ class CollectionsController < ApplicationController
   end
 
   def sites_by_term
-    if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
-    else
-      search = collection.new_search current_user_id: current_user.id
-    end
-
+    search = new_search
     search.full_text_search params[:term] if params[:term]
     search.select_fields(['id', 'name'])
-
     search.apply_queries
 
     results = search.results.map{ |item| item["fields"]}
@@ -173,12 +167,7 @@ class CollectionsController < ApplicationController
   end
 
   def search
-
-    if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
-    else
-      search = collection.new_search current_user_id: current_user.id
-    end
+    search = new_search
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search]
     search.offset params[:offset]
@@ -260,11 +249,7 @@ class CollectionsController < ApplicationController
   end
 
   def sites_info
-    if current_snapshot
-      options = {snapshot_id: current_snapshot.id, current_user_id: current_user.id}
-    else
-      options = {current_user_id: current_user.id}
-    end
+    options = new_search_options
 
     total = collection.new_tire_count(options).value
     no_location = collection.new_tire_count(options) do

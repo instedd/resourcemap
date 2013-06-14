@@ -13,6 +13,14 @@ class ApplicationController < ActionController::Base
   expose(:threshold)
   expose(:reminders) { collection.reminders }
   expose(:reminder)
+  expose(:new_search_options) do
+    if current_snapshot
+      {snapshot_id: current_snapshot.id, current_user_id: current_user.id}
+    else
+      {current_user_id: current_user.id}
+    end
+  end
+  expose(:new_search) { collection.new_search new_search_options }
 
   rescue_from ActiveRecord::RecordNotFound do |x|
     render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true
