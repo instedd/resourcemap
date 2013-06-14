@@ -32,7 +32,7 @@ module SearchBase
     validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
     query_key = field.es_code
 
-    if validated_value.blank?
+    if field.kind != 'yes_no' && validated_value.blank?
       @search.filter :missing, {field: field.es_code}
     elsif field.kind == 'yes_no'
       @search.filter :term, query_key => Field.yes?(value)

@@ -5,7 +5,8 @@ class Api::SitesController < ApplicationController
   before_filter :authenticate_site_user!
 
   expose(:site)
-  expose(:current_snapshot) { site.collection.snapshot_for(current_user) }
+  expose(:collection) { site.collection }
+  expose(:current_snapshot) { collection.snapshot_for(current_user) }
 
   def show
     search = new_search
