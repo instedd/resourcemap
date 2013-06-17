@@ -36,6 +36,7 @@ class ImportWizard
       validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
       # TODO: implement pagination
       validated_data[:sites] = get_sites(user, collection, columns_spec, 1)
+      validated_data[:sites_count] = csv.length - 1
       validated_data
     end
 
@@ -98,7 +99,7 @@ class ImportWizard
 
     def get_sites(user, collection, columns_spec, page)
       csv = read_csv_for(user, collection)
-      csv_columns = csv[1 .. 11]
+      csv_columns = csv[1 .. 10]
       processed_csv_columns = []
       csv_columns.each do |csv_column|
         processed_csv_columns << csv_column.map{|csv_field_value| {value: csv_field_value} }

@@ -12,6 +12,7 @@ onImportWizard ->
       @columns = ko.observableArray $.map(columns,  (x, index) -> new Column(x, index))
       @visibleColumns = ko.observableArray @columns()
       @sites = ko.observableArray()
+      @sitesCount = ko.observable(0)
       @visibleSites = ko.observableArray()
       @showingColumns = ko.observable('all')
 
@@ -50,6 +51,7 @@ onImportWizard ->
       # This method is called after server validations, after changing a column usage or after requesting the sites for the first time.
       sites = $.map(preview.sites, (x) -> new Site(x))
       @sites(sites)
+      @sitesCount(preview.sites_count)
       @validationErrors(new ValidationErrors(preview.errors))
       @loadVisibleSites()
 
