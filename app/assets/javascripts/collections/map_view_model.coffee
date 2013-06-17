@@ -5,11 +5,10 @@ onCollections ->
       @showingMap = ko.observable(true)
       @mapSitesCount = ko.observable(0)
       @mapSitesCountText = ko.computed =>
+        sitesText = if @mapSitesCount() == 1 then "site" else "sites"
         if @currentCollection()
-          sitesText = if @sitesCount() == 1 then "site" else "sites"
-          "Viewing #{@mapSitesCount()} out of #{@sitesCount()} #{sitesText}"
+          "Viewing #{@mapSitesCount()} #{sitesText} out of #{@sitesCount()}"
         else
-          sitesText = if @mapSitesCount() == 1 then "site" else "sites"
           "Viewing #{@mapSitesCount()} #{sitesText}"
 
       @sitesChangedListeners = []
