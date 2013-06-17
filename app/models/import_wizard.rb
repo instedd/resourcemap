@@ -28,15 +28,17 @@ class ImportWizard
 
     def validate_sites_with_columns(user, collection, columns_spec)
       columns_spec.map!{|c| c.with_indifferent_access}
-      validated_data = {}
       csv = read_csv_for(user, collection)
       csv_columns = csv[1.. -1].transpose
-      csv[0].map!{|r| r.strip if r}
+
+      validated_data = {}
+      validated_data[:sites] = get_sites(csv, user, collection, columns_spec, 1)
+      validated_data[:sites_count] = csv.length - 1
+
+      csv[0].map! { |r| r.strip if r }
 
       validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
       # TODO: implement pagination
-      validated_data[:sites] = get_sites(user, collection, columns_spec, 1)
-      validated_data[:sites_count] = csv.length - 1
       validated_data
     end
 
@@ -97,8 +99,7 @@ class ImportWizard
       hierarchy_errors
     end
 
-    def get_sites(user, collection, columns_spec, page)
-      csv = read_csv_for(user, collection)
+    def get_sites(csv, user, collection, columns_spec, page)
       csv_columns = csv[1 .. 10]
       processed_csv_columns = []
       csv_columns.each do |csv_column|
