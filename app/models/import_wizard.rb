@@ -59,6 +59,8 @@ class ImportWizard
       sites_errors[:reserved_code] = calculate_reserved_code(proc_select_new_fields)
 
       collection_fields = collection.fields.all(:include => :layer)
+      collection_fields.each(&:cache_for_read)
+
       sites_errors[:existing_code] = calculate_existing(columns_spec, collection_fields, 'code')
       sites_errors[:existing_label] = calculate_existing(columns_spec, collection_fields, 'label')
 

@@ -100,6 +100,11 @@ class Field < ActiveRecord::Base
     'field_id'
   end
 
+  # Enables caching options and other info for a read-only usage
+  # of this field, so that validations and such can be performed faster.
+  def cache_for_read
+  end
+
   private
 
   def add_option_to_options(options, option)

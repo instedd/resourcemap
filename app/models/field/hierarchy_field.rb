@@ -20,6 +20,10 @@ class Field::HierarchyField < Field
     end
   end
 
+  def cache_for_read
+    @cache_for_read = true
+  end
+
   def hierarchy_options_codes
     hierarchy_options.map {|option| option[:id]}
   end
@@ -33,20 +37,39 @@ class Field::HierarchyField < Field
   end
 
   def hierarchy_options
+    if @cache_for_read && @options_in_cache
+      return @options_in_cache
+    end
+
     options = []
     config['hierarchy'].each do |option|
       add_option_to_options(options, option)
     end
+
+    if @cache_for_read
+      @options_in_cache = options
+    end
+
     options
   end
 
   def find_hierarchy_id_by_name(value)
-    option = hierarchy_options.find {|opt| opt[:name] == value}
+    if @cache_for_read
+      @options_by_name ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:name]] = opt[:id] }
+      return @options_by_name[value]
+    end
+
+    option = hierarchy_options.find { |opt| opt[:name] == value }
     option[:id] if option
   end
 
   def find_hierarchy_name_by_id(value)
-    option = hierarchy_options.find {|opt| opt[:id] == value}
+    if @cache_for_read
+      @options_by_id ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:id]] = opt[:name] }
+      return @options_by_id[value]
+    end
+
+    option = hierarchy_options.find { |opt| opt[:id] == value }
     option[:name] if option
   end
 
