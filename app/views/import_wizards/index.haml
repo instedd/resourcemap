@@ -24,8 +24,7 @@
 
   - if current_user_snapshot.at_present?
     = render 'steps', :step => 1
-  - else
-    = render '/current_snapshot_message'
+
     %br
 
     %h2.orange Upload your CSV file
@@ -46,3 +45,5 @@
       %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
       .icon.fexport.black Upload a CSV file to update multiple sites
       %input#upload{type: :file, name: :file}
+  - else
+    = render '/current_snapshot_message'
