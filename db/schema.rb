@@ -305,8 +305,6 @@ ActiveRecord::Schema.define(:version => 20130614182031) do
     t.integer  "site_count",             :default => 0
     t.integer  "gateway_count",          :default => 0
     t.boolean  "success_outcome"
-    t.boolean  "is_login"
-    t.boolean  "is_guest"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

@@ -44,6 +44,8 @@ onCollections ->
     @enterCollection: (collection) ->
       @queryParams = $.url().param()
 
+      # collection may be a collection object (in most of the cases)
+      # or a string representing the collection id (if the collection is being loaded from the url)
       if typeof collection == 'string'
         collection = @findCollectionById parseInt(collection)
 

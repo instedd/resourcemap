@@ -1,5 +1,6 @@
 class FieldsController < ApplicationController
-  before_filter :authenticate_user!
+	before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
+  before_filter :authenticate_user!, :unless => Proc.new { collection && collection.public }
 
   def index
     options = {}

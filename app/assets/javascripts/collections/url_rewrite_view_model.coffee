@@ -15,7 +15,7 @@ onCollections ->
         query.selected_site = @selectedSite().id()
         query.selected_collection = @selectedSite().collection.id
       else if @currentCollection()
-        query.collection = @currentCollection().id
+        query.collection_id = @currentCollection().id
 
       # Append map center and zoom
       if @map
@@ -48,7 +48,7 @@ onCollections ->
       for key in @queryParams
         value = @queryParams[key]
         switch key
-          when 'collection', 'lat', 'lng', 'z'
+          when 'collection_id', 'lat', 'lng', 'z'
             continue
           when 'search'
             @search(value)

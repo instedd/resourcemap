@@ -19,6 +19,7 @@ gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
 gem 'uuidtools'
 gem 'newrelic_rpm'
+gem 'cancan'
 
 group :test do
   gem 'shoulda-matchers'

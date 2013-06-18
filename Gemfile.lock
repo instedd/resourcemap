@@ -39,6 +39,7 @@ GEM
     bcrypt-ruby (3.0.1)
     breadcrumbs_on_rails (2.2.0)
     builder (3.0.4)
+    cancan (1.6.9)
     capistrano (2.12.0)
       highline
       net-scp (>= 1.0.0)
@@ -283,6 +284,7 @@ PLATFORMS
 
 DEPENDENCIES
   breadcrumbs_on_rails
+  cancan
   capistrano
   capybara
   ci_reporter

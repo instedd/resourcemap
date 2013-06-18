@@ -102,7 +102,7 @@ end
 Membership.blueprint do
   user
   collection
-  admin { true }
+  admin { false }
 end
 
 ImportJob.blueprint do

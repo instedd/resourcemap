@@ -3,6 +3,9 @@ class AndroidController < ApplicationController
   before_filter :authenticate_user!
   helper_method :render_xform, :get_hash_from_xml, :prepare_site
 
+  expose(:collections) { Collection.accessible_by(current_ability) }
+
+
   ODKFORM_TEMPLATE = "public/odk_form_template.xml"
 
   def collections_json

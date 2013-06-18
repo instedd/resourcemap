@@ -14,7 +14,7 @@ class ImportWizard
       delete_file(user, collection)
     end
 
-    def import(user, collection, original_filename, contents)
+     def import(user, collection, original_filename, contents)
       # Store representation of import job in database to enable status tracking later
       ImportJob.uploaded original_filename, user, collection
 

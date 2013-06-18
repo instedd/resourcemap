@@ -1,7 +1,22 @@
 class CollectionsController < ApplicationController
-  before_filter :current_user_or_guest, :only => [:index]
-  before_filter :authenticate_user!
-  before_filter :authenticate_collection_admin!, :only => [:destroy, :create_snapshot]
+
+  before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
+  before_filter :authenticate_user!, :except => [:index, :render_breadcrumbs], :unless => Proc.new { collection && collection.public }
+
+  authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
+
+  expose(:collections) { 
+    if current_user && !current_user.is_guest
+      # public collections are accesible by all users
+      # here we only need the ones in which current_user is a member
+      current_user.collections.reject{|c| c.id.nil?}
+    else
+      Collection.accessible_by(current_ability)
+    end 
+  }
+
+  expose(:collections_with_snapshot) { select_each_snapshot(collections) }
+
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
   before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
@@ -10,22 +25,16 @@ class CollectionsController < ApplicationController
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
-      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if !current_user.is_guest
+      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
       respond_to do |format|
         format.html
-        collections_with_snapshot = []
-        collections.all.each do |collection|
-          attrs = collection.attributes
-          attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
-          collections_with_snapshot = collections_with_snapshot + [attrs]
-        end
-        format.json {render json: collections_with_snapshot }
+        format.json { render json: collections_with_snapshot }
       end
     end
   end
 
   def render_breadcrumbs
-    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if !current_user.is_guest
+    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
     if params.has_key? :collection_id
       add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
@@ -53,20 +62,6 @@ class CollectionsController < ApplicationController
 
   def update
     if collection.update_attributes params[:collection]
-
-      if collection.public
-        u = User.find_by_email 'guest@resourcemap.org'
-        guest_user = if (u != nil)
-          u
-        else
-           u = User.new(email: 'guest@resourcemap.org', password: 'guest_resourcemap', is_guest: true)
-           u.skip_confirmation!
-           u.save
-           u
-        end
-        guest_user.register_guest_membership(collection.id)
-      end
-
       collection.recreate_index
       redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
     else
@@ -148,6 +143,17 @@ class CollectionsController < ApplicationController
 
   def max_value_of_property
     render json: collection.max_value_of_property(params[:property])
+  end
+
+  def select_each_snapshot(collections)
+    collections_with_snapshot = []
+    collections.each do |collection|
+      attrs = collection.attributes
+      # If user is guest (=> current_user will be nil) she will not be able to load a snapshot. At least for the moment
+      attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name) rescue nil
+      collections_with_snapshot = collections_with_snapshot + [attrs]
+    end
+    collections_with_snapshot
   end
 
   def sites_by_term

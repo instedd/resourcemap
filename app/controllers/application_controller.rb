@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  expose(:collections) { current_user.collections }
   expose(:collection)
   expose(:current_user_snapshot) { UserSnapshot.for current_user, collection }
   expose(:collection_memberships) { collection.memberships.includes(:user) }
@@ -27,25 +26,21 @@ class ApplicationController < ActionController::Base
     render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true
   end
 
-  def current_user_or_guest
-    if user_signed_in?
-      return if !current_user.try(:is_guest)
-    end
+  rescue_from CanCan::AccessDenied do |exception|
+    render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
+  end
 
-    if params.has_key? "collection"
-      return if !Collection.find(params["collection"]).public
-      u = User.find_by_is_guest true
-      sign_in :user, u
-      current_user.is_login = true
-      current_user.save!
-    else
-      if current_user.try(:is_login)
-        current_user.is_login = false
-        current_user.save!
-      else
-        sign_out :user
-      end
-    end
+  def setup_guest_user
+    u = User.new is_guest: true
+    # Empty membership for the current collection
+    # This is used in SitesPermissionController.index 
+    # TODO: Manage permissions passing current_ability to client
+    u.memberships = [Membership.new(collection_id: collection.id)]
+    @guest_user = u
+  end
+
+  def current_user
+    super || @guest_user
   end
 
   def after_sign_in_path_for(resource)
@@ -71,7 +66,7 @@ class ApplicationController < ActionController::Base
   def show_collection_breadcrumb
     show_collections_breadcrumb
     add_breadcrumb "Collections", collections_path
-    add_breadcrumb collection.name, collections_path + "?collection=#{collection.id}"
+    add_breadcrumb collection.name, collections_path + "?collection_id=#{collection.id}"
   end
 
   def show_properties_breadcrumb

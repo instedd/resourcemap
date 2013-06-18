@@ -60,6 +60,10 @@ class Collection < ActiveRecord::Base
   end
 
   def visible_fields_for(user, options)
+    if user.is_guest
+      return fields.includes(:layer).all
+    end
+
     membership = user.membership_in self
     return [] unless membership
     if options[:snapshot_id]
@@ -69,8 +73,6 @@ class Collection < ActiveRecord::Base
       target_fields = fields.includes(:layer)
     end
     if membership.admin?
-      target_fields = target_fields.all
-    elsif user.is_guest
       target_fields = target_fields.all
     else
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
@@ -95,7 +97,7 @@ class Collection < ActiveRecord::Base
     end
 
     membership = user.membership_in self
-    if !membership.admin?
+    if !user.is_guest && !membership.admin?
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
         hash
