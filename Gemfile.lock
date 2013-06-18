@@ -4,6 +4,12 @@ GIT
   specs:
     dist (0.0.1)
 
+GIT
+  remote: https://github.com/ruby-prof/ruby-prof.git
+  revision: 8b248d16b12fc8c0ddbdf7ff2666d7b422690206
+  specs:
+    ruby-prof (0.13.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -316,6 +322,7 @@ DEPENDENCIES
   resque_spec
   rspec
   rspec-rails
+  ruby-prof!
   rvm
   rvm-capistrano (= 1.2.2)
   sass-rails (~> 3.2.3)
