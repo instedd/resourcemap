@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130510183328) do
+ActiveRecord::Schema.define(:version => 20130614182031) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(:version => 20130510183328) do
     t.datetime "updated_at",        :null => false
     t.integer  "user_id"
     t.integer  "collection_id"
+    t.text     "exception"
   end
 
   create_table "layer_histories", :force => true do |t|
@@ -274,23 +275,24 @@ ActiveRecord::Schema.define(:version => 20130510183328) do
   create_table "user_snapshots", :force => true do |t|
     t.integer  "user_id"
     t.integer  "snapshot_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.integer  "collection_id"
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                                 :default => "", :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
+    t.string   "email",                  :default => "", :null => false
+    t.string   "encrypted_password",     :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                         :default => 0
+    t.integer  "sign_in_count",          :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                                            :null => false
-    t.datetime "updated_at",                                            :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.string   "phone_number"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -298,10 +300,10 @@ ActiveRecord::Schema.define(:version => 20130510183328) do
     t.string   "unconfirmed_email"
     t.boolean  "is_super_user"
     t.string   "authentication_token"
-    t.integer  "collection_count",                      :default => 0
-    t.integer  "layer_count",                           :default => 0
-    t.integer  "site_count",                            :default => 0
-    t.integer  "gateway_count",                         :default => 0
+    t.integer  "collection_count",       :default => 0
+    t.integer  "layer_count",            :default => 0
+    t.integer  "site_count",             :default => 0
+    t.integer  "gateway_count",          :default => 0
     t.boolean  "success_outcome"
   end
 

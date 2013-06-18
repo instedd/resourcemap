@@ -81,7 +81,9 @@ onCollections ->
       showTable = false
       groupBy = null
 
-      if (value = $.url().param('collection_id') ? $.url().param('editing_collection')) and not @currentCollection()
+      value = $.url().param('collection_id') ? $.url().param('editing_collection')
+
+      if value and not @currentCollection()
         @enterCollection value
         return
 
@@ -89,7 +91,7 @@ onCollections ->
       for key of @queryParams
         value = @queryParams[key]
         switch key
-          when 'lat', 'lng', 'z'
+          when 'lat', 'lng', 'z', 'collection_id'
             continue
           when 'search'
             @search(value)
@@ -105,7 +107,7 @@ onCollections ->
             selectedCollectionId = parseInt(value)
           when 'editing_site'
             editingSiteId = parseInt(value)
-          when 'editing_collection', 'collection_id'
+          when 'editing_collection'
             editingCollectionId = parseInt(value)
           when '_table'
             showTable = true
