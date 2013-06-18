@@ -12,8 +12,8 @@ class Ability
     can :manage, Snapshot, :collection => {:memberships => { :user_id => user.id , :admin => true } }
 
     # User can read collection if she is a collection member or if the collection is public
-    can [:read, :sites_by_term, :search], Collection, :memberships => { :user_id => user.id }
-    can [:read, :sites_by_term, :search], Collection, :public => true
+    can [:read, :sites_by_term, :search, :sites_info], Collection, :memberships => { :user_id => user.id }
+    can [:read, :sites_by_term, :search, :sites_info], Collection, :public => true
 
     can [:search, :index], Site, :collection => {:public => true}
     can [:search, :index], Site, :collection => {:memberships => { :user_id => user.id }}

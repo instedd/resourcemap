@@ -130,13 +130,15 @@ describe CollectionsController do
   end
 
   describe "public access" do
+    let!(:public_collection) { user.create_collection(Collection.make public: true) }
     before(:each) { sign_out :user }
-    it 'should login as guest automatically with passed parameter collection' do
-      get :index, collection: collection.id
+
+    it 'should get index as guest' do
+      get :index, collection_id: public_collection.id
       response.should be_success
     end
 
-    it 'should login failed without passed parameter collection' do
+    it 'should not get index if collection_id is not passed' do
       get :index
       response.should_not be_success
     end
