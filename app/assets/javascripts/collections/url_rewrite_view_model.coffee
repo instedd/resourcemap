@@ -10,10 +10,11 @@ onCollections ->
       # Append selected site or editing site, if any
       if @editingSite()
         query.editing_site = @editingSite().id()
-        query.editing_collection = @editingSite().collection.id
+        query.collection_id = @editingSite().collection.id
       else if @selectedSite()
         query.selected_site = @selectedSite().id()
         query.selected_collection = @selectedSite().collection.id
+        query.collection_id = @selectedSite().collection.id
       else if @currentCollection()
         query.collection_id = @currentCollection().id
 
@@ -36,19 +37,24 @@ onCollections ->
       @reloadMapSites()
 
 
-    @processQueryParams: ->
-      @ignorePerformSearchOrHierarchy = true
+    @processURL: ->
       selectedSiteId = null
       selectedCollectionId = null
       editingSiteId = null
-      editingCollectionId = null
       showTable = false
       groupBy = null
 
-      for key in @queryParams
+      collectionId = $.url().param('collection_id')
+
+      if collectionId and not @currentCollection()
+        @enterCollection collectionId
+        return
+
+      @queryParams = $.url().param()
+      for key of @queryParams
         value = @queryParams[key]
         switch key
-          when 'collection_id', 'lat', 'lng', 'z'
+          when 'lat', 'lng', 'z', 'collection_id'
             continue
           when 'search'
             @search(value)
@@ -64,8 +70,6 @@ onCollections ->
             selectedCollectionId = parseInt(value)
           when 'editing_site'
             editingSiteId = parseInt(value)
-          when 'editing_collection'
-            editingCollectionId = parseInt(value)
           when '_table'
             showTable = true
           when 'hierarchy_code'
@@ -75,6 +79,7 @@ onCollections ->
           when 'sort_direction'
             @sortDirection(value == 'asc')
           else
+            continue if not @currentCollection()
             @expandedRefineProperty(key)
 
             if value.length >= 2 && value[0] in ['>', '<', '~'] && value[1] == '='
@@ -90,9 +95,13 @@ onCollections ->
       @ignorePerformSearchOrHierarchy = false
       @performSearchOrHierarchy()
 
-      @showTable() if showTable
+      if showTable
+        @showTable()
+      else
+        @initMap()
+
       @selectSiteFromId(selectedSiteId, selectedCollectionId) if selectedSiteId
-      @editSiteFromMarker(editingSiteId, editingCollectionId) if editingSiteId
+      @editSiteFromMarker(editingSiteId, collectionId) if editingSiteId
       @groupBy(@currentCollection().findFieldByEsCode(groupBy)) if groupBy && @currentCollection()
 
-      @loadBreadCrumb()
+      @processingURL = false
