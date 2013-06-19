@@ -25,7 +25,7 @@ class CollectionsController < ApplicationController
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
-      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
+      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' 
       respond_to do |format|
         format.html
         format.json { render json: collections_with_snapshot }
@@ -34,7 +34,7 @@ class CollectionsController < ApplicationController
   end
 
   def render_breadcrumbs
-    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
+    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
     if params.has_key? :collection_id
       add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
