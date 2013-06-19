@@ -12,7 +12,7 @@
     %button.icon_button.fsnapshot
       Take new snapshot
 
--if collection.snapshots.count > 0
+- if collection.snapshots.count > 0
   %table
     %tr
       = form_tag(collection_unload_current_snapshot_path(collection)) do
@@ -32,6 +32,8 @@
               = label :name, snapshot.name
           %td.grey
             = label_tag :date, snapshot.date.rfc822
+- elsif !collection_admin?
+  There are no snapshots for this collection.
 
 %br/
 %br/
