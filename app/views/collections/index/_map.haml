@@ -72,7 +72,7 @@
     %span
     %span{ko(text: :name)}
     - #if can? :show, collection
-    - if current_user && !current_user.is_guest
+    - if !current_user.is_guest
       %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
@@ -96,6 +96,7 @@
         <!-- /ko -->
   .tablebottom
     <!-- ko if: !currentSnapshot-->
+    -# if can? :create, Site
     - if current_user && !current_user.is_guest
       %button.flocation{ko(click: '$root.createSite')} Create Site
     <!-- /ko -->
