@@ -7,8 +7,8 @@ onCollections -> if $('#collections-main').length > 0
   History.Adapter.bind window, 'statechange', (e) ->
       State = History.getState()
 
-  # Get collections and start the view model
-  $.get "/collections.json", {}, (collections) =>
+  # Start the view model for given collections
+  initViewModel = (collections) =>
     window.model = new MainViewModel(collections)
     ko.applyBindings window.model
     window.model.processURL()
@@ -17,6 +17,15 @@ onCollections -> if $('#collections-main').length > 0
     $('#collections-main').show()
     $('#refine-container').show()
     $('#snapshot_loaded_message').show()
+
+  # If current_user is guest, she will only have access to the requested collection
+  if window.currentUserIsGuest
+    collectionId = $.url().param('collection_id')
+    $.get "/collections/#{collectionId}.json", {}, (collection) ->
+      initViewModel [collection]
+  else
+    $.get "/collections.json", {}, initViewModel
+
   # Adjust width to window
   window.adjustContainerSize = ->
     adjustRightPanelWidth = (referenceWidth) =>

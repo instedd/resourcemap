@@ -1,5 +1,7 @@
 - content_for :head do
   = google_maps_javascript_include_tag
+  :javascript
+    var currentUserIsGuest = #{current_user.is_guest};
 
 <!-- ko if: !fullscreen() -->
 %h1

@@ -1,7 +1,7 @@
 class CollectionsController < ApplicationController
 
   before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
-  before_filter :authenticate_user!, :except => [:index, :render_breadcrumbs], :unless => Proc.new { collection && collection.public }
+  before_filter :authenticate_user!, :except => [:render_breadcrumbs], :unless => Proc.new { collection && collection.public }
 
   authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
 
