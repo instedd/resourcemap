@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
 
   expose(:new_search_options) do
     if current_user_snapshot.at_present?
-      {current_user_id: current_user.id}
+      {current_user: current_user}
     else
       {snapshot_id: current_user_snapshot.snapshot.id, current_user_id: current_user.id}
     end
