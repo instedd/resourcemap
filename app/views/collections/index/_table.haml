@@ -35,7 +35,7 @@
     %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
     %span
     %span{ko(text: :name)}
-    - if current_user && !current_user.is_guest
+    - if !current_user.is_guest
       %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
   = render 'collections/index/export'
   .mapheader.right

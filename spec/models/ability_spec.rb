@@ -58,6 +58,13 @@ describe Ability do
 			it { user_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
 			it { guest_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
 		end
+
+		describe "Members" do
+			it { admin_ability.should be_able_to(:members, collection) }
+			it { member_ability.should_not be_able_to(:members, collection) }
+			it { user_ability.should_not be_able_to(:members, collection) }
+			it { guest_ability.should_not be_able_to(:members, collection) }
+		end
 	end
 
 end

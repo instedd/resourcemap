@@ -4,7 +4,7 @@
 
 %ul.tabs.top
   = tab "Overview", collection_path(collection)
-  - if current_user.admins?(collection)
+  - if can? :members, collection
     = tab "Members", collection_members_path(collection)
   = tab "Layers", collection_layers_path(collection)
   = tab "Import wizard", collection_import_wizard_path(collection)
