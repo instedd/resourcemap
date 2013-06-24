@@ -91,7 +91,7 @@ class Site < ActiveRecord::Base
      self.properties = properties_by_es_code
     end
   end
-  
+
   def valid_properties
     fields = collection.fields.index_by(&:es_code)
 
@@ -103,7 +103,7 @@ class Site < ActiveRecord::Base
         validated_value = field.apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
         validated_properties["#{field.es_code}"] = validated_value
       rescue => ex
-        errors.add(:properties, {field.es_code => ex.message}) 
+        errors.add(:properties, {field.es_code => ex.message})
       end
     end
 

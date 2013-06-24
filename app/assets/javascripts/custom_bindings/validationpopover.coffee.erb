@@ -18,9 +18,9 @@ ko.bindingHandlers.validationPopover =
     $(element).parent().HideAllBubblePopups()
     $(element).parent().RemoveBubblePopup()
     $(element).parent().removeClass("error")
+
     if !!value
-      $(element).parent().addClass("error")
-      $(element).parent().CreateBubblePopup({
+      options = {
         innerHtml: value,
         themeName: 'bubble'
         themePath:  '<%= InsteddRails.url %>/theme/images/',
@@ -29,4 +29,10 @@ ko.bindingHandlers.validationPopover =
           'color': '#000000',
           'background-color':'white'
         },
-      })
+      }
+
+      $(element).parent().addClass("error")
+      $(element).parent().CreateBubblePopup(options)
+
+      # TODO: unless we do this, the popup doesn't refresh its value
+      setTimeout((-> $(element).parent().SetBubblePopupOptions(options)), 400)

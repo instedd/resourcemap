@@ -6,3 +6,9 @@
 %label{ko(css: {error: 'impl().contextError'})} Context
 %p.smalltext The context in which the agency uses this identifier
 = ko_text_field_tag 'impl().context', css: {error: 'impl().contextError'}
+%hr/
+%label Format
+%p.smalltext
+%select{ko(value: 'impl().format')}
+  - Field::IdentifierField::IdentifierKinds.each do |kind|
+    %option= kind

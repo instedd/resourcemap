@@ -77,10 +77,11 @@
                 - Field::BaseKinds.clone.concat(Field::plugin_kinds.map{|k,v| v}).in_groups_of(6).each do |field_row|
                   .feditor-field-type-row
                   - field_row.each do |field|
-                    %span{ko(click: "function() { $root.newField('#{field[:name]}') }")}
-                      %button{ style: "margin-left:10px; margin-bottom:4px;", class: field[:css_class], title: "Add new #{field[:name].titleize.downcase} field" }
-                      %br/
-                      = field[:name].titleize
+                    - if field
+                      %span{ko(click: "function() { $root.newField('#{field[:name]}') }")}
+                        %button{ style: "margin-left:10px; margin-bottom:4px;", class: field[:css_class], title: "Add new #{field[:name].titleize.downcase} field" }
+                        %br/
+                        = field[:name].titleize
                   %br/
                   %br/
 

@@ -5,6 +5,7 @@ onLayers ->
 
       @context = ko.observable field.config?.context
       @agency = ko.observable field.config?.agency
+      @format = ko.observable field.config?.format
 
       @contextError = ko.computed =>
         if $.trim(@context()).length > 0
@@ -24,3 +25,4 @@ onLayers ->
       json.config =
         context: @context()
         agency: @agency()
+        format: @format()
