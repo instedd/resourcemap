@@ -557,7 +557,7 @@ class ImportWizard
 
     def validate_column_value(column_spec, field_value, field, collection)
       if field
-        field.apply_format_update_validation(field_value, true, collection)
+        field.apply_format_save_validation(field_value, true, collection)
       else
         validate_format_value(column_spec, field_value, collection)
       end
@@ -575,7 +575,7 @@ class ImportWizard
       column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
 
       sample_field = Field.new kind: column_spec[:kind], code: column_header
-      sample_field.apply_format_update_validation(field_value, true, collection)
+      sample_field.apply_format_save_validation(field_value, true, collection)
     end
 
     def to_columns(collection, rows, admin)

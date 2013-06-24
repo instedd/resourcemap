@@ -5,7 +5,7 @@ class Field::SelectManyField < Field
 		check_option_exists(value, use_codes_instead_of_es_codes)
 	end
 
-	def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
+	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
 		value.blank? ? nil : decode_select_many_options(value, use_codes_instead_of_es_codes)
 	end
 

@@ -1,6 +1,6 @@
 class Field::SiteField < Field
 
-	def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
+	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
 		value.blank? ? nil : check_site_exists(value, collection)
 	end
 

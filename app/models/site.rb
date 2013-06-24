@@ -100,7 +100,7 @@ class Site < ActiveRecord::Base
       field = fields[es_code]
       raise "Invalid field identifier: There is not a field with es_code = '#{es_code}' in collection number #{collection_id}." unless field
       begin
-        validated_value = field.apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
+        validated_value = field.apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
         validated_properties["#{field.es_code}"] = validated_value
       rescue => ex
         errors.add(:properties, {field.es_code => ex.message})

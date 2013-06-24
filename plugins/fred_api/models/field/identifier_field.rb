@@ -1,8 +1,8 @@
 class Field::IdentifierField < Field
   IdentifierKinds = ['Normal', 'Luhn']
 
-  def apply_format_update_validation(*args)
-    format_implementation.apply_format_update_validation(*args)
+  def apply_format_save_validation(*args)
+    format_implementation.apply_format_save_validation(*args)
   end
 
   def format_implementation
@@ -11,7 +11,7 @@ class Field::IdentifierField < Field
 end
 
 class Field::IdentifierField::FormatImplementation
-  def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
+  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
     value.blank? ? nil : value
   end
 end
@@ -20,7 +20,7 @@ class Field::IdentifierField::Normal < Field::IdentifierField::FormatImplementat
 end
 
 class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementation
-  def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
+  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
     return nil if value.blank?
 
     unless value =~ /(\d\d\d\d\d\d)\-(\d)/
