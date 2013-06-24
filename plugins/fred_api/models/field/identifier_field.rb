@@ -6,7 +6,7 @@ class Field::IdentifierField < Field
   end
 
   def format_implementation
-    "Field::IdentifierField::#{config['format']}".constantize.new
+    "Field::IdentifierField::#{config['format'] || 'Normal'}".constantize.new
   end
 end
 
@@ -21,9 +21,7 @@ end
 
 class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementation
   def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
-    if value.blank?
-      return super
-    end
+    return nil if value.blank?
 
     unless value =~ /(\d\d\d\d\d\d)\-(\d)/
       raise "the value must be in this format: nnnnnn-n (where 'n' is a number)"
