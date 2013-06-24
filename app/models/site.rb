@@ -95,6 +95,15 @@ class Site < ActiveRecord::Base
   def valid_properties
     fields = collection.fields.index_by(&:es_code)
 
+    if new_record?
+      fields.each do |es_code, field|
+        if properties[field.es_code].blank?
+          value = field.default_value_for_create(collection)
+          properties[field.es_code] = value if value
+        end
+      end
+    end
+
     validated_properties = {}
     properties.each do |es_code, value|
       field = fields[es_code]

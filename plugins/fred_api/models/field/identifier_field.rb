@@ -5,14 +5,26 @@ class Field::IdentifierField < Field
     format_implementation.apply_format_save_validation(*args)
   end
 
+  def default_value_for_create(collection)
+    format_implementation.default_value_for_create(collection)
+  end
+
   def format_implementation
-    "Field::IdentifierField::#{config['format'] || 'Normal'}".constantize.new
+    "Field::IdentifierField::#{config['format'] || 'Normal'}".constantize.new(self)
   end
 end
 
 class Field::IdentifierField::FormatImplementation
+  def initialize(field)
+    @field = field
+  end
+
   def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
     value.blank? ? nil : value
+  end
+
+  def default_value_for_create(collection)
+    nil
   end
 end
 
@@ -27,15 +39,15 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
       raise "the value must be in this format: nnnnnn-n (where 'n' is a number)"
     end
 
-    verifier = compute_lunh_verfier($1)
+    verifier = compute_luhn_verifier($1)
     if verifier != $2.to_i
-      raise "the value failed the lunh check"
+      raise "the value failed the luhn check"
     end
 
     value
   end
 
-  def compute_lunh_verfier(str)
+  def compute_luhn_verifier(str)
     n = str.length - 1
     even = false
     sum = 0
@@ -58,5 +70,28 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
     end
 
     10 - sum % 10
+  end
+
+  def default_value_for_create(collection)
+    field_es_code = "properties.#{@field.es_code}"
+    search = collection.new_search
+    search.select_fields [field_es_code]
+    search.sort field_es_code, true
+    results = search.results
+
+    return "100000-9" if results.empty?
+
+    last = nil
+
+    results.results.each do |result|
+      value = result["fields"][field_es_code]
+      value = value[0 ... 6].to_i
+      if last && value - last > 1
+        break
+      end
+      last = value
+    end
+
+    "#{last + 1}-#{compute_luhn_verifier((last + 1).to_s)}"
   end
 end

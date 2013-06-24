@@ -100,6 +100,10 @@ class Field < ActiveRecord::Base
     'field_id'
   end
 
+  def default_value_for_create(collection)
+    nil
+  end
+
   # Enables caching options and other info for a read-only usage
   # of this field, so that validations and such can be performed faster.
   def cache_for_read
