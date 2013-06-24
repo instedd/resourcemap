@@ -33,7 +33,9 @@ end
 
 class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementation
   def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
-    return nil if value.blank?
+    if value.blank?
+      raise "the value can't be blank"
+    end
 
     unless value =~ /(\d\d\d\d\d\d)\-(\d)/
       raise "the value must be in this format: nnnnnn-n (where 'n' is a number)"
@@ -42,6 +44,15 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
     verifier = compute_luhn_verifier($1)
     if verifier != $2.to_i
       raise "the value failed the luhn check"
+    end
+
+    field_es_code = "properties.#{@field.es_code}"
+    search = collection.new_search
+    search.select_fields [field_es_code]
+    search.eq @field, value
+    results = search.results
+    if results.length > 0
+      raise "the value already exists in the collection"
     end
 
     value
