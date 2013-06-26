@@ -99,7 +99,7 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
       next unless result
       value = result[field_es_code]
       next unless value
-      :attr_writer :attr_names
+
       value = value[0 ... 6].to_i
       if last && value - last > 1
         break
