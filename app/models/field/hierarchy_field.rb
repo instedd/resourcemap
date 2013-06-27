@@ -1,4 +1,15 @@
 class Field::HierarchyField < Field
+  def value_type_description
+    "values that can be found in the defined hierarchy"
+  end
+
+  def value_hint
+    "Some valid values for this hierarchy are: #{hierarchy_options_names_samples}."
+  end
+
+  def error_description_for_invalid_values
+    "don't exist in the corresponding hierarchy"
+  end
 
 	def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
 		check_presence_of_value(value)

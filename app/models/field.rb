@@ -104,6 +104,18 @@ class Field < ActiveRecord::Base
     nil
   end
 
+  def value_type_description
+    "#{kind} values"
+  end
+
+  def value_hint
+    nil
+  end
+
+  def error_description_for_invalid_values
+    "are not valid for the type #{kind}"
+  end
+
   # Enables caching options and other info for a read-only usage
   # of this field, so that validations and such can be performed faster.
   def cache_for_read

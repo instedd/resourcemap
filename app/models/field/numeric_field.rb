@@ -1,4 +1,11 @@
 class Field::NumericField < Field
+  def value_type_description
+    "numeric values"
+  end
+
+  def value_hint
+    "Values must be integers."
+  end
 
 	def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
 		check_presence_of_value(value)

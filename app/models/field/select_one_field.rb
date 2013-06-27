@@ -1,4 +1,11 @@
 class Field::SelectOneField < Field
+  def value_type_description
+    "option values"
+  end
+
+  def error_description_for_invalid_values
+  	"don't match any existing option"
+  end
 
 	def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
 		return nil unless value.present?

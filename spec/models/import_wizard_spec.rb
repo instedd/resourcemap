@@ -786,22 +786,22 @@ describe ImportWizard do
     data_errors[0][:column].should eq(1)
     data_errors[0][:rows].should eq([1, 2])
 
-    data_errors[1][:description].should eq("Some option values in column 3 don't exist.")
+    data_errors[1][:description].should eq("Some of the values in column 3 don't match any existing option.")
     data_errors[1][:column].should eq(2)
     data_errors[1][:type].should eq('option values')
     data_errors[1][:rows].should eq([1, 2])
 
-    data_errors[2][:description].should eq("Some option values in column 4 don't exist.")
+    data_errors[2][:description].should eq("Some of the values in column 4 don't match any existing option.")
     data_errors[2][:column].should eq(3)
     data_errors[2][:type].should eq('option values')
     data_errors[2][:rows].should eq([1, 2])
 
-    data_errors[3][:description].should eq("Some values in column 5 don't exist in the corresponding hierarchy.")
+    data_errors[3][:description].should eq("Some of the values in column 5 don't exist in the corresponding hierarchy.")
     data_errors[3][:column].should eq(4)
     data_errors[3][:type].should eq('values that can be found in the defined hierarchy')
     data_errors[3][:rows].should eq([1, 2])
 
-    data_errors[4][:description].should eq("Some site ids in column 6 don't match any existing site in this collection.")
+    data_errors[4][:description].should eq("Some of the values in column 6 don't match any existing site id in this collection.")
     data_errors[4][:column].should eq(5)
     data_errors[4][:rows].should eq([1, 2])
 
@@ -810,7 +810,7 @@ describe ImportWizard do
     data_errors[5][:type].should eq('dates')
     data_errors[5][:rows].should eq([1, 2])
 
-    data_errors[6][:description].should eq("Some email addresses in column 8 don't belong to any member of this collection.")
+    data_errors[6][:description].should eq("Some of the values in column 8 don't match any email address of a member of this collection.")
     data_errors[6][:column].should eq(7)
     data_errors[6][:type].should eq('email addresses')
     data_errors[6][:rows].should eq([1, 2])
@@ -908,31 +908,27 @@ describe ImportWizard do
     sites_errors[:existing_label].should eq({})
 
     data_errors = sites_errors[:data_errors]
-    data_errors.length.should eq(6)
+    data_errors.length.should eq(5)
 
     data_errors[0][:description].should eq("Some of the values in column 2 are not valid for the type numeric.")
     data_errors[0][:column].should eq(1)
     data_errors[0][:rows].should eq([1, 2])
 
-    data_errors[1][:description].should eq("Hierarchy fields can only be created via web in the Layers page.")
-    data_errors[1][:column].should eq(4)
-    data_errors[1][:rows].should eq([0, 1, 2])
+    data_errors[1][:description].should eq("Some of the values in column 6 don't match any existing site id in this collection.")
+    data_errors[1][:column].should eq(5)
+    data_errors[1][:rows].should eq([1])
 
-    data_errors[2][:description].should eq("Some site ids in column 6 don't match any existing site in this collection.")
-    data_errors[2][:column].should eq(5)
-    data_errors[2][:rows].should eq([1])
+    data_errors[2][:description].should eq("Some of the values in column 7 are not valid for the type date.")
+    data_errors[2][:column].should eq(6)
+    data_errors[2][:rows].should eq([1, 2])
 
-    data_errors[3][:description].should eq("Some of the values in column 7 are not valid for the type date.")
-    data_errors[3][:column].should eq(6)
-    data_errors[3][:rows].should eq([1, 2])
+    data_errors[3][:description].should eq("Some of the values in column 8 don't match any email address of a member of this collection.")
+    data_errors[3][:column].should eq(7)
+    data_errors[3][:rows].should eq([1])
 
-    data_errors[4][:description].should eq("Some email addresses in column 8 don't belong to any member of this collection.")
-    data_errors[4][:column].should eq(7)
-    data_errors[4][:rows].should eq([1])
-
-    data_errors[5][:description].should eq("Some of the values in column 9 are not valid for the type email.")
-    data_errors[5][:column].should eq(8)
-    data_errors[5][:rows].should eq([1, 2])
+    data_errors[4][:description].should eq("Some of the values in column 9 are not valid for the type email.")
+    data_errors[4][:column].should eq(8)
+    data_errors[4][:rows].should eq([1, 2])
 
     ImportWizard.delete_file(user, collection)
   end
@@ -1038,8 +1034,8 @@ describe ImportWizard do
       end
 
      column_specs = [
-       {header: 'Column 1', use_as: 'new_field', "#{value}" => "repeated" },
-       {header: 'Column 2', use_as: 'new_field', "#{value}" => "repeated" }
+       {header: 'Column 1', use_as: 'new_field', kind: 'select_one', "#{value}" => "repeated" },
+       {header: 'Column 2', use_as: 'new_field', kind: 'select_one', "#{value}" => "repeated" }
        ]
 
       ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
@@ -1068,8 +1064,8 @@ describe ImportWizard do
       end
 
        column_specs = [
-         {header: 'Column 1', use_as: 'new_field', "#{value}" => "repeated" },
-         {header: 'Column 2', use_as: 'new_field', "#{value}" => "repeated" }
+         {header: 'Column 1', use_as: 'new_field', kind: 'select_one', "#{value}" => "repeated" },
+         {header: 'Column 2', use_as: 'new_field', kind: 'select_one', "#{value}" => "repeated" }
          ]
 
       ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection

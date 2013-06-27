@@ -1,4 +1,11 @@
 class Field::DateField < Field
+  def value_type_description
+    "dates"
+  end
+
+  def value_hint
+    "Example of valid date: 1/25/2013."
+  end
 
 	def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
 		validated_value = {}

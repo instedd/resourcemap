@@ -50,6 +50,8 @@ class ImportWizard
 
       sites_errors = {}
 
+      # Columns validation
+
       proc_select_new_fields = Proc.new{columns_spec.select{|spec| spec[:use_as].to_s == 'new_field'}}
       sites_errors[:duplicated_code] = calculate_duplicated(proc_select_new_fields, 'code')
       sites_errors[:duplicated_label] = calculate_duplicated(proc_select_new_fields, 'label')
@@ -82,11 +84,17 @@ class ImportWizard
       sites_errors[:data_errors] = []
       sites_errors[:hierarchy_field_found] = []
 
+      # Rows validation
+
       csv_columns.each_with_index do |csv_column, csv_column_number|
         column_spec = columns_spec[csv_column_number]
-        sites_errors[:hierarchy_field_found] = add_new_hierarchy_error(csv_column_number, sites_errors[:hierarchy_field_found]) if column_spec[:use_as] == 'new_field' && column_spec[:kind] == 'hierarchy'
-        errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number)
-        sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
+
+        if column_spec[:use_as].to_s == 'new_field' && column_spec[:kind].to_s == 'hierarchy'
+          sites_errors[:hierarchy_field_found] = add_new_hierarchy_error(csv_column_number, sites_errors[:hierarchy_field_found])
+        elsif column_spec[:use_as].to_s == 'new_field' || column_spec[:use_as].to_s == 'existing_field'
+          errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number)
+          sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
+        end
       end
 
       sites_errors
@@ -413,17 +421,16 @@ class ImportWizard
     def validate_column(user, collection, column_spec, fields, csv_column, column_number)
       if column_spec[:use_as].to_sym == :existing_field
         field = fields.detect{|e| e.id.to_s == column_spec[:field_id].to_s}
+      else
+        field = Field.new kind: column_spec[:kind].to_s
       end
+
       validated_csv_column = []
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
-          case column_spec[:use_as].to_sym
-          when :existing_field, :new_field
-            validate_column_value(column_spec, csv_field_value, field, collection)
-          end
+          validate_column_value(column_spec, csv_field_value, field, collection)
         rescue => ex
-          field_type = if field then field.kind else column_spec[:kind] end
-          description = error_description_for_type(field, column_spec, field_type)
+          description = error_description_for_type(field, column_spec)
           validated_csv_column << {description: description, row: field_number}
         end
       end
@@ -433,63 +440,15 @@ class ImportWizard
       validated_columns_grouped.each do |error_type|
         if error_type[0]
           # For the moment we only have one kind of error for each column.
-          field_type = if field then field.kind else column_spec[:kind] end
-          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: type_value(field_type), example: hint_for_type(field_type, field) }
+          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: field.value_type_description, example: field.value_hint }
         end
       end
       grouped_errors
     end
 
-    def type_value(field_type)
-      case field_type
-        when 'numeric'
-          "numeric values"
-        when 'select_one', 'select_many'
-          "option values"
-        when 'hierarchy'
-          "values that can be found in the defined hierarchy"
-        when 'date'
-          "dates"
-        when 'user', 'email'
-          "email addresses"
-        when 'site'
-          "site ids"
-      end
-    end
-
-    def hint_for_type(field_type, field)
-      case field_type
-      when 'hierarchy'
-        if field then "Some valid values for this hierarchy are: #{field.hierarchy_options_names_samples}." end
-      when 'numeric'
-        "Values must be integers."
-      when 'date'
-        "Example of valid date: 1/25/2013."
-      when 'email'
-        "Example of valid email: myemail@resourcemap.com."
-      end
-    end
-
-    def error_description_for_type(field, column_spec, field_type)
+    def error_description_for_type(field, column_spec)
       column_index = column_spec[:index]
-      description = case field_type
-      when 'site'
-        "Some site ids in column #{column_index + 1} don't match any existing site in this collection."
-      when 'select_many', 'select_one'
-        "Some option values in column #{column_index + 1} don't exist."
-      when 'hierarchy'
-        "Some values in column #{column_index + 1} don't exist in the corresponding hierarchy."
-      when 'user'
-        "Some email addresses in column #{column_index + 1} don't belong to any member of this collection."
-      else
-        "Some of the values in column #{column_index + 1} are not valid for the type #{field_type}."
-      end
-
-      if  field_type == 'hierarchy' && !field #New hierarchy field
-        "Hierarchy fields can only be created via web in the Layers page."
-      else
-        description
-      end
+      "Some of the values in column #{column_index + 1} #{field.error_description_for_invalid_values}."
     end
 
     def calculate_duplicated(selection_block, groping_field)
@@ -556,10 +515,10 @@ class ImportWizard
     end
 
     def validate_column_value(column_spec, field_value, field, collection)
-      if field
-        field.apply_format_save_validation(field_value, true, collection)
-      else
+      if field.new_record?
         validate_format_value(column_spec, field_value, collection)
+      else
+        field.apply_format_save_validation(field_value, true, collection)
       end
     end
 

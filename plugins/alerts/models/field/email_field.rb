@@ -1,4 +1,11 @@
 class Field::EmailField < Field
+  def value_type_description
+    "email addresses"
+  end
+
+  def value_hint
+    "Example of valid email: myemail@resourcemap.com."
+  end
 
 	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
 		value.blank? ? nil : check_email_format(value)

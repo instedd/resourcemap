@@ -1,6 +1,14 @@
 class Field::IdentifierField < Field
   IdentifierKinds = ['Normal', 'Luhn']
 
+  def value_type_description
+    "identifier values"
+  end
+
+  def value_hint
+    format_implementation.value_hint
+  end
+
   def apply_format_save_validation(*args)
     format_implementation.apply_format_save_validation(*args)
   end
@@ -26,12 +34,20 @@ class Field::IdentifierField::FormatImplementation
   def default_value_for_create(collection)
     nil
   end
+
+  def value_hint
+    nil
+  end
 end
 
 class Field::IdentifierField::Normal < Field::IdentifierField::FormatImplementation
 end
 
 class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementation
+  def value_hint
+    "Luhn identifiers must be in this format: nnnnnn-n (where 'n' is a number), must be unique and pass the luhn check."
+  end
+
   def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
     if value.blank?
       raise "the value can't be blank"
