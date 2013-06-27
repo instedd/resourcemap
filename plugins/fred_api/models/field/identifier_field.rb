@@ -62,7 +62,7 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
 
   def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
     if value.blank?
-      raise "the value can't be blank"
+      return nil
     end
 
     unless value =~ /(\d\d\d\d\d\d)\-(\d)/

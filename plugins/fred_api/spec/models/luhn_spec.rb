@@ -38,10 +38,8 @@ describe "Luhn" do
       field.apply_format_save_validation("987654-7", nil, collection)
     end
 
-    it "fails if empty" do
-      lambda do
-        field.apply_format_save_validation("", nil, collection)
-      end.should raise_exception(RuntimeError, /can't be blank/)
+    it "doesn't fail if blank" do
+      field.apply_format_save_validation("", nil, collection)
     end
   end
 
