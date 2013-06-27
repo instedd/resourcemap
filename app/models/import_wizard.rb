@@ -93,7 +93,7 @@ class ImportWizard
           sites_errors[:hierarchy_field_found] = add_new_hierarchy_error(csv_column_number, sites_errors[:hierarchy_field_found])
         elsif column_spec[:use_as].to_s == 'new_field' || column_spec[:use_as].to_s == 'existing_field'
           errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number)
-          sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
+          sites_errors[:data_errors].concat(errors_for_column)
         end
       end
 
@@ -430,25 +430,20 @@ class ImportWizard
         begin
           validate_column_value(column_spec, csv_field_value, field, collection)
         rescue => ex
-          description = error_description_for_type(field, column_spec)
+          description = error_description_for_type(field, column_spec, ex)
           validated_csv_column << {description: description, row: field_number}
         end
       end
 
-      grouped_errors = nil
       validated_columns_grouped = validated_csv_column.group_by{|e| e[:description]}
-      validated_columns_grouped.each do |error_type|
-        if error_type[0]
-          # For the moment we only have one kind of error for each column.
-          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: field.value_type_description, example: field.value_hint }
-        end
+      validated_columns_grouped.map do |description, hash|
+        {description: description, column: column_number, rows: hash.map { |e| e[:row] }, type: field.value_type_description, example: field.value_hint }
       end
-      grouped_errors
     end
 
-    def error_description_for_type(field, column_spec)
+    def error_description_for_type(field, column_spec, ex)
       column_index = column_spec[:index]
-      "Some of the values in column #{column_index + 1} #{field.error_description_for_invalid_values}."
+      "Some of the values in column #{column_index + 1} #{field.error_description_for_invalid_values(ex)}."
     end
 
     def calculate_duplicated(selection_block, groping_field)

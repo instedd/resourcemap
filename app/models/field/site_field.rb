@@ -3,7 +3,7 @@ class Field::SiteField < Field
     "site ids"
   end
 
-  def error_description_for_invalid_values
+  def error_description_for_invalid_values(exception)
     "don't match any existing site id in this collection"
   end
 

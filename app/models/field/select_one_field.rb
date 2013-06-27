@@ -3,7 +3,7 @@ class Field::SelectOneField < Field
     "option values"
   end
 
-  def error_description_for_invalid_values
+  def error_description_for_invalid_values(exception)
   	"don't match any existing option"
   end
 

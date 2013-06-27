@@ -7,7 +7,7 @@ class Field::HierarchyField < Field
     "Some valid values for this hierarchy are: #{hierarchy_options_names_samples}."
   end
 
-  def error_description_for_invalid_values
+  def error_description_for_invalid_values(exception)
     "don't exist in the corresponding hierarchy"
   end
 
