@@ -61,6 +61,15 @@ onCollections ->
       @errorMessage = ko.observable ""
       @error = ko.computed => !!@errorMessage()
 
+    setValueFromSite: (value) =>
+      if @kind == 'date' && $.trim(value).length > 0
+        # Value from server comes with utc time zone and creating a date here gives one
+        # with the client's (browser) time zone, so we convert it back to utc
+        date = new Date(value)
+        date.setTime(date.getTime() + date.getTimezoneOffset() * 60000)
+        value = @datePickerFormat(date)
+
+      @value(value)
 
     codeForLink: (api = false) =>
       if api then @code else @esCode
@@ -76,8 +85,6 @@ onCollections ->
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
       else if @kind == 'hierarchy'
         if value then @fieldHierarchyItemsMap[value] else ''
-      else if @kind == 'date'
-        if value then @datePickerFormat(new Date(value)) else ''
       else if @kind == 'site'
         name = window.model.currentCollection()?.findSiteNameById(value)
         if value && name then name else ''
@@ -85,9 +92,7 @@ onCollections ->
         if value then value else ''
 
     valueUIFrom: (value) =>
-      if @kind == 'date'
-        value
-      else if @kind == 'site'
+      if @kind == 'site'
         # Return site_id or "" if the id for this name is not found (deleting the value or invalid value)
         window.model.currentCollection()?.findSiteIdByName(value) || ""
       else

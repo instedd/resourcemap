@@ -104,7 +104,7 @@ onCollections ->
           for field in collection.fields()
             value = @properties()[field.esCode]
 
-            field.value(value)
+            field.setValueFromSite(value)
 
     update_site: (json, callback) =>
       data = {site: JSON.stringify json}
