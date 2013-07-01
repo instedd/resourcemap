@@ -84,8 +84,9 @@ class Site < ActiveRecord::Base
       properties_by_es_code = {}
       properties.each do |code, value|
         field = fields_by_code[code] || fields_by_es_code[code]
-        raise "Invalid field identifier: There is not a field with code = '#{code}' or es_code = '#{code}' in collection number #{collection_id}." unless field
-       properties_by_es_code["#{field.es_code}"] = value
+        if field
+          properties_by_es_code["#{field.es_code}"] = value
+        end
       end
 
      self.properties = properties_by_es_code
@@ -107,12 +108,13 @@ class Site < ActiveRecord::Base
     validated_properties = {}
     properties.each do |es_code, value|
       field = fields[es_code]
-      raise "Invalid field identifier: There is not a field with es_code = '#{es_code}' in collection number #{collection_id}." unless field
-      begin
-        validated_value = field.apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, self)
-        validated_properties["#{field.es_code}"] = validated_value
-      rescue => ex
-        errors.add(:properties, {field.es_code => ex.message})
+      if field
+        begin
+          validated_value = field.apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, self)
+          validated_properties["#{field.es_code}"] = validated_value
+        rescue => ex
+          errors.add(:properties, {field.es_code => ex.message})
+        end
       end
     end
 

@@ -64,4 +64,12 @@ describe Site do
     Site.get_id_and_name([site.id]).should eq([{'id' => site.id, 'name' => site.name}])
   end
 
+  it "should save without problems after field is deleted" do
+    site # This line is needed because let(:site) is lazy
+
+    room.destroy
+
+    site.properties = site.properties
+    site.save!
+  end
 end
