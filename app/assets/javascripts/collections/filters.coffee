@@ -75,18 +75,18 @@ onCollections ->
     descriptionNonEmpty: =>
       "where #{@field.name} starts with \"#{@value}\""
 
-  class @FilterByNumericProperty extends Filter
+  class @FilterByNumericProperty extends FilterMaybeEmpty
     constructor: (field, operator, value) ->
       @field = field
       @operator = operator
       @value = value
 
-    setQueryParams: (options, api = false) =>
+    setQueryParamsNonEmpty: (options, api = false) =>
       code = @field.codeForLink(api)
       options[code] = {} if not options[code]
       options[code][@operator] = @value
 
-    description: =>
+    descriptionNonEmpty: =>
       str = "where #{@field.name} "
       switch @operator
         when '=' then str += " equals "

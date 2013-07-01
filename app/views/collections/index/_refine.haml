@@ -92,7 +92,12 @@
         %option{value: '<='} is less than or equal to
         %option{value: '>'} is greater than
         %option{value: '>='} is greater than or equal to
+        %option{value: 'empty'} has no value
+
+      <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true), type: :number}
+      <!-- /ko -->
+
       %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
       <!-- ko if: kind == 'date'-->
