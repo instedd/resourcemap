@@ -55,8 +55,14 @@
     <!-- ko if: $root.expandedRefineProperty() == esCode -->
     #div{style: 'padding:10px;margin-left:10px'}
       <!-- ko if: kind == 'text' || kind == 'user' || isPluginKind() -->
-      starts with:
+      %select{ko(value: '$root.expandedRefinePropertyOperator')}
+        %option{value: '='} starts with
+        %option{value: 'empty'} has no value
+
+      <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
+      <!-- /ko -->
+
       %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
 

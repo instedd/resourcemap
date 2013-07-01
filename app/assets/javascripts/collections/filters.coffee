@@ -33,7 +33,7 @@ onCollections ->
 
   class @FilterByLocationMissing extends Filter
     setQueryParams: (options, api = false) =>
-        options.location_missing = true
+      options.location_missing = true
 
     description: => "with location missing"
 
@@ -49,14 +49,22 @@ onCollections ->
     description: => "where #{@field.name} is \"#{@name}\""
 
   class @FilterByTextProperty extends Filter
-    constructor: (field, value) ->
+    constructor: (field, operator, value) ->
       @field = field
+      @operator = operator
       @value = value
 
     setQueryParams: (options, api = false) =>
-      options[@field.codeForLink(api)] = "~=#{@value}"
+      if @operator == 'empty'
+        options[@field.codeForLink(api)] = "="
+      else
+        options[@field.codeForLink(api)] = "~=#{@value}"
 
-    description: => "where #{@field.name} starts with \"#{@value}\""
+    description: =>
+      if @operator == 'empty'
+        "where #{@field.name} has no value"
+      else
+        "where #{@field.name} starts with \"#{@value}\""
 
   class @FilterByNumericProperty extends Filter
     constructor: (field, operator, value) ->

@@ -91,7 +91,7 @@ onCollections ->
         true
 
     @notValueSelected: ->
-      !$.trim(@expandedRefinePropertyValue()) && (@anyDateParamenterAbsent() || @anyDateParameterWithInvalidFormat()) && !@expandedRefinePropertyHierarchy()
+      @expandedRefinePropertyOperator() != 'empty' && !$.trim(@expandedRefinePropertyValue()) && (@anyDateParamenterAbsent() || @anyDateParameterWithInvalidFormat()) && !@expandedRefinePropertyHierarchy()
 
     @filterByProperty: ->
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
@@ -123,7 +123,7 @@ onCollections ->
       return new FilterByTextProperty(field, @expandedRefinePropertyValue()) if field.isPluginKind()
       return switch field.kind
         when 'text', 'user'
-          new FilterByTextProperty(field, @expandedRefinePropertyValue())
+          new FilterByTextProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue())
         when 'site'
           id = @currentCollection().findSiteIdByName(@expandedRefinePropertyValue())
           new FilterBySiteProperty(field, @expandedRefinePropertyValue(), id)
