@@ -13,7 +13,7 @@ class Field::SelectOneField < Field
 		decode_option(value, use_codes_instead_of_es_codes)
 	end
 
-	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
+	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
 		value.blank? ? nil : decode_option(value, use_codes_instead_of_es_codes)
 	end
 

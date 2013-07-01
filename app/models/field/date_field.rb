@@ -14,7 +14,7 @@ class Field::DateField < Field
     validated_value
 	end
 
-	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
+	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
 		value.blank? ? nil : check_date_format(value)
 	end
 

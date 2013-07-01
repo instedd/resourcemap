@@ -31,7 +31,7 @@ class Field::IdentifierField::FormatImplementation
     @field = field
   end
 
-  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
+  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
     value.blank? ? nil : value
   end
 
@@ -60,7 +60,7 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
     "Luhn identifiers must be in this format: nnnnnn-n (where 'n' is a number), must be unique and pass the luhn check."
   end
 
-  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
+  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
     if value.blank?
       return nil
     end
@@ -79,7 +79,10 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
     search.select_fields [field_es_code]
     search.eq @field, value
     results = search.results
-    if results.length > 0
+    if results.length == 1
+      if site && results.results.any? { |r| r["_id"].to_s == site.id.to_s }
+        return value
+      end
       raise "the value already exists in the collection"
     end
 

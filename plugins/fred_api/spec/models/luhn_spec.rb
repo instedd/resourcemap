@@ -58,4 +58,10 @@ describe "Luhn" do
       collection.sites.make(properties: {field.es_code => "100000-9"})
     end.should raise_exception(ActiveRecord::RecordInvalid, /the value already exists in the collection/)
   end
+
+  it "updates site" do
+    site = collection.sites.make
+    site.properties[field.es_code] = site.properties[field.es_code]
+    site.save!
+  end
 end
