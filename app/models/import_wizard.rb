@@ -630,7 +630,7 @@ class ImportWizard
     end
 
     def read_csv_for(user, collection)
-      csv = CSV.read(file_for(user, collection), :encoding => 'utf-8')
+      csv = CSV.read(file_for(user, collection))
 
       # Remove empty rows at the end
       while (last = csv.last) && last.empty?

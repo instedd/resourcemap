@@ -1,19 +1,24 @@
 require 'csv'
 
-# Patch CSV class to always use 'windows-1251:utf-8' encoding.
+# Patch CSV class to try to open the file with the correct encoding.
 class CSV
-  def initialize_with_encoding(data, options = {})
-    options[:encoding] ||= 'windows-1251:utf-8'
-    initialize_without_encoding data, options
-  end
-  alias_method_chain :initialize, :encoding
 
   class << self
     def open_with_encoding(*args, &block)
       options = if args.last.is_a? Hash then args.pop else Hash.new end
-      options[:encoding] ||= 'windows-1251:utf-8'
 
-      open_without_encoding *(args + [options]), &block
+      prev_encoding = options[:encoding]
+
+      # Try to parse the file using utf-8 encoding. 
+      # If it's not valid, we assume it's latin1 (Windows default)
+      options[:encoding] ||= 'utf-8'
+      begin
+        open_without_encoding *(args + [options]), &block
+      rescue
+        options[:encoding] = 'ISO-8859-1:utf-8'
+        open_without_encoding *(args + [options]), &block
+      end
+
     end
     alias_method_chain :open, :encoding
   end
