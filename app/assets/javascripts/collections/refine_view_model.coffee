@@ -136,7 +136,7 @@ onCollections ->
           valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0]?.label
           new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel)
         when 'date'
-          new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo())
+          new FilterByDateProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo())
         when 'hierarchy'
           new FilterByHierarchyProperty(field, 'under', @expandedRefinePropertyHierarchy().id, @expandedRefinePropertyHierarchy().name)
         else

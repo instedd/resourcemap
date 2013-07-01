@@ -18,7 +18,7 @@
     <!-- /ko -->
     %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (showingRefinePopup() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
   <!-- ko if: showingRefinePopup() -->
-  .refine-popup.box{style: 'position:absolute;padding:3px;z-index:10000;width:440px;max-height:300px;overflow:auto;-webkit-box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2)'}
+  .refine-popup.box{style: 'position:absolute;padding:3px;z-index:10000;width:600px;max-height:300px;overflow:auto;-webkit-box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2)'}
     <!-- ko if: !inSearch() || !currentCollection().hasDateFilter() -->
     #div{ko(click: 'function(data, event) { toggleRefineProperty("update") }'), style: 'cursor:pointer'}
       %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expandedRefineProperty() == \"update\" ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
@@ -100,11 +100,17 @@
 
       %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
+
       <!-- ko if: kind == 'date'-->
-      From
+      %select{ko(value: '$root.expandedRefinePropertyOperator')}
+        %option{value: '='} is between
+        %option{value: 'empty'} has no value
+
+      <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
       %input.ux-datepicker#range_from{ko(value: '$root.expandedRefinePropertyDateFrom', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
-      To
+      and
       %input.ux-datepicker#range_to{ko(value: '$root.expandedRefinePropertyDateTo', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
+      <!-- /ko -->
 
       %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->

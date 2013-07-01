@@ -111,16 +111,17 @@ onCollections ->
       else
         " is 'no'"
 
-  class @FilterByDateProperty extends Filter
-    constructor: (field, valueFrom, valueTo) ->
+  class @FilterByDateProperty extends FilterMaybeEmpty
+    constructor: (field, operator, valueFrom, valueTo) ->
       @field = field
+      @operator = operator
       @valueTo = valueTo
       @valueFrom = valueFrom
 
-    setQueryParams: (options, api = false) =>
+    setQueryParamsNonEmpty: (options, api = false) =>
       options[@field.codeForLink(api)]  = "=#{@valueFrom},#{@valueTo}"
 
-    description: =>
+    descriptionNonEmpty: =>
       "where #{@field.name} is between #{@valueFrom} and #{@valueTo}"
 
   class @FilterByHierarchyProperty extends Filter
