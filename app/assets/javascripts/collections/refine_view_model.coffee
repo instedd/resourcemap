@@ -126,7 +126,7 @@ onCollections ->
           new FilterByTextProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue())
         when 'site'
           id = @currentCollection().findSiteIdByName(@expandedRefinePropertyValue())
-          new FilterBySiteProperty(field, @expandedRefinePropertyValue(), id)
+          new FilterBySiteProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue(), id)
         when 'numeric'
           new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue())
         when 'yes_no'

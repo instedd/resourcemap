@@ -4,6 +4,19 @@ onCollections ->
     isDateFilter: => false
     isLocationMissingFilter: => false
 
+  class @FilterMaybeEmpty extends Filter
+    setQueryParams: (options, api = false) =>
+      if @operator == 'empty'
+        options[@field.codeForLink(api)] = "="
+      else
+        @setQueryParamsNonEmpty(options, api)
+
+    description: =>
+      if @operator == 'empty'
+        "where #{@field.name} has no value"
+      else
+        @descriptionNonEmpty()
+
   class @FilterByDate
     isDateFilter: => true
 
@@ -37,34 +50,30 @@ onCollections ->
 
     description: => "with location missing"
 
-  class @FilterBySiteProperty extends Filter
-    constructor: (field, name, id) ->
+  class @FilterBySiteProperty extends FilterMaybeEmpty
+    constructor: (field, operator, name, id) ->
       @field = field
+      @operator = operator
       @name = name
       @id = id
 
-    setQueryParams: (options, api = false) =>
+    setQueryParamsNonEmpty: (options, api = false) =>
       options[@field.codeForLink(api)] = "#{@id}"
 
-    description: => "where #{@field.name} is \"#{@name}\""
+    descriptionNonEmpty: =>
+      "where #{@field.name} is \"#{@name}\""
 
-  class @FilterByTextProperty extends Filter
+  class @FilterByTextProperty extends FilterMaybeEmpty
     constructor: (field, operator, value) ->
       @field = field
       @operator = operator
       @value = value
 
-    setQueryParams: (options, api = false) =>
-      if @operator == 'empty'
-        options[@field.codeForLink(api)] = "="
-      else
-        options[@field.codeForLink(api)] = "~=#{@value}"
+    setQueryParamsNonEmpty: (options, api = false) =>
+      options[@field.codeForLink(api)] = "~=#{@value}"
 
-    description: =>
-      if @operator == 'empty'
-        "where #{@field.name} has no value"
-      else
-        "where #{@field.name} starts with \"#{@value}\""
+    descriptionNonEmpty: =>
+      "where #{@field.name} starts with \"#{@value}\""
 
   class @FilterByNumericProperty extends Filter
     constructor: (field, operator, value) ->

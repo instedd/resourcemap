@@ -67,8 +67,14 @@
       <!-- /ko -->
 
       <!-- ko if: kind == 'site' -->
-      is:
+      %select{ko(value: '$root.expandedRefinePropertyOperator')}
+        %option{value: '='} is
+        %option{value: 'empty'} has no value
+
+      <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
       %input.autocomplete-site-input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
+      <!-- /ko -->
+
       %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
 
