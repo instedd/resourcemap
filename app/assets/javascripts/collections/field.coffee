@@ -69,6 +69,8 @@ onCollections ->
         date.setTime(date.getTime() + date.getTimezoneOffset() * 60000)
         value = @datePickerFormat(date)
 
+      value = '' unless value
+
       @value(value)
 
     codeForLink: (api = false) =>
