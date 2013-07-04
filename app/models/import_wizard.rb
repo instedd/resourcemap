@@ -20,11 +20,12 @@ class ImportWizard
 
       FileUtils.mkdir_p TmpDir
 
-      raise "Invalid file format. Only CSV files are allowed" unless File.extname(original_filename) == '.csv'
+      raise "Invalid file format. Only CSV files are allowed." unless File.extname(original_filename) == '.csv'
 
       begin
         File.open(file_for(user, collection), "wb") { |file| file << contents }
-        CSV.read(file_for(user, collection))
+        csv = CSV.read(file_for(user, collection))
+        raise CSV::MalformedCSVError, "All rows must have the same number of columns." unless csv.all?{|e| e.count == csv[0].count}
       rescue CSV::MalformedCSVError => ex
         raise "The file is not a valid CSV file: #{ex.message}"
       end
