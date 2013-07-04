@@ -111,6 +111,11 @@ onCollections ->
     edit: =>
       if !window.model.currentCollection()?.currentSnapshot
         @originalValue = @value()
+
+        # For select many, if it's an array we need to duplicate it
+        if @kind == 'select_many' && typeof(@originalValue) == 'object'
+          @originalValue = @originalValue.slice(0)
+
         @editing(true)
         optionsDatePicker = {}
         optionsDatePicker.onSelect = (dateText) =>
@@ -128,7 +133,7 @@ onCollections ->
         else true
 
     exit: =>
-      @value(@originalValue) if @originalValue?
+      @value(@originalValue)
       @editing(false)
       @filter('')
       delete @originalValue
