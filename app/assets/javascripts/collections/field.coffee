@@ -30,12 +30,12 @@ onCollections ->
                   else
                     []
         @optionsIds = $.map @options, (x) => x.id
-        if @kind == 'select_one'
-          @optionsIds.unshift('')
-          @optionsUI = [new Option {id: '', label: '(no value)' }].concat(@options)
-          @optionsUIIds = $.map @optionsUI, (x) => x.id
-        else
-          @optionsUI = @options
+
+        # Add the 'no value' option
+        @optionsIds.unshift('')
+        @optionsUI = [new Option {id: '', label: '(no value)' }].concat(@options)
+        @optionsUIIds = $.map @optionsUI, (x) => x.id
+
         @hierarchy = @options
 
       if @kind == 'hierarchy'

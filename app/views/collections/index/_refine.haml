@@ -114,10 +114,12 @@
 
       %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
+
       <!-- ko if: kind == 'hierarchy' -->
       %div{ko(template: {name: "'refine-hierarchy-items-template'", with: 'fieldHierarchyItems'})}
       %a.button.white{ko(click: '$root.filterByProperty')} OK
       <!-- /ko -->
+
       <!-- ko if: kind == 'select_one' || kind == 'select_many' -->
       is:
       %select{ko(value: '$root.expandedRefinePropertyValue', options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
