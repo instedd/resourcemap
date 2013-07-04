@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec_helper'
 
 describe ImportWizard do
@@ -1295,4 +1296,38 @@ describe ImportWizard do
     # do nothing (the test is that it shouldn't raise)
   end
 
+  it "should not import files with invalid extension" do
+    File.open("example.txt", "w") do |f|     
+      f.write("one, two")   
+    end
+    expect { ImportWizard.import user, collection, 'example.txt', "one, two" }.to raise_error
+  end
+
+  it "should not import malformed csv files" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', '2']
+      csv << ['Foo', '1.2', '3.4', '10']
+    end
+    expect { ImportWizard.import user, collection, 'foo.csv', csv_string }.to raise_error
+  end
+
+  it "should not fail when there is latin1 characters" do
+    csv_string = CSV.open("utf8.csv", "wb", encoding: "ISO-8859-1") do |csv|
+      csv << ["é", "ñ", "ç", "ø"]
+      csv << ["é", "ñ", "ç", "ø"]
+    end 
+
+    specs = [
+      {header: 'é', use_as: 'name'},
+      {header: 'ñ', use_as: 'new_field', kind: 'text', code: 'text1', label: 'text 1'},
+      {header: 'ç', use_as: 'new_field', kind: 'text', code: 'text2', label: 'text 2'},
+      {header: 'ø', use_as: 'new_field', kind: 'text', code: 'text3', label: 'text 3'}
+      ]
+
+    expect { ImportWizard.import user, collection, 'utf8.csv', csv_string }.to_not raise_error
+    expect { ImportWizard.mark_job_as_pending user, collection }.to_not raise_error
+    expect { column_spec = ImportWizard.guess_columns_spec user, collection}.to_not raise_error
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    expect {ImportWizard.validate_sites_with_columns user, collection, column_spec}.to_not raise_error
+  end
 end

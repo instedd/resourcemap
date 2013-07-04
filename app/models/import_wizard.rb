@@ -19,11 +19,15 @@ class ImportWizard
       ImportJob.uploaded original_filename, user, collection
 
       FileUtils.mkdir_p TmpDir
-      File.open(file_for(user, collection), "wb") { |file| file << contents }
 
-      # Just to validate its contents
-      csv = CSV.new contents
-      csv.each { |row| }
+      raise "Invalid file format. Only CSV files are allowed" unless File.extname(original_filename) == '.csv'
+
+      begin
+        File.open(file_for(user, collection), "wb") { |file| file << contents }
+        CSV.read(file_for(user, collection))
+      rescue CSV::MalformedCSVError => ex
+        raise "The file is not a valid CSV file: #{ex.message}"
+      end
     end
 
     def validate_sites_with_columns(user, collection, columns_spec)
@@ -540,7 +544,6 @@ class ImportWizard
     def to_columns(collection, rows, admin)
       fields = collection.fields.index_by &:code
       columns_initial_guess = []
-
       rows[0].each do |header|
         column_spec = {}
         column_spec[:header] = header ? header.strip : ''

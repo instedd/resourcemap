@@ -13,10 +13,12 @@ class ImportWizardsController < ApplicationController
   end
 
   def upload_csv
-    ImportWizard.import current_user, collection, params[:file].original_filename, params[:file].read
-    redirect_to adjustments_collection_import_wizard_path(collection)
-  rescue => ex
-    redirect_to collection_import_wizard_path(collection), :notice => "The file was not a valid CSV file"
+    begin
+      ImportWizard.import current_user, collection, params[:file].original_filename, params[:file].read
+      redirect_to adjustments_collection_import_wizard_path(collection)
+    rescue => ex
+      redirect_to collection_import_wizard_path(collection), :alert => ex.message
+    end
   end
 
   def guess_columns_spec

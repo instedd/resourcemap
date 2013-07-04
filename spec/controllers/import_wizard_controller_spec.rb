@@ -29,4 +29,5 @@ describe ImportWizardsController do
     post :execute, collection_id: collection.id, columns: specs
     response.response_code.should == 401
   end
+
 end
