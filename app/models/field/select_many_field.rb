@@ -3,7 +3,7 @@ class Field::SelectManyField < Field
     "option values"
   end
 
-  def error_description_for_invalid_values
+  def error_description_for_invalid_values(exception)
     "don't match any existing option"
   end
 
@@ -12,7 +12,7 @@ class Field::SelectManyField < Field
 		check_option_exists(value, use_codes_instead_of_es_codes)
 	end
 
-	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
+	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
 		value.blank? ? nil : decode_select_many_options(value, use_codes_instead_of_es_codes)
 	end
 

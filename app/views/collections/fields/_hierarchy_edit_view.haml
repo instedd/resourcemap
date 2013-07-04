@@ -1,13 +1,9 @@
 - if single_editing_mode
   .hierarchy-container{ko(event: {blur: :save, keydown: :keyPress}, hasfocus: true), tabIndex: -1}
-    .hierarchy{ko(click: 'function() { value("");}', css: { error: :error, active: 'value() == ""'}), style: 'cursor:pointer;'}
-      (no value)
     <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
     <!-- /ko -->
   .clear
 - else
   .hierarchy-container
-    .hierarchy{ko(click: 'function() { value("");}', css: { active: 'value() == ""'}), style: 'cursor:pointer;'}
-      (no value)
     <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
     <!-- /ko -->

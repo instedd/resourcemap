@@ -154,7 +154,7 @@ describe 'Collection', ->
         expect(@field.options.length).toEqual(3)
 
       it 'should have optionsIds', ->
-        expect(@field.optionsIds).toEqual([1, 2, 3])
+        expect(@field.optionsIds).toEqual(['', 1, 2, 3])
 
       it 'should have all remaining options', ->
         expect(@field.remainingOptions()).toEqual(@field.options)
@@ -188,7 +188,7 @@ describe 'Collection', ->
     describe 'Date Field', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'creation', name: 'Creation', kind: 'date' }
-        @field.value('1012-12-26T03:00:00.000Z')
+        @field.setValueFromSite('1012-12-26T03:00:00.000Z')
 
       it 'should have value when set one', ->
         expect(@field.hasValue()).toBeTruthy()

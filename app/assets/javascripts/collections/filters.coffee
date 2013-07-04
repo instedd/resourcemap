@@ -4,6 +4,19 @@ onCollections ->
     isDateFilter: => false
     isLocationMissingFilter: => false
 
+  class @FilterMaybeEmpty extends Filter
+    setQueryParams: (options, api = false) =>
+      if @operator == 'empty'
+        options[@field.codeForLink(api)] = "="
+      else
+        @setQueryParamsNonEmpty(options, api)
+
+    description: =>
+      if @operator == 'empty'
+        "where #{@field.name} has no value"
+      else
+        @descriptionNonEmpty()
+
   class @FilterByDate
     isDateFilter: => true
 
@@ -33,43 +46,47 @@ onCollections ->
 
   class @FilterByLocationMissing extends Filter
     setQueryParams: (options, api = false) =>
-        options.location_missing = true
+      options.location_missing = true
 
     description: => "with location missing"
 
-  class @FilterBySiteProperty extends Filter
-    constructor: (field, name, id) ->
+  class @FilterBySiteProperty extends FilterMaybeEmpty
+    constructor: (field, operator, name, id) ->
       @field = field
+      @operator = operator
       @name = name
       @id = id
 
-    setQueryParams: (options, api = false) =>
+    setQueryParamsNonEmpty: (options, api = false) =>
       options[@field.codeForLink(api)] = "#{@id}"
 
-    description: => "where #{@field.name} is \"#{@name}\""
+    descriptionNonEmpty: =>
+      "where #{@field.name} is \"#{@name}\""
 
-  class @FilterByTextProperty extends Filter
-    constructor: (field, value) ->
-      @field = field
-      @value = value
-
-    setQueryParams: (options, api = false) =>
-      options[@field.codeForLink(api)] = "~=#{@value}"
-
-    description: => "where #{@field.name} starts with \"#{@value}\""
-
-  class @FilterByNumericProperty extends Filter
+  class @FilterByTextProperty extends FilterMaybeEmpty
     constructor: (field, operator, value) ->
       @field = field
       @operator = operator
       @value = value
 
-    setQueryParams: (options, api = false) =>
+    setQueryParamsNonEmpty: (options, api = false) =>
+      options[@field.codeForLink(api)] = "~=#{@value}"
+
+    descriptionNonEmpty: =>
+      "where #{@field.name} starts with \"#{@value}\""
+
+  class @FilterByNumericProperty extends FilterMaybeEmpty
+    constructor: (field, operator, value) ->
+      @field = field
+      @operator = operator
+      @value = value
+
+    setQueryParamsNonEmpty: (options, api = false) =>
       code = @field.codeForLink(api)
       options[code] = {} if not options[code]
       options[code][@operator] = @value
 
-    description: =>
+    descriptionNonEmpty: =>
       str = "where #{@field.name} "
       switch @operator
         when '=' then str += " equals "
@@ -94,16 +111,17 @@ onCollections ->
       else
         " is 'no'"
 
-  class @FilterByDateProperty extends Filter
-    constructor: (field, valueFrom, valueTo) ->
+  class @FilterByDateProperty extends FilterMaybeEmpty
+    constructor: (field, operator, valueFrom, valueTo) ->
       @field = field
+      @operator = operator
       @valueTo = valueTo
       @valueFrom = valueFrom
 
-    setQueryParams: (options, api = false) =>
+    setQueryParamsNonEmpty: (options, api = false) =>
       options[@field.codeForLink(api)]  = "=#{@valueFrom},#{@valueTo}"
 
-    description: =>
+    descriptionNonEmpty: =>
       "where #{@field.name} is between #{@valueFrom} and #{@valueTo}"
 
   class @FilterByHierarchyProperty extends Filter

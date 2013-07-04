@@ -7,7 +7,7 @@ class Field::HierarchyField < Field
     "Some valid values for this hierarchy are: #{hierarchy_options_names_samples}."
   end
 
-  def error_description_for_invalid_values
+  def error_description_for_invalid_values(exception)
     "don't exist in the corresponding hierarchy"
   end
 
@@ -16,7 +16,7 @@ class Field::HierarchyField < Field
 		decode_hierarchy_option(value, use_codes_instead_of_es_codes)
 	end
 
-	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
+	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
     value.blank? ? nil : check_option_exists(value, use_codes_instead_of_es_codes)
 	end
 

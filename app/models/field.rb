@@ -112,7 +112,7 @@ class Field < ActiveRecord::Base
     nil
   end
 
-  def error_description_for_invalid_values
+  def error_description_for_invalid_values(exception)
     "are not valid for the type #{kind}"
   end
 

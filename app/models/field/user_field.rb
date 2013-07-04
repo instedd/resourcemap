@@ -3,11 +3,11 @@ class Field::UserField < Field
     "email addresses"
   end
 
-  def error_description_for_invalid_values
+  def error_description_for_invalid_values(exception)
     "don't match any email address of a member of this collection"
   end
 
-  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
+  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
   	value.blank? ? nil : check_user_exists(value, collection)
 	end
 

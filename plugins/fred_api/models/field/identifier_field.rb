@@ -17,6 +17,10 @@ class Field::IdentifierField < Field
     format_implementation.default_value_for_create(collection)
   end
 
+  def error_description_for_invalid_values(exception)
+    format_implementation.error_description_for_invalid_values(exception)
+  end
+
   def format_implementation
     "Field::IdentifierField::#{config['format'] || 'Normal'}".constantize.new(self)
   end
@@ -27,7 +31,7 @@ class Field::IdentifierField::FormatImplementation
     @field = field
   end
 
-  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
+  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
     value.blank? ? nil : value
   end
 
@@ -38,19 +42,27 @@ class Field::IdentifierField::FormatImplementation
   def value_hint
     nil
   end
+
+  def error_description_for_invalid_values(exception)
+    "are not valid for the type identifier"
+  end
 end
 
 class Field::IdentifierField::Normal < Field::IdentifierField::FormatImplementation
 end
 
 class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementation
+  def error_description_for_invalid_values(exception)
+    "are not valid for the type luhn identifier: #{exception}"
+  end
+
   def value_hint
     "Luhn identifiers must be in this format: nnnnnn-n (where 'n' is a number), must be unique and pass the luhn check."
   end
 
-  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection)
+  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
     if value.blank?
-      raise "the value can't be blank"
+      return nil
     end
 
     unless value =~ /(\d\d\d\d\d\d)\-(\d)/
@@ -67,7 +79,10 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
     search.select_fields [field_es_code]
     search.eq @field, value
     results = search.results
-    if results.length > 0
+    if results.length == 1
+      if site && results.results.any? { |r| r["_id"].to_s == site.id.to_s }
+        return value
+      end
       raise "the value already exists in the collection"
     end
 

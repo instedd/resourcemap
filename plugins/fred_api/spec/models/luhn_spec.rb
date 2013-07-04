@@ -38,10 +38,8 @@ describe "Luhn" do
       field.apply_format_save_validation("987654-7", nil, collection)
     end
 
-    it "fails if empty" do
-      lambda do
-        field.apply_format_save_validation("", nil, collection)
-      end.should raise_exception(RuntimeError, /can't be blank/)
+    it "doesn't fail if blank" do
+      field.apply_format_save_validation("", nil, collection)
     end
   end
 
@@ -59,5 +57,11 @@ describe "Luhn" do
     lambda do
       collection.sites.make(properties: {field.es_code => "100000-9"})
     end.should raise_exception(ActiveRecord::RecordInvalid, /the value already exists in the collection/)
+  end
+
+  it "updates site" do
+    site = collection.sites.make
+    site.properties[field.es_code] = site.properties[field.es_code]
+    site.save!
   end
 end

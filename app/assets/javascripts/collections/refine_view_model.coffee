@@ -91,11 +91,11 @@ onCollections ->
         true
 
     @notValueSelected: ->
-      !$.trim(@expandedRefinePropertyValue()) && (@anyDateParamenterAbsent() || @anyDateParameterWithInvalidFormat()) && !@expandedRefinePropertyHierarchy()
+      @expandedRefinePropertyOperator() != 'empty' && !$.trim(@expandedRefinePropertyValue()) && (@anyDateParamenterAbsent() || @anyDateParameterWithInvalidFormat()) && !@expandedRefinePropertyHierarchy()
 
     @filterByProperty: ->
       field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
-      return if field.kind != 'select_one' && @notValueSelected()
+      return if field.kind != 'select_one' && field.kind != 'select_many' && @notValueSelected()
 
       filter = @filterFor(field)
       if field.kind == 'numeric'
@@ -120,13 +120,13 @@ onCollections ->
         @filters.push(filter)
 
     @filterFor: (field) ->
-      return new FilterByTextProperty(field, @expandedRefinePropertyValue()) if field.isPluginKind()
+      return new FilterByTextProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()) if field.isPluginKind()
       return switch field.kind
         when 'text', 'user'
-          new FilterByTextProperty(field, @expandedRefinePropertyValue())
+          new FilterByTextProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue())
         when 'site'
           id = @currentCollection().findSiteIdByName(@expandedRefinePropertyValue())
-          new FilterBySiteProperty(field, @expandedRefinePropertyValue(), id)
+          new FilterBySiteProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue(), id)
         when 'numeric'
           new FilterByNumericProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue())
         when 'yes_no'
@@ -136,7 +136,7 @@ onCollections ->
           valueLabel = (option for option in field.options when option.id == @expandedRefinePropertyValue())[0]?.label
           new FilterBySelectProperty(field, @expandedRefinePropertyValue(), valueLabel)
         when 'date'
-          new FilterByDateProperty(field, @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo())
+          new FilterByDateProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyDateFrom(), @expandedRefinePropertyDateTo())
         when 'hierarchy'
           new FilterByHierarchyProperty(field, 'under', @expandedRefinePropertyHierarchy().id, @expandedRefinePropertyHierarchy().name)
         else

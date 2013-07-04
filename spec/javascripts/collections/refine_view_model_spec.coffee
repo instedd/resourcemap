@@ -40,7 +40,7 @@ describe 'Collection', ->
           @model.expandedRefineProperty @phone_field.esCode
           expect(@model.notValueSelected()).toBeTruthy()
           @model.expandedRefineProperty @hierarchy.esCode
-          @hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0].select()
+          @hierarchy.fieldHierarchyItems()[1].fieldHierarchyItems[0].select()
           @model.expandedRefineProperty @phone_field.esCode
           expect(@model.notValueSelected()).toBeTruthy()
           @model.expandedRefineProperty null
@@ -48,7 +48,7 @@ describe 'Collection', ->
 
         it 'should have a selected value', ->
           @model.expandedRefineProperty @hierarchy.esCode
-          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0])
+          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[1].fieldHierarchyItems[0])
           expect(@model.notValueSelected()).toBeFalsy()
 
         it 'should not add filter if no item is selected', ->
@@ -58,7 +58,7 @@ describe 'Collection', ->
 
         it 'should add hierarchy filter', ->
           @model.expandedRefineProperty @hierarchy.esCode
-          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0])
+          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[1].fieldHierarchyItems[0])
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
           expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Tres de Febrero\""
@@ -66,7 +66,7 @@ describe 'Collection', ->
 
         it 'should filter selected item and its descendants', ->
           @model.expandedRefineProperty @hierarchy.esCode
-          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0])
+          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[1])
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
           expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Buenos Aires\""
@@ -74,7 +74,7 @@ describe 'Collection', ->
 
         it 'should update current filter value if filtering by existent filter', ->
           @model.expandedRefineProperty @hierarchy.esCode
-          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0])
+          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[1])
           @model.filterByProperty()
 
           expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Buenos Aires\""
@@ -82,7 +82,7 @@ describe 'Collection', ->
           expect(@model.filters().length).toEqual 1
 
           @model.expandedRefineProperty @hierarchy.esCode
-          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[0].fieldHierarchyItems[0])
+          @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[1].fieldHierarchyItems[0])
           @model.filterByProperty()
 
           expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Tres de Febrero\""
