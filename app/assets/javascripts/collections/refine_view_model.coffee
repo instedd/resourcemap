@@ -120,7 +120,7 @@ onCollections ->
         @filters.push(filter)
 
     @filterFor: (field) ->
-      return new FilterByTextProperty(field, @expandedRefinePropertyValue()) if field.isPluginKind()
+      return new FilterByTextProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()) if field.isPluginKind()
       return switch field.kind
         when 'text', 'user'
           new FilterByTextProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue())
