@@ -113,7 +113,7 @@ onCollections ->
         @originalValue = @value()
 
         # For select many, if it's an array we need to duplicate it
-        if @kind == 'select_many' && typeof(@originalValue) == 'object'
+        if @kind == 'select_many' && typeof(@) == 'object'
           @originalValue = @originalValue.slice(0)
 
         @editing(true)

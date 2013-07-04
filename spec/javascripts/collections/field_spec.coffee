@@ -184,6 +184,19 @@ describe 'Collection', ->
         @field.filter('Red')
         expect(@field.remainingOptions()).toEqual([@field.options[0]])
 
+      it 'should restore original options when empty', ->
+        @field.value('')
+        @field.edit()
+        @field.value([1, 2])
+        @field.exit()
+        expect(@field.value()).toEqual('')
+
+      it 'should restore original options when not empty', ->
+        @field.value([1, 2])
+        @field.edit()
+        @field.value().push(3)
+        @field.exit()
+        expect(@field.value()).toEqual([1, 2])
 
     describe 'Date Field', ->
       beforeEach ->
