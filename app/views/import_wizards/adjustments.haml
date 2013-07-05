@@ -28,12 +28,19 @@
     This may take a while depending on the size of your file.
 
   #import-wizard-main.hidden-until-loaded
-    /ko if: !hasId()
-    - if collection.sites.exists?
-      .info-box.flash_error.drop_shadow
-        = raw "All sites will be imported as new. If you want to modify the existing ones, follow the instructions in the #{link_to "previous page", :back, :class => 'black', :style => 'text-decoration:underline'}."
-      %br
-    //ko
+    
+    .info-box.drop_shadow
+      .i18g-information.left
+      .info-items.left
+        /ko if: !hasId()
+        - if collection.sites.exists?
+          %span
+            = raw "All sites will be imported as new. If you want to modify the existing ones, follow the instructions in the #{link_to "previous page", :back, :class => 'black', :style => 'text-decoration:underline'}."
+          %br
+        //ko
+        %span If you notice issues with some characters (such as accents) try exporting the CSV with UTF-8 encoding.
+      .clear
+    %br
 
     /ko if: (validationErrors() && validationErrors().hasErrors())
     .box.error_description

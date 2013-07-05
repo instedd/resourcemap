@@ -25,9 +25,9 @@ class ImportWizard
       begin
         File.open(file_for(user, collection), "wb") { |file| file << contents }
         csv = CSV.read(file_for(user, collection))
-        raise CSV::MalformedCSVError, "All rows must have the same number of columns." unless csv.all?{|e| e.count == csv[0].count}
+        raise CSV::MalformedCSVError, "all rows must have the same number of columns." unless csv.all?{|e| e.count == csv[0].count}
       rescue CSV::MalformedCSVError => ex
-        raise "The file is not a valid CSV file: #{ex.message}"
+        raise "The file is not a valid CSV: #{ex.message}"
       end
     end
 
