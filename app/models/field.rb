@@ -17,7 +17,7 @@ class Field < ActiveRecord::Base
   validates_uniqueness_of :code, :scope => :collection_id
   validates_uniqueness_of :name, :scope => :collection_id
 
-  serialize :config
+  serialize :config, MarshalZipSerializable
   serialize :metadata
 
   def self.reserved_codes

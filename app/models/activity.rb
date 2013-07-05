@@ -12,7 +12,7 @@ class Activity < ActiveRecord::Base
   belongs_to :field
   belongs_to :site
 
-  serialize :data
+  serialize :data, MarshalZipSerializable
 
   validates_inclusion_of :item_type, :in => ItemTypesAndActions.keys
 
