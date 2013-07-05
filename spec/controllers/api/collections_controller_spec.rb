@@ -176,14 +176,6 @@ describe Api::CollectionsController do
       response.response_code.should be(200)
     end
 
-    it "should validate presence of value" do
-      get :show, id: collection.id, format: 'csv', text.code => ""
-      response.response_code.should be(400)
-      response.body.should include("Missing text value")
-      get :show, id: collection.id, format: 'csv', text.code => "text"
-      response.response_code.should be(200)
-    end
-
     it "should validate date fields format" do
       get :show, id: collection.id, format: 'csv', date.code => "invalid1234"
       response.response_code.should be(400)
