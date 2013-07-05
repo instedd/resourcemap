@@ -93,7 +93,7 @@ describe ImportWizard do
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Beds']
       csv << ["#{site1.id}", 'Foo', '1.2', '3.4', '10']
       csv << ["#{site2.id}", 'Bar', '5.6', '7.8', '20']
-      csv << ['', '', '', '']
+      csv << ['', '', '', '', '']
     end
 
     specs = [
@@ -133,7 +133,7 @@ describe ImportWizard do
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Beds']
       csv << ["", 'Foo', '1.2', '3.4', '10']
-      csv << ['', '', '', '']
+      csv << ['', '', '', '', '']
     end
 
     specs = [
@@ -242,7 +242,7 @@ describe ImportWizard do
       csv << ['Name', 'Column']
       csv << ['Foo', 'hi']
       csv << ['Bar', 'bye']
-      csv << ['', '', '', '']
+      csv << ['', '']
     end
 
     specs = [
@@ -270,7 +270,7 @@ describe ImportWizard do
       csv << ['Name', 'Column']
       csv << ['Foo', '10']
       csv << ['Bar', '20']
-      csv << ['', '', '', '']
+      csv << ['', '']
     end
 
     specs = [
@@ -298,7 +298,7 @@ describe ImportWizard do
       csv << ['Name', 'Column']
       csv << ['Foo', 'one']
       csv << ['Bar', 'two']
-      csv << ['', '', '', '']
+      csv << ['', '']
     end
 
     specs = [
@@ -326,7 +326,7 @@ describe ImportWizard do
       csv << ['Name', 'Column']
       csv << ['Foo', 'three']
       csv << ['Bar', 'four']
-      csv << ['', '', '', '']
+      csv << ['', '']
     end
 
     specs = [
@@ -365,7 +365,7 @@ describe ImportWizard do
       csv << ['Name', 'Column']
       csv << ['Foo', 'one']
       csv << ['Bar', 'one, two']
-      csv << ['', '', '', '']
+      csv << ['', '']
     end
 
     specs = [
@@ -393,7 +393,7 @@ describe ImportWizard do
       csv << ['Name', 'Column']
       csv << ['Foo', 'one, three']
       csv << ['Bar', 'two, four']
-      csv << ['', '', '', '']
+      csv << ['', '']
     end
 
     specs = [
@@ -483,7 +483,7 @@ describe ImportWizard do
        csv << ['Name', 'Column']
        csv << ['Foo', '12/24/2012']
        csv << ['Bar', '10/23/2033']
-       csv << ['', '', '', '']
+       csv << ['', '']
      end
 
      specs = [
@@ -513,7 +513,7 @@ describe ImportWizard do
     csv_string = CSV.generate do |csv|
      csv << ['Name', 'Column']
      csv << ['Foo', '123']
-     csv << ['', '', '', '']
+     csv << ['', '']
     end
 
     specs = [
