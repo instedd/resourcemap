@@ -32,7 +32,7 @@ RSpec.configure do |config|
   config.filter_run_excluding(js: true)   unless config.filter_manager.inclusions[:js]
 
   Warden.test_mode!
-  
+
   Capybara.default_wait_time = 5
   Capybara.javascript_driver = :selenium
   Capybara.default_selector = :css
@@ -74,6 +74,13 @@ RSpec.configure do |config|
     time = Time.parse time
     Time.stub(:now) { time }
   end
+
+  def with_tmp_file(filename)
+    file = "#{Dir.tmpdir}/#{filename}"
+    yield file
+    File.delete file
+  end
+
   # Delete all test indexes after running each spec
   config.after(:each) do
     Tire.delete_indices_that_match /^collection_test_\d+/

@@ -173,7 +173,7 @@ describe 'ImportWizard', ->
       expect(first_error.more_info).toEqual("Some options in column 5 don't exist. To fix this, either change the column's type or edit your CSV so that all rows hold valid options. The invalid options are in the following rows: 2 and 3.")
       second_error = redeable_errors[1]
       expect(second_error.error_kind).toEqual("data_errors")
-      expect(second_error.description).toEqual("There are 1 invalid values in column 2.")
+      expect(second_error.description).toEqual("There is 1 invalid value in column 2.")
       expect(second_error.columns).toEqual([1])
       expect(second_error.more_info).toEqual("Some of the values in column 2 are not valid for the type numeric. To fix this, either change the column's type or edit your CSV so that all rows hold valid numeric values. Values must be integers. The invalid numeric values are in the following rows: 2.")
 

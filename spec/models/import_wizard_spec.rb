@@ -1297,10 +1297,12 @@ describe ImportWizard do
   end
 
   it "should not import files with invalid extension" do
-    File.open("example.txt", "w") do |f|     
-      f.write("one, two")   
+    with_tmp_file("example.txt") do |tmp_file|
+      File.open(tmp_file, "w") do |f|
+        f.write("one, two")
+      end
+      expect { ImportWizard.import user, collection, tmp_file, "one, two" }.to raise_error
     end
-    expect { ImportWizard.import user, collection, 'example.txt', "one, two" }.to raise_error
   end
 
   it "should not import malformed csv files" do
@@ -1312,22 +1314,24 @@ describe ImportWizard do
   end
 
   it "should not fail when there is latin1 characters" do
-    csv_string = CSV.open("utf8.csv", "wb", encoding: "ISO-8859-1") do |csv|
-      csv << ["é", "ñ", "ç", "ø"]
-      csv << ["é", "ñ", "ç", "ø"]
-    end 
+    with_tmp_file('utf8.csv') do |tmp_file|
+      csv_string = CSV.open(tmp_file, "wb", encoding: "ISO-8859-1") do |csv|
+        csv << ["é", "ñ", "ç", "ø"]
+        csv << ["é", "ñ", "ç", "ø"]
+      end
 
-    specs = [
-      {header: 'é', use_as: 'name'},
-      {header: 'ñ', use_as: 'new_field', kind: 'text', code: 'text1', label: 'text 1'},
-      {header: 'ç', use_as: 'new_field', kind: 'text', code: 'text2', label: 'text 2'},
-      {header: 'ø', use_as: 'new_field', kind: 'text', code: 'text3', label: 'text 3'}
-      ]
+      specs = [
+        {header: 'é', use_as: 'name'},
+        {header: 'ñ', use_as: 'new_field', kind: 'text', code: 'text1', label: 'text 1'},
+        {header: 'ç', use_as: 'new_field', kind: 'text', code: 'text2', label: 'text 2'},
+        {header: 'ø', use_as: 'new_field', kind: 'text', code: 'text3', label: 'text 3'}
+        ]
 
-    expect { ImportWizard.import user, collection, 'utf8.csv', csv_string }.to_not raise_error
-    expect { ImportWizard.mark_job_as_pending user, collection }.to_not raise_error
-    expect { column_spec = ImportWizard.guess_columns_spec user, collection}.to_not raise_error
-    column_spec = ImportWizard.guess_columns_spec user, collection
-    expect {ImportWizard.validate_sites_with_columns user, collection, column_spec}.to_not raise_error
+      expect { ImportWizard.import user, collection, tmp_file, csv_string }.to_not raise_error
+      expect { ImportWizard.mark_job_as_pending user, collection }.to_not raise_error
+      expect { column_spec = ImportWizard.guess_columns_spec user, collection}.to_not raise_error
+      column_spec = ImportWizard.guess_columns_spec user, collection
+      expect {ImportWizard.validate_sites_with_columns user, collection, column_spec}.to_not raise_error
+    end
   end
 end
