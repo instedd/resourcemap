@@ -949,13 +949,13 @@ describe ImportWizard do
       {header: 'Text', use_as: 'new_field', kind: 'text', code: 'text', label: 'Non Existing field'},
     ]
 
-    expect {ImportWizard.validate_columns_does_not_exist_in_collection collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with code 'text' already exists in the layer named #{layer.name}")
+    expect {ImportWizard.execute_with_entities(user, collection, column_spec)}.to raise_error(RuntimeError, "Can't save field from column Text: A field with code 'text' already exists in the layer named #{layer.name}")
 
     column_spec = [
      {header: 'Text', use_as: 'new_field', kind: 'text', code: 'newtext', label: 'Existing field'},
     ]
 
-    expect {ImportWizard.validate_columns_does_not_exist_in_collection collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
+    expect {ImportWizard.execute_with_entities(user, collection, column_spec)}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
 
     ImportWizard.delete_file(user, collection)
   end
@@ -1290,19 +1290,19 @@ describe ImportWizard do
       {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
       ]
 
-    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.import user, collection, 'foo.csv', csv_string
+    ImportWizard.mark_job_as_pending user, collection
+
     column_spec = ImportWizard.guess_columns_spec user, collection
     sites_errors = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:errors]
     # do nothing (the test is that it shouldn't raise)
   end
 
   it "should not import files with invalid extension" do
-    with_tmp_file("example.txt") do |tmp_file|
-      File.open(tmp_file, "w") do |f|
-        f.write("one, two")
-      end
-      expect { ImportWizard.import user, collection, tmp_file, "one, two" }.to raise_error
+    File.open("example.txt", "w") do |f|
+      f.write("one, two")
     end
+    expect { ImportWizard.import user, collection, 'example.txt', "one, two" }.to raise_error
   end
 
   it "should not import malformed csv files" do
@@ -1314,24 +1314,47 @@ describe ImportWizard do
   end
 
   it "should not fail when there is latin1 characters" do
-    with_tmp_file('utf8.csv') do |tmp_file|
-      csv_string = CSV.open(tmp_file, "wb", encoding: "ISO-8859-1") do |csv|
-        csv << ["é", "ñ", "ç", "ø"]
-        csv << ["é", "ñ", "ç", "ø"]
+    csv_string = CSV.open("utf8.csv", "wb", encoding: "ISO-8859-1") do |csv|
+      csv << ["é", "ñ", "ç", "ø"]
+      csv << ["é", "ñ", "ç", "ø"]
+    end
+
+    specs = [
+      {header: 'é', use_as: 'name'},
+      {header: 'ñ', use_as: 'new_field', kind: 'text', code: 'text1', label: 'text 1'},
+      {header: 'ç', use_as: 'new_field', kind: 'text', code: 'text2', label: 'text 2'},
+      {header: 'ø', use_as: 'new_field', kind: 'text', code: 'text3', label: 'text 3'}
+      ]
+
+    expect { ImportWizard.import user, collection, 'utf8.csv', csv_string }.to_not raise_error
+    expect { ImportWizard.mark_job_as_pending user, collection }.to_not raise_error
+    expect { column_spec = ImportWizard.guess_columns_spec user, collection}.to_not raise_error
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    expect {ImportWizard.validate_sites_with_columns user, collection, column_spec}.to_not raise_error
+  end
+
+  describe 'updates' do
+    it 'only some fields of a valid site in a collection with one or more select one fields' do
+      # The collection has a valid site before the import
+      site1 = collection.sites.make name: 'Foo old', properties: {text.es_code => 'coco', select_one.es_code => 1}
+
+      # User uploads a CSV with only the resmap-id, name and text fields set.
+      # At the time of writing (1 Jul 2013), this causes the import to fail.
+      csv_string = CSV.generate do |csv|
+        csv << ['resmap-id', 'Name', text.name]
+        csv << [site1.id, 'Foo old', 'coco2']
       end
 
-      specs = [
-        {header: 'é', use_as: 'name'},
-        {header: 'ñ', use_as: 'new_field', kind: 'text', code: 'text1', label: 'text 1'},
-        {header: 'ç', use_as: 'new_field', kind: 'text', code: 'text2', label: 'text 2'},
-        {header: 'ø', use_as: 'new_field', kind: 'text', code: 'text3', label: 'text 3'}
-        ]
+      ImportWizard.import user, collection, 'foo.csv', csv_string
+      ImportWizard.mark_job_as_pending user, collection
 
-      expect { ImportWizard.import user, collection, tmp_file, csv_string }.to_not raise_error
-      expect { ImportWizard.mark_job_as_pending user, collection }.to_not raise_error
-      expect { column_spec = ImportWizard.guess_columns_spec user, collection}.to_not raise_error
-      column_spec = ImportWizard.guess_columns_spec user, collection
-      expect {ImportWizard.validate_sites_with_columns user, collection, column_spec}.to_not raise_error
+      ImportWizard.execute user, collection, specs
+      sites = collection.sites.all
+      sites.length.should eq(1)
+
+      sites[0].name.should eq('Foo old')
+      sites[0].properties[text.es_code].should eq('coco2')
+      sites[0].properties[select_one.es_code].should eq(1)
     end
   end
 end

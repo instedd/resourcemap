@@ -149,226 +149,77 @@ class ImportWizard
     end
 
     def execute_with_entities(user, collection, columns_spec)
-      # Easier manipulation
-      columns_spec.map! &:with_indifferent_access
-
-      existing_fields = collection.fields.index_by &:id
+      spec_object = ImportWizard::ImportSpecs.new columns_spec, collection
 
       # Validate new fields
-      validate_columns_does_not_exist_in_collection(collection, columns_spec)
+      spec_object.validate_new_columns_do_not_exist_in_collection
 
       # Read all the CSV to memory
       rows = read_csv_for(user, collection)
 
       # Put the index of the row in the columns spec
-      rows[0].each_with_index do |row, i|
-        next if row.blank?
-
-        row = row.strip
-        spec = columns_spec.find{|x| x[:header].strip == row}
-        spec[:index] = i if spec
-
+      rows[0].each_with_index do |header, i|
+        next if header.blank?
+        header = header.strip
+        spec_object.annotate_index header, i
       end
 
       # Get the id spec
-      id_spec = columns_spec.find{|x| x[:use_as] == 'id'}
+      id_spec = spec_object.id_column
 
       # Also get the name spec, as the name is mandatory
-      name_spec = columns_spec.find{|x| x[:use_as] == 'name'}
+      name_spec = spec_object.name_column
 
-      # Relate code and label select kinds for 'select one' and 'select many'
-      columns_spec.each do |spec|
-        if spec[:use_as] == 'new_field'
-          if spec[:kind] == 'select_one' || spec[:kind] == 'select_many'
-            if spec[:selectKind] == 'code'
-              spec[:related] = columns_spec.find{|x| x[:code] == spec[:code] && x[:selectKind] == 'label'}
-            end
+      new_layer = spec_object.create_import_wizard_layer user
+
+      begin
+        sites = []
+
+        # Now process all rows
+        rows[1 .. -1].each do |row|
+          # Check that the name is present
+          next unless row[name_spec[:index]].present?
+
+          site = nil
+          site = collection.sites.find_by_id row[id_spec[:index]] if id_spec && row[id_spec[:index]].present?
+          site ||= collection.sites.new properties: {}, collection_id: collection.id, from_import_wizard: true
+
+          site.user = user
+          sites << site
+
+          # Optimization
+          site.collection = collection
+
+          # According to the spec
+          spec_object.each_column do |column_spec|
+            value = row[column_spec.index].try(:strip)
+            column_spec.process row, site
           end
         end
-      end
 
-      # Prepare the new layer
-      layer = Layer.new name: 'Import wizard', ord: collection.next_layer_ord
-      layer.user = user
-      layer.collection = collection
-
-      # Prepare the fields: we index by code, so later we can reference them faster
-      fields = {}
-
-      # Fill the fields with the column specs.
-      # We completely ignore the ones with selectKind equal to 'label', as processing those with
-      # 'code' and 'both' is enough
-      spec_i = 1
-      columns_spec.each do |spec|
-        if spec[:use_as] == 'new_field'
-          if spec[:selectKind] != 'label'
-            fields[spec[:code]] = layer.fields.new code: spec[:code], name: spec[:label], kind: spec[:kind], ord: spec_i
-            fields[spec[:code]].layer = layer
-            spec_i += 1
-          end
-          if spec[:selectKind] == 'code'
-            spec[:related] = columns_spec.find{|x| x[:code] == spec[:code] && x[:selectKind] == 'label'}
-          end
-        end
-      end
-
-      sites = []
-
-      # Now process all rows
-      rows[1 .. -1].each do |row|
-
-        # Check that the name is present
-        next unless row[name_spec[:index]].present?
-
-        site = nil
-        site = collection.sites.find_by_id row[id_spec[:index]] if id_spec && row[id_spec[:index]].present?
-        site ||= collection.sites.new properties: {}, collection_id: collection.id, from_import_wizard: true
-
-        site.user = user
-        sites << site
-
-        # Optimization
-        site.collection = collection
-
-        # According to the spec
-        columns_spec.each do |spec|
-          next unless spec[:index]
-
-          value = row[spec[:index]].try(:strip)
-
-          case spec[:use_as]
-          when 'new_field'
-
-            # New hierarchy fields cannot be created via import wizard
-            if spec[:kind] == 'hierarchy'
-              raise "Hierarchy fields can only be created via web in the Layers page"
-            end
-
-            # For select one and many we need to collect the fields options
-            if spec[:kind] == 'select_one'  || spec[:kind] == 'select_many'
-
-              # For select_one fields each value will be only one option
-              # and for select_many fields we may create more than one option per value
-              options_to_be_created = if spec[:kind] == 'select_many'
-                value.split(',').map{|v| v.strip}
-              else
-                [value]
-              end
-
-              options_to_be_created.each do |option|
-                field = fields[spec[:code]]
-                field.config ||= {'options' => [], 'next_id' => 1}
-
-                code = nil
-                label = nil
-
-                # Compute code and label based on the selectKind
-                case spec[:selectKind]
-                when 'code'
-                  next unless spec[:related]
-
-                  code = option
-                  label = row[spec[:related][:index]]
-                when 'label'
-                  # Processing just the code is enough
-                  next
-                when 'both'
-                  code = option
-                  label = option
-                end
-
-                # Add to options, if not already present
-                if code.present? && label.present?
-                  existing = field.config['options'].find{|x| x['code'] == code}
-                  if !existing
-                    field.config['options'] << {'id' => field.config['next_id'], 'code' => code, 'label' => label}
-                    field.config['next_id'] += 1
-                  end
-                end
-              end
-            end
-
-            field = fields[spec[:code]]
-            site.use_codes_instead_of_es_codes = true
-            site.properties_will_change!
-            site.properties[field.code] = value
-
-          when 'name'
-            site.name = value
-          when 'lat'
-            site.lat = value
-          when 'lng'
-            site.lng = value
-
-
-          when 'existing_field'
-            existing_field = existing_fields[spec[:field_id].to_i]
-            if existing_field
-              site.use_codes_instead_of_es_codes = true
-
-              case existing_field.kind
-                when 'select_one'
-
-                  # Add option to field options if it doesnt exists
-                  existing_option = existing_field.config['options'].find { |x| x['code'] == value }
-                  if !existing_option
-                    existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => value, 'label' => value}
-                    existing_field.config['next_id'] += 1
-                  end
-
-                  site.properties_will_change!
-                  site.properties[existing_field.code] = value
-
-                when 'select_many'
-                  site.properties[existing_field.code] = []
-                  value.split(',').each do |v|
-                    v = v.strip
-
-                    # Add option to field options if it doesnt exists
-                    existing_option = existing_field.config['options'].find { |x| x['code'] == v }
-                    if !existing_option
-                      existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => v, 'label' => v}
-                      existing_field.config['next_id'] += 1
-                    end
-
-                    site.properties_will_change!
-                    site.properties[existing_field.code] << v
-                  end
-                else
-                  site.properties_will_change!
-                  site.properties[existing_field.code] = value
-              end
-              fields[existing_field] = existing_field
-            end
+        Collection.transaction do
+          spec_object.new_fields.each_value do |field|
+            field.save!
           end
 
+          # Force computing bounds and such in memory, so a thousand callbacks are not called
+          collection.compute_geometry_in_memory
+
+          # Reload collection in order to invalidate cached collection.fields copy and to load the new ones
+          collection.fields.reload
+
+          # This will update the existing sites
+          sites.each { |site| site.save! unless site.new_record? }
+
+          # And this will create the new ones
+          collection.save!
+
+          mark_job_as_finished(user, collection)
         end
-      end
-
-      Collection.transaction do
-        new_fields = layer.fields.select(&:new_record?)
-
-        # Update existing fields
-        fields.each_value do |field|
-          field.save! unless field.new_record?
-        end
-
-        # Create layer and new fields
-        layer.save! if new_fields.length > 0
-
-        # Force computing bounds and such in memory, so a thousand callbacks are not called
-        collection.compute_geometry_in_memory
-
-        # Reload collection in order to invalidate cached collection.fields copy and to load the new ones
-        collection.fields.reload
-
-        # This will update the existing sites
-        sites.each { |site| site.save! unless site.new_record? }
-
-        # And this will create the new ones
-        collection.save!
-
-        mark_job_as_finished(user, collection)
+      rescue Exception => ex
+        # Delete layer created by this import process if something unexpectedly fails
+        new_layer.destroy if new_layer
+        raise ex
       end
 
       delete_file(user, collection)
@@ -376,24 +227,6 @@ class ImportWizard
 
     def delete_file(user, collection)
       File.delete(file_for(user, collection))
-    end
-
-    def validate_columns_does_not_exist_in_collection(collection, columns_spec)
-      collection_fields = collection.fields.all(:include => :layer)
-      columns_spec.each do |col_spec|
-        if col_spec[:use_as] == 'new_field'
-          # Validate code
-          found = collection_fields.detect{|f| f.code == col_spec[:code]}
-          if found
-            raise "Can't save field from column #{col_spec[:header]}: A field with code '#{col_spec[:code]}' already exists in the layer named #{found.layer.name}"
-          end
-          # Validate name
-          found = collection_fields.detect{|f| f.name == col_spec[:label]}
-          if found
-            raise "Can't save field from column #{col_spec[:header]}: A field with label '#{col_spec[:label]}' already exists in the layer named #{found.layer.name}"
-          end
-        end
-      end
     end
 
     def mark_job_as_pending(user, collection)
@@ -518,7 +351,7 @@ class ImportWizard
       if field.new_record?
         validate_format_value(column_spec, field_value, collection)
       else
-        field.apply_format_save_validation(field_value, true, collection)
+        field.apply_format_and_validate(field_value, true, collection)
       end
     end
 
@@ -534,7 +367,8 @@ class ImportWizard
       column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
 
       sample_field = Field.new kind: column_spec[:kind], code: column_header
-      sample_field.apply_format_save_validation(field_value, true, collection)
+
+      sample_field.apply_format_and_validate(field_value, true, collection)
     end
 
     def to_columns(collection, rows, admin)

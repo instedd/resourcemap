@@ -106,8 +106,8 @@ describe Collection do
   end
 
   describe "plugins" do
-    # will fixe as soon as possible 
-    pending do 
+    # will fixe as soon as possible
+    pending do
       it "should set plugins by names" do
         collection.selected_plugins = ['plugin_1', 'plugin_2']
         collection.plugins.should eq({'plugin_1' => {}, 'plugin_2' => {}})
@@ -117,35 +117,39 @@ describe Collection do
         collection.selected_plugins = ["", 'plugin_1', ""]
         collection.plugins.should eq({'plugin_1' => {}})
       end
-
-      # duo to moved plugins to file 
-       # it "should iterate selected plugins" do
-       #   p_class = Struct.new(:name)
-       #   p1 = p_class.new 'plugin1'
-       #   p2 = p_class.new 'plugin2'
-       #   Plugin.stub(:all).and_return [p1, p2]
-
-       #   collection.selected_plugins = ['plugin2']
-       #   collection_plugins = []
-       #   collection.each_plugin do |plugin|
-       #     collection_plugins << plugin
-       #   end
-       #   collection_plugins.should eq([p2])
-       # end
     end
   end
-  
+
   describe 'gateway' do
     let(:admin_user) { User.make }
     let(:collection_1) { admin_user.create_collection Collection.make name: 'test'}
     let!(:gateway) { admin_user.channels.make name: 'default', basic_setup: true, ticket_code: '2222'  }
-    
+
     it 'should return user_owner of collection' do
       collection_1.get_user_owner.should eq admin_user
     end
-    
+
     it 'should return gateway under user_owner' do
-      collection_1.get_gateway_under_user_owner.should eq gateway  
+      collection_1.get_gateway_under_user_owner.should eq gateway
+    end
+  end
+
+  describe 'es_codes_by_field_code' do
+    let!(:collection_a) { user.create_collection Collection.make_unsaved }
+    let!(:layer_a) { collection_a.layers.make user: user }
+
+    let!(:field_a) { layer_a.text_fields.make code: 'A', name: 'A', ord: 1 }
+    let!(:field_b) { layer_a.text_fields.make code: 'B', name: 'B', ord: 2 }
+    let!(:field_c) { layer_a.text_fields.make code: 'C', name: 'C', ord: 3 }
+    let!(:field_d) { layer_a.text_fields.make code: 'D', name: 'D', ord: 4 }
+
+    it 'returns a dict of es_codes by field_code' do
+      dict = collection_a.es_codes_by_field_code
+
+      dict['A'].should eq(field_a.es_code)
+      dict['B'].should eq(field_b.es_code)
+      dict['C'].should eq(field_c.es_code)
+      dict['D'].should eq(field_d.es_code)
     end
   end
 end

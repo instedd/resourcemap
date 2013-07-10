@@ -9,11 +9,11 @@ class Field::SelectOneField < Field
 
 	def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
 		return nil unless value.present?
-
 		decode_option(value, use_codes_instead_of_es_codes)
 	end
 
-	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
+
+	def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site = nil)
 		value.blank? ? nil : decode_option(value, use_codes_instead_of_es_codes)
 	end
 
@@ -27,7 +27,6 @@ class Field::SelectOneField < Field
 		if @cache_for_read && !@options_by_code_or_label_in_cache
 			prepare_cache_for_read
 		end
-
     value_id = nil
 		if use_codes_instead_of_es_codes
 			if @cache_for_read

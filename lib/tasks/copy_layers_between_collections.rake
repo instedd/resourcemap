@@ -11,7 +11,7 @@ namespace :layers do
   	end
 
   	puts "Calling export_layers with arguments: #{args}"
-  	
+
   	abort_with "Invalid arguments" unless args.to_hash.keys.length == 5
 
   	uri = URI.parse("http://#{args[:server]}/collections/#{args[:collection_id]}/layers.json") rescue (abort_with "Could not parse URL http://#{args[:server]}/collections/#{args[:collection_id]}/layers.json")

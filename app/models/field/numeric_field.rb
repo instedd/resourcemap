@@ -12,7 +12,7 @@ class Field::NumericField < Field
     check_valid_numeric_value(value)
 	end
 
-	def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
+	def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site = nil)
     value.blank? ? nil : check_valid_numeric_value(value)
 	end
 

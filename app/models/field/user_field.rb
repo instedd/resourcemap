@@ -7,7 +7,7 @@ class Field::UserField < Field
     "don't match any email address of a member of this collection"
   end
 
-  def apply_format_save_validation(value, use_codes_instead_of_es_codes, collection, site = nil)
+  def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site = nil)
   	value.blank? ? nil : check_user_exists(value, collection)
 	end
 

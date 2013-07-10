@@ -189,4 +189,12 @@ class Collection < ActiveRecord::Base
   def register_gateways_under_user_owner(owner_user)
     self.channels = owner_user.channels.find_all_by_is_enable true
   end
+
+  # Returns a dictionary of :code => :es_code of all the fields in the collection
+  def es_codes_by_field_code
+    self.fields.inject({}) do |dict, field|
+      dict[field.code] = field.es_code
+      dict
+    end
+  end
 end
