@@ -39,6 +39,8 @@
               %li
                 %a{:href => "mailto:support@instedd.org?subject=[#{application_name.underscore}-bug]"} Report a bug
               %li= link_to "Sign Out", destroy_user_session_path, method: :delete
+      %li
+        = link_to '', edit_user_registration_path, class: 'fsettings'
     - else
       %li
         = link_to "Create account", new_user_registration_path, class: 'fedit'
