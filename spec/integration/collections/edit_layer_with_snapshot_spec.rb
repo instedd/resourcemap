@@ -14,8 +14,11 @@ describe "snapshots" do
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr/td/div[2]/button').click
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[1]/button[2]').click
     choose ('name_mina')
+    sleep 2
     click_link "Layers"
+    sleep 2 
     page.should_not have_content "Edit"
+    sleep 2
     page.should have_content "You are currently viewing this collection's data as it was on snapshot mina. To make changes, please"
     page.save_screenshot 'Edit_layer_snapshot.png'
   end  
