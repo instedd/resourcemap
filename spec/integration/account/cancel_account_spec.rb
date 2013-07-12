@@ -7,7 +7,9 @@ it " should cancel account", js:true do
     @collection = create_collection_for(@user) 
     login_as (@user)
     visit collections_path
-    sleep 2
+    sleep 2   
+    # find(:xpath, '//div[@id="User"]').click
+    # click_link 'Settings'
     find(:xpath, '//div[@id="toolbar"]/ul[2]/li[2]/a').click
     click_link 'Cancel my account'
     page.driver.browser.switch_to.alert.accept 
