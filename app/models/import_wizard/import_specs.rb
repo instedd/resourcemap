@@ -35,11 +35,11 @@ class ImportWizard::ImportSpecs
   end
 
   def id_column
-    @data.find{|x| x[:use_as] == 'id'}
+    @data.find{|x| x[:use_as].to_s == 'id'}
   end
 
   def name_column
-    @data.find{|x| x[:use_as] == 'name'}
+    @data.find{|x| x[:use_as].to_s == 'name'}
   end
 
   def create_import_wizard_layer(user)

@@ -368,6 +368,9 @@ class ImportWizard
 
       sample_field = Field.new kind: column_spec[:kind], code: column_header
 
+      # We need the collection to validate site_fields
+      sample_field.collection = collection
+
       sample_field.apply_format_and_validate(field_value, true, collection)
     end
 

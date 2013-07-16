@@ -321,45 +321,6 @@ describe ImportWizard do
     sites[1].properties.should eq({select_one.es_code => 2})
   end
 
-  it "imports with name and existing select_one property but creates new option" do
-    csv_string = CSV.generate do |csv|
-      csv << ['Name', 'Column']
-      csv << ['Foo', 'three']
-      csv << ['Bar', 'four']
-      csv << ['', '']
-    end
-
-    specs = [
-      {header: 'Name', use_as: 'name'},
-      {header: 'Column', use_as: 'existing_field', field_id: select_one.id},
-      ]
-
-    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
-    ImportWizard.execute user, collection, specs
-
-    collection.layers.all.should eq([layer])
-
-    select_one.reload
-    select_one.config['options'].length.should eq(4)
-
-    select_one.config['options'][2]['id'].should eq(3)
-    select_one.config['options'][2]['code'].should eq('three')
-    select_one.config['options'][2]['label'].should eq('three')
-
-    select_one.config['options'][3]['id'].should eq(4)
-    select_one.config['options'][3]['code'].should eq('four')
-    select_one.config['options'][3]['label'].should eq('four')
-
-    sites = collection.sites.all
-    sites.length.should eq(2)
-
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({select_one.es_code => 3})
-
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({select_one.es_code => 4})
-  end
-
   it "imports with name and existing select_many property" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Column']
@@ -388,45 +349,6 @@ describe ImportWizard do
     sites[1].properties.should eq({select_many.es_code => [1, 2]})
   end
 
-  it "imports with name and existing select_many property creates new options" do
-    csv_string = CSV.generate do |csv|
-      csv << ['Name', 'Column']
-      csv << ['Foo', 'one, three']
-      csv << ['Bar', 'two, four']
-      csv << ['', '']
-    end
-
-    specs = [
-      {header: 'Name', use_as: 'name'},
-      {header: 'Column', use_as: 'existing_field', field_id: select_many.id},
-      ]
-
-    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
-    ImportWizard.execute user, collection, specs
-
-    collection.layers.all.should eq([layer])
-
-    select_many.reload
-    select_many.config['options'].length.should eq(4)
-
-    select_many.config['options'][2]['id'].should eq(3)
-    select_many.config['options'][2]['code'].should eq('three')
-    select_many.config['options'][2]['label'].should eq('three')
-
-    select_many.config['options'][3]['id'].should eq(4)
-    select_many.config['options'][3]['code'].should eq('four')
-    select_many.config['options'][3]['label'].should eq('four')
-
-    sites = collection.sites.all
-    sites.length.should eq(2)
-
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({select_many.es_code => [1, 3]})
-
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({select_many.es_code => [2, 4]})
-  end
-
   it "should update hierarchy fields in bulk update using name" do
      csv_string = CSV.generate do |csv|
         csv << ['Name', 'Column']
@@ -452,7 +374,9 @@ describe ImportWizard do
       sites[1].properties.should eq({hierarchy.es_code => "101"})
   end
 
-  it "should update hierarchy fields in bulk update using id" do
+  # The updates will be performed using the hierarchy name for now
+  # but soon they this is going to change when solving Issue #459
+  pending "should update hierarchy fields in bulk update using id" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Column']
       csv << ['Foo', '100']
@@ -543,7 +467,7 @@ describe ImportWizard do
       select_one.es_code => 1,
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
-      date.es_code => "2012-10-24T03:00:00.000Z",
+      date.es_code => "2012-10-24T00:00:00Z",
       director.es_code => user.email
     }
     site1.properties[site.es_code] = site1.id
@@ -609,7 +533,7 @@ describe ImportWizard do
       select_one.es_code => 1,
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
-      date.es_code => "2012-10-24T03:00:00.000Z",
+      date.es_code => "2012-10-24T00:00:00Z",
       director.es_code => user.email
     }
     site1.properties[site.es_code] = site1.id
@@ -1344,6 +1268,12 @@ describe ImportWizard do
         csv << ['resmap-id', 'Name', text.name]
         csv << [site1.id, 'Foo old', 'coco2']
       end
+
+      specs = [
+        {header: 'resmap-id', use_as: :id},
+        {header: 'Name', use_as: 'name'},
+        {header: text.name , use_as: 'existing_field', field_id: text.id},
+      ]
 
       ImportWizard.import user, collection, 'foo.csv', csv_string
       ImportWizard.mark_job_as_pending user, collection

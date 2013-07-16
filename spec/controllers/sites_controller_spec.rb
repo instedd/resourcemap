@@ -32,9 +32,7 @@ describe SitesController do
     validate_site_property_value(site, numeric, 2)
   end
 
-  it "should validate format for date field support both mm/dd/YYY and iso8601" do
-    post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "11/27/2012"
-    validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
+  it "should validate format for date field (only iso8601)" do
     post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "2012-11-27T00:00:00Z"
     validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
     post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "117"
@@ -63,9 +61,14 @@ describe SitesController do
     validate_site_property_value(site, select_many, [1])
     post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: ["2", "1"]
     validate_site_property_value(site, select_many, [2, 1])
+    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "2, 1"
+    validate_site_property_value(site, select_many, [2, 1])
     post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "[two,]"  
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid option in field #{select_many.code}")
+    json["error_message"].should eq("Invalid option '[two' in field #{select_many.code}")
+    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "two,one"  
+    json = JSON.parse response.body
+    json["error_message"].should eq("Invalid option 'two' in field #{select_many.code}")
   end
 
   it "should validate format for site field" do
@@ -100,7 +103,7 @@ describe SitesController do
       select_many.es_code => [1,2],
       hierarchy.es_code => "101",
       site_field.es_code=> site.id,
-      date.es_code => "02/05/2013",
+      date.es_code => "2013-02-05T00:00:00Z",
       director.es_code => user.email,
       email_field.es_code => "myemail@mail.com" }}.to_json
     post :create, {:collection_id => collection.id, :site => site_params}

@@ -7,19 +7,20 @@ class Field::SiteField < Field
     "don't match any existing site id in this collection"
   end
 
-	def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site = nil)
-		value.blank? ? nil : check_site_exists(value, collection)
-	end
+  def valid_value?(site_id, site=nil)
+    check_site_exists(site_id)
+  end
+
 
 	private
 
-	def check_site_exists(site_id, collection)
+	def check_site_exists(site_id)
     site_ids = collection.sites.map{|s| s.id.to_s}
 
     if !site_ids.include? site_id.to_s
       raise "Non-existent site-id in field #{code}"
     end
-    site_id
+    true
   end
 
 end

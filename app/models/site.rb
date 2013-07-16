@@ -72,9 +72,12 @@ class Site < ActiveRecord::Base
 
   private
 
+
   def valid_properties
+    
     fields = collection.fields.index_by(&:es_code)
 
+    #TODO: http://stackoverflow.com/questions/328525/what-is-the-best-way-to-set-default-values-in-activerecord
     if new_record?
       fields.each do |es_code, field|
         if properties[field.es_code].blank?
@@ -84,19 +87,18 @@ class Site < ActiveRecord::Base
       end
     end
 
-    validated_properties = {}
+    standarized_properties = {}
     properties.each do |es_code, value|
       field = fields[es_code]
       if field
         begin
-          validated_value = field.apply_format_and_validate(value, false, collection, self)
-          validated_properties["#{field.es_code}"] = validated_value
+          field.valid_value?(value, self)
+          standarized_properties[es_code] = field.standarize(value)
         rescue => ex
           errors.add(:properties, {field.es_code => ex.message})
         end
       end
     end
-
-    self.properties = validated_properties
+    self.properties = standarized_properties
   end
 end

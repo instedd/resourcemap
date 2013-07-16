@@ -38,8 +38,6 @@ class FredApiController < ApplicationController
       return  
     end 
     facility_params = validate_site_params(facility_params)
-
-    site.use_codes_instead_of_es_codes = true
     site.user = current_user
     site.properties_will_change!
     site.update_attributes! facility_params
@@ -56,8 +54,8 @@ class FredApiController < ApplicationController
     end
     facility_params = validate_site_params(facility_params)
     facility = collection.sites.new
-    facility.use_codes_instead_of_es_codes = true
     facility.update_attributes! facility_params.merge(user: current_user)
+    facility.save!
     render json: find_facility_and_apply_fred_format(facility.id), status: :created, :location => url_for_facility(facility.id)
   end
 
@@ -158,14 +156,18 @@ class FredApiController < ApplicationController
     fields = collection.fields.index_by(&:code)
     properties = facility_param["properties"] || {}
 
-    properties.each_pair do |code, value|
+    properties_with_identifiers = properties.merge(convert_to_properties(facility_param["identifiers"]))
+    
+    properties_by_es_code = {}
+    properties_with_identifiers.each_pair do |code, value|
       field = fields[code]
       if field.nil?
         raise "Invalid Parameters: Cannot find Field with code equal to '#{code}' in Collection's Layers."
       end
+      properties_by_es_code["#{field.es_code}"] = field.decode_fred value
     end
 
-    properties_with_identifiers = properties.merge(convert_to_properties(facility_param["identifiers"]))
+    properties_with_identifiers = properties_by_es_code
 
     lat = facility_param["coordinates"][1] if facility_param["coordinates"]
     lng = facility_param["coordinates"][0] if facility_param["coordinates"]

@@ -29,7 +29,7 @@ describe Api::CollectionsController do
     select_many.es_code => [1, 2],
     hierarchy.es_code => 'dad',
     site_ref.es_code => site2.id,
-    date.es_code => "2012-10-24T03:00:00.000Z",
+    date.es_code => "2012-10-24T00:00:00Z",
     director.es_code => user.email }
   }
 
