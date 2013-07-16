@@ -64,4 +64,10 @@ describe "Luhn" do
     site.properties[field.es_code] = site.properties[field.es_code]
     site.save!
   end
+
+  it "gets new site properties" do
+    props = collection.new_site_properties
+    props.length.should eq(1)
+    props[field.es_code].should eq("100000-9")
+  end
 end

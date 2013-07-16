@@ -197,4 +197,11 @@ class Collection < ActiveRecord::Base
       dict
     end
   end
+
+  def new_site_properties
+    self.fields.each_with_object({}) do |field, hash|
+      value = field.default_value_for_create(self)
+      hash[field.es_code] = value if value
+    end
+  end
 end

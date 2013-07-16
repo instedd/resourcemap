@@ -28,6 +28,12 @@ onCollections ->
         pos = @originalSiteLocation = @map.getCenter()
         site = new Site(@currentCollection(), lat: pos.lat(), lng: pos.lng())
         site.copyPropertiesToCollection(@currentCollection())
+
+        if window.model.newSiteProperties
+          for esCode, value of window.model.newSiteProperties
+            field = @currentCollection().findFieldByEsCode esCode
+            field.setValueFromSite(value) if field
+
         @unselectSite()
         @editingSite site
         @editingSite().startEditLocationInMap()
