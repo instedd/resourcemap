@@ -16,7 +16,7 @@ class Field::SelectOneField < Field
     decode_option(option_label_or_code)
   end
 
-  def standarize(value)
+  def standadrize(value)
     value.to_i
   end
 

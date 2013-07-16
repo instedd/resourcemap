@@ -12,7 +12,7 @@ class Field::SelectManyField < Field
 		query_value(value, use_codes_instead_of_es_codes)
 	end
 
-  def standarize(value)
+  def standadrize(value)
     if value.kind_of?(Array)
       option_list = value
     else

@@ -87,18 +87,18 @@ class Site < ActiveRecord::Base
       end
     end
 
-    standarized_properties = {}
+    standardized_properties = {}
     properties.each do |es_code, value|
       field = fields[es_code]
       if field
         begin
           field.valid_value?(value, self)
-          standarized_properties[es_code] = field.standarize(value)
+          standardized_properties[es_code] = field.standadrize(value)
         rescue => ex
           errors.add(:properties, {field.es_code => ex.message})
         end
       end
     end
-    self.properties = standarized_properties
+    self.properties = standardized_properties
   end
 end
