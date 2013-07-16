@@ -141,6 +141,12 @@ describe SitesController do
     end
   end
 
+  it "can destroy site" do
+    delete :destroy, id: site.id, collection_id: collection.id
+
+    Site.find_by_id(site.id).should be_nil
+  end
+
   def validate_site_property_value(site, property, value)
     site.reload
     site.properties["#{property.es_code}"].should eq(value)

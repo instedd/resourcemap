@@ -158,7 +158,7 @@ onCollections ->
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
         @unselectSite()
         @currentCollection().removeSite(@editingSite())
-        $.post "/sites/#{@editingSite().id()}", {_method: 'delete'}, =>
+        $.post "/sites/#{@editingSite().id()}", {collection_id: @currentCollection().id, _method: 'delete'}, =>
           @currentCollection().fetchLocation()
           @editingSite().deleteMarker()
           @exitSite()
