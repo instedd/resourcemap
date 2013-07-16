@@ -112,7 +112,7 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
       n -= 1
     end
 
-    10 - sum % 10
+    (10 - sum) % 10
   end
 
   def default_value_for_create(collection)
@@ -139,6 +139,10 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
       last = value
     end
 
-    "#{last + 1}-#{compute_luhn_verifier((last + 1).to_s)}"
+    next_luhn(last)
+  end
+
+  def next_luhn(max)
+    "#{max + 1}-#{compute_luhn_verifier((max + 1).to_s)}"
   end
 end

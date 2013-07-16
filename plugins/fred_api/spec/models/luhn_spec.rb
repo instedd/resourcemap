@@ -52,6 +52,14 @@ describe "Luhn" do
     collection.sites.make.properties[field.es_code].should eq("100005-4")
   end
 
+  it "gets next luhn" do
+    field.format_implementation.next_luhn(1000006).should eq("1000007-2")
+    field.format_implementation.next_luhn(1000007).should eq("1000008-1")
+    field.format_implementation.next_luhn(1000008).should eq("1000009-0")
+    field.format_implementation.next_luhn(1000009).should eq("1000010-8")
+    field.format_implementation.next_luhn(1000010).should eq("1000011-7")
+  end
+
   it "checks for unicity" do
     collection.sites.make.properties[field.es_code].should eq("100000-9")
     lambda do
