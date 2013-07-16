@@ -27,6 +27,10 @@ module Field::ValidationConcern
     value
   end
 
+  def decode_from_ui(value)
+    value
+  end
+
   def decode_fred(value)
     decode(value)
   end

@@ -32,8 +32,8 @@ describe SitesController do
     validate_site_property_value(site, numeric, 2)
   end
 
-  it "should validate format for date field (only iso8601)" do
-    post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "2012-11-27T00:00:00Z"
+  it "should validate format for date field  in mm/dd/yyyy format" do
+    post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: '11/27/2012'
     validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
     post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "117"
     json = JSON.parse response.body

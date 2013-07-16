@@ -28,7 +28,8 @@ class SitesController < ApplicationController
 
   def create
     site_params = JSON.parse params[:site]
-    site = collection.sites.new(site_params.merge(user: current_user))
+    ui_attributes = prepare_from_ui(site_params)
+    site = collection.sites.new(ui_attributes.merge(user: current_user))
     if site.valid?
       site.save!
       current_user.site_count += 1
@@ -44,7 +45,7 @@ class SitesController < ApplicationController
     site_params = JSON.parse params[:site]
     site.user = current_user
     site.properties_will_change!
-    site.attributes = site_params
+    site.attributes = prepare_from_ui(site_params)
     if site.valid?
       site.save!
       render json: site, :layout => false
@@ -60,8 +61,8 @@ class SitesController < ApplicationController
 
     site.user = current_user
     site.properties_will_change!
-
-    site.properties[params[:es_code]] = params[:value]
+    
+    site.properties[params[:es_code]] = field.decode_from_ui(params[:value])
     if site.valid?
       site.save!
       render json: site, :status => 200, :layout => false
@@ -95,6 +96,20 @@ class SitesController < ApplicationController
     site.user = current_user
     site.destroy
     render json: site
+  end
+
+  private
+
+  def prepare_from_ui(parameters)
+    fields = collection.fields.index_by(&:es_code)
+    decoded_properties = {}
+    site_properties = parameters.delete "properties"
+    site_properties.each_pair do |es_code, value|
+      decoded_properties[es_code] = fields[es_code].decode_from_ui(value)
+    end
+
+    parameters["properties"] = decoded_properties
+    parameters
   end
 
 end
