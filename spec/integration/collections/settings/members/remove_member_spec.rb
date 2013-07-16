@@ -12,7 +12,6 @@ it "should remove member", js:true do
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[1]/button[2]').click
     click_link "Members"
-    # find(:xpath, '//div[@id="container"]/div[2]/table/tbody/tr[3]/td/div/div[5]/input').click
     page.find(:xpath, '//div[@id="container"]/div[2]/table/tbody/tr[3]/td/div/div[1]/img').click
     page.find(:xpath, '//div[@class="memberHeaderColumn"]/a[@class="icon fdelete black"]').click
     page.find(:xpath, '//div[@class="sbox grey"]/div[3]/a[@class="button white right"]').click
