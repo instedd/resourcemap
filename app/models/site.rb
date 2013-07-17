@@ -12,6 +12,7 @@ class Site < ActiveRecord::Base
 
   serialize :properties, Hash
   validate :valid_properties
+  after_validation :standardize_properties
 
   attr_accessor :from_import_wizard
 
@@ -72,6 +73,19 @@ class Site < ActiveRecord::Base
 
   private
 
+  def standardize_properties
+    fields = collection.fields.index_by(&:es_code)
+
+    standardized_properties = {}
+    properties.each do |es_code, value|
+      field = fields[es_code]
+      if field
+        standardized_properties[es_code] = field.standadrize(value)  
+      end
+    end
+    self.properties = standardized_properties
+  end
+
 
   def valid_properties
     
@@ -87,18 +101,15 @@ class Site < ActiveRecord::Base
       end
     end
 
-    standardized_properties = {}
     properties.each do |es_code, value|
       field = fields[es_code]
       if field
         begin
           field.valid_value?(value, self)
-          standardized_properties[es_code] = field.standadrize(value)
         rescue => ex
           errors.add(:properties, {field.es_code => ex.message})
         end
       end
     end
-    self.properties = standardized_properties
   end
 end
