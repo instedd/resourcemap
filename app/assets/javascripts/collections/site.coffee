@@ -64,7 +64,8 @@ onCollections ->
         data: {es_code: esCode, value: value},
         success: ((data) =>
           field.errorMessage("")
-          @propagateUpdatedAt(data.updated_at)),
+          @propagateUpdatedAt(data.updated_at)
+          window.model.updateSitesInfo()),
         global: false
       })
       .fail((data) =>

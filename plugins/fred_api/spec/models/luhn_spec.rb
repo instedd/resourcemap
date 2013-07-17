@@ -52,6 +52,14 @@ describe "Luhn" do
     collection.sites.make.properties[field.es_code].should eq("100005-4")
   end
 
+  it "gets next luhn" do
+    field.format_implementation.next_luhn(1000006).should eq("1000007-2")
+    field.format_implementation.next_luhn(1000007).should eq("1000008-1")
+    field.format_implementation.next_luhn(1000008).should eq("1000009-0")
+    field.format_implementation.next_luhn(1000009).should eq("1000010-8")
+    field.format_implementation.next_luhn(1000010).should eq("1000011-7")
+  end
+
   it "checks for unicity" do
     collection.sites.make.properties[field.es_code].should eq("100000-9")
     lambda do
@@ -63,5 +71,11 @@ describe "Luhn" do
     site = collection.sites.make
     site.properties[field.es_code] = site.properties[field.es_code]
     site.save!
+  end
+
+  it "gets new site properties" do
+    props = collection.new_site_properties
+    props.length.should eq(1)
+    props[field.es_code].should eq("100000-9")
   end
 end

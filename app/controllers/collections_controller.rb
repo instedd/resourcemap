@@ -269,6 +269,7 @@ class CollectionsController < ApplicationController
     info = {}
     info[:total] = total
     info[:no_location] = no_location > 0
+    info[:new_site_properties] = collection.new_site_properties
 
     render json: info
   end

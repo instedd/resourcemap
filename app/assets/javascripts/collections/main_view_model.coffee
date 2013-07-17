@@ -31,6 +31,7 @@ onCollections ->
     initialize: (collections) ->
       @sitesCount = ko.observable(0)
       @sitesWithoutLocation = ko.observable(false)
+      @newSiteProperties = {}
 
       @callModuleConstructors(arguments)
       @groupBy = ko.observable(@defaultGroupBy)
@@ -56,9 +57,11 @@ onCollections ->
         $.get "/collections/#{@currentCollection().id}/sites_info.json", {}, (data) =>
           @sitesCount data.total
           @sitesWithoutLocation data.no_location
+          @newSiteProperties = data.new_site_properties
       else
         @sitesCount(0)
         @sitesWithoutLocation(false)
+        @newSiteProperties = {}
 
     defaultGroupBy: {esCode: '', name: 'None'}
 
