@@ -13,6 +13,7 @@ class Site < ActiveRecord::Base
   serialize :properties, Hash
   validate :valid_properties
   after_validation :standardize_properties
+  before_validation :assign_default_values, :on => :create
 
   attr_accessor :from_import_wizard
 
@@ -86,20 +87,19 @@ class Site < ActiveRecord::Base
     self.properties = standardized_properties
   end
 
-
-  def valid_properties
-    
+  def assign_default_values
     fields = collection.fields.index_by(&:es_code)
 
-    #TODO: http://stackoverflow.com/questions/328525/what-is-the-best-way-to-set-default-values-in-activerecord
-    if new_record?
-      fields.each do |es_code, field|
-        if properties[field.es_code].blank?
-          value = field.default_value_for_create(collection)
-          properties[field.es_code] = value if value
-        end
+    fields.each do |es_code, field|
+      if properties[field.es_code].blank?
+        value = field.default_value_for_create(collection)
+        properties[field.es_code] = value if value
       end
-    end
+    end   
+  end
+
+  def valid_properties
+    fields = collection.fields.index_by(&:es_code)
 
     properties.each do |es_code, value|
       field = fields[es_code]
