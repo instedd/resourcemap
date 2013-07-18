@@ -5,14 +5,14 @@ class CollectionsController < ApplicationController
 
   authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
 
-  expose(:collections) { 
+  expose(:collections) {
     if current_user && !current_user.is_guest
       # public collections are accesible by all users
       # here we only need the ones in which current_user is a member
       current_user.collections.reject{|c| c.id.nil?}
     else
       Collection.accessible_by(current_ability)
-    end 
+    end
   }
 
   expose(:collections_with_snapshot) { select_each_snapshot(collections) }
@@ -25,13 +25,26 @@ class CollectionsController < ApplicationController
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
-      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' 
+      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html
         format.json { render json: collections_with_snapshot }
       end
     end
   end
+
+  def import_layers_from
+    the_other_collection = Collection.find params[:other_id]
+
+    redirect_to collection_layers_path(collection), notice: "Imported layers from #{the_other_collection.name}" unless current_user.admins? the_other_collection
+
+    #TODO: refactor :)
+    json_layers = the_other_collection.layers.includes(:fields).all.as_json(include: :fields).to_json
+
+    collection.import_schema json_layers, current_user
+    redirect_to collection_layers_path(collection), notice: "Imported layers from #{the_other_collection.name}"
+  end
+
 
   def render_breadcrumbs
     add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest

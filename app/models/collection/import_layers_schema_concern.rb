@@ -1,5 +1,4 @@
 module Collection::ImportLayersSchemaConcern
-
 	def import_schema(layers_string, user)
 		layers_json = JSON.parse layers_string
 		layers_json.each do |layer_json|

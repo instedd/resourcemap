@@ -103,4 +103,8 @@ class User < ActiveRecord::Base
   def update_successful_outcome_status
     self.success_outcome = layer_count? & collection_count? & site_count? & gateway_count?
   end
+
+  def collections_i_admin
+    self.memberships.includes(:collection).where(:admin => true).map {|m| { id: m.collection.id, name: m.collection.name }}
+  end
 end

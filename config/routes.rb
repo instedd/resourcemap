@@ -13,7 +13,12 @@ ResourceMap::Application.routes.draw do
   match 'track-food-prices-and-supplies' => 'home#food_page', :via => :get
   #match 'analytics' => 'analytics#index', :via => :get
 
+  match 'memberships/collections_i_admin' => 'memberships#collections_i_admin', :via => :get
+
+  match 'collections/:id/import_layers_from/:other_id' => 'collections#import_layers_from', :via => :get
+
   resources :repeats
+
   resources :collections do
     post :register_gateways
     get  :message_quota

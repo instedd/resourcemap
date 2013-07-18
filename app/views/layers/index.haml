@@ -144,4 +144,20 @@
           = 'Add layer'
         %button.cadd.right{type: :button, style: 'margin-top:3px;margin-right:0px;', title: 'Add new layer'}
         %br{clear: :all}
+        %br/
+        %br/
+        %br/
+        %br/
       //ko
+
+      %div{style:'margin-top:30px;'}
+        %img.members-collapse-icon{ko(click: 'toggleAdvancedExpanded', attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (advancedExpanded() ? 'Down' : 'Right') + '.png'"})}
+        %label{ko(click: 'toggleAdvancedExpanded')} Advanced
+        %br/
+        /ko if: advancedExpanded()
+        %div{style:'margin-left:15px;'}
+          Import layers from collection:
+          %select{ko(value: :selectedImportCollectionId, options: :importCollectionIds, optionsText: 'function(o){return importCollectionLabelFor(o)}')}
+          %button.white{ko(click: "importLayersFromCollection"), type: :button, title: 'Import'} Import
+        //ko
+

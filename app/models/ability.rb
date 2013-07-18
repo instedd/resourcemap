@@ -8,7 +8,7 @@ class Ability
     ### Collection ###
 
     # Admin abilities
-    can [:destroy, :create_snapshot, :recreate_index, :update, :members], Collection, :memberships => { :user_id => user.id , :admin => true }
+    can [:destroy, :create_snapshot, :recreate_index, :update, :members, :import_layers_from], Collection, :memberships => { :user_id => user.id , :admin => true }
     can :manage, Snapshot, :collection => {:memberships => { :user_id => user.id , :admin => true } }
 
     # User can read collection if she is a collection member or if the collection is public

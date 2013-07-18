@@ -2,6 +2,10 @@ class MembershipsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin, :index]
 
+  def collections_i_admin
+    render json: current_user.collections_i_admin
+  end
+
   def index
     layer_memberships = collection.layer_memberships.all.inject({}) do |hash, membership|
       (hash[membership.user_id] ||= []) << membership

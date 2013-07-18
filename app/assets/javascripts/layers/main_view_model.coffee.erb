@@ -1,6 +1,8 @@
 onLayers ->
   class @MainViewModel
     constructor: (collectionId, layers) ->
+      self = @
+
       @collectionId = collectionId
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @currentLayer = ko.observable()
@@ -27,6 +29,28 @@ onLayers ->
           0
 
       @savingLayer = ko.observable(false)
+
+      @advancedExpanded = ko.observable(false)
+
+      @selectedImportCollectionId = ko.observable(0)
+
+      @adminCollections = ko.observableArray([])
+
+      @importCollectionIds = ko.computed =>
+        $.map(@adminCollections(), (c) -> c.id)
+
+      $.get "/memberships/collections_i_admin.json", {}, (collection_ids) =>
+        self.adminCollections(collection_ids)
+
+    importLayersFromCollection: =>
+      window.location.href = "/collections/#{@collectionId}/import_layers_from/#{@selectedImportCollectionId()}"
+
+    importCollectionLabelFor: (o) =>
+      return 'loading...' if o == 0
+      _.chain(@adminCollections()).filter((c) -> c.id == o).map((c) -> c.name).value()[0]
+
+    toggleAdvancedExpanded: =>
+      @advancedExpanded(not @advancedExpanded())
 
     selectingLayer: () ->
 
