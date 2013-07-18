@@ -365,7 +365,7 @@ class ImportWizard
 
     def validate_column_value(column_spec, field_value, field, collection, site)
       if field.new_record?
-        validate_format_value(column_spec, field_value, collection, site)
+        validate_format_value(column_spec, field_value, collection)
       else
         field.apply_format_and_validate(field_value, true, collection, site)
       end
