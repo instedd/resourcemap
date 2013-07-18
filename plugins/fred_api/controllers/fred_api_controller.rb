@@ -35,8 +35,8 @@ class FredApiController < ApplicationController
 
     if ["id","uuid","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
       render  json: { message: "Invalid Paramaters: The id, uuid, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400
-      return  
-    end 
+      return
+    end
     facility_params = validate_site_params(facility_params)
     site.user = current_user
     site.properties_will_change!
@@ -114,16 +114,16 @@ class FredApiController < ApplicationController
     #Hack: All facilities are active. If param[:active]=false then no results should be returned
     facilities = [] if params[:active].to_s == false.to_s
 
-    fred_json_facilities = facilities.map {|facility| fred_facility_format_from_ES facility}
+    @fred_json_facilities = facilities.map {|facility| fred_facility_format_from_ES facility}
 
     # Selection is made in memory for simplicity
     # In the future we could use ES method fields, but the response has different structure.
-    fred_json_facilities = select_properties(fred_json_facilities, parse_fields(params[:fields])) if params[:fields]
+    @fred_json_facilities = select_properties(fred_json_facilities, parse_fields(params[:fields])) if params[:fields]
 
     respond_to do |format|
-      format.json { render json: {facilities: fred_json_facilities} }
+      format.json { render json: {facilities: @fred_json_facilities} }
+      format.xml { render template: 'fred_api/facilities.xml.builder', layout: false }
     end
-
   end
 
   private
@@ -131,8 +131,8 @@ class FredApiController < ApplicationController
   # Remove 'properties.' prefix form params
   def remove_prefix_form_properties_params(params_query)
     res = {}
-    params_query.each_pair do |key, val| 
-      res[key.gsub(/properties./, "")] = val 
+    params_query.each_pair do |key, val|
+      res[key.gsub(/properties./, "")] = val
     end
     res
   end
