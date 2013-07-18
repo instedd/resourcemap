@@ -43,13 +43,25 @@ describe "Luhn" do
     end
   end
 
+  def create_site_and_assig_default_values(luhn_value)
+    if luhn_value
+      site = collection.sites.make(properties: {field.es_code => luhn_value})
+    else
+      site = collection.sites.make
+    end
+
+    site.assign_default_values
+    site.save!
+    site
+  end
+
   it "generates luhn id for new site" do
-    collection.sites.make.properties[field.es_code].should eq("100000-9")
-    collection.sites.make.properties[field.es_code].should eq("100001-8")
-    collection.sites.make.properties[field.es_code].should eq("100002-7")
-    collection.sites.make(properties: {field.es_code => "100004-5"}).properties[field.es_code].should eq("100004-5")
-    collection.sites.make.properties[field.es_code].should eq("100003-6")
-    collection.sites.make.properties[field.es_code].should eq("100005-4")
+    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100000-9")
+    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100001-8")
+    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100002-7")
+    create_site_and_assig_default_values("100004-5").properties[field.es_code].should eq("100004-5")
+    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100003-6")
+    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100005-4")
   end
 
   it "gets next luhn" do
@@ -61,7 +73,7 @@ describe "Luhn" do
   end
 
   it "checks for unicity" do
-    collection.sites.make.properties[field.es_code].should eq("100000-9")
+    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100000-9")
     lambda do
       collection.sites.make(properties: {field.es_code => "100000-9"})
     end.should raise_exception(ActiveRecord::RecordInvalid, /the value already exists in the collection/)

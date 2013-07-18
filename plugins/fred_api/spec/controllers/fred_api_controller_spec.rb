@@ -676,14 +676,72 @@ describe FredApiController do
       json.length.should eq(0)
     end
 
-    it 'sholud return an empty list if the context does not match any identifier' do get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "invalid", "identifiers.id" => "53adf", "identifiers.agency" => "DHIS"
+    it 'sholud return an empty list if the context does not match any identifier' do 
+      get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "invalid", "identifiers.id" => "53adf", "identifiers.agency" => "DHIS"
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(0)
     end
 
-    it 'sholud return an empty list if the agency does not match any identifier' do get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf", "identifiers.agency" => "invalid"
+    it 'sholud return an empty list if the agency does not match any identifier' do 
+      get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf", "identifiers.agency" => "invalid"
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(0)
+    end
+
+  end
+
+  describe "Luhn identifiers" do
+    let!(:luhn_id) {layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Luhn"} }
+
+    it 'should create facility with a default value for the identifier field' do
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC' }.to_json
+      post :create_facility, collection_id: collection.id
+      response.status.should eq(201)
+      site = Site.find_by_name 'Kakamega HC'
+      site.should be
+      site.valid?.should be(true)
+
+      response.location.should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      json = JSON.parse response.body
+      json["properties"]['moh-id'].should eq("100000-9")
+      json["name"].should eq(site.name)
+      json["uuid"].should eq("#{site.uuid}")
+      json["active"].should eq(true)
+      json["href"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+    end
+
+    it 'should create facility with with the next valid luhn identifier if there is a site with luhn value' do
+      site = collection.sites.make
+      site.assign_default_values
+      site.save!
+
+      request.env["RAW_POST_DATA"] = { name: 'Kizikuo' }.to_json
+      post :create_facility, collection_id: collection.id
+      response.status.should eq(201)
+      site = Site.find_by_name 'Kizikuo'
+      site.valid?.should be(true)
+
+      json = JSON.parse response.body
+      json["properties"]['moh-id'].should eq("100001-8")
+    end
+
+    it 'should create facility with with a valid luhn identifier if there is a site without luhn value' do
+      site = collection.sites.make 
+      site.save!
+
+      # we are not calling assign_default_values so this site will not have a value for the luhn_id field
+      # this situation can happen if this site is created using the UI, deleting the suggested luhn value.
+      site.properties["#{luhn_id.es_code}"].should be(nil)
+
+      request.env["RAW_POST_DATA"] = { name: 'Kizikuo' }.to_json
+      post :create_facility, collection_id: collection.id
+      response.status.should eq(201)
+
+      site = Site.find_by_name 'Kizikuo'
+      site.valid?.should be(true)
+
+      json = JSON.parse response.body
+      json["properties"]['moh-id'].should eq("100000-9")
     end
 
   end

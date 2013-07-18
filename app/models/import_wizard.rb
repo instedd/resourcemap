@@ -97,7 +97,7 @@ class ImportWizard
         if column_spec[:use_as].to_s == 'new_field' && column_spec[:kind].to_s == 'hierarchy'
           sites_errors[:hierarchy_field_found] = add_new_hierarchy_error(csv_column_number, sites_errors[:hierarchy_field_found])
         elsif column_spec[:use_as].to_s == 'new_field' || column_spec[:use_as].to_s == 'existing_field'
-          errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number)
+          errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number, csv_column_used_as_id)
           sites_errors[:data_errors].concat(errors_for_column)
         end
       end
@@ -256,17 +256,33 @@ class ImportWizard
       [{rows: invalid_ids, column: resmap_id_column_index}] if invalid_ids.length >0
     end
 
-    def validate_column(user, collection, column_spec, fields, csv_column, column_number)
+    def validate_column(user, collection, column_spec, fields, csv_column, column_number, id_column)
       if column_spec[:use_as].to_sym == :existing_field
         field = fields.detect{|e| e.id.to_s == column_spec[:field_id].to_s}
       else
         field = Field.new kind: column_spec[:kind].to_s
       end
 
+      collection_sites = collection.sites.index_by{|s| s.id.to_s}
       validated_csv_column = []
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
-          validate_column_value(column_spec, csv_field_value, field, collection)
+          site = nil
+          # load the site for the identifiers fields.
+          # we need the site in order to validate the uniqueness of the luhn id value          
+          if id_column && field.kind == 'identifier' && field.has_luhn_format?() 
+            site_id = id_column[field_number]
+            site = collection_sites[site_id.to_s] if (site_id && !site_id.blank?)
+          end
+
+          # Luhn specific validation
+          if field.kind == 'identifier' && field.has_luhn_format?()
+            repetitions = csv_column.each_index.select{|i| csv_column[i] == csv_field_value && i != field_number}
+
+            raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}" if repetitions.length > 0
+          end
+
+          validate_column_value(column_spec, csv_field_value, field, collection, site)
         rescue => ex
           description = error_description_for_type(field, column_spec, ex)
           validated_csv_column << {description: description, row: field_number}
@@ -347,11 +363,11 @@ class ImportWizard
       existing_columns
     end
 
-    def validate_column_value(column_spec, field_value, field, collection)
+    def validate_column_value(column_spec, field_value, field, collection, site)
       if field.new_record?
         validate_format_value(column_spec, field_value, collection)
       else
-        field.apply_format_and_validate(field_value, true, collection)
+        field.apply_format_and_validate(field_value, true, collection, site)
       end
     end
 

@@ -6,8 +6,8 @@ module Capybara::CollectionHelper
     collection
   end
 
-  def create_site_for(collection)
-    collection.sites.make(:name => 'Health Center', :lng => 14.3574, :lat => 26.7574)
+  def create_site_for(collection, site_name="Health Center")
+    collection.sites.make(:name => site_name, :lng => 14.3574, :lat => 26.7574)
   end
 
   def create_layer_for(collection)
