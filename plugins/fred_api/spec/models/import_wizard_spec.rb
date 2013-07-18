@@ -82,6 +82,29 @@ describe ImportWizard do
     sites[0].properties[luhn.es_code].should eq('100000-9')
   end
 
+  it "imports into existing field and with the same value(also identifying the site with a string)" do
+    site = collection.sites.make properties: {luhn.es_code => '100000-9'}
+
+    csv_string = CSV.generate do |csv|
+      csv << ['resmap-id', 'Name', 'Luhn']
+      csv << ["#{site.id}", 'Foo', '100000-9']
+    end
+
+    specs = [
+      {header: 'resmap-id', use_as: 'id'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Luhn', use_as: 'existing_field', field_id: luhn.id},
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string
+    ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.execute user, collection, specs
+
+    sites = collection.sites.all
+    sites.length.should eq(1)
+    sites[0].properties[luhn.es_code].should eq('100000-9')
+  end
+
   it "imports into existing field with invalid values" do
     collection.sites.make properties: {luhn.es_code => '100000-9'}
 

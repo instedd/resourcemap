@@ -263,7 +263,7 @@ class ImportWizard
         field = Field.new kind: column_spec[:kind].to_s
       end
 
-      collection_sites = collection.sites.index_by &:id
+      collection_sites = collection.sites.index_by{|s| s.id.to_s}
       validated_csv_column = []
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
@@ -272,7 +272,7 @@ class ImportWizard
           # we need the site in order to validate the uniqueness of the luhn id value          
           if id_column && field.kind == 'identifier' && field.has_luhn_format?() 
             site_id = id_column[field_number]
-            site = collection_sites[site_id] if (site_id && !site_id.blank?)
+            site = collection_sites[site_id.to_s] if (site_id && !site_id.blank?)
           end
 
           # Luhn specific validation
