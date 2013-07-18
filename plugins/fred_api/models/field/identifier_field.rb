@@ -25,6 +25,10 @@ class Field::IdentifierField < Field
     format_implementation.error_description_for_invalid_values(exception)
   end
 
+  def has_luhn_format?
+    format_implementation.has_luhn_format?
+  end
+
   def format_implementation
     "Field::IdentifierField::#{config['format'] || 'Normal'}".constantize.new(self)
   end
@@ -37,6 +41,10 @@ class Field::IdentifierField::FormatImplementation
 
   def valid_value?(value, site)
     true
+  end
+
+  def has_luhn_format?()
+    false
   end
 
   def decode(value)
@@ -62,6 +70,10 @@ end
 class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementation
   def error_description_for_invalid_values(exception)
     "are not valid for the type luhn identifier: #{exception}"
+  end
+
+  def has_luhn_format?()
+    true
   end
 
   def value_hint
