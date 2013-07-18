@@ -34,8 +34,6 @@ onCollections ->
 
       $('.BreadCrumb').load("/collections/breadcrumbs", {})
 
-      window.setTimeout(window.adjustContainerSize, 100)
-
       # Return undefined because otherwise some browsers (i.e. Miss Firefox)
       # would render the Object returned when called from a 'javascript:___'
       # value in an href (and this is done in the breadcrumb links).
@@ -55,7 +53,6 @@ onCollections ->
 
       $.get "/collections/#{@currentCollection().id}/sites_by_term.json", (sites) =>
         @currentCollection().allSites(sites)
-        window.adjustContainerSize()
 
       initialized = @initMap()
       collection.panToPosition(true) unless initialized
@@ -70,13 +67,10 @@ onCollections ->
           @refreshTimeago()
           @makeFixedHeaderTable()
           @rewriteUrl()
-        window.adjustContainerSize()
 
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
-      window.adjustContainerSize()
       window.model.updateSitesInfo()
 
-    @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
     @tooglefullscreen: ->
       if !@fullscreen()
@@ -87,7 +81,6 @@ onCollections ->
         $('.expand-collapse_button').show()
         $(".expand-collapse_button").addClass("oleftcollapse")
         $(".expand-collapse_button").removeClass("oleftexpand")
-        window.adjustContainerSize()
         @reloadMapSites()
       else
         @fullscreen(false)
@@ -97,17 +90,14 @@ onCollections ->
         $(".frestore").removeClass("frestore")
         $('#collections-main .left').show()
         $('.expand-collapse_button').hide()
-        window.adjustContainerSize()
         @reloadMapSites()
       @makeFixedHeaderTable()
 
-      window.setTimeout(window.adjustContainerSize, 200)
 
     @toogleExpandFullScreen: ->
       if @fullscreen() && !@fullscreenExpanded()
         @fullscreenExpanded(true)
         $('#collections-main .left').hide()
-        window.adjustContainerSize()
         $(".oleftcollapse").addClass("oleftexpand")
         $(".oleftcollapse").removeClass("oleftcollapse")
         @reloadMapSites()
@@ -116,7 +106,6 @@ onCollections ->
         if @fullscreen() && @fullscreenExpanded()
           @fullscreenExpanded(false)
           $('#collections-main .left').show()
-          window.adjustContainerSize()
           $(".oleftexpand").addClass("oleftcollapse")
           $(".oleftexpand").removeClass("oleftexpand")
           @reloadMapSites()

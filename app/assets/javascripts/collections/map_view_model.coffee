@@ -101,7 +101,6 @@ onCollections ->
           if callback && typeof(callback) == 'function'
             callback()
       setTimeout(showMap, 10)
-      setTimeout(window.adjustContainerSize, 10)
 
     @reloadMapSites: (callback) ->
       return unless @map
@@ -432,7 +431,6 @@ onCollections ->
       @showingMap(false)
       @refreshTimeago()
       @makeFixedHeaderTable()
-      setTimeout(window.adjustContainerSize, 10)
 
     @makeFixedHeaderTable: ->
       unless @showingMap()
@@ -451,7 +449,6 @@ onCollections ->
 
         setTimeout((->
           $('.tablescroll').scrollLeft oldScrollLeft
-          window.adjustContainerSize()
         ), 20)
 
     @markerImage: (icon) ->

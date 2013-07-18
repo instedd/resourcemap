@@ -1,0 +1,188 @@
+// Tables
+// ----------------
+
+.tableheader.expanded { 
+  width:960px; 
+  div { 
+    display:inline-block 
+    &:first-child {
+      border-right:1px solid #eeeeee;
+      width:295px;
+    }
+  }
+}
+
+
+
+.tableheader span, .tableheader button { vertical-align:middle }
+
+.tablescroll {
+  overflow:auto;
+  height:420px;
+  border-bottom: 1px #EEE solid;
+  span.loadmore {
+    padding-top: 12px;
+    vertical-align: middle;
+    text-align:center;
+    width:100%;
+    height:30px;
+    display:inline-block;
+    border-top:1px #EEE solid;
+  }
+
+  div { 
+    padding:4px 8px; 
+    margin:5px 0 0 0;
+
+    label {
+      font-weight:bold;
+      display: inline-block;
+      width:25%;
+      cursor: pointer;
+
+      &.error {
+        display: inline-block !important;
+      }
+    }
+    span.value {
+      color: #555555;
+    }
+    &.expdiv:hover,
+    &.coldiv:hover {
+      background: none;
+    }
+    @include clearfix(); 
+  }
+    tr td div:hover {
+      background: #eeeeee;
+      cursor: pointer;
+    }
+  hr { 
+    width:316px; 
+    margin:0px 0px 10px 5px 
+  }
+  table { 
+    width: 100%
+  }
+  .hierarchy-container { 
+    width: auto 
+  }
+}
+
+.tablescroll .GralTable tr:nth-child(2) { background:none !important }
+.tablescroll .GralTable tr.active td { background:#d0d0d0 }
+.tablescroll .GralTable tr td:first-child { border-right:1px solid #eeeeee }
+.tablescroll .GralTable td div { display:inline-block; overflow:hidden;  }
+.tablescroll .GralTable td div img { display:inline-block; vertical-align:middle; margin:2px 2px 0 0 }
+.tablescroll .GralTable td div span { margin-top:2px; white-space:nowrap }
+.tablescroll .GralTable td div span.value { margin-top:0px; white-space:nowrap; vertical-align:top; cursor:pointer }
+.tablescroll .GralTable td div p { display:inline-block; padding:0; margin:0px 0 0 0; vertical-align:middle; white-space:nowrap }
+.tablescroll .GralTable td div p a { color:inherit }
+.tablescroll .GralTable td button.farrow { float:right  }
+.tablescroll .GralTable th.r { text-align:right }
+.tablescroll .GralTable td.r { text-align:right }
+.tablescroll .GralTable td span { white-space: nowrap; vertical-align:middle; /*height:4px*/ }
+
+.tablescroll .GralTable {
+  border-bottom: 1px #EEE solid;
+}
+
+.stat-r { background:#ff4800; background-image:none !important; border-top:1px solid #bf3602; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
+.stat-y { background:#fcbb00; background-image:none !important; border-top:1px solid #bc8b00; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
+.stat-g { background:#79e820; background-image:none !important; border-top:1px solid #5bae18; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
+
+.tablebottom {
+  color: #555555;
+  height: 35px;
+  padding-top: 5px;
+}
+
+.left.panel.wp30 {
+  @include box-sizing(border-box);
+  @include transition(all ease-out 0.2s);
+  width: 24%;
+}
+.left.panel.wp50 {
+  @include box-sizing(border-box);
+  @include transition(all ease-out 0.2s);
+  width: 50%;
+}
+#right-panel.wp50 {
+  @include box-sizing(border-box);
+  @include transition(all ease-out 0.2s);
+  width: 50%;
+}
+#right-panel.wp70 {
+  @include box-sizing(border-box);
+  @include transition(all ease-out 0.2s);
+  width: 76%;
+}
+
+.tableheader.expanded {
+  width: 100%;
+  height: 34px;
+  .title {
+    display: inline-block;
+    padding-top: 3px;
+    width: 296px;
+  }
+}
+
+
+
+
+
+
+/*.cheight {
+  height: 400px !important;
+}*/
+@media screen and (min-height: 300px) {  
+  .cheight { height: 200px !important; } 
+}
+
+@media screen and (min-height: 400px) {  
+  .cheight { height: 280px !important; } 
+}
+
+@media screen and (min-height: 500px) {  
+  .cheight { height: 380px !important; } 
+}
+
+@media screen and (min-height: 600px) {  
+  .cheight { height: 480px !important; } 
+}
+
+@media screen and (min-height: 700px) {  
+  .cheight { height: 580px !important; }
+   @-moz-document url-prefix() { 
+    .cheight { height: 530px !important; }
+  }  
+}
+@media screen and (min-height: 800px) {  
+  .cheight { height: 630px !important; } 
+}
+
+body.fullscreen {
+
+  @media screen and (min-height: 500px) {  
+    .cheight { height: 385px !important; } 
+  }
+
+  @media screen and (min-height: 650px) {  
+    .cheight { height: 550px !important; } 
+  }
+
+  @media screen and (min-height: 700px) {  
+    .cheight { height: 600px !important; } 
+  }
+  @media screen and (min-height: 800px) {  
+    .cheight { height: 705px !important; } 
+  }
+
+}
+
+@-moz-document url-prefix() { 
+  @media screen and (min-height: 700px) {  
+    body.fullscreen .cheight { height: 530px !important; }
+  }
+}   

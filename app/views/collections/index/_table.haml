@@ -1,13 +1,13 @@
 <!-- ko if: !currentCollection() && !editingSite() -->
 -# Collections
 .tableheader.expanded
-  %div{style: 'padding-top:9px;padding-left:6px;height:29px;width:289px'} My Collections
-  .mapheader.w60.right
+  %div.title My Collections
+  .mapheader.right
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: "{active: !$root.showingMap()}")}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: "{active: $root.showingMap()}")}
     %br{clear: "all"}
-.tablescroll
+.tablescroll.cheight
   %table.GralTable.tableview
     %thead
       %tr
@@ -30,8 +30,8 @@
 -# Collection sites
 <!-- ko if: !editingSite() -->
 <!-- ko with: currentCollection -->
-.tableheader.expanded{style: 'height:34px;'}
-  %div
+.tableheader.expanded
+  %div.title
     %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
     %span
     %span{ko(text: :name)}
@@ -43,7 +43,7 @@
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}
     %br{clear: "all"}
-.tablescroll.expanded.sites{style:'width:100%;'}
+.tablescroll.expanded.sites.cheight
   %table.GralTable.tableview{style: 'table-layout: fixed;'}
     %col{width: '300'}
     %col{width: '100'}

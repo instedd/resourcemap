@@ -29,8 +29,6 @@ onCollections ->
 
       if @showingMap()
         @reloadMapSites()
-      else
-        window.adjustContainerSize()
 
       @rewriteUrl()
 

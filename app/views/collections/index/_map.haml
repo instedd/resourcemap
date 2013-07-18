@@ -1,11 +1,11 @@
-.left.w30.h50
+.left.panel{ko(css: { wp30: '!editingSite()', wp50: 'editingSite()' })}
   <!-- ko if: !loadingSite() -->
 
   -# Collections
   <!-- ko if: !currentCollection() && !editingSite() -->
   .tableheader
     %div{style: 'padding-top:9px;padding-left:6px;'} My Collections
-  .tablescroll.sites
+  .tablescroll.cheight.sites
     %table.GralTable.CleanTable
       %tbody
         <!-- ko foreach: collections -->
@@ -58,7 +58,7 @@
 
 
   - if can? :create, Collection
-    .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
+    .tablebottom{ko(click: '$root.createCollection')}
       %button.cadd{type: "button"}
       %span.createCollection Create Collection
   <!-- /ko -->
@@ -76,7 +76,7 @@
       %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
-  .tablescroll.sites
+  .tablescroll.cheight.sites
     %table.GralTable.CleanTable
       %tbody
         <!-- ko if: !isSearch() && $root.groupBy().esCode != '' -->
@@ -116,19 +116,17 @@
       <!-- ko if: !inEditMode() -->
       %span New Site
       <!-- /ko -->
-    .tablescroll
+    .tablescroll.cheight
       %table
         %tbody
           %tr
             %td
               %div
                 = label_tag :name, "Name:"
-                = text_field_tag :name, '', placeholder: 'Enter new site name', class: 'w20 right', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}), :autofocus => true
-                .clear
+                = text_field_tag :name, '', placeholder: 'Enter new site name',  'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}), :autofocus => true
               %div
                 %label Location:
-                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: 'Search or drag the pin'}
-                .clear
+                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-text', placeholder: 'Search or drag the pin'}
               / ko if: collection.readable($data)
               <!-- ko foreach: $root.currentCollection().layers() -->
               %div
@@ -161,45 +159,45 @@
   -# Show Site form
   <!-- ko if: showSite -->
   %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, novalidate: 'novalidate', style: 'display:inline;width:100%'}
-    .tableheader.w30
+    .tableheader
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
       %span{ko(text: :name)}
-    .tablescroll
-      %table{style: 'width:100%'}
+    .tablescroll.cheight
+      %table
         %tbody
           %tr
             %td
-              %div{style: 'margin-bottom:14px'}
+              %div{ko(click: 'editName')}
                 %label Name:
                 - if current_user.is_guest
                   %span.value{ko(text: :name, visible: '!editingName()')}
                 -else
-                  %span.value{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
+                  %span.value{ko(text: :name, visible: '!editingName()')}
                 <!-- ko if: editingName() -->
                 = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                 <!-- /ko -->
-              %div{style: 'margin-bottom:14px'}
+              %div{ko(click: 'editLocation')}
                 %label Location:
                 <!-- ko if: !hasLocation() -->
                 - if current_user.is_guest
-                  %span.value{ko(visible: '!editingLocation()', style: 'color:grey;')} (no value)
+                  %span.value{ko(visible: '!editingLocation()')} (no value)
                 - else
-                  %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'} (no value)
+                  %span.value{ko(visible: '!editingLocation()')}, (no value)
                 <!-- /ko -->
                 <!-- ko if: hasLocation() && !editingLocation() -->
                 - if current_user.is_guest
                   %span.value{ko(text: :locationText, visible: '!editingLocation()')}
                 - else
-                  %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
+                  %span.value{ko(text: :locationText, visible: '!editingLocation()')}
                 <!-- /ko -->
                 <!-- ko if: editingLocation() -->
-                = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search'}
+                = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-text'}
                 <!-- /ko -->
               - if Settings.mobile_id?
-                %div{style: 'margin-bottom:14px'}
+                %div
                   %label ID With Prefix:
-                  %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
+                  %span.value{ko(text: :idWithPrefix)}
               / ko if: collection.readable($data)
               <!-- ko foreach: collection.layers -->
               / col = collection
@@ -207,12 +205,12 @@
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
-              %div{style: 'margin-bottom:14px'}
+              %div{ko(click: 'edit')}
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
                 <!-- ko if: hasValue() && !error() -->
                 <!-- ko if: writeable -->
-                %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer'}
+                %span.value{ko(text: :valueUI, visible: '!editing()')}
                 <!-- /ko -->
                 <!-- ko if: !writeable -->
                 %span.value{ko(text: :valueUI)}
@@ -223,10 +221,10 @@
                 <!-- /ko -->
                 <!-- ko if: !hasValue() &&  !error() -->
                 <!-- ko if: writeable -->
-                %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no value)
+                %span.value{ko(visible: '!editing()'), style: 'color:grey;cursor:pointer'} (no value)
                 <!-- /ko -->
                 <!-- ko if: !writeable -->
-                %span.value{style: 'color:grey'} (no value)
+                %span.value (no value)
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: editing() || error() -->
@@ -256,7 +254,7 @@
       %button.pback
       %span
       %span Loading...
-#right-panel.right.sites
+#right-panel.right.sites{ko(css: { wp70: '!editingSite()', wp50: 'editingSite()' })}
   .mapheader
     <!-- ko if: $root.currentCollection() -->
     = render 'collections/index/export'
@@ -281,6 +279,6 @@
         %span.black Show them
       .clear
     <!-- /ko -->
-    #map
+    #map.cheight
 
 
