@@ -275,6 +275,12 @@ class ImportWizard
             site = collection_sites[site_id] if (site_id && !site_id.blank?)
           end
 
+          # Luhn specific validation
+          if field.kind == 'identifier' && field.has_luhn_format?()
+            repetitions = csv_column.each_index.select{|i| csv_column[i] == csv_field_value && i != field_number}
+
+            raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}" if repetitions.length > 0
+          end
 
           validate_column_value(column_spec, csv_field_value, field, collection, site)
         rescue => ex
