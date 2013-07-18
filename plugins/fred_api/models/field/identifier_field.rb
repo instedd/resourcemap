@@ -9,8 +9,12 @@ class Field::IdentifierField < Field
     format_implementation.value_hint
   end
 
-  def apply_format_and_validate(*args)
-    format_implementation.apply_format_and_validate(*args)
+  def valid_value?(*args)
+    format_implementation.valid_value?(*args)
+  end
+
+  def decode(*args)
+    format_implementation.decode(*args)
   end
 
   def default_value_for_create(collection)
@@ -31,8 +35,12 @@ class Field::IdentifierField::FormatImplementation
     @field = field
   end
 
-  def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site = nil)
-    value.blank? ? nil : value
+  def valid_value?(value, site)
+    true
+  end
+
+  def decode(value)
+    value
   end
 
   def default_value_for_create(collection)
@@ -60,11 +68,11 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
     "Luhn identifiers must be in this format: nnnnnn-n (where 'n' is a number), must be unique and pass the luhn check."
   end
 
+  def decode(value)
+    value
+  end
 
-  def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site = nil)
-    if value.blank?
-      return nil
-    end
+  def valid_value?(value, site)
 
     unless value =~ /(\d\d\d\d\d\d)\-(\d)/
       raise "the value must be in this format: nnnnnn-n (where 'n' is a number)"
@@ -76,7 +84,7 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
     end
 
     field_es_code = "properties.#{@field.es_code}"
-    search = collection.new_search
+    search = @field.collection.new_search
     search.select_fields [field_es_code]
     search.eq @field, value
     results = search.results
@@ -87,7 +95,7 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
       raise "the value already exists in the collection"
     end
 
-    value
+    true
   end
 
   def compute_luhn_verifier(str)
@@ -122,11 +130,13 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
     search.sort field_es_code, true
     results = search.results
 
-    return "100000-9" if results.empty?
+    existing_sites = results.results
+
+    return "100000-9" if existing_sites.empty? || existing_sites.all?{|s| s["fields"].nil?}
 
     last = nil
 
-    results.results.each do |result|
+    existing_sites.each do |result|
       result = result["fields"]
       next unless result
       value = result[field_es_code]

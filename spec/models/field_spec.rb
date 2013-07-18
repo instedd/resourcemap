@@ -56,7 +56,7 @@ describe Field do
 
     it "for dates is a date" do
       field = Field::DateField.make
-      expect { Site.parse_date(field.sample_value) }.to_not raise_error
+      expect { field.parse_date(field.sample_value) }.to_not raise_error
     end
 
     it "for user is a string" do
@@ -156,6 +156,28 @@ describe Field do
   describe "validations" do
     let!(:user) { User.make }
     let!(:collection) { user.create_collection Collection.make_unsaved }
+    let!(:layer) { collection.layers.make }
+    let!(:text) { layer.text_fields.make :code => 'text' }
+    let!(:numeric) { layer.numeric_fields.make :code => 'numeric', :config => {} }
+    let!(:yes_no) { layer.yes_no_fields.make :code => 'yes_no'}
+
+    let!(:numeric_with_decimals) {
+      layer.numeric_fields.make :code => 'numeric_with_decimals', :config => {
+        :allows_decimals => "true" }.with_indifferent_access
+      }
+
+    let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+
+    let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+
+    config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+    let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+    let!(:site_field) { layer.site_fields.make :code => 'site'}
+    let!(:date) { layer.date_fields.make :code => 'date' }
+    let!(:director) { layer.user_fields.make :code => 'user' }
+    let!(:email_field) { layer.email_fields.make :code => 'email' }
+
+    let!(:site) {collection.sites.make name: 'Foo old', id: 1234, properties: {} }
 
     ['name', 'code'].each do |parameter|
       it "should validate uniqueness of #{parameter} in collection" do
@@ -171,34 +193,66 @@ describe Field do
       end
     end
 
+    describe "validations for each field" do
+
+      it { numeric.valid_value?(1).should be_true }
+      it { numeric.valid_value?("1").should be_true }
+
+      it { numeric_with_decimals.valid_value?(1.5).should be_true }
+      it { numeric_with_decimals.valid_value?("1.5").should be_true }
+
+      it { yes_no.valid_value?(true).should be_true }
+      it { yes_no.valid_value?(false).should be_true }
+
+      it { date.valid_value?("2012-11-27T00:00:00Z").should be_true }
+
+      it { hierarchy.valid_value?("101").should be_true }
+
+      it { select_many.valid_value?([1,2]).should be_true }
+      it { select_many.valid_value?(["1","2"]).should be_true }
+
+      it { select_one.valid_value?(1).should be_true }
+      it { select_one.valid_value?("1").should be_true }
+
+      it { site_field.valid_value?(1234).should be_true }
+      it { site_field.valid_value?("1234").should be_true }
+
+      it { director.valid_value?(user.email).should be_true }
+
+      it { email_field.valid_value?("myemail@resourcemap.com").should be_true }
+    end
+
+    describe "decode from ImportWizard format" do
+
+      it { numeric.decode(1).should eq(1) }
+      it { numeric.decode("1").should eq(1) }
+
+      it { numeric_with_decimals.decode("1.5").should eq(1.5) }
+
+      it { yes_no.decode("true").should eq(true) }
+
+      it { date.decode("12/26/1988").should eq("1988-12-26T00:00:00Z") }
+
+      it { hierarchy.decode("Dad").should eq("60") }
+
+      it { select_one.decode("one").should eq(1) }
+      it { select_one.decode("One").should eq(1) }
+
+      it { select_many.decode("one").should eq([1]) }
+      it { select_many.decode("One").should eq([1]) }
+      it { select_many.decode(['one', 'two']).should eq([1, 2]) }
+      it { select_many.decode("one,two").should eq([1, 2]) }
+
+    end
+
+    # TODO: Delete apply_format_and_validate method and use it's content instead with the corresponding decode
+    # decode_fred or decode (for import_wizard)
     describe "apply_format_and_validate" do
-      let!(:layer) { collection.layers.make }
-      let!(:text) { layer.text_fields.make :code => 'text' }
-      let!(:numeric) { layer.numeric_fields.make :code => 'numeric', :config => {} }
-      let!(:yes_no) { layer.yes_no_fields.make :code => 'yes_no'}
-
-      let!(:numeric_with_decimals) {
-        layer.numeric_fields.make :code => 'numeric_with_decimals', :config => {
-          :allows_decimals => "true" }.with_indifferent_access
-        }
-
-      let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-
-      let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-
-      config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-      let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
-      let!(:site_field) { layer.site_fields.make :code => 'site'}
-      let!(:date) { layer.date_fields.make :code => 'date' }
-      let!(:director) { layer.user_fields.make :code => 'user' }
-      let!(:email_field) { layer.email_fields.make :code => 'email' }
-
-      let!(:site) {collection.sites.make name: 'Foo old', id: 1234, properties: {} }
 
       it "should validate format for numeric field" do
         numeric.apply_format_and_validate(2, false, collection).should be(2)
         numeric.apply_format_and_validate("2", false, collection).should be(2)
-        expect { numeric.apply_format_and_validate("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field #{numeric.code}")
+        expect { numeric.apply_format_and_validate("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field numeric. This numeric field is configured not to allow decimal values.")
       end
 
       it "should validate format for yes_no field" do
@@ -214,7 +268,6 @@ describe Field do
 
       it "should not allow decimals" do
         expect { numeric.apply_format_and_validate("2.3", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field #{numeric.code}. This numeric field is configured not to allow decimal values.")
-
         expect { numeric.apply_format_and_validate(2.3, false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field #{numeric.code}. This numeric field is configured not to allow decimal values.")
       end
 
@@ -224,29 +277,27 @@ describe Field do
       end
 
       it "should validate format for date field" do
-        date.apply_format_and_validate("11/27/2012", false, collection).should == "2012-11-27T00:00:00Z"
+        date.apply_format_and_validate("11/27/2012",false, collection).should == "2012-11-27T00:00:00Z"
+        expect { date.apply_format_and_validate("27/10/1298", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}")
         expect { date.apply_format_and_validate("11/27", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}")
         expect { date.apply_format_and_validate("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}")
       end
 
       it "should validate format for hierarchy field" do
-        hierarchy.apply_format_and_validate("101", false, collection).should == "101"
-        expect { hierarchy.apply_format_and_validate("Dad", false, collection) }.to raise_error(RuntimeError, "Invalid hierarchy option in field #{hierarchy.code}")
+        hierarchy.apply_format_and_validate("Dad", false, collection).should == "60"
         expect { hierarchy.apply_format_and_validate("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid hierarchy option in field #{hierarchy.code}")
       end
 
       it "should validate format for select_one field" do
-        select_one.apply_format_and_validate(1, false, collection).should == 1
-        select_one.apply_format_and_validate("1", false, collection).should == 1
-        expect { select_one.apply_format_and_validate("one", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_one.code}")
+        select_one.apply_format_and_validate("one", false, collection).should == 1
+        select_one.apply_format_and_validate("One", false, collection).should == 1
         expect { select_one.apply_format_and_validate("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_one.code}")
       end
 
       it "should validate format for select_many field" do
-        select_many.apply_format_and_validate([2], false, collection).should == [2]
-        select_many.apply_format_and_validate(["2", "1"], false, collection).should == [2, 1]
-        expect { select_many.apply_format_and_validate(["two",], false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_many.code}")
-        expect { select_many.apply_format_and_validate("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option in field #{select_many.code}")
+        select_many.apply_format_and_validate(["two", "one"], false, collection).should == [2, 1]
+        expect { select_many.apply_format_and_validate(["two","inv"], false, collection) }.to raise_error(RuntimeError, "Invalid option 'inv' in field #{select_many.code}")
+        expect { select_many.apply_format_and_validate("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid option 'invalid' in field #{select_many.code}")
       end
 
       it "should validate format for site field" do

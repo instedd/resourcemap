@@ -12,6 +12,7 @@ class Site < ActiveRecord::Base
 
   serialize :properties, Hash
   validate :valid_properties
+  after_validation :standardize_properties
 
   attr_accessor :from_import_wizard
 
@@ -70,33 +71,46 @@ class Site < ActiveRecord::Base
     self.properties = properties
   end
 
+  def assign_default_values
+    fields = collection.fields.index_by(&:es_code)
+
+    fields.each do |es_code, field|
+      if properties[field.es_code].blank?
+        value = field.default_value_for_create(collection)
+        properties[field.es_code] = value if value
+      end
+    end 
+    self 
+  end
+
+
   private
+
+  def standardize_properties
+    fields = collection.fields.index_by(&:es_code)
+
+    standardized_properties = {}
+    properties.each do |es_code, value|
+      field = fields[es_code]
+      if field
+        standardized_properties[es_code] = field.standadrize(value)  
+      end
+    end
+    self.properties = standardized_properties
+  end
 
   def valid_properties
     fields = collection.fields.index_by(&:es_code)
 
-    if new_record?
-      fields.each do |es_code, field|
-        if properties[field.es_code].blank?
-          value = field.default_value_for_create(collection)
-          properties[field.es_code] = value if value
-        end
-      end
-    end
-
-    validated_properties = {}
     properties.each do |es_code, value|
       field = fields[es_code]
       if field
         begin
-          validated_value = field.apply_format_and_validate(value, false, collection, self)
-          validated_properties["#{field.es_code}"] = validated_value
+          field.valid_value?(value, self)
         rescue => ex
           errors.add(:properties, {field.es_code => ex.message})
         end
       end
     end
-
-    self.properties = validated_properties
   end
 end

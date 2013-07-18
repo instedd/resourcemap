@@ -115,7 +115,7 @@ module Field::Base
     elsif numeric?
       value = -39.2
     elsif date?
-      value = Site.format_date_iso_string(Site.parse_date('4/23/1851'))
+      value = Field::DateField.new.decode('4/23/1851')
     elsif user?
       return '' if user.nil?
       value = user.email

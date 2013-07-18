@@ -27,7 +27,7 @@ describe Collection::CsvConcern do
 
   it "should print date as MM/DD/YYYY" do
     date = layer.date_fields.make :code => 'date'
-    site = collection.sites.make :properties => {date.es_code => '1985-10-19T03:00:00.000Z'}
+    site = collection.sites.make :properties => {date.es_code => '1985-10-19T00:00:00Z'}
 
     csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
 

@@ -57,6 +57,9 @@ class ImportWizard::NewFieldSpecs < ImportWizard::BaseFieldSpecs
     field = @new_fields[@column_spec[:code]]
     site.properties_will_change!
 
-    site.properties[field.es_code] = field.apply_format_and_validate value, true, field.layer.collection
+    # We need the collection to validate site_fields
+    field.collection = field.layer.collection
+
+    site.properties[field.es_code] = field.apply_format_and_validate value, true, field.layer.collection, site
   end
 end

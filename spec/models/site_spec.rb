@@ -24,7 +24,7 @@ describe Site do
   let(:desk) { layer.text_fields.make name: 'desk'  }
   let(:creation) { layer.date_fields.make name: 'creation'}
 
-  let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '2012-09-22T03:00:00.000Z' } }
+  let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '2012-09-22T00:00:00Z' } }
 
   it "return as a hash of field_name and its value" do
     site.human_properties.should eq({'room' => 50, 'desk' => 'bla bla', 'creation' => '09/22/2012' })

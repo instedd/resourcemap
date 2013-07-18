@@ -58,6 +58,7 @@ module SearchBase
       return self
     end
 
+    # TODO: Why is this double check necessary?
     value = field.descendants_of_in_hierarchy value, @use_codes_instead_of_es_codes
     validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
     query_key = field.es_code
@@ -98,7 +99,7 @@ module SearchBase
   def where(properties = {})
     properties.each do |es_code, value|
       field = check_field_exists es_code
-
+      
       if value.is_a? String
         case
         when value[0 .. 1] == '<=' then lte(field, value[2 .. -1].strip)

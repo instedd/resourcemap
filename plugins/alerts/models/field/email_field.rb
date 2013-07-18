@@ -7,9 +7,9 @@ class Field::EmailField < Field
     "Example of valid email: myemail@resourcemap.com."
   end
 
-	def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site = nil)
-		value.blank? ? nil : check_email_format(value)
-	end
+  def valid_value?(email_value, site=nil)
+    check_email_format(email_value)
+  end
 
 	private
 
@@ -18,7 +18,7 @@ class Field::EmailField < Field
     if value.match(regex).nil?
       raise "Invalid email address in field #{code}"
     end
-    value
+    true
   end
 
 end
