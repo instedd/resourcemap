@@ -263,16 +263,18 @@ class ImportWizard
         field = Field.new kind: column_spec[:kind].to_s
       end
 
+      collection_sites = collection.sites.index_by &:id
       validated_csv_column = []
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
           site = nil
           # load the site for the identifiers fields.
-          # we need the site in order to validate the uniqueness of the luhn id value
+          # we need the site in order to validate the uniqueness of the luhn id value          
           if id_column && field.kind == 'identifier' && field.has_luhn_format?() 
             site_id = id_column[field_number]
-            site = collection.sites.find(site_id) if (site_id && !site_id.blank?)
+            site = collection_sites[site_id] if (site_id && !site_id.blank?)
           end
+
 
           validate_column_value(column_spec, csv_field_value, field, collection, site)
         rescue => ex
