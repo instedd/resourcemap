@@ -3,6 +3,18 @@ class SerializeExistingActivityData < ActiveRecord::Migration
     connection.select_rows("SELECT id, data FROM activities").each do |id, data|
       next if data.blank?
 
+      next if config.blank?
+      begin
+        config = YAML.load(config)
+      rescue Exception => ex
+        begin
+         config.force_encoding "iso8859-1"
+        config = YAML.load(config)
+        rescue Exception => ex2
+          next
+        end
+      end
+
       data = YAML.load(data)
       binary_data = MarshalZipSerializable.dump(data)
       if binary_data.nil?
