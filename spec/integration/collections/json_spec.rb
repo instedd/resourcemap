@@ -1,8 +1,8 @@
 require 'spec_helper' 
 
-describe "read_Rss" do 
+describe "read_json" do 
  
-  it "should read rss file", js:true do
+  it "should read json", js:true do
     admin = User.make(:email => 'admin@admin.com')
     collection = create_collection_for(admin) 
     10.times  do |i| 
@@ -12,13 +12,14 @@ describe "read_Rss" do
     visit collections_path
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[1]/button[2]').click
-    click_link('RSS')
+    click_link('JSON')
     sleep 3
     new_window=page.driver.browser.window_handles.last 
+    sleep 2
     page.within_window new_window do
-        page.title.should eq collection.name
-        page.current_url.should include("/api/collections/#{collection.id}.rss")
-        page.save_screenshot 'Rss.png'
+        # page.title.should eq collection.name 
+        page.current_url.should include("/api/collections/#{collection.id}.json")
+        page.save_screenshot 'Json.png'
     end
   end
 end
