@@ -205,12 +205,12 @@
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
-              %div{ko(click: 'edit')}
+              %div
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
                 <!-- ko if: hasValue() && !error() -->
                 <!-- ko if: writeable -->
-                %span.value{ko(text: :valueUI, visible: '!editing()')}
+                %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit')}                
                 <!-- /ko -->
                 <!-- ko if: !writeable -->
                 %span.value{ko(text: :valueUI)}
@@ -221,7 +221,7 @@
                 <!-- /ko -->
                 <!-- ko if: !hasValue() &&  !error() -->
                 <!-- ko if: writeable -->
-                %span.value{ko(visible: '!editing()'), style: 'color:grey;cursor:pointer'} (no value)
+                %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no value)
                 <!-- /ko -->
                 <!-- ko if: !writeable -->
                 %span.value (no value)

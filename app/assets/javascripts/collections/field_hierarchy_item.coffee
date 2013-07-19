@@ -34,4 +34,5 @@ onCollections ->
       @parent.toggleParentsExpand() if @parent
 
 
-    select: => @field.value(@id)
+    select: => 
+      @field.value(@id)
