@@ -168,7 +168,7 @@
         %tbody
           %tr
             %td
-              %div{ko(click: 'editName')}
+              %div.site_row{ko(click: 'editName')}
                 %label Name:
                 - if current_user.is_guest
                   %span.value{ko(text: :name, visible: '!editingName()')}
@@ -177,7 +177,7 @@
                 <!-- ko if: editingName() -->
                 = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                 <!-- /ko -->
-              %div{ko(click: 'editLocation')}
+              %div.site_row{ko(click: 'editLocation')}
                 %label Location:
                 <!-- ko if: !hasLocation() -->
                 - if current_user.is_guest
@@ -195,7 +195,7 @@
                 = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-text'}
                 <!-- /ko -->
               - if Settings.mobile_id?
-                %div
+                %div.site_row
                   %label ID With Prefix:
                   %span.value{ko(text: :idWithPrefix)}
               / ko if: collection.readable($data)
@@ -205,7 +205,7 @@
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
-              %div
+              %div.site_row
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
                 <!-- ko if: hasValue() && !error() -->

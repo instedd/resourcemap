@@ -53,7 +53,7 @@
     }
     @include clearfix(); 
   }
-    tr td div:hover {
+    tr td div.site_row:hover {
       background: #eeeeee;
       cursor: pointer;
     }
