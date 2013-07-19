@@ -3,9 +3,14 @@ class SerializeExistingFieldsConfig < ActiveRecord::Migration
     connection.select_rows("SELECT id, config FROM fields").each do |id, config|
       next if config.blank?
       begin
-        config = YAML.load(config) 
-      rescue Exception => ex  
-        next
+        config = YAML.load(config)
+      rescue Exception => ex
+        begin
+          config.force_encoding "iso8859-1"
+          config = YAML.load(config)
+        rescue Exception => ex2
+          next
+        end
       end
       binary_config = MarshalZipSerializable.dump(config)
       if binary_config.nil?
