@@ -1,4 +1,4 @@
-= form_for collection do |f|
+= form_for collection, html: {style: "width: 960px;"}  do |f|
   :javascript
     $(document).ready(function(){ var select_icon = $('#select_icon');
       if(select_icon.val() == "")
