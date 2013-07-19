@@ -8,13 +8,12 @@ class SerializeExistingActivityData < ActiveRecord::Migration
       rescue Exception => ex
         begin
          data.force_encoding "iso8859-1"
-        data = YAML.load(data)
+         data = YAML.load(data)
         rescue Exception => ex2
           next
         end
       end
 
-      data = YAML.load(data)
       binary_data = MarshalZipSerializable.dump(data)
       if binary_data.nil?
         connection.execute("UPDATE activities SET data=NULL WHERE id=#{id}")

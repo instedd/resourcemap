@@ -8,7 +8,7 @@ class SerializeExistingFieldsConfig < ActiveRecord::Migration
       rescue Exception => ex
         begin
          config.force_encoding "iso8859-1"
-        config = YAML.load(config)
+          config = YAML.load(config)
         rescue Exception => ex2
           next
         end
