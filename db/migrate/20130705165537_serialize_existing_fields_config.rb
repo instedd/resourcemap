@@ -1,6 +1,7 @@
 class SerializeExistingFieldsConfig < ActiveRecord::Migration
   def up
     connection.select_rows("SELECT id, config FROM fields").each do |id, config|
+
       next if config.blank?
       begin
         config = YAML.load(config)
