@@ -1,15 +1,14 @@
 class SerializeExistingActivityData < ActiveRecord::Migration
   def up
     connection.select_rows("SELECT id, data FROM activities").each do |id, data|
-      next if data.blank?
 
-      next if config.blank?
+      next if data.blank?
       begin
-        config = YAML.load(config)
+        data = YAML.load(data)
       rescue Exception => ex
         begin
-         config.force_encoding "iso8859-1"
-        config = YAML.load(config)
+         data.force_encoding "iso8859-1"
+        data = YAML.load(data)
         rescue Exception => ex2
           next
         end
