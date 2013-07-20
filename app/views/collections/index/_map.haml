@@ -210,7 +210,7 @@
                 %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
                 <!-- ko if: hasValue() && !error() -->
                 <!-- ko if: writeable -->
-                %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit')}                
+                %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit')}
                 <!-- /ko -->
                 <!-- ko if: !writeable -->
                 %span.value{ko(text: :valueUI)}
@@ -237,7 +237,7 @@
               <!-- /ko -->
               <!-- /ko -->
               / /ko
-    <!-- ko if: !$root.currentSnapshot() -->
+    <!-- ko if: !$root.currentSnapshot() && $root.currentCollection().sitesPermission.canUpdate($root.showSite()) -->
     .tablebottom
       -# if (can? :edit, site)
       - if current_user && !current_user.is_guest
