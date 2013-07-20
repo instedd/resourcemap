@@ -1,0 +1,35 @@
+ko.bindingHandlers.topPopover =
+  init: (element, valueAccessor, allBindingsAccessor, viewModel) ->
+    value = ko.utils.unwrapObservable(valueAccessor())
+    $(element).CreateBubblePopup({
+      innerHtml: value,
+      themeName:  'bubble',
+      themePath:  '<%= InsteddRails.url %>/theme/images/',
+      position: 'top',
+      innerHtmlStyle: {
+        'color':'#000000',
+        'background-color' :'white'
+        },
+    })
+
+  update: (element, valueAccessor, allBindingsAccessor, viewModel) ->
+    value = ko.utils.unwrapObservable(valueAccessor())
+    $(element).HideAllBubblePopups()
+    $(element).RemoveBubblePopup()
+
+    if !!value
+      options = {
+        innerHtml: value,
+        themeName: 'bubble'
+        themePath:  '<%= InsteddRails.url %>/theme/images/',
+        position: 'top',
+        innerHtmlStyle: {
+          'color': '#000000',
+          'background-color':'white'
+        },
+      }
+
+      $(element).CreateBubblePopup(options)
+
+      # TODO: unless we do this, the popup doesn't refresh its value
+      setTimeout((-> $(element).SetBubblePopupOptions(options)), 400)
