@@ -206,7 +206,7 @@
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
               <!-- ko if: writeable -->
-              .site_row.writeable{ko(click: 'edit')}
+              %div.site_row.writeable{ko(click: 'edit')}
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 %label.field-name{ko(text: 'name', topPopover: "'Field Code: ' + code", css: { error: :error })}
                 <!-- ko if: hasValue() && !error() -->
@@ -226,7 +226,7 @@
                 <!-- /ko -->
               <!-- /ko -->
               <!-- ko if: !writeable -->
-              .site_row
+              %div.site_row
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 %label.field-name{ko(text: 'name', topPopover: "'Field Code: ' + code", css: { error: :error })}
                 <!-- ko if: hasValue() && !error() -->
