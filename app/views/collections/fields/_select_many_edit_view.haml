@@ -8,8 +8,8 @@
   %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
     %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
       %a{ko(text: :label, click: '$parent.selectOption')}
-  %button{ko(click: :save), style: 'float:right'} Update options
-  %button{ko(click: :exit), style: 'float:right'} Cancel
+  %button{ko(click: :save, clickBubble: false), style: 'float:right'} Update options
+  %button{ko(click: :exit, clickBubble: false), style: 'float:right'} Cancel
   .clear
 
 - else

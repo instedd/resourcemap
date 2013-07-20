@@ -1,7 +1,7 @@
 - if single_editing_mode
-  %input{ko(checked: 'value', attr: {id: "'yes-no-input-' + code"}), type: 'checkbox'}
-  %button{ko(click: :save)} OK
-  %button{ko(click: :exit)} Cancel
+  %input{ko(checked: 'value', attr: {id: "'yes-no-input-' + code"}, stopBubble: true), type: 'checkbox'}
+  %button{ko(click: :save, clickBubble: false)} OK
+  %button{ko(click: :exit, clickBubble: false)} Cancel
 - else
   %input{ko(checked: 'value', attr: {id: "'yes-no-input-' + code"}), type: 'checkbox', id: 'yesno'}
 
