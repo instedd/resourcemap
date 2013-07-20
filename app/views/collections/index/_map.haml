@@ -205,7 +205,7 @@
                 %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
-              %div.site_row
+              %div.site_row{ko(css: {writeable: 'writeable' })}
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
                 <!-- ko if: hasValue() && !error() -->

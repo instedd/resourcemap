@@ -1,10 +1,10 @@
 // Tables
 // ----------------
 
-.tableheader.expanded { 
-  width:960px; 
-  div { 
-    display:inline-block 
+.tableheader.expanded {
+  width:960px;
+  div {
+    display:inline-block
     &:first-child {
       border-right:1px solid #eeeeee;
       width:295px;
@@ -30,15 +30,14 @@
     border-top:1px #EEE solid;
   }
 
-  div { 
-    padding:4px 8px; 
+  div {
+    padding:4px 8px;
     margin:5px 0 0 0;
 
     label {
       font-weight:bold;
       display: inline-block;
       width:25%;
-      cursor: pointer;
 
       &.error {
         display: inline-block !important;
@@ -51,21 +50,23 @@
     &.coldiv:hover {
       background: none;
     }
-    @include clearfix(); 
+    @include clearfix();
   }
     tr td div.site_row:hover {
       background: #eeeeee;
+    }
+    tr td div.site_row.writable:hover {
       cursor: pointer;
     }
-  hr { 
-    width:316px; 
-    margin:0px 0px 10px 5px 
+  hr {
+    width:316px;
+    margin:0px 0px 10px 5px
   }
-  table { 
+  table {
     width: 100%
   }
-  .hierarchy-container { 
-    width: auto 
+  .hierarchy-container {
+    width: auto
   }
 }
 
@@ -136,53 +137,53 @@
 /*.cheight {
   height: 400px !important;
 }*/
-@media screen and (min-height: 300px) {  
-  .cheight { height: 200px !important; } 
+@media screen and (min-height: 300px) {
+  .cheight { height: 200px !important; }
 }
 
-@media screen and (min-height: 400px) {  
-  .cheight { height: 280px !important; } 
+@media screen and (min-height: 400px) {
+  .cheight { height: 280px !important; }
 }
 
-@media screen and (min-height: 500px) {  
-  .cheight { height: 380px !important; } 
+@media screen and (min-height: 500px) {
+  .cheight { height: 380px !important; }
 }
 
-@media screen and (min-height: 600px) {  
-  .cheight { height: 480px !important; } 
+@media screen and (min-height: 600px) {
+  .cheight { height: 480px !important; }
 }
 
-@media screen and (min-height: 700px) {  
+@media screen and (min-height: 700px) {
   .cheight { height: 580px !important; }
-   @-moz-document url-prefix() { 
+   @-moz-document url-prefix() {
     .cheight { height: 530px !important; }
-  }  
+  }
 }
-@media screen and (min-height: 800px) {  
-  .cheight { height: 630px !important; } 
+@media screen and (min-height: 800px) {
+  .cheight { height: 630px !important; }
 }
 
 body.fullscreen {
 
-  @media screen and (min-height: 500px) {  
-    .cheight { height: 385px !important; } 
+  @media screen and (min-height: 500px) {
+    .cheight { height: 385px !important; }
   }
 
-  @media screen and (min-height: 650px) {  
-    .cheight { height: 550px !important; } 
+  @media screen and (min-height: 650px) {
+    .cheight { height: 550px !important; }
   }
 
-  @media screen and (min-height: 700px) {  
-    .cheight { height: 600px !important; } 
+  @media screen and (min-height: 700px) {
+    .cheight { height: 600px !important; }
   }
-  @media screen and (min-height: 800px) {  
-    .cheight { height: 705px !important; } 
+  @media screen and (min-height: 800px) {
+    .cheight { height: 705px !important; }
   }
 
 }
 
-@-moz-document url-prefix() { 
-  @media screen and (min-height: 700px) {  
+@-moz-document url-prefix() {
+  @media screen and (min-height: 700px) {
     body.fullscreen .cheight { height: 530px !important; }
   }
-}   
+}
