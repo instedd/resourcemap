@@ -160,15 +160,11 @@ describe ImportWizard do
 
     sites_errors = sites[:errors]
     data_errors = sites_errors[:data_errors]
-    data_errors.length.should eq(2)
+    data_errors.length.should eq(1)
 
-    data_errors[0][:description].should eq("Some of the values in column 2 are not valid for the type luhn identifier: the value is repeated in row 2.")
+    data_errors[0][:description].should eq("Some of the values in column 2 are not valid for the type luhn identifier: the value is repeated in row 1 and 2.")
     data_errors[0][:column].should eq(1)
-    data_errors[0][:rows].should eq([0])
-
-    data_errors[1][:description].should eq("Some of the values in column 2 are not valid for the type luhn identifier: the value is repeated in row 1.")
-    data_errors[1][:column].should eq(1)
-    data_errors[1][:rows].should eq([1])
+    data_errors[0][:rows].should eq([0, 1])
   end
 
    it "should not show validation error if the luhn value is empty" do

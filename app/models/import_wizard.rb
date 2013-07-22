@@ -277,9 +277,9 @@ class ImportWizard
 
           # Luhn specific validation
           if field.kind == 'identifier' && field.has_luhn_format?()
-            repetitions = csv_column.each_index.select{|i| !csv_field_value.blank? && csv_column[i] == csv_field_value && i != field_number}
+            repetitions = csv_column.each_index.select{|i| !csv_field_value.blank? && csv_column[i] == csv_field_value }
 
-            raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}" if repetitions.length > 0
+            raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}" if repetitions.length > 1
           end
 
           validate_column_value(column_spec, csv_field_value, field, collection, site)
