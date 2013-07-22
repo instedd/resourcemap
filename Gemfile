@@ -29,6 +29,8 @@ group :test do
   gem 'nokogiri'
   gem 'capybara'
   gem 'database_cleaner'
+  gem 'simplecov'
+  gem 'simplecov-rcov'
 end
 
 group :test, :development do
