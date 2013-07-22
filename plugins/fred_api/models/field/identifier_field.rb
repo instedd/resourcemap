@@ -30,7 +30,12 @@ class Field::IdentifierField < Field
   end
 
   def format_implementation
-    "Field::IdentifierField::#{config['format'] || 'Normal'}".constantize.new(self)
+    format = if config && config['format']
+      config['format']
+    else
+      'Normal'
+    end
+    "Field::IdentifierField::#{format}".constantize.new(self)
   end
 end
 

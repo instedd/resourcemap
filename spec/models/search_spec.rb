@@ -426,8 +426,8 @@ describe Search do
   context "sort" do
     let!(:numeric) { layer.numeric_fields.make :code => 'numeric' }
 
-    let!(:site1) { collection.sites.make :name => 'Brian Adams', :properties => {numeric.es_code => 2} }
     let!(:site2) { collection.sites.make :name => 'Esther Goris', :properties => {numeric.es_code => 1} }
+    let!(:site1) { collection.sites.make :name => 'Brian Adams', :properties => {numeric.es_code => 2} }
 
     let!(:search) { collection.new_search.use_codes_instead_of_es_codes }
 
