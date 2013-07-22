@@ -118,7 +118,7 @@ class FredApiController < ApplicationController
 
     # Selection is made in memory for simplicity
     # In the future we could use ES method fields, but the response has different structure.
-    @fred_json_facilities = select_properties(fred_json_facilities, parse_fields(params[:fields])) if params[:fields]
+    @fred_json_facilities = select_properties(@fred_json_facilities, parse_fields(params[:fields])) if params[:fields]
 
     respond_to do |format|
       format.json { render json: {facilities: @fred_json_facilities} }
@@ -158,7 +158,7 @@ class FredApiController < ApplicationController
     properties = facility_param["properties"] || {}
 
     properties_with_identifiers = properties.merge(convert_to_properties(facility_param["identifiers"]))
-    
+
     properties_by_es_code = {}
     properties_with_identifiers.each_pair do |code, value|
       field = fields[code]
