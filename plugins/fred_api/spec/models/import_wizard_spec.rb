@@ -171,5 +171,27 @@ describe ImportWizard do
     data_errors[1][:rows].should eq([1])
   end
 
+   it "should not show validation error if the luhn value is empty" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Luhn']
+      csv << ['Bar', '']
+      csv << ['Baz', '']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Luhn', use_as: 'existing_field', field_id: luhn.id},
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string
+    ImportWizard.mark_job_as_pending user, collection
+    sites = (ImportWizard.validate_sites_with_columns user, collection, specs)
+
+    sites_errors = sites[:errors]
+    data_errors = sites_errors[:data_errors]
+    data_errors.length.should eq(0)
+  end
+
+
 
 end

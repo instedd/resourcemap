@@ -269,15 +269,15 @@ class ImportWizard
         begin
           site = nil
           # load the site for the identifiers fields.
-          # we need the site in order to validate the uniqueness of the luhn id value          
-          if id_column && field.kind == 'identifier' && field.has_luhn_format?() 
+          # we need the site in order to validate the uniqueness of the luhn id value
+          if id_column && field.kind == 'identifier' && field.has_luhn_format?()
             site_id = id_column[field_number]
             site = collection_sites[site_id.to_s] if (site_id && !site_id.blank?)
           end
 
           # Luhn specific validation
           if field.kind == 'identifier' && field.has_luhn_format?()
-            repetitions = csv_column.each_index.select{|i| csv_column[i] == csv_field_value && i != field_number}
+            repetitions = csv_column.each_index.select{|i| !csv_field_value.blank? && csv_column[i] == csv_field_value && i != field_number}
 
             raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}" if repetitions.length > 0
           end
