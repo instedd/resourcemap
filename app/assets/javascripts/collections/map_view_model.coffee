@@ -475,5 +475,9 @@ onCollections ->
       @initInsteddPlatform()
       # fix dinamic DOM
       # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
-      $(".ux-datepicker").removeClass('hasDatepicker').datepicker(options)
+      $(".ux-datepicker").removeClass('hasDatepicker')
+      options.dateFormat = 'mm/dd/yy'
+      $(".ux-datepicker").not(".dd_mm_yyyy_format").datepicker(options)
+      options.dateFormat = 'dd/mm/yy'
+      $(".ux-datepicker.dd_mm_yyyy_format").datepicker(options)
 

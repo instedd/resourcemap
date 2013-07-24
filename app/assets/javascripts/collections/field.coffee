@@ -39,7 +39,7 @@ onCollections ->
         @hierarchy = @options
 
       if @kind == 'date'
-        @format = data.config?.format
+        @format =  data.config?.format
 
       if @kind == 'hierarchy'
         @hierarchy = data.config?.hierarchy
