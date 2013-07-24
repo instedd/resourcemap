@@ -1,6 +1,6 @@
 class Field::DateFormat::DateMmDdYyyyFormat < Field::DateFormat::FormatImplementation
 
-  def format_message()
+  def format_message
     "The configured date format is mm/dd/yyyy."
   end
 

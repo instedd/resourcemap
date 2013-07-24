@@ -169,6 +169,17 @@ onLayers ->
       json.config = {hierarchy: @hierarchy()}
 
   class @Field_date extends @FieldImpl
+    constructor: (field) ->
+      super(field)
+      @advancedExpanded = ko.observable false
+      @format = ko.observable field.config?.format || 'mm_dd_yyyy'
+
+    toggleAdvancedExpanded: =>
+      @advancedExpanded(not @advancedExpanded())
+
+    toJSON: (json) =>
+      json.config =
+        format: @format()
 
   class @Field_site extends @FieldImpl
 

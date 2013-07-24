@@ -38,6 +38,9 @@ onCollections ->
 
         @hierarchy = @options
 
+      if @kind == 'date'
+        @format = data.config?.format
+
       if @kind == 'hierarchy'
         @hierarchy = data.config?.hierarchy
 
@@ -101,7 +104,10 @@ onCollections ->
         value
 
     datePickerFormat: (date) =>
-      date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear()
+      if @format == "dd_mm_yyyy"
+        date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
+      else
+        date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear()
 
     buildHierarchyItems: =>
       @fieldHierarchyItemsMap = {}

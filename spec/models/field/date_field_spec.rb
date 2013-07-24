@@ -14,19 +14,19 @@ describe Field::DateField do
     end
   end
 
-  describe "Format dd/mmm/yyyy" do
-    let!(:field) { Field::DateField.make code: 'date', config: {format: "dd_mmm_yyyy"}.with_indifferent_access }
+  describe "Format dd/mm/yyyy" do
+    let!(:field) { Field::DateField.make code: 'date', config: {format: "dd_mm_yyyy"}.with_indifferent_access }
 
     it "should be created with dd/mmm/yyyy format" do
-      field.format_message().should eq "The configured date format is dd/mmm/yyyy."
+      field.format_message().should eq "The configured date format is dd/mm/yyyy."
     end
 
     it "should fail in decoding invalid value" do
-      expect { field.decode("08/Hey/2013") }.to raise_error(RuntimeError, "Invalid date value in field date. The configured date format is dd/mmm/yyyy.")
+      expect { field.decode("08/Hey/2013") }.to raise_error(RuntimeError, "Invalid date value in field date. The configured date format is dd/mm/yyyy.")
     end
 
     it "should decode valid value" do
-      field.decode("26/Dec/1988").should eq("1988-12-26T00:00:00Z")
+      field.decode("26/12/1988").should eq("1988-12-26T00:00:00Z")
     end
 
   end

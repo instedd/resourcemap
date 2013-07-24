@@ -81,7 +81,7 @@ onImportWizard ->
                   error_description.more_info = "Column #{errorColumns[0] + 1} has code '#{errorId}'. To fix this issue, change its code."
               when 'non_existent_site_id'
                 # In this case errorColumns contains an object with the following structure:
-                # {column: 1, rows: [1, 3, 5, 6]} 
+                # {column: 1, rows: [1, 3, 5, 6]}
                 error = errorColumns
                 error_description.columns = [error.column]
                 error_description.description = "There are #{error.rows.length} issues with the values in column #{error.column + 1}."

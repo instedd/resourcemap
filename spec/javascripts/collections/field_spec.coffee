@@ -198,26 +198,6 @@ describe 'Collection', ->
         @field.exit()
         expect(@field.value()).toEqual([1, 2])
 
-    describe 'Date Field', ->
-      beforeEach ->
-        @field = new Field { id: 1, code: 'creation', name: 'Creation', kind: 'date' }
-        @field.setValueFromSite('1012-12-26T03:00:00.000Z')
-
-      it 'should have value when set one', ->
-        expect(@field.hasValue()).toBeTruthy()
-
-      it 'should not fail when no value is selected', ->
-        @field.value(undefined)
-        expect(@field.value()).toEqual(undefined)
-
-      it 'should get value for ui', ->
-        expect(@field.valueUI()).toEqual('12/26/1012')
-
-      it 'value should be the in date_picker_format if valueUI changes', ->
-        @field.valueUI('12/25/1012')
-        expect(@field.value()).toEqual('12/25/1012')
-        expect(@field.valueUI()).toEqual('12/25/1012')
-
     describe 'Site Field', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'techreference', name: 'Reference', kind: 'site' }
