@@ -83,9 +83,11 @@ onCollections ->
       ($.trim(@expandedRefinePropertyDateTo()).length == 0 || $.trim(@expandedRefinePropertyDateFrom()).length == 0)
 
     @anyDateParameterWithInvalidFormat: ->
+      field = @currentCollection().findFieldByEsCode @expandedRefineProperty()
+      dateFormat = if field?.format == "dd_mm_yyyy" then 'dd/mm/yy' else 'mm/dd/yy'
       try
-        $.datepicker.parseDate('mm/dd/yy', @expandedRefinePropertyDateTo())
-        $.datepicker.parseDate('mm/dd/yy', @expandedRefinePropertyDateFrom())
+        $.datepicker.parseDate(dateFormat, @expandedRefinePropertyDateTo()) if dateFormat
+        $.datepicker.parseDate(dateFormat, @expandedRefinePropertyDateFrom()) if dateFormat
         false
       catch e
         true

@@ -137,7 +137,7 @@ describe 'Collection', ->
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 2
 
-      describe 'date kind', ->
+      describe 'date kind mm/dd/yyyy format', ->
         beforeEach ->
           @model.expandedRefinePropertyDateFrom '12/26/1988'
           @model.expandedRefinePropertyDateTo '12/28/1988'
@@ -187,6 +187,26 @@ describe 'Collection', ->
             model.expandedRefineProperty @date_field.esCode
             @model.filterByProperty()
             expect(@model.filters().length).toEqual 0
+
+      describe 'date kind dd/mm/yyyy format', ->
+        beforeEach ->
+          @date_dd_mm_yyyy = new Field { id: 100, code: 'creation', name: 'Creation', kind: 'date', config: { format: "dd_mm_yyyy" } }
+          @model.expandedRefineProperty @date_dd_mm_yyyy.esCode
+          @collection.fields [@bed_field, @owner_field, @email_field, @phone_field, @date_field, @date_field_2, @hierarchy, @numeric_field, @site_field, @date_dd_mm_yyyy]
+          @model.currentCollection @collection
+
+        it 'should determine if dates are in correct format', ->
+          @model.expandedRefinePropertyDateFrom '12/27/1988'
+          @model.expandedRefinePropertyDateTo '12/28/1988'
+          expect(@model.anyDateParameterWithInvalidFormat()).toEqual true
+
+        it 'of date should add text filter', ->
+          @model.expandedRefinePropertyDateFrom '27/12/1988'
+          @model.expandedRefinePropertyDateTo '28/12/1988'
+          @model.filterByProperty()
+          expect(@model.filters().length).toEqual 1
+          expect(@model.filters()[0].description()).toEqual "where #{@date_dd_mm_yyyy.name} is between 27/12/1988 and 28/12/1988"
+
 
       describe 'site kind', ->
         beforeEach ->

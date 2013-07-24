@@ -474,7 +474,7 @@ describe Search do
 
   end
 
-  context "filter by date field range" do
+  context "filter by date field range format mm/dd/yyyy" do
     let!(:creation) { layer.date_fields.make code: 'creation' }
     let!(:inaguration) { layer.date_fields.make code: 'inaguration' }
 
@@ -514,7 +514,27 @@ describe Search do
       assert_results search, site1
     end
 
+  end
 
+  context "filter by date field range format dd/mm/yyyy" do
+    let!(:creation) { layer.date_fields.make code: 'creation', config: {'format' => 'dd_mm_yyyy'} }
+
+    let!(:site1) { collection.sites.make :name => 'b', properties: { creation.es_code =>"2012-09-07T00:00:00Z" }}
+    let!(:site2) { collection.sites.make :name => 'a', properties: { creation.es_code =>"2013-09-07T00:00:00Z" }}
+
+
+    it "should search by range" do
+      search = collection.new_search
+      search.where creation.es_code => "=06/09/2012,08/09/2012"
+      assert_results search, site1
+    end
+
+    it "searches by date with @code" do
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      search.where creation.code => "=06/09/2012,08/09/2012"
+      assert_results search, site1
+    end
 
   end
 

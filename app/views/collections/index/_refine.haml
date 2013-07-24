@@ -107,9 +107,9 @@
         %option{value: 'empty'} has no value
 
       <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
-      %input.ux-datepicker#range_from{ko(value: '$root.expandedRefinePropertyDateFrom', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
+      %input.ux-datepicker#range_from{ko(value: '$root.expandedRefinePropertyDateFrom', valueUpdate: :afterkeydown, hasfocus: true, css:{ dd_mm_yyyy_format: "format == 'dd_mm_yyyy'"}), type: :text}
       and
-      %input.ux-datepicker#range_to{ko(value: '$root.expandedRefinePropertyDateTo', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
+      %input.ux-datepicker#range_to{ko(value: '$root.expandedRefinePropertyDateTo', valueUpdate: :afterkeydown, hasfocus: true, css:{ dd_mm_yyyy_format: "format == 'dd_mm_yyyy'"}), type: :text}
       <!-- /ko -->
 
       %a.button.white{ko(click: '$root.filterByProperty')} OK
