@@ -19,3 +19,4 @@ spec/fixtures/instant_file.xml
 dump.rdb
 REVISION
 VERSION
+coverage/*

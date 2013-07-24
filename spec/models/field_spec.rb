@@ -278,9 +278,9 @@ describe Field do
 
       it "should validate format for date field" do
         date.apply_format_and_validate("11/27/2012",false, collection).should == "2012-11-27T00:00:00Z"
-        expect { date.apply_format_and_validate("27/10/1298", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}")
-        expect { date.apply_format_and_validate("11/27", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}")
-        expect { date.apply_format_and_validate("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}")
+        expect { date.apply_format_and_validate("27/10/1298", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}. The configured date format is mm/dd/yyyy.")
+        expect { date.apply_format_and_validate("11/27", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}. The configured date format is mm/dd/yyyy.")
+        expect { date.apply_format_and_validate("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid date value in field #{date.code}. The configured date format is mm/dd/yyyy.")
       end
 
       it "should validate format for hierarchy field" do

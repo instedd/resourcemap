@@ -1,6 +1,4 @@
-%hr/
-%img.members-collapse-icon{ko(click: 'impl().toggleAdvancedExpanded', attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (impl().advancedExpanded() ? 'Down' : 'Right') + '.png'"})}
-%label{ko(click: 'impl().toggleAdvancedExpanded')} Advanced
+= render 'layers/advanced_field_label'
 
 /ko if: impl().advancedExpanded()
 %br/

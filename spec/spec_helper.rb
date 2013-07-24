@@ -1,8 +1,12 @@
 require 'simplecov'
 require 'simplecov-rcov'
-SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
-
-SimpleCov.start 'rails'
+class SimpleCov::Formatter::MergedFormatter
+  def format(result)
+     SimpleCov::Formatter::HTMLFormatter.new.format(result)
+     SimpleCov::Formatter::RcovFormatter.new.format(result)
+  end
+end
+SimpleCov.formatter = SimpleCov::Formatter::MergedFormatter
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] ||= 'test'
@@ -90,7 +94,9 @@ RSpec.configure do |config|
   # Delete all test indexes after running each spec
   config.after(:each) do
     Tire.delete_indices_that_match /^collection_test_\d+/
+    sleep 1
   end
+
 # Mock nuntium access and gateways management
   config.before(:each) do
     @nuntium = double("nuntium")

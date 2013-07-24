@@ -764,7 +764,7 @@ describe ImportWizard do
     data_errors = sites_errors[:data_errors]
 
     data_errors[0][:example].should eq("Values must be integers.")
-    data_errors[1][:example].should eq("Example of valid date: 1/25/2013.")
+    data_errors[1][:example].should eq("Example of valid date: 01/25/2013.")
     data_errors[2][:example].should eq("Example of valid email: myemail@resourcemap.com.")
     data_errors[3][:example].should eq("Some valid values for this hierarchy are: Dad, Son, Bro.")
   end

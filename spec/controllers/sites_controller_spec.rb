@@ -25,7 +25,7 @@ describe SitesController do
   #TODO: Move this functionality to api and rescue validation-exceptions with response_code = 400 and a 'check api doc' message
 
   it 'should validate format for numeric field' do
-    post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number' 
+    post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number'
     json = JSON.parse response.body
     json["error_message"].should eq("Invalid numeric value in field #{numeric.code}")
     post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2'
@@ -37,7 +37,7 @@ describe SitesController do
     validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
     post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "117"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid date value in field #{date.code}")
+    json["error_message"].should eq("Invalid date value in field #{date.code}. The configured date format is mm/dd/yyyy.")
   end
 
   it "should validate format for hierarchy field" do
@@ -51,7 +51,7 @@ describe SitesController do
   it "should validate format for select_one field" do
     post :update_property, site_id: site.id, format: 'json', es_code: select_one.es_code, value: "1"
     validate_site_property_value(site, select_one, 1)
-    post :update_property, site_id: site.id, format: 'json', es_code: select_one.es_code, value: "one" 
+    post :update_property, site_id: site.id, format: 'json', es_code: select_one.es_code, value: "one"
     json = JSON.parse response.body
     json["error_message"].should eq("Invalid option in field #{select_one.code}")
   end
@@ -63,10 +63,10 @@ describe SitesController do
     validate_site_property_value(site, select_many, [2, 1])
     post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "2, 1"
     validate_site_property_value(site, select_many, [2, 1])
-    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "[two,]"  
+    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "[two,]"
     json = JSON.parse response.body
     json["error_message"].should eq("Invalid option '[two' in field #{select_many.code}")
-    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "two,one"  
+    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "two,one"
     json = JSON.parse response.body
     json["error_message"].should eq("Invalid option 'two' in field #{select_many.code}")
   end
@@ -82,7 +82,7 @@ describe SitesController do
   it "should validate format for user field" do
     post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: user.email
     validate_site_property_value(site, director, user.email)
-    post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com" 
+    post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com"
     json = JSON.parse response.body
     json["error_message"].should eq("Non-existent user email address in field #{director.code}")
   end
