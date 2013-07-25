@@ -8,10 +8,16 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
   has_many :memberships
   has_many :channels
+  has_many :layer_memberships
   has_many :collections, through: :memberships, order: 'collections.name ASC'
   has_one :user_snapshot
 
   attr_accessor :is_guest
+
+  # In order to use it in the ability file
+  def readable_layer_ids
+    layer_memberships.where(:read => true).map(&:layer_id).uniq
+  end
 
   def create_collection(collection)
     return false unless collection.save

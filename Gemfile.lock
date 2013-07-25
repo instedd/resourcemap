@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/ryanb/cancan.git
+  revision: cbd352c799182b1ba9c9f5c21afd3c8476af3ea1
+  ref: cbd352c799182b1ba9c9f5c21afd3c8476af3ea1
+  specs:
+    cancan (1.6.9)
+
+GIT
   remote: https://github.com/manastech/dist.git
   revision: 44e5deadb0d9f63919fd68de5fce4ffdae2728a7
   specs:
@@ -45,7 +52,6 @@ GEM
     bcrypt-ruby (3.0.1)
     breadcrumbs_on_rails (2.2.0)
     builder (3.0.4)
-    cancan (1.6.9)
     capistrano (2.15.5)
       highline
       net-scp (>= 1.0.0)
@@ -296,7 +302,7 @@ PLATFORMS
 
 DEPENDENCIES
   breadcrumbs_on_rails
-  cancan
+  cancan!
   capistrano
   capybara
   ci_reporter

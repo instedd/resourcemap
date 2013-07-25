@@ -19,7 +19,7 @@ gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
 gem 'uuidtools'
 gem 'newrelic_rpm'
-gem 'cancan'
+gem 'cancan', :git => 'git://github.com/ryanb/cancan.git', :ref => 'cbd352c799182b1ba9c9f5c21afd3c8476af3ea1'
 
 group :test do
   gem 'shoulda-matchers'

@@ -28,5 +28,17 @@ class Ability
     # In progress
     can :max_value_of_property, Collection, :memberships => { :user_id => user.id }
     can :decode_hierarchy_csv, Collection, :memberships => { :user_id => user.id }
+
+    ### Layer ###
+
+    # A user may read a layer if she's the collection administrator...
+    can :read, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
+    # ...or if she has been given explicit read access to it.
+    can :read, Layer, :collection => { :memberships => { :user_id => user.id} }, :id => user.readable_layer_ids
+
+    # A user can write the layer only if she is the collection admin
+    can :update, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
+    can :create, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
+
   end
 end

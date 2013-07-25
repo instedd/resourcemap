@@ -2,20 +2,20 @@ require 'spec_helper'
 require "cancan/matchers"
 
 describe Ability do
+	let!(:admin) { User.make }
+	let!(:guest) { User.make is_guest: true}
+	let!(:user) { User.make }
+	let!(:member) { User.make }
+	let!(:collection) { admin.create_collection Collection.make }
+	let!(:membership) { collection.memberships.create! :user_id => member.id, admin: false }
+
+	let!(:admin_ability) { Ability.new(admin)}
+	let!(:member_ability) { Ability.new(member)}
+	let!(:user_ability) { Ability.new(user)}
+	let!(:guest_ability) { Ability.new(guest)}
+
 
 	describe "Collection Abilities" do
-		let!(:admin) { User.make }
-		let!(:guest) { User.make is_guest: true}
-		let!(:user) { User.make }
-		let!(:member) { User.make }
-		let!(:collection) { admin.create_collection Collection.make }
-		let!(:membership) { collection.memberships.create! :user_id => member.id, admin: false }
-
-		let!(:admin_ability) { Ability.new(admin)}
-		let!(:member_ability) { Ability.new(member)}
-		let!(:user_ability) { Ability.new(user)}
-		let!(:guest_ability) { Ability.new(guest)}
-
 
 		describe "Destroy collection" do
 			it { admin_ability.should be_able_to(:destroy, collection) }
@@ -31,7 +31,7 @@ describe Ability do
 			it { guest_ability.should_not be_able_to(:create_snapshot, collection) }
 		end
 
-		describe "Update collection" do 
+		describe "Update collection" do
 			it { admin_ability.should be_able_to(:update, collection) }
 			it { member_ability.should_not be_able_to(:upate, collection) }
 			it { user_ability.should_not be_able_to(:update, collection) }
@@ -66,5 +66,47 @@ describe Ability do
 			it { guest_ability.should_not be_able_to(:members, collection) }
 		end
 	end
+
+	describe "Layer Abilities" do
+		let!(:layer) { Layer.make collection: collection, user: admin }
+		let!(:new_layer) { Layer.new collection: collection, user: admin }
+
+
+		describe "Create layer" do
+			it { admin_ability.should be_able_to(:create, new_layer) }
+			it { member_ability.should_not be_able_to(:create, new_layer) }
+			it { user_ability.should_not be_able_to(:create, new_layer) }
+			it { guest_ability.should_not be_able_to(:create, new_layer) }
+		end
+
+		describe "Update layer" do
+			it { admin_ability.should be_able_to(:update, layer) }
+			it { member_ability.should_not be_able_to(:update, layer) }
+			it { user_ability.should_not be_able_to(:update, layer) }
+			it { guest_ability.should_not be_able_to(:update, layer) }
+		end
+
+		describe "Read layer with read permission" do
+			let!(:layer_member_read) { LayerMembership.make layer: layer, user: member, read: true }
+			let!(:member_ability) { Ability.new member }
+
+			it { admin_ability.should be_able_to(:read, layer) }
+			it { layer; member_ability.should be_able_to(:read, layer) }
+			it { user_ability.should_not be_able_to(:read, layer) }
+			it { guest_ability.should_not be_able_to(:read, layer) }
+		end
+
+		describe "Should not read layer without read permission" do
+			let!(:layer_member_none) { LayerMembership.make layer: layer, user: member, read: false }
+			let!(:member_ability) { Ability.new member }
+
+			it { admin_ability.should be_able_to(:read, layer) }
+			it { member_ability.should_not be_able_to(:read, layer) }
+			it { user_ability.should_not be_able_to(:read, layer) }
+			it { guest_ability.should_not be_able_to(:read, layer) }
+		end
+
+	end
+
 
 end

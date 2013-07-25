@@ -4,8 +4,6 @@ class ApplicationController < ActionController::Base
   expose(:collection)
   expose(:current_user_snapshot) { UserSnapshot.for current_user, collection }
   expose(:collection_memberships) { collection.memberships.includes(:user) }
-  expose(:layers) {if !current_user_snapshot.at_present? && collection then collection.layer_histories.at_date(current_user_snapshot.snapshot.date) else collection.layers end}
-  expose(:layer)
   expose(:fields) {if !current_user_snapshot.at_present? && collection then collection.field_histories.at_date(current_user_snapshot.snapshot.date) else collection.fields end}
   expose(:activities) { current_user.activities }
   expose(:thresholds) { collection.thresholds.order :ord }
@@ -33,7 +31,7 @@ class ApplicationController < ActionController::Base
   def setup_guest_user
     u = User.new is_guest: true
     # Empty membership for the current collection
-    # This is used in SitesPermissionController.index 
+    # This is used in SitesPermissionController.index
     # TODO: Manage permissions passing current_ability to client
     u.memberships = [Membership.new(collection_id: collection.id)]
     @guest_user = u

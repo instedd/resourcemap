@@ -128,6 +128,7 @@
         //ko
 
       - if current_user_snapshot.at_present? && collection_admin?
+
         /ko if: !$root.savingLayer()
         %button.farrow{ko(click: '$root.editLayer'), style:'margin-bottom:0px;margin-top:0px', title: 'Edit layer'} Edit
         //ko

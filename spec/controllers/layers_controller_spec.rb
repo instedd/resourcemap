@@ -34,7 +34,7 @@ describe LayersController do
     histories.last.layer_id.should eq(layer2.id)
 
   end
-  
+
   describe 'analytic' do
     it 'should changed user.layer_count by 1' do
       expect {
@@ -43,6 +43,39 @@ describe LayersController do
         u = User.find user
         u.layer_count
       }.from(0).to(1)
+    end
+  end
+
+  describe 'permissions' do
+    let!(:not_a_user_collection) { Collection.make }
+    let!(:member) { User.make email: 'foo@bar.com' }
+    let!(:membership) { Membership.make collection: collection, user: member, admin: false }
+
+    it 'should let any member list layers, but should hide layers without explicit read permissions' do
+      sign_in member
+
+      get :index, collection_id: collection.id, format: 'json'
+
+      json = JSON.parse response.body
+      json.length.should eq(0)
+    end
+
+    it 'should let admins see all layers' do
+      get :index, collection_id: collection.id, format: 'json'
+
+      json = JSON.parse response.body
+      json.length.should eq(2)
+    end
+
+    it 'should let a member see a layer when there is an explicit layer membership with read=true' do
+      LayerMembership.make layer: layer, user: member, read: true
+      sign_in member
+
+      get :index, collection_id: collection.id, format: 'json'
+      json = JSON.parse response.body
+
+      json.length.should eq(1)
+      json[0]['id'].should eq(layer.id)
     end
   end
 

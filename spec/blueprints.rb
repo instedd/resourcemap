@@ -110,3 +110,10 @@ ImportJob.blueprint do
   collection
   status
 end
+
+LayerMembership.blueprint do
+  layer
+  read { false }
+  write { false }
+  user { User.make }
+end

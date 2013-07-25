@@ -1,7 +1,20 @@
 class LayersController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :authenticate_collection_admin!, :except => [:index]
+
   before_filter :fix_field_config, only: [:create, :update]
+
+  authorize_resource :layer, :decent_exposure => true, :except => :create
+
+  expose(:layers) {
+    authorize! :read, collection
+
+    if !current_user_snapshot.at_present? && collection then
+      collection.layer_histories.accessible_by(current_ability).at_date(current_user_snapshot.snapshot.date)
+    else
+      collection.layers.accessible_by(current_ability)
+    end
+  }
+
+  expose(:layer)
 
   def index
     respond_to do |format|
@@ -11,7 +24,7 @@ class LayersController < ApplicationController
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
       if current_user_snapshot.at_present?
-        format.json { render json: layers.includes(:fields).all.as_json(include: :fields) }
+        format.json { render json: layers.includes(:fields).as_json(include: :fields) }
       else
         format.json {
           render json: layers
@@ -26,6 +39,7 @@ class LayersController < ApplicationController
   def create
     layer = layers.new params[:layer]
     layer.user = current_user
+    authorize! :create, layer
     layer.save!
     current_user.layer_count += 1
     current_user.update_successful_outcome_status
@@ -37,7 +51,7 @@ class LayersController < ApplicationController
     # FIX: For some reason using the exposed layer here results in duplicated fields being created
     layer = collection.layers.find params[:id]
 
-    fix_layer_fields_for_update
+    fix_layer_fields_for_update(layer)
     layer.user = current_user
     layer.update_attributes! params[:layer]
     layer.reload
@@ -92,7 +106,7 @@ class LayersController < ApplicationController
   # whose ids don't show up in the new ones and then we add the _destroy flag.
   #
   # That way we preserve existing fields and we can know if their codes change, to trigger a reindex
-  def fix_layer_fields_for_update
+  def fix_layer_fields_for_update(layer)
     fields = layer.fields
 
     fields_ids = fields.map(&:id).compact
