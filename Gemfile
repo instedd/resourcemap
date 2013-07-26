@@ -19,7 +19,7 @@ gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
 gem 'uuidtools'
 gem 'newrelic_rpm'
-gem 'cancan', :git => 'git://github.com/ryanb/cancan.git', :ref => 'cbd352c799182b1ba9c9f5c21afd3c8476af3ea1'
+gem 'cancan', '~> 1.6.10'
 
 group :test do
   gem 'shoulda-matchers'
@@ -49,7 +49,7 @@ end
 
 group :development do
   gem 'dist', :git => 'https://github.com/manastech/dist.git'
-  gem 'ruby-prof', git: 'https://github.com/ruby-prof/ruby-prof.git'
+  gem 'ruby-prof', :git => 'https://github.com/ruby-prof/ruby-prof.git'
 end
 
 # Gems used only for assets and not required
