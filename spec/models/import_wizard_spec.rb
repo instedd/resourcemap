@@ -1223,10 +1223,14 @@ describe ImportWizard do
   end
 
   it "should not import files with invalid extension" do
-    File.open("example.txt", "w") do |f|
-      f.write("one, two")
+    with_tmp_file('example.txt') do |tmp_file|
+
+      File.open(tmp_file, "w") do |f|
+        f.write("one, two")
+      end
+      expect { ImportWizard.import user, collection, 'example.txt', "one, two" }.to raise_error
     end
-    expect { ImportWizard.import user, collection, 'example.txt', "one, two" }.to raise_error
+
   end
 
   it "should not import malformed csv files" do
@@ -1255,6 +1259,7 @@ describe ImportWizard do
     expect { column_spec = ImportWizard.guess_columns_spec user, collection}.to_not raise_error
     column_spec = ImportWizard.guess_columns_spec user, collection
     expect {ImportWizard.validate_sites_with_columns user, collection, column_spec}.to_not raise_error
+    File.delete('utf8.csv')
   end
 
   describe 'updates' do
