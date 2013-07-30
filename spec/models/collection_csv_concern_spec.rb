@@ -29,7 +29,7 @@ describe Collection::CsvConcern do
     date = layer.date_fields.make :code => 'date'
     site = collection.sites.make :properties => {date.es_code => '1985-10-19T00:00:00Z'}
 
-    csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
+    csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
 
     csv[1][4].should eq('10/19/1985')
   end
@@ -40,7 +40,7 @@ describe Collection::CsvConcern do
 
     site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
 
-    csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
+    csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
     csv[1][4].should eq('Son')
   end
 

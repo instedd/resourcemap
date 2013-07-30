@@ -9,8 +9,8 @@ module Collection::CsvConcern
     end
   end
 
-  def to_csv(elastic_search_api_results = new_search.unlimited.api_results)
-    fields = self.fields.all
+  def to_csv(elastic_search_api_results, user, snapshot_id = nil)
+    fields = self.visible_fields_for(user, {snapshot_id: snapshot_id})
 
     CSV.generate do |csv|
       header = ['resmap-id', 'name', 'lat', 'long']
@@ -36,7 +36,7 @@ module Collection::CsvConcern
   end
 
   def sample_csv(user = nil)
-    fields = self.fields.all
+    fields = self.visible_fields_for(user, {snapshot_id: nil})
 
     CSV.generate do |csv|
       header = ['name', 'lat', 'long']
@@ -139,7 +139,7 @@ module Collection::CsvConcern
             item[:error_description] = "Hierarchy name should be unique"
             error = true
           end
-          
+
           #Check unique id
           id = row[0].strip
           if items.any?{|item| item.second[:id] == id}

@@ -102,7 +102,7 @@ class Api::CollectionsController < ApplicationController
   end
 
   def collection_csv(collection, results)
-    sites_csv = collection.to_csv results
+    sites_csv = collection.to_csv(results, current_user)
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
 

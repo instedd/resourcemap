@@ -158,6 +158,28 @@ describe Api::CollectionsController do
     end
   end
 
+  describe "GET CSV collection according permissions" do
+    let!(:member) { User.make }
+    let!(:membership) { collection.memberships.create! :user_id => member.id, admin: false }
+    let!(:layer_member_none) { LayerMembership.make layer: layer, user: member, read: false }
+
+
+    before(:each) do
+      sign_out user
+      sign_in member
+      get :show, id: collection.id, format: 'csv'
+    end
+
+    it "should not get fields without read permission" do
+      csv =  CSV.parse response.body
+      csv.length.should eq(3)
+      csv[0].should eq(['resmap-id', 'name', 'lat', 'long', 'last updated'])
+      csv.should include [site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, site2.updated_at.to_datetime.rfc822]
+      csv.should include [site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.updated_at.to_datetime.rfc822]
+    end
+
+  end
+
   describe "validate query fields" do
 
     it "should validate numeric fields in equal queries" do
