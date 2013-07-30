@@ -8,4 +8,8 @@ class LayerHistory < ActiveRecord::Base
     {collection_id: collection_id, id: layer_id, name: name, ord: ord, public: public, fields: field_histories.map {|f| f.as_json} }
   end
 
+  def fields
+    field_histories
+  end
+
 end

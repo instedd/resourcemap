@@ -12,6 +12,7 @@ describe "layer access" do
   context "fields for user" do
     it "only returns fields that can be read" do
       membership.set_layer_access :verb => :read, :access => true, :layer_id => layer1.id
+      membership.set_layer_access :verb => :read, :access => false, :layer_id => layer2.id
 
       layers = collection.visible_layers_for user
       layers.length.should eq(1)

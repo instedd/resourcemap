@@ -60,66 +60,54 @@ class Collection < ActiveRecord::Base
   end
 
   def visible_fields_for(user, options)
-    if user.is_guest
-      return fields.includes(:layer).all
-    end
+    current_ability = Ability.new(user)
 
-    membership = user.membership_in self
-    return [] unless membership
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
-      target_fields = field_histories.at_date(date).includes(:layer)
+      visible_layers = layer_histories.accessible_by(current_ability).at_date(date)
     else
-      target_fields = fields.includes(:layer)
+      visible_layers = layers.accessible_by(current_ability)
     end
-    if membership.admin?
-      target_fields = target_fields.all
-    else
-      lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
-        hash[lm.layer_id] = lm
-        hash
-      end
 
-      target_fields = target_fields.select { |f| lms[f.layer_id] && lms[f.layer_id].read }
-
-    end
-    target_fields
+    visible_layers.map{|l|l.fields.includes(:layer)}.flatten
   end
 
   def visible_layers_for(user, options = {})
-    target_fields = visible_fields_for(user, options)
-    layers = target_fields.map(&:layer).uniq.map do |layer|
-      {
-        id: layer.id,
-        name: layer.name,
-        ord: layer.ord,
-      }
+    current_ability = Ability.new(user)
+
+    if options[:snapshot_id]
+      date = Snapshot.where(id: options[:snapshot_id]).first.date
+      visible_layers = layer_histories.accessible_by(current_ability).at_date(date)
+    else
+      visible_layers = layers.accessible_by(current_ability)
     end
 
-    membership = user.membership_in self
-    if !user.is_guest && !membership.admin?
-      lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
-        hash[lm.layer_id] = lm
-        hash
-      end
-    end
+    json_layers = []
 
-    layers.each do |layer|
-      layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
-      layer[:fields].map! do |field|
-        {
-          id: field.es_code,
-          name: field.name,
-          code: field.code,
-          kind: field.kind,
-          config: field.config,
-          ord: field.ord,
-          writeable: user.is_guest ? false : !lms || lms[field.layer_id].write
-        }
+    visible_layers.each do |layer|
+      json_layer = {}
+      json_layer[:id] = layer.id
+      json_layer[:name] = layer.name
+      json_layer[:ord] = layer.ord
+      json_layer[:fields] = []
+
+      layer.fields.each do |field|
+        json_field = {}
+        json_field[:id] = field.es_code
+        json_field[:name] = field.name
+        json_field[:code] = field.code
+        json_field[:kind] = field.kind
+        json_field[:config] = field.config
+        json_field[:ord] = field.ord
+        json_field[:writeable] = current_ability.can?(:update, layer)
+
+        json_layer[:fields] << json_field
       end
+      json_layers << json_layer
     end
-    layers.sort! { |x, y| x[:ord] <=> y[:ord] }
-    layers
+    json_layers.sort! { |x, y| x[:ord] <=> y[:ord] }
+
+    json_layers
   end
 
   # Returns the next ord value for a layer that is going to be created

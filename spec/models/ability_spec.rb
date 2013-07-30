@@ -106,7 +106,15 @@ describe Ability do
 			it { guest_ability.should_not be_able_to(:read, layer) }
 		end
 
-	end
+		describe "Should read layers if the collection is public" do
+			let!(:public_collection) { admin.create_collection Collection.make public: true}
+			let!(:layer_in_public_collection) { Layer.make collection: public_collection, user: admin }
 
+			it { admin_ability.should be_able_to(:read, layer_in_public_collection) }
+			it { user_ability.should_not be_able_to(:read, layer_in_public_collection) }
+			it { guest_ability.should be_able_to(:read, layer_in_public_collection) }
+		end
+
+	end
 
 end
