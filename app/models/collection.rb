@@ -99,7 +99,7 @@ class Collection < ActiveRecord::Base
         json_field[:kind] = field.kind
         json_field[:config] = field.config
         json_field[:ord] = field.ord
-        json_field[:writeable] = current_ability.can?(:update, layer)
+        json_field[:writeable] = current_ability.can?(:update_site_property, field, nil)
 
         json_layer[:fields] << json_field
       end

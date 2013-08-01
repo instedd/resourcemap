@@ -9,6 +9,8 @@ describe Ability do
 	let!(:collection) { admin.create_collection Collection.make }
 	let!(:membership) { collection.memberships.create! :user_id => member.id, admin: false }
 
+	let!(:layer) { Layer.make collection: collection, user: admin }
+
 	let!(:admin_ability) { Ability.new(admin)}
 	let!(:member_ability) { Ability.new(member)}
 	let!(:user_ability) { Ability.new(user)}
@@ -68,9 +70,7 @@ describe Ability do
 	end
 
 	describe "Layer Abilities" do
-		let!(:layer) { Layer.make collection: collection, user: admin }
 		let!(:new_layer) { Layer.new collection: collection, user: admin }
-
 
 		describe "Create layer" do
 			it { admin_ability.should be_able_to(:create, new_layer) }
@@ -115,6 +115,40 @@ describe Ability do
 			it { guest_ability.should be_able_to(:read, layer_in_public_collection) }
 		end
 
+	end
+
+	describe "Site-field Abilities for layers" do
+		let!(:field) { Field::TextField.make collection: collection, layer: layer }
+		let!(:site) { collection.sites.make }
+
+		describe "admin" do
+			it { admin_ability.should be_able_to(:update_site_property, field, site) }
+			it { admin_ability.should be_able_to(:read_site_property, field, site) }
+		end
+
+		describe "member with none permission" do
+			let!(:layer_member_none) { LayerMembership.make layer: layer, user: member, read: false }
+			let!(:member_ability_without_read_permission) { Ability.new member }
+
+			it { member_ability_without_read_permission.should_not be_able_to(:update_site_property, field, site) }
+			it { member_ability_without_read_permission.should_not be_able_to(:read_site_property, field, site) }
+		end
+
+		describe "member with read permission" do
+			let!(:layer_member_none) { LayerMembership.make layer: layer, user: member, read: true }
+			let!(:member_ability_with_read_permission) { Ability.new member }
+
+			it { member_ability_with_read_permission.should_not be_able_to(:update_site_property, field, site) }
+			it { member_ability_with_read_permission.should be_able_to(:read_site_property, field, site) }
+		end
+
+		describe "member with write permission" do
+			let!(:layer_member_none) { LayerMembership.make layer: layer, user: member, write: true }
+			let!(:member_ability_with_write_permission) { Ability.new member }
+
+			it { member_ability_with_write_permission.should be_able_to(:update_site_property, field, site) }
+			it { member_ability_with_write_permission.should be_able_to(:read_site_property, field, site) }
+		end
 	end
 
 end

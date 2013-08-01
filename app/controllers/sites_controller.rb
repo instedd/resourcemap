@@ -57,11 +57,12 @@ class SitesController < ApplicationController
   def update_property
     field = site.collection.fields.where_es_code_is params[:es_code]
 
-    return head :forbidden unless current_user.can_write_field? field, site.collection, params[:es_code]
+    #Pending: Check custom site permission
+    return head :forbidden unless can?(:update_site_property, field)
 
     site.user = current_user
     site.properties_will_change!
-    
+
     site.properties[params[:es_code]] = field.decode_from_ui(params[:value])
     if site.valid?
       site.save!

@@ -16,7 +16,9 @@ class User < ActiveRecord::Base
 
   # In order to use it in the ability file
   def readable_layer_ids
-    layer_memberships.where(:read => true).map(&:layer_id).uniq
+    # Write permission => read permission in the creation of the permission, but in order to avoid data conflicts
+    # we make explicit here that implication
+    layer_memberships.where("layer_memberships.read = ? or layer_memberships.write = ?", true, true).map(&:layer_id).uniq
   end
 
   def create_collection(collection)
@@ -40,16 +42,6 @@ class User < ActiveRecord::Base
 
   def display_name
     email
-  end
-
-  def can_write_field?(field, collection, field_es_code)
-    return false unless field
-
-    membership = membership_in(collection)
-    return true if membership.admin?
-
-    lm = LayerMembership.where(user_id: self.id, collection_id: collection.id, layer_id: field.layer_id).first
-    lm && lm.write
   end
 
   def activities

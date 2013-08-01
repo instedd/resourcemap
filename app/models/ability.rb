@@ -55,6 +55,17 @@ class Ability
       can :read, LayerHistory, :collection => {:public => true}
     end
 
+    ### Site properties ###
+    can :read_site_property, Field do |field, site|
+      can? :read, field.layer
+    end
+
+    can :update_site_property, Field do |field, site|
+      admin = user.memberships.where(:collection_id => field.collection_id).first.try(:admin?)
+      lm = LayerMembership.where(user_id: user.id, layer_id: field.layer_id).first
+      admin || (lm && lm.write)
+    end
+
 
   end
 end

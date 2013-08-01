@@ -8,6 +8,7 @@ describe "layer access" do
   let!(:field1) { layer1.text_fields.make collection_id: collection.id }
   let!(:layer2) { collection.layers.make }
   let!(:field2) { layer2.text_fields.make collection_id: collection.id }
+  let!(:site) { collection.sites.make }
 
   context "fields for user" do
     it "only returns fields that can be read" do
@@ -47,26 +48,31 @@ describe "layer access" do
 
   context "can write field" do
     it "can't write if property doesn't exist" do
-      user.can_write_field?(nil, collection, "unexistent").should be_false
+      user_ability = Ability.new user
+
+      (user_ability.can? :update_site_property, nil, site).should be_false
     end
 
     it "can't write if only read access" do
       membership.set_layer_access :verb => :read, :access => true, :layer_id => layer1.id
+      user_ability = Ability.new user
 
-      user.can_write_field?(field1, collection, field1.es_code).should be_false
+      (user_ability.can? :update_site_property, field1, site).should be_false
     end
 
     it "can write if write access" do
       membership.set_layer_access :verb => :write, :access => true, :layer_id => layer1.id
+      user_ability = Ability.new user
 
-      user.can_write_field?(field1, collection, field1.es_code).should be_true
+      (user_ability.can? :update_site_property, field1, site).should be_true
     end
 
     it "can write if admin" do
       membership.admin = true
       membership.save!
+      user_ability = Ability.new user
 
-      user.can_write_field?(field1, collection, field1.es_code).should be_true
+      (user_ability.can? :update_site_property, field1, site).should be_true
     end
   end
 
