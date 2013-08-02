@@ -140,36 +140,37 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
     (10 - sum) % 10
   end
 
-  def default_value_for_create(collection)
+  def largest_existing_luhn_value_in_this_field(collection)
+    # Find largest existing value in ES
     field_es_code = "properties.#{@field.es_code}"
     search = collection.new_search
-    search.select_fields [field_es_code]
-    search.sort field_es_code, true
-    results = search.results
+    search.unlimited
+    search.field_exists(field_es_code)
+    search.sort field_es_code, false
+    search.limit(1)
 
-    existing_sites = results.results
+    site_with_last_luhn_value = search.results.results
 
-    return "100000-9" if existing_sites.empty? || existing_sites.all?{|s| s["fields"].nil?}
-
-    last = nil
-
-    existing_sites.each do |result|
-      result = result["fields"]
-      next unless result
-      value = result[field_es_code]
-      next unless value
-
-      value = value[0 ... 6].to_i
-      if last && value - last > 1
-        break
-      end
-      last = value
+    if !site_with_last_luhn_value.empty?
+      site_with_last_luhn_value.first["_source"]["properties"][@field.es_code]
+    else
+      # Not found
+      nil
     end
-
-    next_luhn(last)
   end
 
-  def next_luhn(max)
-    "#{max + 1}-#{compute_luhn_verifier((max + 1).to_s)}"
+  def default_value_for_create(collection)
+    last_luhn_value = largest_existing_luhn_value_in_this_field(collection)
+    return "100000-9" unless last_luhn_value
+    next_luhn(last_luhn_value)
+  end
+
+  def next_luhn(last_luhn_value)
+    # We calculate the next value using just the found largest
+    # This may become a problem if a user enters manually a really large luhn number
+    # In this case we may search for holes, but we will take care of that case when it happens
+    # Doing it now will cause a loooot of (unnecessary) processing in memory
+    without_validation_digit = last_luhn_value[0 ... 6].to_i
+    "#{without_validation_digit + 1}-#{compute_luhn_verifier((without_validation_digit + 1).to_s)}"
   end
 end

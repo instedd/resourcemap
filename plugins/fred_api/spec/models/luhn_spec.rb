@@ -56,20 +56,20 @@ describe "Luhn" do
   end
 
   it "generates luhn id for new site" do
+    collection.sites.make
     create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100000-9")
     create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100001-8")
     create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100002-7")
     create_site_and_assig_default_values("100004-5").properties[field.es_code].should eq("100004-5")
-    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100003-6")
     create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100005-4")
+    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100006-3")
   end
 
   it "gets next luhn" do
-    field.format_implementation.next_luhn(1000006).should eq("1000007-2")
-    field.format_implementation.next_luhn(1000007).should eq("1000008-1")
-    field.format_implementation.next_luhn(1000008).should eq("1000009-0")
-    field.format_implementation.next_luhn(1000009).should eq("1000010-8")
-    field.format_implementation.next_luhn(1000010).should eq("1000011-7")
+    field.format_implementation.next_luhn("100006-3").should eq("100007-2")
+    field.format_implementation.next_luhn("100007-2").should eq("100008-1")
+    field.format_implementation.next_luhn("100009-0").should eq("100010-8")
+    field.format_implementation.next_luhn("100010-0").should eq("100011-7")
   end
 
   it "checks for unicity" do
