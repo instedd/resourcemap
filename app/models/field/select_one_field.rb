@@ -16,12 +16,22 @@ class Field::SelectOneField < Field
     decode_option(option_label_or_code)
   end
 
+  def api_value(value)
+    option = config['options'].find { |o| o['id'] == value }
+    return option ? option['code'] : value
+  end
+
+  def human_value(value)
+    option = config['options'].find { |o| o['id'] == value }
+    return option ? option['label'] : value
+  end
+
   def standadrize(value)
     value.to_i
   end
 
   def valid_value?(option_code, site=nil)
-    if @cache_for_read 
+    if @cache_for_read
       raise invalid_field_message unless @options_by_id_in_cache.values.include?(option_code)
     else
       check_option_exists(option_code)
@@ -33,7 +43,7 @@ class Field::SelectOneField < Field
   end
 
   private
-  
+
   # TODO: Integrate with decode used in update
   def query_value(value, use_codes_instead_of_es_codes)
     if @cache_for_read && !@options_by_code_or_label_in_cache

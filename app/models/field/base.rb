@@ -55,47 +55,11 @@ module Field::Base
   end
 
   def api_value(value)
-    if yes_no?
-      Field.yes?(value)
-    elsif select_one?
-      option = config['options'].find { |o| o['id'] == value }
-      return option ? option['code'] : value
-    elsif select_many?
-      if value.is_a? Array
-        return value.map do |val|
-          option = config['options'].find { |o| o['id'] == val }
-          option ? option['code'] : val
-        end
-      else
-        return value
-      end
-    elsif hierarchy?
-      return find_hierarchy_name_by_id(value)
-    else
-      return value
-    end
+    value
   end
 
   def human_value(value)
-    if select_one?
-      option = config['options'].find { |o| o['id'] == value }
-      return option ? option['label'] : value
-    elsif select_many?
-      if value.is_a? Array
-        return value.map do |val|
-          option = config['options'].find { |o| o['id'] == val }
-          option ? option['label'] : val
-        end.join ', '
-      else
-        return value
-      end
-    elsif hierarchy?
-      return find_hierarchy_value value
-    elsif date?
-      return api_value(value)
-    else
-      return value
-    end
+    value
   end
 
   def sample_value(user = nil)

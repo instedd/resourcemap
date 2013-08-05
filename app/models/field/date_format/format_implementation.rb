@@ -15,6 +15,10 @@ class Field::DateFormat::FormatImplementation
     Time.strptime value, strftime_format
   end
 
+  def human_value(iso_string)
+    Time.iso8601(iso_string).strftime(strftime_format)
+  end
+
   def api_value(iso_string)
     Time.iso8601(iso_string).strftime(strftime_format)
   end

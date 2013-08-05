@@ -51,6 +51,10 @@ class Field::DateField < Field
     format_implementation.api_value(value)
   end
 
+  def human_value(value)
+    format_implementation.human_value(value)
+  end
+
   def decode_fred(iso_string_value)
     # FRED API uses iso8601 format in updates, so we dont need to decode any value
     # If this value is not an iso string, an exception will be thrown in the site's validation.

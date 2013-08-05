@@ -16,6 +16,14 @@ class Field::HierarchyField < Field
 		decode_hierarchy_option(value, use_codes_instead_of_es_codes)
 	end
 
+  def api_value(value)
+    find_hierarchy_name_by_id(value)
+  end
+
+  def human_value(value)
+    find_hierarchy_value(value)
+  end
+
   def decode(hierarchy_name)
     if hierarchy_code = find_hierarchy_id_by_name(hierarchy_name)
       hierarchy_code

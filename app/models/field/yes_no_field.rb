@@ -9,4 +9,8 @@ class Field::YesNoField < Field
     Field.yes?(value)
   end
 
+  def api_value(value)
+    Field.yes?(value)
+  end
+
 end

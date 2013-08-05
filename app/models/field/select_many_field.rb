@@ -12,6 +12,28 @@ class Field::SelectManyField < Field
 		query_value(value, use_codes_instead_of_es_codes)
 	end
 
+  def api_value(value)
+   if value.is_a? Array
+      return value.map do |val|
+        option = config['options'].find { |o| o['id'] == val }
+        option ? option['code'] : val
+      end
+    else
+      return value
+    end
+  end
+
+  def human_value(value)
+    if value.is_a? Array
+      return value.map do |val|
+        option = config['options'].find { |o| o['id'] == val }
+        option ? option['label'] : val
+      end.join ', '
+    else
+      return value
+    end
+  end
+
   def standadrize(value)
     if value.kind_of?(Array)
       option_list = value

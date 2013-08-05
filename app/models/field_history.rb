@@ -13,6 +13,14 @@ class FieldHistory < ActiveRecord::Base
     field_id.to_s
   end
 
+  def api_value(value)
+    field.api_value(value)
+  end
+
+  def human_value(value)
+    field.human_value(value)
+  end
+
   def as_json(options = {})
     { code: code, collection_id: collection_id, config: config, id: field_id, kind: kind, layer_id: layer_id, name: name, ord: ord}
   end
