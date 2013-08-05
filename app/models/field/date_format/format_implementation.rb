@@ -11,6 +11,14 @@ class Field::DateFormat::FormatImplementation
     end
   end
 
+  def parse_date(value)
+    Time.strptime value, strftime_format
+  end
+
+  def api_value(iso_string)
+    Time.iso8601(iso_string).strftime(strftime_format)
+  end
+
   def convert_to_iso8601_string(value)
     @field.format_date_iso_string(parse_date(value))
   end
