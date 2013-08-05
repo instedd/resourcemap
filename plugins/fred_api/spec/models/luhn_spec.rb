@@ -90,4 +90,15 @@ describe "Luhn" do
     props.length.should eq(1)
     props[field.es_code].should eq("100000-9")
   end
+
+  it "do not search only in the first 50 when genetating values" do
+    51.times do
+      create_site_and_assig_default_values(nil)
+    end
+    lambda do
+      create_site_and_assig_default_values(nil)
+    end.should_not raise_exception(ActiveRecord::RecordInvalid, /the value already exists in the collection/)
+  end
+
+
 end
