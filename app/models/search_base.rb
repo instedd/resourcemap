@@ -99,7 +99,7 @@ module SearchBase
   def where(properties = {})
     properties.each do |es_code, value|
       field = check_field_exists es_code
-      
+
       if value.is_a? String
         case
         when value[0 .. 1] == '<=' then lte(field, value[2 .. -1].strip)
@@ -192,6 +192,10 @@ module SearchBase
       distance: meters,
       location: { lat: lat, lon: lng }
     self
+  end
+
+  def field_exists(field_code)
+    @search.filter :exists, field: field_code
   end
 
   def require_location

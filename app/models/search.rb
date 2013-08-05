@@ -21,6 +21,10 @@ class Search
     @from = 0
   end
 
+  def to_curl
+    @search.to_curl
+  end
+
   def page(page)
     @search.from((page - 1) * self.class.page_size)
     self
