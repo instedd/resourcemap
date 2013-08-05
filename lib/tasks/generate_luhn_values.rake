@@ -34,7 +34,7 @@ namespace :sites do
 
         next_luhn_value = luhn_field.default_value_for_create(collection)
         site.properties[luhn_field.es_code] = next_luhn_value
-
+        site.mute_activities = true
         site.save!
       end
     end
