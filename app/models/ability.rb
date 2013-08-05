@@ -46,6 +46,7 @@ class Ability
     can :update, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :create, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :destroy, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
+    can :set_order, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
 
     ### Layer History ###
 
