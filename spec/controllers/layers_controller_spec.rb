@@ -46,6 +46,13 @@ describe LayersController do
     end
   end
 
+  it "shoud set order" do
+    post :set_order, {ord: 2, collection_id: collection.id, id: layer.id}
+    response.should be_success
+    layer.reload
+    layer.ord.should eq(2)
+  end
+
   describe 'permissions' do
     let!(:not_a_user_collection) { Collection.make }
     let!(:member) { User.make email: 'foo@bar.com' }
