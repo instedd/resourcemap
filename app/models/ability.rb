@@ -45,6 +45,7 @@ class Ability
     # A user can write a layer only if she is the collection admin
     can :update, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :create, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
+    can :destroy, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
 
     ### Layer History ###
 

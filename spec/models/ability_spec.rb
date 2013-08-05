@@ -86,6 +86,13 @@ describe Ability do
 			it { guest_ability.should_not be_able_to(:update, layer) }
 		end
 
+		describe "Destroy layer" do
+			it { admin_ability.should be_able_to(:destroy, layer) }
+			it { member_ability.should_not be_able_to(:destroy, layer) }
+			it { user_ability.should_not be_able_to(:destroy, layer) }
+			it { guest_ability.should_not be_able_to(:destroy, layer) }
+		end
+
 		describe "Read layer with read permission" do
 			let!(:layer_member_read) { LayerMembership.make layer: layer, user: member, read: true }
 			let!(:member_ability_with_read_permission) { Ability.new member }
