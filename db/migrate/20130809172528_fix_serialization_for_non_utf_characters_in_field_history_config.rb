@@ -1,14 +1,14 @@
-class SerializeExistigFieldHistoryConfigData < ActiveRecord::Migration
+class FixSerializationForNonUtfCharactersInFieldHistoryConfig < ActiveRecord::Migration
   def up
-    connection.select_rows("SELECT id, config FROM field_histories").each do |id, config|
+   connection.select_rows("SELECT id, config FROM field_histories").each do |id, config|
 
       next if config.blank?
       begin
         config = YAML.load(config)
       rescue Exception => ex
         begin
-         config.force_encoding "iso8859-1"
-        config = YAML.load(config)
+          config.force_encoding "iso8859-1"
+          config = YAML.load(config.encode('utf-8'))
         rescue Exception => ex2
           next
         end
