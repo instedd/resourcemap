@@ -64,6 +64,10 @@ class Field::HierarchyField < Field
     @cache_for_read = true
   end
 
+  def disable_cache_for_read
+    @cache_for_read = false
+  end
+
   def hierarchy_options_codes
     hierarchy_options.map {|option| option[:id]}
   end

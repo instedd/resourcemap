@@ -32,4 +32,22 @@ namespace :index do
     print "\r#{' ' * 80}"
     print "\rDone!"
   end
+
+  desc "Recreate ElasticSearch indices for all collections"
+  task :recreate_one, [:collection_id] => :environment do |t, args|
+    collection = Collection.find args[:collection_id].to_i
+    puts "\rRecreating index for collection #{collection.name}"
+
+    collection.recreate_index
+
+    snapshot_count = collection.snapshots.count
+
+    collection.snapshots.each_with_index do |snapshot, i|
+      percentage = (100.0 * (i / snapshot_count)).round
+      print "\rRecreating snapshot #{i.to_i}/#{snapshot_count}: %#{percentage}"
+      snapshot.create_index
+    end
+
+    puts "Done!"
+  end
 end
