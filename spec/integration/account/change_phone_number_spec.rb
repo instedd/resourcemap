@@ -19,7 +19,7 @@ it " should change phone number", js:true do
     page.save_screenshot 'Change_phone_number.png'
     page.should have_content 'Account updated successfully'
     find(:xpath, '//div[@id="toolbar"]/ul[2]/li[2]/a').click
-    p 'Phone number update fail'
+    p 'Bug 549'
     page.should have_content '1209348756'
   end
 end
