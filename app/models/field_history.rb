@@ -13,6 +13,10 @@ class FieldHistory < ActiveRecord::Base
     field_id.to_s
   end
 
+  def cache_for_read
+    field.cache_for_read
+  end
+
   def api_value(value)
     field.api_value(value)
   end
