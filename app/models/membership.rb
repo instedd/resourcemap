@@ -5,16 +5,11 @@ class Membership < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :collection
+  has_many :layer_memberships, dependent: :destroy
   has_one :read_sites_permission, dependent: :destroy
   has_one :write_sites_permission, dependent: :destroy
 
-  before_destroy :destroy_collection_memberships
-
   validates :user_id, :uniqueness => { scope: :collection_id, message: "membership already exists" }
-
-  def destroy_collection_memberships
-    collection.layer_memberships.where(:user_id => user_id).destroy_all
-  end
 
   def set_layer_access(options = {})
     intent = options[:verb].to_s
@@ -32,7 +27,7 @@ class Membership < ActiveRecord::Base
       read = true if write
     end
 
-    lm = collection.layer_memberships.where(:layer_id => options[:layer_id], :user_id => user_id).first
+    lm = layer_memberships.where(:layer_id => options[:layer_id]).first
     if lm
       lm.read = read unless read.nil?
       lm.write = write unless write.nil?
@@ -43,7 +38,7 @@ class Membership < ActiveRecord::Base
         lm.destroy
       end
     else
-      collection.layer_memberships.create! :layer_id => options[:layer_id], :user_id => user_id, :read => read, :write => write
+      layer_memberships.create! :layer_id => options[:layer_id], :read => read, :write => write
     end
   end
 end

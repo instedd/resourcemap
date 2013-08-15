@@ -75,7 +75,7 @@ describe LayersController do
     end
 
     it 'should let a member see a layer when there is an explicit layer membership with read=true' do
-      LayerMembership.make layer: layer, user: member, read: true
+      LayerMembership.make layer: layer, membership: membership, read: true
       sign_in member
 
       get :index, collection_id: collection.id, format: 'json'

@@ -7,16 +7,12 @@ class MembershipsController < ApplicationController
   end
 
   def index
-    layer_memberships = collection.layer_memberships.all.inject({}) do |hash, membership|
-      (hash[membership.user_id] ||= []) << membership
-      hash
-    end
     memberships = collection.memberships.includes([:user, :read_sites_permission, :write_sites_permission]).all.map do |membership|
       {
         user_id: membership.user_id,
         user_display_name: membership.user.display_name,
         admin: membership.admin?,
-        layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
+        layers: membership.layer_memberships.map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
         sites: {
           read: membership.read_sites_permission,
           write: membership.write_sites_permission

@@ -13,8 +13,8 @@ describe ExecVisitor, "Process query command" do
     @user = User.make(:phone_number => '85512345678')
     @f1 = @layer.numeric_fields.make :id => 10, :name => "Ambulance", :code => "AB", :ord => 1
     @f2 = @layer.numeric_fields.make :id => 11, :name => "Doctor", :code => "DO", :ord => 2
-    @collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
-    @collection.memberships.create(:user => @user, :admin => false)
+    membership = @collection.memberships.create(:user => @user, :admin => false)
+    membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
 
     @node = parser.parse("dyrm q #{@collection.id} AB>5").command
     @node.sender = @user
@@ -103,7 +103,7 @@ describe ExecVisitor, "Process query command" do
 
       it "should query property pname equals to Phnom Penh" do
         @layer.text_fields.make :id => 22, :name => "pname", :code => "PN", :ord => 1
-        @collection.sites.make :name => 'Bayon', :properties => {"22"=>"Phnom Penh"} 
+        @collection.sites.make :name => 'Bayon', :properties => {"22"=>"Phnom Penh"}
         @visitor.visit_query_command(@node).should eq "[\"PN\"] in Bayon=Phnom Penh"
       end
     end
@@ -119,13 +119,13 @@ describe ExecVisitor, "Process update command" do
     parser = CommandParser.new
     @collection = Collection.make
     @user = User.make(:phone_number => '85512345678')
-    @collection.memberships.create(:user => @user, :admin => false)
+    membership = @collection.memberships.create(:user => @user, :admin => false)
     @layer = @collection.layers.make(:name => "default")
     @f1 = @layer.numeric_fields.make(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1)
     @f2 = @layer.numeric_fields.make(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1)
     @site = @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
     @site.user = @user
-    @collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
+    membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
     @node = parser.parse('dyrm u AB1 ambulances=15,doctors=20').command
     @node.sender = @user
   end

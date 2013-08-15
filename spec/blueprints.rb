@@ -115,5 +115,5 @@ LayerMembership.blueprint do
   layer
   read { false }
   write { false }
-  user { User.make }
+  membership
 end

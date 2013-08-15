@@ -63,8 +63,9 @@ class Ability
     end
 
     can :update_site_property, Field do |field, site|
-      admin = user.memberships.where(:collection_id => field.collection_id).first.try(:admin?)
-      lm = LayerMembership.where(user_id: user.id, layer_id: field.layer_id).first
+      membership = user.memberships.where(:collection_id => field.collection_id).first
+      admin = membership.try(:admin?)
+      lm = LayerMembership.where(membership_id: membership.id, layer_id: field.layer_id).first
       admin || (lm && lm.write)
     end
 

@@ -9,7 +9,6 @@ class Collection < ActiveRecord::Base
   validates_presence_of :name
 
   has_many :memberships, :dependent => :destroy
-  has_many :layer_memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
   has_many :layers, order: 'ord', dependent: :destroy
@@ -48,7 +47,7 @@ class Collection < ActiveRecord::Base
     if membership.admin?
       target_fields = target_fields.all
     else
-      lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
+      lms = LayerMembership.where(membership_id: membership.id).all.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
         hash
       end
