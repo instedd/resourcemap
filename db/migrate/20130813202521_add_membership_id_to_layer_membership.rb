@@ -4,13 +4,13 @@ class AddMembershipIdToLayerMembership < ActiveRecord::Migration
     add_column :layer_memberships, :membership_id, :integer
 
     LayerMembership.find_each do |layer_membership|
-      if layer_membership.user.nil?
+      if layer_membership.user_id.nil?
         puts "Removing layer_membership with id #{layer_membership.id} becuase it's user does not exists anymore."
         layer_membership.destroy
         next
       end
 
-      if layer_membership.collection.nil?
+      if layer_membership.collection_id.nil?
         puts "Removing layer_membership with id #{layer_membership.id} becuase it's collection does not exists anymore."
         layer_membership.destroy
         next

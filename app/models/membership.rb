@@ -8,6 +8,8 @@ class Membership < ActiveRecord::Base
   has_many :layer_memberships, dependent: :destroy
   has_one :read_sites_permission, dependent: :destroy
   has_one :write_sites_permission, dependent: :destroy
+  has_one :name_permission
+  has_one :location_permission
 
   validates :user_id, :uniqueness => { scope: :collection_id, message: "membership already exists" }
 

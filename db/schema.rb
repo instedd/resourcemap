@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130813202521) do
+ActiveRecord::Schema.define(:version => 20130815172456) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -131,6 +131,15 @@ ActiveRecord::Schema.define(:version => 20130813202521) do
     t.integer  "ord"
   end
 
+  create_table "location_permissions", :force => true do |t|
+    t.string   "action",        :default => "read"
+    t.integer  "membership_id"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+  end
+
+  add_index "location_permissions", ["membership_id"], :name => "index_location_permissions_on_membership_id"
+
   create_table "memberships", :force => true do |t|
     t.integer  "user_id"
     t.integer  "collection_id"
@@ -155,6 +164,15 @@ ActiveRecord::Schema.define(:version => 20130813202521) do
     t.integer  "collection_id"
     t.boolean  "is_send",       :default => false
   end
+
+  create_table "name_permissions", :force => true do |t|
+    t.string   "action",        :default => "read"
+    t.integer  "membership_id"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+  end
+
+  add_index "name_permissions", ["membership_id"], :name => "index_name_permissions_on_membership_id"
 
   create_table "prefixes", :force => true do |t|
     t.string   "version"
