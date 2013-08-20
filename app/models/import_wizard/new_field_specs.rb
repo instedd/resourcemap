@@ -4,9 +4,7 @@ class ImportWizard::NewFieldSpecs < ImportWizard::BaseFieldSpecs
     @new_fields = new_fields
   end
 
-  def process(row, site)
-    value = row[@column_spec[:index]]
-
+  def process(row, site, value)
     # New hierarchy fields cannot be created via import wizard
     raise "Hierarchy fields can only be created via web in the Layers page" if @column_spec[:kind] == 'hierarchy'
 
