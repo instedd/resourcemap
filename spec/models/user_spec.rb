@@ -74,15 +74,15 @@ describe User do
       @user1  = User.make
       @user = User.create(:email => "demo@instedd.org", :password => "123456", :phone_number => "855123456789")
       @collection = Collection.make
+      @membership = @collection.memberships.create(:user => @user, :admin => false)
       @site  = @collection.sites.make
-      @layer = @collection.layers.create(:name => "health center")
+      @layer = @collection.layers.make(:name => "health center")
       @properties =[{:code=>"AB", :value=>"26"}]
       @field = Field.create(:collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1, :kind => "numeric")
     end
 
     it "should be able to view and update layer" do
-      membership = @collection.memberships.create(:user => @user, :admin => false)
-      membership.layer_memberships.create( :layer_id => @layer.id, :read => true, :write => true)
+      @membership.layer_memberships.create( :layer_id => @layer.id, :read => true, :write => true)
       Field::NumericField.create :collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1
       @user.can_view?(@collection, @properties[0][:code]).should be_true
       @user.can_update?(@site, @properties).should be_true
@@ -90,8 +90,7 @@ describe User do
 
     context "can update" do
       it "should return true when user have write permission on layer" do
-        membership = @collection.memberships.create(:user => @user, :admin => false)
-        membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
+        @membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
         @user.validate_layer_write_permission(@site, @properties).should be_true
       end
 
@@ -112,8 +111,7 @@ describe User do
 
     context "can view" do
       it "should return true when user have read permission on layer" do
-        membership = @collection.memberships.create(:user => @user, :admin => false)
-        membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
+        @membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
         @user.validate_layer_read_permission(@collection, @properties[0][:code]).should be_true
       end
 
