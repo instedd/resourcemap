@@ -1,5 +1,5 @@
 class ImportWizard::NameFieldSpecs < ImportWizard::BaseFieldSpecs
-  def process(row, site)
-    site.name = row[@column_spec[:index]]
+  def process(row, site, value)
+    site.name = value
   end
 end

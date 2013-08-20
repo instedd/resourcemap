@@ -1,5 +1,5 @@
 class ImportWizard::LatFieldSpecs < ImportWizard::BaseFieldSpecs
-  def process(row, site)
-    site.lat = row[@column_spec[:index]]
+  def process(row, site, value)
+    site.lat = value
   end
 end

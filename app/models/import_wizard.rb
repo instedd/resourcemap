@@ -192,8 +192,8 @@ class ImportWizard
 
           # According to the spec
           spec_object.each_column do |column_spec|
-            value = row[column_spec.index].try(:strip)
-            column_spec.process row, site
+            value = row[column_spec.index].try(:strip) || ""
+            column_spec.process row, site, value
           end
         end
 

@@ -4,8 +4,7 @@ class ImportWizard::ExistingFieldSpecs < ImportWizard::BaseFieldSpecs
     @existing_fields = existing_fields
   end
 
-  def process(row, site)
-    value = row[@column_spec[:index]]
+  def process(row, site, value)
     existing_field = @existing_fields[@column_spec[:field_id].to_i]
 
     if existing_field
@@ -19,8 +18,6 @@ class ImportWizard::ExistingFieldSpecs < ImportWizard::BaseFieldSpecs
 
           value.split(',').each do |v|
             option = v.strip
-
-
             option = existing_field.apply_format_and_validate(option, true, site.collection, site).first
 
             site.properties_will_change!
