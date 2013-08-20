@@ -1,4 +1,5 @@
 class Ability
+
   include CanCan::Ability
 
   def initialize(user)
@@ -63,12 +64,15 @@ class Ability
     end
 
     can :update_site_property, Field do |field, site|
-      membership = user.memberships.where(:collection_id => field.collection_id).first
+      membership = user_memberships(user).find{|um| um.collection_id == field.collection_id}
       admin = membership.try(:admin?)
-      lm = LayerMembership.where(membership_id: membership.id, layer_id: field.layer_id).first
+      lm = membership.layer_memberships.find{|layer_membership| layer_membership.layer_id == field.layer_id}
       admin || (lm && lm.write)
     end
 
+  end
 
+  def user_memberships(user)
+    @user_memberships ||= user.memberships.includes(:layer_memberships).all
   end
 end

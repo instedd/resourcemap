@@ -2,7 +2,6 @@ class Membership < ActiveRecord::Base
   include Membership::ActivityConcern
   include Membership::LayerAccessConcern
   include Membership::SitesPermissionConcern
-  # Todo move Default fields behaviour to concern!
 
   belongs_to :user
   belongs_to :collection
