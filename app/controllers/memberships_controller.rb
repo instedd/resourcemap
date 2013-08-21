@@ -7,7 +7,7 @@ class MembershipsController < ApplicationController
   end
 
   def index
-    memberships = collection.memberships.includes([:user, :read_sites_permission, :write_sites_permission]).all.map do |membership|
+    memberships = collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission]).all.map do |membership|
       {
         user_id: membership.user_id,
         user_display_name: membership.user.display_name,
@@ -16,7 +16,9 @@ class MembershipsController < ApplicationController
         sites: {
           read: membership.read_sites_permission,
           write: membership.write_sites_permission
-        }
+        },
+        name: membership.action_for_name_permission,
+        location: membership.action_for_location_permission,
       }
     end
     render json: memberships

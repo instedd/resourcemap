@@ -2,6 +2,7 @@ class Membership < ActiveRecord::Base
   include Membership::ActivityConcern
   include Membership::LayerAccessConcern
   include Membership::SitesPermissionConcern
+  include Membership::DefaultPermissionConcern
 
   belongs_to :user
   belongs_to :collection
@@ -11,6 +12,8 @@ class Membership < ActiveRecord::Base
   has_one :name_permission, dependent: :destroy
   has_one :location_permission, dependent: :destroy
 
+  accepts_nested_attributes_for :name_permission
+  accepts_nested_attributes_for :location_permission
 
   validates :user_id, :uniqueness => { scope: :collection_id, message: "membership already exists" }
 
