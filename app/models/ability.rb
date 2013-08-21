@@ -64,10 +64,14 @@ class Ability
     end
 
     can :update_site_property, Field do |field, site|
-      membership = user_memberships(user).find{|um| um.collection_id == field.collection_id}
-      admin = membership.try(:admin?)
-      lm = membership.layer_memberships.find{|layer_membership| layer_membership.layer_id == field.layer_id}
-      admin || (lm && lm.write)
+      if user.is_guest
+        false
+      else
+        membership = user_memberships(user).find{|um| um.collection_id == field.collection_id}
+        admin = membership.try(:admin?)
+        lm = membership.layer_memberships.find{|layer_membership| layer_membership.layer_id == field.layer_id}
+        admin || (lm && lm.write)
+      end
     end
 
   end
