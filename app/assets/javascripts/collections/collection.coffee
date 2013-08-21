@@ -11,6 +11,9 @@ onCollections ->
       @maxLng = data?.max_lng
       @layers = ko.observableArray()
       @fields = ko.observableArray()
+      @error = ko.computed =>
+        window.arrayAny(@fields(), (f) => f.error())
+
       @refineFields = ko.observableArray()
       @checked = ko.observable true
       @fieldsInitialized = false

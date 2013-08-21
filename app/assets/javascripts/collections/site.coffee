@@ -129,6 +129,11 @@ onCollections ->
                 for es_code, value of prop
                   f = @collection.findFieldByEsCode(es_code)
                   f.errorMessage(value)
+              offset = $('.error label').offset().top
+              if(Math.abs(offset) > window.innerHeight)
+                $(".tablescroll").animate({
+                  scrollTop: offset
+                }, 2000);
             else
               $.handleAjaxError(data)
           catch error

@@ -151,9 +151,14 @@
               <!-- /ko -->
               / /ko
     .tablebottom
+      /ko if: collection.error()
+      .left{style: 'line-height: 30px;'}
+        %label.error There are validation errors that cause the site cannot be saved.
+      //ko
       .right{style: 'margin-right:3px;margin-top:-5px;'}
         %button.grey{ko(enable: :valid), type: 'submit'} Done
         %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
+      .clear
   <!-- /ko -->
 
   -# Show Site form
