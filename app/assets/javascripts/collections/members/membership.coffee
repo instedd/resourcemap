@@ -8,6 +8,8 @@ class @Membership extends Expandable
     @userDisplayName = ko.observable data?.user_display_name
     @admin = ko.observable data?.admin
     @collectionId = ko.observable root.collectionId()
+    @namePermission = ko.observable data?.name
+    @locationPermission = ko.observable data?.location
 
     rootLayers = data?.layers ? []
     @layers = ko.observableArray $.map(root.layers(), (x) => new LayerMembership(x, rootLayers, _self))
@@ -16,6 +18,28 @@ class @Membership extends Expandable
 
     @callModuleConstructors(arguments)
     super
+
+    for action in ['none', 'read', 'update']
+      do (action) =>
+        this["#{action}NameChecked"] = ko.computed
+          read: =>
+            if @namePermission() == action
+              "true"
+            else
+              ""
+          write: (val) =>
+            @namePermission(action)
+            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_layer_access.json", { layer_id: 'name', verb: action}
+
+        this["#{action}LocationChecked"] = ko.computed
+          read: =>
+            if @locationPermission() == action
+              "true"
+            else
+              ""
+          write: (val) =>
+            @locationPermission(action)
+            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_layer_access.json", { layer_id: 'location', verb: action}
 
     all = (permitted) ->
       _.all _self.layers(), (l) => permitted l

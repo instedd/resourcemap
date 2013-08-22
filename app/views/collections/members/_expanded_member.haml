@@ -29,6 +29,23 @@
     .lastColumn
 
   /ko if: defaultLayerPermissionsExpanded
+  .layerRow
+    .memberHeaderColumn Name
+    - ['None', 'Read', 'Update'].each do |permission|
+      .permissionColumn
+        %input{ko(disable: "admin()", checked: "#{permission.downcase}NameChecked"), :value => "true", :type => 'radio'}
+    .permissionColumn.admin
+    .lastColumn
+
+  .layerRow
+    .memberHeaderColumn Location
+    - ['None', 'Read', 'Update'].each do |permission|
+      .permissionColumn
+        %input{ko(disable: "admin()", checked: "#{permission.downcase}LocationChecked"), :value => "true", :type => 'radio'}
+    .permissionColumn.admin
+    .lastColumn
+
+
   /ko foreach: layers
   .layerRow
     .memberHeaderColumn{ko(text: "layerName()")}

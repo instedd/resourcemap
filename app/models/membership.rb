@@ -18,24 +18,35 @@ class Membership < ActiveRecord::Base
   validates :user_id, :uniqueness => { scope: :collection_id, message: "membership already exists" }
 
   #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
-  def can_read?(field)
-    if field == "name"
+  def can_read?(element)
+    if element == "name"
       name_permission.can_read?
-    elsif field == "location"
+    elsif element == "location"
       location_permission.can_read?
     else
-      raise "Undefined field #{field} for membership."
+      raise "Undefined element #{element} for membership."
     end
   end
 
   #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
-  def can_update?(field)
-    if field == "name"
+  def can_update?(element)
+    if element == "name"
       name_permission.can_update?
-    elsif field == "location"
+    elsif element == "location"
       location_permission.can_update?
     else
-      raise "Undefined field #{field} for membership."
+      raise "Undefined element #{element} for membership."
+    end
+  end
+
+  def set_access(options = {})
+    element = options[:element]
+    if element == 'name'
+      name_permission.set_access(options[:action])
+    elsif element == 'location'
+      name_permission.set_access(options[:action])
+    else
+      raise "Undefined element #{element} for membership."
     end
   end
 

@@ -58,6 +58,13 @@ class MembershipsController < ApplicationController
     redirect_to collection_members_path(collection)
   end
 
+  def set_access
+    membership = collection.memberships.find_by_user_id params[:id]
+    membership.set_access params
+    render json: :ok
+  end
+
+  #TODO: move set_layer_access to the more generic set_access
   def set_layer_access
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_layer_access params

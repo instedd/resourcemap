@@ -37,6 +37,8 @@ ResourceMap::Application.routes.draw do
         get 'search'
       end
       member do
+        post 'set_access'
+        #TODO: move set_layer_access to the more generic set_access
         post 'set_layer_access'
         post 'set_admin'
         post 'unset_admin'
