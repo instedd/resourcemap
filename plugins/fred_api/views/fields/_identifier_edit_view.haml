@@ -1,5 +1,5 @@
 - if single_editing_mode
-  %input{ ko(value: :value, valueUpdate: :afterkeydown, event: {keydown: :keyPress, blur: :save}, hasfocus: true, attr: {id: "'identifier-input-' + code"}), type: :text }
+  = ko_html_field_tag :valueUI, hasfocus: true, event: {keydown: :keyPress, blur: :save}, attr: {id: "'identifier-input-' + esCode"}, css: { error: :error}
 - else
-  %input{ ko(value: :value, attr: {id: "'identifier-input-' + code"}), type: :text }
-  .clear
+  = ko_html_field_tag :valueUI, hasfocus: true, attr: {id: "'identifier-input-' + esCode"}, css: { error: :error}
+
