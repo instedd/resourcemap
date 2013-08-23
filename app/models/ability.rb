@@ -48,6 +48,7 @@ class Ability
     can :create, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :destroy, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :set_order, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
+    can :hierarchy_editor, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
 
     ### Layer History ###
 
