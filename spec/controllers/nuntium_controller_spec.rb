@@ -8,8 +8,8 @@ describe NuntiumController do
       @user = User.make(:phone_number => '85512345678')
       f1 = @layer.numeric_fields.make(:id => 10, :name => "Ambulance", :code => "AB", :ord => 1)
       f2 = @layer.numeric_fields.make(:id => 11, :name => "Doctor", :code => "DO", :ord => 2)
-      @collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
-      @collection.memberships.create(:user => @user, :admin => false)
+      membership = @collection.memberships.create(:user => @user, :admin => false)
+      membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
       site = @collection.sites.make(:name => "SiemReap Health Center", :lat => 9, :lng => 9, :id_with_prefix => "AA1", :properties => {"10"=>5, "11"=>2})
       @params = { :guid => "123", :from => "sms://85512345678", :body => "dyrm u AA1 AB=2" }
       @message = Message.create(@params)
@@ -19,7 +19,7 @@ describe NuntiumController do
       Message.should_receive(:create!).with(:guid => "123", :from => "sms://85512345678", :body => "dyrm u AA1 AB=2").and_return(@message)
       post :receive, @params
     end
-    
+
     describe "should validate post data" do
       def post_receive_without(param)
         post :receive, @params.clone.delete_if { |k, v| k == param }

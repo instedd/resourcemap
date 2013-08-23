@@ -105,6 +105,16 @@ Membership.blueprint do
   admin { false }
 end
 
+NamePermission.blueprint do
+  membership
+  action { 'update' }
+end
+
+LocationPermission.blueprint do
+  membership
+  action { 'update' }
+end
+
 ImportJob.blueprint do
   user
   collection
@@ -115,5 +125,5 @@ LayerMembership.blueprint do
   layer
   read { false }
   write { false }
-  user { User.make }
+  membership
 end

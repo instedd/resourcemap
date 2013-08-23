@@ -121,6 +121,10 @@ class Field < ActiveRecord::Base
   def cache_for_read
   end
 
+  # Disables caching options and other info for a read-only usage.
+  def disable_cache_for_read
+  end
+
   private
 
   def add_option_to_options(options, option)

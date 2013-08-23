@@ -162,7 +162,7 @@ describe Api::CollectionsController do
     describe "GET CSV collection according permissions" do
       let!(:member) { User.make }
       let!(:membership) { collection.memberships.create! :user_id => member.id, admin: false }
-      let!(:layer_member_none) { LayerMembership.make layer: layer, user: member, read: false }
+      let!(:layer_member_none) { LayerMembership.make layer: layer, membership: membership, read: false }
 
 
       before(:each) do

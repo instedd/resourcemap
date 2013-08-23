@@ -14,7 +14,7 @@
       %span{ko(text: :safe_lng)}
     <!-- ko foreach: $root.currentCollection().fields() -->
     %td.padded
-      %span{ko(attr: "{ title: $parent.highlightedPropertyValue($data) }", text: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
+      %span{ko(attr: "{ title: $parent.highlightedPropertyValue($data) }", html: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
     <!-- /ko -->
     %td.timeago.padded{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
     %td.padded

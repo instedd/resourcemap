@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130719193038) do
+ActiveRecord::Schema.define(:version => 20130815172456) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -112,14 +112,15 @@ ActiveRecord::Schema.define(:version => 20130719193038) do
   add_index "layer_histories", ["layer_id"], :name => "index_layer_histories_on_layer_id"
 
   create_table "layer_memberships", :force => true do |t|
-    t.integer  "collection_id"
-    t.integer  "user_id"
     t.integer  "layer_id"
     t.boolean  "read",          :default => false
     t.boolean  "write",         :default => false
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
+    t.integer  "membership_id"
   end
+
+  add_index "layer_memberships", ["membership_id"], :name => "index_layer_memberships_on_membership_id"
 
   create_table "layers", :force => true do |t|
     t.integer  "collection_id"
@@ -129,6 +130,15 @@ ActiveRecord::Schema.define(:version => 20130719193038) do
     t.datetime "updated_at",    :null => false
     t.integer  "ord"
   end
+
+  create_table "location_permissions", :force => true do |t|
+    t.string   "action",        :default => "read"
+    t.integer  "membership_id"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+  end
+
+  add_index "location_permissions", ["membership_id"], :name => "index_location_permissions_on_membership_id"
 
   create_table "memberships", :force => true do |t|
     t.integer  "user_id"
@@ -154,6 +164,15 @@ ActiveRecord::Schema.define(:version => 20130719193038) do
     t.integer  "collection_id"
     t.boolean  "is_send",       :default => false
   end
+
+  create_table "name_permissions", :force => true do |t|
+    t.string   "action",        :default => "read"
+    t.integer  "membership_id"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+  end
+
+  add_index "name_permissions", ["membership_id"], :name => "index_name_permissions_on_membership_id"
 
   create_table "prefixes", :force => true do |t|
     t.string   "version"
@@ -281,18 +300,18 @@ ActiveRecord::Schema.define(:version => 20130719193038) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                  :default => "", :null => false
-    t.string   "encrypted_password",     :default => "", :null => false
+    t.string   "email",                                 :default => "", :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          :default => 0
+    t.integer  "sign_in_count",                         :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
     t.string   "phone_number"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -300,10 +319,10 @@ ActiveRecord::Schema.define(:version => 20130719193038) do
     t.string   "unconfirmed_email"
     t.boolean  "is_super_user"
     t.string   "authentication_token"
-    t.integer  "collection_count",       :default => 0
-    t.integer  "layer_count",            :default => 0
-    t.integer  "site_count",             :default => 0
-    t.integer  "gateway_count",          :default => 0
+    t.integer  "collection_count",                      :default => 0
+    t.integer  "layer_count",                           :default => 0
+    t.integer  "site_count",                            :default => 0
+    t.integer  "gateway_count",                         :default => 0
     t.boolean  "success_outcome"
   end
 

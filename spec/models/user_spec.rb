@@ -74,15 +74,15 @@ describe User do
       @user1  = User.make
       @user = User.create(:email => "demo@instedd.org", :password => "123456", :phone_number => "855123456789")
       @collection = Collection.make
+      @membership = @collection.memberships.create(:user => @user, :admin => false)
       @site  = @collection.sites.make
-      @layer = @collection.layers.create(:name => "health center")
+      @layer = @collection.layers.make(:name => "health center")
       @properties =[{:code=>"AB", :value=>"26"}]
       @field = Field.create(:collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1, :kind => "numeric")
     end
 
     it "should be able to view and update layer" do
-      @collection.memberships.create(:user => @user, :admin => false)
-      @collection.layer_memberships.create( :layer_id => @layer.id, :read => true, :user_id => @user.id, :write => true)
+      @membership.layer_memberships.create( :layer_id => @layer.id, :read => true, :write => true)
       Field::NumericField.create :collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1
       @user.can_view?(@collection, @properties[0][:code]).should be_true
       @user.can_update?(@site, @properties).should be_true
@@ -90,7 +90,7 @@ describe User do
 
     context "can update" do
       it "should return true when user have write permission on layer" do
-        @collection.layer_memberships.create( :layer_id => @layer.id, :read => true, :user_id => @user.id, :write => true)
+        @membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
         @user.validate_layer_write_permission(@site, @properties).should be_true
       end
 
@@ -103,14 +103,15 @@ describe User do
         @layer1 = @collection1.layers.create(:name => "school")
         @field1 = Field.create(:collection_id => @collection1.id, :layer_id => @layer1.id, :code => "AB", :ord => 1, :kind => "numeric")
         @site1  = @collection1.sites.make
-        @collection1.layer_memberships.create( :layer_id => @layer1.id, :read => true, :user_id => @user.id, :write => true)
+        membership = @collection1.memberships.create(:user => @user, :admin => false)
+        membership.layer_memberships.create(:layer_id => @layer1.id, :read => true, :write => true)
         @user.validate_layer_write_permission(@site1, @properties).should be_true
       end
     end
 
     context "can view" do
       it "should return true when user have read permission on layer" do
-        @collection.layer_memberships.create( :layer_id => @layer.id, :read => true, :user_id => @user.id, :write => true)
+        @membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
         @user.validate_layer_read_permission(@collection, @properties[0][:code]).should be_true
       end
 
@@ -126,12 +127,12 @@ describe User do
     User.first.encrypted_password.should_not == 'bar123'
   end
 
-  describe 'gateway' do 
+  describe 'gateway' do
     let(:user_1){ User.make }
     let!(:gateway) { user_1.channels.make name: 'default', ticket_code: '1234', basic_setup: true}
 
     it 'should return gateway under user' do
-      user_1.get_gateway.should eq gateway 
+      user_1.get_gateway.should eq gateway
     end
   end
 end

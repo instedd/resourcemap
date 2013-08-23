@@ -8,17 +8,20 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
   has_many :memberships
   has_many :channels
-  has_many :layer_memberships
   has_many :collections, through: :memberships, order: 'collections.name ASC'
   has_one :user_snapshot
 
   attr_accessor :is_guest
 
   # In order to use it in the ability file
+  # this loads accessible layers for ALL the user's collections.
   def readable_layer_ids
     # Write permission => read permission in the creation of the permission, but in order to avoid data conflicts
     # we make explicit here that implication
-    layer_memberships.where("layer_memberships.read = ? or layer_memberships.write = ?", true, true).map(&:layer_id).uniq
+    memberships.includes(:layer_memberships).inject([]){
+      | layer_ids, membership |
+        (layer_ids | membership.layer_memberships.select{|lm| lm.read == true || lm.write == true}.map(&:layer_id))
+    }
   end
 
   def create_collection(collection)
@@ -59,7 +62,7 @@ class User < ActiveRecord::Base
   end
 
   def can_update?(site, properties)
-    membership = self.memberships.where(:collection_id => site.collection_id).first
+    membership = membership_in(site.collection)
     return false unless membership
     return membership.admin if membership.admin?
     return true if(validate_layer_write_permission(site, properties))
@@ -67,10 +70,11 @@ class User < ActiveRecord::Base
   end
 
   def validate_layer_write_permission(site, properties)
+    membership = membership_in(site.collection)
     properties.each do |prop|
       field = Field.where("code=? && collection_id=?", prop.values[0].to_s, site.collection_id).first
       return false if field.nil?
-      lm = LayerMembership.where(user_id: self.id, collection_id: site.collection_id, layer_id: field.layer_id).first
+      lm = LayerMembership.where(membership_id: membership.id, layer_id: field.layer_id).first
       return false if lm.nil?
       return false if(!lm && lm.write)
     end
@@ -80,7 +84,8 @@ class User < ActiveRecord::Base
   def validate_layer_read_permission(collection, field_code)
     field = Field.where("code=? && collection_id=?", field_code, collection.id).first
     return false if field.nil?
-    lm = LayerMembership.where(user_id: self.id, collection_id: collection.id, layer_id: field.layer_id).first
+    membership = membership_in(collection)
+    lm = LayerMembership.where(membership_id: membership.id, layer_id: field.layer_id).first
     return false if lm.nil?
     return false if(!lm && lm.read)
     return true

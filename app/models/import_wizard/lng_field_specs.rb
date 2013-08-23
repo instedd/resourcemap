@@ -1,5 +1,5 @@
 class ImportWizard::LngFieldSpecs < ImportWizard::BaseFieldSpecs
-  def process(row, site)
-    site.lng = row[@column_spec[:index]]
+  def process(row, site, value)
+    site.lng = value
   end
 end

@@ -9,6 +9,6 @@
 %hr/
 %label Format
 %p.smalltext
-%select{ko(value: 'impl().format')}
+%select#field_format{ko(value: 'impl().format')}
   - Field::IdentifierField::IdentifierKinds.each do |kind|
     %option= kind

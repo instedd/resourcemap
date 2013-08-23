@@ -93,6 +93,7 @@ class Search
   # values (when applicable).
   def api_results
     visible_fields = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id)
+    visible_fields.each { |field| field.cache_for_read }
 
     fields_by_es_code = visible_fields.index_by &:es_code
 
