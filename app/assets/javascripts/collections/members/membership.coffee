@@ -69,10 +69,13 @@ class @Membership extends Expandable
 
     @allLayersNone = ko.computed
       read: =>
-        return 'all' if all nonePermission
+        return 'all' if ((all nonePermission) && @namePermission() == 'none' && @locationPermission() == 'none')
         ''
       write: (val) =>
         return unless val
+
+        @noneNameChecked(true)
+        @noneLocationChecked(true)
 
         _self = @
         _.each @layers(), (layer) ->
@@ -82,9 +85,14 @@ class @Membership extends Expandable
 
 
     @allLayersRead = ko.computed
-      read: => return 'all' if all readPermission; ''
+      read: =>
+        return 'all' if ((all readPermission) && @namePermission() == 'read' && @locationPermission() == 'read')
+        ''
       write: (val) =>
         return unless val
+
+        @readNameChecked(true)
+        @readLocationChecked(true)
 
         _self = @
         _.each @layers(), (layer) ->
@@ -94,9 +102,14 @@ class @Membership extends Expandable
 
 
     @allLayersUpdate = ko.computed
-      read: => return 'all' if all writePermission; ''
+      read: =>
+        return 'all' if ((all writePermission) && @namePermission() == 'update' && @locationPermission() == 'update')
+        ''
       write: (val) =>
         return unless val
+
+        @updateNameChecked(true)
+        @updateLocationChecked(true)
 
         _self = @
         _.each @layers(), (layer) ->

@@ -48,9 +48,7 @@ describe Membership do
     end
 
     it "should not be able to set an invalid action_value for name or location" do
-      lambda { membership.set_access(object: 'name', new_action: 'invalid')}.should raise_error(StandardError)
-
-
+      lambda { membership.set_access(object: 'name', new_action: 'invalid')}.should raise_error(ActiveRecord::RecordInvalid)
     end
   end
 
