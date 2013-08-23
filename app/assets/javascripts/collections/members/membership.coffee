@@ -29,7 +29,7 @@ class @Membership extends Expandable
               ""
           write: (val) =>
             @namePermission(action)
-            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_layer_access.json", { layer_id: 'name', verb: action}
+            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_access.json", { object: 'name', new_action: action}
 
         this["#{action}LocationChecked"] = ko.computed
           read: =>
@@ -39,7 +39,7 @@ class @Membership extends Expandable
               ""
           write: (val) =>
             @locationPermission(action)
-            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_layer_access.json", { layer_id: 'location', verb: action}
+            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_access.json", { object: 'location', new_action: action}
 
     all = (permitted) ->
       _.all _self.layers(), (l) => permitted l

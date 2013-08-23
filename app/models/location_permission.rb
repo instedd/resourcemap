@@ -3,6 +3,8 @@ class LocationPermission < ActiveRecord::Base
   validates :action, :inclusion => { :in => ["read", "update", "none"]}
 
   def set_access(action_value)
+    self.action = action_value
+    self.save!
   end
 
   def can_read?

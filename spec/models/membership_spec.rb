@@ -21,16 +21,14 @@ describe Membership do
   end
 
   it "should delete name_permission when membership is destroyed" do
-    membership.name_permission.action = 'update'
-    membership.save!
+    membership.set_access(object: 'name', new_action: 'update')
     NamePermission.count.should be(1)
     membership.destroy
     NamePermission.count.should be(0)
   end
 
   it "should delete location_permission when membership is destroyed" do
-    membership.location_permission.action = 'update'
-    membership.save!
+    membership.set_access(object: 'location', new_action: 'update')
     LocationPermission.count.should be(1)
     membership.destroy
     LocationPermission.count.should be(0)
@@ -38,17 +36,21 @@ describe Membership do
 
   describe "default fields permission" do
     it "should be able to read and update name if user has write permission for name" do
-      membership.name_permission.action = 'update'
-      membership.save!
+      membership.set_access(object: 'name', new_action: 'update')
       membership.can_read?("name").should be_true
       membership.can_update?("name").should be_true
     end
 
     it "should be able to read and update location if user has write permission for location" do
-      membership.location_permission.action = 'update'
-      membership.save!
+      membership.set_access(object: 'name', new_action: 'update')
       membership.can_read?("location").should be_true
       membership.can_update?("location").should be_true
+    end
+
+    it "should not be able to set an invalid action_value for name or location" do
+      lambda { membership.set_access(object: 'name', new_action: 'invalid')}.should raise_error(StandardError)
+
+
     end
   end
 

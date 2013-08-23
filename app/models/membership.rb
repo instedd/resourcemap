@@ -12,41 +12,38 @@ class Membership < ActiveRecord::Base
   has_one :name_permission, dependent: :destroy
   has_one :location_permission, dependent: :destroy
 
-  accepts_nested_attributes_for :name_permission
-  accepts_nested_attributes_for :location_permission
-
   validates :user_id, :uniqueness => { scope: :collection_id, message: "membership already exists" }
 
   #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
-  def can_read?(element)
-    if element == "name"
+  def can_read?(object)
+    if object == "name"
       name_permission.can_read?
-    elsif element == "location"
+    elsif object == "location"
       location_permission.can_read?
     else
-      raise "Undefined element #{element} for membership."
+      raise "Undefined element #{object} for membership."
     end
   end
 
   #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
-  def can_update?(element)
-    if element == "name"
+  def can_update?(object)
+    if object == "name"
       name_permission.can_update?
-    elsif element == "location"
+    elsif object == "location"
       location_permission.can_update?
     else
-      raise "Undefined element #{element} for membership."
+      raise "Undefined element #{object} for membership."
     end
   end
 
   def set_access(options = {})
-    element = options[:element]
-    if element == 'name'
-      name_permission.set_access(options[:action])
-    elsif element == 'location'
-      name_permission.set_access(options[:action])
+    object = options[:object]
+    if object == 'name'
+      name_permission.set_access(options[:new_action])
+    elsif object == 'location'
+      location_permission.set_access(options[:new_action])
     else
-      raise "Undefined element #{element} for membership."
+      raise "Undefined element #{object} for membership."
     end
   end
 
