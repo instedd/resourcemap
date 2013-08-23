@@ -1,0 +1,50 @@
+.fullscreen {
+  background: none;
+
+  #wrapper,
+  #collections-main {
+    height:100%;
+  }
+
+  #container {
+    margin-left:0px;
+    margin-right:0px;
+    padding-top: 0px;
+  }
+
+  #toolbar,
+  #header,
+  #footer-span {
+    display:none;
+  }
+
+  .oleftcollapse {
+    display:block;
+    left: -2px;
+  }
+
+  .expand-collapse_button {
+    position: absolute;
+    z-index:1;
+  }
+
+  .tableheader {
+  }
+
+  .tablescroll {
+  }
+
+  .tablescroll.expanded.sites {
+  }
+
+  .tablescroll.sites {
+  }
+
+  #right-panel.sites {
+  }
+}
+
+
+.mapcontainer {
+  position: relative;
+}
