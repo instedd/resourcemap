@@ -58,6 +58,9 @@ class LayersController < ApplicationController
     render json: layer.as_json(include: :fields)
   end
 
+  def hierarchy_editor
+  end
+
   def set_order
     # cancan layer is 'readonly' :S
     # https://github.com/ryanb/cancan/issues/357
