@@ -57,7 +57,7 @@ onCollections ->
       initialized = @initMap()
       collection.panToPosition(true) unless initialized
 
-      collection.fetchSitesMembership()
+      collection.fetchMembership()
       collection.fetchFields =>
         if @processingURL
           @processURL()

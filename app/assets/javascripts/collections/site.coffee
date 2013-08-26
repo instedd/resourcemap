@@ -33,12 +33,12 @@ onCollections ->
       @valid = ko.computed => @hasName()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
+      @nameWriteable = false
+      @locationWriteable = false
 
     hasLocation: => @position() != null
 
     hasName: => $.trim(@name()).length > 0
-
-    nameWriteable: =>
 
     propertyValue: (field) =>
       value = @properties()[field.esCode]
