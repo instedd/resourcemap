@@ -214,14 +214,6 @@ body.fullscreen #container {
 
 
 
-
-
-
-
-
-
-
-
 .sitesBox {
   height: 37px;
   padding-top: 1px !important;
@@ -471,4 +463,141 @@ td.loadmore { height: 36px }
 .tablewrapp.w80,
 form.w80 {
   width: 960px;
+}
+
+/* Hierarchy Editor*/
+.filter-header {
+  @include clearfix;
+  margin: 3px 0 6px;
+
+  #collapse-all {
+    @include border-radius(3px);
+    background: #d0d0d0;
+    display: inline-block;
+    padding: 2px;
+    float: right;
+    text-decoration: none !important;
+  }
+}
+ul.h-editor {
+  margin: 0;
+  padding: 0;
+
+  li {
+    /*@include transition(all ease-out 0.2s);*/
+    list-style: none;
+    line-height: 24px;
+    padding: 0;
+    overflow: hidden;
+
+    .name {
+      @include border-radius(4px);
+      @include clearfix;
+      padding: 2px 0 2px 10px;
+      position: relative;
+
+      .n-label {
+        display: block;
+        width: 85%;
+        float: left;
+      }
+
+      .icon {
+        padding: 0 !important;
+        margin: 0 2px;
+        display: none;
+      }
+
+      span.arrow {
+        display: block;
+        width: 0px;
+        height: 0px;
+        border-style: solid;
+        float: left;
+        margin: 8px 4px 0 0;
+        cursor: pointer;
+
+      }
+
+      span.number {
+        font-size: 75%;
+        color: #999999;
+      }
+    }
+
+    .fields {
+      @include box-sizing(border-box);
+      @include clearfix;
+      padding: 6px 0 4px 15px;
+      display: none;
+
+      .f-name {
+        width: 65%;
+      }
+
+      .f-id{
+        width: 20%;
+      }
+    }
+
+    &.active {
+      @include transition(all ease-out 0.2s);
+      min-height: 65px;
+
+      > div.name {
+        background: #d0d0d0;
+      }
+
+      .fields {
+        display: block;
+      }
+
+      .icon {
+        display: inline-block;
+      }
+    }
+
+    &.expanded {
+      height: auto;
+      .arrow {
+        border-width: .6em .35em 0 .35em;
+        border-color: #000000 transparent transparent transparent;
+      }
+    }
+
+    &.collapsed {
+      height: 30px;
+      .arrow {
+        border-width: .35em 0 .35em .6em;
+        border-color: transparent transparent transparent #000000 ;
+      }
+    }
+
+    &.expanded.active + li {
+      margin-top: -10px;
+    }
+
+    ul {
+      margin: 1px 0 0 25px;
+    }
+  }
+}
+
+.paddchild {
+  background: url(/assets/icon-addchild.png) no-repeat;
+  width: 24px;
+  height: 24px;
+  border:none;
+  display: inline-block;
+  margin: 0 1px;
+  cursor: pointer;
+}
+.pdelete {
+  background: url(/assets/icon-trash-plain.png) no-repeat;
+  width: 24px;
+  height: 24px;
+  border:none;
+  display: inline-block;
+  margin: 0 1px;
+  cursor: pointer;
 }
