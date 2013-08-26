@@ -14,7 +14,7 @@ onCollections ->
       $.get "/collections/#{@id}/sites_permission", {}, (data) =>
         @sitesPermission = new SitesPermission(data)
 
-      $.get "/collections/#{@id}/current_user_membership.json", {}, (membership) ->
+      $.get "/collections/#{@id}/current_user_membership.json", {}, (membership) =>
         @namePermission = membership.name
         @locationPermission = membership.location
 
@@ -30,5 +30,4 @@ onCollections ->
         field.writeable = (canUpdate and field.writeable) for field in @fields()
         site.nameWriteable = (canUpdate and @namePermission == 'update')
         site.locationWriteable = (canUpdate and @locationPermission == 'update')
-        debugger
         callback() if typeof(callback) is 'function'
