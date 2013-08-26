@@ -77,4 +77,21 @@ class Membership < ActiveRecord::Base
       layer_memberships.create! :layer_id => options[:layer_id], :read => read, :write => write
     end
   end
+
+
+  def to_json
+    {
+      user_id: user_id,
+      user_display_name: user.display_name,
+      admin: admin?,
+      layers: layer_memberships.map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
+      sites: {
+        read: read_sites_permission,
+        write: write_sites_permission
+      },
+      name: action_for_name_permission,
+      location: action_for_location_permission,
+    }
+  end
+
 end

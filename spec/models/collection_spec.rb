@@ -101,8 +101,33 @@ describe Collection do
       snapshot = collection.snapshot_for(user)
       snapshot.should be_nil
     end
+  end
 
+  describe "memberships" do
+    it "should obtain membership for collection admin" do
+      membership = collection.membership_for(user)
+      membership.admin.should be(true)
+    end
 
+    it "should obtain membership for collection user" do
+      member = User.make
+      membership_for_member = collection.memberships.create! :user_id => member.id, admin: false
+      membership = collection.membership_for(member)
+      membership.admin.should be(false)
+    end
+
+    it "should not obtain membership for user who is not member of the collection" do
+      non_member = User.make
+      membership = collection.membership_for(non_member)
+      membership.should be_nil
+    end
+
+    it "should obtain dummy membership for guest user" do
+      guest = User.make
+      guest.is_guest = true
+      membership = collection.membership_for(guest)
+      membership.admin.should be(false)
+    end
   end
 
   describe "plugins" do

@@ -173,15 +173,19 @@
         %tbody
           %tr
             %td
-              %div.site_row{ko(click: 'editName')}
+              <!-- ko if: nameWriteable -->
+              %div.site_row.writeable{ko(click: 'editName')}
                 %label Name:
-                - if current_user.is_guest
-                  %span.value{ko(text: :name, visible: '!editingName()')}
-                -else
-                  %span.value{ko(text: :name, visible: '!editingName()')}
+                %span.value{ko(text: :name, visible: '!editingName()')}
                 <!-- ko if: editingName() -->
                 = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                 <!-- /ko -->
+              <!-- /ko -->
+              <!-- ko if: ! nameWriteable -->
+              %div.site_row
+                %label Name:
+                %span.value{ko(text: :name)}
+              <!-- /ko -->
               %div.site_row{ko(click: 'editLocation')}
                 %label Location:
                 <!-- ko if: !hasLocation() -->

@@ -23,6 +23,9 @@ ResourceMap::Application.routes.draw do
     post :register_gateways
     get  :message_quota
     get :sites_by_term
+
+    get :current_user_membership
+
     resources :sites
     resources :layers do
       collection do

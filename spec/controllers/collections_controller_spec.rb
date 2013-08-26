@@ -117,7 +117,7 @@ describe CollectionsController do
 
   end
 
-  describe "analytic" do 
+  describe "analytic" do
     it 'should changed user.collection_count by 1' do
       expect{
         post :create, collection: { name: 'collection_1', icon: 'default'}
@@ -141,6 +141,27 @@ describe CollectionsController do
     it 'should not get index if collection_id is not passed' do
       get :index
       response.should_not be_success
+    end
+
+    it "should get current_user_membership for public collection" do
+      get :current_user_membership, collection_id: public_collection.id, format: 'json'
+      response.should be_success
+      dummy_membership = JSON.parse response.body
+      dummy_membership["admin"].should eq(false)
+      dummy_membership["name"].should eq("read")
+      dummy_membership["location"].should eq("read")
+    end
+  end
+
+  describe "Permissions" do
+
+    it "should get current_user_membership" do
+      get :current_user_membership, collection_id: collection.id, format: 'json'
+      response.should be_success
+      membership = JSON.parse response.body
+      membership["admin"].should eq(true)
+      membership["name"].should eq("update")
+      membership["location"].should eq("update")
     end
   end
 

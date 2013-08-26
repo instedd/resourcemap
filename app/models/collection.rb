@@ -34,6 +34,17 @@ class Collection < ActiveRecord::Base
     results.first['_source']['properties'][es_code] rescue 0
   end
 
+  def membership_for(user)
+    if user.is_guest && self.public
+      # Dummy membership with read permission
+      m = Membership.new collection: self, user: user, admin: false
+      m.create_default_associations
+      m
+    else
+      memberships.where(user_id: user.id).first
+    end
+  end
+
   def snapshot_for(user)
     user_snapshots.where(user_id: user.id).first.try(:snapshot)
   end

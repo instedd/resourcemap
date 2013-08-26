@@ -38,6 +38,8 @@ onCollections ->
 
     hasName: => $.trim(@name()).length > 0
 
+    nameWriteable: =>
+
     propertyValue: (field) =>
       value = @properties()[field.esCode]
       field.valueUIFor(value)

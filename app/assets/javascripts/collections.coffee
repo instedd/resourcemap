@@ -19,12 +19,16 @@ onCollections -> if $('#collections-main').length > 0
     $('#snapshot_loaded_message').show()
 
   # If current_user is guest, she will only have access to the requested collection
+  collectionId = $.url().param('collection_id')
   if window.currentUserIsGuest
-    collectionId = $.url().param('collection_id')
     $.get "/collections/#{collectionId}.json", {}, (collection) ->
       initViewModel [collection]
   else
     $.get "/collections.json", {}, initViewModel
+
+  $.get "/collections/#{collectionId}/current_user_membership.json", {}, (membership) ->
+    debugger
+
 
   # Hide the refine popup if clicking outside it
   $(window.document).click (event) ->
