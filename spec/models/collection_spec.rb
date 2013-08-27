@@ -8,7 +8,7 @@ describe Collection do
   it { should have_many :thresholds }
 
   let!(:user) { User.make }
-  let!(:collection) { user.create_collection Collection.make_unsaved }
+  let!(:collection) { user.create_collection Collection.make_unsaved public: true}
   let!(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'foo', name: 'Foo', ord: 1}] }
   let!(:field) { layer.fields.first }
 
