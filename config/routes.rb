@@ -23,6 +23,9 @@ ResourceMap::Application.routes.draw do
     post :register_gateways
     get  :message_quota
     get :sites_by_term
+
+    get :current_user_membership
+
     resources :sites
     resources :layers do
       collection do
@@ -40,6 +43,8 @@ ResourceMap::Application.routes.draw do
         get 'search'
       end
       member do
+        post 'set_access'
+        #TODO: move set_layer_access to the more generic set_access
         post 'set_layer_access'
         post 'set_admin'
         post 'unset_admin'

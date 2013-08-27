@@ -8,6 +8,8 @@ class @Membership extends Expandable
     @userDisplayName = ko.observable data?.user_display_name
     @admin = ko.observable data?.admin
     @collectionId = ko.observable root.collectionId()
+    @namePermission = ko.observable data?.name
+    @locationPermission = ko.observable data?.location
 
     rootLayers = data?.layers ? []
     @layers = ko.observableArray $.map(root.layers(), (x) => new LayerMembership(x, rootLayers, _self))
@@ -16,6 +18,28 @@ class @Membership extends Expandable
 
     @callModuleConstructors(arguments)
     super
+
+    for action in ['none', 'read', 'update']
+      do (action) =>
+        this["#{action}NameChecked"] = ko.computed
+          read: =>
+            if @namePermission() == action
+              "true"
+            else
+              ""
+          write: (val) =>
+            @namePermission(action)
+            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_access.json", { object: 'name', new_action: action}
+
+        this["#{action}LocationChecked"] = ko.computed
+          read: =>
+            if @locationPermission() == action
+              "true"
+            else
+              ""
+          write: (val) =>
+            @locationPermission(action)
+            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_access.json", { object: 'location', new_action: action}
 
     all = (permitted) ->
       _.all _self.layers(), (l) => permitted l
@@ -45,10 +69,13 @@ class @Membership extends Expandable
 
     @allLayersNone = ko.computed
       read: =>
-        return 'all' if all nonePermission
+        return 'all' if ((all nonePermission) && @namePermission() == 'read' && @locationPermission() == 'read')
         ''
       write: (val) =>
         return unless val
+
+        @readNameChecked(true)
+        @readLocationChecked(true)
 
         _self = @
         _.each @layers(), (layer) ->
@@ -58,9 +85,14 @@ class @Membership extends Expandable
 
 
     @allLayersRead = ko.computed
-      read: => return 'all' if all readPermission; ''
+      read: =>
+        return 'all' if ((all readPermission) && @namePermission() == 'read' && @locationPermission() == 'read')
+        ''
       write: (val) =>
         return unless val
+
+        @readNameChecked(true)
+        @readLocationChecked(true)
 
         _self = @
         _.each @layers(), (layer) ->
@@ -70,9 +102,14 @@ class @Membership extends Expandable
 
 
     @allLayersUpdate = ko.computed
-      read: => return 'all' if all writePermission; ''
+      read: =>
+        return 'all' if ((all writePermission) && @namePermission() == 'update' && @locationPermission() == 'update')
+        ''
       write: (val) =>
         return unless val
+
+        @updateNameChecked(true)
+        @updateLocationChecked(true)
 
         _self = @
         _.each @layers(), (layer) ->

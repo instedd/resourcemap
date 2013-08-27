@@ -122,11 +122,26 @@
           %tr
             %td
               %div
+
                 = label_tag :name, "Name:"
+                <!-- ko if: nameWriteable -->
                 = text_field_tag :name, '', placeholder: 'Enter new site name',  'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}), :autofocus => true
+                <!-- /ko -->
+                <!-- ko if: !nameWriteable -->
+                %span.value{ko(text: :name)}
+                <!-- /ko -->
+
+
               %div
                 %label Location:
+                <!-- ko if: locationWriteable -->
                 = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-text', placeholder: 'Search or drag the pin'}
+                <!-- /ko -->
+                <!-- ko if: ! locationWriteable -->
+                %span.value{ko(text: :locationText)}
+                <!-- /ko -->
+
+
               / ko if: collection.readable($data)
               <!-- ko foreach: $root.currentCollection().layers() -->
               %div
@@ -173,32 +188,40 @@
         %tbody
           %tr
             %td
-              %div.site_row{ko(click: 'editName')}
+
+              <!-- ko if: nameWriteable -->
+              %div.site_row.writeable{ko(click: 'editName')}
                 %label Name:
-                - if current_user.is_guest
-                  %span.value{ko(text: :name, visible: '!editingName()')}
-                -else
-                  %span.value{ko(text: :name, visible: '!editingName()')}
+                %span.value{ko(text: :name, visible: '!editingName()')}
                 <!-- ko if: editingName() -->
                 = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                 <!-- /ko -->
-              %div.site_row{ko(click: 'editLocation')}
+              <!-- /ko -->
+              <!-- ko if: ! nameWriteable -->
+              %div.site_row
+                %label Name:
+                %span.value{ko(text: :name)}
+              <!-- /ko -->
+
+              <!-- ko if: locationWriteable -->
+              %div.site_row.writeable{ko(click: 'editLocation')}
                 %label Location:
                 <!-- ko if: !hasLocation() -->
-                - if current_user.is_guest
-                  %span.value{ko(visible: '!editingLocation()')} (no value)
-                - else
-                  %span.value{ko(visible: '!editingLocation()')} (no value)
+                %span.value{ko(visible: '!editingLocation()')} (no value)
                 <!-- /ko -->
                 <!-- ko if: hasLocation() && !editingLocation() -->
-                - if current_user.is_guest
-                  %span.value{ko(text: :locationText, visible: '!editingLocation()')}
-                - else
-                  %span.value{ko(text: :locationText, visible: '!editingLocation()')}
+                %span.value{ko(text: :locationText, visible: '!editingLocation()')}
                 <!-- /ko -->
                 <!-- ko if: editingLocation() -->
                 = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-text'}
                 <!-- /ko -->
+              <!-- /ko -->
+              <!-- ko if: ! locationWriteable -->
+              %div.site_row
+                %label Location:
+                %span.value{ko(text: :locationText)}
+              <!-- /ko -->
+
               - if Settings.mobile_id?
                 %div.site_row
                   %label ID With Prefix:

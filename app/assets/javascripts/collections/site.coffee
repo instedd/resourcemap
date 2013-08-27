@@ -33,6 +33,9 @@ onCollections ->
       @valid = ko.computed => @hasName()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
+      # Default permission for the collection. If this site has custom permission, these will be updated in updatePermission method
+      @nameWriteable = (collection.namePermission == 'update')
+      @locationWriteable = (collection.locationPermission == 'update')
 
     hasLocation: => @position() != null
 

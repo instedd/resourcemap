@@ -12,30 +12,42 @@ class Membership < ActiveRecord::Base
   has_one :name_permission, dependent: :destroy
   has_one :location_permission, dependent: :destroy
 
-  accepts_nested_attributes_for :name_permission
-  accepts_nested_attributes_for :location_permission
-
   validates :user_id, :uniqueness => { scope: :collection_id, message: "membership already exists" }
 
   #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
-  def can_read?(field)
-    if field == "name"
+  def can_read?(object)
+    if admin
+      true
+    elsif object == "name"
       name_permission.can_read?
-    elsif field == "location"
+    elsif object == "location"
       location_permission.can_read?
     else
-      raise "Undefined field #{field} for membership."
+      raise "Undefined element #{object} for membership."
     end
   end
 
   #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
-  def can_update?(field)
-    if field == "name"
+  def can_update?(object)
+    if admin
+      true
+    elsif object == "name"
       name_permission.can_update?
-    elsif field == "location"
+    elsif object == "location"
       location_permission.can_update?
     else
-      raise "Undefined field #{field} for membership."
+      raise "Undefined element #{object} for membership."
+    end
+  end
+
+  def set_access(options = {})
+    object = options[:object]
+    if object == 'name'
+      name_permission.set_access(options[:new_action])
+    elsif object == 'location'
+      location_permission.set_access(options[:new_action])
+    else
+      raise "Undefined element #{object} for membership."
     end
   end
 
@@ -69,4 +81,21 @@ class Membership < ActiveRecord::Base
       layer_memberships.create! :layer_id => options[:layer_id], :read => read, :write => write
     end
   end
+
+
+  def to_json
+    {
+      user_id: user_id,
+      user_display_name: user.display_name,
+      admin: admin?,
+      layers: layer_memberships.map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
+      sites: {
+        read: read_sites_permission,
+        write: write_sites_permission
+      },
+      name: action_for_name_permission,
+      location: action_for_location_permission,
+    }
+  end
+
 end

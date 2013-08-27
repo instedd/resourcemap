@@ -7,7 +7,7 @@ onCollections ->
       # These three are because we are not calling super
       @constructorLocatable(lat: collection.lat(), lng: collection.lng())
       @constructorSitesContainer()
-      @constructorSitesMembership()
+      @constructorCollectionMembership()
       @loadCurrentSnapshotMessage()
 
       @loadAllSites()
@@ -25,6 +25,9 @@ onCollections ->
       @sitesPermission = collection.sitesPermission
       @allSites(collection.allSites())
       @error = collection.error
+
+      @namePermission = collection.namePermission
+      @locationPermission = collection.locationPermission
 
 
     createSite: (site) => new Site(@collection, site)

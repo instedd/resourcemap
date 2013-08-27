@@ -24,9 +24,9 @@ describe MembershipsController do
     end
 
     it "for collection member should include default_fields permissions in json" do
-      membership.name_permission.action = "update"
-      membership.location_permission.action = "read"
-      membership.save!
+      membership.set_access(object: 'name', new_action: 'update')
+      membership.set_access(object: 'location', new_action: 'read')
+
       get :index, collection_id: collection.id
       json = JSON.parse response.body
       json[1]["user_id"].should eq(user_2.id)

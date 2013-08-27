@@ -8,18 +8,7 @@ class MembershipsController < ApplicationController
 
   def index
     memberships = collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission]).all.map do |membership|
-      {
-        user_id: membership.user_id,
-        user_display_name: membership.user.display_name,
-        admin: membership.admin?,
-        layers: membership.layer_memberships.map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
-        sites: {
-          read: membership.read_sites_permission,
-          write: membership.write_sites_permission
-        },
-        name: membership.action_for_name_permission,
-        location: membership.action_for_location_permission,
-      }
+      membership.to_json
     end
     render json: memberships
   end
@@ -58,6 +47,13 @@ class MembershipsController < ApplicationController
     redirect_to collection_members_path(collection)
   end
 
+  def set_access
+    membership = collection.memberships.find_by_user_id params[:id]
+    membership.set_access params
+    render json: :ok
+  end
+
+  #TODO: move set_layer_access to the more generic set_access
   def set_layer_access
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_layer_access params

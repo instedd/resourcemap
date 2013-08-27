@@ -45,6 +45,11 @@ class CollectionsController < ApplicationController
     redirect_to collection_layers_path(collection), notice: "Imported layers from #{the_other_collection.name}"
   end
 
+  def current_user_membership
+    respond_to do |format|
+      format.json { render json: collection.membership_for(current_user).to_json}
+    end
+  end
 
   def render_breadcrumbs
     add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
