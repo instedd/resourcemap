@@ -16,7 +16,9 @@ class Membership < ActiveRecord::Base
 
   #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
   def can_read?(object)
-    if object == "name"
+    if admin
+      true
+    elsif object == "name"
       name_permission.can_read?
     elsif object == "location"
       location_permission.can_read?
@@ -27,7 +29,9 @@ class Membership < ActiveRecord::Base
 
   #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
   def can_update?(object)
-    if object == "name"
+    if admin
+      true
+    elsif object == "name"
       name_permission.can_update?
     elsif object == "location"
       location_permission.can_update?

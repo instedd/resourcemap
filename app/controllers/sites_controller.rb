@@ -28,8 +28,11 @@ class SitesController < ApplicationController
 
   def create
     site_params = JSON.parse params[:site]
-    ui_attributes = prepare_from_ui(site_params)
-    site = collection.sites.new(ui_attributes.merge(user: current_user))
+
+    site = collection.sites.new(user: current_user)
+
+    process_site_params(site, site_params)
+
     if site.valid?
       site.save!
       current_user.site_count += 1
@@ -45,7 +48,9 @@ class SitesController < ApplicationController
     site_params = JSON.parse params[:site]
     site.user = current_user
     site.properties_will_change!
-    site.attributes = prepare_from_ui(site_params)
+
+    process_site_params(site, site_params)
+
     if site.valid?
       site.save!
       render json: site, :layout => false
@@ -101,6 +106,15 @@ class SitesController < ApplicationController
 
   private
 
+  def process_site_params(site, site_params)
+    # TODO: Use cancan and return forbbiden if the user does not have permission
+    user_membership = current_user.membership_in(collection)
+    site.name = site_params["name"] if site_params["name"] && user_membership.can_update?("name")
+    site.lat = site_params["lat"] if site_params["lat"] && user_membership.can_update?("location")
+    site.lng = site_params["lng"] if site_params["lng"] && user_membership.can_update?("location")
+    site.properties = prepare_from_ui(site_params)
+  end
+
   def prepare_from_ui(parameters)
     fields = collection.fields.index_by(&:es_code)
     decoded_properties = {}
@@ -110,8 +124,7 @@ class SitesController < ApplicationController
       decoded_properties[es_code] = fields[es_code].decode_from_ui(value)
     end
 
-    parameters["properties"] = decoded_properties
-    parameters
+    decoded_properties
   end
 
 end
