@@ -24,6 +24,7 @@ onCollections ->
       @groupByOptions = collection.groupByOptions
       @sitesPermission = collection.sitesPermission
       @allSites(collection.allSites())
+      @error = collection.error
 
 
     createSite: (site) => new Site(@collection, site)
