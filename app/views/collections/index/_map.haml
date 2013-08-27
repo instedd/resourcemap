@@ -127,7 +127,7 @@
                 <!-- ko if: nameWriteable -->
                 = text_field_tag :name, '', placeholder: 'Enter new site name',  'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}), :autofocus => true
                 <!-- /ko -->
-                <!-- ko if: !namewriteable -->
+                <!-- ko if: !nameWriteable -->
                 %span.value{ko(text: :name)}
                 <!-- /ko -->
 
@@ -137,7 +137,7 @@
                 <!-- ko if: locationWriteable -->
                 = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-text', placeholder: 'Search or drag the pin'}
                 <!-- /ko -->
-                <!-- ko if: !locationWriteable -->
+                <!-- ko if: ! locationWriteable -->
                 %span.value{ko(text: :locationText)}
                 <!-- /ko -->
 
@@ -205,8 +205,7 @@
 
               <!-- ko if: locationWriteable -->
               %div.site_row.writeable{ko(click: 'editLocation')}
-                %label Name:
-                %span.value{ko(text: :locationText, visible: '!editingLocation()')}
+                %label Location:
                 <!-- ko if: !hasLocation() -->
                 %span.value{ko(visible: '!editingLocation()')} (no value)
                 <!-- /ko -->

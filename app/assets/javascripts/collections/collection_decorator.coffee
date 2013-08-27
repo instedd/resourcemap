@@ -23,10 +23,7 @@ onCollections ->
       @refineFields = collection.fields
       @groupByOptions = collection.groupByOptions
       @sitesPermission = collection.sitesPermission
-      @namePermission = collection.namePermission
-      @locationPermission = collection.locationPermission
       @allSites(collection.allSites())
-
 
     createSite: (site) => new Site(@collection, site)
 
