@@ -25,3 +25,29 @@
 //= require jquery.blockUI
 //= require lodash
 //= require_tree .
+
+$(function(){
+
+  $(".n-label").click(function(){
+    var active = $(this).closest("li.active");
+    if (active.length > 0) {
+      active.removeClass("active");
+    } else {
+      $(".h-editor li").removeClass("active");
+      $(this).closest("li").toggleClass("active");
+    }
+  });
+
+
+  $(".arrow").click(function(){
+    $(this).closest("li").toggleClass("collapsed expanded");
+  });
+
+  $("#collapse-all").click(function(){
+    $(".h-editor li").removeClass("expanded active");
+    $(".h-editor li").addClass("collapsed");
+  });
+
+  return false;
+
+});
