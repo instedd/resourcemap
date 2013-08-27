@@ -48,9 +48,8 @@ describe Snapshot do
     Tire::Index.new(index_name).exists?.should be_false
   end
 
-  its "collection should have histories" do
+  it "collection should have histories" do
     date = Time.now
-
     site_histories = collection.site_histories.at_date(date)
     site_histories.count.should eq(4)
 
@@ -59,6 +58,19 @@ describe Snapshot do
 
     field_histories = collection.field_histories.at_date(date)
     field_histories.count.should eq(2)
+  end
+
+  it "collection should have histories for a past time" do
+    date = Time.parse('2011-01-02 10:00:00 -0500')
+
+    site_histories = collection.site_histories.at_date(date)
+    site_histories.count.should eq(2)
+
+    layer_histories = collection.layer_histories.at_date(date)
+    layer_histories.count.should eq(1)
+
+    field_histories = collection.field_histories.at_date(date)
+    field_histories.count.should eq(1)
   end
 
   it "should delete history when collection is destroyed" do

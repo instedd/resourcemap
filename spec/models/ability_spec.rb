@@ -3,7 +3,8 @@ require "cancan/matchers"
 
 describe Ability do
   let!(:admin) { User.make }
-  let!(:guest) { User.make is_guest: true}
+  # The guest user should not be saved, since it will be a dummy user with the is_guest flag in true
+  let!(:guest) { User.make_unsaved is_guest: true}
   let!(:user) { User.make }
   let!(:member) { User.make }
   let!(:collection) { admin.create_collection Collection.make }
@@ -143,6 +144,17 @@ describe Ability do
       it { admin_ability.should be_able_to(:read, layer_in_public_collection) }
       it { user_ability.should_not be_able_to(:read, layer_in_public_collection) }
       it { guest_ability.should be_able_to(:read, layer_in_public_collection) }
+    end
+
+    # Issue #574
+    describe "Should not read duplicated layers for guest user if the collection is public" do
+      let!(:public_collection) { admin.create_collection Collection.make public: true}
+      # Public collection with more than one membership were given duplicated results.
+      let!(:membership) { public_collection.memberships.create! :user_id => member.id, admin: false }
+
+      let!(:layer_in_public_collection) { Layer.make collection: public_collection, user: admin }
+
+      it { public_collection.layers.accessible_by(guest_ability).count.should eq(1) }
     end
 
   end
