@@ -7,7 +7,7 @@ onCollections ->
       # These three are because we are not calling super
       @constructorLocatable(lat: collection.lat(), lng: collection.lng())
       @constructorSitesContainer()
-      @constructorMembership()
+      @constructorCollectionMembership()
       @loadCurrentSnapshotMessage()
 
       @loadAllSites()

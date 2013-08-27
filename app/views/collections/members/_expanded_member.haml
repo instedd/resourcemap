@@ -33,7 +33,11 @@
     .memberHeaderColumn Name
     - ['None', 'Read', 'Update'].each do |permission|
       .permissionColumn
-        %input{ko(disable: "admin()", checked: "#{permission.downcase}NameChecked"), :value => "true", :type => 'radio'}
+        - if permission == 'None'
+          %input{ko(disable: true), :type => 'radio'}
+        - else
+          %input{ko(disable: "admin()", checked: "#{permission.downcase}NameChecked"), :value => "true", :type => 'radio'}
+
     .permissionColumn.admin
     .lastColumn
 
@@ -41,7 +45,11 @@
     .memberHeaderColumn Location
     - ['None', 'Read', 'Update'].each do |permission|
       .permissionColumn
-        %input{ko(disable: "admin()", checked: "#{permission.downcase}LocationChecked"), :value => "true", :type => 'radio'}
+        - if permission == 'None'
+          %input{ko(disable: true), :type => 'radio'}
+        - else
+          %input{ko(disable: "admin()", checked: "#{permission.downcase}LocationChecked"), :value => "true", :type => 'radio'}
+
     .permissionColumn.admin
     .lastColumn
 

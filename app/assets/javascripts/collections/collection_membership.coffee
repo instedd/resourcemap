@@ -1,8 +1,8 @@
 #= require collections/sites_permission
 onCollections ->
 
-  class @Membership
-    @constructorMembership: ->
+  class @CollectionMembership
+    @constructorCollectionMembership: ->
       @membershipInitialized = false
 
     @fetchMembership: (callback)->

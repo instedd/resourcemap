@@ -1,7 +1,7 @@
 #= require module
 #= require collections/locatable
 #= require collections/sites_container
-#= require collections/membership
+#= require collections/collection_membership
 #= require collections/layer
 #= require collections/field
 onCollections ->
@@ -9,12 +9,12 @@ onCollections ->
   class @CollectionBase extends Module
     @include Locatable
     @include SitesContainer
-    @include Membership
+    @include CollectionMembership
 
     constructor: (data) ->
       @constructorLocatable(data)
       @constructorSitesContainer()
-      @constructorMembership()
+      @constructorCollectionMembership()
 
       @id = data?.id
       @name = data?.name

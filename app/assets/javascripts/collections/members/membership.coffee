@@ -69,13 +69,13 @@ class @Membership extends Expandable
 
     @allLayersNone = ko.computed
       read: =>
-        return 'all' if ((all nonePermission) && @namePermission() == 'none' && @locationPermission() == 'none')
+        return 'all' if ((all nonePermission) && @namePermission() == 'read' && @locationPermission() == 'read')
         ''
       write: (val) =>
         return unless val
 
-        @noneNameChecked(true)
-        @noneLocationChecked(true)
+        @readNameChecked(true)
+        @readLocationChecked(true)
 
         _self = @
         _.each @layers(), (layer) ->
