@@ -13,3 +13,7 @@ onLayers ->
     toggleExpand: =>
       @expanded(!@expanded())
 
+    toJSON: =>
+      {id: @id(), name: @name(), sub: $.map(@hierarchyItems(), (x) -> x.toJSON())}
+
+

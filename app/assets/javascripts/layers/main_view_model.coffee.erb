@@ -30,6 +30,8 @@ onLayers ->
 
       @savingLayer = ko.observable(false)
 
+      @currentHierarchyUnderEdition = ko.observable()
+
       @advancedExpanded = ko.observable(false)
 
       @selectedImportCollectionId = ko.observable(0)
@@ -226,6 +228,10 @@ onLayers ->
     removeAttribute: (attribute) =>
       @currentField().impl().attributes.remove(attribute)
       @newAttribute().hasFocus(true)
+
+    openHierarchyEditor: (field) =>
+      hierarchy = new Hierarchy(field.impl().hierarchy())
+      @currentHierarchyUnderEdition(hierarchy)
 
     startUploadHierarchy: =>
       @currentField().impl().uploadingHierarchy(true)

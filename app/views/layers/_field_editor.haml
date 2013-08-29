@@ -71,6 +71,7 @@
     /ko template: {name: 'hierarchy-items-template', foreach: impl().hierarchyItems}
     //ko
   //ko
+  %button.farrow{ko(click: '$root.openHierarchyEditor'), style:'margin-bottom:0px;margin-top:0px'} Edit Hierarchy
   //ko
   - Field::plugin_kinds.each do |name, kind|
     - if kind[:property_editor]
