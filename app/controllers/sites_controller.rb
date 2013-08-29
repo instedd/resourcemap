@@ -109,10 +109,10 @@ class SitesController < ApplicationController
   def process_site_params(site, site_params)
     # TODO: Use cancan and return forbbiden if the user does not have permission
     user_membership = current_user.membership_in(collection)
-    site.name = site_params["name"] if site_params["name"] && user_membership.can_update?("name")
-    site.lat = site_params["lat"] if site_params["lat"] && user_membership.can_update?("location")
-    site.lng = site_params["lng"] if site_params["lng"] && user_membership.can_update?("location")
-    site.properties = prepare_from_ui(site_params)
+    site.name = site_params["name"] if site_params.has_key?("name") && user_membership.can_update?("name")
+    site.lat = site_params["lat"] if site_params.has_key?("lat") && user_membership.can_update?("location")
+    site.lng = site_params["lng"] if site_params.has_key?("lng") && user_membership.can_update?("location")
+    site.properties = prepare_from_ui(site_params) if site_params.has_key?("properties")
   end
 
   def prepare_from_ui(parameters)

@@ -130,8 +130,30 @@ describe SitesController do
       post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       response.should be_success
-      new_site = Site.find_by_name "new site"
-      new_site.should be
+      modified_site = Site.find_by_name "new site"
+      modified_site.should be
+    end
+
+    it 'should be able to delete location' do
+      site_params = {:lat => nil, :lng => nil}.to_json
+      post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+
+      response.should be_success
+      modified_site = Site.find_by_name site.name
+      modified_site.lat.should be(nil)
+      modified_site.lng.should be(nil)
+    end
+
+    it 'should not delete existing properties when only the name is modified' do
+      site.properties[text.es_code] = "existing value"
+      site.save!
+
+      site_params = {:name => "new site"}.to_json
+      post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+
+      modified_site = Site.find_by_name "new site"
+      modified_site.should be
+      modified_site.properties[text.es_code].should eq("existing value")
     end
 
     it 'should update a single property' do
