@@ -52,11 +52,34 @@
   /ko if: kind() == 'hierarchy'
   %hr/
   %label{ko(css: {error: 'impl().hierarchyError'})} Hierarchy
+  %p.smalltext Hierarchically structured elements
+
+
+  /ko if: !impl().uploadingHierarchy() && impl().hierarchy()
+  .hierarchy-container.box
+    %ul.h-editor
+      /ko template: {name: 'hierarchy-editor-items-template', foreach: impl().hierarchyItems}
+      //ko
+  //ko
+
+  %br
+
+  %a.fancybox.farrow.icon_button{ko(click: '$root.openHierarchyEditor', text: "impl().hierarchy() ? 'Edit Hierarchy' : 'Create Hiearchy'"), style:'margin-bottom:0px;margin-top:0px', href: '#hierarchy_editor'}
+  = render 'hierarchy_editor'
+
+  %br
+
+  %a.fexport.icon_button{ko(click: '$root.toggleExpandUploadCSV')} Upload a CSV
+
+  / ko if: $root.expandedUploadCSV()
   %p.smalltext Upload a CSV: ID, ParentID, ItemName
+
   %form.hierarchy_form{action: collection_decode_hierarchy_csv_path(collection), method: :post, enctype: 'multipart/form-data', target: 'hierarchy_iframe', style: 'margin-top:6px;margin-bottom:10px'}
     %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
     %input.hierarchy_upload{type: :file, name: :file, id: :hierarchy_upload}
   %iframe#hierarchy_iframe{name: 'hierarchy_iframe', style: 'display:none'}
+  / /ko
+
   /ko if: impl().errorUploadingHierarchy()
   %p
     There was
@@ -66,15 +89,7 @@
   /ko if: impl().uploadingHierarchy()
   Uploading, please wait...
   //ko
-  /ko if: !impl().uploadingHierarchy() && impl().hierarchy()
-  .hierarchy-container
-    /ko template: {name: 'hierarchy-items-template', foreach: impl().hierarchyItems}
-    //ko
-  //ko
 
-  %a.fancybox.farrow.icon_button{ko(click: '$root.openHierarchyEditor'), style:'margin-bottom:0px;margin-top:0px', href: '#hierarchy_editor'} Edit Hierarchy
-
-  = render 'hierarchy_editor'
   //ko
 
 
