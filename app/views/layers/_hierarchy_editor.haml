@@ -1,132 +1,15 @@
-#currentHierarchyUnderEdition{ko(with: :currentHierarchyUnderEdition), style:'display: none;'}
-
-%h2 ACA NOMBRE DEL FIELD Hierarchy
-%p Edit or create a hierarchy for this field.
-.box.w60
-  .filter-header
-    %a#collapse-all{:href => "#"} Collapse all
-  %hr
-  %ul.h-editor
-    %li.collapsed
-      .name
-        %span.arrow
-        %a.n-label{:href => "#"}
-          Banteay Meanchey
-          %span.number 1
-        %a.icon.pdelete.right{title: 'Delete'}
-        %a.icon.paddchild.right{title: 'Add child'}
-      .fields
-        %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
-        %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
-        %a.icon.fdelete.right{title: 'Delete'}
-        %a.icon.faccept.right{title: 'Accept'}
-    %li.collapsed
-      .name
-        %span.arrow
-        %a.n-label{:href => "#"}
-          Banttambag
-          %span.number 2
-        %a.icon.pdelete.right{title: 'Delete'}
-        %a.icon.paddchild.right{title: 'Add child'}
-      .fields
-        %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
-        %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
-        %a.icon.fdelete.right{title: 'Delete'}
-        %a.icon.faccept.right{title: 'Accept'}
-    %li.expanded
-      .name
-        %span.arrow
-        %a.n-label{:href => "#"}
-          Kampong Cham
-          %span.number 3
-        %a.icon.pdelete.right{title: 'Delete'}
-        %a.icon.paddchild.right{title: 'Add child'}
-      .fields
-        %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
-        %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
-        %a.icon.fdelete.right{title: 'Delete'}
-        %a.icon.faccept.right{title: 'Accept'}
-      %ul.h-editor
-        %li.collapsed
-          .name
-            %span.arrow
-            %a.n-label{:href => "#"}
-              Bantheavy
-              %span.number 7
-            %a.icon.pdelete.right{title: 'Delete'}
-            %a.icon.paddchild.right{title: 'Add child'}
-          .fields
-            %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
-            %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
-            %a.icon.fdelete.right{title: 'Delete'}
-            %a.icon.faccept.right{title: 'Accept'}
-        %li.collapsed
-          .name
-            %span.arrow
-            %a.n-label{:href => "#"}
-              Chamkar Leu
-              %span.number 8
-            %a.icon.pdelete.right{title: 'Delete'}
-            %a.icon.paddchild.right{title: 'Add child'}
-          .fields
-            %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
-            %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
-            %a.icon.fdelete.right{title: 'Delete'}
-            %a.icon.faccept.right{title: 'Accept'}
-        %li.collapsed
-          .name
-            %span.arrow
-            %a.n-label{:href => "#"}
-              Cheung Prey
-              %span.number 9
-            %a.icon.pdelete.right{title: 'Delete'}
-            %a.icon.paddchild.right{title: 'Add child'}
-          .fields
-            %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
-            %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
-            %a.icon.fdelete.right{title: 'Delete'}
-            %a.icon.faccept.right{title: 'Accept'}
-    %li.collapsed
-      .name
-        %span.arrow
-        %a.n-label{:href => "#"}
-          Kampong Chhang
-          %span.number 4
-        %a.icon.pdelete.right{title: 'Delete'}
-        %a.icon.paddchild.right{title: 'Add child'}
-      .fields
-        %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
-        %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
-        %a.icon.fdelete.right{title: 'Delete'}
-        %a.icon.faccept.right{title: 'Accept'}
-    %li.collapsed
-      .name
-        %span.arrow
-        %a.n-label{:href => "#"}
-          Kampong Speu
-          %span.number 5
-        %a.icon.pdelete.right{title: 'Delete'}
-        %a.icon.paddchild.right{title: 'Add child'}
-      .fields
-        %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
-        %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
-        %a.icon.fdelete.right{title: 'Delete'}
-        %a.icon.faccept.right{title: 'Accept'}
-    %li.collapsed
-      .name
-        %span.arrow
-        %a.n-label{:href => "#"}
-          Kampong Thom
-          %span.number 6
-        %a.icon.pdelete.right{title: 'Delete'}
-        %a.icon.paddchild.right{title: 'Add child'}
-      .fields
-        %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
-        %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
-        %a.icon.fdelete.right{title: 'Delete'}
-        %a.icon.faccept.right{title: 'Accept'}
-  %button.cadd Create item
-%br
-.bottom-actions
-  %button.white Save
-  %a.tgrey{:href => "#"} Cancel
+#hierarchy_editor{ko(with: '$root.currentHierarchyUnderEdition'), style:'display: none;'}
+  %h2{ko(text: '$root.currentHierarchyFieldName()')}
+  %p Edit or create a hierarchy for this field.
+  .box.w60
+    .filter-header
+      %a#collapse-all{ko(click: :collapseAll)} Collapse all
+    %hr
+    %ul.h-editor
+      /ko template: {name: 'hierarchy-editor-items-template', foreach: hierarchyItems}
+      / /ko
+    %button.cadd Create item
+  %br
+  .bottom-actions
+    %button.white Save
+    %a.tgrey{:href => "#"} Cancel

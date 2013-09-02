@@ -31,6 +31,7 @@ onLayers ->
       @savingLayer = ko.observable(false)
 
       @currentHierarchyUnderEdition = ko.observable()
+      @currentHierarchyFieldName = ko.observable("Hierarchy")
 
       @advancedExpanded = ko.observable(false)
 
@@ -230,8 +231,11 @@ onLayers ->
       @newAttribute().hasFocus(true)
 
     openHierarchyEditor: (field) =>
-      hierarchy = new Hierarchy(field.impl().hierarchy())
+      hierarchy = new Hierarchy(field.impl().hierarchy() || [])
       @currentHierarchyUnderEdition(hierarchy)
+      title =  if field.name() then field.name()+ ' Field Hierarchy' else 'Hierarchy'
+      @currentHierarchyFieldName(title)
+      true
 
     startUploadHierarchy: =>
       @currentField().impl().uploadingHierarchy(true)
