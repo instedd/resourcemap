@@ -17,4 +17,9 @@ onLayers ->
     toJSON: =>
       {id: @id(), name: @name(), sub: $.map(@hierarchyItems(), (x) -> x.toJSON())}
 
+    collapseAll: =>
+      @expanded(false)
+      for hierarchyItem in @hierarchyItems()
+        hierarchyItem.collapseAll()
+
 

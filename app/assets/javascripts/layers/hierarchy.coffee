@@ -8,4 +8,4 @@ onLayers ->
 
     collapseAll: =>
       for hierarchyItem in @hierarchyItems()
-        hierarchyItem.expanded(false)
+        hierarchyItem.collapseAll()
