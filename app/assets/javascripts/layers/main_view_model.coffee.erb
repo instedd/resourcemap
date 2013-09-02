@@ -31,7 +31,7 @@ onLayers ->
       @savingLayer = ko.observable(false)
 
       @currentHierarchyUnderEdition = ko.observable()
-      @currentHierarchyFieldName = ko.observable("Hierarchy")
+      @currentHierarchyFieldName = ko.observable("Hierarchy Editor")
 
       @advancedExpanded = ko.observable(false)
 
@@ -233,7 +233,7 @@ onLayers ->
     openHierarchyEditor: (field) =>
       hierarchy = new Hierarchy(field.impl().hierarchy() || [])
       @currentHierarchyUnderEdition(hierarchy)
-      title =  if field.name() then field.name()+ ' Field Hierarchy' else 'Hierarchy'
+      title =  if field.name() then 'Hierarchy Editor for ' + field.name() + ' Field ' else 'Hierarchy Editor'
       @currentHierarchyFieldName(title)
       true
 
