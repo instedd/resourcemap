@@ -20,7 +20,8 @@
   %li{ko(attr: {class: "expanded() ? 'expanded' : 'collapsed'"}, click: :toggleExpand, clickBubble: false )}
     .name
       %span.arrow
-      %a.n-label{ko(text: :name)}
+      %a.n-label
+        #{ko_text :name}
         %span.number{ko(text: :id)}
     %ul.h-editor
       /ko if: expanded
