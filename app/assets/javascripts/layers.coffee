@@ -22,7 +22,7 @@ onLayers -> if $('#layers-main').length > 0
     })
 
   $ ->
-    $(".n-label").click ->
+    $(".n-label").hover ->
       active = $(this).closest("li.active")
       if active.length > 0
         active.removeClass "active"

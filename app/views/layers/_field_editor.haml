@@ -1,17 +1,3 @@
--# Hierarchy item template
-%script{type: "text/html", id: "hierarchy-editor-items-template"}
-  %li{ko(attr: {class: "expanded() ? 'expanded' : 'collapsed'"}, click: :toggleExpand, clickBubble: false )}
-    .name
-      %span.arrow
-      %a.n-label
-        #{ko_text :name}
-        %span.number{ko(text: :id)}
-    %ul.h-editor
-      /ko if: expanded
-      /ko template: {name: 'hierarchy-editor-items-template', foreach: hierarchyItems}
-      //ko
-      //ko
-
 .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField', style: {marginTop: '$root.currentFieldMarginTop'}), style: 'position:relative'}
   %p.title Type
   %p.smalltext The data type to fill in this field.
@@ -72,7 +58,7 @@
   /ko if: !impl().uploadingHierarchy() && impl().hierarchy()
   .hierarchy-container.box
     %ul.h-editor
-      /ko template: {name: 'hierarchy-editor-items-template', foreach: impl().hierarchyItems}
+      /ko template: {name: 'hierarchy-items-template', foreach: impl().hierarchyItems}
       //ko
   //ko
 

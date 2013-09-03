@@ -540,8 +540,6 @@ ul.h-editor {
     }
 
     &.active {
-      @include transition(all ease-out 0.2s);
-      min-height: 65px;
 
       > div.name {
         background: #d0d0d0;

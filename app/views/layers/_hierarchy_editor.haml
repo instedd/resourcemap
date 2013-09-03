@@ -1,3 +1,20 @@
+-# Hierarchy item template
+%script{type: "text/html", id: "hierarchy-editor-items-template"}
+  %li{ko(css: "{'expanded': expanded, 'collapsed': !expanded(), active: active}", event: { mouseover: :toggleActive, mouseout: :toggleActive }, mouseoverBubble: false)}
+    .name
+      %span.arrow{ko(click: :toggleExpand)}
+      %a.n-label
+        #{ko_text :name}
+        %span.number{ko(text: :id)}
+      %a.icon.pdelete.right
+      %a.icon.paddchild.right
+    .fields
+    %ul.h-editor
+      /ko if: expanded
+      /ko template: {name: 'hierarchy-editor-items-template', foreach: hierarchyItems}
+      //ko
+      //ko
+
 #hierarchy_editor{ko(with: '$root.currentHierarchyUnderEdition'), style:'display: none;'}
   %h2{ko(text: '$root.currentHierarchyFieldName()')}
   %p Edit or create a hierarchy for this field.
