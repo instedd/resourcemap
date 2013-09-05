@@ -235,12 +235,12 @@ onLayers ->
       @currentField().impl().attributes.remove(attribute)
       @newAttribute().hasFocus(true)
 
-    openHierarchyEditor: (field) =>
-      hierarchy = new Hierarchy(field.impl().hierarchy() || [])
-      @currentHierarchyUnderEdition(hierarchy)
-      title =  if field.name() then 'Hierarchy Editor for ' + field.name() + ' Field ' else 'Hierarchy Editor'
+    openHierarchyEditor:  =>
+      @currentHierarchyUnderEdition(new Hierarchy(@currentField()))
+      title =  if @currentField().name() then 'Hierarchy Editor for ' + @currentField().name() + ' Field ' else 'Hierarchy Editor'
       @currentHierarchyFieldName(title)
       true
+
 
     startUploadHierarchy: =>
       @currentField().impl().uploadingHierarchy(true)

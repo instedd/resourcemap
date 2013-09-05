@@ -6,9 +6,15 @@
       %a.n-label
         #{ko_text :name}
         %span.number{ko(text: :id)}
-      %a.icon.pdelete.right
+      %a.icon.pdelete.right{ko(click: :deleteItem)}
       %a.icon.paddchild.right
+    / ko if: addingItem
     .fields
+      %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
+      %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
+      %a.icon.fdelete.right{title: 'Delete'}
+      %a.icon.faccept.right{title: 'Accept'}
+    / /ko
     %ul.h-editor
       /ko if: expanded
       /ko template: {name: 'hierarchy-editor-items-template', foreach: hierarchyItems}
@@ -28,5 +34,5 @@
     %button.cadd Create item
   %br
   .bottom-actions
-    %button.white Save
-    %a.tgrey{:href => "#"} Cancel
+    %button.white{ko(click: :saveHierarchy)} Save
+    %a.tgrey{ko(click: :closeFancyBox)} Cancel
