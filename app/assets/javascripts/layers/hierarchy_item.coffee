@@ -8,6 +8,8 @@ onLayers ->
       @level = ko.observable(level)
       @parent = parent
       @active = ko.observable(false)
+      @newItemName = ko.observable()
+      @newItemId = ko.observable()
       @addingItem = ko.observable(false)
       @expanded = ko.observable(false)
       @hierarchyItems = if data.sub?
@@ -26,8 +28,19 @@ onLayers ->
     toJSON: =>
       {id: @id(), name: @name(), sub: $.map(@hierarchyItems(), (x) -> x.toJSON())}
 
-    addItem: =>
+    openAddItem: =>
+      @expanded(true)
       @addingItem(true)
+
+    addItem: =>
+      newItem = new HierarchyItem({name: @newItemName(), id: @newItemId()}, @, @level() + 1)
+      @hierarchyItems.unshift(newItem)
+      @closeAddingItem()
+
+    closeAddingItem: =>
+      @newItemName(null)
+      @newItemId(null)
+      @addingItem(false)
 
     deleteItem: =>
       @parent.hierarchyItems.remove(this)

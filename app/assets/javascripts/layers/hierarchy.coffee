@@ -4,6 +4,9 @@ onLayers ->
       @field = ko.observable field
       initHierarchyData = field.impl().hierarchy() || []
       @hierarchyItems = ko.observableArray $.map(initHierarchyData, (x) => new HierarchyItem(x, @))
+      @addingItem = ko.observable(false)
+      @newItemName = ko.observable()
+      @newItemId = ko.observable()
 
     toJSON: =>
       $.map(@hierarchyItems(), (x) -> x.toJSON())
@@ -18,6 +21,22 @@ onLayers ->
 
     closeFancyBox: =>
       $.fancybox.close()
+
+    openAddItem: =>
+      @addingItem(true)
+
+    addItem: =>
+      newItem = new HierarchyItem({name: @newItemName(), id: @newItemId()}, @, 0)
+      @hierarchyItems.push(newItem)
+      @closeAddingItem()
+
+    closeAddingItem: =>
+      @newItemName(null)
+      @newItemId(null)
+      @addingItem(false)
+
+
+
 
 
 

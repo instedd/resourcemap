@@ -7,13 +7,14 @@
         #{ko_text :name}
         %span.number{ko(text: :id)}
       %a.icon.pdelete.right{ko(click: :deleteItem)}
-      %a.icon.paddchild.right
+      %a.icon.paddchild.right{ko(click: :openAddItem)}
     / ko if: addingItem
     .fields
-      %input.ux-text.f-name{:placeholder => "Name", :type => "text"}/
-      %input.ux-text.f-id{:placeholder => "id", :type => "text"}/
-      %a.icon.fdelete.right{title: 'Delete'}
-      %a.icon.faccept.right{title: 'Accept'}
+      %span.arrow
+      %input.ux-text.f-name{ko(value: :newItemName), :placeholder => "Name", :type => "text"}/
+      %input.ux-text.f-id{ko(value: :newItemId), :placeholder => "Id", :type => "text"}/
+      %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete'}
+      %a.icon.faccept.right{ko(click: :addItem), title: 'Accept'}
     / /ko
     %ul.h-editor
       /ko if: expanded
@@ -31,7 +32,14 @@
     %ul.h-editor
       /ko template: {name: 'hierarchy-editor-items-template', foreach: hierarchyItems}
       / /ko
-    %button.cadd Create item
+    / ko if: addingItem
+    .fields
+      %input.ux-text.f-name{ko(value: :newItemName), :placeholder => "Name", :type => "text"}/
+      %input.ux-text.f-id{ko(value: :newItemId), :placeholder => "Id", :type => "text"}/
+      %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete'}
+      %a.icon.faccept.right{ko(click: :addItem), title: 'Accept'}
+    / /ko
+    %button.cadd{ko(click: :openAddItem)} Create item
   %br
   .bottom-actions
     %button.white{ko(click: :saveHierarchy)} Save
