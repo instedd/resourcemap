@@ -25,22 +25,41 @@
 #hierarchy_editor{ko(with: '$root.currentHierarchyUnderEdition'), style:'display: none;'}
   %h2{ko(text: '$root.currentHierarchyFieldName()')}
   %p Edit or create a hierarchy for this field.
+
+
   .box.w60
     .filter-header
+      / ko if: (hierarchyItems().length > 0 || addingItem())
       %a#collapse-all{ko(click: :collapseAll)} Collapse all
+      / /ko
+
+    / ko if: (hierarchyItems().length == 0 && !addingItem())
+    .empty_hierarchy_message
+      #empty_hierarchy
+      .grey You have no items yet
+    / /ko
+
+    / ko if: (hierarchyItems().length > 0 || addingItem())
     %hr
+
     %ul.h-editor
       /ko template: {name: 'hierarchy-editor-items-template', foreach: hierarchyItems}
       / /ko
-    / ko if: addingItem
+
+    / ko if: addingItem()
     .fields
       %input.ux-text.f-name{ko(value: :newItemName), :placeholder => "Name", :type => "text"}/
       %input.ux-text.f-id{ko(value: :newItemId), :placeholder => "Id", :type => "text"}/
       %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete'}
       %a.icon.faccept.right{ko(click: :addItem), title: 'Accept'}
     / /ko
+
+    / /ko
+
+
     %button.cadd{ko(click: :openAddItem)} New item
   %br
   .bottom-actions
     %button.white{ko(click: :saveHierarchy)} Save
     %a.tgrey{ko(click: :closeFancyBox)} Cancel
+

@@ -473,8 +473,7 @@ form.w80 {
     @include border-radius(3px);
     background: #d0d0d0;
     display: inline-block;
-    padding: 2px;
-    float: right;
+    padding: 2px 5px 2px 5px;
     text-decoration: none !important;
   }
 }
@@ -572,6 +571,19 @@ ul.h-editor {
     ul {
       margin: 1px 0 0 25px;
     }
+  }
+}
+
+.empty_hierarchy_message {
+  vertical-align: middle;
+  text-align: center;
+  font-style: italic;
+
+  #empty_hierarchy {
+    background: url(/assets/hierarchy_icon.png) no-repeat;
+    width: 45px;
+    height: 70px;
+    display: inline-block;
   }
 }
 
