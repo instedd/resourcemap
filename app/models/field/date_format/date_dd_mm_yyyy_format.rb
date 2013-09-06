@@ -9,7 +9,7 @@ class Field::DateFormat::DateDdMmYyyyFormat < Field::DateFormat::FormatImplement
   end
 
   def value_hint
-    "Example of valid date: 08/05/2013."
+    "Example of valid date: 25/01/2013."
   end
 
 
