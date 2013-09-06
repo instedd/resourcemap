@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.13'
 gem 'mysql2'
 gem 'devise'
 gem 'haml-rails'
@@ -31,6 +31,7 @@ group :test do
   gem 'database_cleaner'
   gem 'simplecov'
   gem 'simplecov-rcov'
+  gem 'brakeman'
 end
 
 group :test, :development do
