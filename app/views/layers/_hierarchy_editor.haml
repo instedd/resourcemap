@@ -5,7 +5,9 @@
       %span.arrow{ko(click: :toggleExpand)}
       %a.n-label
         #{ko_text :name}
-        %span.number{ko(text: :id)}
+        %span.number
+          Id:
+          #{ko_text :id}
       %a.icon.pdelete.right{ko(click: :deleteItem)}
       %a.icon.paddchild.right{ko(click: :openAddItem)}
     / ko if: addingItem
