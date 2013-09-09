@@ -5,16 +5,25 @@ onLayers ->
     constructor: (data, parent, level = 0) ->
       @id = ko.observable(data?.id)
       @idPrevious = ko.observable()
+      @idError =  ko.computed => !@id()
 
       @name = ko.observable(data?.name)
       @namePrevious = ko.observable()
+      @nameError =  ko.computed => !@name()
+
+      @errorMessage = ko.observable()
 
       @level = ko.observable(level)
       @parent = parent
       @active = ko.observable(false)
       @editing = ko.observable(false)
+
       @newItemName = ko.observable()
       @newItemId = ko.observable()
+      @newItemNameError =  ko.computed => !@newItemName()
+      @newItemIdError = ko.computed => !@newItemId()
+      @newItemErrorMessage = ko.observable()
+
       @addingItem = ko.observable(false)
       @expanded = ko.observable(false)
       @hierarchyItems = if data.sub?
@@ -35,19 +44,37 @@ onLayers ->
       @namePrevious(@name())
       @editing(true)
 
+    calculateErrorMessage: =>
+      @errorMessage("")
+      if !@name()
+        @errorMessage("Item name is required.")
+      if !@id()
+        @errorMessage(@errorMessage() + " Item id is required.")
+
+    calculateErrorMessageForNewItem: =>
+      @newItemErrorMessage("")
+      if !@newItemName()
+        @newItemErrorMessage("Item name is required.")
+      if !@newItemId()
+        @newItemErrorMessage(@newItemErrorMessage() + " Item id is required.")
+
     saveChanges: =>
-      @idPrevious(null)
-      @namePrevious(null)
-      @editing(false)
-      true
+      @calculateErrorMessage()
+
+      if !@errorMessage()
+        @idPrevious(null)
+        @namePrevious(null)
+        @editing(false)
+        true
+
 
     discardChanges: =>
+      @errorMessage("")
       @id(@idPrevious())
       @name(@namePrevious())
       @idPrevious(null)
       @namePrevious(null)
       @editing(false)
-      true
 
     toJSON: =>
       {id: @id(), name: @name(), sub: $.map(@hierarchyItems(), (x) -> x.toJSON())}
@@ -57,11 +84,16 @@ onLayers ->
       @addingItem(true)
 
     addItem: =>
-      newItem = new HierarchyItem({name: @newItemName(), id: @newItemId()}, @, @level() + 1)
-      @hierarchyItems.unshift(newItem)
-      @closeAddingItem()
+      @calculateErrorMessageForNewItem()
+
+      if !@newItemErrorMessage()
+        newItem = new HierarchyItem({name: @newItemName(), id: @newItemId()}, @, @level() + 1)
+        @hierarchyItems.unshift(newItem)
+        @closeAddingItem()
 
     closeAddingItem: =>
+      @calculateErrorMessageForNewItem()
+
       @newItemName(null)
       @newItemId(null)
       @addingItem(false)

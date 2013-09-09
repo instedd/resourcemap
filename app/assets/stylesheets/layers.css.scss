@@ -86,24 +86,23 @@
         @include box-sizing(border-box);
         @include clearfix;
         padding: 6px 0 4px 15px;
+      }
 
-        .f-name {
-          width: 65%;
-        }
+      .f-name {
+        width: 60%;
+      }
 
-        .f-id{
-          width: 20%;
-        }
+      .f-id{
+        width: 15%;
       }
 
       &.active {
 
         > div.name {
           background: #d0d0d0;
-        }
-
-        .icon {
-          display: inline-block;
+          > .icon {
+            display: inline-block;
+          }
         }
       }
 
