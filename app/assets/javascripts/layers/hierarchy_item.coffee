@@ -67,7 +67,8 @@ onLayers ->
       @addingItem(false)
 
     deleteItem: =>
-      @parent.hierarchyItems.remove(this)
+      confirmation = confirm("Do you want to delete this item and its children?")
+      @parent.hierarchyItems.remove(this) if confirmation
 
     collapseAll: =>
       @expanded(false)

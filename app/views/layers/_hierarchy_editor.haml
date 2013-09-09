@@ -11,8 +11,8 @@
           Id:
           #{ko_text :id}
 
-      %a.icon.pdelete.right{ko(click: :deleteItem)}
-      %a.icon.paddchild.right{ko(click: :openAddItem)}
+      %a.icon.pdelete.right{ko(click: :deleteItem, clickBubble: false)}
+      %a.icon.paddchild.right{ko(click: :openAddItem, clickBubble: false)}
     //ko
 
     /ko if: editing()
