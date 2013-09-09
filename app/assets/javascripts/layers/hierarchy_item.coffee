@@ -4,10 +4,15 @@ onLayers ->
 
     constructor: (data, parent, level = 0) ->
       @id = ko.observable(data?.id)
+      @idPrevious = ko.observable()
+
       @name = ko.observable(data?.name)
+      @namePrevious = ko.observable()
+
       @level = ko.observable(level)
       @parent = parent
       @active = ko.observable(false)
+      @editing = ko.observable(false)
       @newItemName = ko.observable()
       @newItemId = ko.observable()
       @addingItem = ko.observable(false)
@@ -19,11 +24,30 @@ onLayers ->
 
     toggleExpand: =>
       @expanded(!@expanded())
-      false
+      true
 
     toggleActive: =>
       @active(!@active())
-      false
+      true
+
+    edit: =>
+      @idPrevious(@id())
+      @namePrevious(@name())
+      @editing(true)
+
+    saveChanges: =>
+      @idPrevious(null)
+      @namePrevious(null)
+      @editing(false)
+      true
+
+    discardChanges: =>
+      @id(@idPrevious())
+      @name(@namePrevious())
+      @idPrevious(null)
+      @namePrevious(null)
+      @editing(false)
+      true
 
     toJSON: =>
       {id: @id(), name: @name(), sub: $.map(@hierarchyItems(), (x) -> x.toJSON())}
