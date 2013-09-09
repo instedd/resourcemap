@@ -35,6 +35,13 @@ onLayers ->
       @newItemId(null)
       @addingItem(false)
 
+    findById: (idToFind) =>
+      elements = []
+      for hierarchyItem in @hierarchyItems()
+        for foundElement in hierarchyItem.findById(idToFind)
+          elements.push(foundElement)
+      elements
+
 
 
 

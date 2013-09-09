@@ -5,11 +5,11 @@ onLayers ->
     constructor: (data, parent, level = 0) ->
       @id = ko.observable(data?.id)
       @idPrevious = ko.observable()
-      @idError =  ko.computed => !@id()
+      @idError =  ko.observable(false)
 
       @name = ko.observable(data?.name)
       @namePrevious = ko.observable()
-      @nameError =  ko.computed => !@name()
+      @nameError =  ko.observable(false)
 
       @errorMessage = ko.observable()
 
@@ -46,17 +46,31 @@ onLayers ->
 
     calculateErrorMessage: =>
       @errorMessage("")
+      @idError(false)
+      @nameError(true)
       if !@name()
+        @nameError(true)
         @errorMessage("Item name is required.")
       if !@id()
+        @idError(true)
         @errorMessage(@errorMessage() + " Item id is required.")
+      if window.model.currentHierarchyUnderEdition().findById(@id()).length > 1
+        @idError(true)
+        @errorMessage(@errorMessage() + " Item id already exists.")
 
     calculateErrorMessageForNewItem: =>
       @newItemErrorMessage("")
+      @newItemIdError(false)
+      @newItemNameError(false)
       if !@newItemName()
+        @newItemNameError(true)
         @newItemErrorMessage("Item name is required.")
       if !@newItemId()
+        @newItemIdError(true)
         @newItemErrorMessage(@newItemErrorMessage() + " Item id is required.")
+      if window.model.currentHierarchyUnderEdition().findById(@newItemId()).length > 1
+        @newItemIdError(true)
+        @newItemErrorMessage(@newItemErrorMessage() + " Item id already exists.")
 
     saveChanges: =>
       @calculateErrorMessage()
@@ -66,7 +80,6 @@ onLayers ->
         @namePrevious(null)
         @editing(false)
         true
-
 
     discardChanges: =>
       @errorMessage("")
@@ -106,3 +119,11 @@ onLayers ->
       @expanded(false)
       for hierarchyItem in @hierarchyItems()
         hierarchyItem.collapseAll()
+
+    findById: (idToFind) =>
+      elements = []
+      elements.push(this) if (idToFind == @id())
+      for hierarchyItem in @hierarchyItems()
+        for foundElement in hierarchyItem.findById(idToFind)
+          elements.push(foundElement)
+      elements
