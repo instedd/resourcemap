@@ -35,8 +35,12 @@ onLayers ->
       @expanded(!@expanded())
       true
 
-    toggleActive: =>
-      @active(!@active())
+    setActive: =>
+      @active(true)
+      true
+
+    removeActive: =>
+      @active(false)
       true
 
     edit: =>
