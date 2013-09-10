@@ -5,8 +5,12 @@ onLayers ->
       initHierarchyData = field.impl().hierarchy() || []
       @hierarchyItems = ko.observableArray $.map(initHierarchyData, (x) => new HierarchyItem(x, @))
       @addingItem = ko.observable(false)
+
       @newItemName = ko.observable()
       @newItemId = ko.observable()
+      @newItemNameError = ko.observable(false)
+      @newItemIdError = ko.observable(false)
+      @newItemErrorMessage = ko.observable()
 
     toJSON: =>
       $.map(@hierarchyItems(), (x) -> x.toJSON())
@@ -26,14 +30,33 @@ onLayers ->
       @addingItem(true)
 
     addItem: =>
-      newItem = new HierarchyItem({name: @newItemName(), id: @newItemId()}, @, 0)
-      @hierarchyItems.push(newItem)
-      @closeAddingItem()
+      @calculateErrorMessageForNewItem()
+
+      if !@newItemErrorMessage()
+        newItem = new HierarchyItem({name: @newItemName(), id: @newItemId()}, @, 0)
+        @hierarchyItems.push(newItem)
+        @closeAddingItem()
 
     closeAddingItem: =>
+      @newItemErrorMessage("")
       @newItemName(null)
       @newItemId(null)
       @addingItem(false)
+
+    calculateErrorMessageForNewItem: =>
+      @newItemErrorMessage("")
+      @newItemIdError(false)
+      @newItemNameError(false)
+      if !@newItemName()
+        @newItemNameError(true)
+        @newItemErrorMessage("Item name is required.")
+      if !@newItemId()
+        @newItemIdError(true)
+        @newItemErrorMessage(@newItemErrorMessage() + " Item id is required.")
+      if window.model.currentHierarchyUnderEdition().findById(@newItemId()).length > 1
+        @newItemIdError(true)
+        @newItemErrorMessage(@newItemErrorMessage() + " Item id already exists.")
+
 
     findById: (idToFind) =>
       elements = []

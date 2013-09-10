@@ -105,8 +105,6 @@ onLayers ->
         @closeAddingItem()
 
     closeAddingItem: =>
-      @calculateErrorMessageForNewItem()
-
       @newItemName(null)
       @newItemId(null)
       @addingItem(false)
