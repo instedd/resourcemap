@@ -20,7 +20,7 @@
       %span.arrow
 
       %input.ux-text.f-name{ko(value: :name, css: { error: :nameError }), :placeholder => "Name", :type => "text"}/
-      %input.ux-text.f-id{ko(value: :id, css: { error: :idError }), :placeholder => "Id", :type => "text"}/
+      %input.ux-text.f-id{ko(value: :id, css: { error: :idError }), onclick: "this.select();", :placeholder => "Id", :type => "text"}/
       %a.icon.fclose.right.editing{ko(click: :discardChanges), title: 'Cancel'}
       %a.icon.faccept.right.editing{ko(click: :saveChanges), title: 'Accept'}
     //ko
@@ -29,7 +29,7 @@
     / ko if: addingItem
     .fields{ko(topPopover: :newItemErrorMessage)}
       %input.ux-text.f-name{ko(value: :newItemName, css: { error: :newItemNameError }), :placeholder => "Name", :type => "text"}/
-      %input.ux-text.f-id{ko(value: :newItemId, css: { error: :newItemIdError }), :placeholder => "Id", :type => "text"}/
+      %input.ux-text.f-id{ko(value: :newItemId, css: { error: :newItemIdError }), onclick: "this.select();", :placeholder => "Id", :type => "text"}/
       %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete'}
       %a.icon.faccept.right{ko(click: :addItem), title: 'Accept'}
     / /ko
@@ -66,7 +66,7 @@
     / ko if: addingItem()
     .fields{ko(topPopover: :newItemErrorMessage)}
       %input.ux-text.f-name{ko(value: :newItemName, css: { error: :newItemNameError }), :placeholder => "Name", :type => "text"}/
-      %input.ux-text.f-id{ko(value: :newItemId, css: { error: :newItemIdError }), :placeholder => "Id", :type => "text"}/
+      %input.ux-text.f-id{ko(value: :newItemId, css: { error: :newItemIdError }), onclick: "this.select();", :placeholder => "Id", :type => "text"}/
       %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete'}
       %a.icon.faccept.right{ko(click: :addItem), title: 'Accept'}
     / /ko
