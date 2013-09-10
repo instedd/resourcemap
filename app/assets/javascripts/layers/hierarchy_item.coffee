@@ -11,6 +11,7 @@ onLayers ->
       @namePrevious = ko.observable()
       @nameError =  ko.observable(false)
 
+
       @errorMessage = ko.observable()
 
       @level = ko.observable(level)
@@ -19,7 +20,20 @@ onLayers ->
       @editing = ko.observable(false)
 
       @newItemName = ko.observable()
-      @newItemId = ko.observable()
+      @newItemIdOverwritten = false
+
+      @newItemId = null
+
+      @newItemIdUI = ko.computed
+        read: =>
+          if @newItemIdOverwritten
+            @newItemId
+          else
+            @newItemName()?.replace(/\ /g, "_")
+        write: (value) =>
+          @newItemIdOverwritten = true
+          @newItemId = value
+
       @newItemNameError = ko.observable(false)
       @newItemIdError = ko.observable(false)
       @newItemErrorMessage = ko.observable()
@@ -69,10 +83,10 @@ onLayers ->
       if !@newItemName()
         @newItemNameError(true)
         @newItemErrorMessage("Item name is required.")
-      if !@newItemId()
+      if !@newItemIdUI()
         @newItemIdError(true)
         @newItemErrorMessage(@newItemErrorMessage() + " Item id is required.")
-      if window.model.currentHierarchyUnderEdition().findById(@newItemId()).length > 1
+      if window.model.currentHierarchyUnderEdition().findById(@newItemIdUI()).length > 1
         @newItemIdError(true)
         @newItemErrorMessage(@newItemErrorMessage() + " Item id already exists.")
 
@@ -106,7 +120,7 @@ onLayers ->
       @calculateErrorMessageForNewItem()
 
       if !@newItemErrorMessage()
-        newItem = new HierarchyItem({name: @newItemName(), id: @newItemId()}, @, @level() + 1)
+        newItem = new HierarchyItem({name: @newItemName(), id: @newItemIdUI()}, @, @level() + 1)
         @hierarchyItems.unshift(newItem)
         @closeAddingItem()
 
@@ -115,7 +129,9 @@ onLayers ->
       @newItemIdError(false)
       @newItemNameError(false)
       @newItemName(null)
-      @newItemId(null)
+      @newItemId = null
+      @newItemIdOverwritten = false
+      @newItemIdUI(null)
       @addingItem(false)
 
     deleteItem: =>
