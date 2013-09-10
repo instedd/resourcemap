@@ -20,19 +20,20 @@ onLayers ->
       @editing = ko.observable(false)
 
       @newItemName = ko.observable()
-      @newItemIdOverwritten = false
+      @newItemIdOverwritten = ko.observable(false)
 
-      @newItemId = null
+      @newItemId = ko.observable()
 
       @newItemIdUI = ko.computed
         read: =>
-          if @newItemIdOverwritten
-            @newItemId
+          name = @newItemName()
+          if @newItemIdOverwritten()
+            @newItemId()
           else
-            @newItemName()?.replace(/\ /g, "_")
+            name?.replace(/\ /g, "_")
         write: (value) =>
-          @newItemIdOverwritten = true
-          @newItemId = value
+          @newItemIdOverwritten(true)
+          @newItemId(value)
 
       @newItemNameError = ko.observable(false)
       @newItemIdError = ko.observable(false)
@@ -128,10 +129,9 @@ onLayers ->
       @newItemErrorMessage("")
       @newItemIdError(false)
       @newItemNameError(false)
-      @newItemName(null)
-      @newItemId = null
-      @newItemIdOverwritten = false
       @newItemIdUI(null)
+      @newItemName(null)
+      @newItemIdOverwritten(false)
       @addingItem(false)
 
     deleteItem: =>
@@ -145,7 +145,8 @@ onLayers ->
 
     findById: (idToFind) =>
       elements = []
-      elements.push(this) if (idToFind == @id())
+      elements.push(this) if (idToFind == @id() )
+      elements.push(this) if (idToFind == @newItemIdUI() )
       for hierarchyItem in @hierarchyItems()
         for foundElement in hierarchyItem.findById(idToFind)
           elements.push(foundElement)

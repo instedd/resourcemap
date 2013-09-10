@@ -7,17 +7,18 @@ onLayers ->
       @addingItem = ko.observable(false)
 
       @newItemName = ko.observable()
-      @newItemIdOverwritten = false
-      @newItemId = null
+      @newItemIdOverwritten = ko.observable(false)
+      @newItemId = ko.observable()
       @newItemIdUI = ko.computed
         read: =>
-          if @newItemIdOverwritten
-            @newItemId
+          name = @newItemName()
+          if @newItemIdOverwritten()
+            @newItemId()
           else
-            @newItemName()?.replace(/\ /g, "_")
+            name?.replace(/\ /g, "_")
         write: (value) =>
-          @newItemIdOverwritten = true
-          @newItemId = value
+          @newItemIdOverwritten(true)
+          @newItemId(value)
 
       @newItemNameError = ko.observable(false)
       @newItemIdError = ko.observable(false)
@@ -52,11 +53,10 @@ onLayers ->
       @newItemErrorMessage("")
       @newItemIdError(false)
       @newItemNameError(false)
-      @newItemName(null)
       @newItemIdUI(null)
-      @newItemId = null
+      @newItemName(null)
+      @newItemIdOverwritten(false)
       @addingItem(false)
-      @newItemIdOverwritten = false
 
     calculateErrorMessageForNewItem: =>
       @newItemErrorMessage("")
