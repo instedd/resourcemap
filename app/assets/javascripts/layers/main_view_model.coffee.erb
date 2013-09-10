@@ -30,6 +30,11 @@ onLayers ->
 
       @savingLayer = ko.observable(false)
 
+      @currentHierarchyUnderEdition = ko.observable()
+      @currentHierarchyFieldName = ko.observable("Hierarchy Editor")
+
+      @expandedUploadCSV = ko.observable(false)
+
       @advancedExpanded = ko.observable(false)
 
       @selectedImportCollectionId = ko.observable(0)
@@ -51,6 +56,9 @@ onLayers ->
 
     toggleAdvancedExpanded: =>
       @advancedExpanded(not @advancedExpanded())
+
+    toggleExpandUploadCSV: =>
+      @expandedUploadCSV(not @expandedUploadCSV())
 
     selectingLayer: () ->
 
@@ -226,6 +234,13 @@ onLayers ->
     removeAttribute: (attribute) =>
       @currentField().impl().attributes.remove(attribute)
       @newAttribute().hasFocus(true)
+
+    openHierarchyEditor:  =>
+      @currentHierarchyUnderEdition(new Hierarchy(@currentField()))
+      title =  if @currentField().name() then 'Hierarchy Editor for ' + @currentField().name() + ' Field ' else 'Hierarchy Editor'
+      @currentHierarchyFieldName(title)
+      true
+
 
     startUploadHierarchy: =>
       @currentField().impl().uploadingHierarchy(true)

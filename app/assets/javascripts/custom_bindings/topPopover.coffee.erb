@@ -32,4 +32,10 @@ ko.bindingHandlers.topPopover =
       $(element).CreateBubblePopup(options)
 
       # TODO: unless we do this, the popup doesn't refresh its value
-      setTimeout((-> $(element).SetBubblePopupOptions(options)), 400)
+      setTimeout((-> $(element).SetBubblePopupOptions(options) ), 400)
+
+      # fancybox has by default a z-index of 8000, and for some reason setting the z-index in the popup options does not work
+      setTimeout((-> $('.fancybox-overlay').css('z-index','50')), 400)
+
+
+

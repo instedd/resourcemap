@@ -1,0 +1,82 @@
+-# Hierarchy item template
+%script{type: "text/html", id: "hierarchy-editor-items-template"}
+  %li{ko(css: "{'expanded': expanded, 'collapsed': !expanded(), active: active}", event: { mouseover: :setActive, mouseout: :removeActive }, mouseoverBubble: false)}
+
+    /ko if: !editing()
+    .name{ko(click: :edit)}
+      %span.arrow{ko(click: :toggleExpand, clickBubble: false)}
+      %a.n-label
+        #{ko_text :name}
+        %span.number
+          Id:
+          #{ko_text :id}
+
+      %a.icon.pdelete.right{ko(click: :deleteItem, clickBubble: false)}
+      %a.icon.paddchild.right{ko(click: :openAddItem, clickBubble: false)}
+    //ko
+
+    /ko if: editing()
+    .name{ko(topPopover: :errorMessage)}
+      %span.arrow
+
+      %input.ux-text.f-name{ko(value: :name, valueUpdate: 'afterkeydown', css: { error: :nameError }), :placeholder => "Name", :type => "text"}/
+      %input.ux-text.f-id{ko(value: :id, css: { error: :idError }), onclick: "this.select();", :placeholder => "Id", :type => "text"}/
+      %a.icon.fclose.right.editing{ko(click: :discardChanges), title: 'Cancel'}
+      %a.icon.faccept.right.editing{ko(click: :saveChanges), title: 'Accept'}
+    //ko
+
+
+    / ko if: addingItem
+    .fields{ko(topPopover: :newItemErrorMessage)}
+      %input.ux-text.f-name{ko(value: :newItemName, valueUpdate: 'afterkeydown', css: { error: :newItemNameError }), :placeholder => "Name", :type => "text"}/
+      %input.ux-text.f-id{ko(value: :newItemIdUI, valueUpdate: 'afterkeydown', css: { error: :newItemIdError }), onclick: "this.select();", :placeholder => "Id", :type => "text"}/
+      %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete'}
+      %a.icon.faccept.right{ko(click: :addItem), title: 'Accept'}
+    / /ko
+    %ul.h-editor
+      /ko if: expanded
+      /ko template: {name: 'hierarchy-editor-items-template', foreach: hierarchyItems}
+      //ko
+      //ko
+
+#hierarchy_editor{ko(with: '$root.currentHierarchyUnderEdition'), style:'display: none;'}
+  %h2{ko(text: '$root.currentHierarchyFieldName()')}
+  %p Edit or create a hierarchy for this field.
+
+
+  .box.w60
+    .filter-header
+      / ko if: (hierarchyItems().length > 0 || addingItem())
+      %a#collapse-all{ko(click: :collapseAll)} Collapse all
+      / /ko
+
+    / ko if: (hierarchyItems().length == 0 && !addingItem())
+    .empty_hierarchy_message
+      #empty_hierarchy
+      .grey You have no items yet
+    / /ko
+
+    / ko if: (hierarchyItems().length > 0 || addingItem())
+    %hr
+
+    %ul.h-editor
+      /ko template: {name: 'hierarchy-editor-items-template', foreach: hierarchyItems}
+      / /ko
+
+    / ko if: addingItem()
+    .fields{ko(topPopover: :newItemErrorMessage)}
+      %input.ux-text.f-name{ko(value: :newItemName, valueUpdate: :afterkeydown, css: { error: :newItemNameError }), :placeholder => "Name", :type => "text"}/
+      %input.ux-text.f-id{ko(value: :newItemIdUI, valueUpdate: :afterkeydown, css: { error: :newItemIdError }), onclick: "this.select();", :placeholder => "Id", :type => "text"}/
+      %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete'}
+      %a.icon.faccept.right{ko(click: :addItem), title: 'Accept'}
+    / /ko
+
+    / /ko
+
+
+    %button.cadd{ko(click: :openAddItem)} New item
+  %br
+  .bottom-actions
+    %button.white{ko(click: :saveHierarchy, css: {disabled: 'hierarchyItems().length == 0'})} Save
+    %a.tgrey{ko(click: :closeFancyBox)} Cancel
+

@@ -1,4 +1,8 @@
 module KnockoutHelper
+  def ko_text(value)
+    "<!-- ko text: #{value} --><!-- /ko -->".html_safe
+  end
+
   def ko_link_to(text, click, options = {})
     link_to text, 'javascript:void()', options.merge(ko click: click)
   end

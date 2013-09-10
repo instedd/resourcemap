@@ -15,3 +15,19 @@ onLayers -> if $('#layers-main').length > 0
     ko.applyBindings window.model
 
     $('.hidden-until-loaded').show()
+
+    $(".fancybox").fancybox({
+      afterClose: ->
+        window.model.currentHierarchyUnderEdition(null)
+    })
+
+  $ ->
+    $(".n-label").hover ->
+      active = $(this).closest("li.active")
+      if active.length > 0
+        active.removeClass "active"
+      else
+        $(".h-editor li").removeClass "active"
+        $(this).closest("li").toggleClass "active"
+
+    false

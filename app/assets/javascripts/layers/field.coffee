@@ -149,6 +149,7 @@ onLayers ->
       @hierarchy = ko.observable field.config?.hierarchy
       @uploadingHierarchy = ko.observable(false)
       @errorUploadingHierarchy = ko.observable(false)
+      @hierarchyItems = ko.observableArray()
       @initHierarchyItems() if @hierarchy()
       @error = ko.computed =>
         if @hierarchy() && @hierarchy().length > 0
@@ -163,7 +164,7 @@ onLayers ->
       @errorUploadingHierarchy(false)
 
     initHierarchyItems: =>
-      @hierarchyItems = ko.observableArray $.map(@hierarchy(), (x) -> new HierarchyItem(x))
+      @hierarchyItems($.map(@hierarchy(), (x) -> new HierarchyItem(x)))
 
     toJSON: (json) =>
       json.config = {hierarchy: @hierarchy()}
