@@ -39,6 +39,8 @@ onLayers ->
 
     closeAddingItem: =>
       @newItemErrorMessage("")
+      @newItemIdError(false)
+      @newItemNameError(false)
       @newItemName(null)
       @newItemId(null)
       @addingItem(false)
@@ -60,6 +62,7 @@ onLayers ->
 
     findById: (idToFind) =>
       elements = []
+      elements.push(this) if (idToFind == @newItemId())
       for hierarchyItem in @hierarchyItems()
         for foundElement in hierarchyItem.findById(idToFind)
           elements.push(foundElement)

@@ -83,6 +83,8 @@ onLayers ->
 
     discardChanges: =>
       @errorMessage("")
+      @idError(false)
+      @nameError(false)
       @id(@idPrevious())
       @name(@namePrevious())
       @idPrevious(null)
@@ -105,6 +107,9 @@ onLayers ->
         @closeAddingItem()
 
     closeAddingItem: =>
+      @newItemErrorMessage("")
+      @newItemIdError(false)
+      @newItemNameError(false)
       @newItemName(null)
       @newItemId(null)
       @addingItem(false)
