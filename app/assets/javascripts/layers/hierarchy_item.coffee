@@ -20,8 +20,8 @@ onLayers ->
 
       @newItemName = ko.observable()
       @newItemId = ko.observable()
-      @newItemNameError =  ko.computed => !@newItemName()
-      @newItemIdError = ko.computed => !@newItemId()
+      @newItemNameError = ko.observable(false)
+      @newItemIdError = ko.observable(false)
       @newItemErrorMessage = ko.observable()
 
       @addingItem = ko.observable(false)

@@ -31,6 +31,14 @@
     }
   }
 
+  .f-name {
+    width: 60%;
+  }
+
+  .f-id{
+    width: 15%;
+  }
+
   ul.h-editor {
     margin: 0;
     padding: 0;
@@ -86,14 +94,6 @@
         @include box-sizing(border-box);
         @include clearfix;
         padding: 6px 0 4px 15px;
-      }
-
-      .f-name {
-        width: 60%;
-      }
-
-      .f-id{
-        width: 15%;
       }
 
       &.active {
