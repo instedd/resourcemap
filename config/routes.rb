@@ -28,9 +28,6 @@ ResourceMap::Application.routes.draw do
 
     resources :sites
     resources :layers do
-      collection do
-        get :hierarchy_editor
-      end
       member do
         put :set_order
       end
