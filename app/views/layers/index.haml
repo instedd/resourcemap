@@ -6,13 +6,18 @@
 
 -# Hierarchy item template
 %script{type: "text/html", id: "hierarchy-items-template"}
-  %div
-    %a{ko(click: :toggleExpand, style: {marginLeft: "'' + (level() * 20) + 'px'"}), href: 'javascript:void(0)'}
-      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"}), style: 'position:relative;top:2px'}
-      %span{ko(text: :name)}
+  %li{ko(css: "{'expanded': expanded, 'collapsed': !expanded()}")}
+    .name{ko(click: :toggleExpand)}
+      %span.arrow
+      %a.n-label
+        #{ko_text :name}
+        %span.number
+          Id:
+          #{ko_text :id}
     /ko if: expanded
-    /ko template: {name: 'hierarchy-items-template', foreach: hierarchyItems}
-    //ko
+    %ul.h-editor
+      /ko template: {name: 'hierarchy-items-template', foreach: hierarchyItems}
+      //ko
     //ko
 
 .tabsline

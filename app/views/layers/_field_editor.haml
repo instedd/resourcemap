@@ -57,7 +57,7 @@
 
   /ko if: !impl().uploadingHierarchy() && impl().hierarchy()
   .hierarchy-container.box
-    %ul
+    %ul.h-editor
       /ko template: {name: 'hierarchy-items-template', foreach: impl().hierarchyItems}
       //ko
   //ko
