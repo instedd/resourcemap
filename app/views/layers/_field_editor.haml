@@ -74,7 +74,7 @@
   / ko if: $root.expandedUploadCSV()
   %p.smalltext Upload a CSV: ID, ParentID, ItemName
 
-  %form.hierarchy_form{action: collection_decode_hierarchy_csv_path(collection), method: :post, enctype: 'multipart/form-data', target: 'hierarchy_iframe', style: 'margin-top:6px;margin-bottom:10px'}
+  %form.hierarchy_form{action: decode_hierarchy_csv_collection_layers_path(collection), method: :post, enctype: 'multipart/form-data', target: 'hierarchy_iframe', style: 'margin-top:6px;margin-bottom:10px'}
     %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
     %input.hierarchy_upload{type: :file, name: :file, id: :hierarchy_upload}
   %iframe#hierarchy_iframe{name: 'hierarchy_iframe', style: 'display:none'}

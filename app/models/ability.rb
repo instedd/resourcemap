@@ -28,8 +28,6 @@ class Ability
 
     # In progress
     can :max_value_of_property, Collection, :memberships => { :user_id => user.id }
-    can :decode_hierarchy_csv, Collection, :memberships => { :user_id => user.id }
-
 
 
     ### Layer ###
@@ -51,6 +49,7 @@ class Ability
     can :destroy, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :set_order, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :hierarchy_editor, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
+    can :decode_hierarchy_csv, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
 
     ### Layer History ###
 

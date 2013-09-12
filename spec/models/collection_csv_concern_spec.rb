@@ -78,17 +78,23 @@ describe Collection::CsvConcern do
 
   describe "decode hierarchy csv test" do
 
-    it "gets parents right" do
-      json = collection.decode_hierarchy_csv %(
-        ID, ParentID, ItemName
-        1,,Dispensary
-        2,,Health Centre
-        101,1,Lab Dispensary
-        102,1,Clinical Dispensary
-        201,2,Health Centre Type 1
-        202,2,Health Centre Type 2
-      ).strip
+    after(:each) do
+      File.delete("hierarchy_csv_file.csv")
+    end
 
+    it "gets parents right even with blank lines at the end" do
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ['ID', 'ParentID', 'ItemName']
+        csv << ['1','','Dispensary']
+        csv << ['2','','Health Centre']
+        csv << ['101','1','Lab Dispensary']
+        csv << ['102','1','Clinical Dispensary']
+        csv << ['201','2','Health Centre Type 1']
+        csv << ['202','2','Health Centre Type 2']
+        csv << ['', '', '', '']
+      end
+
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
         {order: 1, id: '1', name: 'Dispensary', sub: [{order: 3, id: '101', name: 'Lab Dispensary'}, {order: 4, id: '102', name: 'Clinical Dispensary'}]},
         {order: 2, id: '2', name: 'Health Centre', sub: [{order: 5, id: '201', name: 'Health Centre Type 1'}, {order: 6, id: '202', name: 'Health Centre Type 2'}]},
@@ -97,96 +103,102 @@ describe Collection::CsvConcern do
 
 
     it "decodes hierarchy csv" do
-      json = collection.decode_hierarchy_csv %(
-        ID, ParentID, ItemName
-        1,,Site 1
-        2,,Site 2
-        3,,Site 3
-        4,1,Site 1.1
-        5,1,Site 1.2
-        6,1,Site 1.3
-      ).strip
 
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ['ID', 'ParentID', 'ItemName']
+        csv << ['1','','Location 1']
+        csv << ['2','','Location 2']
+        csv << ['3','','Location 3']
+        csv << ['4','1','Location 1.1']
+        csv << ['5','1','Location 1.2']
+        csv << ['6','1','Location 1.3']
+      end
+
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
-        {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}, {order: 6, id: '6', name: 'Site 1.3'}]},
-        {order: 2, id: '2', name: 'Site 2'},
-        {order: 3, id: '3', name: 'Site 3'}
+        {order: 1, id: '1', name: 'Location 1', sub: [{order: 4, id: '4', name: 'Location 1.1'}, {order: 5, id: '5', name: 'Location 1.2'}, {order: 6, id: '6', name: 'Location 1.3'}]},
+        {order: 2, id: '2', name: 'Location 2'},
+        {order: 3, id: '3', name: 'Location 3'}
       ])
     end
 
     it "without header" do
-      json = collection.decode_hierarchy_csv %(
-        1,,Site 1
-        2,,Site 2
-        3,,Site 3
-        4,1,Site 1.1
-        5,1,Site 1.2
-        6,1,Site 1.3
-      ).strip
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ['1','','Location 1']
+        csv << ['2','','Location 2']
+        csv << ['3','','Location 3']
+        csv << ['4','1','Location 1.1']
+        csv << ['5','1','Location 1.2']
+        csv << ['6','1','Location 1.3']
+      end
 
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
-        {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}, {order: 6, id: '6', name: 'Site 1.3'}]},
-        {order: 2, id: '2', name: 'Site 2'},
-        {order: 3, id: '3', name: 'Site 3'}
+        {order: 1, id: '1', name: 'Location 1', sub: [{order: 4, id: '4', name: 'Location 1.1'}, {order: 5, id: '5', name: 'Location 1.2'}, {order: 6, id: '6', name: 'Location 1.3'}]},
+        {order: 2, id: '2', name: 'Location 2'},
+        {order: 3, id: '3', name: 'Location 3'}
       ])
     end
 
     it "gets an error if has >3 columns in a row" do
-      json = collection.decode_hierarchy_csv %(
-        1,,Site 1
-        2,,Site 2
-        3,,Site 3,
-        4,1,Site 1.1
-        5,1,Site 1.2
-        6,1,Site 1.3
-      ).strip
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ['1','','Location 1']
+        csv << ['2','','Location 2']
+        csv << ['3','','Location 3','']
+        csv << ['4','1','Location 1.1']
+        csv << ['5','1','Location 1.2']
+        csv << ['6','1','Location 1.3']
+      end
 
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
-        {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}, {order: 6, id: '6', name: 'Site 1.3'}]},
-        {order: 2, id: '2', name: 'Site 2'},
+        {order: 1, id: '1', name: 'Location 1', sub: [{order: 4, id: '4', name: 'Location 1.1'}, {order: 5, id: '5', name: 'Location 1.2'}, {order: 6, id: '6', name: 'Location 1.3'}]},
+        {order: 2, id: '2', name: 'Location 2'},
         {order: 3, error: 'Wrong format.', error_description: 'Invalid column number'}
       ])
     end
 
     it "gets an error if has <3 columns in a row" do
-      json = collection.decode_hierarchy_csv %(
-        1,,Site 1
-        2,,Site 2
-        3,,Site 3
-        4,1,Site 1.1
-        5,1,Site 1.2
-        6,
-      ).strip
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ['1','','Location 1']
+        csv << ['2','','Location 2']
+        csv << ['3','','Location 3',]
+        csv << ['4','1','Location 1.1']
+        csv << ['5','1','Location 1.2']
+        csv << ['6']
+      end
 
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
-        {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}]},
-        {order: 2, id: '2', name: 'Site 2'},
-        {order: 3, id: '3', name: 'Site 3'},
+        {order: 1, id: '1', name: 'Location 1', sub: [{order: 4, id: '4', name: 'Location 1.1'}, {order: 5, id: '5', name: 'Location 1.2'}]},
+        {order: 2, id: '2', name: 'Location 2'},
+        {order: 3, id: '3', name: 'Location 3'},
         {order: 6, error: 'Wrong format.', error_description: 'Invalid column number'}
       ])
     end
 
-    # works ok in the app but the test is not working
-    pending "works ok with quotes" do
-      json = collection.decode_hierarchy_csv %(
-        "1","","Site 1"
-        "2","1","Site 2"
-      ).strip
+    it "works ok with quotes" do
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ["1","","Location 1"]
+        csv << ["2","","Location 2"]
+      end
 
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
-        {order: 1, id: '1', name: 'Site 1'},
-        {order: 2, id: '2', name: 'Site 2'}
+        {order: 1, id: '1', name: 'Location 1'},
+        {order: 2, id: '2', name: 'Location 2'}
       ])
     end
 
     it "gets an error if the parent does not exists" do
-      json = collection.decode_hierarchy_csv %(
-        ID, ParentID, ItemName
-        1,,Dispensary
-        2,,Health Centre
-        101,10,Lab Dispensary
-      ).strip
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ['ID', 'ParentID', 'ItemName']
+        csv << ['1','','Dispensary']
+        csv << ['2','','Health Centre']
+        csv << ['101','10','Lab Dispensary']
+      end
 
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
         {order: 1, id: '1', name: 'Dispensary', },
         {order: 2, id: '2', name: 'Health Centre'},
@@ -194,77 +206,82 @@ describe Collection::CsvConcern do
       ])
     end
 
-    it "gets an error if there is wrong quotes (when creating file in excel without export it to csv)" do
-      json = collection.decode_hierarchy_csv %(
-        1,,Site 1
-        2,,Site 2
-        3,,Site 3
-        "4,,Site 4
-
-      ).strip
-
-      json.should eq([
-        {error: "Illegal quoting in line 4."}
-      ])
-    end
-
     it ">1 column number errors" do
-      json = collection.decode_hierarchy_csv %(
-        1,,Site 1
-        2,,Site 2,
-        3,,Site 3,
-        4,,Site 4
 
-      ).strip
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ['1','','Location 1']
+        csv << ['2','','Location 2','']
+        csv << ['3','','Location 3','']
+        csv << ['4','','Location 4']
+      end
 
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
-        {order: 1, id: '1', name: 'Site 1'},
+        {order: 1, id: '1', name: 'Location 1'},
         {order: 2, error: 'Wrong format.', error_description: 'Invalid column number'},
         {order: 3, error: 'Wrong format.', error_description: 'Invalid column number'},
-        {order: 4, id: '4', name: 'Site 4'}
+        {order: 4, id: '4', name: 'Location 4'}
 
       ])
     end
 
-    it "hierarchy name should be unique" do
-      json = collection.decode_hierarchy_csv %(
-        1,,Site 1
-        2,,Site 1
-      ).strip
+    it "hierarchy name should can be duplicated" do
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ['1','','Location 1']
+        csv << ['2','','Location 1']
+      end
 
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
-        {order: 1, id: '1', name: 'Site 1'},
-        {order: 2, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'}
+        {order: 1, id: '1', name: 'Location 1'},
+        {order: 2, id: '2', name: 'Location 1'},
       ])
     end
 
-    it "more than one hierarchy name repeated" do
-      json = collection.decode_hierarchy_csv %(
-        1,,Site 1
-        2,,Site 1
-        3,,Site 1
-      ).strip
-
-      json.should eq([
-        {order: 1, id: '1', name: 'Site 1'},
-        {order: 2, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'},
-        {order: 3, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'}
-      ])
-    end
 
     it "hiearchy id should be unique" do
-      json = collection.decode_hierarchy_csv %(
-        1,,Site 1
-        1,,Site 2
-        1,,Site 3
-      ).strip
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ['1','','Location 1']
+        csv << ['1','','Location 1']
+        csv << ['1','','Location 1']
+      end
 
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
-        {order: 1, id: '1', name: 'Site 1'},
+        {order: 1, id: '1', name: 'Location 1'},
         {order: 2, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'},
         {order: 3, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'}
       ])
     end
+  end
+
+  it "should generate error description form preprocessed hierarchy list" do
+    hierarchy_csv = [
+      {:order=>1, :error=>"Wrong format.", :error_description=>"Invalid column number"},
+      {:order=>2, :id=>"2", :name=>"dad", :sub=>[{:order=>3, :id=>"3", :name=>"son"}]} ]
+
+    res = collection.generate_error_description_list(hierarchy_csv)
+
+    res.should == "Error: Wrong format. Invalid column number in line 1."
+  end
+
+  it "should generate error description form invalid hierarchy list" do
+    hierarchy_csv = [{:error=>"Illegal quoting in line 3."}]
+
+    res = collection.generate_error_description_list(hierarchy_csv)
+
+    res.should == "Error: Illegal quoting in line 3."
+  end
+
+  it "should generate error description html form invalid hierarchy list with >1 errors" do
+    hierarchy_csv = [
+      {:order=>1, :error=>"Wrong format.", :error_description=>"Invalid column number"},
+      {:order=>2, :error=>"Wrong format.", :error_description=>"Invalid column number"} ]
+
+
+    res = collection.generate_error_description_list(hierarchy_csv)
+
+    res.should == "Error: Wrong format. Invalid column number in line 1.<br/>Error: Wrong format. Invalid column number in line 2."
   end
 
 end

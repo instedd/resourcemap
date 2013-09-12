@@ -227,29 +227,6 @@ class CollectionsController < ApplicationController
     render json: results
   end
 
-  def decode_hierarchy_csv
-    csv_string = File.read(params[:file].path, :encoding => 'utf-8')
-    @hierarchy = collection.decode_hierarchy_csv(csv_string)
-    @hierarchy_errors = CollectionsController.generate_error_description_list(@hierarchy)
-    render layout: false
-  end
-
-  def self.generate_error_description_list(hierarchy_csv)
-    hierarchy_errors = []
-    hierarchy_csv.each do |item|
-      message = ""
-
-      if item[:error]
-        message << "Error: #{item[:error]}"
-        message << " " + item[:error_description] if item[:error_description]
-        message << " in line #{item[:order]}." if item[:order]
-      end
-
-      hierarchy_errors << message if !message.blank?
-    end
-    hierarchy_errors.join("<br/>").to_s
-  end
-
   def recreate_index
     render json: collection.recreate_index
   end

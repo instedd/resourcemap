@@ -72,9 +72,22 @@ module Collection::CsvConcern
     end
   end
 
-  def decode_hierarchy_csv(string)
+  def decode_hierarchy_csv_file(file_path)
+    begin
+      csv = CSV.read(file_path)
 
-    csv = CSV.parse(string)
+      # Remove empty rows at the end
+      while (last = csv.last) && last.all?(&:empty?)
+        csv.pop
+      end
+
+      decode_hierarchy_csv(csv)
+    rescue Exception => ex
+      return [{error: ex.message}]
+    end
+  end
+
+  def decode_hierarchy_csv(csv)
 
     # First read all items into a hash
     # And validate it's content
@@ -108,12 +121,23 @@ module Collection::CsvConcern
       end
     end
 
-
     items.values
+  end
 
-    rescue Exception => ex
-      return [{error: ex.message}]
+  def generate_error_description_list(hierarchy_csv)
+    hierarchy_errors = []
+    hierarchy_csv.each do |item|
+      message = ""
 
+      if item[:error]
+        message << "Error: #{item[:error]}"
+        message << " " + item[:error_description] if item[:error_description]
+        message << " in line #{item[:order]}." if item[:order]
+      end
+
+      hierarchy_errors << message if !message.blank?
+    end
+    hierarchy_errors.join("<br/>").to_s
   end
 
   def validate_format(csv)
@@ -132,13 +156,7 @@ module Collection::CsvConcern
           item[:error_description] = "Invalid column number"
         else
 
-          #Check unique name
           name = row[2].strip
-          if items.any?{|item| item.second[:name] == name}
-            item[:error] = "Invalid name."
-            item[:error_description] = "Hierarchy name should be unique"
-            error = true
-          end
 
           #Check unique id
           id = row[0].strip

@@ -31,6 +31,9 @@ ResourceMap::Application.routes.draw do
       member do
         put :set_order
       end
+      collection do
+        post :decode_hierarchy_csv
+      end
     end
     resources :fields
 
@@ -63,7 +66,6 @@ ResourceMap::Application.routes.draw do
 
     get 'recreate_index'
     get 'search'
-    post 'decode_hierarchy_csv'
 
     get 'sites_info'
 

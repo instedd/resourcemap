@@ -74,6 +74,12 @@ class LayersController < ApplicationController
     head :ok
   end
 
+  def decode_hierarchy_csv
+    @hierarchy = collection.decode_hierarchy_csv_file(params[:file].path)
+    @hierarchy_errors = collection.generate_error_description_list(@hierarchy)
+    render layout: false
+  end
+
   private
 
   # The options come as a hash insted of a list, so we convert the hash to a list
