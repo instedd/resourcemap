@@ -82,10 +82,10 @@ describe Field do
       end
     end
 
-    it "for hierarchy is a valid item" do
-      config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}]}]
+    it "for hierarchy is a valid item( a hierarchy id)" do
+      config_hierarchy = [{ id: '0', name: 'root', sub: [{id: '1', name: 'child'}]}]
       field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
-      ['root', 'child'].should include field.sample_value
+      ['0', '1'].should include field.sample_value
     end
 
     it "for email and phone is a string" do

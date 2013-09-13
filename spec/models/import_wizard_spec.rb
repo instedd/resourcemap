@@ -349,34 +349,32 @@ describe ImportWizard do
     sites[1].properties.should eq({select_many.es_code => [1, 2]})
   end
 
-  it "should update hierarchy fields in bulk update using name" do
-     csv_string = CSV.generate do |csv|
-        csv << ['Name', 'Column']
-        csv << ['Foo', 'Son']
-        csv << ['Bar', 'Bro']
-      end
+  it "should also update hierarchy fields in bulk update using name" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Column']
+      csv << ['Foo', 'Son']
+      csv << ['Bar', 'Bro']
+    end
 
-      specs = [
-        {header: 'Name', use_as: 'name'},
-        {header: 'Column', use_as: 'existing_field', field_id: hierarchy.id},
-        ]
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: hierarchy.id},
+      ]
 
-      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
-      ImportWizard.execute user, collection, specs
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.execute user, collection, specs
 
-      collection.layers.all.should eq([layer])
-      sites = collection.sites.all
+    collection.layers.all.should eq([layer])
+    sites = collection.sites.all
 
-      sites[0].name.should eq('Foo')
-      sites[0].properties.should eq({hierarchy.es_code => "100"})
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({hierarchy.es_code => "100"})
 
-      sites[1].name.should eq('Bar')
-      sites[1].properties.should eq({hierarchy.es_code => "101"})
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({hierarchy.es_code => "101"})
   end
 
-  # The updates will be performed using the hierarchy name for now
-  # but soon they this is going to change when solving Issue #459
-  pending "should update hierarchy fields in bulk update using id" do
+  it "should update hierarchy fields in bulk update using id" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Column']
       csv << ['Foo', '100']
@@ -400,7 +398,6 @@ describe ImportWizard do
     sites[1].name.should eq('Bar')
     sites[1].properties.should eq({hierarchy.es_code => "101"})
   end
-
 
   it "imports with name and existing date property" do
      csv_string = CSV.generate do |csv|
@@ -737,9 +734,9 @@ describe ImportWizard do
 
     csv_string = CSV.generate do |csv|
       csv << ['text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
-      csv << ['new val', '11', 'two', 'one', 'Dad', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
-      csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
-      csv << ['new val', 'invalid11', 'inval', 'Dad, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
+      csv << ['new val', '11', 'two', 'one', '60', '1235', '12/26/1988', 'user2@email.com', 'email@mail.com']
+      csv << ['new val', 'invalid11', 'inval', '60, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
+      csv << ['new val', 'invalid11', 'inval', '60, inv', 'inval', '999', '12/26', 'non-existing@email.com', 'email@ma@il.com']
     end
 
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
@@ -749,12 +746,12 @@ describe ImportWizard do
 
     sites_preview.length.should eq(3)
     first_line = sites_preview.first
-    first_line.should == [{:value=>"new val"}, {value: '11'}, {:value=>"two"}, {:value=>"one"}, {:value=>"Dad"},
+    first_line.should == [{:value=>"new val"}, {value: '11'}, {:value=>"two"}, {:value=>"one"}, {:value=>"60"},
       {:value=>"1235"}, {:value=>"12/26/1988"}, {:value=>"user2@email.com"}, {:value=>"email@mail.com"}]
 
     #Lines 2 and 3 are equals
     second_line = sites_preview.last
-    second_line.should  == [{:value=>"new val"}, {:value=>"invalid11"}, {:value=>"inval"}, {:value=>"Dad, inv"}, {:value=>"inval"},
+    second_line.should  == [{:value=>"new val"}, {:value=>"invalid11"}, {:value=>"inval"}, {:value=>"60, inv"}, {:value=>"inval"},
       {:value=>"999"}, {:value=>"12/26"}, {:value=>"non-existing@email.com"}, {:value=>"email@ma@il.com"}]
 
     sites_errors = processed_sites[:errors]
@@ -809,7 +806,7 @@ describe ImportWizard do
 
     csv_string = CSV.generate do |csv|
       csv << ['numeric', 'date', 'email', 'hierarchy']
-      csv << ['11', '12/26/1988', 'email@mail.com', 'Dad']
+      csv << ['11', '12/26/1988', 'email@mail.com', '60']
       csv << ['invalid11', '23/1/234', 'email@ma@il.com', 'invalid']
     end
 
@@ -822,7 +819,7 @@ describe ImportWizard do
     data_errors[0][:example].should eq("Values must be integers.")
     data_errors[1][:example].should eq("Example of valid date: 01/25/2013.")
     data_errors[2][:example].should eq("Example of valid email: myemail@resourcemap.com.")
-    data_errors[3][:example].should eq("Some valid values for this hierarchy are: Dad, Son, Bro.")
+    data_errors[3][:example].should eq("Some valid values for this hierarchy are: 60, 100, 101.")
   end
 
   it "should get sites & errors for invalid existing fields if field_id is string" do

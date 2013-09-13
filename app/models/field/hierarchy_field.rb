@@ -4,7 +4,7 @@ class Field::HierarchyField < Field
   end
 
   def value_hint
-    "Some valid values for this hierarchy are: #{hierarchy_options_names_samples}."
+    "Some valid values for this hierarchy are: #{hierarchy_options_id_samples}."
   end
 
   def error_description_for_invalid_values(exception)
@@ -17,15 +17,17 @@ class Field::HierarchyField < Field
 	end
 
   def api_value(value)
-    find_hierarchy_name_by_id(value)
+    value if hierarchy_id_exists(value)
   end
 
   def human_value(value)
     find_hierarchy_value(value)
   end
 
-  def decode(hierarchy_name)
-    if hierarchy_code = find_hierarchy_id_by_name(hierarchy_name)
+  def decode(hierarchy_id_or_name)
+    if hierarchy_id_exists(hierarchy_id_or_name)
+      hierarchy_id_or_name
+    elsif hierarchy_code = find_hierarchy_id_by_name(hierarchy_id_or_name)
       hierarchy_code
     else
       raise invalid_field_message()
@@ -69,12 +71,12 @@ class Field::HierarchyField < Field
     hierarchy_options.map {|option| option[:id]}
   end
 
-  def hierarchy_options_names
-    hierarchy_options.map {|option| option[:name]}
+  def hierarchy_options_ids
+    hierarchy_options.map {|option| option[:id]}
   end
 
-  def hierarchy_options_names_samples
-    hierarchy_options_names.take(3).join(", ")
+  def hierarchy_options_id_samples
+    hierarchy_options_ids.take(3).join(", ")
   end
 
   def hierarchy_options
@@ -115,6 +117,10 @@ class Field::HierarchyField < Field
   end
 
 	private
+
+  def hierarchy_id_exists(value)
+    find_hierarchy_item_by_id(value) != nil
+  end
 
 	def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
     start_at.each do |item|

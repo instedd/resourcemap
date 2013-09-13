@@ -34,14 +34,14 @@ describe Collection::CsvConcern do
     csv[1][4].should eq('10/19/1985')
   end
 
-  it "should download hiearchy value as Name" do
+  it "should download hiearchy value as Id" do
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
     hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
 
     site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
 
     csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
-    csv[1][4].should eq('Son')
+    csv[1][4].should eq('100')
   end
 
   describe "generate sample csv" do
