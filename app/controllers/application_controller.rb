@@ -21,11 +21,17 @@ class ApplicationController < ActionController::Base
   expose(:new_search) { collection.new_search new_search_options }
 
   rescue_from ActiveRecord::RecordNotFound do |x|
-    render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true
+    respond_to do |format|
+      format.html { render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true}
+      format.json { render json: { message: "Record not found"} , status: 404 }
+    end
   end
 
   rescue_from CanCan::AccessDenied do |exception|
-    render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
+    respond_to do |format|
+      format.html { render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden}
+      format.json { render json: { message: "Access Denied"} , status: 404 }
+    end
   end
 
   def setup_guest_user

@@ -35,6 +35,7 @@ ResourceMap::Application.routes.draw do
         post :decode_hierarchy_csv
       end
     end
+
     resources :fields
 
     resources :memberships do
