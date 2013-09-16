@@ -107,21 +107,27 @@ class Field::HierarchyField < Field
   end
 
   def find_hierarchy_name_by_id(value)
+    option = find_hierarchy_option_by_id(value)
+    option[:name] if option
+  end
+
+  def find_hierarchy_option_by_id(value)
     if @cache_for_read
       @options_by_id ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:id]] = opt[:name] }
       return @options_by_id[value]
     end
 
-    option = hierarchy_options.find { |opt| opt[:id] == value }
-    option[:name] if option
+    hierarchy_options.find { |opt| opt[:id] == value }
   end
+
 
 	private
 
   def hierarchy_id_exists(value)
-    find_hierarchy_item_by_id(value) != nil
+    find_hierarchy_option_by_id(value) != nil
   end
 
+  #TODO: deprecate
 	def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
     start_at.each do |item|
       return item if item['id'] == id
