@@ -113,8 +113,8 @@ onCollections ->
     update_site: (json, callback) =>
       data = {site: JSON.stringify json}
       $.ajax({
-          type: "PUT",
-          url: "/collections/#{@collection.id}/sites/#{@id()}.json",
+          type: "POST",
+          url: "/collections/#{@collection.id}/sites/#{@id()}/partial_update.json",
           data: data,
           success: ((data) =>
             for field in @collection.fields()

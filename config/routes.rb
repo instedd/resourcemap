@@ -26,7 +26,11 @@ ResourceMap::Application.routes.draw do
 
     get :current_user_membership
 
-    resources :sites
+    resources :sites do
+      member do
+        post 'partial_update'
+      end
+    end
     resources :layers do
       member do
         put :set_order

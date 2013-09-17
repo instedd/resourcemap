@@ -125,18 +125,47 @@ describe SitesController do
 
   describe 'updating site' do
 
-    it 'should update only name' do
+    it 'should not be allowed to full update a site if the user is not the collection admin' do
+      sign_out user
+
+      member = User.make
+      membership = Membership.make collection: collection, user: member, admin: false
+      sign_in member
+
       site_params = {:name => "new site"}.to_json
       post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+
+      response.status.should eq(403)
+    end
+
+    it 'should update only name' do
+      site_params = {:name => "new site"}.to_json
+      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       response.should be_success
       modified_site = Site.find_by_name "new site"
       modified_site.should be
     end
 
+    it 'should not be allowed to update name if user does not have permission' do
+      sign_out user
+
+      member = User.make
+      membership = Membership.make collection: collection, user: member, admin: false
+      membership.set_access(object: 'name', new_action: 'read')
+
+      sign_in member
+
+      site_params = {:name => "new site"}.to_json
+      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+
+      response.status.should eq(403)
+      Site.find_by_name("new site").should be_nil
+    end
+
     it 'should be able to delete location' do
       site_params = {:lat => nil, :lng => nil}.to_json
-      post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       response.should be_success
       modified_site = Site.find_by_name site.name
@@ -144,21 +173,75 @@ describe SitesController do
       modified_site.lng.should be(nil)
     end
 
+    it 'should not be allowed to update location if user does not have permission' do
+      sign_out user
+
+      member = User.make
+      membership = Membership.make collection: collection, user: member, admin: false
+      membership.set_access(object: 'location', new_action: 'read')
+      previous_lat = site.lat
+      previous_lng = site.lng
+
+      sign_in member
+
+      site_params = {:lat => nil, :lng => nil}.to_json
+      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+
+      response.status.should eq(403)
+      site.reload
+      site.lat.should eq(previous_lat)
+      site.lng.should eq(previous_lng)
+    end
+
     it 'should not delete existing properties when only the name is modified' do
       site.properties[text.es_code] = "existing value"
       site.save!
 
       site_params = {:name => "new site"}.to_json
-      post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       modified_site = Site.find_by_name "new site"
       modified_site.should be
       modified_site.properties[text.es_code].should eq("existing value")
     end
 
+    it 'should not delete existing properties when only the one of them is modified' do
+      site.properties[text.es_code] = "existing value"
+      site.properties[numeric.es_code] = 12
+
+      site.save!
+
+      site_params = {:properties => {text.es_code => "new value"}}.to_json
+      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+
+      modified_site = site.reload
+      modified_site.properties[text.es_code].should eq("new value")
+      modified_site.properties[numeric.es_code].should eq(12)
+    end
+
+    it 'should not be allowed to update a property if user does not have permission' do
+      site.properties[text.es_code] = "existing value"
+      site.save!
+
+      sign_out user
+
+      member = User.make
+      membership = Membership.make collection: collection, user: member, admin: false
+      LayerMembership.make layer: text.layer, membership: membership, read: false
+
+      sign_in member
+
+      site_params = {:properties => {text.es_code => "new value"}}.to_json
+      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+
+      response.status.should eq(403)
+      site.reload
+      site.properties[text.es_code].should eq("existing value")
+    end
+
     it 'should update a single property' do
       site_params = {:properties => { text.es_code => "new text" }}.to_json
-      post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       response.should be_success
       new_site = Site.find_by_name site.name

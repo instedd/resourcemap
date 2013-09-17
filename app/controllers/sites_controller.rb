@@ -1,6 +1,7 @@
 class SitesController < ApplicationController
   before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
   before_filter :authenticate_user!, :except => [:index, :search], :unless => Proc.new { collection && collection.public }
+  before_filter :authenticate_collection_admin!, :only => :update
 
   authorize_resource :only => [:index, :search], :decent_exposure => true
 
@@ -31,7 +32,7 @@ class SitesController < ApplicationController
 
     site = collection.sites.new(user: current_user)
 
-    process_site_params(site, site_params)
+    validate_and_process_parameters(site, site_params)
 
     if site.valid?
       site.save!
@@ -44,12 +45,30 @@ class SitesController < ApplicationController
     end
   end
 
+  # This action updates the entire entity.
+  # It perform a full update, erasing the values for the fields that are not present in the request
+  # It is only accessible by admins: there are no permission validations in the code
   def update
     site_params = JSON.parse params[:site]
     site.user = current_user
     site.properties_will_change!
+    site.attributes = decode_from_ui(site_params)
 
-    process_site_params(site, site_params)
+    if site.valid?
+      site.save!
+      render json: site, :layout => false
+    else
+      render json: site.errors.messages, status: :unprocessable_entity, :layout => false
+    end
+  end
+
+  # This action modifies only the fields that are present in the request.
+  def partial_update
+    site_params = JSON.parse params[:site]
+    site.user = current_user
+    site.properties_will_change!
+
+    validate_and_process_parameters(site, site_params)
 
     if site.valid?
       site.save!
@@ -106,16 +125,7 @@ class SitesController < ApplicationController
 
   private
 
-  def process_site_params(site, site_params)
-    # TODO: Use cancan and return forbbiden if the user does not have permission
-    user_membership = current_user.membership_in(collection)
-    site.name = site_params["name"] if site_params.has_key?("name") && user_membership.can_update?("name")
-    site.lat = site_params["lat"] if site_params.has_key?("lat") && user_membership.can_update?("location")
-    site.lng = site_params["lng"] if site_params.has_key?("lng") && user_membership.can_update?("location")
-    site.properties = prepare_from_ui(site_params) if site_params.has_key?("properties")
-  end
-
-  def prepare_from_ui(parameters)
+  def decode_from_ui(parameters)
     fields = collection.fields.index_by(&:es_code)
     decoded_properties = {}
     site_properties = parameters.delete "properties"
@@ -124,7 +134,53 @@ class SitesController < ApplicationController
       decoded_properties[es_code] = fields[es_code].decode_from_ui(value)
     end
 
-    decoded_properties
+    parameters["properties"] = decoded_properties
+    parameters
+  end
+
+  # TODO: Integrate with cancan
+  def validate_and_process_parameters(site, site_params)
+    user_membership = current_user.membership_in(collection)
+
+    if site_params.has_key?("name")
+      if user_membership.can_update?("name")
+        site.name = site_params["name"]
+      else
+        raise CanCan::AccessDenied.new("Not authorized to update Site name", :update, Site)
+      end
+    end
+
+    if site_params.has_key?("lat")
+      if user_membership.can_update?("location")
+        site.lat = site_params["lat"]
+      else
+        raise CanCan::AccessDenied.new("Not authorized to update Site location", :update, Site)
+      end
+    end
+
+    if site_params.has_key?("lng")
+      if user_membership.can_update?("location")
+        site.lng = site_params["lng"]
+      else
+        raise CanCan::AccessDenied.new("Not authorized to update Site location", :update, Site)
+      end
+    end
+
+    if site_params.has_key?("properties")
+      fields = collection.fields.index_by(&:es_code)
+      site_params["properties"].each_pair do |es_code, value|
+
+        #Next if there is no changes in the property
+        next if value == site.properties[es_code]
+
+        field = fields[es_code]
+        if field && can?(:update_site_property, field)
+          site.properties[es_code] = field.decode_from_ui(value)
+        else
+          raise CanCan::AccessDenied.new("Not authorized to update Site property with code #{es_code}", :update, Site)
+        end
+      end
+    end
   end
 
 end
