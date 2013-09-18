@@ -2,6 +2,10 @@ ResourceMap::Application.routes.draw do
 
   devise_for :users, :controllers => {:registrations => "registrations"}
 
+  devise_scope :user do
+    get "users/validate_credentials" => "registrations#validate_credentials"
+  end
+
   # match 'messaging' => 'messaging#index'
   match 'nuntium' => 'nuntium#receive', :via => :post
   match 'authenticate' => 'nuntium#authenticate', :via => :post
