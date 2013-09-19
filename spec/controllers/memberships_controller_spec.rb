@@ -3,9 +3,9 @@ require 'spec_helper'
 describe MembershipsController do
   include Devise::TestHelpers
 
-  let!(:user) { User.make email: 'foo@test.com' }
-  let!(:user_2) { User.make email: 'bar@test.com' }
-  let!(:collection) { user.create_collection(Collection.make_unsaved) }
+  let(:user) { User.make email: 'foo@test.com' }
+  let(:user_2) { User.make email: 'bar@test.com' }
+  let(:collection) { user.create_collection(Collection.make_unsaved) }
 
 
   describe "index" do

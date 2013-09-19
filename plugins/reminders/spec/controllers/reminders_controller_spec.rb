@@ -3,8 +3,8 @@ require 'spec_helper'
 describe RemindersController do
   include Devise::TestHelpers
 
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make_unsaved) }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make_unsaved) }
   let!(:site) { collection.sites.make }
   let!(:repeat) { repeat = Repeat.make }
   let!(:reminder) { collection.reminders.make }
@@ -35,7 +35,7 @@ describe RemindersController do
     }.to change { Reminder.count }.by -1
   end
 
-  it 'should update status' do 
+  it 'should update status' do
     post :set_status, :id => reminder.id, :collection_id => collection.id, :status => true
     Reminder.find(reminder).status.should == true
   end

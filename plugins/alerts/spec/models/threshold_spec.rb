@@ -6,8 +6,8 @@ describe Threshold do
   it { should validate_presence_of(:color) }
   its(:conditions) { should eq([]) }
 
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection Collection.make }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection Collection.make }
   let!(:layer) { collection.layers.make }
   let!(:beds) { layer.numeric_fields.make id: 1, code: 'beds'}
   let!(:doctors) { layer.numeric_fields.make id: 2, code: 'doctors' }
@@ -32,8 +32,8 @@ describe Threshold do
   end
 
   describe "multiple conditions" do
-    describe "all conditions" do 
-      let!(:threshold) { collection.thresholds.make is_all_condition: true, conditions: [ {field: beds.es_code, op: :gt, value: '10'}, {field: doctors.es_code, op: :lte, value: '2'} ] }
+    describe "all conditions" do
+      let(:threshold) { collection.thresholds.make is_all_condition: true, conditions: [ {field: beds.es_code, op: :gt, value: '10'}, {field: doctors.es_code, op: :lte, value: '2'} ] }
 
       it "should throw :threshold when all conditions are matched" do
         expect { threshold.test({beds.es_code => 11, doctors.es_code => 2}) }.to throw_symbol :threshold, threshold
@@ -50,7 +50,7 @@ describe Threshold do
     end
 
     describe "any conditions" do
-      let!(:threshold) { collection.thresholds.make is_all_condition: false, conditions: [ {field: beds.es_code, op: :gt, value: '10'}, {field: doctors.es_code, op: :lte, value: '2'} ] }
+      let(:threshold) { collection.thresholds.make is_all_condition: false, conditions: [ {field: beds.es_code, op: :gt, value: '10'}, {field: doctors.es_code, op: :lte, value: '2'} ] }
       it "should throw when one condition is not matched" do
         expect { threshold.test({beds.es_code => 9, doctors.es_code => 2}) }.to throw_symbol :threshold, threshold
         expect { threshold.test({beds.es_code => 11, doctors.es_code => 3}) }.to throw_symbol :threshold, threshold
@@ -59,7 +59,7 @@ describe Threshold do
   end
 
   describe "should test text field" do
-    let!(:field) { layer.text_fields.make code: 'txt' }
+    let(:field) { layer.text_fields.make code: 'txt' }
 
     it "for equality" do
       threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 'hello'}]

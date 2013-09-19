@@ -3,9 +3,9 @@ require 'spec_helper'
 describe FredApiController do
   include Devise::TestHelpers
 
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make) }
-  let!(:layer) { collection.layers.make }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make) }
+  let(:layer) { collection.layers.make }
 
   # We test only the field types supported by FRED API
   # Id fields are tested below
@@ -626,7 +626,7 @@ describe FredApiController do
   end
 
   describe "External Facility Identifiers" do
-    let!(:moh_id) {layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS"} }
+    let(:moh_id) {layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS"} }
 
      let!(:site_with_metadata) { collection.sites.make :properties => {
         moh_id.es_code => "53adf",
@@ -676,13 +676,13 @@ describe FredApiController do
       json.length.should eq(0)
     end
 
-    it 'sholud return an empty list if the context does not match any identifier' do 
+    it 'sholud return an empty list if the context does not match any identifier' do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "invalid", "identifiers.id" => "53adf", "identifiers.agency" => "DHIS"
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(0)
     end
 
-    it 'sholud return an empty list if the agency does not match any identifier' do 
+    it 'sholud return an empty list if the agency does not match any identifier' do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf", "identifiers.agency" => "invalid"
       json = (JSON.parse response.body)["facilities"]
       json.length.should eq(0)
@@ -726,7 +726,7 @@ describe FredApiController do
     end
 
     it 'should create facility with with a valid luhn identifier if there is a site without luhn value' do
-      site = collection.sites.make 
+      site = collection.sites.make
       site.save!
 
       # we are not calling assign_default_values so this site will not have a value for the luhn_id field

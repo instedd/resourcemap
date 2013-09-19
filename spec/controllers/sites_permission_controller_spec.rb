@@ -3,8 +3,8 @@ require 'spec_helper'
 describe SitesPermissionController do
   include Devise::TestHelpers
 
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make_unsaved) }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make_unsaved) }
   before(:each) { sign_in user }
 
   describe 'POST create' do
@@ -15,9 +15,9 @@ describe SitesPermissionController do
   end
 
   describe 'GET index' do
-    let!(:membership) { collection.memberships[0] }
-    let!(:read_sites_permission) { membership.create_read_sites_permission all_sites: true }
-    let!(:write_sites_permission) { membership.create_write_sites_permission all_sites: false, some_sites: [{id: 1, name: 'Bayon clinic'}] }
+    let(:membership) { collection.memberships[0] }
+    let(:read_sites_permission) { membership.create_read_sites_permission all_sites: true }
+    let(:write_sites_permission) { membership.create_write_sites_permission all_sites: false, some_sites: [{id: 1, name: 'Bayon clinic'}] }
 
     before(:each) { get :index, "collection_id" => collection.id }
     it "should response include read sites permission" do

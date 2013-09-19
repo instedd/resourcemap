@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe ImportWizard do
-  let!(:user) { User.make }
+  let(:user) { User.make }
 
-  let!(:collection) { user.create_collection Collection.make_unsaved }
-  let!(:user2) { collection.users.make email: 'user2@email.com'}
-  let!(:membership) { collection.memberships.create! user_id: user2.id }
+  let(:collection) { user.create_collection Collection.make_unsaved }
+  let(:user2) { collection.users.make email: 'user2@email.com'}
+  let(:membership) { collection.memberships.create! user_id: user2.id }
 
-  let!(:layer) { collection.layers.make }
+  let(:layer) { collection.layers.make }
 
-  let!(:luhn) { layer.identifier_fields.make code: 'luhn', config: {'format' => 'Luhn'} }
+  let(:luhn) { layer.identifier_fields.make code: 'luhn', config: {'format' => 'Luhn'} }
 
   it "imports into existing field with non-blank values" do
     csv_string = CSV.generate do |csv|

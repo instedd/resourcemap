@@ -20,85 +20,85 @@ describe Ability do
 
   describe "Collection Abilities" do
 
-    describe "Destroy collection" do
-      it { admin_ability.should be_able_to(:destroy, collection) }
-      it { member_ability.should_not be_able_to(:destroy, collection) }
-      it { user_ability.should_not be_able_to(:destroy, collection) }
-      it { guest_ability.should_not be_able_to(:destroy, collection) }
+    it "Destroy collection" do
+      admin_ability.should be_able_to(:destroy, collection)
+      member_ability.should_not be_able_to(:destroy, collection)
+      user_ability.should_not be_able_to(:destroy, collection)
+      guest_ability.should_not be_able_to(:destroy, collection)
     end
 
-    describe "Create snapshot" do
-      it { admin_ability.should be_able_to(:create_snapshot, collection) }
-      it { member_ability.should_not be_able_to(:create_snapshot, collection) }
-      it { user_ability.should_not be_able_to(:create_snapshot, collection) }
-      it { guest_ability.should_not be_able_to(:create_snapshot, collection) }
+    it "Create snapshot" do
+      admin_ability.should be_able_to(:create_snapshot, collection)
+      member_ability.should_not be_able_to(:create_snapshot, collection)
+      user_ability.should_not be_able_to(:create_snapshot, collection)
+      guest_ability.should_not be_able_to(:create_snapshot, collection)
     end
 
-    describe "Update collection" do
-      it { admin_ability.should be_able_to(:update, collection) }
-      it { member_ability.should_not be_able_to(:upate, collection) }
-      it { user_ability.should_not be_able_to(:update, collection) }
-      it { guest_ability.should_not be_able_to(:update, collection) }
+    it "Update collection" do
+      admin_ability.should be_able_to(:update, collection)
+      member_ability.should_not be_able_to(:upate, collection)
+      user_ability.should_not be_able_to(:update, collection)
+      guest_ability.should_not be_able_to(:update, collection)
     end
 
-    describe "Create collection" do
-      it { guest_ability.should_not be_able_to(:create, Collection) }
-      it { user_ability.should be_able_to(:create, Collection) }
+    it "Create collection" do
+      guest_ability.should_not be_able_to(:create, Collection)
+      user_ability.should be_able_to(:create, Collection)
     end
 
-    describe "Public Collection Abilities" do
-      let!(:public_collection) { admin.create_collection Collection.make public: true}
+    it "Public Collection Abilities" do
+      public_collection = admin.create_collection Collection.make public: true
 
-      it { user_ability.should_not be_able_to(:read, collection) }
-      it { user_ability.should_not be_able_to(:update, collection) }
+      user_ability.should be_able_to(:read, public_collection)
+      user_ability.should_not be_able_to(:update, public_collection)
 
     end
 
-    describe "Manage snapshots" do
+    it "Manage snapshots" do
 
-      it { admin_ability.should be_able_to(:create, (Snapshot.make collection: collection)) }
-      it { member_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
-      it { user_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
-      it { guest_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
+      admin_ability.should be_able_to(:create, (Snapshot.make collection: collection))
+      member_ability.should_not be_able_to(:create, (Snapshot.make collection: collection))
+      user_ability.should_not be_able_to(:create, (Snapshot.make collection: collection))
+      guest_ability.should_not be_able_to(:create, (Snapshot.make collection: collection))
     end
 
-    describe "Members" do
-      it { admin_ability.should be_able_to(:members, collection) }
-      it { member_ability.should_not be_able_to(:members, collection) }
-      it { user_ability.should_not be_able_to(:members, collection) }
-      it { guest_ability.should_not be_able_to(:members, collection) }
+    it "Members" do
+      admin_ability.should be_able_to(:members, collection)
+      member_ability.should_not be_able_to(:members, collection)
+      user_ability.should_not be_able_to(:members, collection)
+      guest_ability.should_not be_able_to(:members, collection)
     end
   end
 
   describe "Layer Abilities" do
     let!(:new_layer) { Layer.new collection: collection, user: admin }
 
-    describe "Create layer" do
-      it { admin_ability.should be_able_to(:create, new_layer) }
-      it { member_ability.should_not be_able_to(:create, new_layer) }
-      it { user_ability.should_not be_able_to(:create, new_layer) }
-      it { guest_ability.should_not be_able_to(:create, new_layer) }
+    it "Create layer" do
+      admin_ability.should be_able_to(:create, new_layer)
+      member_ability.should_not be_able_to(:create, new_layer)
+      user_ability.should_not be_able_to(:create, new_layer)
+      guest_ability.should_not be_able_to(:create, new_layer)
     end
 
-    describe "Update layer" do
-      it { admin_ability.should be_able_to(:update, layer) }
-      it { member_ability.should_not be_able_to(:update, layer) }
-      it { user_ability.should_not be_able_to(:update, layer) }
-      it { guest_ability.should_not be_able_to(:update, layer) }
+    it "Update layer" do
+      admin_ability.should be_able_to(:update, layer)
+      member_ability.should_not be_able_to(:update, layer)
+      user_ability.should_not be_able_to(:update, layer)
+      guest_ability.should_not be_able_to(:update, layer)
     end
 
-    describe "Destroy layer" do
-      it { admin_ability.should be_able_to(:destroy, layer) }
-      it { member_ability.should_not be_able_to(:destroy, layer) }
-      it { user_ability.should_not be_able_to(:destroy, layer) }
-      it { guest_ability.should_not be_able_to(:destroy, layer) }
+    it "Destroy layer" do
+      admin_ability.should be_able_to(:destroy, layer)
+      member_ability.should_not be_able_to(:destroy, layer)
+      user_ability.should_not be_able_to(:destroy, layer)
+      guest_ability.should_not be_able_to(:destroy, layer)
     end
 
-    describe "Set layer order" do
-      it { admin_ability.should be_able_to(:set_order, layer) }
-      it { member_ability.should_not be_able_to(:set_order, layer) }
-      it { user_ability.should_not be_able_to(:set_order, layer) }
-      it { guest_ability.should_not be_able_to(:set_order, layer) }
+    it "Set layer order" do
+      admin_ability.should be_able_to(:set_order, layer)
+      member_ability.should_not be_able_to(:set_order, layer)
+      user_ability.should_not be_able_to(:set_order, layer)
+      guest_ability.should_not be_able_to(:set_order, layer)
     end
 
     describe "Read layer with read permission" do

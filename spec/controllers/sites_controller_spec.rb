@@ -3,22 +3,22 @@ require 'spec_helper'
 describe SitesController do
   include Devise::TestHelpers
 
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make_unsaved) }
-  let!(:layer) { collection.layers.make }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make_unsaved) }
+  let(:layer) { collection.layers.make }
 
-  let!(:site) { collection.sites.make id: 1234}
+  let(:site) { collection.sites.make id: 1234}
 
-  let!(:text) { layer.text_fields.make code: 'text'}
+  let(:text) { layer.text_fields.make code: 'text'}
   let(:numeric) { layer.numeric_fields.make code: 'n' }
-  let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-  let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-  let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
-  let!(:site_field) { layer.site_fields.make :code => 'site' }
-  let!(:date) { layer.date_fields.make :code => 'date' }
-  let!(:director) { layer.user_fields.make :code => 'user' }
-  let!(:email_field) { layer.email_fields.make :code => 'email' }
+  let(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+  let(:site_field) { layer.site_fields.make :code => 'site' }
+  let(:date) { layer.date_fields.make :code => 'date' }
+  let(:director) { layer.user_fields.make :code => 'user' }
+  let(:email_field) { layer.email_fields.make :code => 'email' }
 
   before(:each) { sign_in user }
 

@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe AndroidController do
   include Devise::TestHelpers
-  let!(:user) { User.make }
+  let(:user) { User.make }
   let!(:collection1) { user.create_collection(Collection.make_unsaved) }
   let!(:collection2) { user.collections.make }
-  let!(:layer) { collection1.layers.make }
+  let(:layer) { collection1.layers.make }
 
   let!(:text) { layer.text_fields.make :code => 'text' }
   let!(:numeric) { layer.numeric_fields.make :code => 'numeric'}
@@ -51,7 +51,7 @@ describe AndroidController do
       xml_file = fixture_file_upload('/instant_file.xml', 'text/xml')
 
       post :submission, :xml_submission_file => xml_file
-      response.should be_success 
+      response.should be_success
     end
 
     it "should response Unauthorized if user is not an admin" do
@@ -59,7 +59,7 @@ describe AndroidController do
       File.open("spec/fixtures/instant_file.xml","w") { |f| f.puts @xml }
       xml_file = fixture_file_upload('/instant_file.xml', 'text/xml')
 
-      post :submission, :xml_submission_file => xml_file 
+      post :submission, :xml_submission_file => xml_file
       response.response_code.should eq(401)
       response.should_not be_success
 

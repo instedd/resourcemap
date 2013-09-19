@@ -28,8 +28,8 @@ describe User do
   end
 
   context "admins?" do
-    let!(:user) { User.make }
-    let!(:collection) { user.create_collection Collection.make_unsaved }
+    let(:user) { User.make }
+    let(:collection) { user.create_collection Collection.make_unsaved }
 
     it "admins a collection" do
       user.admins?(collection).should be_true

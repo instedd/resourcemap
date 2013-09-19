@@ -109,10 +109,10 @@ describe Field do
   end
 
   describe "cast strongly type" do
-    let!(:config_options) { [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}] }
+    let(:config_options) { [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}] }
 
     describe "select_many" do
-      let!(:field) { Field::SelectManyField.make config: {options: config_options} }
+      let(:field) { Field::SelectManyField.make config: {options: config_options} }
 
       it "should convert value to integer" do
         field.strongly_type('1').should eq 1
@@ -154,28 +154,28 @@ describe Field do
   end
 
   describe "validations" do
-    let!(:user) { User.make }
-    let!(:collection) { user.create_collection Collection.make_unsaved }
-    let!(:layer) { collection.layers.make }
-    let!(:text) { layer.text_fields.make :code => 'text' }
-    let!(:numeric) { layer.numeric_fields.make :code => 'numeric', :config => {} }
-    let!(:yes_no) { layer.yes_no_fields.make :code => 'yes_no'}
+    let(:user) { User.make }
+    let(:collection) { user.create_collection Collection.make_unsaved }
+    let(:layer) { collection.layers.make }
+    let(:text) { layer.text_fields.make :code => 'text' }
+    let(:numeric) { layer.numeric_fields.make :code => 'numeric', :config => {} }
+    let(:yes_no) { layer.yes_no_fields.make :code => 'yes_no'}
 
-    let!(:numeric_with_decimals) {
+    let(:numeric_with_decimals) {
       layer.numeric_fields.make :code => 'numeric_with_decimals', :config => {
         :allows_decimals => "true" }.with_indifferent_access
       }
 
-    let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
 
-    let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
 
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-    let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
-    let!(:site_field) { layer.site_fields.make :code => 'site'}
-    let!(:date) { layer.date_fields.make :code => 'date' }
-    let!(:director) { layer.user_fields.make :code => 'user' }
-    let!(:email_field) { layer.email_fields.make :code => 'email' }
+    let(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+    let(:site_field) { layer.site_fields.make :code => 'site'}
+    let(:date) { layer.date_fields.make :code => 'date' }
+    let(:director) { layer.user_fields.make :code => 'user' }
+    let(:email_field) { layer.email_fields.make :code => 'email' }
 
     let!(:site) {collection.sites.make name: 'Foo old', id: 1234, properties: {} }
 
@@ -193,55 +193,55 @@ describe Field do
       end
     end
 
-    describe "validations for each field" do
+    it "validations for each field" do
 
-      it { numeric.valid_value?(1).should be_true }
-      it { numeric.valid_value?("1").should be_true }
+      numeric.valid_value?(1).should be_true
+      numeric.valid_value?("1").should be_true
 
-      it { numeric_with_decimals.valid_value?(1.5).should be_true }
-      it { numeric_with_decimals.valid_value?("1.5").should be_true }
+      numeric_with_decimals.valid_value?(1.5).should be_true
+      numeric_with_decimals.valid_value?("1.5").should be_true
 
-      it { yes_no.valid_value?(true).should be_true }
-      it { yes_no.valid_value?(false).should be_true }
+      yes_no.valid_value?(true).should be_true
+      yes_no.valid_value?(false).should be_true
 
-      it { date.valid_value?("2012-11-27T00:00:00Z").should be_true }
+      date.valid_value?("2012-11-27T00:00:00Z").should be_true
 
-      it { hierarchy.valid_value?("101").should be_true }
+      hierarchy.valid_value?("101").should be_true
 
-      it { select_many.valid_value?([1,2]).should be_true }
-      it { select_many.valid_value?(["1","2"]).should be_true }
+      select_many.valid_value?([1,2]).should be_true
+      select_many.valid_value?(["1","2"]).should be_true
 
-      it { select_one.valid_value?(1).should be_true }
-      it { select_one.valid_value?("1").should be_true }
+      select_one.valid_value?(1).should be_true
+      select_one.valid_value?("1").should be_true
 
-      it { site_field.valid_value?(1234).should be_true }
-      it { site_field.valid_value?("1234").should be_true }
+      site_field.valid_value?(1234).should be_true
+      site_field.valid_value?("1234").should be_true
 
-      it { director.valid_value?(user.email).should be_true }
+      director.valid_value?(user.email).should be_true
 
-      it { email_field.valid_value?("myemail@resourcemap.com").should be_true }
+      email_field.valid_value?("myemail@resourcemap.com").should be_true
     end
 
-    describe "decode from ImportWizard format" do
+    it "decode from ImportWizard format" do
 
-      it { numeric.decode(1).should eq(1) }
-      it { numeric.decode("1").should eq(1) }
+      numeric.decode(1).should eq(1)
+      numeric.decode("1").should eq(1)
 
-      it { numeric_with_decimals.decode("1.5").should eq(1.5) }
+      numeric_with_decimals.decode("1.5").should eq(1.5)
 
-      it { yes_no.decode("true").should eq(true) }
+      yes_no.decode("true").should eq(true)
 
-      it { date.decode("12/26/1988").should eq("1988-12-26T00:00:00Z") }
+      date.decode("12/26/1988").should eq("1988-12-26T00:00:00Z")
 
-      it { hierarchy.decode("Dad").should eq("60") }
+      hierarchy.decode("Dad").should eq("60")
 
-      it { select_one.decode("one").should eq(1) }
-      it { select_one.decode("One").should eq(1) }
+      select_one.decode("one").should eq(1)
+      select_one.decode("One").should eq(1)
 
-      it { select_many.decode("one").should eq([1]) }
-      it { select_many.decode("One").should eq([1]) }
-      it { select_many.decode(['one', 'two']).should eq([1, 2]) }
-      it { select_many.decode("one,two").should eq([1, 2]) }
+      select_many.decode("one").should eq([1])
+      select_many.decode("One").should eq([1])
+      select_many.decode(['one', 'two']).should eq([1, 2])
+      select_many.decode("one,two").should eq([1, 2])
 
     end
 

@@ -91,10 +91,11 @@ RSpec.configure do |config|
     File.delete file
   end
 
-  # Delete all test indexes after running each spec
+  $test_count = 0
+
+  # Delete all test indexes after every 10 tests
   config.after(:each) do
-    Tire.delete_indices_that_match /^collection_test_\d+/
-    sleep 1
+    Tire::Index.new("collection_test_*").delete if (($test_count += 1) % 10 == 0)
   end
 
 # Mock nuntium access and gateways management

@@ -38,7 +38,7 @@ describe Message do
 
   describe "#process!" do
     before(:each) do
-      collection = Collection.make :id => 1
+      collection = Collection.make
       user = User.make :phone_number => '123'
       collection.memberships.create :user => user, :admin => true
       @message = Message.new :guid => '999', :from => 'sms://123', :body => 'dyrm q 1 beds>12'
@@ -74,13 +74,13 @@ describe Message do
     end
   end
 
-  describe "message log" do 
-    let(:collection) { Collection.make quota: 10 } 
+  describe "message log" do
+    let(:collection) { Collection.make quota: 10 }
     it 'should change collection.quota after log  message' do
-      expect{ 
+      expect{
         Message.log [{from: '123456', to: '123456', body: 'hello resourcemap'}], collection.id
       }.to change{
-        c = Collection.find collection.id 
+        c = Collection.find collection.id
         c.quota
       }.from(10).to(9)
     end
@@ -88,7 +88,7 @@ describe Message do
 
     it "shouldn't change collection.quota after create new message with property is_send == false" do
       message = Message.new from: '123456', to: '123456', body: 'hello resourcemap', is_send: false, collection_id: collection.id
-      c = Collection.find collection.id 
+      c = Collection.find collection.id
       c.quota.should eq collection.quota
     end
 

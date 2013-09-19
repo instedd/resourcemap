@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe Site do
 
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection Collection.make(selected_plugins: ['alerts']) }
-  let!(:layer) { collection.layers.make }
-  let!(:beds_field) { layer.numeric_fields.make code: 'beds' }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection Collection.make(selected_plugins: ['alerts']) }
+  let(:layer) { collection.layers.make }
+  let(:beds_field) { layer.numeric_fields.make code: 'beds' }
   let!(:threshold) { collection.thresholds.make is_all_site: true,
     is_all_condition: true,
     conditions: [ {field: beds_field.es_code, op: :gt, value: '10'} ],
@@ -23,12 +23,12 @@ describe Site do
   end
 
   describe "get notification numbers" do
-    let!(:telephone) { layer.phone_fields.make code: 'tel'}
-    let!(:owner) { layer.user_fields.make code: 'owner'}
-    let!(:user_2) { User.make }
+    let(:telephone) { layer.phone_fields.make code: 'tel'}
+    let(:owner) { layer.user_fields.make code: 'owner'}
+    let(:user_2) { User.make }
     let!(:membership) { collection.memberships.create! :user_id => user_2.id }
-    let!(:alert) { collection.thresholds.make phone_notification: {members: [user.id], fields: [telephone.es_code], users: [owner.es_code]} }
-    let!(:site) { collection.sites.make properties: {telephone.es_code => '123456', owner.es_code => user_2.email} }
+    let(:alert) { collection.thresholds.make phone_notification: {members: [user.id], fields: [telephone.es_code], users: [owner.es_code]} }
+    let(:site) { collection.sites.make properties: {telephone.es_code => '123456', owner.es_code => user_2.email} }
 
     it "should include member phone number" do
       site.notification_numbers(alert).should include user.phone_number
@@ -68,7 +68,7 @@ describe Site do
 
     context "when user field does not have phone number" do
       before(:each) do
-        user_2.update_attributes phone_number: nil 
+        user_2.update_attributes phone_number: nil
       end
 
       it "should not include nil in" do
@@ -78,12 +78,12 @@ describe Site do
   end
 
   describe "get notification emails" do
-    let!(:email) { layer.email_fields.make code: 'email'}
-    let!(:owner) { layer.user_fields.make code: 'owner' }
-    let!(:user_2) { User.make }
+    let(:email) { layer.email_fields.make code: 'email'}
+    let(:owner) { layer.user_fields.make code: 'owner' }
+    let(:user_2) { User.make }
     let!(:membership) { collection.memberships.create! :user_id => user_2.id }
-    let!(:alert) { collection.thresholds.make email_notification: {members: [user.id], fields: [email.es_code], users: [owner.es_code]} }
-    let!(:site) { collection.sites.make properties: {email.es_code => 'info@example.com', owner.es_code => user_2.email} }
+    let(:alert) { collection.thresholds.make email_notification: {members: [user.id], fields: [email.es_code], users: [owner.es_code]} }
+    let(:site) { collection.sites.make properties: {email.es_code => 'info@example.com', owner.es_code => user_2.email} }
 
     it "should include member email" do
       site.notification_emails(alert).should include user.email

@@ -15,7 +15,7 @@ describe Field::DateField do
   end
 
   describe "Format dd/mm/yyyy" do
-    let!(:field) { Field::DateField.make code: 'date', config: {format: "dd_mm_yyyy"}.with_indifferent_access }
+    let(:field) { Field::DateField.make code: 'date', config: {format: "dd_mm_yyyy"}.with_indifferent_access }
 
     it "should be created with dd/mmm/yyyy format" do
       field.format_message().should eq "The configured date format is dd/mm/yyyy."

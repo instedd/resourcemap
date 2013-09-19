@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe ImportWizard do
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection Collection.make_unsaved }
-  let!(:layer) { collection.layers.make }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection Collection.make_unsaved }
+  let(:layer) { collection.layers.make }
 
-  let!(:phone) { layer.phone_fields.make :code => 'phone' }
-  let!(:email) { layer.email_fields.make :code => 'email' }
+  let(:phone) { layer.phone_fields.make :code => 'phone' }
+  let(:email) { layer.email_fields.make :code => 'email' }
 
   it "should update all property values" do
     site1 = collection.sites.make name: 'Foo old', properties: {

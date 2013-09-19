@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe UserSnapshot do
-  let!(:collection) { Collection.make }
-  let!(:user) { User.make }
-  let!(:snapshot1) { collection.snapshots.create! date: Date.yesterday, name: 'snp1' }
+  let(:collection) { Collection.make }
+  let(:user) { User.make }
+  let(:snapshot1) { collection.snapshots.create! date: Date.yesterday, name: 'snp1' }
   let!(:user_snapshot) { snapshot1.user_snapshots.create! user: user, collection: collection }
 
   it "should delete previous snapshot per user and collection when creating a new one" do

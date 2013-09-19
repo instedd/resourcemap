@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Api::SitesController do
   include Devise::TestHelpers
 
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make_unsaved) }
-  let!(:site) { collection.sites.make }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make_unsaved) }
+  let(:site) { collection.sites.make }
 
   before(:each) { sign_in user }
 

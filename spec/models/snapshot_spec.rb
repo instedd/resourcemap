@@ -7,7 +7,7 @@ describe Snapshot do
     it { should validate_uniqueness_of(:name).scoped_to(:collection_id) }
   end
 
-  let!(:collection) { Collection.make }
+  let(:collection) { Collection.make }
 
   before(:each) do
     stub_time '2011-01-01 10:00:00 -0500'

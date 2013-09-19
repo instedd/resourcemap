@@ -4,11 +4,11 @@ describe FieldsController do
   include Devise::TestHelpers
   render_views
 
-  let!(:admin) { User.make }
-  let!(:collection) { admin.create_collection(Collection.make) }
-  let!(:layer) { Layer.make collection: collection, user: admin}
+  let(:admin) { User.make }
+  let(:collection) { admin.create_collection(Collection.make) }
+  let(:layer) { Layer.make collection: collection, user: admin}
   config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-  let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+  let(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
 
   it "should get field in json" do
     sign_in admin

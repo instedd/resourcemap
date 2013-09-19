@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Collection::CsvConcern do
   let(:user) { User.make }
   let(:collection) { user.create_collection Collection.make }
-  let!(:layer) { collection.layers.make }
+  let(:layer) { collection.layers.make }
 
   it "imports csv" do
     collection.import_csv user, %(

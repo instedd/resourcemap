@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe Site::CleanupConcern do
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection Collection.make_unsaved }
-  let!(:layer) { collection.layers.make user: user }
-  let!(:beds) { layer.numeric_fields.make :code => 'beds' }
-  let!(:area) { layer.numeric_fields.make :code => 'area', config: { :allows_decimals => "true" }  }
-  let!(:many) { layer.select_many_fields.make :code => 'many', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}]} }
-  let!(:one) { layer.select_one_fields.make :code => 'one', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection Collection.make_unsaved }
+  let(:layer) { collection.layers.make user: user }
+  let(:beds) { layer.numeric_fields.make :code => 'beds' }
+  let(:area) { layer.numeric_fields.make :code => 'area', config: { :allows_decimals => "true" }  }
+  let(:many) { layer.select_many_fields.make :code => 'many', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}]} }
+  let(:one) { layer.select_one_fields.make :code => 'one', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}]} }
 
   it "converts properties values to int if the field does not allow decimals" do
     site = collection.sites.make properties: {beds.es_code => '123'}

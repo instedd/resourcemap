@@ -4,12 +4,12 @@ describe ImportWizardsController do
   include Devise::TestHelpers
   render_views
 
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make) }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make) }
 
   before(:each) {sign_in user}
-  let!(:user2) { User.make }
-  let!(:membership) { collection.memberships.create! :user_id => user2.id }
+  let(:user2) { User.make }
+  let(:membership) { collection.memberships.create! :user_id => user2.id }
 
   it "should not allow to create a new field to a non-admin user" do
     sign_out user

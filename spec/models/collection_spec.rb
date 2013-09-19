@@ -7,10 +7,10 @@ describe Collection do
   it { should have_many :fields }
   it { should have_many :thresholds }
 
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection Collection.make_unsaved public: true}
-  let!(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'foo', name: 'Foo', ord: 1}] }
-  let!(:field) { layer.fields.first }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection Collection.make_unsaved public: true}
+  let(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'foo', name: 'Foo', ord: 1}] }
+  let(:field) { layer.fields.first }
 
   context "max value" do
     it "gets max value for property that exists" do
@@ -23,7 +23,7 @@ describe Collection do
   end
 
   describe "thresholds test" do
-    let!(:site) { collection.sites.make properties: {field.es_code => 9}}
+    let(:site) { collection.sites.make properties: {field.es_code => 9}}
     it "should return false when there is no threshold" do
       collection.thresholds_test(site).should be_false
     end
@@ -45,7 +45,7 @@ describe Collection do
     end
 
     describe "multiple thresholds test" do
-      let!(:site_2) { collection.sites.make properties: {field.es_code => 25}}
+      let(:site_2) { collection.sites.make properties: {field.es_code => 25}}
 
       it "should evaluate second threshold" do
         collection.thresholds.make is_all_site: false, conditions: [ {field: field.es_code, op: :gt, value: 10} ], sites: [{ "id" => site.id }]
@@ -160,8 +160,8 @@ describe Collection do
   end
 
   describe 'es_codes_by_field_code' do
-    let!(:collection_a) { user.create_collection Collection.make_unsaved }
-    let!(:layer_a) { collection_a.layers.make user: user }
+    let(:collection_a) { user.create_collection Collection.make_unsaved }
+    let(:layer_a) { collection_a.layers.make user: user }
 
     let!(:field_a) { layer_a.text_fields.make code: 'A', name: 'A', ord: 1 }
     let!(:field_b) { layer_a.text_fields.make code: 'B', name: 'B', ord: 2 }

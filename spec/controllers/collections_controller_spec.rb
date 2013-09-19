@@ -3,8 +3,8 @@ require 'spec_helper'
 describe CollectionsController do
   include Devise::TestHelpers
   render_views
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make public: false) }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make public: false) }
 
   before(:each) {sign_in user}
 
@@ -50,9 +50,9 @@ describe CollectionsController do
   end
 
   describe "Permissions" do
-    let!(:public_collection) { user.create_collection(Collection.make public: true) }
-    let!(:not_member) { User.make }
-    let!(:member) { User.make }
+    let(:public_collection) { user.create_collection(Collection.make public: true) }
+    let(:not_member) { User.make }
+    let(:member) { User.make }
 
 
     before(:each) do
@@ -100,7 +100,7 @@ describe CollectionsController do
   end
 
   describe "public access" do
-    let!(:public_collection) { user.create_collection(Collection.make public: true) }
+    let(:public_collection) { user.create_collection(Collection.make public: true) }
     before(:each) { sign_out :user }
 
     it 'should get index as guest' do

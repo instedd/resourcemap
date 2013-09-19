@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe "Luhn" do
-  let!(:collection) { Collection.make }
-  let!(:layer) { collection.layers.make }
+  let(:collection) { Collection.make }
+  let(:layer) { collection.layers.make }
   let!(:field) { layer.identifier_fields.make config: {"context" => "MOH", "agency" => "DHIS", "format" => "Luhn"} }
 
   context "validation" do

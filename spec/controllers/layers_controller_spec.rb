@@ -4,8 +4,8 @@ describe LayersController do
   include Devise::TestHelpers
   render_views
 
-  let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make) }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make) }
   let!(:layer) {Layer.make collection: collection, user: user}
   let!(:layer2) {Layer.make collection: collection, user: user}
   let!(:numeric) {layer.numeric_fields.make }
