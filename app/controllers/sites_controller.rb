@@ -34,6 +34,8 @@ class SitesController < ApplicationController
 
     validate_and_process_parameters(site, site_params)
 
+    site.assign_default_values
+
     if site.valid?
       site.save!
       current_user.site_count += 1

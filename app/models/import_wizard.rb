@@ -216,6 +216,7 @@ class ImportWizard
 
           mark_job_as_finished(user, collection)
         end
+
       rescue Exception => ex
         # Delete layer created by this import process if something unexpectedly fails
         new_layer.destroy if new_layer

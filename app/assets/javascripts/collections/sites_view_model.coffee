@@ -32,6 +32,7 @@ onCollections ->
         if window.model.newSiteProperties
           for esCode, value of window.model.newSiteProperties
             field = @currentCollection().findFieldByEsCode esCode
+            field.defaultValue(value) if field && field.kind == 'identifier'
             field.setValueFromSite(value) if field
 
         @unselectSite()

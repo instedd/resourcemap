@@ -19,10 +19,13 @@ onCollections ->
         else
           @value() && (if @kind == 'select_many' then @value().length > 0 else @value())
 
+      @defaultValue = ko.observable()
+
       @valueUI =  ko.computed
        read: =>  @valueUIFor(@value())
        write: (value) =>
          @value(@valueUIFrom(value))
+         @value.valueHasMutated()
 
       if @kind in ['select_one', 'select_many']
         @options = if data.config?.options?
@@ -100,6 +103,8 @@ onCollections ->
       if @kind == 'site'
         # Return site_id or "" if the id for this name is not found (deleting the value or invalid value)
         window.model.currentCollection()?.findSiteIdByName(value) || ""
+      else if @kind == 'identifier'
+        if value then value else @defaultValue()
       else
         value
 
