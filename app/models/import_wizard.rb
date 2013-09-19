@@ -208,6 +208,19 @@ class ImportWizard
           # Reload collection in order to invalidate cached collection.fields copy and to load the new ones
           collection.fields.reload
 
+          # Generate default values for luhn fields
+          luhn_fields = collection.identifier_fields.select{ |field| field.has_luhn_format?}
+
+          luhn_fields.each  do |luhn_field|
+            next_luhn_value = luhn_field.default_value_for_create(collection)
+            sites.each do |site|
+              if site.properties[luhn_field.es_code].blank?
+                site.properties[luhn_field.es_code] = next_luhn_value
+                next_luhn_value = luhn_field.format_implementation.next_luhn(next_luhn_value)
+              end
+            end
+          end
+
           # This will update the existing sites
           sites.each { |site| site.save! unless site.new_record? }
 

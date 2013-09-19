@@ -1345,4 +1345,106 @@ describe ImportWizard do
       sites[0].properties[select_one.es_code].should eq(1)
     end
   end
+
+  describe "luhn values" do
+    let!(:luhn_id) {layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Luhn"} }
+
+    it "should generate default luhn values when the column is not present and there is no data" do
+      csv_string = CSV.generate do |csv|
+        csv << ['Name']
+        csv << ['Foo']
+      end
+
+      specs = [
+        {header: 'Name', use_as: 'name'}
+      ]
+
+      ImportWizard.import user, collection, 'foo.csv', csv_string
+      ImportWizard.mark_job_as_pending user, collection
+
+      ImportWizard.execute user, collection, specs
+      sites = collection.sites.all
+      sites.length.should eq(1)
+
+      sites[0].name.should eq('Foo')
+      sites[0].properties[luhn_id.es_code].should eq('100000-9')
+    end
+
+    it "should create a site with an especific luhn value and one with a default value" do
+      csv_string = CSV.generate do |csv|
+        csv << ['Name', 'moh-id']
+        csv << ['Foo', '100002-7']
+        csv << ['Foo 2', '']
+      end
+
+      specs = [
+        {header: 'Name', use_as: 'name'},
+        {header: 'moh-id' , use_as: 'existing_field', field_id: luhn_id.id},
+      ]
+
+      ImportWizard.import user, collection, 'foo.csv', csv_string
+      ImportWizard.mark_job_as_pending user, collection
+
+      ImportWizard.execute user, collection, specs
+      sites = collection.sites.all
+      sites.length.should eq(2)
+
+      sites[0].name.should eq('Foo')
+      sites[0].properties[luhn_id.es_code].should eq('100002-7')
+
+      sites[1].name.should eq('Foo 2')
+      sites[1].properties[luhn_id.es_code].should eq('100000-9')
+    end
+
+    it "should not override existing luhn value when updating a site" do
+      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-8'}
+
+      csv_string = CSV.generate do |csv|
+        csv << ['resmap-id', 'Name']
+        csv << [site1.id, 'Foo new']
+      end
+
+      specs = [
+        {header: 'resmap-id', use_as: :id},
+        {header: 'Name', use_as: 'name'},
+      ]
+
+      ImportWizard.import user, collection, 'foo.csv', csv_string
+      ImportWizard.mark_job_as_pending user, collection
+
+      ImportWizard.execute user, collection, specs
+      sites = collection.sites.all
+      sites.length.should eq(1)
+
+      sites[0].name.should eq('Foo new')
+      sites[0].properties[luhn_id.es_code].should eq('100001-8')
+    end
+
+    it "should not repeat an existing value for new sites" do
+      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-8'}
+
+      csv_string = CSV.generate do |csv|
+        csv << ['Name']
+        csv << ['Foo 2']
+      end
+
+      specs = [
+        {header: 'Name', use_as: 'name'},
+      ]
+
+      ImportWizard.import user, collection, 'foo.csv', csv_string
+      ImportWizard.mark_job_as_pending user, collection
+
+      ImportWizard.execute user, collection, specs
+      sites = collection.sites.all
+      sites.length.should eq(2)
+
+      sites[0].name.should eq('Foo')
+      sites[0].properties[luhn_id.es_code].should eq('100001-8')
+
+      sites[1].name.should eq('Foo 2')
+      sites[1].properties[luhn_id.es_code].should eq('100002-7')
+    end
+
+  end
 end
