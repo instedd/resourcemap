@@ -725,7 +725,7 @@ describe ImportWizard do
     column_spec.should include({:header=>"user", :kind=>:user, :code=>"user", :label=>"User", :use_as=>:existing_field, :layer_id=>director.layer_id, :field_id=>director.id})
     column_spec.should include({:header=>"email", :kind=>:email, :code=>"email", :label=>"Email", :use_as=>:existing_field, :layer_id=>email_field.layer_id, :field_id=>email_field.id})
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
   end
 
   it "should get sites & errors for invalid existing fields" do
@@ -798,7 +798,7 @@ describe ImportWizard do
     data_errors[7][:type].should eq('email addresses')
     data_errors[7][:rows].should eq([1, 2])
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
   end
 
   it "should be include hints for format errors" do
@@ -908,7 +908,7 @@ describe ImportWizard do
     data_errors[4][:column].should eq(8)
     data_errors[4][:rows].should eq([1, 2])
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
   end
 
 
@@ -934,7 +934,7 @@ describe ImportWizard do
 
     expect {ImportWizard.execute_with_entities(user, collection, column_spec)}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
   end
 
 
@@ -957,7 +957,7 @@ describe ImportWizard do
       sites_errors = sites_preview[:errors]
       sites_errors[:duplicated_usage].should eq("#{usage}" => [0,1])
 
-      ImportWizard.delete_file(user, collection)
+      ImportWizard.delete_files(user, collection)
     end
   end
 
@@ -978,7 +978,7 @@ describe ImportWizard do
      sites_errors = sites_preview[:errors]
      sites_errors[:duplicated_usage].should eq(text.id => [0,1])
 
-     ImportWizard.delete_file(user, collection)
+     ImportWizard.delete_files(user, collection)
   end
 
 
@@ -1000,7 +1000,7 @@ describe ImportWizard do
      sites_errors = sites_preview[:errors]
      sites_errors[:duplicated_usage].should eq({})
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
 
   end
 
@@ -1023,7 +1023,7 @@ describe ImportWizard do
       sites_errors = sites_preview[:errors]
       key = "duplicated_#{value}".to_sym
       sites_errors[key].should eq("repeated" => [0,1])
-      ImportWizard.delete_file(user, collection)
+      ImportWizard.delete_files(user, collection)
 
     end
   end
@@ -1053,7 +1053,7 @@ describe ImportWizard do
       sites_errors = sites_preview[:errors]
       key = "existing_#{value}".to_sym
       sites_errors[key].should eq("repeated" => [0,1])
-      ImportWizard.delete_file(user, collection)
+      ImportWizard.delete_files(user, collection)
 
     end
   end
@@ -1077,7 +1077,7 @@ describe ImportWizard do
 
    sites_errors[:data_errors].should == []
 
-   ImportWizard.delete_file(user, collection)
+   ImportWizard.delete_files(user, collection)
  end
 
   it "should not generate a data error when updating a default property" do
@@ -1097,7 +1097,7 @@ describe ImportWizard do
     sites_errors = sites_preview[:errors]
     sites_errors[:data_errors].should == []
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
   end
 
   # Otherwise a missmatch will be generated
@@ -1120,7 +1120,7 @@ describe ImportWizard do
     column_spec[2][:label].should eq("")
     column_spec[2][:use_as].should eq(:new_field)
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
   end
 
   it 'should not fail if header has a nil value' do
@@ -1142,7 +1142,7 @@ describe ImportWizard do
     column_spec[2][:label].should eq("")
     column_spec[2][:use_as].should eq(:new_field)
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
   end
 
   it 'should not fail if label and code are missing in new fields' do
@@ -1162,7 +1162,7 @@ describe ImportWizard do
     sites_errors[:missing_label].should eq(:columns => [1,2])
     sites_errors[:missing_code].should eq(:columns => [1,2])
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
   end
 
   it "should validate presence of name in column specs" do
@@ -1178,7 +1178,7 @@ describe ImportWizard do
     sites_errors = sites_preview[:errors]
     sites_errors[:missing_name].should_not be_blank
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
 
 
     specs = [{:header=>"numeric", :use_as=>:name}]
@@ -1188,7 +1188,7 @@ describe ImportWizard do
     sites_errors = sites_preview[:errors]
     sites_errors[:missing_name].should be_blank
 
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
 
   end
 
@@ -1205,7 +1205,7 @@ describe ImportWizard do
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
       sites_errors = sites_preview[:errors]
       sites_errors[:reserved_code].should eq({"#{reserved_code}"=>[0]})
-      ImportWizard.delete_file(user, collection)
+      ImportWizard.delete_files(user, collection)
 
     end
   end
@@ -1226,7 +1226,7 @@ describe ImportWizard do
     resmap_id_error = sites_errors[:non_existent_site_id][0]
     resmap_id_error[:rows].should eq([1])
     resmap_id_error[:column].should eq(0)
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
 
   end
 
@@ -1246,7 +1246,7 @@ describe ImportWizard do
     sites_errors = sites_preview[:errors]
 
     sites_errors[:non_existent_site_id].should be(nil)
-    ImportWizard.delete_file(user, collection)
+    ImportWizard.delete_files(user, collection)
 
   end
 
@@ -1419,6 +1419,40 @@ describe ImportWizard do
       sites[0].name.should eq('Foo new')
       sites[0].properties[luhn_id.es_code].should eq('100001-8')
     end
+
+    it "should choose the higher luhn between the one alredy stored in the collection and the one in the csv for the default value for new sites" do
+      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-8'}
+
+      csv_string = CSV.generate do |csv|
+        csv << ['Name', 'Luhn']
+        csv << ['Foo new 1', '']
+        csv << ['Foo new 2', '100002-7']
+
+      end
+
+      specs = [
+        {header: 'Name', use_as: 'name'},
+        {header: 'Luhn' , use_as: 'existing_field', field_id: luhn_id.id},
+      ]
+
+      ImportWizard.import user, collection, 'foo.csv', csv_string
+      ImportWizard.mark_job_as_pending user, collection
+
+      ImportWizard.validate_sites_with_columns user, collection, specs
+      ImportWizard.execute user, collection, specs
+      sites = collection.sites.all
+      sites.length.should eq(3)
+
+      sites[0].name.should eq('Foo')
+      sites[0].properties[luhn_id.es_code].should eq('100001-8')
+
+      sites[1].name.should eq('Foo new 1')
+      sites[1].properties[luhn_id.es_code].should eq('100003-6')
+
+      sites[2].name.should eq('Foo new 2')
+      sites[2].properties[luhn_id.es_code].should eq('100002-7')
+    end
+
 
     it "should not repeat an existing value for new sites" do
       site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-8'}

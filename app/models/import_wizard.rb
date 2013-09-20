@@ -11,7 +11,7 @@ class ImportWizard
 
     def cancel_pending_jobs(user, collection)
       mark_job_as_canceled_by_user(user, collection)
-      delete_file(user, collection)
+      delete_files(user, collection)
     end
 
      def import(user, collection, original_filename, contents)
@@ -23,9 +23,13 @@ class ImportWizard
       raise "Invalid file format. Only CSV files are allowed." unless File.extname(original_filename) == '.csv'
 
       begin
-        File.open(file_for(user, collection), "wb") { |file| file << contents }
+        File.open(csv_file_for(user, collection), "wb") { |file| file << contents }
         csv = read_csv_for(user, collection)
         raise CSV::MalformedCSVError, "all rows must have the same number of columns." unless csv.all?{|e| e.count == csv[0].count}
+
+        # Create file that will contain data collected during validation in order to improve performance during the import execution
+        File.open(aditional_data_file_for(user, collection), "wb") { |file| file << {} }
+
       rescue CSV::MalformedCSVError => ex
         raise "The file is not a valid CSV: #{ex.message}"
       end
@@ -125,7 +129,7 @@ class ImportWizard
 
     def guess_columns_spec(user, collection)
       rows = []
-      CSV.foreach(file_for user, collection) do |row|
+      CSV.foreach(csv_file_for user, collection) do |row|
         rows << row
       end
       to_columns collection, rows, user.admins?(collection)
@@ -212,9 +216,18 @@ class ImportWizard
           luhn_fields = collection.identifier_fields.select{ |field| field.has_luhn_format?}
 
           luhn_fields.each  do |luhn_field|
-            next_luhn_value = luhn_field.default_value_for_create(collection)
+
+            # The next luhn value will be the max between the higher number in the CSV and the higher number in the collection
+            next_luhn_value_collection = luhn_field.default_value_for_create(collection)
+            last_luhn_value_csv = JSON.load(File.read(aditional_data_file_for(user, collection)))[luhn_field.es_code]
+            next_luhn_value_csv = luhn_field.format_implementation.next_luhn(last_luhn_value_csv) if last_luhn_value_csv
+            next_luhn_value = if (next_luhn_value_csv && (next_luhn_value_csv > next_luhn_value_collection)) then next_luhn_value_csv else next_luhn_value_collection end
+
             sites.each do |site|
-              if site.properties[luhn_field.es_code].blank?
+              # If the site already has a value for the luhn field we don't want to generate a new one
+              if !site.properties_was[luhn_field.es_code].blank?
+                site.properties[luhn_field.es_code] = site.properties_was[luhn_field.es_code]
+              elsif site.properties[luhn_field.es_code].blank?
                 site.properties[luhn_field.es_code] = next_luhn_value
                 next_luhn_value = luhn_field.format_implementation.next_luhn(next_luhn_value)
               end
@@ -236,11 +249,12 @@ class ImportWizard
         raise ex
       end
 
-      delete_file(user, collection)
+      delete_files(user, collection)
     end
 
-    def delete_file(user, collection)
-      File.delete(file_for(user, collection))
+    def delete_files(user, collection)
+      File.delete(csv_file_for(user, collection))
+      File.delete(aditional_data_file_for(user, collection))
     end
 
     def mark_job_as_pending(user, collection)
@@ -279,6 +293,10 @@ class ImportWizard
 
       collection_sites = collection.sites.index_by{|s| s.id.to_s}
       validated_csv_column = []
+
+      # We need to store the maximum value in each luhn field in the csv in order to not search it again during the import
+      max_luhn_value_in_csv = "0"
+
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
           site = nil
@@ -296,12 +314,22 @@ class ImportWizard
             raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}" if repetitions.length > 1
           end
 
-          validate_column_value(column_spec, csv_field_value, field, collection, site)
+          value = validate_column_value(column_spec, csv_field_value, field, collection, site)
+
+          if field.kind == 'identifier' && field.has_luhn_format?()
+            max_luhn_value_in_csv = if (value && (value > max_luhn_value_in_csv)) then value else max_luhn_value_in_csv end
+          end
+
         rescue => ex
           description = error_description_for_type(field, column_spec, ex)
           validated_csv_column << {description: description, row: field_number}
         end
       end
+
+      luhn_data = JSON.load(File.read(aditional_data_file_for(user, collection)))
+      luhn_data[field.es_code] = max_luhn_value_in_csv if max_luhn_value_in_csv != "0"
+      File.open(aditional_data_file_for(user, collection), "wb") { |file| file << luhn_data.to_json }
+
 
       validated_columns_grouped = validated_csv_column.group_by{|e| e[:description]}
       validated_columns_grouped.map do |description, hash|
@@ -496,7 +524,7 @@ class ImportWizard
     end
 
     def read_csv_for(user, collection)
-      csv = CSV.read(file_for(user, collection))
+      csv = CSV.read(csv_file_for(user, collection))
 
       # Remove empty rows at the end
       while (last = csv.last) && last.empty?
@@ -506,7 +534,11 @@ class ImportWizard
       csv
     end
 
-    def file_for(user, collection)
+    def aditional_data_file_for(user, collection)
+      "#{TmpDir}/#{user.id}_#{collection.id}_aditional_data.json"
+    end
+
+    def csv_file_for(user, collection)
       "#{TmpDir}/#{user.id}_#{collection.id}.csv"
     end
   end

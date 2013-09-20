@@ -11,6 +11,10 @@ describe ImportWizard do
 
   let(:luhn) { layer.identifier_fields.make code: 'luhn', config: {'format' => 'Luhn'} }
 
+  def aditional_data_file_for(user, collection)
+    "#{Rails.root}/tmp/import_wizard/#{user.id}_#{collection.id}_aditional_data.json"
+  end
+
   it "imports into existing field with non-blank values" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Luhn']
@@ -36,7 +40,7 @@ describe ImportWizard do
     sites[2].properties[luhn.es_code].should eq('100002-7')
   end
 
-  it "imports into existing field and generate a new the value" do
+  it "import into existing field should not generate a new value, because the the luhn value should not be changed unless the user specify a new value" do
     site = collection.sites.make properties: {luhn.es_code => '100000-9'}
 
     csv_string = CSV.generate do |csv|
@@ -186,6 +190,35 @@ describe ImportWizard do
     sites_errors = sites[:errors]
     data_errors = sites_errors[:data_errors]
     data_errors.length.should eq(0)
+  end
+
+  it "should store max luhn value in a json file" do
+    luhn2 = layer.identifier_fields.make code: 'luhn2', config: {'format' => 'Luhn'}
+    luhn3 = layer.identifier_fields.make code: 'luhn3', config: {'format' => 'Luhn'}
+
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Luhn', 'Luhn2', 'Luhn3']
+      csv << ['Bar', '100000-9', '', '']
+      csv << ['Baz', '100002-7', '', '100001-8']
+      csv << ['Baz', '100001-8', '', '']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Luhn', use_as: 'existing_field', field_id: luhn.id},
+      {header: 'Luhn2', use_as: 'existing_field', field_id: luhn2.id},
+      {header: 'Luhn3', use_as: 'existing_field', field_id: luhn3.id},
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string
+    ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.validate_sites_with_columns user, collection, specs
+
+    luhn_data = JSON.load(File.read(aditional_data_file_for(user, collection)))
+    luhn_data[luhn.es_code].should eq('100002-7')
+    luhn_data[luhn2.es_code].should eq(nil)
+    luhn_data[luhn3.es_code].should eq('100001-8')
+
   end
 
 
