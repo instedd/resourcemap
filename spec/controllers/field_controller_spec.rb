@@ -6,9 +6,9 @@ describe FieldsController do
 
   let(:admin) { User.make }
   let(:collection) { admin.create_collection(Collection.make) }
-  let(:layer) { Layer.make collection: collection, user: admin}
+  let(:layer) { collection.layers.make user: admin}
   config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-  let(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+  let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
 
   it "should get field in json" do
     sign_in admin
@@ -47,4 +47,18 @@ describe FieldsController do
     response.status.should eq(404)
   end
 
+
+  it "should get mapping" do
+    sign_in admin
+
+    get :mapping, collection_id: collection.id
+    json = JSON.parse response.body
+    json.length.should eq(1)
+    field = json[0]
+    field["name"].should eq(hierarchy.name)
+    field["id"].should eq(hierarchy.id)
+    field["code"].should eq('hierarchy')
+    field["kind"].should eq('hierarchy')
+
+  end
 end

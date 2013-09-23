@@ -44,7 +44,11 @@ ResourceMap::Application.routes.draw do
       end
     end
 
-    resources :fields
+    resources :fields do
+      collection do
+        get 'mapping'
+      end
+    end
 
     resources :memberships do
       collection do

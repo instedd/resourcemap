@@ -1,7 +1,7 @@
 class FieldsController < ApplicationController
 	before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
   before_filter :authenticate_user!, :unless => Proc.new { collection && collection.public }
-  before_filter :authenticate_collection_admin!, only: :show
+  before_filter :authenticate_collection_admin!, only: [:show, :mapping]
 
   expose(:field) { fields.find params[:id] }
 
@@ -15,4 +15,7 @@ class FieldsController < ApplicationController
     render json: field.to_json
   end
 
+  def mapping
+    render json: collection.fields.map{|f| {name: f.name, id: f.id, code: f.code, kind: f.kind}}.to_json
+  end
 end
