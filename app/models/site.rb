@@ -71,7 +71,7 @@ class Site < ActiveRecord::Base
     self.properties = properties
   end
 
-  def assign_default_values
+  def assign_default_values_for_create
     fields = collection.fields.index_by(&:es_code)
 
     fields.each do |es_code, field|
@@ -79,10 +79,19 @@ class Site < ActiveRecord::Base
         value = field.default_value_for_create(collection)
         properties[field.es_code] = value if value
       end
-    end 
-    self 
+    end
+    self
   end
 
+  def assign_default_values_for_update
+    fields = collection.fields.index_by(&:es_code)
+
+    fields.each do |es_code, field|
+      value = field.default_value_for_update
+      properties[field.es_code] = value unless value.nil?
+    end
+    self
+  end
 
   private
 
@@ -93,7 +102,7 @@ class Site < ActiveRecord::Base
     properties.each do |es_code, value|
       field = fields[es_code]
       if field
-        standardized_properties[es_code] = field.standadrize(value)  
+        standardized_properties[es_code] = field.standadrize(value)
       end
     end
     self.properties = standardized_properties

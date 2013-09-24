@@ -43,26 +43,26 @@ describe "Luhn" do
     end
   end
 
-  def create_site_and_assig_default_values(luhn_value)
+  def create_site_and_assign_default_values(luhn_value)
     if luhn_value
       site = collection.sites.make(properties: {field.es_code => luhn_value})
     else
       site = collection.sites.make
     end
 
-    site.assign_default_values
+    site.assign_default_values_for_create
     site.save!
     site
   end
 
   it "generates luhn id for new site" do
     collection.sites.make
-    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100000-9")
-    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100001-8")
-    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100002-7")
-    create_site_and_assig_default_values("100004-5").properties[field.es_code].should eq("100004-5")
-    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100005-4")
-    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100006-3")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100000-9")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100001-8")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100002-7")
+    create_site_and_assign_default_values("100004-5").properties[field.es_code].should eq("100004-5")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100005-4")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100006-3")
   end
 
   it "gets next luhn" do
@@ -73,7 +73,7 @@ describe "Luhn" do
   end
 
   it "checks for unicity" do
-    create_site_and_assig_default_values(nil).properties[field.es_code].should eq("100000-9")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100000-9")
     lambda do
       collection.sites.make(properties: {field.es_code => "100000-9"})
     end.should raise_exception(ActiveRecord::RecordInvalid, /the value already exists in the collection/)
@@ -93,10 +93,10 @@ describe "Luhn" do
 
   it "do not search only in the first 50 when genetating values" do
     51.times do
-      create_site_and_assig_default_values(nil)
+      create_site_and_assign_default_values(nil)
     end
     lambda do
-      create_site_and_assig_default_values(nil)
+      create_site_and_assign_default_values(nil)
     end.should_not raise_exception(ActiveRecord::RecordInvalid, /the value already exists in the collection/)
   end
 

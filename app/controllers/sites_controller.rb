@@ -34,7 +34,7 @@ class SitesController < ApplicationController
 
     validate_and_process_parameters(site, site_params)
 
-    site.assign_default_values
+    site.assign_default_values_for_create
 
     if site.valid?
       site.save!
@@ -88,7 +88,7 @@ class SitesController < ApplicationController
 
     site.user = current_user
     site.properties_will_change!
-
+    site.assign_default_values_for_update
     site.properties[params[:es_code]] = field.decode_from_ui(params[:value])
     if site.valid?
       site.save!
@@ -170,6 +170,7 @@ class SitesController < ApplicationController
 
     if site_params.has_key?("properties")
       fields = collection.fields.index_by(&:es_code)
+
       site_params["properties"].each_pair do |es_code, value|
 
         #Next if there is no changes in the property
@@ -183,6 +184,10 @@ class SitesController < ApplicationController
         end
       end
     end
+
+    # after, so if the user update the whole site
+    # the auto_reset is reseted
+    site.assign_default_values_for_update
   end
 
 end

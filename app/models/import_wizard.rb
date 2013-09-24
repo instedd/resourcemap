@@ -14,7 +14,7 @@ class ImportWizard
       delete_files(user, collection)
     end
 
-     def import(user, collection, original_filename, contents)
+    def import(user, collection, original_filename, contents)
       # Store representation of import job in database to enable status tracking later
       ImportJob.uploaded original_filename, user, collection
 
@@ -233,6 +233,8 @@ class ImportWizard
               end
             end
           end
+
+          sites.each { |site| site.assign_default_values_for_update }
 
           # This will update the existing sites
           sites.each { |site| site.save! unless site.new_record? }

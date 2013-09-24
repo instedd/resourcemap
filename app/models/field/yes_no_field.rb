@@ -13,4 +13,16 @@ class Field::YesNoField < Field
     Field.yes?(value)
   end
 
+  def default_value_for_create(collection)
+    false
+  end
+
+  def default_value_for_update
+    if config && config['auto_reset'] == true
+      false
+    else
+      nil
+    end
+  end
+
 end

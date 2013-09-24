@@ -270,4 +270,82 @@ describe SitesController do
       }.from(0).to(1)
     end
   end
+
+  describe 'yes_no with auto_reset' do
+    let!(:auto_reset_field) { layer.yes_no_fields.make :code => 'flag', :config => { 'auto_reset' => true } }
+
+    describe 'create new site' do
+      before(:each) do
+        site_params = {:name => "new site"}.to_json
+        @response = post :create, {:collection_id => collection.id, :site => site_params}
+      end
+
+      it "should be success" do
+        @response.should be_success
+      end
+
+      it "should reset on create" do
+        new_site = Site.find_by_name "new site"
+        new_site.properties[auto_reset_field.es_code.to_s].should be_false
+      end
+    end
+
+    describe 'update site' do
+      before(:each) do
+        site_params = {:name => "new site name"}.to_json
+        @response = post :partial_update, { :collection_id => collection.id, :id => site.id, :site => site_params }
+      end
+
+      it "should be success" do
+        @response.should be_success
+      end
+
+      it "should reset field" do
+        new_site = Site.find_by_name "new site name"
+        new_site.properties[auto_reset_field.es_code.to_s].should be_false
+      end
+    end
+
+    describe 'update site forcing auto_reset_value' do
+      before(:each) do
+        site_params = {:name => "new site name", :properties => {
+          auto_reset_field.es_code => true
+        }}.to_json
+        @response = post :partial_update, { :collection_id => collection.id, :id => site.id, :site => site_params }
+      end
+
+      it "should be success" do
+        @response.should be_success
+      end
+
+      it "should reset field" do
+        new_site = Site.find_by_name "new site name"
+        new_site.properties[auto_reset_field.es_code.to_s].should be_false
+      end
+    end
+
+    describe 'update other site property' do
+      before(:each) do
+        post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2'
+      end
+
+      it "should update property" do
+        validate_site_property_value(site, numeric, 2)
+      end
+
+      it "should reset field" do
+        validate_site_property_value(site, auto_reset_field, false)
+      end
+    end
+
+    describe 'update auto_reset site property' do
+      before(:each) do
+        post :update_property, site_id: site.id, format: 'json', es_code: auto_reset_field.es_code, value: true
+      end
+
+      it "should update property" do
+        validate_site_property_value(site, auto_reset_field, true)
+      end
+    end
+  end
 end

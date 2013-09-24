@@ -55,7 +55,7 @@ class FredApiController < ApplicationController
     facility_params = validate_site_params(facility_params)
     facility = collection.sites.new
     facility.update_attributes! facility_params.merge(user: current_user)
-    facility.assign_default_values
+    facility.assign_default_values_for_create
     facility.save!
     render json: find_facility_and_apply_fred_format(facility.id), status: :created, :location => url_for_facility(facility.id)
   end

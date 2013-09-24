@@ -712,7 +712,7 @@ describe FredApiController do
 
     it 'should create facility with with the next valid luhn identifier if there is a site with luhn value' do
       site = collection.sites.make
-      site.assign_default_values
+      site.assign_default_values_for_create
       site.save!
 
       request.env["RAW_POST_DATA"] = { name: 'Kizikuo' }.to_json
@@ -729,7 +729,7 @@ describe FredApiController do
       site = collection.sites.make
       site.save!
 
-      # we are not calling assign_default_values so this site will not have a value for the luhn_id field
+      # we are not calling assign_default_values_for_create so this site will not have a value for the luhn_id field
       # this situation can happen if this site is created using the UI, deleting the suggested luhn value.
       site.properties["#{luhn_id.es_code}"].should be(nil)
 

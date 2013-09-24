@@ -1060,25 +1060,25 @@ describe ImportWizard do
 
   it "should not show errors if usage is ignore" do
 
-   csv_string = CSV.generate do |csv|
-     csv << ['numeric ']
-     csv << ['11']
-     csv << ['invalid11']
-   end
+    csv_string = CSV.generate do |csv|
+       csv << ['numeric ']
+       csv << ['11']
+       csv << ['invalid11']
+    end
 
-   ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
 
-   columns_spec = [{header: 'numeric', use_as: 'ignore', kind: 'ignore'}]
-   validated_sites = (ImportWizard.validate_sites_with_columns user, collection, columns_spec)
+    columns_spec = [{header: 'numeric', use_as: 'ignore', kind: 'ignore'}]
+    validated_sites = (ImportWizard.validate_sites_with_columns user, collection, columns_spec)
 
-   sites_preview = validated_sites[:sites]
-   sites_preview.should  == [[{:value=>"11"}], [{:value=>"invalid11"}]]
-   sites_errors = validated_sites[:errors]
+    sites_preview = validated_sites[:sites]
+    sites_preview.should  == [[{:value=>"11"}], [{:value=>"invalid11"}]]
+    sites_errors = validated_sites[:errors]
 
-   sites_errors[:data_errors].should == []
+    sites_errors[:data_errors].should == []
 
-   ImportWizard.delete_files(user, collection)
- end
+    ImportWizard.delete_files(user, collection)
+  end
 
   it "should not generate a data error when updating a default property" do
     site1 = collection.sites.make name: 'Foo old'
@@ -1479,6 +1479,53 @@ describe ImportWizard do
       sites[1].name.should eq('Foo 2')
       sites[1].properties[luhn_id.es_code].should eq('100002-7')
     end
+  end
 
+  describe "auto_reset" do
+    let!(:auto_reset) { layer.yes_no_fields.make :code => 'flag', :config => { 'auto_reset' => true } }
+
+    it "should reset sites included despite the values used in the import" do
+      site1 = collection.sites.make name: 'Foo', properties: {auto_reset.es_code => true}
+      site2 = collection.sites.make name: 'Bar', properties: {auto_reset.es_code => true}
+      site3 = collection.sites.make name: 'Old', properties: {auto_reset.es_code => true}
+
+      csv_string = CSV.generate do |csv|
+        csv << ['resmap-id', 'Name', 'Column']
+        csv << [site1.id,'Foo', 'true']
+        csv << [site2.id,'Bar', 'false']
+        csv << ['','Baz', 'true']
+        csv << ['','Foobar', 'false']
+        csv << ['','', '']
+      end
+
+      specs = [
+        {header: 'resmap-id', use_as: 'id'},
+        {header: 'Name', use_as: 'name'},
+        {header: 'Column', use_as: 'existing_field', field_id: auto_reset.id},
+        ]
+
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+      ImportWizard.execute user, collection, specs
+
+      collection.layers.all.should eq([layer])
+
+      sites = collection.sites.all
+      sites.length.should eq(5)
+
+      sites[0].name.should eq('Foo')
+      sites[0].properties.should eq({auto_reset.es_code => false})
+
+      sites[1].name.should eq('Bar')
+      sites[1].properties.should eq({auto_reset.es_code => false})
+
+      sites[2].name.should eq('Old')
+      sites[2].properties.should eq({auto_reset.es_code => true})
+
+      sites[3].name.should eq('Baz')
+      sites[3].properties.should eq({auto_reset.es_code => false})
+
+      sites[4].name.should eq('Foobar')
+      sites[4].properties.should eq({auto_reset.es_code => false})
+    end
   end
 end
