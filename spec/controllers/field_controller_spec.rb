@@ -47,7 +47,6 @@ describe FieldsController do
     response.status.should eq(404)
   end
 
-
   it "should get mapping" do
     sign_in admin
 
@@ -59,6 +58,5 @@ describe FieldsController do
     field["id"].should eq(hierarchy.id)
     field["code"].should eq('hierarchy')
     field["kind"].should eq('hierarchy')
-
   end
 end

@@ -38,7 +38,11 @@ module SearchBase
     query_key = field.es_code
 
     if field.kind == 'yes_no'
-      @search.filter :term, query_key => Field.yes?(value)
+      if Field.yes?(value)
+        @search.filter :term, query_key => true
+      else
+        @search.filter :not, { :term => { query_key => true } }
+      end
     elsif field.kind == 'date'
       date_field_range(query_key, validated_value)
     elsif field.kind == 'hierarchy' and value.is_a? Array

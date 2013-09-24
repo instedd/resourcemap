@@ -610,6 +610,13 @@ describe Search do
       search.where cool.es_code => 'no'
       assert_results search, site2
     end
+
+    it "filter by no should get nil values" do
+      site3 = collection.sites.make properties: {}
+      search = collection.new_search
+      search.where cool.es_code => 'no'
+      assert_results search, site2, site3
+    end
   end
 
   context 'hierarchy parameter for select_kind and hierarchy fields' do
