@@ -93,6 +93,7 @@ class Site < ActiveRecord::Base
     self
   end
 
+
   private
 
   def standardize_properties

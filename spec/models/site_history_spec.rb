@@ -23,5 +23,17 @@ describe SiteHistory do
     search.perform.results.first["_source"]["location"]["lon"].should eq(site_history.lng)
   end
 
+  it "should update version number when the site changes" do
+    site = Site.make
+    site.histories.count.should eq(1)
+    site.current_history.version.should eq(1)
+
+    site.name = "Other"
+    site.save!
+
+    site.histories.count.should eq(2)
+    site.current_history.version.should eq(2)
+  end
+
 end
 

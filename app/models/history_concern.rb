@@ -17,7 +17,11 @@ module HistoryConcern
     end
   end
 
-  def create_history
+  def version
+    current_history.version
+  end
+
+  def create_history(current_version = 0)
     history = histories.new
     attributes.each_pair do |att_name, att_value|
       unless ['id', 'created_at', 'updated_at'].include? att_name
@@ -26,6 +30,7 @@ module HistoryConcern
     end
     history["valid_since"] = updated_at
     history[self.history_concern_foreign_key] = id
+    history["version"] = current_version + 1
     history.save!
     history
   end
@@ -35,8 +40,9 @@ module HistoryConcern
   end
 
   def expire_current_history_and_create_new_one
+    version = self.version
     expire_current_history updated_at
-    create_history
+    create_history(version)
   end
 
   def expire_current_history(valid_to = Time.now)

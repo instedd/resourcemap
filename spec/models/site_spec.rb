@@ -72,4 +72,16 @@ describe Site do
     site.properties = site.properties
     site.save!
   end
+
+  it "should have version" do
+    site.version.should eq(1)
+  end
+
+  it "should increase version if something changes in the site" do
+    site.name = "other name"
+    site.save!
+
+    site.version.should eq(2)
+  end
+
 end
