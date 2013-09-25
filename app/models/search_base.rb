@@ -131,9 +131,12 @@ module SearchBase
     self
   end
 
+  # Set a really large number for site parameter, since ES does not have a way to return all terms matching the hits
+  # https://github.com/elasticsearch/elasticsearch/issues/1776
+  # The number I put here is the max integer in Java
   def histogram_search(field_es_code)
     @search.facet "#field_{field_es_code}_ratings" do
-      terms field_es_code
+      terms field_es_code, :size => 2147483647, :all_terms => true
     end
     self
   end
