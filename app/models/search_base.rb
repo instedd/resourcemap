@@ -131,6 +131,14 @@ module SearchBase
     self
   end
 
+  def histogram_search(field_es_code)
+    @search.facet "#field_{field_es_code}_ratings" do
+      terms field_es_code
+    end
+    self
+  end
+
+
   def before(time)
     time = parse_time(time)
     @search.filter :range, updated_at: {lte: Site.format_date(time)}

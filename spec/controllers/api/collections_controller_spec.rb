@@ -239,6 +239,33 @@ describe Api::CollectionsController do
       end
     end
 
+    describe "GET JSON histogram" do
+      it "should get histogram for a collection hierarchy field by id" do
+        get :histogram_by_field, collection_id: collection.id, field_id: hierarchy.id
+        response.should be_success
+        histogram = JSON.parse response.body
+        histogram['dad'].should eq(1)
+        histogram['bro'].should eq(1)
+      end
+
+      it "should get histogram for a collection hierarchy field by code" do
+        get :histogram_by_field, collection_id: collection.id, field_id: hierarchy.code
+        response.should be_success
+        histogram = JSON.parse response.body
+        histogram['dad'].should eq(1)
+        histogram['bro'].should eq(1)
+      end
+
+      it "should get histogram for a collection text field" do
+        site3 = collection.sites.make properties: {text.es_code => 'foo'}
+
+        get :histogram_by_field, collection_id: collection.id, field_id: text.id
+        response.should be_success
+        histogram = JSON.parse response.body
+        histogram['foo'].should eq(2)
+      end
+    end
+
   end
 
   describe "Date fields" do
@@ -290,7 +317,5 @@ describe Api::CollectionsController do
     end
 
   end
-
-
 
 end

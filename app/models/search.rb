@@ -136,4 +136,12 @@ class Search
 
     items
   end
+
+  def histogram_results(field_es_code)
+    histogram = {}
+    @search.results.facets["#field_{field_es_code}_ratings"]["terms"].each do |item|
+      histogram[item["term"]] = item["count"]
+    end
+    histogram
+  end
 end

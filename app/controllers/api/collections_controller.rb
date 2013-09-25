@@ -39,12 +39,27 @@ class Api::CollectionsController < ApplicationController
     render json: perform_search(:count).total
   end
 
+  def histogram_by_field
+    fields = collection.fields.where(code: params[:field_id])
+    fields = collection.fields.where(id: params[:field_id]) if fields.empty?
+
+    raise "Field not found" if fields.empty?
+
+    render json: perform_histogram_search(fields.first)
+  end
+
   def geo_json
     @results = perform_search :page, :sort, :require_location
     render json: collection_geo_json(collection, @results)
   end
 
   private
+
+  def perform_histogram_search(field)
+    search = new_search
+    search.histogram_search(field.es_code)
+    search.histogram_results(field.es_code)
+  end
 
   def perform_search(*options)
     except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius]
