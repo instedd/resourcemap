@@ -49,6 +49,8 @@ module SearchBase
       @search.filter :terms, query_key => validated_value
     elsif field.select_kind?
       @search.filter :term, query_key => validated_value
+    elsif value.is_a? Array
+      @search.filter :terms, query_key => validated_value
     else
       @search.filter :term, query_key => value
     end

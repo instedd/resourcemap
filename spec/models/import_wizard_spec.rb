@@ -1484,15 +1484,19 @@ describe ImportWizard do
   describe "auto_reset" do
     let!(:auto_reset) { layer.yes_no_fields.make :code => 'flag', :config => { 'auto_reset' => true } }
 
-    it "should reset sites included despite the values used in the import" do
+    it "should reset sites included despite the values used in the import only if changed" do
       site1 = collection.sites.make name: 'Foo', properties: {auto_reset.es_code => true}
       site2 = collection.sites.make name: 'Bar', properties: {auto_reset.es_code => true}
       site3 = collection.sites.make name: 'Old', properties: {auto_reset.es_code => true}
+      site4 = collection.sites.make name: 'Lorem', properties: {auto_reset.es_code => false}
+      site5 = collection.sites.make name: 'Ipsum', properties: {auto_reset.es_code => true}
 
       csv_string = CSV.generate do |csv|
         csv << ['resmap-id', 'Name', 'Column']
         csv << [site1.id,'Foo', 'true']
         csv << [site2.id,'Bar', 'false']
+        csv << [site4.id,'Lorem', 'true']
+        csv << [site5.id,'Ipsum2', 'true']
         csv << ['','Baz', 'true']
         csv << ['','Foobar', 'false']
         csv << ['','', '']
@@ -1510,7 +1514,7 @@ describe ImportWizard do
       collection.layers.all.should eq([layer])
 
       sites = collection.sites.all
-      sites.length.should eq(5)
+      sites.length.should eq(7)
 
       sites[0].name.should eq('Foo')
       sites[0].properties.should eq({auto_reset.es_code => false})
@@ -1521,11 +1525,17 @@ describe ImportWizard do
       sites[2].name.should eq('Old')
       sites[2].properties.should eq({auto_reset.es_code => true})
 
-      sites[3].name.should eq('Baz')
+      sites[3].name.should eq('Lorem')
       sites[3].properties.should eq({auto_reset.es_code => false})
 
-      sites[4].name.should eq('Foobar')
+      sites[4].name.should eq('Ipsum2')
       sites[4].properties.should eq({auto_reset.es_code => false})
+
+      sites[5].name.should eq('Baz')
+      sites[5].properties.should eq({auto_reset.es_code => false})
+
+      sites[6].name.should eq('Foobar')
+      sites[6].properties.should eq({auto_reset.es_code => false})
     end
   end
 end

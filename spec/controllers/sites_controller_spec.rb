@@ -292,6 +292,9 @@ describe SitesController do
 
     describe 'update site' do
       before(:each) do
+        site.properties[auto_reset_field.es_code] = true
+        site.save!
+
         site_params = {:name => "new site name"}.to_json
         @response = post :partial_update, { :collection_id => collection.id, :id => site.id, :site => site_params }
       end
@@ -303,6 +306,25 @@ describe SitesController do
       it "should reset field" do
         new_site = Site.find_by_name "new site name"
         new_site.properties[auto_reset_field.es_code.to_s].should be_false
+      end
+    end
+
+    describe 'update site without changing' do
+      before(:each) do
+        site.properties[auto_reset_field.es_code] = true
+        site.save!
+
+        site_params = {:name => site.name}.to_json
+        @response = post :partial_update, { :collection_id => collection.id, :id => site.id, :site => site_params }
+      end
+
+      it "should be success" do
+        @response.should be_success
+      end
+
+      it "should not reset field" do
+        new_site = Site.find_by_name site.name
+        new_site.properties[auto_reset_field.es_code.to_s].should be_true
       end
     end
 

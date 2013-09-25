@@ -87,6 +87,12 @@ describe Search do
       assert_results search, site2, site3, site4
     end
 
+    it "search by multiple text values" do
+      search = collection.new_search
+      search.where first_name.es_code => ["peter pan", "Alice Cooper"]
+      assert_results search, site2, site3
+    end
+
     context "full text search" do
       let!(:population_source) { layer.text_fields.make :code => 'population_source' }
 

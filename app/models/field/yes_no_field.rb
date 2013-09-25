@@ -18,7 +18,7 @@ class Field::YesNoField < Field
   end
 
   def default_value_for_update
-    if config && config['auto_reset'] == true
+    if config && Field.yes?(config['auto_reset'])
       false
     else
       nil

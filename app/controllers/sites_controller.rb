@@ -68,7 +68,6 @@ class SitesController < ApplicationController
   def partial_update
     site_params = JSON.parse params[:site]
     site.user = current_user
-    site.properties_will_change!
 
     validate_and_process_parameters(site, site_params)
 
@@ -187,7 +186,9 @@ class SitesController < ApplicationController
 
     # after, so if the user update the whole site
     # the auto_reset is reseted
-    site.assign_default_values_for_update
+    if site.changed?
+      site.assign_default_values_for_update
+    end
   end
 
 end
