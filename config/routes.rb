@@ -121,6 +121,7 @@ ResourceMap::Application.routes.draw do
     get 'collections/:id/count' => 'collections#count',as: :count
     get 'collections/:id/geo' => 'collections#geo_json',as: :geojson
     get 'sites/:id' => 'sites#show', as: :site
+    get 'collections/:collection_id/sites/:id/histories' => 'sites#histories', as: :histories
     get 'activity' => 'activities#index', as: :activity
     resources :tokens, :only => [:index, :destroy]
   end

@@ -18,4 +18,16 @@ class Api::SitesController < ApplicationController
       format.json { render json: site_item_json(@result) }
     end
   end
+
+
+  def histories
+    if version = params[:version]
+      histories = site.histories.where(version: version)
+    else
+      histories = site.histories
+    end
+    respond_to do |format|
+      format.json { render json:  histories.to_json }
+    end
+  end
 end

@@ -8,7 +8,7 @@ module HistoryConcern
     after_update :expire_current_history_and_create_new_one
     before_destroy :expire_current_history
 
-    has_many :histories, :class_name => history_class_name
+    has_many :histories, :class_name => history_class_name, :order => 'version ASC'
 
     class << history_class_name.constantize
       def at_date(date)
