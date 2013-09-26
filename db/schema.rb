@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130923203608) do
+ActiveRecord::Schema.define(:version => 20130926155736) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -87,6 +87,9 @@ ActiveRecord::Schema.define(:version => 20130923203608) do
     t.text     "metadata"
   end
 
+  add_index "fields", ["collection_id"], :name => "index_fields_on_collection_id"
+  add_index "fields", ["layer_id"], :name => "index_fields_on_layer_id"
+
   create_table "import_jobs", :force => true do |t|
     t.string   "status"
     t.string   "original_filename"
@@ -133,6 +136,8 @@ ActiveRecord::Schema.define(:version => 20130923203608) do
     t.integer  "ord"
   end
 
+  add_index "layers", ["collection_id"], :name => "index_layers_on_collection_id"
+
   create_table "location_permissions", :force => true do |t|
     t.string   "action",        :default => "read"
     t.integer  "membership_id"
@@ -149,6 +154,9 @@ ActiveRecord::Schema.define(:version => 20130923203608) do
     t.datetime "updated_at",                       :null => false
     t.boolean  "admin",         :default => false
   end
+
+  add_index "memberships", ["collection_id"], :name => "index_memberships_on_collection_id"
+  add_index "memberships", ["user_id"], :name => "index_memberships_on_user_id"
 
   create_table "messages", :force => true do |t|
     t.string   "guid"
@@ -259,6 +267,8 @@ ActiveRecord::Schema.define(:version => 20130923203608) do
     t.string   "id_with_prefix"
     t.string   "uuid"
   end
+
+  add_index "sites", ["collection_id"], :name => "index_sites_on_collection_id"
 
   create_table "sites_permissions", :force => true do |t|
     t.integer  "membership_id"

@@ -87,9 +87,9 @@ class Collection < ActiveRecord::Base
 
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
-      visible_layers = layer_histories.accessible_by(current_ability).at_date(date)
+      visible_layers = layer_histories.accessible_by(current_ability).at_date(date).includes(:fields)
     else
-      visible_layers = layers.accessible_by(current_ability)
+      visible_layers = layers.accessible_by(current_ability).includes(:fields)
     end
 
     json_layers = []
