@@ -39,7 +39,8 @@ class Field::HierarchyField < Field
   end
 
   def valid_value?(hierarchy_code, site = nil)
-    if (hierarchy_options_codes.map{|o|o.to_s}).include?(hierarchy_code.to_s)
+
+    if find_hierarchy_option_by_id(hierarchy_code)
       true
     else
       raise invalid_field_message
@@ -68,7 +69,7 @@ class Field::HierarchyField < Field
   end
 
   def hierarchy_options_codes
-    hierarchy_options.map {|option| option[:id]}
+    hierarchy_options.map {|option| option[:id].to_s}
   end
 
   def hierarchy_options_ids
@@ -117,7 +118,7 @@ class Field::HierarchyField < Field
       return @options_by_id[value]
     end
 
-    hierarchy_options.find { |opt| opt[:id] == value }
+    hierarchy_options.find { |opt| opt[:id].to_s == value.to_s }
   end
 
 
@@ -158,7 +159,7 @@ class Field::HierarchyField < Field
       value_id = find_hierarchy_id_by_name(value)
       value_id = value if value_id.nil? && !find_hierarchy_name_by_id(value).nil?
     else
-      value_id = value unless !hierarchy_options_codes.map{|o|o.to_s}.include? value.to_s
+      value_id = value unless !hierarchy_options_codes.include? value.to_s
     end
     raise "Invalid hierarchy option in field #{code}" if value_id.nil?
     value_id
