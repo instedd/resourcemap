@@ -17,7 +17,7 @@ class Field::HierarchyField < Field
 	end
 
   def api_value(value)
-    value if hierarchy_id_exists(value)
+    value if find_hierarchy_option_by_id(value)
   end
 
   def human_value(value)
@@ -25,7 +25,7 @@ class Field::HierarchyField < Field
   end
 
   def decode(hierarchy_id_or_name)
-    if hierarchy_id_exists(hierarchy_id_or_name)
+    if find_hierarchy_option_by_id(hierarchy_id_or_name)
       hierarchy_id_or_name
     elsif hierarchy_code = find_hierarchy_id_by_name(hierarchy_id_or_name)
       hierarchy_code
@@ -123,10 +123,6 @@ class Field::HierarchyField < Field
 
 
 	private
-
-  def hierarchy_id_exists(value)
-    find_hierarchy_option_by_id(value) != nil
-  end
 
   #TODO: deprecate
 	def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
