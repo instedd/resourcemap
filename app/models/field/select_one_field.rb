@@ -33,6 +33,7 @@ class Field::SelectOneField < Field
   def valid_value?(option_code, site=nil)
     if @cache_for_read
       raise invalid_field_message unless @options_by_id_in_cache.values.include?(option_code)
+      option_code
     else
       check_option_exists(option_code)
     end

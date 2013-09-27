@@ -1,7 +1,7 @@
 class ImportWizard::ImportSpecs
   def initialize(columns_spec_array, collection)
     @collection = collection
-    @existing_fields = collection.fields.index_by &:id
+    @existing_fields = collection.fields.each(&:cache_for_read).index_by &:id
 
     @data = columns_spec_array.map! &:with_indifferent_access
     relate_codes_and_labels_for_select_fields
