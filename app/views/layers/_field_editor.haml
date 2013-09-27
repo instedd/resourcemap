@@ -1,7 +1,6 @@
 .box.right.w30.feditor-sidebar{ko(with: '$root.currentField', visible: '$root.currentField', style: {marginTop: '$root.currentFieldMarginTop'}), style: 'position:relative'}
   %p.title Type
   %p.smalltext The data type to fill in this field.
-  = render 'layers/data_will_be_lost_alert'
   %div{"data-bind" => "text: kind_titleize"}
 
   /ko if: kind() == 'numeric'
@@ -26,7 +25,6 @@
   %hr/
   %label{ko(css: {error: 'impl().optionsError'})} Options
   %p.smalltext Possible values for this field.
-  = render 'layers/data_will_be_lost_alert'
   %ul.mclist.w40{style: 'width: 282px !important'}
     /ko foreach: impl().options
     %li
