@@ -19,19 +19,19 @@
     .name{ko(topPopover: :errorMessage)}
       %span.arrow
 
-      %input.ux-text.f-name{ko(value: :name, valueUpdate: 'afterkeydown', css: { error: :nameError }), :placeholder => "Name", :type => "text"}/
-      %input.ux-text.f-id{ko(value: :id, css: { error: :idError }), onclick: "this.select();", :placeholder => "Id", :type => "text"}/
-      %a.icon.fclose.right.editing{ko(click: :discardChanges), title: 'Cancel'}
-      %a.icon.faccept.right.editing{ko(click: :saveChanges), title: 'Accept'}
+      %input.ux-text.f-name{ko(value: :name, valueUpdate: 'afterkeydown', css: { error: :nameError }), :placeholder => "Name", :type => "text", :tabindex => "1"}/
+      %input.ux-text.f-id{ko(value: :id, css: { error: :idError }), onclick: "this.select();", :placeholder => "Id", :type => "text", :tabindex => "2"}/
+      %a.icon.fclose.right.editing{ko(click: :discardChanges), title: 'Cancel', :tabindex => "4"}
+      %a.icon.faccept.right.editing{ko(click: :saveChanges), title: 'Accept', :tabindex => "3" }
     //ko
 
 
     / ko if: addingItem
     .fields{ko(topPopover: :newItemErrorMessage)}
-      %input.ux-text.f-name{ko(value: :newItemName, valueUpdate: 'afterkeydown', css: { error: :newItemNameError }), :placeholder => "Name", :type => "text"}/
-      %input.ux-text.f-id{ko(value: :newItemIdUI, valueUpdate: 'afterkeydown', css: { error: :newItemIdError }), onclick: "this.select();", :placeholder => "Id", :type => "text"}/
-      %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete'}
-      %a.icon.faccept.right{ko(click: :addItem), title: 'Accept'}
+      %input.ux-text.f-name{ko(value: :newItemName, valueUpdate: 'afterkeydown', css: { error: :newItemNameError }), :placeholder => "Name", :type => "text", :tabindex => "1" }/
+      %input.ux-text.f-id{ko(value: :newItemIdUI, valueUpdate: 'afterkeydown', css: { error: :newItemIdError }), onclick: "this.select();", :placeholder => "Id", :type => "text", :tabindex => "2"}/
+      %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete', :tabindex => "4"}
+      %a.icon.faccept.right{ko(click: :addItem), title: 'Accept', :tabindex => "3"}
     / /ko
     %ul.h-editor
       /ko if: expanded
@@ -65,10 +65,10 @@
 
     / ko if: addingItem()
     .fields{ko(topPopover: :newItemErrorMessage)}
-      %input.ux-text.f-name{ko(value: :newItemName, valueUpdate: :afterkeydown, css: { error: :newItemNameError }), :placeholder => "Name", :type => "text"}/
-      %input.ux-text.f-id{ko(value: :newItemIdUI, valueUpdate: :afterkeydown, css: { error: :newItemIdError }), onclick: "this.select();", :placeholder => "Id", :type => "text"}/
-      %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete'}
-      %a.icon.faccept.right{ko(click: :addItem), title: 'Accept'}
+      %input.ux-text.f-name{ko(value: :newItemName, valueUpdate: :afterkeydown, css: { error: :newItemNameError }), :placeholder => "Name", :type => "text", :tabindex => "1"}/
+      %input.ux-text.f-id{ko(value: :newItemIdUI, valueUpdate: :afterkeydown, css: { error: :newItemIdError }), onclick: "this.select();", :placeholder => "Id", :type => "text", :tabindex => "2"}/
+      %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete', :tabindex => "4"}
+      %a.icon.faccept.right{ko(click: :addItem), title: 'Accept', :tabindex => "3"}
     / /ko
 
     / /ko
