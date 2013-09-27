@@ -131,15 +131,6 @@ class Field < ActiveRecord::Base
 
   private
 
-  def add_option_to_options(options, option)
-    options << { id: option['id'], name: option['name']}
-    if option['sub']
-      option['sub'].each do |sub_option|
-        add_option_to_options(options, sub_option)
-      end
-    end
-  end
-
   def sanitize_hierarchy_items(items)
     items.map! &:to_hash
     items.each do |item|

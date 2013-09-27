@@ -88,7 +88,8 @@ class ImportWizard
       columns_used_as_id = columns_spec.select{|spec| spec[:use_as].to_s == 'id'}
       # Only one column will be marked to be used as id
       csv_column_used_as_id = csv_columns[columns_used_as_id.first[:index]] if columns_used_as_id.length > 0
-      sites_errors[:non_existent_site_id] = calculate_non_existent_site_id(collection.sites.map{|s| s.id.to_s}, csv_column_used_as_id, columns_used_as_id.first[:index]) if columns_used_as_id.length > 0
+
+      sites_errors[:non_existent_site_id] = calculate_non_existent_site_id(collection.sites.map{|s| s.id.to_s}, csv_column_used_as_id, columns_used_as_id.first[:index]) if csv_column_used_as_id && columns_used_as_id.length > 0
 
       sites_errors[:data_errors] = []
       sites_errors[:hierarchy_field_found] = []

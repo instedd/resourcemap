@@ -121,8 +121,16 @@ class Field::HierarchyField < Field
     hierarchy_options.find { |opt| opt[:id].to_s == value.to_s }
   end
 
-
 	private
+
+  def add_option_to_options(options, option)
+    options << { id: option['id'], name: option['name']}
+    if option['sub']
+      option['sub'].each do |sub_option|
+        add_option_to_options(options, sub_option)
+      end
+    end
+  end
 
   #TODO: deprecate
 	def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])

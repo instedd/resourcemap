@@ -68,6 +68,10 @@ class Field::SelectManyField < Field
     end
   end
 
+  def select_kind?
+    true
+  end
+
 	private
 
   # TODO: Integrate with decode used in update

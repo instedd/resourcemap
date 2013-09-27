@@ -22,7 +22,7 @@ class Field::NumericField < Field
   end
 
   def decode(value)
-    if allow_decimals? 
+    if allow_decimals?
       raise allows_decimals_message unless value.real?
       Float(value)
     else
@@ -39,6 +39,10 @@ class Field::NumericField < Field
       raise invalid_field_message unless value.integer?
     end
     true
+  end
+
+  def allow_decimals?
+    config && (config[:allows_decimals] == "true" || config["allows_decimals"] == "true")
   end
 
   private

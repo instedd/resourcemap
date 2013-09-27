@@ -728,6 +728,19 @@ describe ImportWizard do
     ImportWizard.delete_files(user, collection)
   end
 
+
+  it "should not fail when there is no data in the csv" do
+    csv_string = CSV.generate do |csv|
+      csv << ['text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
+    end
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
+    sites_preview = processed_sites[:sites]
+    sites_preview.length.should eq(0)
+  end
+
   it "should get sites & errors for invalid existing fields" do
     email_field = layer.email_fields.make :code => 'email'
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235

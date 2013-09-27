@@ -27,7 +27,7 @@ module Field::Base
   end
 
   def select_kind?
-    select_one? || select_many?
+    false
   end
 
   def plugin?
@@ -40,10 +40,6 @@ module Field::Base
 
   def stored_as_number?
     numeric? || select_one? || select_many?
-  end
-
-  def allow_decimals?
-    config && (config[:allows_decimals] == "true" || config["allows_decimals"] == "true")
   end
 
   def strongly_type(value)

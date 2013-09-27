@@ -47,6 +47,10 @@ class Field::SelectOneField < Field
     @cache_for_read = false
   end
 
+  def select_kind?
+    true
+  end
+
   private
 
   # TODO: Integrate with decode used in update
