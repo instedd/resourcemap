@@ -15,6 +15,12 @@ class FieldsController < ApplicationController
     render json: field.to_json
   end
 
+  def hierarchy
+    if value = params[:under]
+      render json: field.descendants_of_in_hierarchy(value, false)
+    end
+  end
+
   def mapping
     render json: collection.fields.map{|f| {name: f.name, id: f.id, code: f.code, kind: f.kind}}.to_json
   end

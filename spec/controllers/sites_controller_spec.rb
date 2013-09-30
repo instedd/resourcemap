@@ -95,6 +95,13 @@ describe SitesController do
     json["error_message"].should eq("Invalid email address in field #{email_field.code}")
   end
 
+  it "should increase the site version when updating a single property" do
+    site_version = site.version
+    post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "valid@email.com"
+    json = JSON.parse response.body
+    json["version"].should eq(site_version+1)
+  end
+
   it 'should create a new site' do
     site_params = {:name => "new site", :lat => "-7.338135", :lng => "29.836455", :properties => {
       text.es_code => "new text",
@@ -246,6 +253,14 @@ describe SitesController do
       response.should be_success
       new_site = Site.find_by_name site.name
       new_site.properties[text.es_code.to_s]
+    end
+
+    it 'should respond with a JSON site with the new version' do
+      site_version = site.version
+      site_params = {:properties => { text.es_code => "new text" }}.to_json
+      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      json = JSON.parse response.body
+      json["version"].should eq(site_version+1)
     end
   end
 

@@ -15,6 +15,7 @@ module Site::IndexUtils
       created_at: site.created_at.strftime(DateFormat),
       updated_at: site.updated_at.strftime(DateFormat),
       icon: site.collection.icon,
+      version: site.version
     }
 
     if site.lat? && site.lng?
@@ -45,7 +46,8 @@ module Site::IndexUtils
         lng_analyzed: { type: :string },
         created_at: { type: :date, format: :basic_date_time },
         updated_at: { type: :date, format: :basic_date_time },
-        properties: { properties: fields_mapping(fields) }
+        properties: { properties: fields_mapping(fields) },
+        version: { type: :long }
       }
     }
   end

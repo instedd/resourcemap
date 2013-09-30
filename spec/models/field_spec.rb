@@ -42,6 +42,13 @@ describe Field do
     json["kind"].should eq('select_one')
   end
 
+  it "should return descendants_of_in_hierarchy" do
+    config_hierarchy = [{ id: '0', name: 'root', sub: [{id: '1', name: 'child'}]}]
+    field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
+    field.descendants_of_in_hierarchy('0', false).should eq(['0', '1'])
+    field.descendants_of_in_hierarchy('root', true).should eq(['0', '1'])
+  end
+
   describe "sample value" do
     it "for text are strings" do
       field = Field::TextField.make
