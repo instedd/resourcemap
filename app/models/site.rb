@@ -14,10 +14,18 @@ class Site < ActiveRecord::Base
   validate :valid_properties
   after_validation :standardize_properties
 
+  before_create :set_version
+  before_update :set_version
+
+
   attr_accessor :from_import_wizard
 
   def history_concern_foreign_key
     self.class.name.foreign_key
+  end
+
+  def set_version
+    self.version = self.version + 1
   end
 
   def extended_properties

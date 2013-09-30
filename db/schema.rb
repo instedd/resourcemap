@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130926155736) do
+ActiveRecord::Schema.define(:version => 20130930143831) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -266,6 +266,7 @@ ActiveRecord::Schema.define(:version => 20130926155736) do
     t.string   "location_mode",  :limit => 10,                                :default => "automatic"
     t.string   "id_with_prefix"
     t.string   "uuid"
+    t.integer  "version",                                                     :default => 0
   end
 
   add_index "sites", ["collection_id"], :name => "index_sites_on_collection_id"
@@ -342,5 +343,6 @@ ActiveRecord::Schema.define(:version => 20130926155736) do
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+
 
 end

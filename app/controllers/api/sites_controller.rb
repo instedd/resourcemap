@@ -24,7 +24,7 @@ class Api::SitesController < ApplicationController
     if version = params[:version]
       histories = site.histories.where(version: version)
     else
-      histories = site.histories
+      histories = site.histories.order('version ASC')
     end
     respond_to do |format|
       format.json { render json:  histories.to_json }

@@ -8,7 +8,7 @@ module HistoryConcern
     after_update :expire_current_history_and_create_new_one
     before_destroy :expire_current_history
 
-    has_many :histories, :class_name => history_class_name, :order => 'version ASC'
+    has_many :histories, :class_name => history_class_name
 
     class << history_class_name.constantize
       def at_date(date)
@@ -17,11 +17,7 @@ module HistoryConcern
     end
   end
 
-  def version
-    current_history.version
-  end
-
-  def create_history(current_version = 0)
+  def create_history
     history = histories.new
     attributes.each_pair do |att_name, att_value|
       unless ['id', 'created_at', 'updated_at'].include? att_name
@@ -30,7 +26,6 @@ module HistoryConcern
     end
     history["valid_since"] = updated_at
     history[self.history_concern_foreign_key] = id
-    history["version"] = current_version + 1
     history.save!
     history
   end
@@ -40,9 +35,8 @@ module HistoryConcern
   end
 
   def expire_current_history_and_create_new_one
-    version = self.version
     expire_current_history updated_at
-    create_history(version)
+    create_history
   end
 
   def expire_current_history(valid_to = Time.now)
