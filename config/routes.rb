@@ -48,6 +48,9 @@ ResourceMap::Application.routes.draw do
       collection do
         get 'mapping'
       end
+      member do
+        get 'hierarchy'
+      end
     end
 
     resources :memberships do

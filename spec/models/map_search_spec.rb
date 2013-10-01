@@ -22,7 +22,7 @@ describe MapSearch do
     lat: site.lat.to_f, lng: site.lng.to_f,
     name: site.name, name_not_analyzed: site.name, id_with_prefix:"AA1",
     lat_analyzed: site.lat.to_s, lng_analyzed: site.lng.to_s,
-    uuid: site.uuid, highlighted: false, icon: 'default', alert: 'false', version: 1}
+    uuid: site.uuid, highlighted: false, icon: 'default', alert: 'false', version: '1'}
     search.results[:sites][0].should == expected_hash
   end
 

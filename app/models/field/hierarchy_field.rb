@@ -30,12 +30,12 @@ class Field::HierarchyField < Field
     elsif hierarchy_code = find_hierarchy_id_by_name(hierarchy_id_or_name)
       hierarchy_code
     else
-      raise invalid_field_message()
+      raise invalid_field_message(hierarchy_id_or_name)
     end
   end
 
-  def invalid_field_message()
-    "Invalid hierarchy option in field #{code}"
+  def invalid_field_message(hierarchy_code = nil)
+    "Invalid hierarchy option '#{hierarchy_code}' in field '#{code}'"
   end
 
   def valid_value?(hierarchy_code, site = nil)
@@ -43,7 +43,7 @@ class Field::HierarchyField < Field
     if find_hierarchy_option_by_id(hierarchy_code)
       true
     else
-      raise invalid_field_message
+      raise invalid_field_message(hierarchy_code)
     end
   end
 

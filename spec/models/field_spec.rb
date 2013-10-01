@@ -292,7 +292,7 @@ describe Field do
 
       it "should validate format for hierarchy field" do
         hierarchy.apply_format_and_validate("Dad", false, collection).should == "60"
-        expect { hierarchy.apply_format_and_validate("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid hierarchy option in field #{hierarchy.code}")
+        expect { hierarchy.apply_format_and_validate("invalid", false, collection) }.to raise_error(RuntimeError, "Invalid hierarchy option 'invalid' in field 'hierarchy'")
       end
 
       it "should validate format for select_one field" do

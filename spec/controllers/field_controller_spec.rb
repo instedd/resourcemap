@@ -59,4 +59,61 @@ describe FieldsController do
     field["code"].should eq('hierarchy')
     field["kind"].should eq('hierarchy')
   end
+
+  it "should get hierarchy nodes under certain one" do
+    sign_in admin
+
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60'
+    elements = JSON.parse response.body
+    elements.length.should eq 3
+    elements.should include('60')
+    elements.should include('100')
+    elements.should include('101')
+  end
+
+  it "should get error if the field is not a hierarchy" do
+    sign_in admin
+
+    text = layer.text_fields.make :code => 'text'
+
+    get :hierarchy, collection_id: collection.id, id: text.id, under: '60'
+    response.status.should eq(422)
+    message = (JSON.parse response.body)["message"]
+    message.should include("The field 'text' is not a hierarchy.")
+  end
+
+
+  it "should show proper error message if the under parameter is not found" do
+    sign_in admin
+
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: 'invalid'
+    response.status.should eq(422)
+    message = (JSON.parse response.body)["message"]
+    message.should include("Invalid hierarchy option 'invalid' in field 'hierarchy'")
+  end
+
+  it "should show proper error message if the node parameter is not found" do
+    sign_in admin
+
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', node: 'invalid'
+    response.status.should eq(422)
+    message = (JSON.parse response.body)["message"]
+    message.should include("Invalid hierarchy option 'invalid' in field 'hierarchy'")
+  end
+
+
+  it "should responde if a certain node is under anotherone" do
+    sign_in admin
+
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', node: '100'
+    response.body.should eq("true")
+  end
+
+  it "should get 403 if the user is not admin " do
+    member = User.make
+    membership = Membership.make collection: collection, user: member, admin: false
+    sign_in member
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60'
+    response.status.should eq(403)
+  end
 end
