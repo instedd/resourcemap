@@ -102,11 +102,18 @@ describe FieldsController do
   end
 
 
-  it "should responde if a certain node is under anotherone" do
+  it "should respond true if a certain node is under another" do
     sign_in admin
 
     get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', node: '100'
     response.body.should eq("true")
+  end
+
+  it "should respond false if a certain node is under another" do
+    sign_in admin
+
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '100', node: '60'
+    response.body.should eq("false")
   end
 
   it "should get 403 if the user is not admin " do
