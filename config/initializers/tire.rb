@@ -17,11 +17,16 @@ class Tire::Search::Search
     uri = URI(url)
     reader, writer = IO.pipe
     producer = Thread.new(writer) do |io|
-      Net::HTTP.start(uri.host, uri.port) do |http|
-        request = Net::HTTP::Get.new uri.request_uri
-        http.request request, to_json do |response|
-          response.read_body { |segment| io.write segment }
+      begin
+        Net::HTTP.start(uri.host, uri.port) do |http|
+          request = Net::HTTP::Get.new uri.request_uri
+          http.request request, to_json do |response|
+            response.read_body { |segment| io.write segment.force_encoding("UTF-8") }
+          end
         end
+      rescue Exception => ex
+        Rails.logger.error ex.message + "\n" + ex.backtrace.join("\n")
+      ensure
         io.close
       end
     end
