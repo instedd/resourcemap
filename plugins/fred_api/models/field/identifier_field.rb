@@ -45,7 +45,17 @@ class Field::IdentifierField::FormatImplementation
   end
 
   def valid_value?(value, site)
-    true
+    field_es_code = "properties.#{@field.es_code}"
+    search = @field.collection.new_search
+    search.select_fields [field_es_code]
+    search.eq @field, value
+    results = search.results
+    if results.length == 1
+      if site && results.results.any? { |r| r["_id"].to_s == site.id.to_s }
+        return value
+      end
+      raise "the value already exists in the collection"
+    end
   end
 
   def has_luhn_format?()
@@ -64,15 +74,27 @@ class Field::IdentifierField::FormatImplementation
     nil
   end
 
-  def error_description_for_invalid_values(exception)
-    "are not valid for the type identifier"
-  end
 end
 
 class Field::IdentifierField::Normal < Field::IdentifierField::FormatImplementation
+
+  def error_description_for_invalid_values(exception)
+    "are not valid for the type identifier: #{exception}"
+  end
+
+  def valid_value?(value, site)
+    super
+    true
+  end
+
+  def value_hint
+    "Identifiers must be unique."
+  end
+
 end
 
 class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementation
+
   def error_description_for_invalid_values(exception)
     "are not valid for the type luhn identifier: #{exception}"
   end
@@ -100,18 +122,7 @@ class Field::IdentifierField::Luhn < Field::IdentifierField::FormatImplementatio
       raise "the value failed the luhn check"
     end
 
-    field_es_code = "properties.#{@field.es_code}"
-    search = @field.collection.new_search
-    search.select_fields [field_es_code]
-    search.eq @field, value
-    results = search.results
-    if results.length == 1
-      if site && results.results.any? { |r| r["_id"].to_s == site.id.to_s }
-        return value
-      end
-      raise "the value already exists in the collection"
-    end
-
+    super
     true
   end
 
