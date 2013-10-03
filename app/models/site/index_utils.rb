@@ -16,7 +16,7 @@ module Site::IndexUtils
       updated_at: site.updated_at.strftime(DateFormat),
       icon: site.collection.icon,
       # If the migration to add the version in Sites is not runned, then calling site.version will cause some previous migration to fail
-      version: site.try(:version)
+      version: site.version rescue nil
     }
 
     if site.lat? && site.lng?
