@@ -18,8 +18,19 @@ class AddDefaultValuesToExistingLuhnFields < ActiveRecord::Migration
         if site.properties[luhn_field.es_code].blank?
           site.properties[luhn_field.es_code] = next_luhn_value
           site.mute_activities = true
-          site.save!
-          print "\rGenerating #{index} out of #{sites_number} sites for collection #{collection.id}"
+          if site.valid?
+            site.save!
+            print "\rGenerating #{index} out of #{sites_number} sites for collection #{collection.id}"
+          else
+            # Delete invalid data
+            site.errors.messages[:properties].each do |errors_per_property|
+              errors_per_property.keys.each do |field_error_id|
+                puts "Deleting invalid value '#{site.properties[field_error_id]}' for site #{site.id} in property '#{field_error_id}'"
+                site.properties[field_error_id] = nil
+              end
+            end
+            site.save!
+          end
 
           next_luhn_value = luhn_field.format_implementation.next_luhn(next_luhn_value)
         end
