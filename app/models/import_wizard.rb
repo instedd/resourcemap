@@ -106,7 +106,6 @@ class ImportWizard
           sites_errors[:data_errors].concat(errors_for_column)
         end
       end
-
       sites_errors
     end
 
@@ -317,7 +316,6 @@ class ImportWizard
 
             raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}" if repetitions.length > 1
           end
-
           value = validate_column_value(column_spec, csv_field_value, field, collection, site)
 
           # Store the max value for Luhn generation

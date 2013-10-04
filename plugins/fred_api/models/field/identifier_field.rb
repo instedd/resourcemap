@@ -30,32 +30,68 @@ class Field::IdentifierField < Field
   end
 
   def format_implementation
+    if @format_implementation
+      return @format_implementation
+    end
+
     format = if config && config['format']
       config['format']
     else
       'Normal'
     end
-    "Field::IdentifierField::#{format}".constantize.new(self)
+
+    @format_implementation = "Field::IdentifierField::#{format}".constantize.new(self)
+  end
+
+  def cache_for_read
+    format_implementation.cache_for_read
+  end
+
+  def disable_cache_for_read
+    format_implementation.disable_cache_for_read
   end
 end
 
 class Field::IdentifierField::FormatImplementation
+
+  def existing_values
+    if @cache_for_read && @existing_values_in_cache
+      return @existing_values_in_cache
+    end
+
+    search = @field.collection.new_search
+    property_code = "properties.#{@field.es_code}"
+    search.select_fields(["id",property_code])
+    search.unlimited
+    search.apply_queries
+    existing = search.results.results.map{ |item| item["fields"]}.index_by{|e| e[property_code]}
+
+    if @cache_for_read
+      @existing_values_in_cache = existing
+    end
+
+    existing
+  end
+
+
+  def cache_for_read
+    @cache_for_read = true
+  end
+
+  def disable_cache_for_read
+    @cache_for_read = false
+  end
+
   def initialize(field)
     @field = field
   end
 
-  def valid_value?(value, site)
-    field_es_code = "properties.#{@field.es_code}"
-    search = @field.collection.new_search
-    search.select_fields [field_es_code]
-    search.eq @field, value
-    results = search.results
-    if results.length == 1
-      if site && results.results.any? { |r| r["_id"].to_s == site.id.to_s }
-        return value
-      end
-      raise "the value already exists in the collection"
-    end
+  def valid_value?(value, existing_site)
+    if existing_values[value]
+      # If the value already exists in the collection, the value will be invalid
+      # Unless this is an update to an update an existing site with the same value
+      raise "the value already exists in the collection" unless (existing_site && (existing_values[value]["id"] == existing_site.id))    end
+    true
   end
 
   def has_luhn_format?()
