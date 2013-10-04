@@ -72,7 +72,10 @@ class CollectionsController < ApplicationController
       current_user.collection_count += 1
       current_user.update_successful_outcome_status
       current_user.save!
-      redirect_to collection_path(collection), notice: "Collection #{collection.name} created"
+      respond_to do |format|
+        format.html { redirect_to collection_path(collection), notice: "Collection #{collection.name} created" }
+        format.json { render json: collection }
+      end
     else
       render :new
     end
