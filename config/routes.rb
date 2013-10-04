@@ -1,6 +1,6 @@
 ResourceMap::Application.routes.draw do
-
-  devise_for :users, :controllers => {:registrations => "registrations"}
+  devise_for :users, controllers: {registrations: "registrations", omniauth_callbacks: "omniauth_callbacks"}
+  guisso_for :user
 
   devise_scope :user do
     get "users/validate_credentials" => "registrations#validate_credentials"

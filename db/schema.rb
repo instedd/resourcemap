@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130930143831) do
+ActiveRecord::Schema.define(:version => 20131003184219) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -89,6 +89,14 @@ ActiveRecord::Schema.define(:version => 20130930143831) do
 
   add_index "fields", ["collection_id"], :name => "index_fields_on_collection_id"
   add_index "fields", ["layer_id"], :name => "index_fields_on_layer_id"
+
+  create_table "identities", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "provider"
+    t.string   "token"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "import_jobs", :force => true do |t|
     t.string   "status"

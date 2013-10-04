@@ -10,6 +10,16 @@ GIT
   specs:
     ruby-prof (0.13.0)
 
+PATH
+  remote: ../alto_guisso
+  specs:
+    alto_guisso (0.0.1)
+      omniauth
+      omniauth-openid
+      rack-oauth2
+      rails (>= 3.0)
+      ruby-openid
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -42,6 +52,7 @@ GEM
       multi_json (~> 1.0)
     ansi (1.4.3)
     arel (3.0.2)
+    attr_required (0.0.5)
     bcrypt-ruby (3.0.1)
     brakeman (2.1.1)
       erubis (~> 2.6)
@@ -121,9 +132,11 @@ GEM
       activesupport (~> 3.0)
       haml (~> 3.0)
       railties (~> 3.0)
+    hashie (2.0.5)
     hashr (0.0.22)
     highline (1.6.19)
     hike (1.2.3)
+    httpclient (2.3.4.1)
     i18n (0.6.1)
     ice_cube (0.8.0)
     instedd-rails (0.0.17)
@@ -152,7 +165,7 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.8.2)
     mime-types (1.25)
-    multi_json (1.7.9)
+    multi_json (1.8.0)
     mysql2 (0.3.11)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
@@ -166,6 +179,12 @@ GEM
     nuntium_api (0.20)
       json
       rest-client
+    omniauth (1.1.4)
+      hashie (>= 1.2, < 3)
+      rack
+    omniauth-openid (1.0.1)
+      omniauth (~> 1.0)
+      rack-openid (~> 1.3.1)
     orm_adapter (0.3.0)
     polyglot (0.3.3)
     pry (0.9.12.2)
@@ -178,6 +197,15 @@ GEM
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
+    rack-oauth2 (1.0.5)
+      activesupport (>= 2.3)
+      attr_required (>= 0.0.5)
+      httpclient (>= 2.2.0.2)
+      multi_json (>= 1.3.6)
+      rack (>= 1.1)
+    rack-openid (1.3.1)
+      rack (>= 1.1.0)
+      ruby-openid (>= 2.1.8)
     rack-protection (1.2.0)
       rack
     rack-ssl (1.3.3)
@@ -237,6 +265,7 @@ GEM
       activesupport (>= 3.0)
       railties (>= 3.0)
       rspec (~> 2.10.0)
+    ruby-openid (2.3.0)
     ruby2ruby (2.0.6)
       ruby_parser (~> 3.1)
       sexp_processor (~> 4.0)
@@ -317,6 +346,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  alto_guisso!
   brakeman
   breadcrumbs_on_rails
   cancan (~> 1.6.10)
@@ -343,6 +373,8 @@ DEPENDENCIES
   newrelic_rpm
   nokogiri
   nuntium_api (~> 0.13)
+  omniauth
+  omniauth-openid
   pry
   pry-debugger
   rails (= 3.2.13)
