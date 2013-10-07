@@ -2,8 +2,12 @@ class Api::CollectionsController < ApplicationController
   include Api::JsonHelper
   include Api::GeoJsonHelper
 
-  before_filter :authenticate_user!
+  before_filter :authenticate_api_user!
   around_filter :rescue_with_check_api_docs
+
+  def index
+    render json: current_user.collections.all
+  end
 
   def show
     options = [:sort]

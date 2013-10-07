@@ -119,6 +119,7 @@ ResourceMap::Application.routes.draw do
   match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
 
   namespace :api do
+    get 'collections' => 'collections#index',as: :collections
     get 'collections/:id' => 'collections#show',as: :collection
     get 'collections/:id/sample_csv' => 'collections#sample_csv',as: :sample_csv
     get 'collections/:collection_id/histogram/:field_id' => 'collections#histogram_by_field',as: :histogram_by_field

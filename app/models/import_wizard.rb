@@ -203,6 +203,7 @@ class ImportWizard
         end
 
         Collection.transaction do
+
           spec_object.new_fields.each_value do |field|
             field.save!
           end
@@ -305,13 +306,13 @@ class ImportWizard
           site = nil
           # load the site for the identifiers fields.
           # we need the site in order to validate the uniqueness of the luhn id value
-          if id_column && field.kind == 'identifier' && field.has_luhn_format?()
+          if id_column && field.kind == 'identifier'
             site_id = id_column[field_number]
             site = collection_sites[site_id.to_s] if (site_id && !site_id.blank?)
           end
 
-          # Luhn specific validation
-          if field.kind == 'identifier' && field.has_luhn_format?()
+          # identifiers specific validation
+          if field.kind == 'identifier'
             repetitions = csv_column.each_index.select{|i| !csv_field_value.blank? && csv_column[i] == csv_field_value }
 
             raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}" if repetitions.length > 1
@@ -319,6 +320,7 @@ class ImportWizard
 
           value = validate_column_value(column_spec, csv_field_value, field, collection, site)
 
+          # Store the max value for Luhn generation
           if field.kind == 'identifier' && field.has_luhn_format?()
             max_luhn_value_in_csv = if (value && (value > max_luhn_value_in_csv)) then value else max_luhn_value_in_csv end
           end

@@ -25,6 +25,7 @@ class Site < ActiveRecord::Base
   end
 
   def set_version
+    return if !self.respond_to?(:version)
     self.version = self.version + 1
   end
 

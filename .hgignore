@@ -20,3 +20,4 @@ dump.rdb
 REVISION
 VERSION
 coverage/*
+config/settings.yml

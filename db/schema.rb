@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131003184219) do
+ActiveRecord::Schema.define(:version => 20131003192147) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -235,8 +235,6 @@ ActiveRecord::Schema.define(:version => 20131003184219) do
     t.string   "name"
     t.decimal  "lat",                          :precision => 10, :scale => 6
     t.decimal  "lng",                          :precision => 10, :scale => 6
-    t.integer  "parent_id"
-    t.string   "hierarchy"
     t.datetime "created_at",                                                                           :null => false
     t.datetime "updated_at",                                                                           :null => false
     t.text     "properties"
@@ -266,8 +264,6 @@ ActiveRecord::Schema.define(:version => 20131003184219) do
     t.string   "name"
     t.decimal  "lat",                          :precision => 10, :scale => 6
     t.decimal  "lng",                          :precision => 10, :scale => 6
-    t.integer  "parent_id"
-    t.string   "hierarchy"
     t.datetime "created_at",                                                                           :null => false
     t.datetime "updated_at",                                                                           :null => false
     t.text     "properties"
