@@ -294,7 +294,7 @@ class ImportWizard
         field = Field.new kind: column_spec[:kind].to_s
       end
 
-      collection_sites = collection.sites.index_by{|s| s.id.to_s}
+      collection_sites_ids = collection.sites.map{|e|e.id.to_s}
       validated_csv_column = []
 
       # We need to store the maximum value in each luhn field in the csv in order to not search it again during the import
@@ -302,12 +302,13 @@ class ImportWizard
 
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
-          site = nil
+          existing_site_id = nil
           # load the site for the identifiers fields.
           # we need the site in order to validate the uniqueness of the luhn id value
+          # The value should not be invlid if this same site has it
           if id_column && field.kind == 'identifier'
             site_id = id_column[field_number]
-            site = collection_sites[site_id.to_s] if (site_id && !site_id.blank?)
+            existing_site_id = site_id if (site_id && !site_id.blank? && collection_sites_ids.include?(site_id.to_s))
           end
 
           # identifiers specific validation
@@ -316,7 +317,7 @@ class ImportWizard
 
             raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}" if repetitions.length > 1
           end
-          value = validate_column_value(column_spec, csv_field_value, field, collection, site)
+          value = validate_column_value(column_spec, csv_field_value, field, collection, existing_site_id)
 
           # Store the max value for Luhn generation
           if field.kind == 'identifier' && field.has_luhn_format?()
@@ -408,11 +409,11 @@ class ImportWizard
       existing_columns
     end
 
-    def validate_column_value(column_spec, field_value, field, collection, site)
+    def validate_column_value(column_spec, field_value, field, collection, site_id)
       if field.new_record?
         validate_format_value(column_spec, field_value, collection)
       else
-        field.apply_format_and_validate(field_value, true, collection, site)
+        field.apply_format_and_validate(field_value, true, collection, site_id)
       end
     end
 

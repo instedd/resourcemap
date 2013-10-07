@@ -6,10 +6,10 @@ module Field::ValidationConcern
     value
   end
 
-  def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site = nil)
+  def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site_id = nil)
     decoded_value = value.blank? ? nil : decode(value)
     if decoded_value
-      standadrize(decoded_value) if valid_value?(decoded_value, site)
+      standadrize(decoded_value) if valid_value?(decoded_value, site_id)
     else
       decoded_value
     end
