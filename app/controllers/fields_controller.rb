@@ -20,7 +20,7 @@ class FieldsController < ApplicationController
       render json: {message: invalid_hiearchy_message("The field '#{field.code}' is not a hierarchy")}, status: 422
     elsif value = params[:under]
       begin
-        descendants = field.descendants_of_in_hierarchy(value, false)
+        descendants = field.descendants_of_in_hierarchy(value)
         if node = params[:node]
           field.valid_value?(node)
           render json: descendants.include?(node)
