@@ -125,6 +125,7 @@ ResourceMap::Application.routes.draw do
     get 'collections/:collection_id/histogram/:field_id' => 'collections#histogram_by_field',as: :histogram_by_field
     get 'collections/:id/count' => 'collections#count',as: :count
     get 'collections/:id/geo' => 'collections#geo_json',as: :geojson
+    get 'collections/:id/fields' => 'fields#index',as: :fields
     get 'sites/:id' => 'sites#show', as: :site
     get 'collections/:collection_id/sites/:id/histories' => 'sites#histories', as: :histories
     get 'activity' => 'activities#index', as: :activity
