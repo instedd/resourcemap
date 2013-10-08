@@ -53,6 +53,7 @@ class Field::HierarchyField < Field
       parent_id = parent_id_or_name
     rescue
       parent_id = find_hierarchy_id_by_name(parent_id_or_name)
+      raise invalid_field_message(parent_id_or_name) unless parent_id
     end
     options = []
     add_option_to_options options, find_hierarchy_item_by_id(parent_id)
