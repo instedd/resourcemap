@@ -1551,4 +1551,73 @@ describe ImportWizard do
       sites[6].properties.should eq({auto_reset.es_code => false})
     end
   end
+
+
+  describe "PKs for update" do
+    let(:moh_id) {layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Normal"} }
+
+    it "should not allow two PK pivots columns" do
+      csv_string = CSV.generate do |csv|
+        csv << ['col1', 'col2 ']
+        csv << ['val', 'val']
+      end
+
+      column_specs = [
+        {header: 'Column 1', use_as: "id", id_matching_column: "resmap-id"},
+        {header: 'Column 2', use_as:"id", id_matching_column: moh_id.id.to_s}
+      ]
+
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+
+      sites_errors = sites_preview[:errors]
+      sites_errors[:duplicated_usage].should eq("id" => [0,1])
+
+      ImportWizard.delete_files(user, collection)
+    end
+
+    it "should be able to select an identifier field as PK" do
+      collection.sites.make properties: {moh_id.es_code => '123'}
+
+      csv_string = CSV.generate do |csv|
+        csv << ['moh-id', 'name ']
+        csv << ['123', 'Name']
+      end
+
+      column_specs = [
+        {header: 'moh-id', use_as: "id", id_matching_column: moh_id.id.to_s},
+        {header: 'name', use_as: "name"}
+      ]
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+      sites_errors = sites_preview[:errors]
+
+      sites_errors[:invalid_site_identifier].should be_nil
+
+    end
+
+    it "uploading an empty value as identifier field PK should be invalid" do
+      collection.sites.make properties: {moh_id.es_code => '123'}
+
+      csv_string = CSV.generate do |csv|
+        csv << ['moh-id', 'name ']
+        csv << ['', 'Name']
+        csv << ['', 'Name 2']
+        csv << ['123', 'Name 2']
+      end
+
+      column_specs = [
+        {header: 'moh-id', use_as: "id", id_matching_column: moh_id.id.to_s},
+        {header: 'name', use_as: "name"}
+      ]
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+      sites_errors = sites_preview[:errors]
+
+      sites_errors[:invalid_site_identifier].should eq([{:rows=>[0,1], :column=>0}])
+    end
+  end
 end

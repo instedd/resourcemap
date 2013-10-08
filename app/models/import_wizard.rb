@@ -85,11 +85,27 @@ class ImportWizard
       # Name is mandatory
       sites_errors[:missing_name] = {:use_as => 'name'} if !(columns_spec.any?{|spec| spec[:use_as].to_s == 'name'})
 
-      columns_used_as_id = columns_spec.select{|spec| spec[:use_as].to_s == 'id'}
-      # Only one column will be marked to be used as id
-      csv_column_used_as_id = csv_columns[columns_used_as_id.first[:index]] if columns_used_as_id.length > 0
+      #### Choosing the pivot ####
 
-      sites_errors[:non_existent_site_id] = calculate_non_existent_site_id(collection.sites.map{|s| s.id.to_s}, csv_column_used_as_id, columns_used_as_id.first[:index]) if csv_column_used_as_id && columns_used_as_id.length > 0
+      # Only one column will be marked to be used as id
+      columns_used_as_id = columns_spec.select{|spec| spec[:use_as].to_s == 'id'}
+      column_used_as_id = columns_used_as_id.first if columns_used_as_id.length > 0
+
+      if column_used_as_id
+        csv_column_used_as_id = csv_columns[column_used_as_id[:index]]
+
+        if (!column_used_as_id[:id_matching_column] || column_used_as_id[:id_matching_column] == "resmap-id")
+          sites_errors[:non_existent_site_id] = calculate_non_existent_site_id(collection.sites.map{|s| s.id.to_s}, csv_column_used_as_id, column_used_as_id[:index])
+        else
+          # Load the identifier field related to this column
+          field_id = column_used_as_id[:id_matching_column]
+          field = collection.identifier_fields.find field_id
+          # This is not possible using UI
+          raise "Invalid identifier field id #{field_id}" unless field
+
+          sites_errors[:invalid_site_identifier] = calculate_invalid_identifier_id(csv_column_used_as_id, column_used_as_id[:index])
+        end
+      end
 
       sites_errors[:data_errors] = []
       sites_errors[:hierarchy_field_found] = []
@@ -285,6 +301,14 @@ class ImportWizard
         invalid_ids << field_number unless (csv_field_value.blank? || valid_site_ids.include?(csv_field_value.to_s))
       end
       [{rows: invalid_ids, column: resmap_id_column_index}] if invalid_ids.length >0
+    end
+
+    def calculate_invalid_identifier_id(csv_column, identifier_column_index)
+      invalid_ids = []
+      csv_column.each_with_index do |csv_field_value, field_number|
+        invalid_ids << field_number if csv_field_value.blank?
+      end
+      [{rows: invalid_ids, column: identifier_column_index}] if invalid_ids.length >0
     end
 
     def validate_column(user, collection, column_spec, fields, csv_column, column_number, id_column)

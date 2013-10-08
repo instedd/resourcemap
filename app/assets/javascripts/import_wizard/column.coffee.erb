@@ -58,7 +58,7 @@ onImportWizard ->
         json.label = @label()
         json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
       if @usage() == 'id'
-        json.idMatchingColumn = @idMatchingColumn()
+        json.id_matching_column = @idMatchingColumn()
       json
 
     computeIconClass: =>
