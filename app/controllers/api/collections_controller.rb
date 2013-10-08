@@ -2,7 +2,7 @@ class Api::CollectionsController < ApplicationController
   include Api::JsonHelper
   include Api::GeoJsonHelper
 
-  before_filter :authenticate_api_user!
+  before_filter :authenticate_user!
   around_filter :rescue_with_check_api_docs
 
   def index
