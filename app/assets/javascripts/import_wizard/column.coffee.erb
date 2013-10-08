@@ -21,6 +21,9 @@ onImportWizard ->
       # For new select_one or select_many fields
       @selectKind = ko.observable()
 
+      # For ID column
+      @idMatchingColumn = ko.observable()
+
       @iconClass = ko.observable()
 
       @errors = ko.observableArray()
@@ -54,6 +57,8 @@ onImportWizard ->
         json.code = @code()
         json.label = @label()
         json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
+      if @usage() == 'id'
+        json.idMatchingColumn = @idMatchingColumn()
       json
 
     computeIconClass: =>

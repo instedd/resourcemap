@@ -19,14 +19,13 @@ describe 'ImportWizard', ->
     it 'should load existing field in usages if layer exists', ->
       @model.initialize(1, @layers, @columns)
       expect(window.arrayAny(@model.usages, (x) -> (x.name == 'Existing field' && x.code == 'existing_field'))).toBe(true)
-      expect(window.arrayAny(@model.usages, (x) -> (x.name == 'resmap-id' && x.code == 'id'))).toBe(true)
       expect(window.arrayAny(@model.selectableUsagesForAdmins, (x) -> (x.name == 'Existing field' && x.code == 'existing_field'))).toBe(true)
       expect(window.arrayAny(@model.selectableUsagesForNonAdmins, (x) -> (x.name == 'Existing field' && x.code == 'existing_field'))).toBe(true)
 
-    it 'should not include id field in selectable usages', ->
+    it 'should include id field in selectable usages', ->
       @model.initialize(1, @layers, @columns)
-      expect(window.arrayAny(@model.selectableUsagesForAdmins, (x) -> (x.name == 'resmap-id' && x.code == 'id'))).toBe(false)
-      expect(window.arrayAny(@model.selectableUsagesForNonAdmins, (x) -> (x.name == 'resmap-id' && x.code == 'id'))).toBe(false)
+      expect(window.arrayAny(@model.selectableUsagesForAdmins, (x) -> (x.name == 'resmap-id' && x.code == 'id'))).toBe(true)
+      expect(window.arrayAny(@model.selectableUsagesForNonAdmins, (x) -> (x.name == 'resmap-id' && x.code == 'id'))).toBe(true)
 
     it 'should not allow non admins to create a new field', ->
       @model.initialize(1, @layers, @columns)
