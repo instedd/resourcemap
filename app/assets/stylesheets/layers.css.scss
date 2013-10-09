@@ -14,6 +14,13 @@
   bottom: 16px;
 }
 
+.elipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+}
+
 .hierarchy-viewer  {
   padding: 10px;
 
