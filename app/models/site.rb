@@ -125,7 +125,7 @@ class Site < ActiveRecord::Base
       field = fields[es_code]
       if field
         begin
-          field.valid_value?(value, self)
+          field.valid_value?(value, self.id)
         rescue => ex
           errors.add(:properties, {field.es_code => ex.message})
         end

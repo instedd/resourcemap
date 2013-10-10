@@ -7,6 +7,7 @@ class Collection < ActiveRecord::Base
 
 
   validates_presence_of :name
+  validates_presence_of :icon
 
   has_many :memberships, :dependent => :destroy
   has_many :users, through: :memberships

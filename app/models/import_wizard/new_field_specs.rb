@@ -58,6 +58,6 @@ class ImportWizard::NewFieldSpecs < ImportWizard::BaseFieldSpecs
     # We need the collection to validate site_fields
     field.collection = field.layer.collection
 
-    site.properties[field.es_code] = field.apply_format_and_validate value, true, field.layer.collection, site
+    site.properties[field.es_code] = field.apply_format_and_validate value, true, field.layer.collection, site.id
   end
 end

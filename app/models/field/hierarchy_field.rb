@@ -47,13 +47,14 @@ class Field::HierarchyField < Field
     end
   end
 
-	def descendants_of_in_hierarchy(parent, use_codes_instead_of_es_codes)
-    if use_codes_instead_of_es_codes
-      parent_id = find_hierarchy_id_by_name(parent)
-    else
-      parent_id = parent
+	def descendants_of_in_hierarchy(parent_id_or_name)
+    begin
+      valid_value?(parent_id_or_name)
+      parent_id = parent_id_or_name
+    rescue
+      parent_id = find_hierarchy_id_by_name(parent_id_or_name)
+      raise invalid_field_message(parent_id_or_name) unless parent_id
     end
-    valid_value?(parent_id)
     options = []
     add_option_to_options options, find_hierarchy_item_by_id(parent_id)
 

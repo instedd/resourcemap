@@ -64,7 +64,7 @@ module SearchBase
       return self
     end
 
-    value = field.descendants_of_in_hierarchy value, @use_codes_instead_of_es_codes
+    value = field.descendants_of_in_hierarchy value
     query_key = field.es_code
     @search.filter :terms, query_key => value
     self
