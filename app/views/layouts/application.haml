@@ -43,7 +43,7 @@
         = link_to '', edit_user_registration_path, class: 'fsettings'
     - else
       %li
-        = link_to "Create account", new_user_registration_path, class: 'fedit'
+        = link_to "Create account", guisso_sign_up_path_for(:user), class: 'fedit'
       %li
         = link_to "Log in", guisso_sign_in_path_for(:user), class: 'fuser'
 - content_for :footer_links do

@@ -1,6 +1,6 @@
 GIT
   remote: https://bitbucket.org/instedd/alto_guisso.git
-  revision: 40518c9a63b6d258b1fab9ecbdc1bfa3e0b9816b
+  revision: f1f4edaefdff1a65a5b753d74e9e59fa26d07bd7
   branch: master
   specs:
     alto_guisso (0.0.1)
@@ -167,7 +167,7 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.8.2)
     mime-types (1.25)
-    multi_json (1.8.0)
+    multi_json (1.8.1)
     mysql2 (0.3.11)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
@@ -328,7 +328,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.37)
+    tzinfo (0.3.38)
     uglifier (1.2.6)
       execjs (>= 0.3.0)
       multi_json (~> 1.3)
