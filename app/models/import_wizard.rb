@@ -113,13 +113,14 @@ class ImportWizard
 
       # Rows validation
 
+      mapping_for_identifier_pivot = if field then field.existing_values else nil end
+
       csv_columns.each_with_index do |csv_column, csv_column_number|
         column_spec = columns_spec[csv_column_number]
 
         if column_spec[:use_as].to_s == 'new_field' && column_spec[:kind].to_s == 'hierarchy'
           sites_errors[:hierarchy_field_found] = add_new_hierarchy_error(csv_column_number, sites_errors[:hierarchy_field_found])
         elsif column_spec[:use_as].to_s == 'new_field' || column_spec[:use_as].to_s == 'existing_field'
-          mapping_for_identifier_pivot = if field then field.existing_values else nil end
           errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number, csv_column_used_as_id, mapping_for_identifier_pivot)
           sites_errors[:data_errors].concat(errors_for_column)
         end
