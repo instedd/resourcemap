@@ -100,6 +100,7 @@ class ImportWizard
           # Load the identifier field related to this column
           field_id = column_used_as_id[:id_matching_column]
           field = collection.identifier_fields.find field_id
+
           # This is not possible using UI
           raise "Invalid identifier field id #{field_id}" unless field
 
@@ -118,7 +119,8 @@ class ImportWizard
         if column_spec[:use_as].to_s == 'new_field' && column_spec[:kind].to_s == 'hierarchy'
           sites_errors[:hierarchy_field_found] = add_new_hierarchy_error(csv_column_number, sites_errors[:hierarchy_field_found])
         elsif column_spec[:use_as].to_s == 'new_field' || column_spec[:use_as].to_s == 'existing_field'
-          errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number, csv_column_used_as_id)
+          mapping_for_identifier_pivot = if field then field.existing_values else nil end
+          errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number, csv_column_used_as_id, mapping_for_identifier_pivot)
           sites_errors[:data_errors].concat(errors_for_column)
         end
       end
@@ -311,7 +313,7 @@ class ImportWizard
       [{rows: invalid_ids, column: identifier_column_index}] if invalid_ids.length >0
     end
 
-    def validate_column(user, collection, column_spec, fields, csv_column, column_number, id_column)
+    def validate_column(user, collection, column_spec, fields, csv_column, column_number, csv_id_column, id_mapping)
       if column_spec[:use_as].to_sym == :existing_field
         field = fields.detect{|e| e.id.to_s == column_spec[:field_id].to_s}
       else
@@ -330,8 +332,13 @@ class ImportWizard
           # load the site for the identifiers fields.
           # we need the site in order to validate the uniqueness of the luhn id value
           # The value should not be invlid if this same site has it
-          if id_column && field.kind == 'identifier'
-            site_id = id_column[field_number]
+          if csv_id_column && field.kind == 'identifier'
+            if id_mapping
+              # An identifier value was selected as pivot
+              site_id = id_mapping[csv_id_column[field_number]]["id"]
+            else
+              site_id = csv_id_column[field_number]
+            end
             existing_site_id = site_id if (site_id && !site_id.blank? && collection_sites_ids.include?(site_id.to_s))
           end
 

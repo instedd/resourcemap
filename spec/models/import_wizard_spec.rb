@@ -1619,5 +1619,58 @@ describe ImportWizard do
 
       sites_errors[:invalid_site_identifier].should eq([{:rows=>[0,1], :column=>0}])
     end
+
+    it "should not show validation error in other luhn fields when identifier a site by an identifier" do
+      other_id = layer.identifier_fields.make :code => 'other-id', :config => {"context" => "MOH", "agency" => "Jembi", "format" => "Normal"}
+      site = collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+
+      csv_string = CSV.generate do |csv|
+        csv << ['moh-id', 'name ', other_id.code]
+        csv << ['123', site.name,  '456']
+      end
+
+      column_specs = [
+        {header: 'moh-id', use_as: "id", id_matching_column: moh_id.id.to_s},
+        {header: 'name', use_as: "name"},
+        {header: 'other_id.code]', use_as: "existing_field", field_id: other_id.id.to_s},
+
+      ]
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+      sites_errors = sites_preview[:errors]
+      data_errors = sites_errors[:data_errors]
+      data_errors.length.should eq(0)
+
+      sites_errors[:invalid_site_identifier].should be_nil
+    end
+
+    it "should  show validation error in other luhn fields when identifier a site by an identifier" do
+      other_id = layer.identifier_fields.make :code => 'other-id', :config => {"context" => "MOH", "agency" => "Jembi", "format" => "Normal"}
+      site = collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+      site2 = collection.sites.make properties: {other_id.es_code => '457'}
+
+      csv_string = CSV.generate do |csv|
+        csv << ['moh-id', 'name ', other_id.code]
+        csv << ['123', site.name,  '457']
+      end
+
+      column_specs = [
+        {header: 'moh-id', use_as: "id", id_matching_column: moh_id.id.to_s},
+        {header: 'name', use_as: "name"},
+        {header: 'other_id.code]', use_as: "existing_field", field_id: other_id.id.to_s},
+
+      ]
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+      sites_errors = sites_preview[:errors]
+      data_errors = sites_errors[:data_errors]
+      data_errors.length.should eq(1)
+
+      sites_errors[:invalid_site_identifier].should be_nil
+    end
   end
+
+
 end

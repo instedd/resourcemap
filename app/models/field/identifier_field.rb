@@ -9,6 +9,10 @@ class Field::IdentifierField < Field
     format_implementation.value_hint
   end
 
+  def existing_values
+    format_implementation.existing_values
+  end
+
   def valid_value?(*args)
     format_implementation.valid_value?(*args)
   end
