@@ -20,6 +20,9 @@ gem 'foreman'
 gem 'uuidtools'
 gem 'newrelic_rpm'
 gem 'cancan', '~> 1.6.10'
+gem "omniauth"
+gem "omniauth-openid"
+gem 'alto_guisso', git: "https://bitbucket.org/instedd/alto_guisso.git", branch: 'master'
 
 group :test do
   gem 'shoulda-matchers'

@@ -1,6 +1,6 @@
 ResourceMap::Application.routes.draw do
-
-  devise_for :users, :controllers => {:registrations => "registrations"}
+  devise_for :users, controllers: {registrations: "registrations", omniauth_callbacks: "omniauth_callbacks"}
+  guisso_for :user
 
   devise_scope :user do
     get "users/validate_credentials" => "registrations#validate_credentials"
@@ -119,11 +119,13 @@ ResourceMap::Application.routes.draw do
   match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
 
   namespace :api do
+    get 'collections' => 'collections#index',as: :collections
     get 'collections/:id' => 'collections#show',as: :collection
     get 'collections/:id/sample_csv' => 'collections#sample_csv',as: :sample_csv
     get 'collections/:collection_id/histogram/:field_id' => 'collections#histogram_by_field',as: :histogram_by_field
     get 'collections/:id/count' => 'collections#count',as: :count
     get 'collections/:id/geo' => 'collections#geo_json',as: :geojson
+    get 'collections/:id/fields' => 'fields#index',as: :fields
     get 'sites/:id' => 'sites#show', as: :site
     get 'collections/:collection_id/sites/:id/histories' => 'sites#histories', as: :histories
     get 'activity' => 'activities#index', as: :activity
