@@ -21,7 +21,7 @@ class Tire::Search::Search
         Net::HTTP.start(uri.host, uri.port) do |http|
           request = Net::HTTP::Get.new uri.request_uri
           http.request request, to_json do |response|
-            response.read_body { |segment| io.write segment.force_encoding("UTF-8") }
+            response.read_body { |segment| io.write segment.dup.force_encoding("UTF-8") }
           end
         end
       rescue Exception => ex
