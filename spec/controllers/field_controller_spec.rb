@@ -36,6 +36,14 @@ describe FieldsController do
     response.status.should eq(403)
   end
 
+  it "should not get field mapping if not logged in and collection is public" do
+    collection = admin.create_collection(Collection.make public: true)
+
+    get :mapping, collection_id: collection.id, format: 'json'
+
+    response.status.should eq(403)
+  end
+
   it "should not get field in other collection" do
     sign_in admin
     collection2 = admin.create_collection(Collection.make)
