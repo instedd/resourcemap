@@ -23,9 +23,10 @@ describe ThresholdsController do
   describe 'Update threshold' do
     let(:condition_attributes) { {"field"=>"392", "op"=>"eq", "value"=>"20", "type"=>"value"} }
     let(:threshold) { collection.thresholds.make }
-    let(:sites) {{"id" => "1", "name" => "SR Health Center"}}
+    let(:sites) {{"id" => site.id, "name" => "SR Health Center"}}
 
     it 'should fix conditions' do
+
       put :update, "threshold"=>{ "conditions"=>{"0"=>condition_attributes}, "sites" => {"0" => sites}}, "collection_id" => collection.id, "id" => threshold.id
 
       threshold.reload
