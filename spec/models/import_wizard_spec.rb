@@ -1555,6 +1555,7 @@ describe ImportWizard do
 
   describe "PKs for update" do
     let(:moh_id) {layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Normal"} }
+    let(:other_id) { layer.identifier_fields.make :code => 'other-id', :config => {"context" => "MOH", "agency" => "Jembi", "format" => "Normal"} }
 
     it "should not allow two PK pivots columns" do
       csv_string = CSV.generate do |csv|
@@ -1577,33 +1578,12 @@ describe ImportWizard do
       ImportWizard.delete_files(user, collection)
     end
 
-    it "should be able to select an identifier field as PK" do
-      collection.sites.make properties: {moh_id.es_code => '123'}
-
-      csv_string = CSV.generate do |csv|
-        csv << ['moh-id', 'name ']
-        csv << ['123', 'Name']
-      end
-
-      column_specs = [
-        {header: 'moh-id', use_as: "id", id_matching_column: moh_id.id.to_s},
-        {header: 'name', use_as: "name"}
-      ]
-      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
-
-      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
-      sites_errors = sites_preview[:errors]
-
-      sites_errors[:invalid_site_identifier].should be_nil
-
-    end
-
     it "uploading an empty value as identifier field PK should be invalid" do
       collection.sites.make properties: {moh_id.es_code => '123'}
 
       csv_string = CSV.generate do |csv|
         csv << ['moh-id', 'name ']
-        csv << ['', 'Name']
+        csv << ['456', 'Name']
         csv << ['', 'Name 2']
         csv << ['123', 'Name 2']
       end
@@ -1617,11 +1597,10 @@ describe ImportWizard do
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
       sites_errors = sites_preview[:errors]
 
-      sites_errors[:invalid_site_identifier].should eq([{:rows=>[0,1], :column=>0}])
+      sites_errors[:invalid_site_identifier].should eq([{:rows=>[1], :column=>0}])
     end
 
-    it "should not show validation error in other luhn fields when identifier a site by an identifier" do
-      other_id = layer.identifier_fields.make :code => 'other-id', :config => {"context" => "MOH", "agency" => "Jembi", "format" => "Normal"}
+    it "should not show validation error in other luhn fields the pivot is an identifier" do
       site = collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
 
       csv_string = CSV.generate do |csv|
@@ -1645,8 +1624,7 @@ describe ImportWizard do
       sites_errors[:invalid_site_identifier].should be_nil
     end
 
-    it "should show validation error in other luhn fields when identifier a site by an identifier" do
-      other_id = layer.identifier_fields.make :code => 'other-id', :config => {"context" => "MOH", "agency" => "Jembi", "format" => "Normal"}
+    it "should show validation error in other if a value already exists for an exisiting luhn value" do
       site = collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
       site2 = collection.sites.make properties: {other_id.es_code => '457'}
 
@@ -1672,7 +1650,6 @@ describe ImportWizard do
     end
 
     it "should import using an identifier field as pivot" do
-      other_id = layer.identifier_fields.make :code => 'other-id', :config => {"context" => "MOH", "agency" => "Jembi", "format" => "Normal"}
       collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
 
       csv_string = CSV.generate do |csv|
@@ -1698,6 +1675,4 @@ describe ImportWizard do
     end
 
   end
-
-
 end

@@ -188,13 +188,8 @@ class ImportWizard
       end
 
       # Get the id spec
-      id_spec = spec_object.id_column
 
-      # Load the mapping for the pivot if according to the id_matching_column
-      if (id_spec && id_spec[:id_matching_column] && id_spec[:id_matching_column] != "resmap-id")
-        pivot_field = collection.identifier_fields.find id_spec[:id_matching_column]
-        mapping_for_pivot = pivot_field.existing_values if pivot_field
-      end
+      id_column = spec_object.create_id_column collection
 
       # Also get the name spec, as the name is mandatory
       name_spec = spec_object.name_column
@@ -211,15 +206,8 @@ class ImportWizard
           next unless row[name_spec[:index]].present?
 
           # Load or create a new site from the ID column spec
-          site = nil
-          if id_spec && row[id_spec[:index]].present?
-
-            site_id = if mapping_for_pivot
-                mapping_for_pivot[row[id_spec[:index]]]["id"]
-              else
-                row[id_spec[:index]]
-              end
-
+          if id_column
+            site_id = id_column.site_id_for row[id_column.column_spec_index]
             site = collection.sites.find_by_id site_id
           end
 
