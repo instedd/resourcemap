@@ -1658,7 +1658,7 @@ describe ImportWizard do
       column_specs = [
         {header: 'moh-id', use_as: "id", id_matching_column: moh_id.id.to_s},
         {header: 'name', use_as: "name"},
-        {header: 'other_id.code]', use_as: "existing_field", field_id: other_id.id.to_s},
+        {header: 'other_id.code', use_as: "existing_field", field_id: other_id.id.to_s},
 
       ]
       ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
