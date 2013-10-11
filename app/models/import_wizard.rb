@@ -205,13 +205,13 @@ class ImportWizard
           # Check that the name is present
           next unless row[name_spec[:index]].present?
 
-          # Load or create a new site from the ID column spec
-          if id_column
-            site_id = id_column.site_id_for row[id_column.column_spec_index]
-            site = collection.sites.find_by_id site_id
+          # Load or create site from the ID column spec if it exists (according to the row value)
+          # If there is not an id_column, create a new site
+          site = if id_column
+            id_column.find_or_create_site(collection, row[id_column.column_spec_index])
+          else
+            collection.sites.new properties: {}, from_import_wizard: true
           end
-
-          site ||= collection.sites.new properties: {}, collection_id: collection.id, from_import_wizard: true
 
           site.user = user
           sites << site
@@ -492,17 +492,17 @@ class ImportWizard
     end
 
     def guess_column_usage(column, fields, rows, i, admin)
+      if column[:header] =~ /^resmap-id$/i
+        column[:use_as] = :id
+        column[:kind] = :id
+        return
+      end
+
       if (field = fields[column[:header]])
         column[:use_as] = :existing_field
         column[:layer_id] = field.layer_id
         column[:field_id] = field.id
         column[:kind] = field.kind.to_sym
-        return
-      end
-
-      if column[:header] =~ /^resmap-id$/i
-        column[:use_as] = :id
-        column[:kind] = :id
         return
       end
 
