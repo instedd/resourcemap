@@ -1,7 +1,4 @@
 onImportWizard ->
-  class @Usage
-    constructor: (@name, @code) ->
-
   class @MainViewModel
     initialize: (collectionId, layers, columns, field_kinds) ->
       @field_kinds = _.filter field_kinds, (k) -> k != 'hierarchy'
@@ -63,18 +60,11 @@ onImportWizard ->
       @usages.push(new Usage('Latitude', 'lat'))
       @usages.push(new Usage('Longitude', 'lng'))
       @usages.push(new Usage('Ignore', 'ignore'))
-
-      # The usage ID is not selectable by the user except for the cases in which the csv was downloaded from resourcemap
-      @usages.push(new Usage('resmap-id', 'id')) if column && column.header() == 'resmap-id'
+      @usages.push(new Usage('resmap-id', 'id'))
 
       @selectableUsagesForAdmins = @usages.slice(0)
       # Non admins can't create new fields
       @selectableUsagesForNonAdmins = @usages.slice(1)
-
-      # If usage id is not added yet, we need to add it.
-      # This way is a valid column type but it's not selectable by the user unless the column has header 'resmap-id'
-      if !window.arrayAny(@usages, (u) -> u.name == 'resmap-id')
-        @usages.push(new Usage('resmap-id', 'id'))
 
     findLayer: (id) =>
       (layer for layer in @layers when layer.id == id)[0]
@@ -83,6 +73,12 @@ onImportWizard ->
       for layer in @layers
         field = layer.findField(id) unless field
       field
+
+    identifierFields: =>
+      identifierFields = []
+      for layer in @layers
+        identifierFields = identifierFields.concat layer.identifierFields()
+      identifierFields.concat(new Usage("Internal ResourceMap ID", "resmap-id"))
 
     selectColumn: (column) =>
       @loadUsages(column)

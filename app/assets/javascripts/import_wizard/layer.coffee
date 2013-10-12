@@ -7,3 +7,6 @@ onImportWizard ->
 
     findField: (id) =>
       (field for field in @fields when String(field.id) == String(id))[0]
+
+    identifierFields: =>
+      (new Usage(field.name, field.id) for field in @fields when field.kind == 'identifier')

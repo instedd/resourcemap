@@ -34,8 +34,11 @@ class ImportWizard::ImportSpecs
     spec[:index] = index if spec
   end
 
-  def id_column
-    @data.find{|x| x[:use_as].to_s == 'id'}
+  def create_id_column(collection)
+    id_spec = @data.find{|x| x[:use_as].to_s == 'id'}
+    if id_spec
+      ImportWizard::IdFieldSpecs.new(collection, id_spec)
+    end
   end
 
   def name_column

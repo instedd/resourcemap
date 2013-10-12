@@ -85,16 +85,35 @@ class ImportWizard
       # Name is mandatory
       sites_errors[:missing_name] = {:use_as => 'name'} if !(columns_spec.any?{|spec| spec[:use_as].to_s == 'name'})
 
-      columns_used_as_id = columns_spec.select{|spec| spec[:use_as].to_s == 'id'}
-      # Only one column will be marked to be used as id
-      csv_column_used_as_id = csv_columns[columns_used_as_id.first[:index]] if columns_used_as_id.length > 0
+      #### Choosing the pivot ####
 
-      sites_errors[:non_existent_site_id] = calculate_non_existent_site_id(collection.sites.map{|s| s.id.to_s}, csv_column_used_as_id, columns_used_as_id.first[:index]) if csv_column_used_as_id && columns_used_as_id.length > 0
+      # Only one column will be marked to be used as id
+      columns_used_as_id = columns_spec.select{|spec| spec[:use_as].to_s == 'id'}
+      column_used_as_id = columns_used_as_id.first if columns_used_as_id.length > 0
+
+      if column_used_as_id
+        csv_column_used_as_id = csv_columns[column_used_as_id[:index]]
+
+        if (!column_used_as_id[:id_matching_column] || column_used_as_id[:id_matching_column] == "resmap-id")
+          sites_errors[:non_existent_site_id] = calculate_non_existent_site_id(collection.sites.map{|s| s.id.to_s}, csv_column_used_as_id, column_used_as_id[:index])
+        else
+          # Load the identifier field related to this column
+          field_id = column_used_as_id[:id_matching_column]
+          field = collection.identifier_fields.find field_id
+
+          # This is not possible using UI
+          raise "Invalid identifier field id #{field_id}" unless field
+
+          sites_errors[:invalid_site_identifier] = calculate_invalid_identifier_id(csv_column_used_as_id, column_used_as_id[:index])
+        end
+      end
 
       sites_errors[:data_errors] = []
       sites_errors[:hierarchy_field_found] = []
 
       # Rows validation
+
+      mapping_for_identifier_pivot = if field then field.existing_values else nil end
 
       csv_columns.each_with_index do |csv_column, csv_column_number|
         column_spec = columns_spec[csv_column_number]
@@ -102,7 +121,7 @@ class ImportWizard
         if column_spec[:use_as].to_s == 'new_field' && column_spec[:kind].to_s == 'hierarchy'
           sites_errors[:hierarchy_field_found] = add_new_hierarchy_error(csv_column_number, sites_errors[:hierarchy_field_found])
         elsif column_spec[:use_as].to_s == 'new_field' || column_spec[:use_as].to_s == 'existing_field'
-          errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number, csv_column_used_as_id)
+          errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number, csv_column_used_as_id, mapping_for_identifier_pivot)
           sites_errors[:data_errors].concat(errors_for_column)
         end
       end
@@ -169,7 +188,8 @@ class ImportWizard
       end
 
       # Get the id spec
-      id_spec = spec_object.id_column
+
+      id_column = spec_object.create_id_column collection
 
       # Also get the name spec, as the name is mandatory
       name_spec = spec_object.name_column
@@ -181,12 +201,17 @@ class ImportWizard
 
         # Now process all rows
         rows[1 .. -1].each do |row|
+
           # Check that the name is present
           next unless row[name_spec[:index]].present?
 
-          site = nil
-          site = collection.sites.find_by_id row[id_spec[:index]] if id_spec && row[id_spec[:index]].present?
-          site ||= collection.sites.new properties: {}, collection_id: collection.id, from_import_wizard: true
+          # Load or create site from the ID column spec if it exists (according to the row value)
+          # If there is not an id_column, create a new site
+          site = if id_column
+            id_column.find_or_create_site(collection, row[id_column.column_spec_index])
+          else
+            collection.sites.new properties: {}, from_import_wizard: true
+          end
 
           site.user = user
           sites << site
@@ -287,7 +312,15 @@ class ImportWizard
       [{rows: invalid_ids, column: resmap_id_column_index}] if invalid_ids.length >0
     end
 
-    def validate_column(user, collection, column_spec, fields, csv_column, column_number, id_column)
+    def calculate_invalid_identifier_id(csv_column, identifier_column_index)
+      invalid_ids = []
+      csv_column.each_with_index do |csv_field_value, field_number|
+        invalid_ids << field_number if csv_field_value.blank?
+      end
+      [{rows: invalid_ids, column: identifier_column_index}] if invalid_ids.length >0
+    end
+
+    def validate_column(user, collection, column_spec, fields, csv_column, column_number, csv_id_column, id_mapping)
       if column_spec[:use_as].to_sym == :existing_field
         field = fields.detect{|e| e.id.to_s == column_spec[:field_id].to_s}
       else
@@ -306,8 +339,13 @@ class ImportWizard
           # load the site for the identifiers fields.
           # we need the site in order to validate the uniqueness of the luhn id value
           # The value should not be invlid if this same site has it
-          if id_column && field.kind == 'identifier'
-            site_id = id_column[field_number]
+          if csv_id_column && field.kind == 'identifier'
+            if id_mapping
+              # An identifier value was selected as pivot
+              site_id = id_mapping[csv_id_column[field_number]]["id"]
+            else
+              site_id = csv_id_column[field_number]
+            end
             existing_site_id = site_id if (site_id && !site_id.blank? && collection_sites_ids.include?(site_id.to_s))
           end
 
@@ -454,17 +492,22 @@ class ImportWizard
     end
 
     def guess_column_usage(column, fields, rows, i, admin)
-      if (field = fields[column[:header]])
-        column[:use_as] = :existing_field
-        column[:layer_id] = field.layer_id
-        column[:field_id] = field.id
-        column[:kind] = field.kind.to_sym
-        return
-      end
-
       if column[:header] =~ /^resmap-id$/i
         column[:use_as] = :id
         column[:kind] = :id
+        return
+      end
+
+      if (field = fields[column[:header]])
+        if field.identifier?
+          column[:use_as] = :id
+          column[:id_matching_column] = field.id
+        else
+          column[:use_as] = :existing_field
+          column[:layer_id] = field.layer_id
+          column[:field_id] = field.id
+          column[:kind] = field.kind.to_sym
+        end
         return
       end
 
