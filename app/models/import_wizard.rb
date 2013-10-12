@@ -499,10 +499,15 @@ class ImportWizard
       end
 
       if (field = fields[column[:header]])
-        column[:use_as] = :existing_field
-        column[:layer_id] = field.layer_id
-        column[:field_id] = field.id
-        column[:kind] = field.kind.to_sym
+        if field.identifier?
+          column[:use_as] = :id
+          column[:id_matching_column] = field.id
+        else
+          column[:use_as] = :existing_field
+          column[:layer_id] = field.layer_id
+          column[:field_id] = field.id
+          column[:kind] = field.kind.to_sym
+        end
         return
       end
 

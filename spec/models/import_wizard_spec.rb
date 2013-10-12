@@ -1674,6 +1674,31 @@ describe ImportWizard do
       sites[0].properties.should eq({moh_id.es_code => '123', other_id.es_code => '457'})
     end
 
+    it "should import using an identifier field without changing the value for an another identifier field" do
+      collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+
+      csv_string = CSV.generate do |csv|
+        csv << ['moh-id', 'name ', 'other-id']
+        csv << ['123', "Changed Name",  '456']
+      end
+
+      column_specs = [
+        {header: 'moh-id', use_as: "id", id_matching_column: moh_id.id.to_s},
+        {header: 'name', use_as: "name"},
+        {header: 'other-id', use_as: "existing_field", field_id: other_id.id.to_s},
+      ]
+
+      ImportWizard.import user, collection, 'foo.csv', csv_string
+      ImportWizard.mark_job_as_pending user, collection
+      ImportWizard.execute user, collection, column_specs
+
+      sites = collection.sites.all
+      sites.length.should eq(1)
+
+      sites[0].name.should eq('Changed Name')
+      sites[0].properties.should eq({moh_id.es_code => '123', other_id.es_code => '456'})
+    end
+
     it "should create new site if the value for the identifier Pivot column does not exist" do
       collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
 
