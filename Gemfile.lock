@@ -1,6 +1,6 @@
 GIT
   remote: https://bitbucket.org/instedd/alto_guisso.git
-  revision: eee1f8d3d54218e847e328cf799c1d3b1f616c97
+  revision: 10fedf5bf5c071a2d6ac05a16805067348dd32d3
   branch: master
   specs:
     alto_guisso (0.0.1)
@@ -167,7 +167,7 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.8.2)
     mime-types (1.25)
-    multi_json (1.8.1)
+    multi_json (1.8.2)
     mysql2 (0.3.11)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)

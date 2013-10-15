@@ -156,13 +156,13 @@ describe Field do
     it "for hierarchy with one level" do
       config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}]}]
       field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
-      field.hierarchy_options.should eq([{:id=>0, :name=>"root"}, {:id=>1, :name=>"child"}])
+      field.hierarchy_options.should eq([{:id=>0, :name=>"root", :parent_id => ""}, {:id=>1, :name=>"child", :parent_id => 0}])
     end
 
     it "for hierarchy with one level two childs" do
       config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}, {id: 2, name: 'child2'}]}]
       field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
-      field.hierarchy_options.should eq([{:id=>0, :name=>"root"}, {:id=>1, :name=>"child"}, {:id=>2, :name=>"child2"}])
+      field.hierarchy_options.should eq([{:id=>0, :name=>"root", :parent_id => ""}, {:id=>1, :name=>"child", :parent_id => 0}, {:id=>2, :name=>"child2", :parent_id => 0}])
     end
   end
 

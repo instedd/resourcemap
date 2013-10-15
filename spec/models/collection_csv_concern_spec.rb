@@ -101,9 +101,7 @@ describe Collection::CsvConcern do
       ])
     end
 
-
     it "decodes hierarchy csv" do
-
       CSV.open("hierarchy_csv_file.csv", "w") do |csv|
         csv << ['ID', 'ParentID', 'ItemName']
         csv << ['1','','Location 1']
