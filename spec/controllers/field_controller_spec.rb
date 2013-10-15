@@ -41,7 +41,8 @@ describe FieldsController do
 
     get :mapping, collection_id: collection.id, format: 'json'
 
-    response.status.should eq(403)
+    # Redirected to login
+    response.status.should eq(401)
   end
 
   it "should not get field in other collection" do
@@ -71,7 +72,7 @@ describe FieldsController do
   it "should get hierarchy nodes under certain one" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60'
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', format: 'json'
     elements = JSON.parse response.body
     elements.length.should eq 3
     elements.should include('60')
@@ -84,7 +85,7 @@ describe FieldsController do
 
     text = layer.text_fields.make :code => 'text'
 
-    get :hierarchy, collection_id: collection.id, id: text.id, under: '60'
+    get :hierarchy, collection_id: collection.id, id: text.id, under: '60', format: 'json'
     response.status.should eq(422)
     message = (JSON.parse response.body)["message"]
     message.should include("The field 'text' is not a hierarchy.")
@@ -94,7 +95,7 @@ describe FieldsController do
   it "should show proper error message if the under parameter is not found" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: 'invalid'
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: 'invalid', format: 'json'
     response.status.should eq(422)
     message = (JSON.parse response.body)["message"]
     message.should include("Invalid hierarchy option 'invalid' in field 'hierarchy'")
@@ -103,7 +104,7 @@ describe FieldsController do
   it "should show proper error message if the node parameter is not found" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', node: 'invalid'
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', node: 'invalid', format: 'json'
     response.status.should eq(422)
     message = (JSON.parse response.body)["message"]
     message.should include("Invalid hierarchy option 'invalid' in field 'hierarchy'")
@@ -113,14 +114,14 @@ describe FieldsController do
   it "should respond true if a certain node is under another" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', node: '100'
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', node: '100', format: 'json'
     response.body.should eq("true")
   end
 
   it "should respond false if a certain node is under another" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '100', node: '60'
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '100', node: '60', format: 'json'
     response.body.should eq("false")
   end
 
@@ -128,7 +129,27 @@ describe FieldsController do
     member = User.make
     membership = Membership.make collection: collection, user: member, admin: false
     sign_in member
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60'
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', format: 'json'
+    response.status.should eq(403)
+  end
+
+  it "should get hierarchy as CSV" do
+    sign_in admin
+
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, format: 'csv'
+    response.status.should eq(200)
+    csv =  CSV.parse(response.body)
+    csv[0].should eq(['ID', 'ParentID', 'ItemName'])
+    csv[1].should eq(['60', '', 'Dad'])
+    csv[2].should eq(['100', '60', 'Son'])
+    csv[3].should eq(['101', '60', 'Bro'])
+  end
+
+  it "should not get hierarchy as CSV if the user is not admin" do
+    member = User.make
+    membership = Membership.make collection: collection, user: member, admin: false
+    sign_in member
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, format: 'csv'
     response.status.should eq(403)
   end
 end

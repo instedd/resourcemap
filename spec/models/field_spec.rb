@@ -166,6 +166,17 @@ describe Field do
     end
   end
 
+  it "should download hierarchy as csv" do
+    config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child', sub: [{id: 3, name: 'grand child'}]}, {id: 2, name: 'child2'}]}]
+    field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
+    csv =  CSV.parse(field.hierarchy_to_csv)
+    csv[0].should eq(['ID', 'ParentID', 'ItemName'])
+    csv[1].should eq(['0', '', 'root'])
+    csv[2].should eq(['1', '0', 'child'])
+    csv[3].should eq(['3', '1', 'grand child'])
+    csv[4].should eq(['2', '0', 'child2'])
+  end
+
   describe "validations" do
     let(:user) { User.make }
     let(:collection) { user.create_collection Collection.make_unsaved }

@@ -31,7 +31,10 @@ class FieldsController < ApplicationController
         render json: {message: invalid_hiearchy_message(ex.message)}, status: 422
       end
     else
-      render json: field.to_json
+      respond_to do |format|
+        format.json { render json: field.to_json }
+        format.csv { send_data field.hierarchy_to_csv, type: 'text/csv', filename: "hierarchy_#{field.code}.csv"}
+      end
     end
   end
 

@@ -24,6 +24,17 @@ class Field::HierarchyField < Field
     find_hierarchy_value(value)
   end
 
+  def hierarchy_to_csv
+    CSV.generate do |csv|
+      header = ['ID', 'ParentID', 'ItemName']
+      csv << header
+
+      hierarchy_options.each do |option|
+        csv << ["#{option[:id]}", "#{option[:parent_id]}", "#{option[:name]}"]
+      end
+    end
+  end
+
   def decode(hierarchy_id_or_name)
     if find_hierarchy_option_by_id(hierarchy_id_or_name)
       hierarchy_id_or_name
@@ -124,11 +135,11 @@ class Field::HierarchyField < Field
 
 	private
 
-  def add_option_to_options(options, option)
-    options << { id: option['id'], name: option['name']}
+  def add_option_to_options(options, option, parent_id = '')
+    options << { id: option['id'], name: option['name'], parent_id: parent_id}
     if option['sub']
       option['sub'].each do |sub_option|
-        add_option_to_options(options, sub_option)
+        add_option_to_options(options, sub_option, option['id'])
       end
     end
   end
