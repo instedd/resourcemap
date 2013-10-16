@@ -7,7 +7,7 @@ describe FieldsController do
   let(:admin) { User.make }
   let(:collection) { admin.create_collection(Collection.make) }
   let(:layer) { collection.layers.make user: admin}
-  config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+  config_hierarchy = [{ id: '60', name: 'Dad', type: 'region', sub: [{id: '100', name: 'Son', type: 'district'}, {id: '101', name: 'Bro', type: 'district'}]}]
   let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
 
   it "should get field in json" do
@@ -20,7 +20,7 @@ describe FieldsController do
     json['config'].should eq(
       {"hierarchy"=>
         [
-          {"id"=>"60", "name"=>"Dad", "sub"=>[{"id"=>"100", "name"=>"Son"}, {"id"=>"101", "name"=>"Bro"}]}
+          {"id"=>"60", "name"=>"Dad", "type" =>"region", "sub"=>[{"id"=>"100", "name"=>"Son", "type"=>"district"}, {"id"=>"101", "name"=>"Bro","type"=>"district"}]}
         ]
       }
     )
@@ -151,5 +151,13 @@ describe FieldsController do
     sign_in member
     get :hierarchy, collection_id: collection.id, id: hierarchy.id, format: 'csv'
     response.status.should eq(403)
+  end
+
+  it "should get hierarchy by node and type" do
+    sign_in admin
+
+    get :hierarchy, collection_id: collection.id, id: hierarchy.id, node: '100', type: 'region',format: 'json'
+    elements = JSON.parse response.body
+    elements.should eq({"id"=>"60", "name"=>"Dad", "type"=>"region"})
   end
 end

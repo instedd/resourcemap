@@ -30,6 +30,8 @@ class FieldsController < ApplicationController
       rescue => ex
         render json: {message: invalid_hiearchy_message(ex.message)}, status: 422
       end
+    elsif ((node = params[:node]) && (type = params[:type]))
+      render json: field.ascendants_with_type(node, type)
     else
       respond_to do |format|
         format.json { render json: field.to_json }

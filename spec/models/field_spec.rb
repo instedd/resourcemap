@@ -43,16 +43,53 @@ describe Field do
   end
 
   it "should return descendants_of_in_hierarchy" do
-    config_hierarchy = [{ id: '0', name: 'root', sub: [{id: '1', name: 'child'}]}]
+    config_hierarchy = [{ id: '0', name: 'root', sub: [{id: '1', name: 'child'}, {id: '2', name: 'child2'}]}]
     field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
-    field.descendants_of_in_hierarchy('0').should eq(['0', '1'])
-    field.descendants_of_in_hierarchy('root').should eq(['0', '1'])
+    field.descendants_of_in_hierarchy('0').should eq(['0', '1', '2'])
+    field.descendants_of_in_hierarchy('root').should eq(['0', '1', '2'])
   end
 
-   pending "descendants_of_in_hierarchy should return every results if option name is duplicated " do
+  pending "descendants_of_in_hierarchy should return every results if option name is duplicated " do
     config_hierarchy = [{ id: '0', name: 'root', sub: [{id: '1', name: 'child'}]}, {id: '2', name: 'root'}]
     field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
     field.descendants_of_in_hierarchy('root').should eq(['0', '1', '2'])
+  end
+
+  it "should return ascendant_of_in_hierarchy" do
+    config_hierarchy = [
+      { id: '0', name: 'root', type: 'region', sub: [
+        {id: '1', name: 'child', type: 'district', sub: [
+          {id: '2', name: 'grand-child 2', type: 'ward'},
+          {id: '4', name: 'grand-brother', type: 'ward'}
+        ]}
+      ]},
+      {id: '3', name: "other", type: 'region'}
+    ]
+
+    field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
+    res = [{:id=>"2", :name=>"grand-child 2", :type=>"ward"}, {:id=>"1", :name=>"child", :type=>"district"}, {:id=>"0", :name=>"root", :type=>"region"}]
+    field.ascendants_of_in_hierarchy('2').should eq(res)
+    field.ascendants_of_in_hierarchy('grand-child 2').should eq(res)
+  end
+
+  it "should return ascendants by type" do
+    config_hierarchy = [
+      { id: '0', name: 'root', type: 'region', sub: [
+        {id: '1', name: 'child', type: 'district', sub: [
+          {id: '2', name: 'grand-child 2', type: 'ward'},
+          {id: '4', name: 'grand-brother', type: 'ward'}
+        ]}
+      ]},
+      {id: '3', name: "other", type: 'region'}
+    ]
+
+    field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
+    res = [{:id=>"2", :name=>"grand-child 2", :type=>"ward"}, {:id=>"1", :name=>"child", :type=>"district"}, {:id=>"0", :name=>"root", :type=>"region"}]
+    field.ascendants_with_type('2', "district").should eq({:id=>"1", :name=>"child", :type=>"district"})
+    field.ascendants_with_type('grand-child 2', "district").should eq({:id=>"1", :name=>"child", :type=>"district"})
+
+    field.ascendants_with_type('grand-child 2', "not_found").should eq(nil)
+
   end
 
   describe "sample value" do

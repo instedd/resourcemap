@@ -58,6 +58,31 @@ class Field::HierarchyField < Field
     end
   end
 
+  def ascendants_of_in_hierarchy(node_id_or_name)
+    begin
+      valid_value?(node_id_or_name)
+      node_id = node_id_or_name
+    rescue
+      node_id = find_hierarchy_id_by_name(node_id_or_name)
+      raise invalid_field_message(node_id_or_name) unless node_id
+    end
+
+    options = []
+    while (!node_id.blank?)
+      option = find_hierarchy_option_by_id(node_id)
+      options << { id: option[:id], name: option[:name], type: option[:type]}
+      node_id = option[:parent_id]
+    end
+
+    options
+  end
+
+  def ascendants_with_type(node_id_or_name, type)
+    ascendants = ascendants_of_in_hierarchy(node_id_or_name)
+    res = ascendants.find{|option| option[:type] == type }
+    res
+  end
+
 	def descendants_of_in_hierarchy(parent_id_or_name)
     begin
       valid_value?(parent_id_or_name)
@@ -136,7 +161,12 @@ class Field::HierarchyField < Field
 	private
 
   def add_option_to_options(options, option, parent_id = '')
-    options << { id: option['id'], name: option['name'], parent_id: parent_id}
+    this_option = { id: option['id'], name: option['name'], parent_id: parent_id}
+    if option['type']
+      this_option[:type] = option['type']
+    end
+
+    options << this_option
     if option['sub']
       option['sub'].each do |sub_option|
         add_option_to_options(options, sub_option, option['id'])
@@ -145,16 +175,16 @@ class Field::HierarchyField < Field
   end
 
   #TODO: deprecate
-	def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
+  def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
     start_at.each do |item|
       return item if item['id'] == id
       if item.has_key? 'sub'
         found = find_hierarchy_item_by_id(id, item['sub'])
         return found unless found.nil?
-      end
+       end
     end
     nil
-  end
+   end
 
   # TODO: Integrate with decode used in update
   def decode_hierarchy_option(array_value, use_codes_instead_of_es_codes)
