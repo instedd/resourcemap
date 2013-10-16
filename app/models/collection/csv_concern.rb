@@ -151,7 +151,7 @@ module Collection::CsvConcern
         i = i+1
         item[:order] = i
 
-        if row.length != 3
+        if !(row.length == 3 || row.length == 4)
           item[:error] = "Wrong format."
           item[:error_description] = "Invalid column number"
         else
@@ -178,6 +178,7 @@ module Collection::CsvConcern
             item[:id] = id
             item[:parent] = row[1].strip if row[1].present?
             item[:name] = name
+            item[:type] = row[3].strip if row[3].present?
           end
         end
 

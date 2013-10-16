@@ -138,11 +138,11 @@ describe Collection::CsvConcern do
       ])
     end
 
-    it "gets an error if has >3 columns in a row" do
+    it "gets an error if has >4 columns in a row" do
       CSV.open("hierarchy_csv_file.csv", "w") do |csv|
         csv << ['1','','Location 1']
         csv << ['2','','Location 2']
-        csv << ['3','','Location 3','']
+        csv << ['3','','Location 3','distict', '']
         csv << ['4','1','Location 1.1']
         csv << ['5','1','Location 1.2']
         csv << ['6','1','Location 1.3']
@@ -208,8 +208,8 @@ describe Collection::CsvConcern do
 
       CSV.open("hierarchy_csv_file.csv", "w") do |csv|
         csv << ['1','','Location 1']
-        csv << ['2','','Location 2','']
-        csv << ['3','','Location 3','']
+        csv << ['2','','Location 2','district', '']
+        csv << ['3','','Location 3','district', '']
         csv << ['4','','Location 4']
       end
 
@@ -249,6 +249,24 @@ describe Collection::CsvConcern do
         {order: 1, id: '1', name: 'Location 1'},
         {order: 2, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'},
         {order: 3, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'}
+      ])
+    end
+
+    it "should store type" do
+      CSV.open("hierarchy_csv_file.csv", "w") do |csv|
+        csv << ["ID", "ParentID", "ItemName", "Type"]
+        csv << ['1','','Location 1', "district"]
+        csv << ['2','1','Location 1.2', "region"]
+        csv << ['3','2','Location 1.2.3', 'ward']
+      end
+
+      json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
+      json.should eq([
+        {order: 1, id: '1', name: 'Location 1', type: "district", sub: [
+          {order: 2, id: '2', name: 'Location 1.2', type: "region", sub: [
+            {order: 3, id: '3', name: 'Location 1.2.3', type: "ward"}
+          ]}
+        ]}
       ])
     end
   end
