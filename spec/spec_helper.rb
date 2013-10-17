@@ -111,4 +111,23 @@ RSpec.configure do |config|
     Channel.any_instance.stub(:gateway_url).and_return(true)
     Channel.any_instance.stub(:handle_nuntium_channel_response).and_return(true)
   end
+
+  # Turn on all plugins by default
+  module Settings
+    def is_on?(plugin)
+      true
+    end
+
+    def selected_plugins
+      [self]
+    end
+
+    def method_missing(method_name)
+      if method_name.to_s =~ /(\w+)\?$/
+        true
+      else
+        self
+      end
+    end
+  end
 end
