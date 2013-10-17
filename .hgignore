@@ -21,3 +21,4 @@ REVISION
 VERSION
 coverage/*
 config/settings.yml
+config/guisso.yml
