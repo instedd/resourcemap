@@ -10,7 +10,7 @@ describe Search do
     let!(:tables) { layer.numeric_fields.make code: 'tables' }
     let!(:first_name) { layer.text_fields.make code: 'first_name' }
     let!(:country) { layer.text_fields.make code: 'country' }
-    let!(:hierarchy) { layer.hierarchy_fields.make code: 'hie', config: { "hierarchy" => [{ 'id' => 1, 'name' => 'root'}] } }
+    let!(:hierarchy) { layer.hierarchy_fields.make code: 'hie', config: { "hierarchy" => [{ 'id' => 1, 'name' => 'root'}, { 'id' => 2, 'name' => 'root'}] } }
 
 
     let!(:site1) { collection.sites.make properties:
@@ -43,10 +43,12 @@ describe Search do
     end
 
     it "searches by name equality on hierarchy field" do
+      site5 = collection.sites.make properties:
+      {beds.es_code => 10, tables.es_code => 5, first_name.es_code => "John Doyle 2", country.es_code => "south arabia", hierarchy.es_code => 2}
       search = collection.new_search
       search.use_codes_instead_of_es_codes
       search.where hierarchy.code => 'root'
-      assert_results search, site3, site4
+      assert_results search, site3, site4, site5
     end
 
     it "searches by equality on hierarchy field" do

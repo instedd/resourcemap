@@ -38,10 +38,12 @@ class Field::HierarchyField < Field
   def decode(hierarchy_id_or_name)
     if find_hierarchy_option_by_id(hierarchy_id_or_name)
       hierarchy_id_or_name
-    elsif hierarchy_code = find_hierarchy_id_by_name(hierarchy_id_or_name)
-      hierarchy_code
     else
-      raise invalid_field_message(hierarchy_id_or_name)
+      hierarchy_code = find_hierarchy_id_by_name(hierarchy_id_or_name)
+      raise invalid_field_message(hierarchy_id_or_name) if hierarchy_code.blank?
+      raise "Multiple hierarchy option '#{hierarchy_id_or_name}' in field '#{code}'" if hierarchy_code.size > 1
+
+      hierarchy_code.first
     end
   end
 
@@ -61,17 +63,19 @@ class Field::HierarchyField < Field
   def ascendants_of_in_hierarchy(node_id_or_name)
     begin
       valid_value?(node_id_or_name)
-      node_id = node_id_or_name
+      node_ids = [node_id_or_name]
     rescue
-      node_id = find_hierarchy_id_by_name(node_id_or_name)
-      raise invalid_field_message(node_id_or_name) unless node_id
+      node_ids = find_hierarchy_id_by_name(node_id_or_name)
+      raise invalid_field_message(node_id_or_name) if node_ids.blank?
     end
 
     options = []
-    while (!node_id.blank?)
-      option = find_hierarchy_option_by_id(node_id)
-      options << { id: option[:id], name: option[:name], type: option[:type]}
-      node_id = option[:parent_id]
+    node_ids.each do |node_id|
+      while (!node_id.blank?)
+        option = find_hierarchy_option_by_id(node_id)
+        options << { id: option[:id], name: option[:name], type: option[:type]}
+        node_id = option[:parent_id]
+      end
     end
 
     options
@@ -86,13 +90,15 @@ class Field::HierarchyField < Field
 	def descendants_of_in_hierarchy(parent_id_or_name)
     begin
       valid_value?(parent_id_or_name)
-      parent_id = parent_id_or_name
+      parent_ids = [parent_id_or_name]
     rescue
-      parent_id = find_hierarchy_id_by_name(parent_id_or_name)
-      raise invalid_field_message(parent_id_or_name) unless parent_id
+      parent_ids = find_hierarchy_id_by_name(parent_id_or_name)
+      raise invalid_field_message(parent_id_or_name) if parent_ids.blank?
     end
     options = []
-    add_option_to_options options, find_hierarchy_item_by_id(parent_id)
+    parent_ids.each do |parent_id|
+      add_option_to_options options, find_hierarchy_item_by_id(parent_id)
+    end
 
     options.map { |item| item[:id] }
   end
@@ -136,12 +142,22 @@ class Field::HierarchyField < Field
 
   def find_hierarchy_id_by_name(value)
     if @cache_for_read
-      @options_by_name ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:name]] = opt[:id] }
+      @options_by_name ||= hierarchy_options.each_with_object({}) do |opt, hash|
+        if hash[opt[:name]]
+          hash[opt[:name]] << opt[:id]
+        else
+          hash[opt[:name]] = [opt[:id]]
+        end
+      end
       return @options_by_name[value]
     end
 
-    option = hierarchy_options.find { |opt| opt[:name] == value }
-    option[:id] if option
+    options = hierarchy_options.select { |opt| opt[:name] == value }
+    unless options.empty?
+      options.map { |option| option[:id]}
+    else
+      nil
+    end
   end
 
   def find_hierarchy_name_by_id(value)
@@ -196,19 +212,18 @@ class Field::HierarchyField < Field
       value_id = check_option_exists(value, use_codes_instead_of_es_codes)
       value_ids << value_id
     end
-    value_ids
+    value_ids.flatten
   end
 
   def check_option_exists(value, use_codes_instead_of_es_codes)
     value_id = nil
     if use_codes_instead_of_es_codes
       value_id = find_hierarchy_id_by_name(value)
-      value_id = value if value_id.nil? && !find_hierarchy_name_by_id(value).nil?
+      value_id = value if value_id.blank? && !find_hierarchy_name_by_id(value).nil?
     else
       value_id = value unless !hierarchy_options_codes.include? value.to_s
     end
     raise "Invalid hierarchy option in field #{code}" if value_id.nil?
     value_id
   end
-
 end
