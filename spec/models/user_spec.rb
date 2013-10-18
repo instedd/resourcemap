@@ -135,4 +135,13 @@ describe User do
       user_1.get_gateway.should eq gateway
     end
   end
+
+  # This bug only happens when de collections are deleted using "delete" or for old memberships
+  # since if they are destroyed all its memberships are also destroyed
+  it "should not get memberships for deleted collections" do
+    user = User.make
+    collection = user.create_collection Collection.make
+    collection.delete
+    user.collections_i_admin.should eq []
+  end
 end

@@ -9,7 +9,7 @@ class Collection < ActiveRecord::Base
   validates_presence_of :name
   validates_presence_of :icon
 
-  has_many :memberships, :dependent => :destroy
+  has_many :memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
   has_many :layers, order: 'ord', dependent: :destroy

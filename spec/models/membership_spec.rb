@@ -16,6 +16,14 @@ describe Membership do
   let(:member) { User.make }
   let(:membership) { collection.memberships.create! :user_id => member.id }
 
+  it "should delete memberships when the collection is destroyed" do
+    collection.destroy
+    user.reload
+    member.reload
+    user.memberships.should eq([])
+    member.memberships.should eq([])
+  end
+
   it "should create associations for default permissions on memberships create" do
     membership.location_permission.should be
     membership.name_permission.should be
