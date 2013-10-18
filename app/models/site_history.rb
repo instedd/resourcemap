@@ -1,6 +1,7 @@
 class SiteHistory < ActiveRecord::Base
   belongs_to :site
   belongs_to :collection
+  belongs_to :user
 
   serialize :properties, Hash
 

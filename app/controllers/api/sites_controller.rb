@@ -21,13 +21,14 @@ class Api::SitesController < ApplicationController
 
 
   def histories
-    if version = params[:version]
-      histories = site.histories.where(version: version)
+    histories = site.histories.includes(:user).select('site_histories.*, users.email')
+    histories = if version = params[:version]
+      histories.where(version: version)
     else
-      histories = site.histories.order('version ASC')
+      histories.order('version ASC')
     end
     respond_to do |format|
-      format.json { render json:  histories.to_json }
+      format.json { render json:  histories.map{|h| h.attributes.merge({user: h.user.email})} }
     end
   end
 end

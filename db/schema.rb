@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131018162412) do
+ActiveRecord::Schema.define(:version => 20131003192147) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -245,6 +245,7 @@ ActiveRecord::Schema.define(:version => 20131018162412) do
     t.integer  "site_id"
     t.string   "uuid"
     t.integer  "version",                                                     :default => 0
+    t.integer  "user_id"
   end
 
   add_index "site_histories", ["site_id"], :name => "index_site_histories_on_site_id"
