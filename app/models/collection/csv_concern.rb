@@ -59,7 +59,7 @@ module Collection::CsvConcern
       csv.each do |row|
         next unless row[0].present? && row[0] != 'resmap-id'
 
-        site = sites.new name: row[1].strip
+        site = sites.new name: row[1].strip, user: user
         site.mute_activities = true
         site.lat = row[2].strip if row[2].present?
         site.lng = row[3].strip if row[3].present?

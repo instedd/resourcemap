@@ -35,5 +35,17 @@ describe SiteHistory do
     site.current_history.version.should eq(2)
   end
 
+  it "should add which user edited on site changing" do
+    user = User.make
+    site = Site.make user: user
+    site.histories.count.should eq(1)
+
+    site.name = "Other"
+    site.save!
+
+    site.histories.count.should eq(2)
+    site.current_history.user_id.should eq(user.id)
+  end
+
 end
 
