@@ -45,7 +45,7 @@ module SearchBase
       end
     elsif field.kind == 'date'
       date_field_range(query_key, validated_value)
-    elsif field.kind == 'hierarchy' and value.is_a? Array
+    elsif field.kind == 'hierarchy' and validated_value.is_a? Array
       @search.filter :terms, query_key => validated_value
     elsif field.select_kind?
       @search.filter :term, query_key => validated_value

@@ -42,6 +42,13 @@ describe Search do
       assert_results search, site2, site4
     end
 
+    it "searches by name equality on hierarchy field" do
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      search.where hierarchy.code => 'root'
+      assert_results search, site3, site4
+    end
+
     it "searches by equality on hierarchy field" do
       search = collection.new_search
       search.where hierarchy.es_code => [1]
