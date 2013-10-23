@@ -1,6 +1,6 @@
 GIT
   remote: https://bitbucket.org/instedd/alto_guisso.git
-  revision: 10fedf5bf5c071a2d6ac05a16805067348dd32d3
+  revision: 1058fc24e37968e36bb8d5f84d8efc5455aa4afd
   branch: master
   specs:
     alto_guisso (0.0.1)
@@ -151,7 +151,7 @@ GEM
     jquery-rails (2.0.2)
       railties (>= 3.2.0, < 5.0)
       thor (~> 0.14)
-    json (1.8.0)
+    json (1.8.1)
     knockoutjs-rails (2.2.0)
       railties (~> 3.1)
     libv8 (3.3.10.4)
