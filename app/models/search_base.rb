@@ -34,28 +34,52 @@ module SearchBase
       return self
     end
 
-    validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
+    query_params = query_params(field, value)
+    @search.filter query_params.keys.first, query_params.values.first
+
+    self
+  end
+
+  def query_params(field, value, no_format=false)
     query_key = field.es_code
+    validated_value = value
+    unless no_format
+      validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
+    end
 
     if field.kind == 'yes_no'
       if Field.yes?(value)
-        @search.filter :term, query_key => true
+        {term: {query_key => true}}
+        # @search.filter :term, query_key => true
       else
-        @search.filter :not, { :term => { query_key => true } }
+        {not: {:term => { query_key => true }} }
+        # @search.filter :not, { :term => { query_key => true } }
       end
     elsif field.kind == 'date'
       date_field_range(query_key, validated_value)
     elsif field.kind == 'hierarchy' and validated_value.is_a? Array
-      @search.filter :terms, query_key => validated_value
+      {terms: {query_key => validated_value}}
+      # @search.filter :terms, query_key => validated_value
     elsif field.select_kind?
-      @search.filter :term, query_key => validated_value
+      {term: {query_key => validated_value}}
+      # @search.filter :term, query_key => validated_value
     elsif value.is_a? Array
-      @search.filter :terms, query_key => validated_value
+      {terms: {query_key => validated_value}}
+      # @search.filter :terms, query_key => validated_value
     else
-      @search.filter :term, query_key => value
+      {term: {query_key => validated_value}}
+      # @search.filter :term, query_key => value
     end
 
-    self
+  end
+
+  def date_field_range(key, valid_value)
+    date_from = valid_value[:date_from]
+    date_to = valid_value[:date_to]
+
+    {range: {key => {gte: date_from, lte: date_to}} }
+    # @search.filter :range, key => {gte: date_from, lte: date_to}
+    # self
   end
 
   def under(field, value)
@@ -123,20 +147,22 @@ module SearchBase
     self
   end
 
-  def date_field_range(key, valid_value)
-    date_from = valid_value[:date_from]
-    date_to = valid_value[:date_to]
-
-    @search.filter :range, key => {gte: date_from, lte: date_to}
-    self
-  end
 
   # Set a really large number for site parameter, since ES does not have a way to return all terms matching the hits
   # https://github.com/elasticsearch/elasticsearch/issues/1776
   # The number I put here is the max integer in Java
-  def histogram_search(field_es_code)
-    @search.facet "#field_{field_es_code}_ratings" do
-      terms field_es_code, :size => 2147483647, :all_terms => true
+  def histogram_search(field_es_code, filters=nil)
+    if filters.present?
+      query_params = query_params(filters.keys.first, filters.values.first, true)
+      query_hash = {facet_filter: {and: [query_params]} }
+      # facet_filter: {and: [not: {term: {"90" => true}}]}
+      @search.facet "field_#{field_es_code}_ratings", query_hash do
+        terms field_es_code, :size => 2147483647, :all_terms => true
+      end
+    else
+      @search.facet "field_#{field_es_code}_ratings" do
+        terms field_es_code, :size => 2147483647, :all_terms => true
+      end
     end
     self
   end
