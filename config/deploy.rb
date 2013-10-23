@@ -24,7 +24,7 @@ namespace :deploy do
   end
 
   task :symlink_configs, :roles => :app do
-    %W(settings.yml google_maps.key guisso.yml nuntium.yml).each do |file|
+    %W(settings.yml google_maps.key guisso.yml nuntium.yml newrelic.yml).each do |file|
       run "ln -nfs #{shared_path}/#{file} #{release_path}/config/"
     end
   end
