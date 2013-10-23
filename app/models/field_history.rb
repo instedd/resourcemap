@@ -6,7 +6,7 @@ class FieldHistory < ActiveRecord::Base
   belongs_to :collection
   belongs_to :layer
 
-  serialize :config
+  serialize :config, MarshalZipSerializable
   serialize :metadata
 
   def es_code
