@@ -8,7 +8,7 @@ class MarshalZipSerializable
   end
 
   def self.load(x)
-    return nil if x.nil?
+    return nil if (x.nil? || x == "--- \n...\n" )
 
     Marshal.load(Zlib.inflate(x))
   end
