@@ -84,11 +84,12 @@ class Collection < ActiveRecord::Base
   end
 
   def visible_layers_for(user, options = {})
+
     current_ability = Ability.new(user)
 
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
-      visible_layers = layer_histories.accessible_by(current_ability).at_date(date).includes(:fields)
+      visible_layers = layer_histories.accessible_by(current_ability).at_date(date)
     else
       visible_layers = layers.accessible_by(current_ability).includes(:fields)
     end
