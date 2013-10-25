@@ -40,36 +40,25 @@ module SearchBase
     self
   end
 
-  def query_params(field, value, no_format=false)
+  def query_params(field, value)
     query_key = field.es_code
-    validated_value = value
-    unless no_format
-      validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
+    validated_value = field.parse_for_query(value, @use_codes_instead_of_es_codes)
+
+    if field.kind == 'date'
+      date_field_range(query_key, validated_value)
+    elsif field.kind == 'yes_no' && !validated_value.is_a?(Array) && !Field.yes?(value)
+      { not: { :term => { query_key => true }}} # so we return false & nil values
+    elsif validated_value.is_a? Array
+      { terms: {query_key => validated_value} }
+    else
+      { term: {query_key => validated_value} }
     end
 
-    if field.kind == 'yes_no'
-      if Field.yes?(value)
-        {term: {query_key => true}}
-        # @search.filter :term, query_key => true
-      else
-        {not: {:term => { query_key => true }} }
-        # @search.filter :not, { :term => { query_key => true } }
-      end
-    elsif field.kind == 'date'
-      date_field_range(query_key, validated_value)
-    elsif field.kind == 'hierarchy' and validated_value.is_a? Array
-      {terms: {query_key => validated_value}}
-      # @search.filter :terms, query_key => validated_value
-    elsif field.select_kind?
-      {term: {query_key => validated_value}}
-      # @search.filter :term, query_key => validated_value
-    elsif value.is_a? Array
-      {terms: {query_key => validated_value}}
-      # @search.filter :terms, query_key => validated_value
-    else
-      {term: {query_key => validated_value}}
-      # @search.filter :term, query_key => value
-    end
+    # elsif field.select_kind?
+    #   {term: {query_key => validated_value}}
+    #   # @search.filter :term, query_key => validated_value
+    # else
+    # end
 
   end
 
@@ -77,9 +66,7 @@ module SearchBase
     date_from = valid_value[:date_from]
     date_to = valid_value[:date_to]
 
-    {range: {key => {gte: date_from, lte: date_to}} }
-    # @search.filter :range, key => {gte: date_from, lte: date_to}
-    # self
+    { range: { key => { gte: date_from, lte: date_to } } }
   end
 
   def under(field, value)
@@ -153,7 +140,7 @@ module SearchBase
   # The number I put here is the max integer in Java
   def histogram_search(field_es_code, filters=nil)
     if filters.present?
-      query_params = query_params(filters.keys.first, filters.values.first, true)
+      query_params = query_params(filters.keys.first, filters.values.first)
       query_hash = {facet_filter: {and: [query_params]} }
       # facet_filter: {and: [not: {term: {"90" => true}}]}
       @search.facet "field_#{field_es_code}_ratings", query_hash do

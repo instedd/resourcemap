@@ -10,17 +10,18 @@ describe Search do
     let!(:tables) { layer.numeric_fields.make code: 'tables' }
     let!(:first_name) { layer.text_fields.make code: 'first_name' }
     let!(:country) { layer.text_fields.make code: 'country' }
+    let!(:kind) { layer.select_many_fields.make code: 'kind', :config => {'options' => [{'id' => 1, 'code' => 'hosp', 'label' => 'Hospital'}, {'id' => 2, 'code' => 'center', 'label' => 'Health Center'}, {'id' => 3, 'code' => 'phar', 'label' => 'Pharmacy'}]} }
     let!(:hierarchy) { layer.hierarchy_fields.make code: 'hie', config: { "hierarchy" => [{ 'id' => 1, 'name' => 'root'}, { 'id' => 2, 'name' => 'root'}] } }
 
 
     let!(:site1) { collection.sites.make properties:
-      {beds.es_code => 5, tables.es_code => 1, first_name.es_code => "peterin panini", country.es_code => "argentina"} }
+      {beds.es_code => 5, tables.es_code => 1, first_name.es_code => "peterin panini", country.es_code => "argentina", kind.es_code => [1,2]} }
     let!(:site2) { collection.sites.make properties:
-      {beds.es_code => 10, tables.es_code => 2, first_name.es_code => "peter pan", country.es_code => "albania"}  }
+      {beds.es_code => 10, tables.es_code => 2, first_name.es_code => "peter pan", country.es_code => "albania", kind.es_code => [1,3]}  }
     let!(:site3) { collection.sites.make properties:
       {beds.es_code => 20, tables.es_code => 3, first_name.es_code => "Alice Cooper", country.es_code => "argelia", hierarchy.es_code => 1}  }
     let!(:site4) { collection.sites.make properties:
-      {beds.es_code => 10, tables.es_code => 4, first_name.es_code => "John Doyle", country.es_code => "south arabia", hierarchy.es_code => 1}  }
+      {beds.es_code => 10, tables.es_code => 4, first_name.es_code => "John Doyle", country.es_code => "south arabia", hierarchy.es_code => 1, kind.es_code => [2,3]}  }
 
     it "searches by equality" do
       search = collection.new_search
@@ -96,11 +97,30 @@ describe Search do
       assert_results search, site2, site3, site4
     end
 
-    it "search by multiple text values" do
+    it "searches by multiple text values" do
       search = collection.new_search
       search.where first_name.es_code => ["peter pan", "Alice Cooper"]
       assert_results search, site2, site3
     end
+
+    it "searches by multiple numeric values" do
+      search = collection.new_search
+      search.where tables.es_code => [1, 3]
+      assert_results search, site1, site3
+    end
+
+    it "searches by select many field accepting sites with at least the search parameter" do
+      search = collection.new_search
+      search.where kind.es_code => 3
+      assert_results search, site2, site4
+    end
+
+    it "searches by select many on more than one value" do
+      search = collection.new_search
+      search.where kind.es_code => [2,3]
+      assert_results search, site1, site2, site4
+    end
+
 
     context "full text search" do
       let!(:population_source) { layer.text_fields.make :code => 'population_source' }
