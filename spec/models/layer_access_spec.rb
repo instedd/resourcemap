@@ -50,7 +50,6 @@ describe "layer access" do
 
     it "should return layers form snapshot" do
 
-
       stub_time '2011-01-01 10:00:00 -0500'
       new_layer = collection.layers.make
       new_field = new_layer.text_fields.make collection_id: collection.id
@@ -58,12 +57,12 @@ describe "layer access" do
       stub_time '2011-01-01 11:00:00 -0500'
       new_field.name = "new name"
 
-      snapshot = Snapshot.make collection: collection, date: '2011-01-01 11:00:00 -0500'
+      snapshot = Snapshot.make collection: collection, date: '2011-01-01 12:00:00 -0500'
       user_snapshot = UserSnapshot.make user: user, snapshot: snapshot
 
       new_field.name = "other name"
 
-      membership.set_layer_access :verb => :read, :access => true, :layer_id => new_field.id
+      membership.set_layer_access :verb => :read, :access => true, :layer_id => new_layer.id
       membership.set_layer_access :verb => :read, :access => false, :layer_id => layer2.id
 
       layers = collection.visible_layers_for(user, {snapshot_id: snapshot.id})

@@ -56,7 +56,7 @@ class Ability
     # Same read permissions of Layer
     if !user.is_guest
       can :read, LayerHistory, :collection => { :memberships => { :user_id => user.id, :admin => true } }
-      can :read, LayerHistory, :collection => { :memberships => { :user_id => user.id} }, :id => user.readable_layer_ids
+      can :read, LayerHistory, :collection => { :memberships => { :user_id => user.id} }, :layer_id => user.readable_layer_ids
     else
       can :read, LayerHistory, :collection => {:public => true}
     end

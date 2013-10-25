@@ -84,7 +84,6 @@ class Collection < ActiveRecord::Base
   end
 
   def visible_layers_for(user, options = {})
-
     current_ability = Ability.new(user)
 
     if options[:snapshot_id]
