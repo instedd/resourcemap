@@ -7,6 +7,23 @@ class ImportWizard::ImportSpecs
     relate_codes_and_labels_for_select_fields
   end
 
+  def self.initial_guess(rows, collection, user)
+    fields = collection.fields.index_by &:code
+    columns_spec_array = []
+    admin = user.admins? collection
+
+    rows[0].each_with_index do |header, i|
+      column_spec = {}
+      column_spec[:header] = header ? header.strip : ''
+
+      guess_column_usage(column_spec, fields, rows, i, admin, columns_spec_array)
+
+      columns_spec_array << column_spec
+    end
+
+    columns_spec_array
+  end
+
   def new_fields
     @new_fields
   end
@@ -103,6 +120,92 @@ class ImportWizard::ImportSpecs
       if spec[:use_as] == 'new_field' && (spec[:kind] == 'select_one' || spec[:kind] == 'select_many') && spec[:selectKind] == 'code'
           spec[:related] = @data.find{|x| x[:code] == spec[:code] && x[:selectKind] == 'label'}
       end
+    end
+  end
+
+  def self.guess_column_usage(column, fields, rows, i, admin, spec_object_so_far)
+    if column[:header] =~ /^resmap-id$/i
+      column[:use_as] = :id
+      column[:kind] = :id
+      column[:id_matching_column] = "resmap-id"
+      return
+    end
+
+    if (field = fields[column[:header]])
+      if field.identifier? && !spec_object_so_far.any?{|spec| spec[:use_as] == :id}
+        column[:use_as] = :id
+        column[:id_matching_column] = field.id
+      else
+        column[:code] = column[:header].downcase.gsub(/\s+/, '') rescue ''
+        column[:label] = column[:header].titleize rescue ''
+
+        column[:use_as] = :existing_field
+        column[:field_id] = field.id
+        column[:kind] = field.kind.to_sym
+      end
+      return
+    end
+
+    if column[:header] =~ /^name$/i
+      column[:use_as] = :name
+      column[:kind] = :name
+      return
+    end
+
+    if column[:header] =~ /^\s*lat/i
+      column[:use_as] = :lat
+      column[:kind] = :location
+      return
+    end
+
+    if column[:header] =~ /^\s*(lon|lng)/i
+      column[:use_as] = :lng
+      column[:kind] = :location
+      return
+    end
+
+    if column[:header] =~ /last updated/i
+      column[:use_as] = :ignore
+      column[:kind] = :ignore
+      return
+    end
+
+    if not admin
+      column[:use_as] = :ignore
+      return
+    end
+
+    found = false
+
+    column[:code] = column[:header].downcase.gsub(/\s+/, '') rescue ''
+    column[:label] = column[:header].titleize rescue ''
+
+    rows[1 .. -1].each do |row|
+      next if row[i].blank?
+
+      found = true
+
+      if row[i].start_with?('0')
+        column[:use_as] = :new_field
+        column[:kind] = :text
+
+        return
+      end
+
+      begin
+        Float(row[i])
+      rescue
+        column[:use_as] = :new_field
+        column[:kind] = :text
+        return
+      end
+    end
+
+    if found
+      column[:use_as] = :new_field
+      column[:kind] = :numeric
+    else
+      column[:use_as] = :ignore
     end
   end
 end

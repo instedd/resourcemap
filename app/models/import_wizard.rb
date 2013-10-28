@@ -151,7 +151,7 @@ class ImportWizard
       CSV.foreach(csv_file_for user, collection) do |row|
         rows << row
       end
-      to_columns collection, rows, user.admins?(collection)
+      ImportWizard::ImportSpecs.initial_guess rows, collection, user
     end
 
     def execute(user, collection, columns_spec)
@@ -472,102 +472,6 @@ class ImportWizard
       sample_field.collection = collection
 
       sample_field.apply_format_and_validate(field_value, true, collection)
-    end
-
-    def to_columns(collection, rows, admin)
-      fields = collection.fields.index_by &:code
-      columns_initial_guess = []
-      rows[0].each do |header|
-        column_spec = {}
-        column_spec[:header] = header ? header.strip : ''
-        column_spec[:kind] = :text
-        column_spec[:code] = header ? header.downcase.gsub(/\s+/, '') : ''
-        column_spec[:label] = header ? header.titleize : ''
-        columns_initial_guess << column_spec
-      end
-
-      columns_initial_guess.each_with_index do |column, i|
-        guess_column_usage(column, fields, rows, i, admin)
-      end
-    end
-
-    def guess_column_usage(column, fields, rows, i, admin)
-      if column[:header] =~ /^resmap-id$/i
-        column[:use_as] = :id
-        column[:kind] = :id
-        return
-      end
-
-      if (field = fields[column[:header]])
-        if field.identifier?
-          column[:use_as] = :id
-          column[:id_matching_column] = field.id
-        else
-          column[:use_as] = :existing_field
-          column[:layer_id] = field.layer_id
-          column[:field_id] = field.id
-          column[:kind] = field.kind.to_sym
-        end
-        return
-      end
-
-      if column[:header] =~ /^name$/i
-        column[:use_as] = :name
-        column[:kind] = :name
-        return
-      end
-
-      if column[:header] =~ /^\s*lat/i
-        column[:use_as] = :lat
-        column[:kind] = :location
-        return
-      end
-
-      if column[:header] =~ /^\s*(lon|lng)/i
-        column[:use_as] = :lng
-        column[:kind] = :location
-        return
-      end
-
-      if column[:header] =~ /last updated/i
-        column[:use_as] = :ignore
-        column[:kind] = :ignore
-        return
-      end
-
-      if not admin
-        column[:use_as] = :ignore
-        return
-      end
-
-      found = false
-
-      rows[1 .. -1].each do |row|
-        next if row[i].blank?
-
-        found = true
-
-        if row[i].start_with?('0')
-          column[:use_as] = :new_field
-          column[:kind] = :text
-          return
-        end
-
-        begin
-          Float(row[i])
-        rescue
-          column[:use_as] = :new_field
-          column[:kind] = :text
-          return
-        end
-      end
-
-      if found
-        column[:use_as] = :new_field
-        column[:kind] = :numeric
-      else
-        column[:use_as] = :ignore
-      end
     end
 
     def read_csv_for(user, collection)
