@@ -99,7 +99,8 @@ onCollections ->
     @toogleExpandFullScreen: ->
       if @fullscreen() && !@fullscreenExpanded()
         @fullscreenExpanded(true)
-        $('#collections-main .left').hide()
+        $('#collections-main .left').addClass("collapse")
+        $('#collections-main .right').addClass("expand")
         $(".oleftcollapse").addClass("oleftexpand")
         $(".oleftcollapse").removeClass("oleftcollapse")
         @reloadMapSites()
@@ -107,9 +108,10 @@ onCollections ->
       else
         if @fullscreen() && @fullscreenExpanded()
           @fullscreenExpanded(false)
-          $('#collections-main .left').show()
           $(".oleftexpand").addClass("oleftcollapse")
           $(".oleftexpand").removeClass("oleftexpand")
+          $("#collections-main .left").removeClass("collapse")
+          $("#collections-main .right").removeClass("expand")
           @reloadMapSites()
 
 

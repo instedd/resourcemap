@@ -22,10 +22,16 @@
     display:block;
     left: -2px;
   }
-
+  .oleftexpand {
+    display:block;
+    left: 0px;
+  }
   .expand-collapse_button {
-    position: absolute;
-    z-index:1;
+    position: absolute !important;
+    z-index:10;
+    top: 50%;
+    left: -2px;
+    margin-top: -24px;
   }
 
   .tableheader {

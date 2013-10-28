@@ -102,6 +102,11 @@
   @include box-sizing(border-box);
   @include transition(all ease-out 0.2s);
   width: 24%;
+  overflow: hidden;
+  &.collapse {
+    width: 0px;
+    overflow: hidden;
+  }
 }
 .left.panel.wp50 {
   @include box-sizing(border-box);
@@ -117,6 +122,10 @@
   @include box-sizing(border-box);
   @include transition(all ease-out 0.2s);
   width: 76%;
+
+  &.expand {
+    width: 100%;
+  }
 }
 
 .tableheader.expanded {
