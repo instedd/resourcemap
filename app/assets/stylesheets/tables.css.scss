@@ -96,6 +96,16 @@
   color: #555555;
   height: 35px;
   padding-top: 5px;
+
+  .cadd {
+    vertical-align: middle;
+
+    & + span {
+      margin-left: -4px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
 }
 
 .left.panel.wp30 {
@@ -140,59 +150,65 @@
 
 
 
-
-
-
-/*.cheight {
-  height: 400px !important;
-}*/
 @media screen and (min-height: 300px) {
-  .cheight { height: 200px !important; }
+  .cheight.tablescroll { height: 200px !important; }
+  .cheight#map { height: 240px !important; }
 }
 
 @media screen and (min-height: 400px) {
-  .cheight { height: 280px !important; }
+  .cheight.tablescroll { height: 280px !important; }
+  .cheight#map { height: 320px !important; }
 }
 
 @media screen and (min-height: 500px) {
-  .cheight { height: 380px !important; }
+  .cheight.tablescroll { height: 380px !important; }
+  .cheight#map { height: 420px !important; }
 }
 
 @media screen and (min-height: 600px) {
-  .cheight { height: 480px !important; }
+  .cheight.tablescroll { height: 480px !important; }
+  .cheight#map { height: 520px !important; }
 }
 
 @media screen and (min-height: 700px) {
-  .cheight { height: 580px !important; }
+  .cheight.tablescroll { height: 580px !important; }
+  .cheight#map { height: 620px !important; }
    @-moz-document url-prefix() {
-    .cheight { height: 530px !important; }
+    .cheight.tablescroll { height: 530px !important; }
+    .cheight#map { height: 570px !important; }
   }
 }
 @media screen and (min-height: 800px) {
-  .cheight { height: 630px !important; }
+  .cheight.tablescroll { height: 630px !important; }
+  .cheight#map { height: 670px !important; }
 }
 
 body.fullscreen {
 
   @media screen and (min-height: 500px) {
-    .cheight { height: 385px !important; }
+    .cheight.tablescroll { height: 385px !important; }
+    .cheight#map { height: 425px !important; }
   }
 
   @media screen and (min-height: 650px) {
-    .cheight { height: 550px !important; }
+    .cheight.tablescroll { height: 550px !important; }
+    .cheight#map { height: 590px !important; }
   }
 
   @media screen and (min-height: 700px) {
-    .cheight { height: 600px !important; }
+    .cheight.tablescroll { height: 600px !important; }
+    .cheight#map { height: 640px !important; }
   }
   @media screen and (min-height: 800px) {
-    .cheight { height: 705px !important; }
+    .cheight.tablescroll { height: 705px !important; }
+    .cheight#map { height: 745px !important; }
   }
 
 }
 
 @-moz-document url-prefix() {
   @media screen and (min-height: 700px) {
-    body.fullscreen .cheight { height: 530px !important; }
+    body.fullscreen .cheight.tablescroll { height: 530px !important; }
+    body.fullscreen .cheight#map { height: 570px !important; }
   }
 }

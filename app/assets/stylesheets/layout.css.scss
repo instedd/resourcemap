@@ -13,7 +13,22 @@ body.fullscreen #container {
   width: 100%;
   overflow: hidden;
 }
+#header {
+  width: 100%;
 
+  .left {
+    width: 25%;
+
+    img {
+      margin-left: 8px;
+    }
+  }
+  .BreadCrumb {
+    width: 73%;
+    margin-top: 20px;
+    float: left;
+  }
+}
 #footer-container {
   width: 96%;
   min-width: 920px;
@@ -378,7 +393,7 @@ td.loadmore { height: 36px }
 
 .GralTable button.farrow { margin: 3px 2px !important;}
 
-.createCollection { position:relative; top:1px; color: #3d73ad; }
+.createCollection { color: #3d73ad; }
 
 .btupdn { display: inline-block; vertical-align:bottom; width:24px; height:24px; position:relative }
 .fmoveup, .fmovedown {
