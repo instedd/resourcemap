@@ -367,7 +367,14 @@ td.loadmore { height: 36px }
 
 .highlight { background-color: yellow; }
 
-.greyback { background:#d0d0d0; display:inline-block; margin:2px 2px 2px 0; padding-right:4px; border:1px solid #dddddd; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
+.greyback {
+  @include border-radius(3px);
+  background:#d0d0d0;
+  line-height: 22px;
+  display:inline-block;
+  margin:2px 2px 2px 0;
+  padding-right:4px;
+}
 .greyback button { margin:0px; padding:0px; vertical-align:baseline; color:#666666 }
 .greyback span { vertical-align:baseline; margin:0 0 0 3px; color:#666666 }
 .greyback:active span { display:inline-block }
@@ -510,4 +517,21 @@ form.w80 {
 
 a.tgrey {
   cursor: pointer;
+}
+
+.refine {
+  color: #555555;
+}
+
+.middlebuttons > div {
+  color: #555555 !important;
+
+  &:after {
+    content: ',';
+    display:inline-block;
+  }
+
+  &:last-child:after {
+    display: none;
+  }
 }
