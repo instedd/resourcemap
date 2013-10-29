@@ -715,15 +715,15 @@ describe ImportWizard do
     column_spec.should include({:header=>"Name", :kind=>:name, :use_as=>:name})
     column_spec.should include({:header=>"Lat", :kind=>:location, :use_as=>:lat})
     column_spec.should include({:header=>"Lon", :kind=>:location, :use_as=>:lng})
-    column_spec.should include({:header=>"text", :kind=>:text, :code=>"text", :label=>"Text", :use_as=>:existing_field, :field_id=>text.id})
-    column_spec.should include({:header=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :use_as=>:existing_field, :field_id=>numeric.id})
-    column_spec.should include({:header=>"select_one", :kind=>:select_one, :code=>"select_one", :label=>"Select One", :use_as=>:existing_field, :field_id=>select_one.id})
-    column_spec.should include({:header=>"select_many", :kind=>:select_many, :code=>"select_many", :label=>"Select Many", :use_as=>:existing_field, :field_id=>select_many.id})
-    column_spec.should include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :field_id=>hierarchy.id})
-    column_spec.should include({:header=>"site", :kind=>:site, :code=>"site", :label=>"Site", :use_as=>:existing_field, :field_id=>site.id})
-    column_spec.should include({:header=>"date", :kind=>:date, :code=>"date", :label=>"Date", :use_as=>:existing_field, :field_id=>date.id})
-    column_spec.should include({:header=>"user", :kind=>:user, :code=>"user", :label=>"User", :use_as=>:existing_field, :field_id=>director.id})
-    column_spec.should include({:header=>"email", :kind=>:email, :code=>"email", :label=>"Email", :use_as=>:existing_field, :field_id=>email_field.id})
+    column_spec.should include({:header=>"text", :kind=>:text, :code=>"text", :label=>"Text", :use_as=>:existing_field, :field_id=>text.id, :layer_id=>layer.id})
+    column_spec.should include({:header=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :use_as=>:existing_field, :field_id=>numeric.id, :layer_id=>layer.id})
+    column_spec.should include({:header=>"select_one", :kind=>:select_one, :code=>"select_one", :label=>"Select One", :use_as=>:existing_field, :field_id=>select_one.id, :layer_id=>layer.id})
+    column_spec.should include({:header=>"select_many", :kind=>:select_many, :code=>"select_many", :label=>"Select Many", :use_as=>:existing_field, :field_id=>select_many.id, :layer_id=>layer.id})
+    column_spec.should include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :field_id=>hierarchy.id, :layer_id=>layer.id})
+    column_spec.should include({:header=>"site", :kind=>:site, :code=>"site", :label=>"Site", :use_as=>:existing_field, :field_id=>site.id, :layer_id=>layer.id})
+    column_spec.should include({:header=>"date", :kind=>:date, :code=>"date", :label=>"Date", :use_as=>:existing_field, :field_id=>date.id, :layer_id=>layer.id})
+    column_spec.should include({:header=>"user", :kind=>:user, :code=>"user", :label=>"User", :use_as=>:existing_field, :field_id=>director.id, :layer_id=>layer.id})
+    column_spec.should include({:header=>"email", :kind=>:email, :code=>"email", :label=>"Email", :use_as=>:existing_field, :field_id=>email_field.id, :layer_id=>layer.id})
 
     ImportWizard.delete_files(user, collection)
   end
@@ -1739,8 +1739,8 @@ describe ImportWizard do
         column_spec.should include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
         column_spec.should include({:header=>"name", :kind=>:name, :use_as=>:name})
         #TODO: label should be "Other Id" or "Moh Id" and not only "Other" or "Moh"
-        column_spec.should include({:header=>"other-id", :use_as=>:existing_field, :code=>"other-id", :label=>"Other", :kind=> :identifier, :field_id => other_id.id})
-        column_spec.should include({:header=>"moh-id", :use_as=>:existing_field, :code=>"moh-id", :label=>"Moh", :kind=> :identifier, :field_id => moh_id.id})
+        column_spec.should include({:header=>"other-id", :use_as=>:existing_field, :code=>"other-id", :label=>"Other", :kind=> :identifier, :field_id => other_id.id, :layer_id=>layer.id})
+        column_spec.should include({:header=>"moh-id", :use_as=>:existing_field, :code=>"moh-id", :label=>"Moh", :kind=> :identifier, :field_id => moh_id.id, :layer_id=>layer.id})
 
         ImportWizard.delete_files(user, collection)
       end
@@ -1757,7 +1757,7 @@ describe ImportWizard do
         column_spec = ImportWizard.guess_columns_spec user, collection
         column_spec.should include({:header=>"name", :kind=>:name, :use_as=>:name})
         column_spec.should include({:header=>"moh-id", :use_as=>:id, :id_matching_column=>moh_id.id})
-        column_spec.should include({:header=>"other-id", :use_as=>:existing_field, :code=>"other-id", :label=>"Other", :kind=> :identifier, :field_id => other_id.id})
+        column_spec.should include({:header=>"other-id", :use_as=>:existing_field, :code=>"other-id", :label=>"Other", :kind=> :identifier, :field_id => other_id.id, :layer_id=>layer.id})
 
         ImportWizard.delete_files(user, collection)
       end

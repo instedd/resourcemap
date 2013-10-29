@@ -141,6 +141,7 @@ class ImportWizard::ImportSpecs
 
         column[:use_as] = :existing_field
         column[:field_id] = field.id
+        column[:layer_id] = field.layer_id
         column[:kind] = field.kind.to_sym
       end
       return
