@@ -1762,6 +1762,32 @@ describe ImportWizard do
         ImportWizard.delete_files(user, collection)
       end
     end
+
+    it "when the pivot value does not exist, an existing 'identifier' value should be invalid" do
+      site = collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+
+      csv_string = CSV.generate do |csv|
+        csv << ['moh-id', 'name', 'other-id']
+        csv << ['new-one', site.name,  '456']
+      end
+
+      column_specs = [
+        {header: 'moh-id', use_as: "id", id_matching_column: moh_id.id.to_s},
+        {header: 'name', use_as: "name"},
+        {header: 'other-id', use_as: "existing_field", field_id: other_id.id.to_s},
+      ]
+
+      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
+      sites_errors = sites_preview[:errors]
+      data_errors = sites_errors[:data_errors]
+      data_errors.length.should eq(1)
+
+      data_errors.first[:description].should eq "Some of the values in column 3 are not valid for the type identifier: the value already exists in the collection."
+
+
+    end
   end
 
 end

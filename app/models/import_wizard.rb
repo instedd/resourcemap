@@ -340,7 +340,7 @@ class ImportWizard
           # we need the site in order to validate the uniqueness of the luhn id value
           # The value should not be invlid if this same site has it
           if csv_id_column && field.kind == 'identifier'
-            if id_mapping
+            if id_mapping && id_mapping[csv_id_column[field_number]]
               # An identifier value was selected as pivot
               site_id = id_mapping[csv_id_column[field_number]]["id"]
             else
