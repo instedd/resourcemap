@@ -6,6 +6,20 @@ module Field::ValidationConcern
     value
   end
 
+  def parse_for_query(value, use_codes_instead_of_es_codes = false)
+    if !value.is_a?(Array)
+      value = [value]
+    end
+
+    parsed = value.map { |v| apply_format_query_validation(v, use_codes_instead_of_es_codes) }
+
+    if parsed.count == 1
+      parsed.first
+    else
+      parsed
+    end
+  end
+
   def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site_id = nil)
     decoded_value = value.blank? ? nil : decode(value)
     if decoded_value

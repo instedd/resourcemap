@@ -49,7 +49,9 @@ class Api::CollectionsController < ApplicationController
 
     raise "Field not found" if fields.empty?
 
-    render json: perform_histogram_search(fields.first)
+    filters = find_fields(params[:filters])
+
+    render json: perform_histogram_search(fields.first, filters)
   end
 
   def geo_json
@@ -59,9 +61,9 @@ class Api::CollectionsController < ApplicationController
 
   private
 
-  def perform_histogram_search(field)
+  def perform_histogram_search(field, filters=nil)
     search = new_search
-    search.histogram_search(field.es_code)
+    search.histogram_search(field.es_code, filters)
     search.histogram_results(field.es_code)
   end
 
@@ -135,5 +137,15 @@ class Api::CollectionsController < ApplicationController
     Rails.logger.info ex.backtrace
 
     render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
+  end
+
+  def find_fields(params)
+    return nil if params.nil?
+    replaced_params = {}
+    params.each do |k,v|
+      field = collection.fields.where(code: k).first
+      replaced_params[field] = v
+    end
+    replaced_params
   end
 end
