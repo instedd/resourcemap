@@ -22,8 +22,7 @@ onLayers ->
       @currentFieldMarginTop = ko.computed =>
         if @currentLayer()
           idx = @currentLayer().fields().indexOf(@currentField())
-          margin = idx * 73
-          margin += 3 if idx > 0
+          margin = idx * 70
           "#{margin}px"
         else
           0

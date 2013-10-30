@@ -1,3 +1,9 @@
+.feditor-top {
+  height: 10px;
+}
+.feditor-container {
+  padding: 0 5px 13px 3px;
+}
 .hierarchy-container {
   @include border-radius(3px);
   @include box-shadow(0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset);
@@ -9,9 +15,11 @@
 }
 
 .change_layer {
+  font-size: 12px;
+  color: #555555;
   position: absolute;
   right: 5px;
-  bottom: 16px;
+  top: 33px;
 }
 
 .elipsis {
@@ -138,4 +146,51 @@
       }
     }
   }
+}
+
+.mclist.wp100 {
+  @include box-sizing(border-box);
+  width: 100%;
+
+  li {
+    @include clearfix;
+    padding: 4px 0 2px 0;
+
+    input {
+      @include box-sizing(border-box);
+
+      &.arrowinput {
+        width: 85px !important;
+        padding-left: 4px;
+        display: block;
+        float: left;
+      }
+
+      &.ux-text {
+        width: 55%;
+        margin-left: 5px;
+        padding-left: 4px;
+        display: block;
+        float: left;
+      }
+
+      &.ux-clist {
+        width: 55%;
+        margin-left: 5px;
+        display: block;
+        float: left;
+      }
+    }
+
+    .arrowgrey {
+      display: block;
+      float: left;
+    }
+
+    .clist-remove,
+    .clist-add {
+      float: right;
+    }
+  }
+
 }

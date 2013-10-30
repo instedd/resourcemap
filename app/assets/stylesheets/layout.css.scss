@@ -339,8 +339,7 @@ ul.taglist li a { display:block }
 
 .toptitle { width:552px; float:left; }
 .toptitle span { color:#000000 }
-.rightbuttons { position:absolute; right:5px; top:5px }
-.rightbuttons button { margin:0 }
+
 
 .middlebuttons {
   margin-top:25px;
@@ -402,29 +401,55 @@ td.loadmore { height: 36px }
 
 .createCollection { color: #3d73ad; }
 
-.btupdn { display: inline-block; vertical-align:bottom; width:24px; height:24px; position:relative }
-.fmoveup, .fmovedown {
-    background-color: transparent;
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    border: medium none;
-    cursor: pointer;
-    display: inline-block;
-    height: 12px;
-    min-width: 24px;
-}
-.fmoveup:hover, .fmovedown:hover {
-    background-position: 0 -30px;
-}
-.fmoveup:active, .fmovedown:active {
-    background-position: 0 -60px;
-}
-.fmovedown { background:url(/assets/moveDown.png) no-repeat; position:absolute; bottom:1px }
-.fmoveup { background:url(/assets/moveUp.png) no-repeat; position:absolute; top:0 }
+.rightbuttons {
+  position:absolute;
+  right:5px;
+  top:5px;
 
-.fmoveup.disabled, .fmoveup.disabled:hover, .fmoveup.disabled:active,
-.fmovedown.disabled, .fmovedown.disabled:hover, .fmovedown.disabled:active {
-  background-position: 0px -90px;
+  button {
+    margin: 0;
+    vertical-align: middle;
+  }
+
+  .btupdn {
+    display: inline-block;
+    vertical-align:middle;
+    width:24px;
+    height:24px;
+    position:relative;
+
+    .fmovedown {
+      background:url(/assets/moveDown.png) no-repeat; position:absolute; bottom:1px;
+    }
+    .fmoveup {
+      background:url(/assets/moveUp.png) no-repeat; position:absolute; top: 0;
+    }
+
+    .fmoveup, .fmovedown {
+      background-color: transparent;
+      background-position: 0 0;
+      background-repeat: no-repeat;
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+      height: 12px;
+      width: 24px;
+
+      &:hover {
+        background-position: 0 -30px;
+      }
+
+      &:active {
+        background-position: 0 -60px;
+      }
+
+      &.disabled,
+      &.disabled:hover,
+      &.disabled:active {
+        background-position: 0px -90px;
+      }
+    }
+  }
 }
 
 .hierarchy.active { background:#d0d0d0 }
