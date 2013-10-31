@@ -560,3 +560,23 @@ a.tgrey {
     display: none;
   }
 }
+
+.fancybox-inner {
+
+  .box.alert {
+    @include box-shadow(none);
+    padding: 8px;
+    margin: 0;
+  }
+
+  .bottom-actions {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    a {
+      display: inline-block;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+  }
+}

@@ -17,6 +17,7 @@
     = render '/current_snapshot_message'
     %br
 
+  %br
   %h2.loading Curate Data
   %p Specify how to map each column to a field
 
@@ -28,8 +29,8 @@
     This may take a while depending on the size of your file.
 
   #import-wizard-main.hidden-until-loaded
-    
-    .info-box.drop_shadow
+
+    %div
       .i18g-information.left
       .info-items.left
         /ko if: !hasId()

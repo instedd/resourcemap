@@ -40,11 +40,11 @@
           = label_tag "select_kind_group_#{option[1]}", option[0]
       //ko
       //ko
-  %div{style: 'bottom:0px;position:absolute;width:100%;'}
+  .bottom-actions
     %hr
-    %button.grey.right{ko(click: 'saveAndClose'), style: 'margin-left:10px;'}
+    %button.grey{ko(click: 'saveAndClose')}
       Apply
-    %a.right{ko(click: 'discardAndClose'), style: 'margin-top:12px;'}
+    %a{ko(click: 'discardAndClose')}
       Cancel
 
 
