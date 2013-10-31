@@ -1,6 +1,6 @@
 -# Hierarchy item template
 %script{type: "text/html", id: "hierarchy-editor-items-template"}
-  %li{ko(css: "{'expanded': expanded, 'collapsed': !expanded(), active: active}", event: { mouseover: :setActive, mouseout: :removeActive }, mouseoverBubble: false)}
+  %li{ko(css: "{'expanded': expanded, 'collapsed': !expanded(), on: active}", event: { mouseover: :setActive, mouseout: :removeActive }, mouseoverBubble: false)}
 
     /ko if: !editing()
     .name{ko(click: :edit)}
