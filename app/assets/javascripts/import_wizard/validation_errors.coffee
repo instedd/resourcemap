@@ -27,6 +27,14 @@ onImportWizard ->
           for errorId, errorColumns of errors
             error_description = {error_kind: errorType, columns: errorColumns}
             switch errorType
+              when 'invalid_site_identifier'
+                error_description.description = "Invalid resmap-id value. Pivot cannot be blank"
+                error_description.more_info = "ResourceMap uses the 'resmap-id' column to identify sites."
+                error_description.more_info = error_description.more_info + " If you want to update sites, all the values in the column 'resmap-id' must correspond to already existing values for the 'matching identifier field' in the collection."
+                error_description.more_info = error_description.more_info + " Non existing values will create new sites with this value for the matching identifier field."
+                if errorColumns.rows.length < 25
+                  error_description.more_info = error_description.more_info + " The invalid site-id values are in the following rows: #{@toIndex1BasedSentence(errorColumns.rows)}."
+
               when 'missing_name'
                 error_description.description = "Please select a column to be used as 'Name'"
                 error_description.more_info = "You need to select a column to be used as 'Name' of the sites in order to continue with the upload."
