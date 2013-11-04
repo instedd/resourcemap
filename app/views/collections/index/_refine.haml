@@ -72,7 +72,7 @@
         %option{value: 'empty'} has no value
 
       <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
-      %input.autocomplete-site-input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
+      %input.autocomplete-site-input.ux-search{ko(autocomplete: '$root.expandedRefinePropertyValue', value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, hasfocus: true, source: "$root.currentCollection().searchSitesUrl()"), type: :text}
       <!-- /ko -->
 
       %a.button.white{ko(click: '$root.filterByProperty')} OK
