@@ -28,7 +28,7 @@ class Api::SitesController < ApplicationController
       histories.order('version ASC')
     end
     respond_to do |format|
-      format.json { render json:  histories.map{|h| h.attributes.merge({user: h.user.email})} }
+      format.json { render json:  histories.map{|h| h.attributes.merge({user: h.user.try(:email)})} }
     end
   end
 end
