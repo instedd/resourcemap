@@ -30,4 +30,26 @@ describe ImportWizardsController do
     response.response_code.should == 401
   end
 
+  it "should get job status of an enqued job" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Lat', 'Lon']
+      csv << ['Foo', '1.2', '3.4']
+      csv << ['Bar', '5.6', '7.8']
+    end
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string
+    ImportWizard.mark_job_as_pending user, collection
+
+    get :job_status, collection_id: collection.id
+    json_response = JSON.parse response.body
+    json_response["status"].should eq("pending")
+  end
+
+  it "should not fail when quering job status of a non enqued job" do
+    get :job_status, collection_id: collection.id
+    response.status.should eq(404)
+    json_response = JSON.parse response.body
+    json_response["status"].should eq("not_found")
+  end
+
 end

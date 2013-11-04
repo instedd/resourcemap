@@ -64,7 +64,11 @@ class ImportWizardsController < ApplicationController
   end
 
   def job_status
-    render json: {:status => import_job.status}
+    if import_job
+      render json: {:status => import_job.status}
+    else
+      render json: {:status => :not_found}, status: 404
+    end
   end
 
   def logs
