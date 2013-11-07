@@ -22,29 +22,30 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActiveRecord::RecordNotFound do |x|
     respond_to do |format|
-      format.html { render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true}
+      format.html { render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true }
       format.json { render json: { message: "Record not found"} , status: 404 }
     end
   end
 
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
-      format.html { render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden}
+      format.html {
+        if current_user.is_guest
+          authenticate_user!
+        else
+         render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
+        end
+      }
       format.json { render json: { message: "Access Denied"} , status: 404 }
     end
   end
 
-  def setup_guest_user
-    u = User.new is_guest: true
-    # Empty membership for the current collection
-    # This is used in SitesPermissionController.index
-    # TODO: Manage permissions passing current_ability to client
-    u.memberships = [Membership.new(collection_id: collection.id)]
-    @guest_user = u
+  def guest_user
+    @guest_user ||= User.new(is_guest: true)
   end
 
   def current_user
-    super || @guest_user
+    super || guest_user
   end
 
   def after_sign_in_path_for(resource)

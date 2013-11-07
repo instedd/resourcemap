@@ -1,12 +1,11 @@
 class GatewaysController < ApplicationController
-  before_filter :setup_guest_user, :only => :index
   before_filter :authenticate_user!, :except => :index
 
   def index
     method = Channel.nuntium_info_methods
     respond_to do |format|
-      format.html 
-      format.json { render json: params[:without_nuntium] ?  current_user.channels.where("channels.is_enable=?", true).all.as_json : current_user.channels.select('channels.id,channels.name,channels.password,channels.nuntium_channel_name,channels.is_enable,channels.basic_setup, channels.advanced_setup, channels.national_setup').all.as_json(methods: method)}    
+      format.html
+      format.json { render json: params[:without_nuntium] ?  current_user.channels.where("channels.is_enable=?", true).all.as_json : current_user.channels.select('channels.id,channels.name,channels.password,channels.nuntium_channel_name,channels.is_enable,channels.basic_setup, channels.advanced_setup, channels.national_setup').all.as_json(methods: method)}
     end
   end
 
@@ -27,7 +26,7 @@ class GatewaysController < ApplicationController
   def destroy
     channel = Channel.find params[:id]
     channel.destroy
-    render json: channel 
+    render json: channel
   end
 
   def try
@@ -35,9 +34,9 @@ class GatewaysController < ApplicationController
     SmsNuntium.notify_sms [params[:phone_number]], 'Welcome to resource map!', channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
     render json: channel.as_json
   end
-  
+
   def status
-    channel = Channel.find params[:id] 
+    channel = Channel.find params[:id]
     channel.is_enable = params[:status]
     channel.save!
     render json: channel

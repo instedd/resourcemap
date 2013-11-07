@@ -64,7 +64,7 @@ describe CollectionsController do
     it 'should return forbidden in delete if user tries to delete a collection of which he is not member'  do
       sign_in not_member
       delete :destroy, id: collection.id
-      response.status.should eq(403)
+      response.status.should eq(404)
       delete :destroy, id: public_collection.id
       response.status.should eq(403)
     end

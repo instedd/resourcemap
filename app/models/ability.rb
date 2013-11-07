@@ -4,8 +4,6 @@ class Ability
 
   def initialize(user)
 
-    user ||= User.new :is_guest => true
-
     ### Collection ###
 
     # Admin abilities

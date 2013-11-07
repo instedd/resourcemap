@@ -1,19 +1,8 @@
 class CollectionsController < ApplicationController
 
-  before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
-  before_filter :authenticate_user!, :except => [:render_breadcrumbs], :unless => Proc.new { collection && collection.public }
-
   authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
 
-  expose(:collections) {
-    if current_user && !current_user.is_guest
-      # public collections are accesible by all users
-      # here we only need the ones in which current_user is a member
-      current_user.collections.reject{|c| c.id.nil?}
-    else
-      Collection.accessible_by(current_ability)
-    end
-  }
+  expose(:collections) { Collection.accessible_by(current_ability) }
 
   expose(:collections_with_snapshot) { select_each_snapshot(collections) }
 
@@ -22,7 +11,9 @@ class CollectionsController < ApplicationController
   before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
 
   def index
-    if params[:name].present?
+    if params[:collection_id].blank? && current_user.is_guest
+      redirect_to root_url
+    elsif params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
       add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'

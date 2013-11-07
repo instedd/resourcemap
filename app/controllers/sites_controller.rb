@@ -1,5 +1,4 @@
 class SitesController < ApplicationController
-  before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
   before_filter :authenticate_user!, :except => [:index, :search], :unless => Proc.new { collection && collection.public }
   before_filter :authenticate_collection_admin!, :only => :update
 

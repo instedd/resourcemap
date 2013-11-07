@@ -17,6 +17,7 @@ class LayersController < ApplicationController
   expose(:layer)
 
   def index
+    layers # signal that layers will be used on this page (loaded by ajax later)
     respond_to do |format|
       format.html do
         show_collection_breadcrumb

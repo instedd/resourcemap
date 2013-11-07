@@ -1,5 +1,4 @@
 class FieldsController < ApplicationController
-	before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
   before_filter :authenticate_user!, :unless => Proc.new { collection && collection.public && (params[:action] == "index" || params[:action] == "show") }
   before_filter :authenticate_collection_admin!, except: :index
 
