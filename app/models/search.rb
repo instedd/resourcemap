@@ -1,11 +1,7 @@
 class Search
   include SearchBase
 
-  class << self
-    attr_accessor :page_size
-  end
-  Search.page_size = 50
-
+  attr_accessor :page_size
   attr_accessor :collection
 
   def initialize(collection, options)
@@ -19,6 +15,7 @@ class Search
     end
     @sort_list = {}
     @from = 0
+    @page_size = 50
   end
 
   def to_curl
@@ -26,7 +23,7 @@ class Search
   end
 
   def page(page)
-    @search.from((page - 1) * self.class.page_size)
+    @search.from((page - 1) * self.page_size)
     self
   end
 
@@ -81,7 +78,7 @@ class Search
     elsif @unlimited
       @search.size 1_000_000
     else
-      @search.size self.class.page_size
+      @search.size self.page_size
     end
 
     Rails.logger.debug @search.to_curl if Rails.logger.level <= Logger::DEBUG

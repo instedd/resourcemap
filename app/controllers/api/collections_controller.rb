@@ -68,13 +68,14 @@ class Api::CollectionsController < ApplicationController
   end
 
   def perform_search(*options)
-    except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name]
+    except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size]
 
     search = new_search
 
     search.use_codes_instead_of_es_codes
 
     if options.include? :page
+      search.page_size = params[:page_size].to_i if params[:page_size]
       search.page params[:page].to_i if params[:page]
       except_params << :page
     elsif options.include? :count
