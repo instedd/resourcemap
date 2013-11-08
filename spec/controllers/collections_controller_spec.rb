@@ -16,17 +16,27 @@ describe CollectionsController do
 
   # Issue #627
   it "should not get public repeated one time for each membership" do
-    # load user's collection
     collection.public = true
     collection.save
 
-    # create another one (public)
     user2 = collection.users.make email: 'user2@email.com'
     collection.memberships.create! user_id: user2.id
 
     get :index, format: 'json'
     collections =  JSON.parse response.body
     collections.count.should eq(1)
+  end
+
+  it "should get public collection being a guest user" do
+    collection.public = true
+    collection.save
+
+    sign_out user
+
+    get :show, format: 'json', id: collection.id
+    response.should be_success
+    json = JSON.parse response.body
+    json["name"].should eq(collection.name)
   end
 
   describe "get ES resutls" do

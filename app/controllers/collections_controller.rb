@@ -2,9 +2,9 @@ class CollectionsController < ApplicationController
 
   authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
 
-  expose(:collections) { current_user.collections }
+  expose(:collections) { Collection.accessible_by(current_ability) }
 
-  expose(:collections_with_snapshot) { select_each_snapshot(collections) }
+  expose(:collections_with_snapshot) { select_each_snapshot(collections.uniq) }
 
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
