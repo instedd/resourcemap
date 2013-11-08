@@ -143,6 +143,7 @@ class Api::CollectionsController < ApplicationController
   def find_fields(params)
     return nil if params.nil?
     replaced_params = {}
+    params = JSON.parse(params) unless params.respond_to?(:each)
     params.each do |k,v|
       field = collection.fields.where(code: k).first
       replaced_params[field] = v
