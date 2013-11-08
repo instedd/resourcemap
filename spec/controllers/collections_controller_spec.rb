@@ -14,6 +14,21 @@ describe CollectionsController do
     assert_redirected_to collection_url(collection.id)
   end
 
+  # Issue #627
+  it "should not get public repeated one time for each membership" do
+    # load user's collection
+    collection.public = true
+    collection.save
+
+    # create another one (public)
+    user2 = collection.users.make email: 'user2@email.com'
+    collection.memberships.create! user_id: user2.id
+
+    get :index, format: 'json'
+    collections =  JSON.parse response.body
+    collections.count.should eq(1)
+  end
+
   describe "get ES resutls" do
       before(:each) do
         layer = collection.layers.make
