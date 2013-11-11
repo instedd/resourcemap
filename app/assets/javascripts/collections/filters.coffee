@@ -146,7 +146,11 @@ onCollections ->
       @valueLabel = valueLabel
 
     setQueryParams: (options, api = false) =>
-      options[@field.codeForLink(api)] = @value
+      if api
+        value = @field.codeForOption(@value, api)
+      else
+        value = @value
+      options[@field.codeForLink(api)] = value
 
     description: =>
       if @valueLabel

@@ -40,4 +40,6 @@ onCollections ->
       filter.setQueryParams(q, api) for filter in @filters
       q
 
-    link: (format) => "/api/collections/#{@id}.#{format}?#{$.param @queryParams(true)}"
+    link: (format) =>
+      parameters = $.param  @queryParams(true)
+      "/api/collections/#{@id}.#{format}?#{parameters}"

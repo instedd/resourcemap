@@ -208,6 +208,13 @@ onCollections ->
           return option.label
       null
 
+    codeForOption: (value, api = false) =>
+      if @options and api
+        option = @options.filter (element) => element.id == value
+        if option.length > 0 then option[0].code else value
+      else
+        value
+
     # In the table view, use a fixed size width for each property column,
     # which depends on the length of the name.
     suggestedWidth: =>
