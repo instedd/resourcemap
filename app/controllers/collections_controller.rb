@@ -11,6 +11,11 @@ class CollectionsController < ApplicationController
   before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
 
   def index
+    # Keep only the collections of which the user is membership
+    # since the public ones are accessible also, but should not be listed in the collection's view
+    user_memberships = current_user.memberships.map{|c| c.collection_id.to_s}
+    collections_with_snapshot_by_user = collections_with_snapshot.select{|col| user_memberships.include?(col["id"].to_s)}
+
     if params[:collection_id].blank? && current_user.is_guest
       redirect_to root_url
     elsif params[:name].present?
@@ -19,7 +24,7 @@ class CollectionsController < ApplicationController
       add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html
-        format.json { render json: collections_with_snapshot }
+        format.json { render json: collections_with_snapshot_by_user }
       end
     end
   end

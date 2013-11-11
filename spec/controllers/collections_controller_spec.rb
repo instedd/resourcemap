@@ -39,6 +39,20 @@ describe CollectionsController do
     json["name"].should eq(collection.name)
   end
 
+  # Issue #629
+  it "should not get public collections in the index if the user is logged in" do
+    # load collection
+    collection
+
+    other_collection = Collection.make public: true
+    user2 = other_collection.users.make email: 'user2@email.com'
+    other_collection.memberships.create! user_id: user2.id
+
+    get :index, format: 'json'
+    collections =  JSON.parse response.body
+    collections.count.should eq(1)
+  end
+
   describe "get ES resutls" do
       before(:each) do
         layer = collection.layers.make
