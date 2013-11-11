@@ -30,7 +30,7 @@
 }
 
 .hierarchy-viewer  {
-  padding: 10px;
+  padding: 10px 0 30px;
 
   .filter-header {
     @include clearfix;
@@ -47,11 +47,11 @@
   }
 
   .f-name {
-    width: 60%;
+    width: 55%;
   }
 
   .f-id{
-    width: 23%;
+    width: 20%;
   }
 
   ul.h-editor {
@@ -76,6 +76,11 @@
           display: block;
           width: 85%;
           float: left;
+        }
+
+        .action-buttons {
+          display: inline-block;
+          vertical-align: middle;
         }
 
         .icon {

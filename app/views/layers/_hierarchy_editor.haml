@@ -21,8 +21,9 @@
 
       %input.ux-text.f-name{ko(value: :name, valueUpdate: 'afterkeydown', css: { error: :nameError }), :placeholder => "Name", :type => "text", :tabindex => "1"}/
       %input.ux-text.f-id{ko(value: :id, css: { error: :idError }), onclick: "this.select();", :placeholder => "Id", :type => "text", :tabindex => "2"}/
-      %a.icon.fclose.right.editing{ko(click: :discardChanges), title: 'Cancel', :tabindex => "4"}
-      %a.icon.faccept.right.editing{ko(click: :saveChanges), title: 'Accept', :tabindex => "3" }
+      .action-buttons
+        %a.icon.fclose.right.editing{ko(click: :discardChanges), title: 'Cancel', :tabindex => "4"}
+        %a.icon.faccept.right.editing{ko(click: :saveChanges), title: 'Accept', :tabindex => "3" }
     //ko
 
 
