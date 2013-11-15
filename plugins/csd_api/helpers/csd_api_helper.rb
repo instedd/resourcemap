@@ -9,6 +9,7 @@ module CsdApiHelper
         end
 
         xml.tag!("wsa:MessageID") do
+          #TODO generate a new UUID
           xml.text!("#{message_id}")
         end
 
@@ -16,6 +17,7 @@ module CsdApiHelper
           xml.text!("http://www.w3.org/2005/08/addressing/anonymous")
         end
 
+        # TODO: Use the UUID in the request
         xml.tag!("wsa:RelatesTo") do
           xml.text!("urn:uuid:b75f1d11-ee35-488a-9f6e-16db3713906c")
         end

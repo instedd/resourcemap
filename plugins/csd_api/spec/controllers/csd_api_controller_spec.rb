@@ -76,14 +76,14 @@ describe CsdApiController do
       post :directories, collection_id: collection.id
 
       expected_xml = %Q{
-        <SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
-          <SOAP:Body>
-            <SOAP:Fault>
-              <faultcode>SOAP:Client</faultcode>
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+            <soap:Fault>
+              <faultcode>soap:Client</faultcode>
               <faultstring>Element '{urn:ihe:iti:csd:2013}lastModified': 'hello' is not a valid value of the atomic type 'xs:dateTime'.</faultstring>
-            </SOAP:Fault>
-          </SOAP:Body>
-        </SOAP:Envelope>
+            </soap:Fault>
+          </soap:Body>
+        </soap:Envelope>
       }
 
       expected = Hash.from_xml(expected_xml)
@@ -92,6 +92,34 @@ describe CsdApiController do
       assert_equal expected, response_hash
       assert_equal 500, @response.status
     end
+
+    it  "should respond whit an error on invalid soap message" do
+      request.env["RAW_POST_DATA"] =  %Q{"hello"}
+
+      post :directories, collection_id: collection.id
+
+      expected_xml = %Q{
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+            <soap:Fault>
+              <faultcode>soap:Client</faultcode>
+              <faultstring>The document has no document element.</faultstring>
+            </soap:Fault>
+          </soap:Body>
+        </soap:Envelope>
+      }
+
+      expected = Hash.from_xml(expected_xml)
+      response_hash = Hash.from_xml(response.body)
+
+      assert_equal expected, response_hash
+      assert_equal 500, @response.status
+    end
+
+
+
+
+
   end
 
 end
