@@ -12,7 +12,6 @@ class CsdApiController < ApplicationController
     soap_message = Nokogiri::XML(request.body.read)
 
     # Validation
-    process_soap_headers(soap_message)
     soap_body = extract_soap_body(soap_message)
     validate_soap_body(soap_body)
 
@@ -38,14 +37,6 @@ class CsdApiController < ApplicationController
   end
 
   private
-
-  def process_soap_headers(soap_message)
-    # This service isn't programmed to handle particular SOAP headers,
-    # any SOAP headers with mustUnderstand="1" will result in a SOAP fault
-    # with fault_code MustUnderstand (indicating that this service
-    # couldn't process a mandatory SOAP header)
-    raise(SoapFault::MustUnderstandError, "SOAP Must Understand Error", "MustUnderstand") if soap_message.root.at_xpath('//soap:Header/*[@soap:mustUnderstand="1" and not(@soap:actor)]', 'soap' => 'http://schemas.xmlsoap.org/soap/envelope/')
-  end
 
   def extract_soap_body(soap_message)
     # Extract the SOAP body from SOAP envelope using XSLT
