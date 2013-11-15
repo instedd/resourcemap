@@ -25,14 +25,16 @@ class CsdApiController < ApplicationController
     #search.sort "updated_since", false
     @facities = search.api_results
 
-    render template: 'directories.xml.builder', layout: false
+    render template: 'directories', formats: [:xml], handler: :builder, layout: false
+
   rescue StandardError => e
     # If any exception was raised generate a SOAP fault, if there is no
     # fault_code present then default to fault_code Server (indicating the
     # message failed due to an error on the server)
     @fault_code = e.respond_to?(:fault_code) ? e.fault_code : "Server"
     @fault_string = e.message
-    render template: 'fault.xml.builder', layout: false, :status => 500
+
+    render template: 'fault', formats: [:xml], handlers: :builder, layout: false, :status => 500
   end
 
   private
