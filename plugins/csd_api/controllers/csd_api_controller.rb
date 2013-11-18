@@ -15,15 +15,14 @@ class CsdApiController < ApplicationController
     soap_body = extract_soap_body(soap_message)
     validate_soap_body(soap_body)
 
-    # TODO: Load lastModified datetime
-
+    # Create the search object and apply updated_since filter
     search = collection.new_search current_user_id: current_user.id
-
     search.use_codes_instead_of_es_codes
     search.unlimited
-    #search.sort "updated_since", false
-    @facities = search.api_results
+    updated_since = soap_message.xpath('//soap:Body//csd:lastModified').children.first.content
+    search.after(updated_since)
 
+    @facilities = search.api_results
     @request_id = soap_message.xpath("//soap:Header/wsa:MessageID").children.first.content
 
     render template: 'directories', formats: [:xml], handler: :builder, layout: false

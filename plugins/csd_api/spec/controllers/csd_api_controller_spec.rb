@@ -121,6 +121,22 @@ describe CsdApiController do
       assert_equal 500, @response.status
     end
 
+    it "should return facilities modified after a particular date" do
+      stub_time Time.iso8601("2013-11-18T15:40:28-03:00").to_s
+      collection.sites.make name: 'Site A'
+
+      stub_time Time.iso8601("2013-11-19T15:40:28-03:00").to_s
+      collection.sites.make name: 'Site B'
+
+      request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
+      post :directories, collection_id: collection.id
+      response_hash = Hash.from_xml(response.body)
+
+      body = response_hash["Envelope"]["Body"]["getModificationsResponse"]["CSD"]
+
+      body["facilityDirectory"].length.should eq(1)
+    end
+
   end
 
 end

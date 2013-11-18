@@ -28,7 +28,11 @@ module CsdApiHelper
 
             xml.tag!("serviceDirectory")
 
-            xml.tag!("facilityDirectory")
+            xml.tag!("facilityDirectory") do
+              facilities.each do |facility|
+                facility_xml xml, facility
+              end
+            end
 
             xml.tag!("providerDirectory")
 
@@ -41,7 +45,12 @@ module CsdApiHelper
 
   private
 
-   def xs_header_specification
+  def facility_xml(xml, facility)
+    xml.tag!("facility")
+  end
+
+
+  def xs_header_specification
     {
       'xmlns:soap' => "http://www.w3.org/2003/05/soap-envelope",
       'xmlns:wsa'  => "http://www.w3.org/2005/08/addressing",
