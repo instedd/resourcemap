@@ -39,7 +39,7 @@ describe CsdApiController do
       request_id = "urn:uuid:4924fff9-e0f4-48c8-a403-955760fcc667"
       request.env["RAW_POST_DATA"] = generate_request(request_id)
 
-      post :directories, collection_id: collection.id
+      post :get_directory_modifications, collection_id: collection.id
       assert_equal 200, response.status
 
       response_hash = Hash.from_xml(response.body)
@@ -78,7 +78,7 @@ describe CsdApiController do
     it  "should respond whit an error on invalid datetime element" do
       request.env["RAW_POST_DATA"] =  generate_request("hello", "hello")
 
-      post :directories, collection_id: collection.id
+      post :get_directory_modifications, collection_id: collection.id
 
       expected_xml = %Q{
         <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -101,7 +101,7 @@ describe CsdApiController do
     it  "should respond whit an error on invalid soap message" do
       request.env["RAW_POST_DATA"] =  %Q{"hello"}
 
-      post :directories, collection_id: collection.id
+      post :get_directory_modifications, collection_id: collection.id
 
       expected_xml = %Q{
         <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -129,7 +129,7 @@ describe CsdApiController do
       collection.sites.make name: 'Site B'
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
-      post :directories, collection_id: collection.id
+      post :get_directory_modifications, collection_id: collection.id
       response_hash = Hash.from_xml(response.body)
 
       body = response_hash["Envelope"]["Body"]["getModificationsResponse"]["CSD"]

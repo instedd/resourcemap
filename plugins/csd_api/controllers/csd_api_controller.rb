@@ -7,7 +7,7 @@ class CsdApiController < ApplicationController
 
   before_filter :authenticate_user!
 
-  def directories
+  def get_directory_modifications
     # Parse message
     soap_message = Nokogiri::XML(request.body.read)
 
