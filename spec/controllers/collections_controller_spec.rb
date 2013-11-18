@@ -53,6 +53,17 @@ describe CollectionsController do
     collections.count.should eq(1)
   end
 
+  it "admin should be able to update all collection's fields" do
+    put :update, id: collection.id, collection: {"name"=>"new name", "description"=>"new description", "public"=>"1", "icon"=>"default"}
+    response.should be_redirect
+
+    updated_collection = Collection.find_by_name "new name"
+    updated_collection.should be
+    updated_collection.description.should eq("new description")
+    updated_collection.public.should be_true
+    updated_collection.icon.should eq("default")
+  end
+
   describe "get ES resutls" do
       before(:each) do
         layer = collection.layers.make
@@ -103,7 +114,7 @@ describe CollectionsController do
     it 'should return forbidden in delete if user tries to delete a collection of which he is not member'  do
       sign_in not_member
       delete :destroy, id: collection.id
-      response.status.should eq(404)
+      response.status.should eq(403)
       delete :destroy, id: public_collection.id
       response.status.should eq(403)
     end
