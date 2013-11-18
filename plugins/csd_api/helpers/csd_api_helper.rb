@@ -1,25 +1,22 @@
 module CsdApiHelper
 
-  # TODO: is RealtesTo attribute a variable??
-  def facilities_directory_xml(xml, facilities, action="GetDirectoryModificationsResponse", message_id="urn:uuid:40973a4f-1e5c-4b69-8db1-601eb64a0f25")
+  def facilities_directory_xml_for_get_modifications(xml, facilities, request_id)
     xml.soap(:Envelope, xs_header_specification) do
       xml.soap :Header do
         xml.tag!("wsa:Action", { "soap:mustUnderstand" => "1"}) do
-          xml.text!("urn:ihe:iti:csd:2013:#{action}")
+          xml.text!("urn:ihe:iti:csd:2013:GetDirectoryModificationsResponse")
         end
 
         xml.tag!("wsa:MessageID") do
-          #TODO generate a new UUID
-          xml.text!("#{message_id}")
+          xml.text!("urn:uuid:#{UUIDTools::UUID.random_create.to_s}")
         end
 
         xml.tag!("wsa:To", { "soap:mustUnderstand" => "1"}) do
           xml.text!("http://www.w3.org/2005/08/addressing/anonymous")
         end
 
-        # TODO: Use the UUID in the request
         xml.tag!("wsa:RelatesTo") do
-          xml.text!("urn:uuid:b75f1d11-ee35-488a-9f6e-16db3713906c")
+          xml.text!(request_id)
         end
       end
 

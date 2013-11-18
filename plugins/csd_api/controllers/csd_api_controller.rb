@@ -24,6 +24,8 @@ class CsdApiController < ApplicationController
     #search.sort "updated_since", false
     @facities = search.api_results
 
+    @request_id = soap_message.xpath("//soap:Header/wsa:MessageID").children.first.content
+
     render template: 'directories', formats: [:xml], handler: :builder, layout: false
 
   rescue StandardError => e
