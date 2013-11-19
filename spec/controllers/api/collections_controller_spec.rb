@@ -91,6 +91,22 @@ describe Api::CollectionsController do
       end
     end
 
+    context "location missing" do
+      let!(:site1) { collection.sites.make :name => 'b', :lat => "", :lng => ""  }
+      let!(:site2) { collection.sites.make :name => 'a' }
+
+      it "should filter sites without location" do
+        get :show, id: collection.id, format: 'json', "location_missing"=>"true"
+
+        response.should be_success
+        json = JSON.parse response.body
+        json["sites"].length.should eq(1)
+        json["sites"][0]["name"].should eq("b")
+      end
+
+    end
+
+
     describe "GET RSS collection" do
       before(:each) do
         get :show, id: collection.id, format: 'rss'
