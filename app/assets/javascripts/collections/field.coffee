@@ -103,6 +103,13 @@ onCollections ->
       else if @kind == 'site'
         name = window.model.currentCollection()?.findSiteNameById(value)
         if value && name then name else ''
+      else if @kind == 'date'
+        if value
+          date = new Date(value)
+          date.setTime(date.getTime() + date.getTimezoneOffset() * 60000)
+          @datePickerFormat(date)
+        else
+          ''
       else
         if value then value else ''
 
