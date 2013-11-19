@@ -483,3 +483,6 @@ onCollections ->
       options.dateFormat = 'dd/mm/yy'
       $(".ux-datepicker.dd_mm_yyyy_format").datepicker(options)
 
+      if options.defaultDate?
+        $(".ux-datepicker").datepicker('setDate', options.defaultDate)
+

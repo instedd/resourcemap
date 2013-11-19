@@ -139,7 +139,7 @@ onCollections ->
           @originalValue = @originalValue.slice(0)
 
         @editing(true)
-        optionsDatePicker = {}
+        optionsDatePicker = {defaultDate: @value()}
         optionsDatePicker.onSelect = (dateText) =>
           @valueUI(dateText)
           @save()
