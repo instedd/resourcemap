@@ -71,7 +71,6 @@ class RecalculteLuhnValuesWithTheNewAlgorithm < ActiveRecord::Migration
         value = site.properties[luhn_field.es_code]
 
         if !value.blank?
-          binding.pry
           value =~ /(\d\d\d\d\d\d)\-(\d)/
           verifier = field.compute_luhn_verifier($1)
           site.properties[luhn_field.es_code] = "#{$1}-#{verifier}"
