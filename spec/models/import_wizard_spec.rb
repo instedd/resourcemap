@@ -1386,7 +1386,7 @@ describe ImportWizard do
     it "should create a site with an especific luhn value and one with a default value" do
       csv_string = CSV.generate do |csv|
         csv << ['Name', 'moh-id']
-        csv << ['Foo', '100002-7']
+        csv << ['Foo', '100002-5']
         csv << ['Foo 2', '']
       end
 
@@ -1403,14 +1403,14 @@ describe ImportWizard do
       sites.length.should eq(2)
 
       sites[0].name.should eq('Foo')
-      sites[0].properties[luhn_id.es_code].should eq('100002-7')
+      sites[0].properties[luhn_id.es_code].should eq('100002-5')
 
       sites[1].name.should eq('Foo 2')
       sites[1].properties[luhn_id.es_code].should eq('100000-9')
     end
 
     it "should not override existing luhn value when updating a site" do
-      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-8'}
+      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-7'}
 
       csv_string = CSV.generate do |csv|
         csv << ['resmap-id', 'Name']
@@ -1430,16 +1430,16 @@ describe ImportWizard do
       sites.length.should eq(1)
 
       sites[0].name.should eq('Foo new')
-      sites[0].properties[luhn_id.es_code].should eq('100001-8')
+      sites[0].properties[luhn_id.es_code].should eq('100001-7')
     end
 
     it "should choose the higher luhn between the one alredy stored in the collection and the one in the csv for the default value for new sites" do
-      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-8'}
+      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-7'}
 
       csv_string = CSV.generate do |csv|
         csv << ['Name', 'Luhn']
         csv << ['Foo new 1', '']
-        csv << ['Foo new 2', '100002-7']
+        csv << ['Foo new 2', '100002-5']
 
       end
 
@@ -1457,18 +1457,18 @@ describe ImportWizard do
       sites.length.should eq(3)
 
       sites[0].name.should eq('Foo')
-      sites[0].properties[luhn_id.es_code].should eq('100001-8')
+      sites[0].properties[luhn_id.es_code].should eq('100001-7')
 
       sites[1].name.should eq('Foo new 1')
-      sites[1].properties[luhn_id.es_code].should eq('100003-6')
+      sites[1].properties[luhn_id.es_code].should eq('100003-3')
 
       sites[2].name.should eq('Foo new 2')
-      sites[2].properties[luhn_id.es_code].should eq('100002-7')
+      sites[2].properties[luhn_id.es_code].should eq('100002-5')
     end
 
 
     it "should not repeat an existing value for new sites" do
-      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-8'}
+      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-7'}
 
       csv_string = CSV.generate do |csv|
         csv << ['Name']
@@ -1487,10 +1487,10 @@ describe ImportWizard do
       sites.length.should eq(2)
 
       sites[0].name.should eq('Foo')
-      sites[0].properties[luhn_id.es_code].should eq('100001-8')
+      sites[0].properties[luhn_id.es_code].should eq('100001-7')
 
       sites[1].name.should eq('Foo 2')
-      sites[1].properties[luhn_id.es_code].should eq('100002-7')
+      sites[1].properties[luhn_id.es_code].should eq('100002-5')
     end
   end
 

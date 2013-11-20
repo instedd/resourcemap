@@ -722,7 +722,7 @@ describe FredApiController do
       site.valid?.should be(true)
 
       json = JSON.parse response.body
-      json["properties"]['moh-id'].should eq("100001-8")
+      json["properties"]['moh-id'].should eq("100001-7")
     end
 
     it 'should create facility with with a valid luhn identifier if there is a site without luhn value' do

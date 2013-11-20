@@ -22,8 +22,8 @@ describe ImportWizard do
       csv_string = CSV.generate do |csv|
         csv << ['Name', 'Luhn']
         csv << ['Foo', '100000-9']
-        csv << ['Bar', '100001-8']
-        csv << ['Baz', '100002-7']
+        csv << ['Bar', '100001-7']
+        csv << ['Baz', '100002-5']
       end
 
       specs = [
@@ -39,8 +39,8 @@ describe ImportWizard do
       sites.length.should eq(3)
 
       sites[0].properties[luhn.es_code].should eq('100000-9')
-      sites[1].properties[luhn.es_code].should eq('100001-8')
-      sites[2].properties[luhn.es_code].should eq('100002-7')
+      sites[1].properties[luhn.es_code].should eq('100001-7')
+      sites[2].properties[luhn.es_code].should eq('100002-5')
     end
 
     it "import into existing field should not generate a new value, because the the luhn value should not be changed unless the user specify a new value" do
@@ -202,8 +202,8 @@ describe ImportWizard do
       csv_string = CSV.generate do |csv|
         csv << ['Name', 'Luhn', 'Luhn2', 'Luhn3']
         csv << ['Bar', '100000-9', '', '']
-        csv << ['Baz', '100002-7', '', '100001-8']
-        csv << ['Baz', '100001-8', '', '']
+        csv << ['Baz', '100002-5', '', '100001-7']
+        csv << ['Baz', '100001-7', '', '']
       end
 
       specs = [
@@ -218,9 +218,9 @@ describe ImportWizard do
       ImportWizard.validate_sites_with_columns user, collection, specs
 
       luhn_data = JSON.load(File.read(aditional_data_file_for(user, collection)))
-      luhn_data[luhn.es_code].should eq('100002-7')
+      luhn_data[luhn.es_code].should eq('100002-5')
       luhn_data[luhn2.es_code].should eq(nil)
-      luhn_data[luhn3.es_code].should eq('100001-8')
+      luhn_data[luhn3.es_code].should eq('100001-7')
 
     end
   end

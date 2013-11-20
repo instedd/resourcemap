@@ -33,15 +33,17 @@ class Field::IdentifierFields::LuhnField < Field::IdentifierFields::FormatImplem
   end
 
   def compute_luhn_verifier(str)
+    # Algorithm: http://en.wikipedia.org/wiki/Luhn_algorithm
+    # Verifier: http://www.ee.unb.ca/cgi-bin/tervo/luhn.pl
     n = str.length - 1
-    even = false
+    even = true
     sum = 0
     while n >= 0
       digit = str[n].to_i
 
       if even
         if digit < 5
-          sum += digit
+          sum += digit * 2
         else
           sum += 1 + (digit - 5) * 2
         end

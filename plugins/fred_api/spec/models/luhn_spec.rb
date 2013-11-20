@@ -20,12 +20,12 @@ describe "Luhn" do
 
     it "fails if luhn check is not valid" do
       lambda do
-        field.apply_format_and_validate("100000-8", nil, collection)
+        field.apply_format_and_validate("108439-6", nil, collection)
       end.should raise_exception(RuntimeError, /failed the luhn check/)
     end
 
     it "passes if the luhn check is valid" do
-      field.apply_format_and_validate("100000-9", nil, collection)
+      field.apply_format_and_validate("108439-1", nil, collection)
     end
 
     it "fails if luhn check is not valid 2" do
@@ -35,7 +35,7 @@ describe "Luhn" do
     end
 
     it "passes if the luhn check is valid 2" do
-      field.apply_format_and_validate("987654-7", nil, collection)
+      field.apply_format_and_validate("987654-1", nil, collection)
     end
 
     it "doesn't fail if blank" do
@@ -58,18 +58,18 @@ describe "Luhn" do
   it "generates luhn id for new site" do
     collection.sites.make
     create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100000-9")
-    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100001-8")
-    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100002-7")
-    create_site_and_assign_default_values("100004-5").properties[field.es_code].should eq("100004-5")
-    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100005-4")
-    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100006-3")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100001-7")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100002-5")
+    create_site_and_assign_default_values("100004-1").properties[field.es_code].should eq("100004-1")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100005-8")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100006-6")
   end
 
   it "gets next luhn" do
-    field.format_implementation.next_luhn("100006-3").should eq("100007-2")
-    field.format_implementation.next_luhn("100007-2").should eq("100008-1")
-    field.format_implementation.next_luhn("100009-0").should eq("100010-8")
-    field.format_implementation.next_luhn("100010-0").should eq("100011-7")
+    field.format_implementation.next_luhn("100006-6").should eq("100007-4")
+    field.format_implementation.next_luhn("100007-4").should eq("100008-2")
+    field.format_implementation.next_luhn("100009-2").should eq("100010-8")
+    field.format_implementation.next_luhn("100010-8").should eq("100011-6")
   end
 
   it "checks for unicity" do
