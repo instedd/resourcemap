@@ -33,6 +33,9 @@ onCollections ->
       @expanded(true) if @field.value() != @id
       @parent.toggleParentsExpand() if @parent
 
+    selectAndSave: =>
+      @select()
+      @field.save()
 
     select: =>
       @field.value(@id)
