@@ -1,4 +1,4 @@
-%h1= collection.name
+%h1.ellipsis{title: collection.name}= collection.name
 - if collection.description.present?
   %p{style: 'font-size:12px'}= collection.description
 
@@ -10,5 +10,5 @@
   = tab "Import wizard", collection_import_wizard_path(collection)
   = tab "Settings", collection_settings_path(collection)
   = render_hook collection, :collection_tab, :collection => collection
-  - if Settings.is_on? :channels  
+  - if Settings.is_on? :channels
     = tab "Quotas", collection_quotas_path(collection)

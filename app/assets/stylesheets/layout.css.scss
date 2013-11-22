@@ -32,6 +32,14 @@ body.fullscreen #container {
 
     li {
       max-width: 400px;
+
+      a {
+        max-width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+
+      }
     }
   }
 }
@@ -264,6 +272,16 @@ body.fullscreen #container {
   background-position: 4px 2px;
 }
 
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.memberHeaderColumn span {
+  max-width: 265px;
+  display: inline-block;
+}
+
 /* ------------ table ------------------- */
 .GralTable td {
   padding:0px 6px;
@@ -374,7 +392,25 @@ body.fullscreen #container {
 
 
 ul.taglist { padding:0 4px; border:1px solid #dddddd; height:128px; overflow:auto; overflow-x:hidden; -webkit-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset; -moz-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset; box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
-ul.taglist li { background:url(#{$InsteddRailsUrl + "/theme/images/interface/add.png"}) no-repeat 98% -15px; margin:3px 0; border:1px solid #dddddd; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px; cursor: pointer }
+ul.taglist li {
+  margin:3px 0;
+  border:1px solid #dddddd;
+  border-radius:3px;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  cursor: pointer;
+  position: relative;
+  &:after {
+    background:url(#{$InsteddRailsUrl + "/theme/images/interface/add.png"}) no-repeat 98% -15px;
+    content:'';
+    display: table;
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    width: 18px;
+    height: 18px;
+  }
+}
 ul.taglist li:hover { background-color:#eaeaea }
 ul.taglist li a { display:block }
 
