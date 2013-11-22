@@ -394,7 +394,25 @@ ul.taglist li a { display:block }
 
 .middlebuttons {
   margin-top:25px;
+
+  & > div {
+    color: #555555 !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 195px;
+
+    &:after {
+      content: ',';
+      display:inline-block;
+    }
+
+    &:last-child:after {
+      display: none;
+    }
+  }
 }
+
 
 .feditor-container { position:relative }
 .feditor-container .rightbuttons{ top:-6px; right:5px }
@@ -599,18 +617,7 @@ a.tgrey {
   color: #555555;
 }
 
-.middlebuttons > div {
-  color: #555555 !important;
 
-  &:after {
-    content: ',';
-    display:inline-block;
-  }
-
-  &:last-child:after {
-    display: none;
-  }
-}
 
 .fancybox-inner {
 

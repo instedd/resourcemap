@@ -3,6 +3,15 @@
 }
 .feditor-container {
   padding: 0 5px 13px 3px;
+
+  div.feditor-content {
+    width: 460px;
+
+    .hint {
+      display: block;
+      margin-bottom: 5px;
+    }
+  }
 }
 .hierarchy-container {
   @include border-radius(3px);
