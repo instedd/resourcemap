@@ -3,7 +3,7 @@
   <!-- ko foreach: sites -->
   %tr
     %td{ko(click: '$root.selectSite', css: {grayselected: "$data == $root.selectedSite()"})}
-      %a{ko(style: {marginLeft: "'' + (($parent.level + 1) * 20) + 'px'"}, attr: {title: :name}, click: '$root.selectSite')}
+      %span{ko(style: {marginLeft: "'' + (($parent.level + 1) * 20) + 'px'"}, attr: {title: :name})}
         / %span.stat-r
         %span{ko(html: :highlightedName)}
       %button.farrow{ko(click: '$root.editSite'), type: "button"}
