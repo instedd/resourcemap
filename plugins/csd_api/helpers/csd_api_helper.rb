@@ -1,6 +1,7 @@
 module CsdApiHelper
 
-  def facilities_directory_xml_for_get_modifications(xml, facilities, request_id)
+  def facilities_directory_xml_for_get_modifications(xml, facilities, request_id, collection)
+    identifier_fields = collection.identifier_fields
     xml.soap(:Envelope, xs_header_specification) do
       xml.soap :Header do
         xml.tag!("wsa:Action", { "soap:mustUnderstand" => "1"}) do
@@ -30,7 +31,7 @@ module CsdApiHelper
 
             xml.tag!("facilityDirectory") do
               facilities.each do |facility|
-                facility_xml xml, facility
+                facility_xml xml, facility, identifier_fields
               end
             end
 
@@ -45,10 +46,34 @@ module CsdApiHelper
 
   private
 
-  def facility_xml(xml, facility)
-    xml.tag!("facility")
+  def facility_xml(xml, facility, identifier_fields)
+    xml.tag!("facility") do
+      xml.tag!("oid", generate_oid(facility))
+      identifier_fields.each do |identifier_field|
+        xml.tag!("otherID") do
+          value = facility["_source"]["properties"][identifier_field.code]
+          xml.tag!("code", value)
+          agency = identifier_field.agency
+          xml.tag!("assigningAuthorityName", agency)
+
+        end
+      end
+    end
+
   end
 
+
+  def generate_oid(facility)
+    # TODO: include as a user-defined collection's metadata
+    parent_id = "309768652999692686176651983274504471835"
+
+    # TODO: calculate country from lat-long and obtain the code??
+    # 646 is rwanda, hardcoded for the momemnt
+    country_code = "646"
+
+    facility_in_decimal = facility["_source"]["uuid"].delete("-").hex
+    "2.25.#{parent_id}.#{country_code}.5.#{facility_in_decimal}"
+  end
 
   def xs_header_specification
     {

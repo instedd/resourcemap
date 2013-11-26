@@ -122,11 +122,18 @@ describe CsdApiController do
     end
 
     it "should return facilities modified after a particular date" do
+      stub_time Time.iso8601("2012-11-18T15:40:28-03:00").to_s
+
+      site_a = collection.sites.make name: 'Site A'
+      site_b = collection.sites.make name: 'Site B', uuid: "f81d4fae-7dec-11d0-a765-00a0c91e6bf6"
+
       stub_time Time.iso8601("2013-11-18T15:40:28-03:00").to_s
-      collection.sites.make name: 'Site A'
+      site_a.name = 'Site A changed'
+      site_a.save!
 
       stub_time Time.iso8601("2013-11-19T15:40:28-03:00").to_s
-      collection.sites.make name: 'Site B'
+      site_b.name = 'Site B changed'
+      site_b.save!
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
@@ -135,6 +142,37 @@ describe CsdApiController do
       body = response_hash["Envelope"]["Body"]["getModificationsResponse"]["CSD"]
 
       body["facilityDirectory"].length.should eq(1)
+      facility = body["facilityDirectory"]["facility"]
+      facility["oid"].should eq("2.25.309768652999692686176651983274504471835.646.5.329800735698586629295641978511506172918")
+
+    end
+
+    it "should return an element 'otherId' for each identifier field in the collection" do
+      layer = collection.layers.make
+      identifier_field = layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Normal"}
+      identifier_field_2 = layer.identifier_fields.make :code => 'rw-id', :config => {"context" => "RW facility list", "agency" => "RW", "format" => "Normal"}
+
+      stub_time Time.iso8601("2013-12-18T15:40:28-03:00").to_s
+      site_a = collection.sites.make name: 'Site A', properties: {identifier_field.es_code => "12345"}
+
+      request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
+      post :get_directory_modifications, collection_id: collection.id
+      response_hash = Hash.from_xml(response.body)
+
+      body = response_hash["Envelope"]["Body"]["getModificationsResponse"]["CSD"]
+
+      body["facilityDirectory"].length.should eq(1)
+
+      other_ids = body["facilityDirectory"]["facility"]["otherID"]
+      other_ids.length.should eq(2)
+
+      other_id_1 = other_ids.first
+      other_id_1["code"].should eq("12345")
+      other_id_1["assigningAuthorityName"].should eq("DHIS")
+
+      other_id_2 = other_ids.last
+      other_id_2["code"].should eq(nil)
+      other_id_2["assigningAuthorityName"].should eq("RW")
     end
 
   end

@@ -24,6 +24,7 @@ class CsdApiController < ApplicationController
 
     @facilities = search.api_results
     @request_id = soap_message.xpath("//soap:Header/wsa:MessageID").children.first.content
+    @collection = collection
 
     render template: 'directories', formats: [:xml], handler: :builder, layout: false
 
