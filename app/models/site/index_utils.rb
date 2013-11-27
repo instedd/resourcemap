@@ -41,7 +41,7 @@ module Site::IndexUtils
         name: { type: :string },
         id_with_prefix: { type: :string },
         uuid: { type: :string, index: :not_analyzed },
-        name_not_analyzed: { type: :string, index: :not_analyzed },
+        name_not_analyzed: { type: :string, index: :analyzed, analyzer: :downcase },
         location: { type: :geo_point },
         lat_analyzed: { type: :string },
         lng_analyzed: { type: :string },

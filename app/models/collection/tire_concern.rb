@@ -9,7 +9,20 @@ module Collection::TireConcern
   def create_index
     success = index.create({
       refresh: true,
-      mappings: { site: site_mapping }
+      mappings: { site: site_mapping },
+      settings: {
+        index: {
+          analysis: {
+            analyzer: {
+              downcase: {
+                tokenizer: :keyword,
+                filter: :lowercase,
+                type: :custom,
+              }
+            }
+          }
+        }
+      }
     })
     raise "Can't create index for collection #{name} (ID: #{id})." unless success
 
