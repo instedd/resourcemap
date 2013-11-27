@@ -9,7 +9,10 @@ class Snapshot < ActiveRecord::Base
 
   def create_index
     index = Tire::Index.new index_name
-    index.create mappings: { site: site_mapping }
+
+    index_properties = { mappings: { site: site_mapping } }
+    index_properties.merge!(Site::IndexUtils::DowncaseAnalyzer)
+    index.create(index_properties)
 
     collection.site_histories.at_date(date).each do |history|
       history.store_in index

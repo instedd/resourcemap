@@ -7,23 +7,12 @@ module Collection::TireConcern
   end
 
   def create_index
-    success = index.create({
+    index_properties = {
       refresh: true,
       mappings: { site: site_mapping },
-      settings: {
-        index: {
-          analysis: {
-            analyzer: {
-              downcase: {
-                tokenizer: :keyword,
-                filter: :lowercase,
-                type: :custom,
-              }
-            }
-          }
-        }
-      }
-    })
+    }
+    index_properties.merge!(Site::IndexUtils::DowncaseAnalyzer)
+    success = index.create(index_properties)
     raise "Can't create index for collection #{name} (ID: #{id})." unless success
 
     # This is because in the tests collections are created and the

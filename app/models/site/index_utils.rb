@@ -2,6 +2,21 @@ module Site::IndexUtils
   extend self
 
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
+  DowncaseAnalyzer = {
+    settings: {
+        index: {
+          analysis: {
+            analyzer: {
+              downcase: {
+                tokenizer: :keyword,
+                filter: :lowercase,
+                type: :custom,
+              }
+            }
+          }
+        }
+      }
+    }
 
   def store(site, site_id, index, options = {})
     hash = {
