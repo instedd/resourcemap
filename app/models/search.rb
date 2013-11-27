@@ -38,10 +38,19 @@ class Search
   end
 
   def sort(es_code, ascendent = true)
-    if es_code == 'id' || es_code == 'name' || es_code == 'name_not_analyzed'
-      sort = es_code == 'name' ? 'name_not_analyzed' : es_code
+    case es_code
+    when 'id', 'name.downcase'
+      sort = es_code
+    when 'name'
+      sort = 'name.downcase'
     else
-      sort = decode(es_code)
+      es_code = remove_at_from_code es_code
+      field = fields.find { |x| x.code == es_code || x.es_code == es_code }
+      if field && field.kind == 'text'
+        sort = "#{field.es_code}.downcase"
+      else
+        sort = decode(es_code)
+      end
     end
     @sort = true
     ascendant = ascendent ? 'asc' : 'desc'
@@ -69,7 +78,7 @@ class Search
     if @sort
       @search.sort { by sort_list }
     else
-      @search.sort { by 'name_not_analyzed' }
+      @search.sort { by 'name.downcase' }
     end
 
     if @offset && @limit

@@ -24,7 +24,6 @@ module Site::IndexUtils
       name: site.name,
       id_with_prefix: site.id_with_prefix,
       uuid: site.uuid,
-      name_not_analyzed: site.name,
       type: :site,
       properties: site.properties,
       created_at: site.created_at.strftime(DateFormat),
@@ -53,10 +52,15 @@ module Site::IndexUtils
   def site_mapping(fields)
     {
       properties: {
-        name: { type: :string },
+        name: {
+          type: :multi_field,
+          fields: {
+            name: { type: :string },
+            downcase: { type: :string, index: :analyzed, analyzer: :downcase },
+          },
+        },
         id_with_prefix: { type: :string },
         uuid: { type: :string, index: :not_analyzed },
-        name_not_analyzed: { type: :string, index: :analyzed, analyzer: :downcase },
         location: { type: :geo_point },
         lat_analyzed: { type: :string },
         lng_analyzed: { type: :string },

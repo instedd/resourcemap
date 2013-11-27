@@ -21,7 +21,7 @@ module SearchBase
   end
 
   def name(name)
-    @search.filter :term, name_not_analyzed: name.downcase
+    @search.filter :term, "name.downcase" => name.downcase
   end
 
   def uuid(uuid)

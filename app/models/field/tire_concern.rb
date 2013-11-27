@@ -9,6 +9,14 @@ module Field::TireConcern
       { type: :long }
     when stored_as_date?
       { type: :date }
+    when kind == 'text'
+      {
+        type: :multi_field,
+        fields: {
+          es_code => { type: :string, index: :not_analyzed },
+          "#{es_code}.downcase" => { type: :string, path: :just_name, index: :analyzed, analyzer: :downcase },
+        },
+      }
     else
       { type: :string, index: :not_analyzed }
     end
