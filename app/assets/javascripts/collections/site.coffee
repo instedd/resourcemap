@@ -156,7 +156,7 @@ onCollections ->
         if data.status == 422 && (nameErrors || propertyErrors)
           if nameErrors
             for value in nameErrors
-              @collection.nameFieldError(value)
+              @collection.nameFieldError("Name #{value}")
           if propertyErrors
             for prop in propertyErrors
               for es_code, value of prop
