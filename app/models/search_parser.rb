@@ -1,4 +1,4 @@
-require 'strscan'
+# encoding=utf-8 require 'strscan'
 
 # Represents a search. It's a hash of key value pairs plus a search string.
 #
@@ -26,7 +26,7 @@ class SearchParser < Hash
       key = scan_decimal_number(s)
 
       # Get next work
-      key = s.scan(/\w+/) if key.nil?
+      key = s.scan(/\p{Word}+/) if key.nil?
 
       # Check if there's a colon so we have key:...
       # (but not key://)
@@ -39,7 +39,7 @@ class SearchParser < Hash
         next
       end
 
-      key = s.scan(/"(\w|\s)+"/) if key.nil?
+      key = s.scan(/"(\p{Word}|\s)+"/) if key.nil?
       key = s.scan(/\W+/) if key.nil?
 
       # Just a word to add to the search
