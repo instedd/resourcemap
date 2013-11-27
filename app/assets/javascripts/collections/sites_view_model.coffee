@@ -102,8 +102,6 @@ onCollections ->
           @editSite site
 
     @saveSite: ->
-      return unless @editingSite().valid()
-
       callback = (data) =>
         @currentCollection().reloadSites()
 

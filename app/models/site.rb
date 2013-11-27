@@ -8,7 +8,7 @@ class Site < ActiveRecord::Base
   include HistoryConcern
 
   belongs_to :collection
-  validates_presence_of :name
+  validates_presence_of :name, message: "Name can't be blank"
 
   serialize :properties, Hash
   validate :valid_properties

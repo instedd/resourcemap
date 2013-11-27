@@ -122,10 +122,10 @@
           %tr
             %td
               %div
-
+                %span{ko(text: 'collection.nameFieldError', validationPopover: 'collection.nameFieldError'), style: 'display: none;'}
                 = label_tag :name, "Name:"
                 <!-- ko if: nameWriteable -->
-                = text_field_tag :name, '', placeholder: 'Enter new site name',  'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}), :autofocus => true
+                = text_field_tag :name, '', placeholder: 'Enter new site name',  'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}, css: {error: 'collection.nameFieldError'}), :autofocus => true
                 <!-- /ko -->
                 <!-- ko if: !nameWriteable -->
                 %span.value{ko(text: :name)}
@@ -171,7 +171,7 @@
         %label.error There are validation errors that prevent the site from being saved.
       //ko
       .right{style: 'margin-right:3px;margin-top:-5px;'}
-        %button.grey{ko(enable: :valid), type: 'submit'} Done
+        %button.grey{type: 'submit'} Done
         %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
       .clear
   <!-- /ko -->

@@ -11,8 +11,12 @@ onCollections ->
       @maxLng = data?.max_lng
       @layers = ko.observableArray()
       @fields = ko.observableArray()
+
+      # The error in the name field of the current site
+      @nameFieldError = ko.observable()
+
       @error = ko.computed =>
-        window.arrayAny(@fields(), (f) => f.error())
+        @nameFieldError() || window.arrayAny(@fields(), (f) => f.error())
 
       @refineFields = ko.observableArray()
       @checked = ko.observable true
@@ -44,7 +48,3 @@ onCollections ->
         )
       else if @position()
         window.model.map.panTo @position()
-
-
-
-

@@ -30,7 +30,6 @@ onCollections ->
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
-      @valid = ko.computed => @hasName()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
       # Default permission for the collection. If this site has custom permission, these will be updated in updatePermission method
@@ -117,29 +116,15 @@ onCollections ->
           url: "/collections/#{@collection.id}/sites/#{@id()}/partial_update.json",
           data: data,
           success: ((data) =>
-            for field in @collection.fields()
-              field.errorMessage("")
+            @clearFieldErrors()
             @propagateUpdatedAt(data.updated_at)
             callback(data) if callback && typeof(callback) == 'function' )
           global: false
         }).fail((data) =>
-          try
-            propertyErrors = JSON.parse(data.responseText)["properties"]
-            for field in @collection.fields()
-                field.errorMessage("")
-            if data.status == 422 && propertyErrors
-              for prop in propertyErrors
-                for es_code, value of prop
-                  f = @collection.findFieldByEsCode(es_code)
-                  f.errorMessage(value)
-              $(".tablescroll").animate({
-                scrollTop: $('.error label').position().top + $(".tablescroll").scrollTop() - 60
-              }, 2000);
-            else
-              $.handleAjaxError(data)
-          catch error
-              $.handleAjaxError(data))
-
+          if @showFieldErrors(data)
+            $(".tablescroll").animate({
+              scrollTop: $('.error label').position().top + $(".tablescroll").scrollTop() - 60
+            }, 2000))
 
     create_site: (json, callback) =>
       data = {site: JSON.stringify json}
@@ -148,29 +133,42 @@ onCollections ->
           url: "/collections/#{@collection.id}/sites",
           data: data,
           success: ((data) =>
-            for field in @collection.fields()
-              field.errorMessage("")
+            @clearFieldErrors()
             @propagateUpdatedAt(data.updated_at)
             @id(data.id)
             @idWithPrefix(data.id_with_prefix)
             $.status.showNotice "Site '#{@name()}' successfully created", 2000
             callback(data) if callback && typeof(callback) == 'function' )
           global: false
-        }).fail((data) =>
-          try
-            propertyErrors = JSON.parse(data.responseText)["properties"]
-            for field in @collection.fields()
-                field.errorMessage("")
-            if data.status == 422 && propertyErrors
-              for prop in propertyErrors
-                for es_code, value of prop
-                  f = @collection.findFieldByEsCode(es_code)
-                  f.errorMessage(value)
-            else
-              $.handleAjaxError(data)
-          catch error
-            $.handleAjaxError(data))
+        }).fail(@showFieldErrors)
 
+    clearFieldErrors: =>
+      @collection.nameFieldError(null)
+      for field in @collection.fields()
+        field.errorMessage("")
+
+    showFieldErrors: (data) =>
+      try
+        @clearFieldErrors()
+        errors = JSON.parse(data.responseText)
+        nameErrors = errors.name
+        propertyErrors = errors.properties
+        if data.status == 422 && (nameErrors || propertyErrors)
+          if nameErrors
+            for value in nameErrors
+              @collection.nameFieldError(value)
+          if propertyErrors
+            for prop in propertyErrors
+              for es_code, value of prop
+                f = @collection.findFieldByEsCode(es_code)
+                f.errorMessage(value)
+          true
+        else
+          $.handleAjaxError(data)
+          false
+      catch error
+          $.handleAjaxError(data)
+          false
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
