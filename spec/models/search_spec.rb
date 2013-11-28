@@ -283,6 +283,7 @@ describe Search do
     let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds.es_code => 8, prop.es_code => 1} }
     let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds.es_code => 10, prop.es_code => 2} }
     let!(:site3) { collection.sites.make :name => "Cordoba bar Buenos", :properties => {beds.es_code => 20, prop.es_code => 3} }
+    let!(:site4) { collection.sites.make :name => "hello?/{#.", :properties => {beds.es_code => 0, prop.es_code => 3} }
 
     it "finds by name" do
       assert_results collection.new_search.full_text_search("Argent"), site1
@@ -334,6 +335,10 @@ describe Search do
     it "searches with written accents" do
       a_site = collection.sites.make :name => "Censús"
       assert_results collection.new_search.full_text_search("Censús"), a_site
+    end
+
+    it "escapes symbols" do
+      assert_results collection.new_search.full_text_search("hello?/{#."), site4
     end
   end
 

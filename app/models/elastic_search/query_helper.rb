@@ -80,7 +80,7 @@ module ElasticSearch::QueryHelper
       fields_to_search = fields_to_search.select &:select_kind?
 
       codes = {}
-      regex = /#{text}/i
+      regex = /#{Regexp.escape text}/i
       fields_to_search.each do |field|
         option_id = search_value_id field, regex
         codes[field.es_code] = option_id if option_id
@@ -113,12 +113,17 @@ module ElasticSearch::QueryHelper
         # Otherwise, we use quotes and no star.
 
         if text =~ /\s/
-          %Q("#{text}")
+          %Q("#{escape text}")
         else
           # We do want to search prefixes for location values. This types of values comes as single words.
-          "#{text}*"
+          "#{escape text}*"
         end
       end
+    end
+
+    def escape(text)
+      text = Regexp.escape(text)
+      text.gsub("/", "\\\\/")
     end
   end
 end
