@@ -155,9 +155,18 @@ describe CsdApiController do
       identifier_field_2 = layer.identifier_fields.make code: 'rw-id', :config => {"context" => "RW facility list", "agency" => "RW", "format" => "Normal"}
 
       # Select One fields with metadata (for codedType)
-      select_one_field = layer.select_one_fields.make code: 'moh-schema-option', metadata: {"Type" => "facilityType", "OptionList" => "MOH"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+      select_one_field = layer.select_one_fields.make code: 'moh-schema-option', metadata: {"CSDType" => "facilityType", "OptionList" => "MOH"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
       stub_time Time.iso8601("2013-12-18T15:40:28-03:00").to_s
-      site_a = collection.sites.make name: 'Site A', properties: {identifier_field.es_code => "12345", select_one_field.es_code => 1}
+
+      # Text fields with metadata (for otherName)
+      french_name_field = layer.text_fields.make code: 'French Name', metadata: {"CSDType" => "otherName", "CSDLanguage" => "french"}
+      spanish_name_field = layer.text_fields.make code: 'Spanish Name', metadata: {"CSDType" => "otherName", "CSDLanguage" => "spanish"}
+
+      site_a = collection.sites.make(name: 'Site A', lat: 10, lng: 20, properties: {
+          identifier_field.es_code => "12345",
+          select_one_field.es_code => 1,
+          french_name_field.es_code => "Terrain A",
+          spanish_name_field.es_code => "Sitio A"})
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
@@ -167,10 +176,10 @@ describe CsdApiController do
 
       body["facilityDirectory"].length.should eq(1)
 
-      facility_directory = body["facilityDirectory"]["facility"]
+      facility = body["facilityDirectory"]["facility"]
 
       # Should include 'otherId'
-      other_ids = facility_directory["otherID"]
+      other_ids = facility["otherID"]
       other_ids.length.should eq(2)
 
       other_id_1 = other_ids.first
@@ -182,13 +191,29 @@ describe CsdApiController do
       other_id_2["assigningAuthorityName"].should eq("RW")
 
       # Should include 'codedType'
-      coded_type = facility_directory["codedType"]
+      coded_type = facility["codedType"]
       coded_type["code"].should eq("one")
       coded_type["codingSchema"].should eq("MOH")
 
-      #Should include 'name'
-      name = facility_directory["primaryName"]
+      # Should include 'name'
+      name = facility["primaryName"]
       name.should eq 'Site A'
+
+      # Should include 'otherName's
+      other_names = facility["otherName"]
+      other_names.length.should eq(2)
+
+      other_names.first["language"].should eq "french"
+      other_names.first["commonName"].should eq "Terrain A"
+
+      other_names.last["language"].should eq "spanish"
+      other_names.last["commonName"].should eq "Sitio A"
+
+      # Should include 'geocode'
+      facility["geocode"]["latitude"].should eq("10.0")
+      facility["geocode"]["longitude"].should eq("20.0")
+      facility["geocode"]["coordinateSystem"].should eq("WGS-84")
+
     end
 
   end

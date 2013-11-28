@@ -4,9 +4,11 @@ module CsdApiHelper
     # Used to generate 'otherId's
     identifier_fields = collection.identifier_fields
 
-    #Used to generate 'facilityTypes's
+    # Used to generate 'facilityTypes's
     facility_type_fields = collection.facility_type_fields
 
+    # Used to generate 'otherNames's
+    other_name_fields = collection.facility_other_name_fields
 
     xml.soap(:Envelope, xs_header_specification) do
       xml.soap :Header do
@@ -37,7 +39,7 @@ module CsdApiHelper
 
             xml.tag!("facilityDirectory") do
               facilities.each do |facility|
-                facility_xml xml, facility, identifier_fields, facility_type_fields
+                facility_xml xml, facility, identifier_fields, facility_type_fields, other_name_fields
               end
             end
 
@@ -52,12 +54,13 @@ module CsdApiHelper
 
   private
 
-  def facility_xml(xml, facility, identifier_fields, facility_type_fields)
+  def facility_xml(xml, facility, identifier_fields, facility_type_fields, other_name_fields)
 
     facility_properties = facility["_source"]["properties"]
 
     xml.tag!("facility") do
       xml.tag!("oid", generate_oid(facility))
+
       identifier_fields.each do |identifier_field|
         xml.tag!("otherID") do
           value = facility_properties[identifier_field.code] || ""
@@ -71,11 +74,29 @@ module CsdApiHelper
         xml.tag!("codedType") do
           value = facility_properties[facility_type_field.code] || ""
           xml.tag!("code", value)
-          # TODO: move this to a method
+          # TODO: move this to a field's method
           schema = facility_type_field.metadata["OptionList"] || ""
           xml.tag!("codingSchema", schema)
         end
-        xml.tag!("primaryName", facility["_source"]["name"])
+      end
+
+      xml.tag!("primaryName", facility["_source"]["name"])
+
+      other_name_fields.each do |other_name_field|
+        xml.tag!("otherName") do
+          value = facility_properties[other_name_field.code] || ""
+          xml.tag!("commonName", value)
+          # TODO: move this to a field's method
+          language = other_name_field.metadata["CSDLanguage"] || ""
+          xml.tag!("language", language)
+        end
+      end
+
+      xml.tag!("geocode") do
+        xml.tag!("latitude", facility["_source"]["location"]["lat"])
+        xml.tag!("longitude", facility["_source"]["location"]["lon"])
+        xml.tag!("coordinateSystem", "WGS-84")
+
       end
     end
 
