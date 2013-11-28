@@ -9,9 +9,9 @@
           %span{ko(html: :highlightedName)}
       %button.farrow{ko(click: '$root.editSite'), type: :button}
     %td.padded
-      %span{ko(text: :safe_lat)}
+      %span{ko(html: :highlightedLat)}
     %td.padded
-      %span{ko(text: :safe_lng)}
+      %span{ko(html: :highlightedLng)}
     <!-- ko foreach: $root.currentCollection().fields() -->
     %td.padded
       %span{ko(attr: "{ title: $parent.highlightedPropertyValue($data) }", html: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}

@@ -31,6 +31,8 @@ onCollections ->
         owner: @
       @locationTextTemp = @locationText()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
+      @highlightedLat = ko.computed => window.model.highlightSearch(@safe_lat())
+      @highlightedLng = ko.computed => window.model.highlightSearch(@safe_lng())
       @inEditMode = ko.observable(false)
       # Default permission for the collection. If this site has custom permission, these will be updated in updatePermission method
       @nameWriteable = (collection.namePermission == 'update')
