@@ -167,8 +167,10 @@ describe CsdApiController do
 
       body["facilityDirectory"].length.should eq(1)
 
+      facility_directory = body["facilityDirectory"]["facility"]
+
       # Should include 'otherId'
-      other_ids = body["facilityDirectory"]["facility"]["otherID"]
+      other_ids = facility_directory["otherID"]
       other_ids.length.should eq(2)
 
       other_id_1 = other_ids.first
@@ -180,9 +182,13 @@ describe CsdApiController do
       other_id_2["assigningAuthorityName"].should eq("RW")
 
       # Should include 'codedType'
-      coded_type = body["facilityDirectory"]["facility"]["codedType"]
+      coded_type = facility_directory["codedType"]
       coded_type["code"].should eq("one")
       coded_type["codingSchema"].should eq("MOH")
+
+      #Should include 'name'
+      name = facility_directory["primaryName"]
+      name.should eq 'Site A'
     end
 
   end

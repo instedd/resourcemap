@@ -75,6 +75,7 @@ module CsdApiHelper
           schema = facility_type_field.metadata["OptionList"] || ""
           xml.tag!("codingSchema", schema)
         end
+        xml.tag!("primaryName", facility["_source"]["name"])
       end
     end
 
