@@ -1,7 +1,13 @@
 module CsdApiHelper
 
   def facilities_directory_xml_for_get_modifications(xml, facilities, request_id, collection)
+    # Used to generate 'otherId's
     identifier_fields = collection.identifier_fields
+
+    #Used to generate 'facilityTypes's
+    facility_type_fields = collection.facility_type_fields
+
+
     xml.soap(:Envelope, xs_header_specification) do
       xml.soap :Header do
         xml.tag!("wsa:Action", { "soap:mustUnderstand" => "1"}) do
@@ -31,7 +37,7 @@ module CsdApiHelper
 
             xml.tag!("facilityDirectory") do
               facilities.each do |facility|
-                facility_xml xml, facility, identifier_fields
+                facility_xml xml, facility, identifier_fields, facility_type_fields
               end
             end
 
@@ -46,16 +52,28 @@ module CsdApiHelper
 
   private
 
-  def facility_xml(xml, facility, identifier_fields)
+  def facility_xml(xml, facility, identifier_fields, facility_type_fields)
+
+    facility_properties = facility["_source"]["properties"]
+
     xml.tag!("facility") do
       xml.tag!("oid", generate_oid(facility))
       identifier_fields.each do |identifier_field|
         xml.tag!("otherID") do
-          value = facility["_source"]["properties"][identifier_field.code]
+          value = facility_properties[identifier_field.code] || ""
           xml.tag!("code", value)
           agency = identifier_field.agency
           xml.tag!("assigningAuthorityName", agency)
+        end
+      end
 
+      facility_type_fields.each do |facility_type_field|
+        xml.tag!("codedType") do
+          value = facility_properties[facility_type_field.code] || ""
+          xml.tag!("code", value)
+          # TODO: move this to a method
+          schema = facility_type_field.metadata["OptionList"] || ""
+          xml.tag!("codingSchema", schema)
         end
       end
     end

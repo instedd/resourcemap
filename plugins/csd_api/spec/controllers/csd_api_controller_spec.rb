@@ -147,13 +147,17 @@ describe CsdApiController do
 
     end
 
-    it "should return an element 'otherId' for each identifier field in the collection" do
+    it "should return an facility params for each identifier field in the collection" do
       layer = collection.layers.make
-      identifier_field = layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Normal"}
-      identifier_field_2 = layer.identifier_fields.make :code => 'rw-id', :config => {"context" => "RW facility list", "agency" => "RW", "format" => "Normal"}
 
+      # Identifiers fields (for otherId)
+      identifier_field = layer.identifier_fields.make code: 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Normal"}
+      identifier_field_2 = layer.identifier_fields.make code: 'rw-id', :config => {"context" => "RW facility list", "agency" => "RW", "format" => "Normal"}
+
+      # Select One fields with metadata (for codedType)
+      select_one_field = layer.select_one_fields.make code: 'moh-schema-option', metadata: {"Type" => "facilityType", "OptionList" => "MOH"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
       stub_time Time.iso8601("2013-12-18T15:40:28-03:00").to_s
-      site_a = collection.sites.make name: 'Site A', properties: {identifier_field.es_code => "12345"}
+      site_a = collection.sites.make name: 'Site A', properties: {identifier_field.es_code => "12345", select_one_field.es_code => 1}
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
@@ -163,6 +167,7 @@ describe CsdApiController do
 
       body["facilityDirectory"].length.should eq(1)
 
+      # Should include 'otherId'
       other_ids = body["facilityDirectory"]["facility"]["otherID"]
       other_ids.length.should eq(2)
 
@@ -173,6 +178,11 @@ describe CsdApiController do
       other_id_2 = other_ids.last
       other_id_2["code"].should eq(nil)
       other_id_2["assigningAuthorityName"].should eq("RW")
+
+      # Should include 'codedType'
+      coded_type = body["facilityDirectory"]["facility"]["codedType"]
+      coded_type["code"].should eq("one")
+      coded_type["codingSchema"].should eq("MOH")
     end
 
   end
