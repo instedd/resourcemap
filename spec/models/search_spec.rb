@@ -1,3 +1,4 @@
+#encoding=utf-8
 require 'spec_helper'
 
 describe Search do
@@ -329,6 +330,11 @@ describe Search do
     it "searches by label value" do
       assert_results collection.new_search.full_text_search("prop:water"), site1
     end
+
+    it "searches with written accents" do
+      a_site = collection.sites.make :name => "Censús"
+      assert_results collection.new_search.full_text_search("Censús"), a_site
+    end
   end
 
   context "geo" do
@@ -489,6 +495,12 @@ describe Search do
     it "sorts by multiple fields" do
       site3 = collection.sites.make :name => 'Esther Goris', :properties => {numeric.es_code => 2}
       result = search.sort_multiple({'name' => true, numeric.code => false}).results
+      result.map { |x| x['_id'].to_i } .should eq([site1.id, site3.id, site2.id])
+    end
+
+    it "sorts by name case-insensitive" do
+      site3 = collection.sites.make :name => 'esther agoris', :properties => {numeric.es_code => 2}
+      result = search.sort('name').results
       result.map { |x| x['_id'].to_i } .should eq([site1.id, site3.id, site2.id])
     end
   end
