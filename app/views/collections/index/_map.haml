@@ -4,20 +4,19 @@
   -# Collections
   <!-- ko if: !currentCollection() && !editingSite() -->
   .tableheader
-    %div{style: 'padding-top:9px;padding-left:6px;'} My Collections
+    .title My Collections
   .tablescroll.cheight.sites
     %table.GralTable.CleanTable
       %tbody
         <!-- ko foreach: collections -->
         %tr
           %td
-            %div{style: "width:230px;overflow:hidden;"}
-              %input{ko(checked: :checked), type: :checkbox, style: 'position:relative;'}
-              %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor: pointer;width:205px;overflow:hidden;display:block;float:right;'}"
+            %input{ko(checked: :checked), type: :checkbox}
+            %a{ko(text: :name, attr: {title: :name}, click: '$root.enterCollection')}"
             <!-- ko if: currentSnapshot -->
-            .snapshot_on.right{style: 'padding-right:0'}
+            .snapshot_on.right
               .i18g-snapshot
-              %button.farrow{ko(click: '$root.enterCollection'), type: :button,  style: 'float:none'}
+              %button.farrow{ko(click: '$root.enterCollection'), type: :button}
             .clear
             <!-- /ko -->
             <!-- ko if: !currentSnapshot -->
@@ -28,32 +27,32 @@
     - if Settings.is_on? :account_completeness
       -# acount completeness
       #profile-main{style: 'display:none'}
-        .box.plain.orange{ko(visible: 'collections().length < 1 || (!$root.isExist())'), :style => 'padding:5px; display:none;background-color: #B6D7A8;border: 0px'}
-          .sbox.grey.StateDisplay{style: 'margin: 0px;padding: 0px;background-color: #FFFFFF'}
-            .values{style: 'padding: 0px;margin: 4px 0 4px 0;font-size: 12px;line-height: 12px;width: 100%;'}
+        .box.plain.orange{ko(visible: 'collections().length < 1 || (!$root.isExist())')}
+          .sbox.grey.StateDisplay
+            .values
 
               <!-- ko if: collections().length < 1 && (!$root.isExist()) -->
-              .M{style: 'padding: 0px; width: 75px; height: 15px; border: solid 1px; background-color: #FFFFFF; float: left;margin-left: 13px;'}
-                %span.Fill{style: 'width: 0%; background-color: #38761D; height: 15px'}/
+              .M
+                %span.Fill/
               .R
-                %span{style: 'font-weight:bold; color: #000000;letter-spacing: 0em; margin-top: 3px; font-size:10px;'} 0% Account Setup Completeness
+                %span 0% Account Setup Completeness
               <!-- /ko -->
 
               <!-- ko if: (collections().length < 1 && $root.isExist()) || (collections().length > 0 && (!$root.isExist()))-->
-              .M{style: 'padding: 0px; width: 75px; height: 15px; border: solid 1px; background-color: #FFFFFF; float: left;margin-left: 13px;'}
-                %span.Fill{style: 'width: 50%; background-color: #38761D; height: 15px'}/
+              .M
+                %span.Fill/
               .R
-                %span{style: 'font-weight:bold; color: #000000;letter-spacing: 0em; margin-top: 3px; font-size:10px;'} 50% Account Setup Completeness
+                %span 50% Account Setup Completeness
               <!-- /ko -->
               .L
                 <!-- ko if: collections().length < 1 -->
-                %button.fadd{ko(click: '$root.createCollection'),type: "button", style: 'width:250px'}
-                  %span{style: 'float:left; font-size: 12px'} Create Your First Collection (+50%)
+                %button.fadd{ko(click: '$root.createCollection'),type: "button"}
+                  %span Create Your First Collection (+50%)
                 %br{:clear => "all"}/
                 <!-- /ko -->
                 <!-- ko if: !$root.isExist() -->
-                %button.fadd{onClick: "window.location='/gateways';return false;", type: "button", style: 'width:250px'}
-                  %span{style: 'float:left; font-size: 12px'} Configure SMS Gateway (+50%)
+                %button.fadd{onClick: "window.location='/gateways';return false;", type: "button"}
+                  %span Configure SMS Gateway (+50%)
                 <!-- /ko -->
 
 
@@ -67,14 +66,13 @@
   <!-- ko if: !editingSite() -->
   <!-- ko with: currentCollection -->
   .tableheader
-    %div.title
+    .title
       - if can? :index, Collection
         %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
-      %span{ko(text: :name), style: "display: inline-block;max-width: 185px;white-space: nowrap;"}
+      %span{ko(text: :name, attr: {title: :name})}
       - #if can? :show, collection
       - if !current_user.is_guest
-        %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
-      .clear
+        %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button'}
 
   .tablescroll.cheight.sites
     %table.GralTable.CleanTable
@@ -88,7 +86,7 @@
         <!-- ko if: hasMoreSites() && !loadingSites()-->
         %tr
           %td.loadmore
-            = ko_link_to "Load more sites...", :loadMoreSites, style: 'margin-left: 23px'
+            = ko_link_to "Load more sites...", :loadMoreSites
         <!-- /ko -->
         <!-- ko if: hasMoreSites() && loadingSites()-->
         %tr
@@ -106,7 +104,7 @@
 
   -# New Site or Edit Site form
   <!-- ko if: newOrEditSite -->
-  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), novalidate: 'novalidate', action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
+  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), novalidate: 'novalidate', action: '#/null', method: :post}
     .tableheader.w30
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
@@ -146,7 +144,7 @@
               <!-- ko foreach: $root.currentCollection().layers() -->
               %div
                 %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
-                %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
+                %span{ko(text: :name, click: :toggleExpand)}
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
               %div
@@ -167,10 +165,10 @@
               / /ko
     .tablebottom
       /ko if: collection.error()
-      .left{style: 'line-height: 30px;'}
+      .left
         %label.error There are validation errors that prevent the site from being saved.
       //ko
-      .right{style: 'margin-right:3px;margin-top:-5px;'}
+      .right
         %button.grey{type: 'submit'} Done
         %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
       .clear
@@ -178,7 +176,7 @@
 
   -# Show Site form
   <!-- ko if: showSite -->
-  %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, novalidate: 'novalidate', style: 'display:inline;width:100%'}
+  %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, novalidate: 'novalidate'}
     .tableheader
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
@@ -230,7 +228,7 @@
               <!-- ko foreach: collection.layers -->
               / col = collection
               %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
-                %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
+                %span{ko(text: :name, click: :toggleExpand)}
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
               <!-- ko if: writeable -->
@@ -244,7 +242,7 @@
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: !hasValue() &&  !error() -->
-                %span.value{ko(visible: '!editing()'), style: 'color:grey;cursor:pointer'} (no value)
+                %span.value{ko(visible: '!editing()')} (no value)
                 <!-- /ko -->
                 <!-- ko if: editing() || error() -->
                 - Field::kinds.each do |kind|
@@ -315,7 +313,7 @@
     %a#sites_whitout_location_alert.alert.box.flash_error.drop_shadow(href='javascript:window.model.filterByLocationMissing()')
       %span There are sites with no location set
       %span.right
-        %button.fconfiguration{ko(click: '$root.filterByLocationMissing'), type: 'button', style: 'margin-left:9px'}
+        %button.fconfiguration{ko(click: '$root.filterByLocationMissing'), type: 'button'}
         %span.black Show them
       .clear
     <!-- /ko -->

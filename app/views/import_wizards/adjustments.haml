@@ -78,7 +78,8 @@
             %tr
               / ko foreach: visibleColumns()
               %th
-                %a.fancybox.column_header.icon_button{ko(css: {error_column: 'errors().length > 0'}, class: 'iconClass', text: :header, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
+                %a.fancybox.column_header.icon_button.left{ko(css: {error_column: 'errors().length > 0'}, class: 'iconClass', click: '$root.selectColumn'), href: '#columnUsageTemplate'}
+                %span.fancybox{ko(text: :header, click: '$root.selectColumn'), href: '#columnUsageTemplate'}
               //ko
           %tbody
             / ko foreach: visibleSites()

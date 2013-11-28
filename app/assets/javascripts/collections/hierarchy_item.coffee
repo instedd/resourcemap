@@ -49,14 +49,13 @@ onCollections ->
 
     # private
     style: =>
-      pixels_per_indent_level = 20
+      pixels_per_indent_level = 10
       row_width = 300
 
       indent = @level * pixels_per_indent_level
 
       {
         columnStyle: {
-          height: '30px',
           cursor: 'pointer'
         }
         labelStyle: {

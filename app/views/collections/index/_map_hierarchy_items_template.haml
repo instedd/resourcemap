@@ -3,7 +3,7 @@
   <!-- ko foreach: hierarchyItems -->
   %tr
     %td.hierarchyItem{ko(click: :toggleExpand, style: :columnStyle)}
-      %div{ko(style: :labelStyle, css: {greyback: :isSelected})}
+      %div{ko(style: :labelStyle)}
         %a{href: 'javascript:void(0)'}
           %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
         %span{ko(text: :name)}
