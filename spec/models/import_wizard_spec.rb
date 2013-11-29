@@ -168,7 +168,8 @@ describe ImportWizard do
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Beds','Soap']
       csv << ["", 'Foo', '1.2', '3.4', '1','1']
-      csv << ["", 'Bar', '10', '40', '10','10']
+      csv << [nil, 'Bar', '10', '40', '10','10']
+      csv << [" ", 'Fin de semana', '10', '40', '20','20']
     end
 
     specs = [
@@ -194,12 +195,14 @@ describe ImportWizard do
     fields[0].kind.should eq('numeric')
 
     sites = collection.sites.all
-    sites.length.should eq(2)
+    sites.length.should eq(3)
 
     sites[0].name.should eq('Foo')
     sites[0].properties.should eq({fields[0].es_code => 1,fields[1].es_code => 1})
     sites[1].name.should eq('Bar')
     sites[1].properties.should eq({fields[0].es_code => 10,fields[1].es_code => 10})
+    sites[2].name.should eq('Fin de semana')
+    sites[2].properties.should eq({fields[0].es_code => 20,fields[1].es_code => 20})
   end
 
   it "imports with new select one mapped to both code and label" do
