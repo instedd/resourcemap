@@ -27,6 +27,11 @@ class Snapshot < ActiveRecord::Base
     index.delete
   end
 
+  def recreate_index
+    destroy_index
+    create_index
+  end
+
   def index_name
     collection.index_name snapshot_id: id
   end

@@ -32,7 +32,7 @@ onCollections ->
       location = document.createElement 'a'
       location.href = window.location
       location.search = $.param query
-      History.pushState null, null, location
+      History.pushState null, null, location.href
 
       @reloadMapSites()
 

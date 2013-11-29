@@ -27,7 +27,7 @@ namespace :index do
       percentage = (100 * (i / snapshot_count)).round
       print "\rRecreating snapshot #{i.to_i}/#{snapshot_count}: %#{percentage}"
       next if snapshot.collection.nil?
-      snapshot.create_index
+      snapshot.recreate_index
     end
 
     print "\r#{' ' * 80}"
@@ -46,7 +46,7 @@ namespace :index do
     collection.snapshots.each_with_index do |snapshot, i|
       percentage = (100.0 * (i / snapshot_count)).round
       print "\rRecreating snapshot #{i.to_i}/#{snapshot_count}: %#{percentage}"
-      snapshot.create_index
+      snapshot.recreate_index
     end
 
     puts "Done!"

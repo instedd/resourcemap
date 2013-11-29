@@ -18,8 +18,19 @@ module Collection::GeomConcern
   end
 
   def compute_bounding_box
+    set_bounds = false
     sites.where('lat is not null && lng is not null').select('min(lat) as v1, max(lat) as v2, min(lng) as v3, max(lng) as v4').each do |v|
-      set_bounding_box v.v1, v.v2, v.v3, v.v4 if v.v1 && v.v2 && v.v3 && v.v4
+      if v.v1 && v.v2 && v.v3 && v.v4
+        set_bounding_box v.v1, v.v2, v.v3, v.v4
+        set_bounds = true
+      end
+    end
+
+    unless set_bounds
+      offset = 30
+      lat = 90 - offset
+      lng = 180 - offset
+      set_bounding_box(-lat, lat, -lng, lng)
     end
   end
 
