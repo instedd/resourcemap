@@ -4,11 +4,14 @@ module CsdApiHelper
     # Used to generate 'otherId's
     identifier_fields = collection.identifier_fields
 
-    # Used to generate 'facilityTypes's
+    # Used to generate 'facilityTypes'
     facility_type_fields = collection.facility_type_fields
 
-    # Used to generate 'otherNames's
+    # Used to generate 'otherNames'
     other_name_fields = collection.facility_other_name_fields
+
+    # Used to generate 'address'
+    address_fields = collection.facility_address_fields
 
     xml.soap(:Envelope, xs_header_specification) do
       xml.soap :Header do
@@ -39,7 +42,8 @@ module CsdApiHelper
 
             xml.tag!("facilityDirectory") do
               facilities.each do |facility|
-                facility_xml xml, facility, identifier_fields, facility_type_fields, other_name_fields
+
+                facility_xml xml, facility, identifier_fields, facility_type_fields, other_name_fields, address_fields
               end
             end
 
@@ -54,8 +58,7 @@ module CsdApiHelper
 
   private
 
-  def facility_xml(xml, facility, identifier_fields, facility_type_fields, other_name_fields)
-
+  def facility_xml(xml, facility, identifier_fields, facility_type_fields, other_name_fields, address_fields)
     facility_properties = facility["_source"]["properties"]
 
     xml.tag!("facility") do
@@ -96,8 +99,19 @@ module CsdApiHelper
         xml.tag!("latitude", facility["_source"]["location"]["lat"])
         xml.tag!("longitude", facility["_source"]["location"]["lon"])
         xml.tag!("coordinateSystem", "WGS-84")
-
       end
+
+      xml.tag!("address", {"type" => "Legal"}) do
+        address_fields.each do |address_field|
+          value = facility_properties[address_field.code] || ""
+          # TODO: move this to a field's method
+          component = address_field.metadata["CSDComponent"] || ""
+          xml.tag!("addressLine", {"component" => component}) do
+            xml.text!(value)
+          end
+        end
+      end
+
     end
 
   end

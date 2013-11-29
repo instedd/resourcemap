@@ -155,18 +155,24 @@ describe CsdApiController do
       identifier_field_2 = layer.identifier_fields.make code: 'rw-id', :config => {"context" => "RW facility list", "agency" => "RW", "format" => "Normal"}
 
       # Select One fields with metadata (for codedType)
-      select_one_field = layer.select_one_fields.make code: 'moh-schema-option', metadata: {"CSDType" => "facilityType", "OptionList" => "MOH"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+      select_one_field = layer.select_one_fields.make code: 'moh-schema-option', metadata: {"CSDType" => "facilityType", "OptionList" => "moh.gov.rw"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
       stub_time Time.iso8601("2013-12-18T15:40:28-03:00").to_s
 
       # Text fields with metadata (for otherName)
       french_name_field = layer.text_fields.make code: 'French Name', metadata: {"CSDType" => "otherName", "CSDLanguage" => "french"}
       spanish_name_field = layer.text_fields.make code: 'Spanish Name', metadata: {"CSDType" => "otherName", "CSDLanguage" => "spanish"}
 
+      # Text fields with metadata (for address)
+      city_address_field = layer.text_fields.make code: 'city', metadata: {"CSDType" => "address", "CSDComponent" => "City"}
+      street_address_field = layer.text_fields.make code: 'street', metadata: {"CSDType" => "address", "CSDComponent" => "StreetAddress"}
+
       site_a = collection.sites.make(name: 'Site A', lat: 10, lng: 20, properties: {
           identifier_field.es_code => "12345",
           select_one_field.es_code => 1,
           french_name_field.es_code => "Terrain A",
-          spanish_name_field.es_code => "Sitio A"})
+          spanish_name_field.es_code => "Sitio A",
+          city_address_field.es_code => "Buenos Aires",
+          street_address_field.es_code => "Balcarce 50"})
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
@@ -193,7 +199,7 @@ describe CsdApiController do
       # Should include 'codedType'
       coded_type = facility["codedType"]
       coded_type["code"].should eq("one")
-      coded_type["codingSchema"].should eq("MOH")
+      coded_type["codingSchema"].should eq("moh.gov.rw")
 
       # Should include 'name'
       name = facility["primaryName"]
@@ -208,6 +214,12 @@ describe CsdApiController do
 
       other_names.last["language"].should eq "spanish"
       other_names.last["commonName"].should eq "Sitio A"
+
+      # Should include 'address'
+      address = facility["address"]
+      address["addressLine"].length.should eq(2)
+      address["addressLine"][0].should eq("Buenos Aires")
+      address["addressLine"][1].should eq("Balcarce 50")
 
       # Should include 'geocode'
       facility["geocode"]["latitude"].should eq("10.0")

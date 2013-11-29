@@ -8,4 +8,8 @@ module Collection::CSDApiConcern
   def facility_other_name_fields
     text_fields.select{|field| field.metadata["CSDType"] == "otherName" }
   end
+
+  def facility_address_fields
+    text_fields.select{|field| field.metadata["CSDType"] == "address" }
+  end
 end
