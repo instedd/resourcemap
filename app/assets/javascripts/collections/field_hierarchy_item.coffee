@@ -36,6 +36,13 @@ onCollections ->
     selectAndSave: =>
       @select()
       @field.save()
+      @field.closeHierarchyItems()
+      @toggleParentsExpand()
 
     select: =>
       @field.value(@id)
+
+    close: =>
+      @expanded(false)
+      for item in @fieldHierarchyItems
+        item.close()

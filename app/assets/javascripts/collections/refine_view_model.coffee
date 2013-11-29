@@ -111,6 +111,9 @@ onCollections ->
       @expandedRefinePropertyHierarchy(null)
       @hideRefinePopup()
 
+      if field.kind == 'hierarchy'
+        field.closeHierarchyItems()
+
     @addOrReplaceFilter: (filter, extraCondition = -> true) ->
       i = 0
       for f in @filters()

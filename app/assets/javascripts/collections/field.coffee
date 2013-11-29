@@ -130,6 +130,10 @@ onCollections ->
       @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@, x))
       @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: '(no value)'})
 
+    closeHierarchyItems: =>
+      for item in @fieldHierarchyItems()
+        item.close()
+
     edit: =>
       if !window.model.currentCollection()?.currentSnapshot
         @originalValue = @value()
