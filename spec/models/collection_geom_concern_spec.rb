@@ -52,4 +52,19 @@ describe Collection::GeomConcern do
     collection.lat.to_f.should eq(30.0)
     collection.lng.to_f.should eq(20.0)
   end
+
+  it "use big bounding box when removing locations from sites" do
+    site1 = collection.sites.make :lat => 30, :lng => 20
+    site1.lat = nil
+    site1.lng = nil
+    site1.save!
+
+    collection.reload
+    collection.lat.to_f.should eq(0)
+    collection.lng.to_f.should eq(0)
+    collection.min_lat.to_f.should eq(-60)
+    collection.max_lat.to_f.should eq(60)
+    collection.min_lng.to_f.should eq(-150)
+    collection.max_lng.to_f.should eq(150)
+  end
 end
