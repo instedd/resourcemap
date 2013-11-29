@@ -24,7 +24,7 @@ class ImportWizard::IdFieldSpecs < ImportWizard::BaseFieldSpecs
       end
     else
       # Pivot is resmap-id
-      if row_value.empty?
+      if row_value.blank?
         collection.sites.new properties: {}, from_import_wizard: true
       else
         collection.sites.find_by_id row_value

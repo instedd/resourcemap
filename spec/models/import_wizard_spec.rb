@@ -164,6 +164,44 @@ describe ImportWizard do
     sites[0].properties.should eq({fields[0].es_code => 10})
   end
 
+  it "New sites are created when importing and using rows with no value(nil) or blank space in resmap-id column" do
+    csv_string = CSV.generate do |csv|
+      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Beds','Soap']
+      csv << ["", 'Foo', '1.2', '3.4', '1','1']
+      csv << ["", 'Bar', '10', '40', '10','10']
+    end
+
+    specs = [
+      {header: 'resmap-id', use_as: 'id'},
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'},
+      {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
+      {header: 'Soap', use_as: 'new_field', kind: 'numeric', code: 'soap', label: 'sp'},
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.execute user, collection, specs
+
+    layers = collection.layers.all
+    layers.length.should eq(2)
+    layers[1].name.should eq('Import wizard')
+
+    fields = layers[1].fields.all
+    fields.length.should eq(2)
+    fields[0].name.should eq('The beds')
+    fields[0].code.should eq('beds')
+    fields[0].kind.should eq('numeric')
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({fields[0].es_code => 1,fields[1].es_code => 1})
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({fields[0].es_code => 10,fields[1].es_code => 10})
+  end
+
   it "imports with new select one mapped to both code and label" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Visibility']
