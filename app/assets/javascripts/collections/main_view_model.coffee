@@ -85,3 +85,12 @@ onCollections ->
       $.get "/gateways.json", (data) ->
         _self.isExist(true) if data.length > 0
         $('#profile-main').show()
+
+    refreshMapResize: =>
+      map = window.model.map
+      if map
+        setTimeout (->
+          center = map.getCenter()
+          google.maps.event.trigger(map, 'resize')
+          map.panTo(center)
+          ), 300

@@ -13,14 +13,7 @@ onCollections ->
       window.markers = @markers = {}
 
       # Make sure to resize the map and keep its center when the left column's width changes
-      @expandLeftColumn.subscribe =>
-        map = window.model.map
-        if map
-          setTimeout (->
-            center = map.getCenter()
-            google.maps.event.trigger(map, 'resize')
-            map.panTo(center)
-            ), 300
+      @expandLeftColumn.subscribe @refreshMapResize
 
     @loadBreadCrumb: ->
       params = {}

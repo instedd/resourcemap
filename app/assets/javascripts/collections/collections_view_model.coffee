@@ -10,6 +10,10 @@ onCollections ->
       @currentSnapshot = ko.computed =>
         @currentCollection()?.currentSnapshot
 
+      # Make sure to resize the map and keep its center when entering/exiting fullscreen
+      @fullscreen.subscribe @refreshMapResize
+      @fullscreenExpanded.subscribe @refreshMapResize
+
     @findCollectionById: (id) -> (x for x in @collections() when x.id == id)[0]
 
     @goToRoot: ->
