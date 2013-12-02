@@ -150,24 +150,31 @@ describe CsdApiController do
     it "should return an facility params for each identifier field in the collection" do
       layer = collection.layers.make
 
-      # Identifiers fields (for otherId)
+      # Identifiers fields for otherId
       identifier_field = layer.identifier_fields.make code: 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Normal"}
       identifier_field_2 = layer.identifier_fields.make code: 'rw-id', :config => {"context" => "RW facility list", "agency" => "RW", "format" => "Normal"}
 
-      # Select One fields with metadata (for codedType)
+      # Select One fields with metadata for codedType
       select_one_field = layer.select_one_fields.make code: 'moh-schema-option', metadata: {"CSDType" => "facilityType", "OptionList" => "moh.gov.rw"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
       stub_time Time.iso8601("2013-12-18T15:40:28-03:00").to_s
 
-      # Text fields with metadata (for otherName)
+      # Text fields with metadata for otherName
       french_name_field = layer.text_fields.make code: 'French Name', metadata: {"CSDType" => "otherName", "CSDLanguage" => "french"}
       spanish_name_field = layer.text_fields.make code: 'Spanish Name', metadata: {"CSDType" => "otherName", "CSDLanguage" => "spanish"}
 
-      # Text fields with metadata (for address)
+      # Text fields with metadata for address
       city_fiscal_address_field = layer.text_fields.make code: 'fiscal city', metadata: {"CSDType" => "address", "CSDComponent" => "City", "CSDCode" => "FiscalAddress"}
       street_fiscal_address_field = layer.text_fields.make code: 'fiscal street', metadata: {"CSDType" => "address", "CSDComponent" => "StreetAddress", "CSDCode" => "FiscalAddress"}
 
       city_real_address_field = layer.text_fields.make code: 'real city', metadata: {"CSDType" => "address", "CSDComponent" => "City", "CSDCode" => "RealAddress"}
       street_real_address_field = layer.text_fields.make code: 'real street', metadata: {"CSDType" => "address", "CSDComponent" => "StreetAddress", "CSDCode" => "RealAddress"}
+
+      # Text fields with metadata for contactPoint
+      contact1_equipment_field = layer.text_fields.make code: 'Contact Equipment', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Equipment", "CSDCode" => "ContactOne"}
+      contact1_purpose_field = layer.text_fields.make code: 'Contact Purpose', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Purpose", "CSDCode" => "ContactOne"}
+      contact1_certificate_field = layer.text_fields.make code: 'Contact Certificate', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Certificate", "CSDCode" => "ContactOne"}
+      contact1_coded_type_field = layer.select_one_fields.make code: 'Contact Coded Type', metadata: {"CSDType" => "contactPoint", "OptionList" => "moh.gov.rw", "CSDCode" => "ContactOne"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+
 
       site_a = collection.sites.make(name: 'Site A', lat: 10, lng: 20, properties: {
           identifier_field.es_code => "12345",
@@ -177,7 +184,11 @@ describe CsdApiController do
           city_fiscal_address_field.es_code => "Buenos Aires",
           street_fiscal_address_field.es_code => "Balcarce 50",
           city_real_address_field.es_code => "Vicente Lopez",
-          street_real_address_field.es_code => "Bartolome Cruz 1818"})
+          street_real_address_field.es_code => "Bartolome Cruz 1818",
+          contact1_equipment_field.es_code => "Equipment for contact 1",
+          contact1_purpose_field.es_code => "Main contact",
+          contact1_certificate_field.es_code => "1234",
+          contact1_coded_type_field.es_code => 2})
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
@@ -220,7 +231,7 @@ describe CsdApiController do
       other_names.last["language"].should eq "spanish"
       other_names.last["commonName"].should eq "Sitio A"
 
-      # Should include 'address'
+      # Should include 'address', one for each type
       addresses = facility["address"]
       addresses.length.should eq(2)
 
@@ -242,6 +253,7 @@ describe CsdApiController do
       facility["geocode"]["coordinateSystem"].should eq("WGS-84")
 
       # Should include 'contactPoint'
+
 
 
     end
