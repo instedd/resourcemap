@@ -10,6 +10,6 @@ module Collection::CSDApiConcern
   end
 
   def facility_address_fields
-    text_fields.select{|field| field.metadata["CSDType"] == "address" }
+    text_fields.select{|field| field.metadata["CSDType"] == "address" }.group_by{|field| field.metadata["CSDCode"]}
   end
 end

@@ -163,16 +163,21 @@ describe CsdApiController do
       spanish_name_field = layer.text_fields.make code: 'Spanish Name', metadata: {"CSDType" => "otherName", "CSDLanguage" => "spanish"}
 
       # Text fields with metadata (for address)
-      city_address_field = layer.text_fields.make code: 'city', metadata: {"CSDType" => "address", "CSDComponent" => "City"}
-      street_address_field = layer.text_fields.make code: 'street', metadata: {"CSDType" => "address", "CSDComponent" => "StreetAddress"}
+      city_fiscal_address_field = layer.text_fields.make code: 'fiscal city', metadata: {"CSDType" => "address", "CSDComponent" => "City", "CSDCode" => "FiscalAddress"}
+      street_fiscal_address_field = layer.text_fields.make code: 'fiscal street', metadata: {"CSDType" => "address", "CSDComponent" => "StreetAddress", "CSDCode" => "FiscalAddress"}
+
+      city_real_address_field = layer.text_fields.make code: 'real city', metadata: {"CSDType" => "address", "CSDComponent" => "City", "CSDCode" => "RealAddress"}
+      street_real_address_field = layer.text_fields.make code: 'real street', metadata: {"CSDType" => "address", "CSDComponent" => "StreetAddress", "CSDCode" => "RealAddress"}
 
       site_a = collection.sites.make(name: 'Site A', lat: 10, lng: 20, properties: {
           identifier_field.es_code => "12345",
           select_one_field.es_code => 1,
           french_name_field.es_code => "Terrain A",
           spanish_name_field.es_code => "Sitio A",
-          city_address_field.es_code => "Buenos Aires",
-          street_address_field.es_code => "Balcarce 50"})
+          city_fiscal_address_field.es_code => "Buenos Aires",
+          street_fiscal_address_field.es_code => "Balcarce 50",
+          city_real_address_field.es_code => "Vicente Lopez",
+          street_real_address_field.es_code => "Bartolome Cruz 1818"})
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
@@ -216,15 +221,28 @@ describe CsdApiController do
       other_names.last["commonName"].should eq "Sitio A"
 
       # Should include 'address'
-      address = facility["address"]
-      address["addressLine"].length.should eq(2)
-      address["addressLine"][0].should eq("Buenos Aires")
-      address["addressLine"][1].should eq("Balcarce 50")
+      addresses = facility["address"]
+      addresses.length.should eq(2)
+
+      fiscal_address = addresses.first
+      fiscal_address["type"].should eq("FiscalAddress")
+      fiscal_address["addressLine"].length.should eq(2)
+      fiscal_address["addressLine"][0].should eq("Buenos Aires")
+      fiscal_address["addressLine"][1].should eq("Balcarce 50")
+
+      real_address = addresses.last
+      real_address["type"].should eq("RealAddress")
+      real_address["addressLine"].length.should eq(2)
+      real_address["addressLine"][0].should eq("Vicente Lopez")
+      real_address["addressLine"][1].should eq("Bartolome Cruz 1818")
 
       # Should include 'geocode'
       facility["geocode"]["latitude"].should eq("10.0")
       facility["geocode"]["longitude"].should eq("20.0")
       facility["geocode"]["coordinateSystem"].should eq("WGS-84")
+
+      # Should include 'contactPoint'
+
 
     end
 

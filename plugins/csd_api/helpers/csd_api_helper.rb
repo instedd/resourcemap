@@ -11,7 +11,7 @@ module CsdApiHelper
     other_name_fields = collection.facility_other_name_fields
 
     # Used to generate 'address'
-    address_fields = collection.facility_address_fields
+    address_fields_by_type = collection.facility_address_fields
 
     xml.soap(:Envelope, xs_header_specification) do
       xml.soap :Header do
@@ -43,7 +43,7 @@ module CsdApiHelper
             xml.tag!("facilityDirectory") do
               facilities.each do |facility|
 
-                facility_xml xml, facility, identifier_fields, facility_type_fields, other_name_fields, address_fields
+                facility_xml xml, facility, identifier_fields, facility_type_fields, other_name_fields, address_fields_by_type
               end
             end
 
@@ -58,7 +58,7 @@ module CsdApiHelper
 
   private
 
-  def facility_xml(xml, facility, identifier_fields, facility_type_fields, other_name_fields, address_fields)
+  def facility_xml(xml, facility, identifier_fields, facility_type_fields, other_name_fields, address_fields_by_type)
     facility_properties = facility["_source"]["properties"]
 
     xml.tag!("facility") do
@@ -101,17 +101,22 @@ module CsdApiHelper
         xml.tag!("coordinateSystem", "WGS-84")
       end
 
-      xml.tag!("address", {"type" => "Legal"}) do
-        address_fields.each do |address_field|
-          value = facility_properties[address_field.code] || ""
-          # TODO: move this to a field's method
-          component = address_field.metadata["CSDComponent"] || ""
-          xml.tag!("addressLine", {"component" => component}) do
-            xml.text!(value)
+      address_fields_by_type.each do |address_fields_for_type|
+        address_type = address_fields_for_type[0]
+        address_fields = address_fields_for_type[1]
+        xml.tag!("address", {"type" => address_type}) do
+
+          address_fields.each do |address_field|
+            value = facility_properties[address_field.code] || ""
+            # TODO: move this to a field's method
+            component = address_field.metadata["CSDComponent"] || ""
+            xml.tag!("addressLine", {"component" => component}) do
+              xml.text!(value)
+            end
           end
+
         end
       end
-
     end
 
   end
