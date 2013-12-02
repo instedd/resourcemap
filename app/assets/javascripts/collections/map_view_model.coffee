@@ -50,6 +50,7 @@ onCollections ->
         zoom: zoom
         mapTypeId: google.maps.MapTypeId.ROADMAP
         scaleControl: true
+        minZoom: 2
       @map = new google.maps.Map document.getElementById("map"), mapOptions
 
       # Create a dummy overlay to easily get a position of a marker in pixels
