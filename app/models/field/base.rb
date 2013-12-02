@@ -71,7 +71,7 @@ module Field::Base
     if text?
       value = 'sample text value'
     elsif numeric?
-      value = -39.2
+      value = 39
     elsif date?
       value = Field::DateField.new.decode('4/23/1851')
     elsif user?

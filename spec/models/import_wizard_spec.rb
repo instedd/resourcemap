@@ -205,6 +205,15 @@ describe ImportWizard do
     sites[2].properties.should eq({fields[0].es_code => 20,fields[1].es_code => 20})
   end
 
+  it "imports by downloading and uploading an empty collection with numeric field" do
+    sample_csv = collection.sample_csv user
+    ImportWizard.import user, collection, 'sample.csv', sample_csv
+    ImportWizard.mark_job_as_pending user, collection
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
+    processed_sites[:errors][:data_errors].count.should eq(0)
+  end
+
   it "imports with new select one mapped to both code and label" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Visibility']
