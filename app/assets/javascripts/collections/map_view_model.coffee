@@ -475,6 +475,7 @@ onCollections ->
       @initInsteddPlatform()
       options.changeMonth = true
       options.changeYear = true
+      options.yearRange = "1900:+0"
       # fix dinamic DOM
       # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
       $(".ux-datepicker").removeClass('hasDatepicker')
