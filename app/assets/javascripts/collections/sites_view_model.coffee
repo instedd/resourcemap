@@ -37,9 +37,17 @@ onCollections ->
             field.defaultValue(value) if field && field.kind == 'identifier'
             field.setValueFromSite(value) if field
 
+        # I can't figure out why the screen scroll down after this.
+        # So we do this workaround: remember the windows' scroll top
+        # and later restore that value
+        oldScrollTop = $(window).scrollTop()
+
         @unselectSite()
         @editingSite site
         @editingSite().startEditLocationInMap()
+
+        $(window).scrollTop(oldScrollTop)
+
         window.model.initDatePicker()
         window.model.initAutocomplete()
 
