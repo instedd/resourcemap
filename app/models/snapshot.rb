@@ -47,4 +47,26 @@ class Snapshot < ActiveRecord::Base
   def site_mapping
     Site::IndexUtils.site_mapping fields
   end
+
+  # Given some collections and a user, returns a Hash collection_id => snapshot_name.
+  def self.names_for_collections_and_user(collections, user)
+    info_for_collections_ids_and_user(collections.map(&:id), user, "name")
+  end
+
+  # Given some collections and a user, returns a Hash collection_id => snapshot_id.
+  def self.ids_for_collections_ids_and_user(collections_ids, user)
+    info_for_collections_ids_and_user(collections_ids, user, "id")
+  end
+
+  def self.info_for_collections_ids_and_user(collections_ids, user, field)
+    collections_ids = collections_ids.map { |id| connection.quote(id) }.join ', '
+    user_id = connection.quote(user.id)
+    results = connection.execute("
+      select c.id, s.#{field}
+      from collections c, user_snapshots u, snapshots s
+      where c.id = u.collection_id and u.snapshot_id = s.id
+      and u.user_id = #{user_id}
+      and c.id IN (#{collections_ids})")
+    Hash[results.to_a]
+  end
 end

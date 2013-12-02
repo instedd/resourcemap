@@ -169,11 +169,19 @@ class CollectionsController < ApplicationController
 
   def select_each_snapshot(collections)
     collections_with_snapshot = []
+
+    if current_user
+      # Fetch all snapshots names at once instead of fetching them one by one for each collection
+      snapshot_names = Snapshot.names_for_collections_and_user(collections, current_user)
+    else
+      # If user is guest (=> current_user will be nil) she will not be able to load a snapshot. At least for the moment
+      snapshot_names = {}
+    end
+
     collections.each do |collection|
       attrs = collection.attributes
-      # If user is guest (=> current_user will be nil) she will not be able to load a snapshot. At least for the moment
-      attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name) rescue nil
-      collections_with_snapshot = collections_with_snapshot + [attrs]
+      attrs["snapshot_name"] = snapshot_names[collection.id]
+      collections_with_snapshot.push attrs
     end
     collections_with_snapshot
   end

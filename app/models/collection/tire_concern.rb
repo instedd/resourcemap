@@ -72,7 +72,6 @@ module Collection::TireConcern
     INDEX_NAME_PREFIX = Rails.env == 'test' ? "collection_test" : "collection"
 
     def index_name(id, options = {})
-
       if options[:snapshot_id]
         return "#{INDEX_NAME_PREFIX}_#{id}_#{options[:snapshot_id]}"
       end
@@ -92,11 +91,27 @@ module Collection::TireConcern
     end
 
     def new_tire_search(*ids, options)
-      Tire::Search::Search.new ids.map{|id| index_name(id, options)}, type: :site
+      # If we want the indices for many collections for a given user, it's faster
+      # to get all snapshots ids first instead of fetching them one by one for each collection.
+      # This optimization does that.
+      if options[:user] && !options[:snapshot_id]
+        collection_ids_to_snapshot_id = Snapshot.ids_for_collections_ids_and_user(ids, options[:user])
+        options.delete :user
+      end
+
+      index_names = ids.map do |id|
+        if collection_ids_to_snapshot_id
+          options[:snapshot_id] = collection_ids_to_snapshot_id[id.to_i]
+        end
+
+        index_name(id, options)
+      end
+      Tire::Search::Search.new index_names, type: :site
     end
 
     def new_tire_count(*ids, options, &block)
-      Tire::Search::Count.new ids.map{|id| index_name(id, options)}, type: :site, &block
+      index_names = ids.map { |id| index_name(id, options) }
+      Tire::Search::Count.new index_names, type: :site, &block
     end
   end
 end
