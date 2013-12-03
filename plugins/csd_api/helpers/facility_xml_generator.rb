@@ -12,6 +12,11 @@
 
       # Used to generate 'address'
       @address_fields_by_type = collection.facility_address_fields
+
+      # Used to generate 'contactPoint'
+      @contact_point_fields_by_type = collection.facility_contact_point_fields
+      @coded_type_for_contact_point_fields_by_type = collection.coded_type_for_contact_point_fields
+
     end
 
     def generate_facility_xml(xml, facility)
@@ -35,11 +40,41 @@
         end
 
         generate_addresses(xml, facility_properties)
+
+        generate_contact_points(xml, facility_properties)
       end
       xml
     end
 
     private
+
+    def generate_contact_points(xml, facility_properties)
+      @contact_point_fields_by_type.each do |contact_points_by_type|
+
+        contact_point_fields = contact_points_by_type[1]
+        xml.tag!("contactPoint") do
+          contact_point_fields.each do |contact_point_element|
+            element = contact_point_element.metadata["CSDContactData"] || ""
+            value = facility_properties[contact_point_element.code] || ""
+            xml.tag!(element.downcase, value)
+          end
+
+          contact_point_code = contact_points_by_type[0]
+
+          if @coded_type_for_contact_point_fields_by_type[contact_point_code]
+            coded_type_field_for_this_contact = @coded_type_for_contact_point_fields_by_type[contact_point_code][0]
+            xml.tag!("codedType") do
+              value = facility_properties[coded_type_field_for_this_contact.code] || ""
+              xml.tag!("code", value)
+              # TODO: move this to a field's method
+              schema = coded_type_field_for_this_contact.metadata["OptionList"] || ""
+              xml.tag!("codingSchema", schema)
+            end
+
+          end
+        end
+      end
+    end
 
     def generate_addresses(xml, facility_properties)
       @address_fields_by_type.each do |address_fields_for_type|

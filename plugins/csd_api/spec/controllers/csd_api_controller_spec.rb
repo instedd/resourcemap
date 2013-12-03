@@ -147,7 +147,7 @@ describe CsdApiController do
 
     end
 
-    it "should return an facility params for each identifier field in the collection" do
+    it "should return CSD facility attributes for each CSD-field in the collection" do
       layer = collection.layers.make
 
       # Identifiers fields for otherId
@@ -175,6 +175,8 @@ describe CsdApiController do
       contact1_certificate_field = layer.text_fields.make code: 'Contact Certificate', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Certificate", "CSDCode" => "ContactOne"}
       contact1_coded_type_field = layer.select_one_fields.make code: 'Contact Coded Type', metadata: {"CSDType" => "contactPoint", "OptionList" => "moh.gov.rw", "CSDCode" => "ContactOne"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
 
+      contact2_equipment_field = layer.text_fields.make code: 'Contact 2 Equipment', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Equipment", "CSDCode" => "ContactTwo"}
+
 
       site_a = collection.sites.make(name: 'Site A', lat: 10, lng: 20, properties: {
           identifier_field.es_code => "12345",
@@ -188,7 +190,8 @@ describe CsdApiController do
           contact1_equipment_field.es_code => "Equipment for contact 1",
           contact1_purpose_field.es_code => "Main contact",
           contact1_certificate_field.es_code => "1234",
-          contact1_coded_type_field.es_code => 2})
+          contact1_coded_type_field.es_code => 2,
+          contact2_equipment_field.es_code => "Contact 2"})
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
@@ -253,7 +256,16 @@ describe CsdApiController do
       facility["geocode"]["coordinateSystem"].should eq("WGS-84")
 
       # Should include 'contactPoint'
+      facility["contactPoint"].length.should eq(2)
+      contact1 = facility["contactPoint"][0]
+      contact1["equipment"].should eq("Equipment for contact 1")
+      contact1["purpose"].should eq("Main contact")
+      contact1["certificate"].should eq("1234")
+      contact1["codedType"]["code"].should eq "two"
+      contact1["codedType"]["codingSchema"].should eq "moh.gov.rw"
 
+      contact2 = facility["contactPoint"][1]
+      contact2["equipment"].should eq("Contact 2")
 
 
     end

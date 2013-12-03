@@ -12,4 +12,12 @@ module Collection::CSDApiConcern
   def facility_address_fields
     text_fields.select{|field| field.metadata["CSDType"] == "address" }.group_by{|field| field.metadata["CSDCode"]}
   end
+
+  def facility_contact_point_fields
+    text_fields.select{|field| field.metadata["CSDType"] == "contactPoint" }.group_by{|field| field.metadata["CSDCode"]}
+  end
+
+  def coded_type_for_contact_point_fields
+    select_one_fields.select{|field| field.metadata["CSDType"] == "contactPoint" }.group_by{|field| field.metadata["CSDCode"]}
+  end
 end
