@@ -22,6 +22,10 @@ module Collection::CSDApiConcern
   end
 
   def facility_language_fields
-     select_one_fields.select{|field| field.metadata["CSDType"] == "language" }
+    select_one_fields.select{|field| field.metadata["CSDType"] == "language" }
+  end
+
+  def facility_status_field
+    yes_no_fields.find{|field| field.metadata["CSDType"] == "status"}
   end
 end

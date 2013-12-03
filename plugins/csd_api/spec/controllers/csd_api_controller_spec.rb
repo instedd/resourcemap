@@ -156,7 +156,6 @@ describe CsdApiController do
 
       # Select One fields with metadata for codedType
       select_one_field = layer.select_one_fields.make code: 'moh-schema-option', metadata: {"CSDType" => "facilityType", "OptionList" => "moh.gov.rw"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
-      stub_time Time.iso8601("2013-12-18T15:40:28-03:00").to_s
 
       # Text fields with metadata for otherName
       french_name_field = layer.text_fields.make code: 'French Name', metadata: {"CSDType" => "otherName", "CSDLanguage" => "french"}
@@ -180,7 +179,10 @@ describe CsdApiController do
       # Select One fields with metadata for languages
       language_field = layer.select_one_fields.make code: 'language', metadata: {"CSDType" => "language", "OptionList" => "BCP 47"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'spanish', 'label' => 'Spanish'}, {'id' => 2, 'code' => 'french', 'label' => 'French'}]}
 
+      # Yes-No field for active
+      status_field = layer.yes_no_fields.make code: 'active', metadata: {"CSDType" => "status"}
 
+      stub_time Time.iso8601("2013-12-18T15:40:28-03:00").to_s
       site_a = collection.sites.make(name: 'Site A', lat: 10, lng: 20, properties: {
           identifier_field.es_code => "12345",
           select_one_field.es_code => 1,
@@ -195,7 +197,8 @@ describe CsdApiController do
           contact1_certificate_field.es_code => "1234",
           contact1_coded_type_field.es_code => 2,
           contact2_equipment_field.es_code => "Contact 2",
-          language_field.es_code => 2})
+          language_field.es_code => 2,
+          status_field.es_code => false})
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
@@ -274,6 +277,12 @@ describe CsdApiController do
       # Should include 'language'
       facility["language"]["code"].should eq("french")
       facility["language"]["codingSchema"].should eq("BCP 47")
+
+      # Should include 'record'
+      facility["record"]["created"].should eq("2013-12-18T18:40:28+00:00")
+      facility["record"]["updated"].should eq("2013-12-18T18:40:28+00:00")
+      facility["record"]["sourceDirectory"].should eq("http://#{Settings.host}")
+      facility["record"]["status"].should eq("inactive")
 
     end
 

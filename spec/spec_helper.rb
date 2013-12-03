@@ -114,6 +114,8 @@ RSpec.configure do |config|
 
   # Turn on all plugins by default
   module Settings
+    CONFIG_SETTINGS = YAML.load_file(File.expand_path('../../config/settings.yml', __FILE__))
+
     def is_on?(plugin)
       true
     end
@@ -126,7 +128,7 @@ RSpec.configure do |config|
       if method_name.to_s =~ /(\w+)\?$/
         true
       else
-        self
+        CONFIG_SETTINGS[method_name.to_s]
       end
     end
   end

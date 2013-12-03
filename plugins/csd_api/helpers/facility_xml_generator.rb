@@ -20,6 +20,8 @@
       # Used to generate 'language'
       @language_fields = collection.facility_language_fields
 
+      # Used to generate 'status' required
+      @status_field = collection.facility_status_field
     end
 
     def generate_facility_xml(xml, facility)
@@ -47,11 +49,25 @@
         generate_contact_points(xml, facility_properties)
 
         generate_languages(xml, facility_properties)
+
+        generate_record(xml, facility)
       end
       xml
     end
 
     private
+
+    def generate_record(xml, facility)
+      xml.tag!("record") do
+        xml.tag!("created", facility["_source"]["created_at"].to_datetime.iso8601)
+        xml.tag!("updated", facility["_source"]["updated_at"].to_datetime.iso8601)
+        status = facility["_source"]["properties"][@status_field.code] rescue raise("Status field is required")
+        status_value = status ? "active" : "inactive"
+        xml.tag!("status", status_value)
+        xml.tag!("sourceDirectory", "http://#{Settings.host}")
+      end
+      xml
+    end
 
     def generate_languages(xml, facility_properties)
       @language_fields.each do |language_field|
