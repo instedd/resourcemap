@@ -178,7 +178,7 @@ describe CsdApiController do
       contact2_equipment_field = layer.text_fields.make code: 'Contact 2 Equipment', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Equipment", "CSDCode" => "ContactTwo"}
 
       # Select One fields with metadata for languages
-      language_field = layer.select_one_fields.make code: 'language', metadata: {"CSDType" => "language", "OptionList" => "moh.gov.rw"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'spanish', 'label' => 'Spanish'}, {'id' => 2, 'code' => 'french', 'label' => 'French'}]}
+      language_field = layer.select_one_fields.make code: 'language', metadata: {"CSDType" => "language", "OptionList" => "BCP 47"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'spanish', 'label' => 'Spanish'}, {'id' => 2, 'code' => 'french', 'label' => 'French'}]}
 
 
       site_a = collection.sites.make(name: 'Site A', lat: 10, lng: 20, properties: {
@@ -273,7 +273,7 @@ describe CsdApiController do
 
       # Should include 'language'
       facility["language"]["code"].should eq("french")
-      facility["language"]["codingSchema"].should eq("moh.gov.rw")
+      facility["language"]["codingSchema"].should eq("BCP 47")
 
     end
 
