@@ -17,6 +17,9 @@
       @contact_point_fields_by_type = collection.facility_contact_point_fields
       @coded_type_for_contact_point_fields_by_type = collection.coded_type_for_contact_point_fields
 
+      # Used to generate 'language'
+      @language_fields = collection.facility_language_fields
+
     end
 
     def generate_facility_xml(xml, facility)
@@ -42,11 +45,26 @@
         generate_addresses(xml, facility_properties)
 
         generate_contact_points(xml, facility_properties)
+
+        generate_languages(xml, facility_properties)
       end
       xml
     end
 
     private
+
+    def generate_languages(xml, facility_properties)
+      @language_fields.each do |language_field|
+        xml.tag!("language") do
+          value = facility_properties[language_field.code] || ""
+          xml.tag!("code", value)
+          # TODO: move this to a field's method
+          schema = language_field.metadata["OptionList"] || ""
+          xml.tag!("codingSchema", schema)
+        end
+      end
+      xml
+    end
 
     def generate_contact_points(xml, facility_properties)
       @contact_point_fields_by_type.each do |contact_points_by_type|
@@ -74,6 +92,7 @@
           end
         end
       end
+      xml
     end
 
     def generate_addresses(xml, facility_properties)
@@ -92,6 +111,7 @@
           end
         end
       end
+      xml
     end
 
     def generate_other_names(xml, facility_properties)

@@ -177,6 +177,9 @@ describe CsdApiController do
 
       contact2_equipment_field = layer.text_fields.make code: 'Contact 2 Equipment', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Equipment", "CSDCode" => "ContactTwo"}
 
+      # Select One fields with metadata for languages
+      language_field = layer.select_one_fields.make code: 'language', metadata: {"CSDType" => "language", "OptionList" => "moh.gov.rw"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'spanish', 'label' => 'Spanish'}, {'id' => 2, 'code' => 'french', 'label' => 'French'}]}
+
 
       site_a = collection.sites.make(name: 'Site A', lat: 10, lng: 20, properties: {
           identifier_field.es_code => "12345",
@@ -191,7 +194,8 @@ describe CsdApiController do
           contact1_purpose_field.es_code => "Main contact",
           contact1_certificate_field.es_code => "1234",
           contact1_coded_type_field.es_code => 2,
-          contact2_equipment_field.es_code => "Contact 2"})
+          contact2_equipment_field.es_code => "Contact 2",
+          language_field.es_code => 2})
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
@@ -267,6 +271,9 @@ describe CsdApiController do
       contact2 = facility["contactPoint"][1]
       contact2["equipment"].should eq("Contact 2")
 
+      # Should include 'language'
+      facility["language"]["code"].should eq("french")
+      facility["language"]["codingSchema"].should eq("moh.gov.rw")
 
     end
 

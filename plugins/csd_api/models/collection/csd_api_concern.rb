@@ -20,4 +20,8 @@ module Collection::CSDApiConcern
   def coded_type_for_contact_point_fields
     select_one_fields.select{|field| field.metadata["CSDType"] == "contactPoint" }.group_by{|field| field.metadata["CSDCode"]}
   end
+
+  def facility_language_fields
+     select_one_fields.select{|field| field.metadata["CSDType"] == "language" }
+  end
 end
