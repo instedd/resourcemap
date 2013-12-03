@@ -57,7 +57,7 @@ describe 'ImportWizard', ->
       expect(@model.columns()[0].errors().length).toBe(0)
       errors = {duplicated_code:[], duplicated_label:[], existing_label:[], existing_code:[], duplicated_usage: [], data_errors: []}
       errors.existing_code = {text_column: [0]}
-      @model.validationErrors(new ValidationErrors(errors))
+      @model.validationErrors(new ValidationErrors(@model.columns, errors))
       expect(@model.columns()[0].errors().length).toBe(1)
 
   describe "ImportWizard Sites specs", ->

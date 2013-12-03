@@ -49,7 +49,7 @@ onImportWizard ->
       sites = $.map(preview.sites, (x) -> new Site(x))
       @sites(sites)
       @sitesCount(preview.sites_count)
-      @validationErrors(new ValidationErrors(preview.errors))
+      @validationErrors(new ValidationErrors(@columns, preview.errors))
       @loadVisibleSites()
 
     loadUsages: (column) =>

@@ -135,15 +135,15 @@ describe ImportWizard do
       data_errors = sites_errors[:data_errors]
       data_errors.length.should eq(3)
 
-      data_errors[0][:description].should eq("Some of the values in column 2 are not valid for the type luhn identifier: the value must be in this format: nnnnnn-n (where 'n' is a number).")
+      data_errors[0][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: the value must be in this format: nnnnnn-n (where 'n' is a number).")
       data_errors[0][:column].should eq(1)
       data_errors[0][:rows].should eq([0])
 
-      data_errors[1][:description].should eq("Some of the values in column 2 are not valid for the type luhn identifier: the value failed the luhn check.")
+      data_errors[1][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: the value failed the luhn check.")
       data_errors[1][:column].should eq(1)
       data_errors[1][:rows].should eq([1])
 
-      data_errors[2][:description].should eq("Some of the values in column 2 are not valid for the type luhn identifier: the value already exists in the collection.")
+      data_errors[2][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: the value already exists in the collection.")
       data_errors[2][:column].should eq(1)
       data_errors[2][:rows].should eq([2])
     end
@@ -169,7 +169,7 @@ describe ImportWizard do
       data_errors = sites_errors[:data_errors]
       data_errors.length.should eq(1)
 
-      data_errors[0][:description].should eq("Some of the values in column 2 are not valid for the type luhn identifier: the value is repeated in row 1 and 2.")
+      data_errors[0][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: the value is repeated in row 1 and 2.")
       data_errors[0][:column].should eq(1)
       data_errors[0][:rows].should eq([0, 1])
     end
@@ -319,7 +319,7 @@ describe ImportWizard do
       data_errors = sites_errors[:data_errors]
       data_errors.length.should eq(1)
 
-      data_errors[0][:description].should eq("Some of the values in column 2 are not valid for the type identifier: the value already exists in the collection.")
+      data_errors[0][:description].should eq("Some of the values in field 'Normal' (2nd column) are not valid for the type identifier: the value already exists in the collection.")
       data_errors[0][:column].should eq(1)
       data_errors[0][:rows].should eq([0])
     end
@@ -344,7 +344,7 @@ describe ImportWizard do
       data_errors = sites_errors[:data_errors]
       data_errors.length.should eq(1)
 
-      data_errors[0][:description].should eq("Some of the values in column 2 are not valid for the type identifier: the value is repeated in row 1 and 2.")
+      data_errors[0][:description].should eq("Some of the values in field 'Normal' (2nd column) are not valid for the type identifier: the value is repeated in row 1 and 2.")
       data_errors[0][:column].should eq(1)
       data_errors[0][:rows].should eq([0, 1])
     end

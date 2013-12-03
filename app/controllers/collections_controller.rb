@@ -170,7 +170,7 @@ class CollectionsController < ApplicationController
   def select_each_snapshot(collections)
     collections_with_snapshot = []
 
-    if current_user
+    if current_user && current_user.id
       # Fetch all snapshots names at once instead of fetching them one by one for each collection
       snapshot_names = Snapshot.names_for_collections_and_user(collections, current_user)
     else
