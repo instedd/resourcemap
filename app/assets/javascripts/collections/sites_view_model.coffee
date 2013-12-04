@@ -63,7 +63,9 @@ onCollections ->
 
         site.collection.updatePermission site, => @editingSite(site)
         @selectSite(site)
+        siteSearchCount = @currentCollection().siteSearchCount()
         @currentCollection(site.collection)
+        @currentCollection().siteSearchCount(siteSearchCount)
 
         @loadBreadCrumb()
 

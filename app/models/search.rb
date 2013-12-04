@@ -72,7 +72,7 @@ class Search
 
   # Returns the results from ElasticSearch without modifications. Keys are ids
   # and so are values (when applicable).
-  def results
+  def results_with_count
     apply_queries
     sort_list = @sort_list
     if @sort
@@ -92,7 +92,12 @@ class Search
 
     Rails.logger.debug @search.to_curl if Rails.logger.level <= Logger::DEBUG
 
-    @search.perform.results
+    search = @search.perform
+    {sites: search.results, total_count: search.json['hits']['total']}
+  end
+
+  def results
+    results_with_count[:sites]
   end
 
   # Returns the results from ElasticSearch but with codes as keys and codes as
@@ -126,8 +131,9 @@ class Search
   def ui_results
     fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
 
-    items = results()
-    items.each do |item|
+    items = results_with_count()
+
+    items[:sites].each do |item|
       if item['_source']['location']
         item['_source']['lat'] = item['_source']['location']['lat']
         item['_source']['lng'] = item['_source']['location']['lon']

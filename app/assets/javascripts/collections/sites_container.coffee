@@ -10,6 +10,7 @@ onCollections ->
       @sitesPage = 1
       @hasMoreSites = ko.observable true
       @loadingSites = ko.observable true
+      @siteSearchCount = ko.observable 0
       @siteIds = {}
 
     # Loads SITES_PER_PAGE sites more from the server, it there are more sites.
@@ -20,12 +21,14 @@ onCollections ->
       # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
       # extra element so the user always sees SITES_PER_PAGE elements.
       $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1}, (data) =>
+        sites = data.sites
+        @siteSearchCount(data.total_count)
         @sitesPage += 1
-        if data.length == SITES_PER_PAGE + 1
-          data.pop()
+        if sites.length == SITES_PER_PAGE + 1
+          sites.pop()
         else
           @hasMoreSites false
-        for site in data
+        for site in sites
           @addSite @createSite(site)
         @loadingSites false
         window.model.refreshTimeago()
@@ -35,6 +38,8 @@ onCollections ->
       @siteIds = {}
       @sites = ko.observableArray()
       $.get @sitesUrl(), {offset: 0, limit: (@sitesPage - 1) * SITES_PER_PAGE }, (data) =>
+        sites = data.sites
+        @siteSearchCount(data.total_count)
         for site in data
           @addSite @createSite(site)
         @loadingSites false

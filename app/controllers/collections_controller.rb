@@ -216,7 +216,8 @@ class CollectionsController < ApplicationController
 
     search.apply_queries
 
-    results = search.results.map do |result|
+    search_result = search.results_with_count
+    sites = search_result[:sites].map do |result|
       source = result['_source']
 
       obj = {}
@@ -236,7 +237,7 @@ class CollectionsController < ApplicationController
 
       obj
     end
-    render_json results
+    render_json({ sites: sites, total_count: search_result[:total_count] })
   end
 
   def recreate_index

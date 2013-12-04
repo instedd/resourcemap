@@ -427,7 +427,7 @@ describe Search do
 
     it "gets ui results" do
       search = collection.new_search current_user_id: user.id
-      result = search.ui_results[0]
+      result = search.ui_results[:sites][0]
       result['_source']['lat'].should eq(1)
       result['_source']['lng'].should eq(2)
     end
@@ -440,7 +440,7 @@ describe Search do
       site1.save!
 
       search = collection.new_search current_user_id: user.id
-      result = search.ui_results[0]
+      result = search.ui_results[:sites][0]
 
       result['_source']['properties'][text.es_code].should eq('foo2')
       result['_source']['properties'][numeric.es_code].should eq(2)
@@ -448,7 +448,7 @@ describe Search do
       result['_source']['properties'][select_many.es_code].should eq([2])
 
       search = collection.new_search current_user_id: user.id, snapshot_id: snapshot.id
-      result = search.ui_results[0]
+      result = search.ui_results[:sites][0]
       result['_source']['properties'][text.es_code].should eq('foo')
       result['_source']['properties'][numeric.es_code].should eq(1)
       result['_source']['properties'][select_one.es_code].should eq(1)
@@ -458,7 +458,7 @@ describe Search do
     it "do not get deleted fields" do
       numeric.delete
       search = collection.new_search current_user_id: user.id
-      result = search.ui_results[0]
+      result = search.ui_results[:sites][0]
       result['_source']['properties'][numeric.es_code].should be_nil
     end
 

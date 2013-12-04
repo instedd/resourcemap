@@ -7,7 +7,7 @@ onCollections ->
       @mapSitesCountText = ko.computed =>
         sitesText = if @mapSitesCount() == 1 then "site" else "sites"
         if @currentCollection()
-          "Viewing #{@mapSitesCount()} #{sitesText} out of #{@sitesCount()}"
+          "Search returned #{@currentCollection().siteSearchCount()} #{sitesText} out of #{@sitesCount()} - Viewing #{@mapSitesCount()}"
         else
           "Viewing #{@mapSitesCount()} #{sitesText}"
 
