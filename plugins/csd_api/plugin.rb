@@ -1,5 +1,5 @@
 class CsdApi::Plugin < Plugin
-  collection_tab '/csd_api_config_tab'
+  #collection_tab '/csd_api_config_tab'
 
   Collection
   extend_model \
