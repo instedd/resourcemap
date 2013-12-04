@@ -8,6 +8,12 @@ onLayers ->
       @kind = ko.observable data?.kind
       @config = data?.config
       @metadata = data?.metadata
+      @attributes = if @metadata
+                      ko.observableArray($.map(@metadata, (x) -> new Attribute(x)))
+                    else
+                      ko.observableArray()
+      @advancedExpanded = ko.observable false
+
 
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
@@ -58,6 +64,12 @@ onLayers ->
     iconClass: =>
       FIELD_TYPES[@kind()].small_css_class
 
+    toggleAdvancedExpanded: =>
+      @advancedExpanded(not @advancedExpanded())
+
+    addAttribute: (attribute) =>
+      @attributes.push attribute
+
     toJSON: =>
       @code(@code().trim())
       json =
@@ -68,6 +80,7 @@ onLayers ->
         ord: @ord()
         layer_id: @layer().id()
       @impl().toJSON(json)
+      json.metadata = $.map(@attributes(), (x) -> x.toJSON())
       json
 
   class @FieldImpl
@@ -78,22 +91,6 @@ onLayers ->
     toJSON: (json) =>
 
   class @Field_text extends @FieldImpl
-    constructor: (field) ->
-      super(field)
-      @attributes = if field.metadata?
-                      ko.observableArray($.map(field.metadata, (x) -> new Attribute(x)))
-                    else
-                      ko.observableArray()
-      @advancedExpanded = ko.observable false
-
-    toggleAdvancedExpanded: =>
-      @advancedExpanded(not @advancedExpanded())
-
-    addAttribute: (attribute) =>
-      @attributes.push attribute
-
-    toJSON: (json) =>
-      json.metadata = $.map(@attributes(), (x) -> x.toJSON())
 
   class @Field_numeric extends @FieldImpl
     constructor: (field) ->
@@ -172,11 +169,8 @@ onLayers ->
   class @Field_date extends @FieldImpl
     constructor: (field) ->
       super(field)
-      @advancedExpanded = ko.observable false
-      @format = ko.observable field.config?.format || 'mm_dd_yyyy'
 
-    toggleAdvancedExpanded: =>
-      @advancedExpanded(not @advancedExpanded())
+      @format = ko.observable field.config?.format || 'mm_dd_yyyy'
 
     toJSON: (json) =>
       json.config =

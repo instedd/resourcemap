@@ -23,13 +23,14 @@ gem 'cancan', '~> 1.6.10'
 gem "omniauth"
 gem "omniauth-openid"
 gem 'alto_guisso', git: "https://bitbucket.org/instedd/alto_guisso.git", branch: 'master'
+gem 'nokogiri'
+
 
 group :test do
   gem 'shoulda-matchers'
   gem 'ci_reporter'
   gem 'resque_spec'
   gem 'selenium-webdriver'
-  gem 'nokogiri'
   gem 'capybara'
   gem 'database_cleaner'
   gem 'simplecov'
