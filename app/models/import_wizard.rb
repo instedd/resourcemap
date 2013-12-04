@@ -380,8 +380,12 @@ class ImportWizard
     end
 
     def error_description_for_type(field, column_spec, ex)
-      column_index = column_spec[:index]
-      "Some of the values in column #{column_index + 1} #{field.error_description_for_invalid_values(ex)}."
+      if column_spec[:header].present?
+        column_desc = "field '#{column_spec[:header]}' (#{(column_spec[:index] + 1).ordinalize} column)"
+      else
+        column_desc = "the #{(column_spec[:index] + 1).ordinalize} column"
+      end
+      "Some of the values in #{column_desc} #{field.error_description_for_invalid_values(ex)}."
     end
 
     def calculate_duplicated(selection_block, groping_field)

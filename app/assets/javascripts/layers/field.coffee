@@ -37,6 +37,27 @@ onLayers ->
       @error = ko.computed => @nameError() || @codeError() || @impl().error()
       @valid = ko.computed => !@error()
 
+      @initAutocompleteCodeFromName()
+
+    initAutocompleteCodeFromName: =>
+      # It works like this:
+      #   1. It starts enabled if the code is empty.
+      #   2. It remains enabled as long as the used doesn't modify the code manually
+      #   3. It is re-enabled if the user clears the code
+      @autocompleteCode = ko.observable($.trim(@code()).length == 0)
+
+      codeAutomaticallyChanged = false
+
+      @name.subscribe =>
+        if @autocompleteCode()
+          codeAutomaticallyChanged = true
+          @code($.trim(@name()).toLowerCase().replace(/\W/g, '_'))
+          codeAutomaticallyChanged = false
+
+      @code.subscribe =>
+        unless codeAutomaticallyChanged
+          @autocompleteCode($.trim(@code()).length == 0)
+
     hasName: => $.trim(@name()).length > 0
 
     hasCode: => $.trim(@code()).length > 0

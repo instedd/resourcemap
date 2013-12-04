@@ -24,12 +24,12 @@ class CollectionsController < ApplicationController
     if params[:collection_id].blank? && current_user.is_guest
       redirect_to root_url
     elsif params[:name].present?
-      render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
+      render_json Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
       add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html
-        format.json { render json: collections_with_snapshot_by_user }
+        format.json { render_json collections_with_snapshot_by_user }
       end
     end
   end
@@ -48,7 +48,7 @@ class CollectionsController < ApplicationController
 
   def current_user_membership
     respond_to do |format|
-      format.json { render json: collection.membership_for(current_user).to_json}
+      format.json { render json: collection.membership_for(current_user).to_json }
     end
   end
 
@@ -75,7 +75,7 @@ class CollectionsController < ApplicationController
       current_user.save!
       respond_to do |format|
         format.html { redirect_to collection_path(collection), notice: "Collection #{collection.name} created" }
-        format.json { render json: collection }
+        format.json { render_json collection }
       end
     else
       render :new
@@ -96,7 +96,7 @@ class CollectionsController < ApplicationController
     add_breadcrumb "Properties", '#'
     respond_to do |format|
       format.html
-      format.json { render json: collection }
+      format.json { render_json collection }
     end
   end
 
@@ -153,7 +153,7 @@ class CollectionsController < ApplicationController
       format.html {
         flash[:notice] = "Snapshot #{loaded_snapshot.name} unloaded" if loaded_snapshot
         redirect_to  collection_path(collection) }
-      format.json { render json: :ok }
+      format.json { render_json :ok }
     end
   end
 
@@ -164,13 +164,13 @@ class CollectionsController < ApplicationController
   end
 
   def max_value_of_property
-    render json: collection.max_value_of_property(params[:property])
+    render_json collection.max_value_of_property(params[:property])
   end
 
   def select_each_snapshot(collections)
     collections_with_snapshot = []
 
-    if current_user
+    if current_user && current_user.id
       # Fetch all snapshots names at once instead of fetching them one by one for each collection
       snapshot_names = Snapshot.names_for_collections_and_user(collections, current_user)
     else
@@ -199,7 +199,7 @@ class CollectionsController < ApplicationController
       item[:value] = item["name"]
     end
 
-    render json: results
+    render_json results
   end
 
   def search
@@ -236,16 +236,16 @@ class CollectionsController < ApplicationController
 
       obj
     end
-    render json: results
+    render_json results
   end
 
   def recreate_index
-    render json: collection.recreate_index
+    render_json collection.recreate_index
   end
 
   def register_gateways
     collection.channels = Channel.find params["gateways"]
-    render json: collection.as_json
+    render_json collection
   end
 
   def message_quota
@@ -259,7 +259,7 @@ class CollectionsController < ApplicationController
       start_date = date.prev_year
     end
     ms = collection.messages.where("is_send = true and created_at between ? and ?", start_date, Time.now)
-    render json: {status: 200, remain_quota: collection.quota, sended_message: ms.length }
+    render_json({status: 200, remain_quota: collection.quota, sended_message: ms.length})
   end
 
   def sites_info
@@ -278,6 +278,6 @@ class CollectionsController < ApplicationController
     info[:no_location] = no_location > 0
     info[:new_site_properties] = collection.new_site_properties
 
-    render json: info
+    render_json info
   end
 end

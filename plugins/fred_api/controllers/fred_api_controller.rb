@@ -16,18 +16,18 @@ class FredApiController < ApplicationController
 
   def verify_site_belongs_to_collection!
     if !collection.sites.include? site
-      render json: { message: "Facility #{site.id} do not belong to collection #{collection.id}"}, status: 409
+      render_json({ message: "Facility #{site.id} do not belong to collection #{collection.id}"}, status: 409)
     end
   end
 
   def show_facility
-    render json: find_facility_and_apply_fred_format(site.id)
+    render_json find_facility_and_apply_fred_format(site.id)
   end
 
   def delete_facility
     site.user = current_user
     site.destroy
-    render json: url_for_facility(site.id)
+    render_json url_for_facility(site.id)
   end
 
   def update_facility
@@ -35,7 +35,7 @@ class FredApiController < ApplicationController
     facility_params = JSON.parse raw_post
 
     if ["id","uuid","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
-      render  json: { message: "Invalid Paramaters: The id, uuid, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400
+      render_json({ message: "Invalid Paramaters: The id, uuid, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400)
       return
     end
     facility_params = validate_site_params(facility_params)
@@ -43,14 +43,14 @@ class FredApiController < ApplicationController
     site.properties_will_change!
     site.update_attributes! facility_params
 
-    render json: find_facility_and_apply_fred_format(site.id), status: :ok, :location => url_for_facility(site.id)
+    render_json(find_facility_and_apply_fred_format(site.id), status: :ok, :location => url_for_facility(site.id))
   end
 
   def create_facility
     raw_post = request.raw_post.empty? ? "{}" : request.raw_post
     facility_params = JSON.parse raw_post
     if ["id","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
-      render  json: { message: "Invalid Paramaters: The id, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400
+      render_json({ message: "Invalid Paramaters: The id, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400)
       return
     end
     facility_params = validate_site_params(facility_params)
@@ -58,7 +58,7 @@ class FredApiController < ApplicationController
     facility.update_attributes! facility_params.merge(user: current_user)
     facility.assign_default_values_for_create
     facility.save!
-    render json: find_facility_and_apply_fred_format(facility.id), status: :created, :location => url_for_facility(facility.id)
+    render_json(find_facility_and_apply_fred_format(facility.id), status: :created, :location => url_for_facility(facility.id))
   end
 
   def facilities
@@ -122,7 +122,7 @@ class FredApiController < ApplicationController
     @fred_json_facilities = select_properties(@fred_json_facilities, parse_fields(params[:fields])) if params[:fields]
 
     respond_to do |format|
-      format.json { render json: {facilities: @fred_json_facilities} }
+      format.json { render_json({facilities: @fred_json_facilities}) }
       format.xml { render template: 'fred_api/facilities.xml.builder', layout: false }
     end
   end
@@ -252,22 +252,22 @@ class FredApiController < ApplicationController
 
   def rescue_record_invalid(ex)
     if ex.record.errors[:uuid].include?("has already been taken")
-      render json: {code: "409 Conflict", message: "Duplicated facility: UUID has already been taken in this collection."}, :status => 409, :layout => false
+      render_json({code: "409 Conflict", message: "Duplicated facility: UUID has already been taken in this collection."}, :status => 409, :layout => false)
     else
-      render json: {code: "400 Record Invalid", message: "#{ex.message}"}, :status => 400, :layout => false
+      render_json({code: "400 Record Invalid", message: "#{ex.message}"}, :status => 400, :layout => false)
     end
   end
 
   def rescue_runtime_error(ex)
-    render json: {code: "400 Record Invalid", message: "#{ex.message}"}, :status => 400, :layout => false
+    render_json({code: "400 Record Invalid", message: "#{ex.message}"}, :status => 400, :layout => false)
   end
 
   def default_rescue(ex)
     puts ex.message
-    render json: {code: "500 Internal Server Error",  message: "#{ex.message}"}, status: 500, :layout => false
+    render_json({code: "500 Internal Server Error",  message: "#{ex.message}"}, status: 500, :layout => false)
   end
 
   def rescue_record_not_found(ex)
-    render json: { code: "404 Not Found", message: "Resource not found" }, :status => 404, :layout => false
+    render_json({ code: "404 Not Found", message: "Resource not found" }, :status => 404, :layout => false)
   end
 end

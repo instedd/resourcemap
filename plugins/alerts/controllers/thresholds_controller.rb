@@ -10,7 +10,7 @@ class ThresholdsController < ApplicationController
         add_breadcrumb "Properties", collection_path(collection)
         add_breadcrumb "Thresholds", collection_thresholds_path(collection)
       end
-      format.json { render json: thresholds }
+      format.json { render_json thresholds }
     end
   end
 
@@ -21,13 +21,13 @@ class ThresholdsController < ApplicationController
     threshold = thresholds.new params[:threshold].except(:sites)
     threshold.sites = Site.get_id_and_name params[:threshold][:sites] if params[:threshold][:sites]#select only id and name
     threshold.save!
-    render json: threshold
+    render_json threshold
   end
 
   def set_order
     threshold.update_attribute :ord, params[:ord]
 
-    render json: threshold
+    render_json threshold
   end
 
   def update
@@ -39,13 +39,13 @@ class ThresholdsController < ApplicationController
       threshold.sites = Site.get_id_and_name params[:threshold][:sites]
       threshold.save
     end
-    render json: threshold
+    render_json threshold
   end
 
   def destroy
     threshold.destroy
 
-    render json: threshold
+    render_json threshold
   end
 
   private

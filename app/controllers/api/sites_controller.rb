@@ -15,7 +15,7 @@ class Api::SitesController < ApplicationController
 
     respond_to do |format|
       format.rss
-      format.json { render json: site_item_json(@result) }
+      format.json { render_json site_item_json(@result) }
     end
   end
 
@@ -28,7 +28,7 @@ class Api::SitesController < ApplicationController
       histories.order('version ASC')
     end
     respond_to do |format|
-      format.json { render json:  histories.map{|h| h.attributes.merge({user: h.user.try(:email)})} }
+      format.json { render_json histories.map{|h| h.attributes.merge({user: h.user.try(:email)})} }
     end
   end
 end
