@@ -6,7 +6,7 @@ class Api::CollectionsController < ApplicationController
   around_filter :rescue_with_check_api_docs
 
   def index
-    render json: current_user.collections.all
+    render_json current_user.collections.all
   end
 
   def show
@@ -24,7 +24,7 @@ class Api::CollectionsController < ApplicationController
     respond_to do |format|
       format.rss { render :show, layout: false }
       format.csv { collection_csv(collection, @results) }
-      format.json { render json: collection_json(collection, @results) }
+      format.json { render_json collection_json(collection, @results) }
     end
   end
 
@@ -40,7 +40,7 @@ class Api::CollectionsController < ApplicationController
   end
 
   def count
-    render json: perform_search(:count).total
+    render_json perform_search(:count).total
   end
 
   def histogram_by_field
@@ -51,12 +51,12 @@ class Api::CollectionsController < ApplicationController
 
     filters = find_fields(params[:filters])
 
-    render json: perform_histogram_search(fields.first, filters)
+    render_json perform_histogram_search(fields.first, filters)
   end
 
   def geo_json
     @results = perform_search :page, :sort, :require_location
-    render json: collection_geo_json(collection, @results)
+    render_json collection_geo_json(collection, @results)
   end
 
   private

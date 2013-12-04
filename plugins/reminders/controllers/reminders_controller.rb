@@ -7,7 +7,7 @@ class RemindersController < ApplicationController
         add_breadcrumb "Properties", collection_path(collection)
         add_breadcrumb "Reminders", collection_reminders_path(collection)
       end
-      format.json { render json: reminders.all.as_json(include: [:repeat], methods: [:reminder_date], except: [:schedule])}
+      format.json { render_json(reminders.all.as_json(include: [:repeat], methods: [:reminder_date], except: [:schedule])) }
     end
   end
 
@@ -15,25 +15,25 @@ class RemindersController < ApplicationController
     reminder = reminders.new params[:reminder].except(:sites)
     reminder.sites = Site.select("id, collection_id, name, properties").find params[:reminder][:sites] if params[:reminder][:sites]
     reminder.save!
-    render json: reminder
+    render_json reminder
   end
-  
+
   def update
     reminder = reminders.find params[:id]
     reminder.update_attributes! params[:reminder].except(:sites)
     reminder.sites = Site.select("id, collection_id, name, properties").find params[:reminder][:sites] if params[:reminder][:sites]
-   
-    reminder.save! 
-    render json: reminder
+
+    reminder.save!
+    render_json reminder
   end
-  
+
   def destroy
     reminder.destroy
-    render json: reminder
+    render_json reminder
   end
-  
+
   def set_status
     reminder.update_attribute :status, params[:status]
-    render json: reminder
+    render_json reminder
   end
 end

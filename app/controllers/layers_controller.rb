@@ -25,10 +25,10 @@ class LayersController < ApplicationController
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
       if current_user_snapshot.at_present?
-        format.json { render json: layers.includes(:fields).as_json(include: :fields) }
+        format.json { render_json layers.includes(:fields).as_json(include: :fields) }
       else
         format.json {
-          render json: layers
+          render_json layers
             .includes(:field_histories)
             .where("field_histories.valid_since <= :date && (:date < field_histories.valid_to || field_histories.valid_to is null)", date: current_user_snapshot.snapshot.date)
             .as_json(include: :field_histories)
@@ -45,7 +45,7 @@ class LayersController < ApplicationController
     current_user.layer_count += 1
     current_user.update_successful_outcome_status
     current_user.save!
-    render json: layer.as_json(include: :fields)
+    render_json layer.as_json(include: :fields)
   end
 
   def update
@@ -56,7 +56,7 @@ class LayersController < ApplicationController
     layer.user = current_user
     layer.update_attributes! params[:layer]
     layer.reload
-    render json: layer.as_json(include: :fields)
+    render_json layer.as_json(include: :fields)
   end
 
   def set_order
@@ -66,7 +66,7 @@ class LayersController < ApplicationController
 
     layer.user = current_user
     layer.update_attributes! ord: params[:ord]
-    render json: layer
+    render_json layer
   end
 
   def destroy

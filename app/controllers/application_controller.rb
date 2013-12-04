@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound do |x|
     respond_to do |format|
       format.html { render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true }
-      format.json { render json: { message: "Record not found"} , status: 404 }
+      format.json { render_json({ message: "Record not found"}, status: 404) }
     end
   end
 
@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
          render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
         end
       }
-      format.json { render json: { message: "Access Denied"} , status: 404 }
+      format.json { render_json({ message: "Access Denied"}, status: 404) }
     end
   end
 
@@ -76,5 +76,13 @@ class ApplicationController < ActionController::Base
 
   def show_properties_breadcrumb
     add_breadcrumb "Properties", collection_path(collection)
+  end
+
+  # Faster way to render json, using the Oj library.
+  # There is a way to let render :json use Oj by default,
+  # but in my tests it turned out to be slower... - Ary
+  def render_json(object, options = {})
+    options = options.merge(text: object.to_json_oj, content_type: 'application/json')
+    render options
   end
 end

@@ -1,13 +1,13 @@
 class ActivitiesController < ApplicationController
 
-  expose(:collections) { 
+  expose(:collections) {
     if current_user && !current_user.is_guest
       # public collections are accesible by all users
       # here we only need the ones in which current_user is a member
       current_user.collections.reject{|c| c.id.nil?}
     else
       Collection.accessible_by(current_ability)
-    end 
+    end
   }
 
   def index
@@ -37,7 +37,7 @@ class ActivitiesController < ApplicationController
             created_at: activity.created_at
           }
         end
-        render json: activities_json
+        render_json activities_json
       end
     end
   end

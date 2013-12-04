@@ -12,7 +12,7 @@ class AndroidController < ApplicationController
     collection_array=[]
     collections.all.each do |collection|
       collection_hash = collection.attributes
-      collection_hash["form"] = render_xform(collection) 
+      collection_hash["form"] = render_xform(collection)
       collection_array.push collection_hash
     end
     render :json => collection_array
@@ -32,9 +32,9 @@ class AndroidController < ApplicationController
   def submission
     xml_hash = HashParser.from_xml_file(params["xml_submission_file"]).values.first.merge("current_user" => current_user)
     if current_user.admins?(Collection.find(xml_hash["collection_id"]))
-      render json: Site.create_or_update_from_hash!(xml_hash)
+      render_json Site.create_or_update_from_hash!(xml_hash)
     else
-      render text: "User is unauthorized", status: 401 
+      render text: "User is unauthorized", status: 401
     end
   end
 

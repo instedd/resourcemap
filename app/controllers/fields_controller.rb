@@ -7,40 +7,40 @@ class FieldsController < ApplicationController
   def index
     options = {}
     options[:snapshot_id] = current_user_snapshot.snapshot.id if !current_user_snapshot.at_present?
-    render json: collection.visible_layers_for(current_user, options)
+    render_json collection.visible_layers_for(current_user, options)
   end
 
   def show
-    render json: field.to_json
+    render_json field
   end
 
   def hierarchy
     if !field.hierarchy?
-      render json: {message: invalid_hiearchy_message("The field '#{field.code}' is not a hierarchy")}, status: 422
+      render_json({message: invalid_hiearchy_message("The field '#{field.code}' is not a hierarchy")}, status: 422)
     elsif value = params[:under]
       begin
         descendants = field.descendants_of_in_hierarchy(value)
         if node = params[:node]
           field.valid_value?(node)
-          render json: descendants.include?(node)
+          render_json descendants.include?(node)
         else
-          render json: descendants
+          render_json descendants
         end
       rescue => ex
-        render json: {message: invalid_hiearchy_message(ex.message)}, status: 422
+        render_json({message: invalid_hiearchy_message(ex.message)}, status: 422)
       end
     elsif ((node = params[:node]) && (type = params[:type]))
-      render json: field.ascendants_with_type(node, type)
+      render_json field.ascendants_with_type(node, type)
     else
       respond_to do |format|
-        format.json { render json: field.to_json }
+        format.json { render_json field }
         format.csv { send_data field.hierarchy_to_csv, type: 'text/csv', filename: "hierarchy_#{field.code}.csv"}
       end
     end
   end
 
   def mapping
-    render json: collection.fields.map{|f| {name: f.name, id: f.id, code: f.code, kind: f.kind}}.to_json
+    render_json collection.fields.map{|f| {name: f.name, id: f.id, code: f.code, kind: f.kind}}
   end
 
   private

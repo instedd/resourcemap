@@ -14,7 +14,7 @@ class SitesController < ApplicationController
     search.offset params[:offset]
     search.limit params[:limit]
 
-    render json: search.ui_results.map { |x| x['_source'] }
+    render_json search.ui_results.map { |x| x['_source'] }
   end
 
   def show
@@ -23,7 +23,7 @@ class SitesController < ApplicationController
     search.id params[:id]
     # If site does not exists, return empty object
     result = search.ui_results.first['_source'] rescue {}
-    render json: result
+    render_json result
   end
 
   def create
@@ -40,9 +40,9 @@ class SitesController < ApplicationController
       current_user.site_count += 1
       current_user.update_successful_outcome_status
       current_user.save!
-      render json: site, :layout => false
+      render_json site, :layout => false
     else
-      render json: site.errors.messages, status: :unprocessable_entity, :layout => false
+      render_json site.errors.messages, status: :unprocessable_entity, :layout => false
     end
   end
 
@@ -57,9 +57,9 @@ class SitesController < ApplicationController
 
     if site.valid?
       site.save!
-      render json: site, :layout => false
+      render_json(site, :layout => false)
     else
-      render json: site.errors.messages, status: :unprocessable_entity, :layout => false
+      render_json(site.errors.messages, status: :unprocessable_entity, :layout => false)
     end
   end
 
@@ -72,9 +72,9 @@ class SitesController < ApplicationController
 
     if site.valid?
       site.save!
-      render json: site, :layout => false
+      render_json(site, :layout => false)
     else
-      render json: site.errors.messages, status: :unprocessable_entity, :layout => false
+      render_json(site.errors.messages, status: :unprocessable_entity, :layout => false)
     end
   end
 
@@ -90,10 +90,10 @@ class SitesController < ApplicationController
     site.properties[params[:es_code]] = field.decode_from_ui(params[:value])
     if site.valid?
       site.save!
-      render json: site, :status => 200, :layout => false
+      render_json(site, :status => 200, :layout => false)
     else
       error_message = site.errors[:properties][0][params[:es_code]]
-      render json: {:error_message => error_message}, status: :unprocessable_entity, :layout => false
+      render_json({:error_message => error_message}, status: :unprocessable_entity, :layout => false)
     end
   end
 
@@ -114,13 +114,13 @@ class SitesController < ApplicationController
     search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies)
 
     search.apply_queries
-    render json: search.results
+    render_json search.results
   end
 
   def destroy
     site.user = current_user
     site.destroy
-    render json: site
+    render_json site
   end
 
   private

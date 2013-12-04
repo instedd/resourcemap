@@ -22,7 +22,7 @@ class ImportWizardsController < ApplicationController
   end
 
   def guess_columns_spec
-    render json: ImportWizard.guess_columns_spec(current_user, collection)
+    render_json ImportWizard.guess_columns_spec(current_user, collection)
   end
 
   def adjustments
@@ -30,7 +30,7 @@ class ImportWizardsController < ApplicationController
   end
 
   def validate_sites_with_columns
-    render json: ImportWizard.validate_sites_with_columns(current_user, collection, JSON.parse(params[:columns]))
+    render_json ImportWizard.validate_sites_with_columns(current_user, collection, JSON.parse(params[:columns]))
   end
 
   def execute
@@ -39,7 +39,7 @@ class ImportWizardsController < ApplicationController
       render text: "Non-admin users can't create new fields", status: :unauthorized
     else
       ImportWizard.enqueue_job current_user, collection, params[:columns].values
-      render json: :ok
+      render_json :ok
     end
   end
 
@@ -65,9 +65,9 @@ class ImportWizardsController < ApplicationController
 
   def job_status
     if import_job
-      render json: {:status => import_job.status}
+      render_json({status: import_job.status})
     else
-      render json: {:status => :not_found}, status: 404
+      render_json({status: :not_found}, status: 404)
     end
   end
 
