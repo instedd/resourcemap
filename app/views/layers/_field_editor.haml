@@ -39,15 +39,9 @@
       %button.clist-add{ko(click: '$root.addOption', enable: '$root.optionValid'), title: 'Add option'}
   //ko
 
-  /ko if: kind() == 'text'
-  = render 'layers/advanced_text_field_editor'
-  //ko
-
-
   /ko if: kind() == 'date'
   = render 'layers/advanced_date_field_editor'
   //ko
-
 
   /ko if: kind() == 'hierarchy'
   %hr/
@@ -92,13 +86,15 @@
 
   //ko
 
-
   - Field::plugin_kinds.each do |name, kind|
     - if kind[:property_editor]
       <!-- ko if: kind() == '#{name}' -->
       = render kind[:property_editor]
       <!-- /ko -->
+
+  = render 'layers/advanced_metadata_editor'
   %br/
   %br/
+
 
 .clear
