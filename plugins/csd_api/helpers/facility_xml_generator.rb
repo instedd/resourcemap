@@ -61,7 +61,8 @@
       xml.tag!("record") do
         xml.tag!("created", facility["_source"]["created_at"].to_datetime.iso8601)
         xml.tag!("updated", facility["_source"]["updated_at"].to_datetime.iso8601)
-        status = facility["_source"]["properties"][@status_field.code] rescue raise("Status field is required")
+        # TODO: This field is required in the xsd. We need to discuss if a 'default' value is a good option here.
+        status = facility["_source"]["properties"][@status_field.code] rescue "active"
         status_value = status ? "active" : "inactive"
         xml.tag!("status", status_value)
         xml.tag!("sourceDirectory", "http://#{Settings.host}")
