@@ -80,7 +80,18 @@ class Collection < ActiveRecord::Base
       visible_layers = layers.accessible_by(current_ability)
     end
 
-    visible_layers.map{|l|l.fields.includes(:layer)}.flatten
+    visible_layers = visible_layers.all
+    fields_by_layer_id = Field.where(layer_id: visible_layers.map(&:id)).all.group_by(&:layer_id)
+
+    visible_layers.map do |layer|
+      fields = fields_by_layer_id[layer.id]
+      if fields
+        fields.each do |field|
+          field.layer = layer
+        end
+      end
+      fields || []
+    end.flatten
   end
 
   def visible_layers_for(user, options = {})
