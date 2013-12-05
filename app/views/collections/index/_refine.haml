@@ -3,6 +3,8 @@
   Group by
   %select{ko(value: '$root.groupBy', options: :groupByOptions, optionsText: "'name'")}
 <!-- /ko -->
+.left.site-count{style: 'padding:3px;'}
+  %span{ko(text: :siteCountText)}
 .left.superblyTagItems
   <!-- ko foreach: filters() -->
   %li.superblyTagItem{style: 'float:left;padding:3px;margin-right:4px;cursor:pointer'}

@@ -46,10 +46,7 @@ onCollections ->
         window.model.initAutocomplete()
 
     @filterDescription: (filter) ->
-      if @filters()[0] == filter
-        "Show sites #{filter.description()}"
-      else
-        filter.description()
+      filter.description()
 
     @removeFilter: (filter) ->
       @filters.remove filter

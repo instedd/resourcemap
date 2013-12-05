@@ -30,6 +30,7 @@ onCollections ->
 
     initialize: (collections) ->
       @sitesCount = ko.observable(0)
+
       @sitesWithoutLocation = ko.observable(false)
       @newSiteProperties = {}
 
@@ -45,6 +46,12 @@ onCollections ->
       @processingURL = true
 
       @updateSitesInfo()
+      @siteCountText = ko.computed =>
+        if @currentCollection() && @currentCollection().siteSearchCount() != @sitesCount()
+          sitesText = if @currentCollection().siteSearchCount() == 1 then "site" else "sites"
+          "Showing #{@currentCollection().siteSearchCount()} #{sitesText} out of #{@sitesCount()}"
+        else
+          "Showing all #{@sitesCount()} sites"
 
       # We make sure all the methods in this model are correctly bound to "this".
       # Using Module and @include makes the methods in the included class not bound
