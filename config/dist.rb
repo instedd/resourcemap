@@ -7,6 +7,7 @@ set :description, 'InSTEDD Resource Map'
 set :summary, description
 
 use :mail
+use :nodejs
 
 before_build "rake deploy:generate_revision_and_version[#{get :version}]"
 
