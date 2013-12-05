@@ -15,7 +15,7 @@ class SitesController < ApplicationController
     search.limit params[:limit]
 
     results = search.ui_results
-    render_json { sites: results[:sites].map { |x| x['_source'] }, total_count: results[:total_count] }
+    render_json({ sites: results[:sites].map { |x| x['_source'] }, total_count: results[:total_count] })
   end
 
   def show
