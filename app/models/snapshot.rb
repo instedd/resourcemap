@@ -8,14 +8,18 @@ class Snapshot < ActiveRecord::Base
   after_create :create_index
 
   def create_index
-    index = Tire::Index.new index_name
+    index = index()
 
     index_properties = { mappings: { site: site_mapping } }
     index_properties.merge!(Site::IndexUtils::DowncaseAnalyzer)
     index.create(index_properties)
 
-    collection.site_histories.at_date(date).each do |history|
-      history.store_in index
+    docs = collection.site_histories.at_date(date).map do |history|
+      history.collection = collection
+      history.to_elastic_search
+    end
+    docs.each_slice(200) do |docs_slice|
+      index.import docs_slice
     end
 
     index.refresh

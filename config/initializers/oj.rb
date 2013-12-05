@@ -5,3 +5,5 @@ class Object
     Oj.dump self
   end
 end
+
+MultiJson.use :oj

@@ -33,9 +33,12 @@ module Collection::TireConcern
   def recreate_index
     destroy_index
     create_index
-    sites.each do |site|
+    docs = sites.map do |site|
       site.collection = self
-      site.store_in_index refresh: false
+      site.to_elastic_search
+    end
+    docs.each_slice(200) do |docs_slice|
+      index.import docs_slice
     end
     index.refresh
   end

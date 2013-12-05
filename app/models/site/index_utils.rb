@@ -19,6 +19,17 @@ module Site::IndexUtils
     }
 
   def store(site, site_id, index, options = {})
+    hash = to_elastic_search(site, site_id)
+
+    result = index.store hash
+    if result['error']
+      raise "Can't store site in index: #{result['error']}"
+    end
+
+    index.refresh unless options[:refresh] == false
+  end
+
+  def to_elastic_search(site, site_id)
     hash = {
       id: site_id,
       name: site.name,
@@ -38,15 +49,8 @@ module Site::IndexUtils
       hash[:lat_analyzed] = site.lat.to_s
       hash[:lng_analyzed] = site.lng.to_s
     end
-
     hash.merge! site.extended_properties if site.is_a? Site
-    result = index.store hash
-
-    if result['error']
-      raise "Can't store site in index: #{result['error']}"
-    end
-
-    index.refresh unless options[:refresh] == false
+    hash
   end
 
   def site_mapping(fields)

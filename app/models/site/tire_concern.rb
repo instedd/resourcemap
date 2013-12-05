@@ -16,6 +16,10 @@ module Site::TireConcern
     end
   end
 
+  def to_elastic_search
+    Site::IndexUtils.to_elastic_search(self, id)
+  end
+
   def from_index
     search = collection.new_search
     search.id id
