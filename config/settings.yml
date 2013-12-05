@@ -9,3 +9,5 @@ plugins:
   alerts: on
   account_completeness: on
   fred_api: on
+  csd_api: on
+

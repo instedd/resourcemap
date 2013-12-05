@@ -1,13 +1,13 @@
 = render 'layers/advanced_field_label'
 
-/ko if: impl().advancedExpanded()
+/ko if: advancedExpanded()
 %br/
 %br/
 %label Attributes
 %p.smalltext Field semantics, usually meaningful to external systems that depend on Resource Map
 
 %ul.mclist.w40{style: 'width: 282px !important'}
-  /ko foreach: impl().attributes
+  /ko foreach: attributes
   %li
     %input.arrowinput{ko(visible: :editing, hasfocus: true, value: :key, valueUpdate: :afterkeydown, event: {keypress: :keyPress, blur: '$root.attributeBlur'}), type: :text, style: 'position:relative;top:1px'}
     %span.arrowgrey{ko(visible: '!editing()', click: :edit, text: :key), style: 'cursor:pointer;position:relative;top:-1px'}
