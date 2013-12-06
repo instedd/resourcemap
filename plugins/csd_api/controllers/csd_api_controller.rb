@@ -1,11 +1,15 @@
 class CsdApiController < ApplicationController
+  before_filter :authenticate_user_without_guisso!
+
   Mime::Type.register "application/wsdl+xml", :wsdl
   Mime::Type.unregister :xml
   Mime::Type.register "text/xml", :xml
 
   skip_before_filter :verify_authenticity_token
 
-  before_filter :authenticate_user!
+  authorize_resource :collection, :decent_exposure => true
+
+  rescue_from Exception, :with => :rescue_error
 
   def index
   end
@@ -30,18 +34,27 @@ class CsdApiController < ApplicationController
     @collection = collection
 
     render template: 'directories', formats: [:xml], handler: :builder, layout: false
-
-  rescue StandardError => e
-    # If any exception was raised generate a SOAP fault, if there is no
-    # fault_code present then default to fault_code Server (indicating the
-    # message failed due to an error on the server)
-    @fault_code = e.respond_to?(:fault_code) ? e.fault_code : "Server"
-    @fault_string = e.message
-
-    render template: 'fault', formats: [:xml], handlers: :builder, layout: false, :status => 500
   end
 
   private
+
+  def rescue_error(ex)
+    status = case ex
+      when ActionController::RoutingError then 404
+      when ActiveRecord::RecordNotFound then 404
+      when ActiveRecord::RecordInvalid then 400
+      when CanCan::AccessDenied then 403
+      else 500
+    end
+
+    # If any exception was raised generate a SOAP fault, if there is no
+    # fault_code present then default to fault_code Server (indicating the
+    # message failed due to an error on the server)
+    @fault_code = ex.respond_to?(:fault_code) ? ex.fault_code : "Server"
+    @fault_string = ex.message
+
+    render template: 'fault', formats: [:xml], handlers: :builder, layout: false, :status => status
+  end
 
   def extract_soap_body(soap_message)
     # Extract the SOAP body from SOAP envelope using XSLT

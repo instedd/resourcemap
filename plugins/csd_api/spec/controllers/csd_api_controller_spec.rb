@@ -35,6 +35,15 @@ describe CsdApiController do
 
   describe "SOAP Service" do
 
+    it 'should return forbidden in get_directory_modifications if user tries to access a collection of which he is not member'  do
+      not_member = User.make
+      sign_in not_member
+      request_id = "urn:uuid:4924fff9-e0f4-48c8-a403-955760fcc667"
+      request.env["RAW_POST_DATA"] = generate_request(request_id)
+      post :get_directory_modifications, collection_id: collection.id
+      response.status.should eq(403)
+    end
+
     it "should accept SOAP request and respond with a valid envelope" do
       request_id = "urn:uuid:4924fff9-e0f4-48c8-a403-955760fcc667"
       request.env["RAW_POST_DATA"] = generate_request(request_id)
