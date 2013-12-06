@@ -10,6 +10,6 @@ class SiteHistory < ActiveRecord::Base
   end
 
   def to_elastic_search
-    Site::IndexUtils.to_elastic_search(self, id)
+    Site::IndexUtils.to_elastic_search(self, site_id)
   end
 end
