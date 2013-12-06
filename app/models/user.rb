@@ -121,6 +121,6 @@ class User < ActiveRecord::Base
   end
 
   def collections_i_admin
-    self.memberships.joins(:collection).where(:admin => true).map {|m| { id: m.collection.id, name: m.collection.name }}
+    self.memberships.includes(:collection).where(:admin => true).select(&:collection).map {|m| { id: m.collection.id, name: m.collection.name }}
   end
 end
