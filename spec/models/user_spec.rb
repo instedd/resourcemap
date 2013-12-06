@@ -142,6 +142,7 @@ describe User do
     user = User.make
     collection = user.create_collection Collection.make
     collection.delete
+    user.reload
     user.collections_i_admin.should eq []
   end
 end
