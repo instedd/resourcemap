@@ -75,12 +75,11 @@ class Collection < ActiveRecord::Base
 
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
-      visible_layers = layer_histories.accessible_by(current_ability).at_date(date)
+      visible_layers = layer_histories.accessible_by(current_ability).at_date(date).includes(:layer).map(&:layer)
     else
-      visible_layers = layers.accessible_by(current_ability)
+      visible_layers = layers.accessible_by(current_ability).all
     end
 
-    visible_layers = visible_layers.all
     fields_by_layer_id = Field.where(layer_id: visible_layers.map(&:id)).all.group_by(&:layer_id)
 
     visible_layers.map do |layer|
