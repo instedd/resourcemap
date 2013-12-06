@@ -57,6 +57,17 @@
 
     private
 
+    def has_entry(metadata, metadata_key)
+      metadata.values.find{|element| element["key"] == metadata_key}
+    end
+
+    def entry(metadata, metadata_key)
+      if has_entry(metadata, metadata_key)
+        metadata_entry = metadata.values.find{|element| element["key"] == metadata_key}
+        metadata_entry["value"]
+      end
+    end
+
     def generate_record(xml, facility)
       xml.tag!("record") do
         xml.tag!("created", facility["_source"]["created_at"].to_datetime.iso8601)
@@ -76,7 +87,7 @@
           value = facility_properties[language_field.code] || ""
           xml.tag!("code", value)
           # TODO: move this to a field's method
-          schema = language_field.metadata["OptionList"] || ""
+          schema = entry(language_field.metadata, "OptionList") || ""
           xml.tag!("codingSchema", schema)
         end
       end
@@ -89,7 +100,7 @@
         contact_point_fields = contact_points_by_type[1]
         xml.tag!("contactPoint") do
           contact_point_fields.each do |contact_point_element|
-            element = contact_point_element.metadata["CSDContactData"] || ""
+            element = entry(contact_point_element.metadata, "CSDContactData") || ""
             value = facility_properties[contact_point_element.code] || ""
             xml.tag!(element.downcase, value)
           end
@@ -102,7 +113,7 @@
               value = facility_properties[coded_type_field_for_this_contact.code] || ""
               xml.tag!("code", value)
               # TODO: move this to a field's method
-              schema = coded_type_field_for_this_contact.metadata["OptionList"] || ""
+              schema = entry(coded_type_field_for_this_contact.metadata, "OptionList") || ""
               xml.tag!("codingSchema", schema)
             end
 
@@ -121,7 +132,7 @@
           address_fields.each do |address_field|
             value = facility_properties[address_field.code] || ""
             # TODO: move this to a field's method
-            component = address_field.metadata["CSDComponent"] || ""
+            component = entry(address_field.metadata, "CSDComponent") || ""
             xml.tag!("addressLine", {"component" => component}) do
               xml.text!(value)
             end
@@ -137,7 +148,7 @@
           value = facility_properties[other_name_field.code] || ""
           xml.tag!("commonName", value)
           # TODO: move this to a field's method
-          language = other_name_field.metadata["CSDLanguage"] || ""
+          language = entry(other_name_field.metadata, "CSDLanguage") || ""
           xml.tag!("language", language)
         end
       end
@@ -150,7 +161,7 @@
           value = facility_properties[facility_type_field.code] || ""
           xml.tag!("code", value)
           # TODO: move this to a field's method
-          schema = facility_type_field.metadata["OptionList"] || ""
+          schema = entry(facility_type_field.metadata, "OptionList") || ""
           xml.tag!("codingSchema", schema)
         end
       end
