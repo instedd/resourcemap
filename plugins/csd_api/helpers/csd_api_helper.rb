@@ -34,7 +34,9 @@ module CsdApiHelper
 
             xml.tag!("facilityDirectory") do
               facilities.each do |facility|
-                facility_xml_generator.generate_facility_xml xml, facility
+                if is_csd_complete(facility)
+                  facility_xml_generator.generate_facility_xml xml, facility
+                end
               end
             end
 
@@ -47,6 +49,15 @@ module CsdApiHelper
   end
 
   private
+
+  def is_csd_complete(facility)
+    begin
+      facility["_source"]["location"]["lon"]
+      facility["_source"]["location"]["lat"]
+    rescue
+      false
+    end
+  end
 
   def xs_header_specification
     {
