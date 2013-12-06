@@ -20,7 +20,7 @@ class CsdApiController < ApplicationController
 
     # Validation
     soap_body = extract_soap_body(soap_message)
-    validate_soap_body(soap_body)
+    #validate_soap_body(soap_body)
 
     # Create the search object and apply updated_since filter
     search = collection.new_search current_user_id: current_user.id
