@@ -166,32 +166,32 @@ describe CsdApiController do
       identifier_field_2 = layer.identifier_fields.make code: 'rw-id', :config => {"context" => "RW facility list", "agency" => "RW", "format" => "Normal"}
 
       # Select One fields with metadata for codedType
-      select_one_field = layer.select_one_fields.make code: 'moh-schema-option', metadata: {"CSDType" => "facilityType", "OptionList" => "moh.gov.rw"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+      select_one_field = layer.select_one_fields.make code: 'moh-schema-option', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"facilityType"}, "1"=>{"key"=>"OptionList", "value"=>"moh.gov.rw"}}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
 
       # Text fields with metadata for otherName
-      french_name_field = layer.text_fields.make code: 'French Name', metadata: {"CSDType" => "otherName", "CSDLanguage" => "french"}
-      spanish_name_field = layer.text_fields.make code: 'Spanish Name', metadata: {"CSDType" => "otherName", "CSDLanguage" => "spanish"}
+      french_name_field = layer.text_fields.make code: 'French Name', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"otherName"}, "1"=>{"key"=>"CSDLanguage", "value"=>"french"}}
+      spanish_name_field = layer.text_fields.make code: 'Spanish Name', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"otherName"}, "1"=>{"key"=>"CSDLanguage", "value"=>"spanish"}}
 
       # Text fields with metadata for address
-      city_fiscal_address_field = layer.text_fields.make code: 'fiscal city', metadata: {"CSDType" => "address", "CSDComponent" => "City", "CSDCode" => "FiscalAddress"}
-      street_fiscal_address_field = layer.text_fields.make code: 'fiscal street', metadata: {"CSDType" => "address", "CSDComponent" => "StreetAddress", "CSDCode" => "FiscalAddress"}
+      city_fiscal_address_field = layer.text_fields.make code: 'fiscal city', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"address"}, "1"=>{"key"=>"CSDComponent", "value"=>"City"}, "2"=>{"key"=>"CSDCode", "value"=>"FiscalAddress"}}
+      street_fiscal_address_field = layer.text_fields.make code: 'fiscal street', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"address"}, "1"=>{"key"=>"CSDComponent", "value"=>"StreetAddress"}, "2"=>{"key"=>"CSDCode", "value"=>"FiscalAddress"}}
 
-      city_real_address_field = layer.text_fields.make code: 'real city', metadata: {"CSDType" => "address", "CSDComponent" => "City", "CSDCode" => "RealAddress"}
-      street_real_address_field = layer.text_fields.make code: 'real street', metadata: {"CSDType" => "address", "CSDComponent" => "StreetAddress", "CSDCode" => "RealAddress"}
+      city_real_address_field = layer.text_fields.make code: 'real city', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"address"}, "1"=>{"key"=>"CSDComponent", "value"=>"City"}, "2"=>{"key"=>"CSDCode", "value"=>"RealAddress"}}
+      street_real_address_field = layer.text_fields.make code: 'real street', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"address"}, "1"=>{"key"=>"CSDComponent", "value"=>"StreetAddress"}, "2"=>{"key"=>"CSDCode", "value"=>"RealAddress"}}
 
       # Text fields with metadata for contactPoint
-      contact1_equipment_field = layer.text_fields.make code: 'Contact Equipment', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Equipment", "CSDCode" => "ContactOne"}
-      contact1_purpose_field = layer.text_fields.make code: 'Contact Purpose', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Purpose", "CSDCode" => "ContactOne"}
-      contact1_certificate_field = layer.text_fields.make code: 'Contact Certificate', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Certificate", "CSDCode" => "ContactOne"}
-      contact1_coded_type_field = layer.select_one_fields.make code: 'Contact Coded Type', metadata: {"CSDType" => "contactPoint", "OptionList" => "moh.gov.rw", "CSDCode" => "ContactOne"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+      contact1_equipment_field = layer.text_fields.make code: 'Contact Equipment', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"contactPoint"}, "1"=>{"key"=>"CSDContactData", "value"=>"Equipment"}, "2"=>{"key"=>"CSDCode", "value"=>"ContactOne"}}
+      contact1_purpose_field = layer.text_fields.make code: 'Contact Purpose', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"contactPoint"}, "1"=>{"key"=>"CSDContactData", "value"=>"Purpose"}, "2"=>{"key"=>"CSDCode", "value"=>"ContactOne"}}
+      contact1_certificate_field = layer.text_fields.make code: 'Contact Certificate', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"contactPoint"}, "1"=>{"key"=>"CSDContactData", "value"=>"Certificate"}, "2"=>{"key"=>"CSDCode", "value"=>"ContactOne"}}
+      contact1_coded_type_field = layer.select_one_fields.make code: 'Contact Coded Type', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"contactPoint"}, "1"=>{"key"=>"OptionList", "value"=>"moh.gov.rw"}, "2"=>{"key"=>"CSDCode", "value"=>"ContactOne"}}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
 
-      contact2_equipment_field = layer.text_fields.make code: 'Contact 2 Equipment', metadata: {"CSDType" => "contactPoint", "CSDContactData" => "Equipment", "CSDCode" => "ContactTwo"}
+      contact2_equipment_field = layer.text_fields.make code: 'Contact 2 Equipment', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"contactPoint"}, "1"=>{"key"=>"CSDContactData", "value"=>"Equipment"}, "2"=>{"key"=>"CSDCode", "value"=>"ContactTwo"}}
 
       # Select One fields with metadata for languages
-      language_field = layer.select_one_fields.make code: 'language', metadata: {"CSDType" => "language", "OptionList" => "BCP 47"}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'spanish', 'label' => 'Spanish'}, {'id' => 2, 'code' => 'french', 'label' => 'French'}]}
+      language_field = layer.select_one_fields.make code: 'language', "metadata"=>{"0"=>{"key"=>"CSDType", "value"=>"language"}, "1"=>{"key"=>"OptionList", "value"=>"BCP 47"}}, :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'spanish', 'label' => 'Spanish'}, {'id' => 2, 'code' => 'french', 'label' => 'French'}]}
 
       # Yes-No field for active
-      status_field = layer.yes_no_fields.make code: 'active', metadata: {"CSDType" => "status"}
+      status_field = layer.yes_no_fields.make code: 'active', "metadata" => {"0" => {"key" => "CSDType", "value"=> "status"}}
 
       stub_time Time.iso8601("2013-12-18T15:40:28-03:00").to_s
       site_a = collection.sites.make(name: 'Site A', lat: 10, lng: 20, properties: {
@@ -221,6 +221,11 @@ describe CsdApiController do
 
       facility = body["facilityDirectory"]["facility"]
 
+      # Should include 'codedType'
+      coded_type = facility["codedType"]
+      coded_type["code"].should eq("one")
+      coded_type["codingSchema"].should eq("moh.gov.rw")
+
       # Should include 'otherId'
       other_ids = facility["otherID"]
       other_ids.length.should eq(2)
@@ -232,11 +237,6 @@ describe CsdApiController do
       other_id_2 = other_ids.last
       other_id_2["code"].should eq(nil)
       other_id_2["assigningAuthorityName"].should eq("RW")
-
-      # Should include 'codedType'
-      coded_type = facility["codedType"]
-      coded_type["code"].should eq("one")
-      coded_type["codingSchema"].should eq("moh.gov.rw")
 
       # Should include 'name'
       name = facility["primaryName"]
