@@ -101,6 +101,15 @@ describe Ability do
       guest_ability.should_not be_able_to(:set_order, layer)
     end
 
+    it "Delete site only for admins" do
+      site = collection.sites.make name: "Site A"
+
+      admin_ability.should be_able_to(:delete, site)
+      member_ability.should_not be_able_to(:delete, site)
+      user_ability.should_not be_able_to(:delete, site)
+      guest_ability.should_not be_able_to(:delete, site)
+    end
+
     describe "Read layer with read permission" do
       let!(:layer_member_read) { LayerMembership.make layer: layer, membership: membership, read: true }
       let!(:member_ability_with_read_permission) { Ability.new member }

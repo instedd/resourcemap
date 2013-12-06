@@ -16,6 +16,7 @@ class Ability
 
     can [:search, :index], Site, :collection => {:public => true}
     can [:search, :index], Site, :collection => {:memberships => { :user_id => user.id }}
+    can :delete, Site, :collection => {:memberships => { :user_id => user.id , :admin => true } }
 
     if !user.is_guest
       can [:new, :create], Collection

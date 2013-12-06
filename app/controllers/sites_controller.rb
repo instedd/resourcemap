@@ -119,6 +119,8 @@ class SitesController < ApplicationController
   end
 
   def destroy
+    # TODO: authorice resource for all the controller's actions
+    authorize! :delete, site
     site.user = current_user
     site.destroy
     render_json site

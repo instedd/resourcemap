@@ -270,6 +270,17 @@ describe SitesController do
     Site.find_by_id(site.id).should be_nil
   end
 
+  it "cannot destroy site if the user is not admin" do
+    member = User.make
+    membership = Membership.make collection: collection, user: member, admin: false
+    sign_in member
+
+    delete :destroy, id: site.id, collection_id: collection.id
+    response.should be_forbidden
+
+    Site.find_by_id(site.id).should be
+  end
+
   def validate_site_property_value(site, property, value)
     site.reload
     site.properties["#{property.es_code}"].should eq(value)
