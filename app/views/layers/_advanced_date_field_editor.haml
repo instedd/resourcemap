@@ -6,8 +6,10 @@
 %label Date Format
 %p.smalltext Format that will be used to display and update date values for this field.
 
-%input{ko(checked: 'impl().format', name: 'impl().format'), value: 'mm_dd_yyyy', type: 'radio'} MM/DD/YYYY (e.g. "12/31/2013")
+%label
+  %input{ko(checked: 'impl().format', name: 'impl().format'), value: 'mm_dd_yyyy', type: 'radio'} MM/DD/YYYY (e.g. "12/31/2013")
 %br/
-%input{ko(checked: 'impl().format', name: 'impl().format'), value: 'dd_mm_yyyy', type: 'radio'} DD/MM/YYYY (e.g. "31/12/2013")
+%label
+  %input{ko(checked: 'impl().format', name: 'impl().format'), value: 'dd_mm_yyyy', type: 'radio'} DD/MM/YYYY (e.g. "31/12/2013")
 
 //ko
