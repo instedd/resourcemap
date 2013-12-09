@@ -18,6 +18,12 @@ describe "Luhn" do
       end.should raise_exception(RuntimeError, /nnnnnn/)
     end
 
+    it "fails if numeric but chars follow" do
+      lambda do
+        field.apply_format_and_validate("100000-9asf", nil, collection)
+      end.should raise_exception(RuntimeError, /nnnnnn/)
+    end
+
     it "fails if luhn check is not valid" do
       lambda do
         field.apply_format_and_validate("108439-6", nil, collection)
@@ -63,6 +69,12 @@ describe "Luhn" do
     create_site_and_assign_default_values("100004-1").properties[field.es_code].should eq("100004-1")
     create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100005-8")
     create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100006-6")
+  end
+
+  it "generates luhn id for new site after 000000-0" do
+    collection.sites.make properties: {field.es_code => "000000-0"}
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("000001-8")
+    create_site_and_assign_default_values(nil).properties[field.es_code].should eq("000002-6")
   end
 
   it "gets next luhn" do

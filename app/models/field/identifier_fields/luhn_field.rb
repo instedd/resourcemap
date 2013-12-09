@@ -19,7 +19,7 @@ class Field::IdentifierFields::LuhnField < Field::IdentifierFields::FormatImplem
 
   def valid_value?(value, site)
 
-    unless value =~ /(\d\d\d\d\d\d)\-(\d)/
+    unless value =~ /\A(\d\d\d\d\d\d)\-(\d)\Z/
       raise "the value must be in this format: nnnnnn-n (where 'n' is a number)"
     end
 
@@ -90,6 +90,8 @@ class Field::IdentifierFields::LuhnField < Field::IdentifierFields::FormatImplem
     # In this case we may search for holes, but we will take care of that case when it happens
     # Doing it now will cause a loooot of (unnecessary) processing in memory
     without_validation_digit = last_luhn_value[0 ... 6].to_i
-    "#{without_validation_digit + 1}-#{compute_luhn_verifier((without_validation_digit + 1).to_s)}"
+    next_number = without_validation_digit + 1
+    next_number = "%06d" % next_number
+    "#{next_number}-#{compute_luhn_verifier((next_number).to_s)}"
   end
 end
