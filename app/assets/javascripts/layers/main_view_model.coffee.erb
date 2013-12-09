@@ -43,7 +43,7 @@ onLayers ->
       @importCollectionIds = ko.computed =>
         $.map(@adminCollections(), (c) -> c.id)
 
-      $.get "/memberships/collections_i_admin.json", {}, (collection_ids) =>
+      $.get "/memberships/collections_i_admin.json", {except_id: @collectionId}, (collection_ids) =>
         self.adminCollections(collection_ids)
 
     importLayersFromCollection: =>

@@ -3,7 +3,7 @@ class MembershipsController < ApplicationController
   before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin, :index]
 
   def collections_i_admin
-    render_json current_user.collections_i_admin
+    render_json current_user.collections_i_admin(params)
   end
 
   def index

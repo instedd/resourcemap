@@ -120,7 +120,12 @@ class User < ActiveRecord::Base
     self.success_outcome = layer_count? & collection_count? & site_count? & gateway_count?
   end
 
-  def collections_i_admin
-    self.memberships.includes(:collection).where(:admin => true).select(&:collection).map {|m| { id: m.collection.id, name: m.collection.name }}
+  def collections_i_admin(options = {})
+    results = self.memberships.includes(:collection).where(:admin => true).select(&:collection).map {|m| { id: m.collection.id, name: m.collection.name }}
+    if options[:except_id]
+      except_id = options[:except_id].to_i
+      results.select! { |result| result[:id] != except_id }
+    end
+    results
   end
 end
