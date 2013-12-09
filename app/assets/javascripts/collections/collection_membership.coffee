@@ -24,6 +24,9 @@ onCollections ->
     @readable: (site) ->
       @sitesPermission.canRead(site)
 
+    @canDeleteSites: ->
+      @sitesPermission.canDeleteSites()
+
     @updatePermission: (site, callback) ->
       @fetchMembership =>
         canUpdate = @sitesPermission.canUpdate(site)

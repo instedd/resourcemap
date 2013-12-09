@@ -18,11 +18,8 @@ module Membership::SitesPermissionConcern
   end
 
   def sites_permission
-    permission = { read: read_sites_permission, write: write_sites_permission }
-    permission = { read: build_read_sites_permission, write: build_write_sites_permission } if admin
+    permission = { read: read_sites_permission, write: write_sites_permission, delete: false }
+    permission = { read: build_read_sites_permission, write: build_write_sites_permission, delete: true } if admin
     permission
   end
 end
-
-{:write=>{:all_sites=>false, :some_sites=>[{:id=>1, :name=>"Bayon clinic"}]}}
-{"write"=>{"all_sites"=>"false", "some_sites"=>{"0"=>{"id"=>"5", "name"=>"Carlos Casares"}}}}
