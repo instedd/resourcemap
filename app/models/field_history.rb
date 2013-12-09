@@ -25,6 +25,10 @@ class FieldHistory < ActiveRecord::Base
     field.human_value(value)
   end
 
+  def allow_decimals?
+    field.allow_decimals?
+  end
+
   def as_json(options = {})
     { code: code, collection_id: collection_id, config: config, id: field_id, kind: kind, layer_id: layer_id, name: name, ord: ord}
   end

@@ -716,6 +716,21 @@ describe Search do
     end
   end
 
+  context "numeric" do
+    let!(:layer) { collection.layers.make }
+    let!(:temperature) { layer.numeric_fields.make :code => 'temp', config: {allows_decimals: "true"} }
+
+    let!(:site1) { collection.sites.make properties: { temperature.es_code => 45.6 } }
+
+    it "finds by decimal number property and doesn't find" do
+      assert_results collection.new_search.where(temperature.es_code => 45.123)
+    end
+
+    it "finds by decimal number property and finds" do
+      assert_results collection.new_search.where(temperature.es_code => 45.6), site1
+    end
+  end
+
   def assert_results(search, *sites)
     search.results.map{|r| r['_id'].to_i}.should =~ sites.map(&:id)
   end

@@ -6,7 +6,11 @@ module Field::TireConcern
     when kind == 'yes_no'
       { type: :boolean }
     when stored_as_number?
-      { type: :long }
+      if kind == 'numeric' && allow_decimals?
+        { type: :float }
+      else
+        { type: :long }
+      end
     when stored_as_date?
       { type: :date }
     when kind == 'text'
