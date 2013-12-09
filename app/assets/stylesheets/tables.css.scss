@@ -177,9 +177,19 @@
   .cheight#map { height: 240px !important; }
 }
 
+@media screen and (min-height: 350px) {
+  .cheight.tablescroll { height: 250px !important; }
+  .cheight#map { height: 290px !important; }
+}
+
 @media screen and (min-height: 400px) {
   .cheight.tablescroll { height: 280px !important; }
   .cheight#map { height: 320px !important; }
+}
+
+@media screen and (min-height: 450px) {
+  .cheight.tablescroll { height: 330px !important; }
+  .cheight#map { height: 370px !important; }
 }
 
 @media screen and (min-height: 500px) {
@@ -187,9 +197,19 @@
   .cheight#map { height: 420px !important; }
 }
 
+@media screen and (min-height: 550px) {
+  .cheight.tablescroll { height: 430px !important; }
+  .cheight#map { height: 470px !important; }
+}
+
 @media screen and (min-height: 600px) {
   .cheight.tablescroll { height: 480px !important; }
   .cheight#map { height: 520px !important; }
+}
+
+@media screen and (min-height: 650px) {
+  .cheight.tablescroll { height: 530px !important; }
+  .cheight#map { height: 570px !important; }
 }
 
 @media screen and (min-height: 700px) {
@@ -200,32 +220,87 @@
     .cheight#map { height: 570px !important; }
   }
 }
+
+@media screen and (min-height: 750px) {
+  .cheight.tablescroll { height: 630px !important; }
+  .cheight#map { height: 670px !important; }
+   @-moz-document url-prefix() {
+    .cheight.tablescroll { height: 580px !important; }
+    .cheight#map { height: 620px !important; }
+  }
+}
+
 @media screen and (min-height: 800px) {
   .cheight.tablescroll { height: 630px !important; }
   .cheight#map { height: 670px !important; }
 }
 
+@media screen and (min-height: 850px) {
+  .cheight.tablescroll { height: 680px !important; }
+  .cheight#map { height: 720px !important; }
+}
+
 body.fullscreen {
 
+  @media screen and (min-height: 300px) {
+    .cheight.tablescroll { height: 205px !important; }
+    .cheight#map { height: 245px !important; }
+  }
+
+  @media screen and (min-height: 350px) {
+    .cheight.tablescroll { height: 255px !important; }
+    .cheight#map { height: 295px !important; }
+  }
+
+  @media screen and (min-height: 400px) {
+    .cheight.tablescroll { height: 305px !important; }
+    .cheight#map { height: 345px !important; }
+  }
+
+  @media screen and (min-height: 450px) {
+    .cheight.tablescroll { height: 355px !important; }
+    .cheight#map { height: 395px !important; }
+  }
+
   @media screen and (min-height: 500px) {
-    .cheight.tablescroll { height: 385px !important; }
-    .cheight#map { height: 425px !important; }
+    .cheight.tablescroll { height: 405px !important; }
+    .cheight#map { height: 445px !important; }
+  }
+
+  @media screen and (min-height: 550px) {
+    .cheight.tablescroll { height: 455px !important; }
+    .cheight#map { height: 495px !important; }
+  }
+
+  @media screen and (min-height: 600px) {
+    .cheight.tablescroll { height: 505px !important; }
+    .cheight#map { height: 545px !important; }
   }
 
   @media screen and (min-height: 650px) {
-    .cheight.tablescroll { height: 550px !important; }
-    .cheight#map { height: 590px !important; }
+    .cheight.tablescroll { height: 555px !important; }
+    .cheight#map { height: 595px !important; }
   }
 
   @media screen and (min-height: 700px) {
-    .cheight.tablescroll { height: 600px !important; }
-    .cheight#map { height: 640px !important; }
+    .cheight.tablescroll { height: 605px !important; }
+    .cheight#map { height: 645px !important; }
   }
+
+  @media screen and (min-height: 750px) {
+    .cheight.tablescroll { height: 655px !important; }
+    .cheight#map { height: 695px !important; }
+  }
+
   @media screen and (min-height: 800px) {
     .cheight.tablescroll { height: 705px !important; }
     .cheight#map { height: 745px !important; }
   }
 
+  @media screen and (min-height: 850px) {
+    .cheight.tablescroll { height: 755px !important; }
+    .cheight#map { height: 795px !important; }
+  }
 }
 
 @-moz-document url-prefix() {
@@ -233,4 +308,8 @@ body.fullscreen {
     body.fullscreen .cheight.tablescroll { height: 530px !important; }
     body.fullscreen .cheight#map { height: 570px !important; }
   }
+}
+
+.cheight {
+  min-height: 200px !important;
 }
