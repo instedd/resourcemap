@@ -40,7 +40,7 @@ onCollections ->
       $.get @sitesUrl(), {offset: 0, limit: (@sitesPage - 1) * SITES_PER_PAGE }, (data) =>
         sites = data.sites
         @siteSearchCount(data.total_count)
-        for site in data
+        for site in sites
           @addSite @createSite(site)
         @loadingSites false
         window.model.refreshTimeago()
