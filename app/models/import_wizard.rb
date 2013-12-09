@@ -46,7 +46,10 @@ class ImportWizard
 
       csv[0].map! { |r| r.strip if r }
 
-      validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
+      unless csv_columns.empty?
+        validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
+      end
+
       # TODO: implement pagination
       validated_data
     end

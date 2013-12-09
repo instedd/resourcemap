@@ -791,6 +791,15 @@ describe ImportWizard do
     sites_preview.length.should eq(0)
   end
 
+  it "should not fail when there is no data in the csv (2)" do
+    csv_string = "resmap-id,name,lat,long,AddOn,last updated\n"
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
+    sites_preview = processed_sites[:sites]
+    sites_preview.length.should eq(0)
+  end
+
   it "should get sites & errors for invalid existing fields" do
     email_field = layer.email_fields.make :code => 'email'
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
