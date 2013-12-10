@@ -23,5 +23,6 @@
 //= require knockout
 //= require jquery.fancybox
 //= require jquery.blockUI
+//= require jquery.Jcrop
 //= require lodash
 //= require_tree .

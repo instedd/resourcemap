@@ -1,0 +1,14 @@
+%h2 Upload logo
+
+Current:
+= collection.logo
+%br/
+= form_tag(collection_upload_logo_path(collection), multipart: true) do
+  = file_field_tag :logo
+
+  = submit_tag "Upload & edit"
+
+%br/
+%br/
+
+

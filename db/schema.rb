@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131120154821) do
+ActiveRecord::Schema.define(:version => 20131206170547) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(:version => 20131120154821) do
     t.decimal  "max_lng",     :precision => 10, :scale => 6
     t.string   "icon"
     t.integer  "quota",                                      :default => 0
+    t.string   "logo"
   end
 
   create_table "field_histories", :force => true do |t|

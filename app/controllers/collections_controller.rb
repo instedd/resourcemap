@@ -281,4 +281,17 @@ class CollectionsController < ApplicationController
 
     render_json info
   end
+
+  def upload_logo
+    img = params[:logo]
+    if !img.blank? && collection.update_attribute(:logo, img)
+      redirect_to :edit_logo
+    else
+      render :index
+    end
+  end
+
+  def edit_logo
+
+  end
 end

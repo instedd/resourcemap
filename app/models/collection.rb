@@ -5,6 +5,8 @@ class Collection < ActiveRecord::Base
   include Collection::PluginsConcern
   include Collection::ImportLayersSchemaConcern
 
+  mount_uploader :logo, LogoUploader
+  attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
 
   validates_presence_of :name
   validates_presence_of :icon

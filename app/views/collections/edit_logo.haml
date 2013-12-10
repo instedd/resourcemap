@@ -1,0 +1,9 @@
+#settings
+  = form_for collection do |f|
+
+    = image_tag collection.logo_url, id: 'cropbox'
+
+    - %w(x y w h).each do |attr|
+      = f.hidden_field "crop_#{attr}"
+
+    = f.submit 'Save'
