@@ -90,6 +90,7 @@
       <!-- ko if: kind == 'numeric' -->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
         %option{value: '='} equals
+        %option{value: '!='} not equals
         %option{value: '<'} is less than
         %option{value: '<='} is less than or equal to
         %option{value: '>'} is greater than

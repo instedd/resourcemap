@@ -90,6 +90,7 @@ onCollections ->
       str = "where #{@field.name} "
       switch @operator
         when '=' then str += " equals "
+        when '!=' then str += " not equals "
         when '<' then str += " is less than "
         when '<=' then str += " is less than or equal to "
         when '>' then str += " is greater than "

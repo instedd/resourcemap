@@ -40,6 +40,12 @@ module SearchBase
     self
   end
 
+  def not_eq(field, value)
+    query_params = query_params(field, value)
+    @search.filter :not, query_params
+    self
+  end
+
   def query_params(field, value)
     query_key = field.es_code
     validated_value = field.parse_for_query(value, @use_codes_instead_of_es_codes)
@@ -105,6 +111,7 @@ module SearchBase
     when '>', 'gt' then gt(field, value)
     when '>=', 'gte' then gte(field, value)
     when '=', '==', 'eq' then eq(field, value)
+    when '!=' then not_eq(field, value)
     when 'under' then under(field, value)
     else raise "Invalid operation: #{op}"
     end

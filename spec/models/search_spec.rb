@@ -729,6 +729,11 @@ describe Search do
     it "finds by decimal number property and finds" do
       assert_results collection.new_search.where(temperature.es_code => 45.6), site1
     end
+
+    it "finds by decimal not equals value" do
+      assert_results collection.new_search.not_eq(temperature, 45.6)
+      assert_results collection.new_search.not_eq(temperature, 45.7), site1
+    end
   end
 
   def assert_results(search, *sites)
