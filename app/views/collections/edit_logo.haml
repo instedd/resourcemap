@@ -1,9 +1,13 @@
 #settings
   = form_for collection do |f|
 
-    = image_tag collection.logo_url, id: 'cropbox'
+    = image_tag collection.logo_url(:croppable), id: 'cropbox'
+
+    #logo-preview
+      #preview-container
+        = image_tag collection.logo_url(:preview), id: 'preview'
 
     - %w(x y w h).each do |attr|
       = f.hidden_field "crop_#{attr}"
 
-    = f.submit 'Save'
+    = f.button 'Save', class: 'white'

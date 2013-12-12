@@ -1,12 +1,12 @@
 %h2 Upload logo
 
 Current:
-= collection.logo
+= image_tag collection.logo_url(:grayscale)
 %br/
 = form_tag(collection_upload_logo_path(collection), multipart: true) do
   = file_field_tag :logo
 
-  = submit_tag "Upload & edit"
+  = button_tag "Upload & edit", class: 'white'
 
 %br/
 %br/

@@ -29,6 +29,10 @@ class Collection < ActiveRecord::Base
   has_many :messages, dependent: :destroy
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
+  after_update do
+    logo.recreate_versions! if crop_x.present?
+  end
+
   def max_value_of_property(es_code)
     search = new_tire_search
     search.sort { by es_code, 'desc' }

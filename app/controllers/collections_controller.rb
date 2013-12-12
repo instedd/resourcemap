@@ -284,8 +284,9 @@ class CollectionsController < ApplicationController
 
   def upload_logo
     img = params[:logo]
-    if !img.blank? && collection.update_attribute(:logo, img)
-      redirect_to :edit_logo
+    if !img.blank? && collection.update_attributes({logo: img})
+      #TODO: If image already exists delete from uploads
+      redirect_to collection_edit_logo_path(collection)
     else
       render :index
     end
