@@ -4,12 +4,14 @@
       %span{ko(text: '$parent.labelFor($data)')}
       %a x
   .superblyTagfieldClearer
-  %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:220px'}
-  %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
-    %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
-      %a{ko(text: :label, click: '$parent.selectOption')}
-  %button{ko(click: :save, clickBubble: false), style: 'float:right'} Update options
-  %button{ko(click: :exit, clickBubble: false), style: 'float:right'} Cancel
+  #select-many-search{style:'width:250px'}
+    <!-- ko if: options.length >= 5 -->
+    %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
+    <!-- /ko -->
+    %ul.taglist{ko(foreach: :remainingOptions), style: 'width:100%;margin-top:2px'}
+      %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
+        %a{ko(text: :label, click: '$parent.selectOption')}
+  %button{ko(click: :save, clickBubble: false), style: 'float:right'} Collapse
   .clear
 
 - else
@@ -22,8 +24,11 @@
   <!-- /ko -->
   .superblyTagfieldClearer
     <!-- ko if: expanded() -->
-    %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
-    %ul.taglist.box{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px;width:100%'}
-      %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
-        %a{ko(text: :label, click: '$parent.selectOption')}
+    #select-many-search{style:'width:250px'}
+      <!-- ko if: options.length > 5 -->
+      %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
+      <!-- /ko -->
+      %ul.taglist.box{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px;width:100%'}
+        %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
+          %a{ko(text: :label, click: '$parent.selectOption')}
     <!-- /ko -->
