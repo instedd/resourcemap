@@ -21,6 +21,9 @@ onImportWizard ->
       # For new select_one or select_many fields
       @selectKind = ko.observable()
 
+      # For numeric fields
+      @allowDecimals = ko.observable()
+
       # For ID column
       @idMatchingColumn = ko.observable()
 
@@ -49,16 +52,22 @@ onImportWizard ->
       json =
         use_as: @usage()
         header: @header()
-      if @usage() == 'existing_field'
-        json.layer_id = @layer().id
-        json.field_id = @field().id
-      if @usage() == 'new_field'
-        json.kind = @kind()
-        json.code = @code()
-        json.label = @label()
-        json.selectKind = @selectKind() if @kind() == 'select_one' || @kind() == 'select_many'
-      if @usage() == 'id'
-        json.id_matching_column = @idMatchingColumn()
+      switch @usage()
+        when 'existing_field'
+          json.layer_id = @layer().id
+          json.field_id = @field().id
+        when 'new_field'
+          json.kind = @kind()
+          json.code = @code()
+          json.label = @label()
+
+          switch @kind()
+            when 'select_one', 'select_many'
+              json.selectKind = @selectKind()
+            when 'numeric'
+              json.config = allows_decimals: @allowDecimals()
+        when 'id'
+          json.id_matching_column = @idMatchingColumn()
       json
 
     computeIconClass: =>
@@ -73,7 +82,7 @@ onImportWizard ->
     saveAndClose: =>
       $.fancybox.close()
       @commit()
-      window.model.validateSites()
+      window.model  .validateSites()
 
     discardAndClose: =>
       $.fancybox.close()

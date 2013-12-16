@@ -327,7 +327,7 @@ class ImportWizard
       if column_spec[:use_as].to_sym == :existing_field
         field = fields.detect{|e| e.id.to_s == column_spec[:field_id].to_s}
       else
-        field = Field.new kind: column_spec[:kind].to_s
+        field = Field.new kind: column_spec[:kind].to_s, config: column_spec[:config]
       end
 
       collection_sites_ids = collection.sites.map{|e|e.id.to_s}
@@ -473,7 +473,7 @@ class ImportWizard
 
       column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
 
-      sample_field = Field.new kind: column_spec[:kind], code: column_header
+      sample_field = Field.new kind: column_spec[:kind], code: column_header, config: column_spec[:config]
 
       # We need the collection to validate site_fields
       sample_field.collection = collection

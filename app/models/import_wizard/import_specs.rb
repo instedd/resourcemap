@@ -81,7 +81,7 @@ class ImportWizard::ImportSpecs
           # Set field to code if there's no label defined
           new_field_name = spec[:label].present? ? spec[:label] : spec[:code]
 
-          @new_fields[spec[:code]] = layer.fields.new code: spec[:code], name: new_field_name, kind: spec[:kind], ord: spec_i
+          @new_fields[spec[:code]] = layer.fields.new code: spec[:code], name: new_field_name, kind: spec[:kind], ord: spec_i, config: spec[:config]
           @new_fields[spec[:code]].layer = layer
           spec_i += 1
         end

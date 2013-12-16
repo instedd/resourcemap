@@ -42,7 +42,7 @@ class Field::NumericField < Field
   end
 
   def allow_decimals?
-    config && (config[:allows_decimals] == "true" || config["allows_decimals"] == "true")
+    config && (config[:allows_decimals].to_s == "true" || config["allows_decimals"].to_s == "true")
   end
 
   private

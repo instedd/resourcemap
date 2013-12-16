@@ -39,6 +39,16 @@
           = radio_button_tag 'select_kind_group', option[1], false, 'data-bind' => kov(checked: 'selectKind')
           = label_tag "select_kind_group_#{option[1]}", option[0]
       //ko
+
+      /ko if: kind() == 'numeric'
+      %br/
+      %div
+        %label
+          %input{ko(checked: 'allowDecimals'), type: 'checkbox', style: 'float:left;'}
+          %div{style: 'width:200px; float:left; margin-top: 1px; color: #555555;'} Allow decimal numbers
+      %br/
+      //ko
+
       //ko
   .bottom-actions
     %hr

@@ -59,6 +59,47 @@ describe ImportWizard do
     sites[1].properties.should eq({fields[0].es_code => 20})
   end
 
+  it "imports with a new numeric field that allows decimal numbers" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Lat', 'Lon', 'Beds']
+      csv << ['Foo', '1.2', '3.4', '10.151']
+      csv << ['Bar', '5.6', '7.8', '20.223']
+      csv << ['', '', '', '']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'},
+      {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds', config: {"allows_decimals"=>true} },
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string
+    ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.execute user, collection, specs
+
+    layers = collection.layers.all
+    layers.length.should eq(2)
+    layers[1].name.should eq('Import wizard')
+
+    fields = layers[1].fields.all
+    fields.length.should eq(1)
+    fields[0].name.should eq('The beds')
+    fields[0].code.should eq('beds')
+    fields[0].kind.should eq('numeric')
+    fields[0].allow_decimals?.should be_true
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({fields[0].es_code => 10.151})
+
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({fields[0].es_code => 20.223})
+  end
+
+
   it "import should calculate collection bounds from sites" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Lat', 'Lon']
