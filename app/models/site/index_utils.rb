@@ -19,9 +19,9 @@ module Site::IndexUtils
     }
 
   def store(site, site_id, index, options = {})
-    hash = to_elastic_search(site, site_id)
+    document = to_elastic_search(site, site_id)
 
-    result = index.store hash
+    result = index.store document, refresh: true
     if result['error']
       raise "Can't store site in index: #{result['error']}"
     end
