@@ -292,13 +292,35 @@ describe FredApiController do
   end
 
   describe "delete facility" do
-    it "should delete facility" do
-      site3 = collection.sites.make name: 'Site C'
-      delete :delete_facility, id: site3.id, collection_id: collection.id
-      response.body.should eq("\"http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site3.id}.json\"")
+    it "should render json's code field 200 when deleting a facility" do
+      site = collection.sites.make name: 'Site C'
+      delete :delete_facility, id: site.id, collection_id: collection.id
+      json = JSON.parse response.body
+      json["code"].should eq(200)
+      json["id"].should eq(site.id.to_s)
+      json["message"].should eq("Resource deleted")
       sites = Site.find_by_name 'Site C'
       sites.should be(nil)
     end
+
+    it "should render json's code field 404 when the site is not found in an empty collection" do
+      Site.count.should eq(0)
+      delete :delete_facility, id: 100, collection_id: collection.id
+      json = JSON.parse response.body
+      json["code"].should eq("404 Not Found")
+      json["message"].should eq("Resource not found")
+    end
+
+    let(:collection2) { user.create_collection(Collection.make) }
+
+    it "should render 404 when a site of other collection is passed as parameter" do
+      site = collection2.sites.make name: 'Site D'
+      delete :delete_facility, id: site.id, collection_id: collection.id
+      json = JSON.parse response.body
+      json["code"].should eq("404 Not Found")
+      json["message"].should eq("Resource not found")
+    end
+
   end
 
   describe "http status codes" do

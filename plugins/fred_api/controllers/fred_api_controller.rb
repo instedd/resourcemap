@@ -2,7 +2,7 @@ class FredApiController < ApplicationController
   before_filter :authenticate_user_without_guisso!
   before_filter :authenticate_collection_admin!
 
-  before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :delete_facility, :update_facility]
+  before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :update_facility]
   before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility, :update_facility]
 
   rescue_from Exception, :with => :default_rescue
@@ -25,9 +25,14 @@ class FredApiController < ApplicationController
   end
 
   def delete_facility
-    site.user = current_user
-    site.destroy
-    render_json url_for_facility(site.id)
+    if !collection.sites.include? site
+      render_json(code: "404 Not Found", message: "Resource not found")
+    else
+      id = site.id
+      site.user = current_user
+      site.destroy
+      render_json(code: 200, id: site.id.to_s, message: "Resource deleted")
+    end
   end
 
   def update_facility
