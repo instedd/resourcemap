@@ -25,7 +25,7 @@
   .superblyTagfieldClearer
     <!-- ko if: expanded() -->
     #select-many-search{style:'width:250px'}
-      <!-- ko if: options.length > 5 -->
+      <!-- ko if: options.length >= 5 -->
       %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
       <!-- /ko -->
       %ul.taglist.box{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px;width:100%'}
