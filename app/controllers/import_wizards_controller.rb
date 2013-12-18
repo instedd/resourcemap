@@ -14,8 +14,13 @@ class ImportWizardsController < ApplicationController
 
   def upload_csv
     begin
-      ImportWizard.import current_user, collection, params[:file].original_filename, params[:file].read
-      redirect_to adjustments_collection_import_wizard_path(collection)
+      csv = ImportWizard.import current_user, collection, params[:file].original_filename, params[:file].read
+      if csv.length == 1
+        message = "The uploaded csv is empty."
+        redirect_to adjustments_collection_import_wizard_path(collection), :notice => message
+      else
+        redirect_to adjustments_collection_import_wizard_path(collection)
+      end
     rescue => ex
       redirect_to collection_import_wizard_path(collection), :alert => ex.message
     end

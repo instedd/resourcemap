@@ -30,6 +30,7 @@ class ImportWizard
         # Create file that will contain data collected during validation in order to improve performance during the import execution
         File.open(aditional_data_file_for(user, collection), "wb") { |file| file << {} }
 
+        csv
       rescue CSV::MalformedCSVError => ex
         raise "The file is not a valid CSV: #{ex.message}"
       end
