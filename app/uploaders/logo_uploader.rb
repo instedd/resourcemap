@@ -88,7 +88,6 @@ class LogoUploader < CarrierWave::Uploader::Base
       img.combine_options do |cmd|
         cmd.colorspace 'RGB'
         resize_and_extent_west(cmd, width, height, "#FFFFFF")
-        cmd.modulate "92"
         cmd.colorspace 'gray'
       end
       img

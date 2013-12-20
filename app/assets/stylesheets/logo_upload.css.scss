@@ -16,3 +16,18 @@
     height: 300px;
   }
 }
+
+#extra-logo {
+  position:absolute;
+  top:0;
+  left:29px;
+  width:99px;
+  height:99px;
+  @include border-radius(3px);
+  border: #D0D0D0 1px solid;
+  background-color: #FFFFFF;
+
+  img {
+    padding: 3px;
+  }
+}

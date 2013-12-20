@@ -4,6 +4,7 @@
     var currentUserIsGuest = #{!!current_user.is_guest};
 
 <!-- ko if: !fullscreen() -->
+= render 'collections/index/custom_logo_template'
 %h1
   Collections
   %p#snapshot_loaded_message{style: 'display:none'}
@@ -15,6 +16,8 @@
       Go back to present
     <!-- /ko -->
     <!-- /ko -->
+  <!-- ko template: {name: 'custom-logo-template'} -->
+  <!-- /ko -->
 <!-- /ko -->
 
 = render 'collections/index/refine_hierarchy_items_template'

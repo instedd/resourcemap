@@ -1,0 +1,14 @@
+ko.bindingHandlers.collectionLogo =
+  update: (element, valueAccessor, allBindings) ->
+    valueUnwrapped = ko.utils.unwrapObservable(valueAccessor())
+    duration = allBindings().slideDuration or 400 # 400ms is default duration unless otherwise specified
+
+    if valueUnwrapped is true
+      $(element).slideDown duration
+      $('#header img').animate({marginLeft: '135px'})
+      $('#instedd-pulldown').animate({marginLeft: '117px'})
+    else
+      $(element).slideUp duration
+      $('#header img').animate({marginLeft: '8px'})
+      $('#instedd-pulldown').animate({marginLeft: '8px'})
+

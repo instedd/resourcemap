@@ -11,6 +11,7 @@ onCollections ->
       @maxLng = data?.max_lng
       @layers = ko.observableArray()
       @fields = ko.observableArray()
+      @logoUrl = data?.logo_url
 
       # The error in the name field of the current site
       @nameFieldError = ko.observable()
@@ -39,6 +40,9 @@ onCollections ->
       @maxLng = data.max_lng
       @position(data)
       @updatedAt(data.updated_at)
+
+    fetchLogoUrl: => $.get "/collections/#{@id}.json", {}, (data) =>
+      @logoUrl = data.logo.grayscale.url
 
     panToPosition: =>
       if @minLat && @maxLat && @minLng && @maxLng

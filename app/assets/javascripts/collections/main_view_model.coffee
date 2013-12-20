@@ -24,6 +24,7 @@ onCollections ->
     @include SortViewModel
     @include UrlRewriteViewModel
     @include GatewaysViewModel
+    @include CustomLogoViewModel
 
     constructor: (collections) ->
       @initialize(collections)
