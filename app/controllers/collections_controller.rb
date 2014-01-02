@@ -180,6 +180,7 @@ class CollectionsController < ApplicationController
 
     collections.each do |collection|
       attrs = collection.attributes
+      attrs["logo_url"] = collection.logo_url(:grayscale)
       attrs["snapshot_name"] = snapshot_names[collection.id]
       collections_with_snapshot.push attrs
     end

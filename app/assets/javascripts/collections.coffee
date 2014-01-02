@@ -10,8 +10,8 @@ onCollections -> if $('#collections-main').length > 0
   # Start the view model for given collections
   initViewModel = (collections) =>
     window.model = new MainViewModel(collections)
-    ko.applyBindings window.model
     window.model.processURL()
+    ko.applyBindings window.model
     window.model.isGatewayExist()
     $('#collections-dummy').remove()
     $('#collections-main').show()

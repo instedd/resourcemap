@@ -1,14 +1,24 @@
 ko.bindingHandlers.collectionLogo =
+  init: (element, valueAccessor, allBindings) ->
+    valueUnwrapped = ko.utils.unwrapObservable(valueAccessor())
+    $(element).toggle(valueUnwrapped)
+    if valueUnwrapped
+      $('#header img').css({marginLeft: '135px'})
+      $('#instedd-pulldown').css({marginLeft: '117px'})
+    else
+      $('#header img').css({marginLeft: '8px'})
+      $('#instedd-pulldown').css({marginLeft: '8px'})
   update: (element, valueAccessor, allBindings) ->
     valueUnwrapped = ko.utils.unwrapObservable(valueAccessor())
     duration = allBindings().slideDuration or 400 # 400ms is default duration unless otherwise specified
 
     if valueUnwrapped is true
-      $(element).slideDown duration
-      $('#header img').animate({marginLeft: '135px'})
-      $('#instedd-pulldown').animate({marginLeft: '117px'})
+      $('#header img').animate({marginLeft: '135px'}, duration, ->
+        $(element).slideDown duration
+      )
+      $('#instedd-pulldown').animate({marginLeft: '117px'}, duration)
     else
-      $(element).slideUp duration
-      $('#header img').animate({marginLeft: '8px'})
-      $('#instedd-pulldown').animate({marginLeft: '8px'})
+      $(element).slideUp duration, ->
+        $('#header img').animate({marginLeft: '8px'}, duration)
+        $('#instedd-pulldown').animate({marginLeft: '8px'}, duration)
 
