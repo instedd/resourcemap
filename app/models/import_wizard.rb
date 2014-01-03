@@ -328,7 +328,7 @@ class ImportWizard
       if column_spec[:use_as].to_sym == :existing_field
         field = fields.detect{|e| e.id.to_s == column_spec[:field_id].to_s}
       else
-        field = Field.new kind: column_spec[:kind].to_s, config: column_spec[:config]
+        field = new_field_for_column_spec(column_spec, collection)
       end
 
       collection_sites_ids = collection.sites.map{|e|e.id.to_s}
@@ -465,21 +465,29 @@ class ImportWizard
 
     def validate_format_value(column_spec, field_value, collection)
       # Bypass some field validations
-      if column_spec[:kind] == 'hierarchy'
+      case column_spec[:kind]
+      when 'hierarchy'
         raise "Hierarchy fields can only be created via web in the Layers page"
-      elsif column_spec[:kind] == 'select_one' || column_spec[:kind] == 'select_many'
+      when 'select_one', 'select_many'
         # options will be created
         return field_value
       end
 
-      column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
-
-      sample_field = Field.new kind: column_spec[:kind], code: column_header, config: column_spec[:config]
-
-      # We need the collection to validate site_fields
-      sample_field.collection = collection
+      sample_field = new_field_for_column_spec(column_spec, collection)
 
       sample_field.apply_format_and_validate(field_value, true, collection)
+    end
+
+    def new_field_for_column_spec(column_spec, collection)
+      column_spec[:validate_format_value_cached_field] ||= begin
+        column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
+        field = Field.new kind: column_spec[:kind], code: column_header, config: column_spec[:config]
+
+        # We need the collection to validate site_fields
+        field.collection = collection
+
+        field
+      end
     end
 
     def read_csv_for(user, collection)
