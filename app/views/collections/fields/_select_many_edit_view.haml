@@ -3,7 +3,7 @@
     %li.superblyTagItem{ko(click: '$parent.removeOption')}
       %span{ko(text: '$parent.labelFor($data)')}
       %a x
-  .superblyTagfieldClearer
+  .superblyTagfieldClearer.select-many
   %button{ko(click: :save, clickBubble: false), style: 'float:right; margin-bottom: 5px;'} Done
   #select-many-search{style:'width:250px'}
     <!-- ko if: options.length >= 5 -->
@@ -22,7 +22,7 @@
   <!-- ko if: !expanded() -->
   %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer', id: "Add more"} Add more...
   <!-- /ko -->
-  .superblyTagfieldClearer
+  .superblyTagfieldClearer.select-many
     <!-- ko if: expanded() -->
     #select-many-search{style:'width:250px'}
       <!-- ko if: options.length >= 5 -->
