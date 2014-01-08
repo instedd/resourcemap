@@ -481,7 +481,7 @@ class ImportWizard
     def new_field_for_column_spec(column_spec, collection)
       column_spec[:validate_format_value_cached_field] ||= begin
         column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
-        field = Field.new kind: column_spec[:kind], code: column_header, config: column_spec[:config]
+        field = Field.new kind: column_spec[:kind].to_s, code: column_header, config: column_spec[:config]
 
         # We need the collection to validate site_fields
         field.collection = collection
