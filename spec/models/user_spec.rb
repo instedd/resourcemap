@@ -122,7 +122,7 @@ describe User do
   end
 
   it "should encrypt all users password" do
-    User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`) VALUES (22, 'foo@example.com', 'bar123')"
+    User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`, `created_at`, `updated_at`) VALUES (22, 'foo@example.com', 'bar123', '#{Time.now.utc.to_s(:db)}', '#{Time.now.utc.to_s(:db)}')"
     User.encrypt_users_password
     User.first.encrypted_password.should_not == 'bar123'
   end
