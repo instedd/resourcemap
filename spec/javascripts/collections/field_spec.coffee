@@ -78,11 +78,20 @@ describe 'Collection', ->
         @field.errorMessage("Invalid Option")
         expect(@field.error()).toBeTruthy()
 
+    describe 'Identifier Field', ->
+      beforeEach ->
+          @field = new Field { id: 1, code: 'luhn_id', name: 'Luhn_id', kind: 'identifier' }, (esCode) -> 'next_value'
+      it 'should have next_value as value', ->
+        @field.value('')
+        expect(@field.value()).toEqual("")
+        @field.edit()
+        expect(@field.value()).toEqual('next_value')
 
     describe 'Numeric Field', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'beds', name: 'Available beds', kind: 'numeric' }
         @field.value(123)
+
 
       it 'should have value when set one', ->
         expect(@field.hasValue()).toBeTruthy()

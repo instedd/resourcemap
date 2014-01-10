@@ -51,7 +51,6 @@ class LayersController < ApplicationController
   def update
     # FIX: For some reason using the exposed layer here results in duplicated fields being created
     layer = collection.layers.find params[:id]
-
     fix_layer_fields_for_update(layer)
     layer.user = current_user
     layer.update_attributes! params[:layer]
@@ -117,7 +116,7 @@ class LayersController < ApplicationController
   # whose ids don't show up in the new ones and then we add the _destroy flag.
   #
   # That way we preserve existing fields and we can know if their codes change, to trigger a reindex
-  def fix_layer_fields_for_update(layer)
+  def fix_layer_fields_for_update(layers)
     fields = layer.fields
 
     fields_ids = fields.map(&:id).compact

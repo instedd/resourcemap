@@ -108,7 +108,6 @@ onCollections ->
         if @properties()
           for field in collection.fields()
             value = @properties()[field.esCode]
-
             field.setValueFromSite(value)
 
     update_site: (json, callback) =>
@@ -309,9 +308,10 @@ onCollections ->
       # Keep the original values, in case the user cancels
       @originalName = @name()
       @originalPosition = @position()
+
       for field in window.model.currentCollection().fields()
         field.editing(false)
-        field.originalValue = field.value()
+        field.onEnteredEditMode()
 
       @inEditMode(true)
       @startEditLocationInMap()

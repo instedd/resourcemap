@@ -2,7 +2,9 @@ onCollections ->
 
   # A Layer field
   class @Field
-    constructor: (data) ->
+    constructor: (data, nextValueProvider) ->
+      @nextValueProvider = nextValueProvider
+
       @esCode = "#{data.id}"
       @code = data.code
       @name = data.name
@@ -139,14 +141,22 @@ onCollections ->
       for item in @fieldHierarchyItems()
         item.close()
 
+    # Notifies the field that it should be prepared for edition
+    # Returns whether the field has actually entered edit mode or not
+    onEnteredEditMode: =>
+      return false if window.model.currentCollection()?.currentSnapshot
+      @originalValue = @value()
+
+      # For select many, if it's an array we need to duplicate it
+      if @kind == 'select_many' && typeof(@) == 'object'
+        @originalValue = @originalValue.slice(0)
+      if @kind == 'identifier'
+        if not @value() then @value(@nextValue())
+
+      return true
+
     edit: =>
-      if !window.model.currentCollection()?.currentSnapshot
-        @originalValue = @value()
-
-        # For select many, if it's an array we need to duplicate it
-        if @kind == 'select_many' && typeof(@) == 'object'
-          @originalValue = @originalValue.slice(0)
-
+        return if not @onEnteredEditMode()
         @editing(true)
         optionsDatePicker = {defaultDate: @value()}
         optionsDatePicker.onSelect = (dateText) =>
@@ -244,3 +254,6 @@ onCollections ->
     exitEditing: ->
       @editing(false)
       @writeable = @originalWriteable
+
+    nextValue: =>
+      @nextValueProvider(@esCode)
