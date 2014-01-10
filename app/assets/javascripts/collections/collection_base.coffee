@@ -21,8 +21,10 @@ onCollections ->
       @currentSnapshot = if data?.snapshot_name then data?.snapshot_name else ''
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
+      @logoUrl = data?.logo_url
       @loadCurrentSnapshotMessage()
       @loadAllSites()
+
 
     loadAllSites: =>
       @allSites = ko.observable()
@@ -89,4 +91,7 @@ onCollections ->
     searchUsersUrl: -> "/collections/#{@id}/memberships/search.json"
 
     searchSitesUrl: -> "/collections/#{@id}/sites_by_term.json"
+
+    fetchLogoUrl: => $.get "/collections/#{@id}.json", {}, (data) =>
+      @logoUrl = data.logo.grayscale.url
 
