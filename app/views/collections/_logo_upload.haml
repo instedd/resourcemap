@@ -1,7 +1,9 @@
 %h2 Upload logo
 
-Current:
-= image_tag collection.logo_url(:grayscale)
+- if collection.logo_url(:grayscale)
+  Current:
+  = image_tag collection.logo_url(:grayscale)
+
 %br/
 = form_tag(collection_upload_logo_path(collection), multipart: true) do
   = file_field_tag :logo
