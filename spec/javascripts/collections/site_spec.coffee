@@ -17,6 +17,12 @@ describe 'Collection', ->
         long:17,
         long_analyzed: "17",
         updated_at: "2014-01-09T13:42:57Z"
+        properties: {
+          50:20
+        },
+        type: "site",
+        uuid: "a8b87477-71b0-4e2f-8605-89831f49faca",
+        version: 82
       }
 
       @data_collection = {
@@ -27,17 +33,23 @@ describe 'Collection', ->
 
       @collection = new Collection @data_collection
       window.model = new MainViewModel [@collection]
+
       @field = new Field { id: 1, code: 'luhn_id', name: 'Luhn_id', kind: 'identifier', config: {format: "Luhn" } }, (esCode) -> 'next_value'
+
       @layer = new Layer({fields: {@field}, name:'luhn_layer'})
+
       @site = new Site @collection, @data_site
+
       @collection.layers.push(@layer)
       @collection.fields.push(@field)
-      window.model.currentCollection = @collection
+      window.model.currentCollection(@collection)
+
+      spyOn(@site, 'createMarker')
+      spyOn(@site, 'startEditLocationInMap')
 
     it 'should edit luhn values in editing mode', ->
-      debugger
       @site.startEditMode()
-      #expect(@site.collection.fields['luhn_id']).toEqual('next_value')
+      expect(@site.collection.fields()[0].value()).toEqual('next_value')
 
 
 
