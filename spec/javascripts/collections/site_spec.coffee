@@ -8,7 +8,7 @@ describe 'Collection', ->
       @data_site = {
         alert:false,
         created_at:"2013-12-20T20:36:42Z",
-        icon: "hoseriding",
+        icon: "horseriding",
         id_with_prefix: "AG3",
         id:4,
         name: "luhn_site",
