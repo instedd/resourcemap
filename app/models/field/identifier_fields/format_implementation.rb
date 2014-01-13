@@ -37,7 +37,7 @@ class Field::IdentifierFields::FormatImplementation
     if existing_values[value]
       # If the value already exists in the collection, the value will be invalid
       # Unless this is an update to an update an existing site with the same value
-      raise "the value already exists in the collection" unless (existing_site_id && (existing_values[value]["id"].to_s == existing_site_id.to_s))    end
+      raise "The value already exists in the collection" unless (existing_site_id && (existing_values[value]["id"].to_s == existing_site_id.to_s))    end
     true
   end
 
