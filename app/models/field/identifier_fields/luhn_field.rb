@@ -20,12 +20,12 @@ class Field::IdentifierFields::LuhnField < Field::IdentifierFields::FormatImplem
   def valid_value?(value, site)
 
     unless value =~ /\A(\d\d\d\d\d\d)\-(\d)\Z/
-      raise "the value must be in this format: nnnnnn-n (where 'n' is a number)"
+      raise "The value must be in this format: nnnnnn-n (where 'n' is a number)"
     end
 
     verifier = compute_luhn_verifier($1)
     if verifier != $2.to_i
-      raise "the value failed the luhn check"
+      raise "The value failed the luhn check"
     end
 
     super
