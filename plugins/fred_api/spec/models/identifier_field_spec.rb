@@ -16,7 +16,7 @@ describe "Identifier field" do
 
       lambda do
         collection.sites.make properties: {field.es_code => "1"}
-      end.should raise_exception(ActiveRecord::RecordInvalid, /the value already exists in the collection/)
+      end.should raise_exception(ActiveRecord::RecordInvalid, /The value already exists in the collection/)
   end
 
   end

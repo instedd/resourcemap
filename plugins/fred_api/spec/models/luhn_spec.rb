@@ -27,7 +27,7 @@ describe "Luhn" do
     it "fails if luhn check is not valid" do
       lambda do
         field.apply_format_and_validate("108439-6", nil, collection)
-      end.should raise_exception(RuntimeError, /failed the luhn check/)
+      end.should raise_exception(RuntimeError, /Invalid Luhn check digit/)
     end
 
     it "passes if the luhn check is valid" do
@@ -37,7 +37,7 @@ describe "Luhn" do
     it "fails if luhn check is not valid 2" do
       lambda do
         field.apply_format_and_validate("987654-6", nil, collection)
-      end.should raise_exception(RuntimeError, /failed the luhn check/)
+      end.should raise_exception(RuntimeError, /Invalid Luhn check digit/)
     end
 
     it "passes if the luhn check is valid 2" do
@@ -88,7 +88,7 @@ describe "Luhn" do
     create_site_and_assign_default_values(nil).properties[field.es_code].should eq("100000-9")
     lambda do
       collection.sites.make(properties: {field.es_code => "100000-9"})
-    end.should raise_exception(ActiveRecord::RecordInvalid, /the value already exists in the collection/)
+    end.should raise_exception(ActiveRecord::RecordInvalid, /The value already exists in the collection/)
   end
 
   it "updates site" do
@@ -109,7 +109,7 @@ describe "Luhn" do
     end
     lambda do
       create_site_and_assign_default_values(nil)
-    end.should_not raise_exception(ActiveRecord::RecordInvalid, /the value already exists in the collection/)
+    end.should_not raise_exception(ActiveRecord::RecordInvalid, /The value already exists in the collection/)
   end
 
 

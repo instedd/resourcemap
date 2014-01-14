@@ -1884,7 +1884,7 @@ describe ImportWizard do
       data_errors = sites_errors[:data_errors]
       data_errors.length.should eq(1)
 
-      data_errors.first[:description].should eq "Some of the values in field 'other-id' (3rd column) are not valid for the type identifier: the value already exists in the collection."
+      data_errors.first[:description].should eq "Some of the values in field 'other-id' (3rd column) are not valid for the type identifier: The value already exists in the collection."
     end
   end
 end
