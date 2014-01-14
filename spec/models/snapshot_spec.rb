@@ -101,4 +101,10 @@ describe Snapshot do
     UserSnapshot.where(user_id: user.id, snapshot_id: snapshot.id).count.should eq(0)
   end
 
+  describe "info_for_collections_ids_and_user" do
+    it "should return empty hash if collections_ids is empty" do
+      user = User.make
+      Snapshot.info_for_collections_ids_and_user([], user, "field").should eq({})
+    end
+  end
 end

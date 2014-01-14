@@ -65,6 +65,9 @@ class Snapshot < ActiveRecord::Base
   def self.info_for_collections_ids_and_user(collections_ids, user, field)
     collections_ids = collections_ids.map { |id| connection.quote(id) }.join ', '
     user_id = connection.quote(user.id)
+
+    return {} unless collections_ids.length > 0
+
     results = connection.execute("
       select c.id, s.#{field}
       from collections c, user_snapshots u, snapshots s
