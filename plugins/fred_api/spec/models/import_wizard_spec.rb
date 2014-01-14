@@ -139,7 +139,7 @@ describe ImportWizard do
       data_errors[0][:column].should eq(1)
       data_errors[0][:rows].should eq([0])
 
-      data_errors[1][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: The value failed the luhn check.")
+      data_errors[1][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: Invalid Luhn check digit.")
       data_errors[1][:column].should eq(1)
       data_errors[1][:rows].should eq([1])
 

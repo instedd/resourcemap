@@ -25,7 +25,7 @@ class Field::IdentifierFields::LuhnField < Field::IdentifierFields::FormatImplem
 
     verifier = compute_luhn_verifier($1)
     if verifier != $2.to_i
-      raise "The value failed the luhn check"
+      raise "Invalid Luhn check digit"
     end
 
     super
