@@ -116,7 +116,7 @@ class LayersController < ApplicationController
   # whose ids don't show up in the new ones and then we add the _destroy flag.
   #
   # That way we preserve existing fields and we can know if their codes change, to trigger a reindex
-  def fix_layer_fields_for_update(layers)
+  def fix_layer_fields_for_update(layer)
     fields = layer.fields
 
     fields_ids = fields.map(&:id).compact
