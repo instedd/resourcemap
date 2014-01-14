@@ -18,15 +18,50 @@ module Site::IndexUtils
       }
     }
 
+  class DefaultStrategy
+    def self.store(document, index, options = {})
+      result = index.store document, refresh: true
+      if result['error']
+        raise "Can't store site in index: #{result['error']}"
+      end
+
+      index.refresh unless options[:refresh] == false
+    end
+  end
+
+  class BulkStrategy
+    def initialize(index)
+      @index = index
+      @documents = []
+    end
+
+    def store(document, index, options = {})
+      @documents << document
+      flush if @documents.length >= 1000
+    end
+
+    def flush
+      @index.import @documents
+      @documents.clear
+    end
+  end
+
+  def self.bulk(index)
+    begin
+      strategy = BulkStrategy.new(index)
+      Thread.current[:index_utils_strategy] = strategy
+      yield
+    ensure
+      strategy.flush
+      Thread.current[:index_utils_strategy] = nil
+    end
+  end
+
   def store(site, site_id, index, options = {})
     document = to_elastic_search(site, site_id)
 
-    result = index.store document, refresh: true
-    if result['error']
-      raise "Can't store site in index: #{result['error']}"
-    end
-
-    index.refresh unless options[:refresh] == false
+    strategy = Thread.current[:index_utils_strategy] || DefaultStrategy
+    strategy.store(document, index, options)
   end
 
   def to_elastic_search(site, site_id)

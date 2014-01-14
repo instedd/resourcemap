@@ -171,7 +171,10 @@ class ImportWizard
       # Execution should continue only if the job is in status pending (user may canceled it)
       if import_job.status == 'pending'
         mark_job_as_in_progress(user, collection)
-        execute_with_entities(user, collection, columns_spec)
+
+        Site::IndexUtils.bulk(collection.index) do
+          execute_with_entities(user, collection, columns_spec)
+        end
       end
     end
 
@@ -457,13 +460,13 @@ class ImportWizard
 
     def validate_column_value(column_spec, field_value, field, collection, site_id)
       if field.new_record?
-        validate_format_value(column_spec, field_value, collection)
+        validate_format_value(column_spec, field_value, field, collection)
       else
         field.apply_format_and_validate(field_value, true, collection, site_id)
       end
     end
 
-    def validate_format_value(column_spec, field_value, collection)
+    def validate_format_value(column_spec, field_value, field, collection)
       # Bypass some field validations
       case column_spec[:kind]
       when 'hierarchy'
@@ -473,9 +476,7 @@ class ImportWizard
         return field_value
       end
 
-      sample_field = new_field_for_column_spec(column_spec, collection)
-
-      sample_field.apply_format_and_validate(field_value, true, collection)
+      field.apply_format_and_validate(field_value, true, collection)
     end
 
     def new_field_for_column_spec(column_spec, collection)
