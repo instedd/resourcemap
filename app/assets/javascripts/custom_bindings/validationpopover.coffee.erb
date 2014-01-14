@@ -1,8 +1,10 @@
 ko.bindingHandlers.validationPopover =
   init: (element, valueAccessor, allBindingsAccessor, viewModel) ->
     value = ko.utils.unwrapObservable(valueAccessor())
-    $(element).parent().addClass("error")
-    $(element).parent().CreateBubblePopup({
+    input = $(element).parent().children('input')
+    container = $(element).parent()
+    container.addClass("error")
+    input.CreateBubblePopup({
       innerHtml: value,
       themeName:  'bubble',
       themePath:  '<%= InsteddRails.url %>/theme/images/',
@@ -15,9 +17,11 @@ ko.bindingHandlers.validationPopover =
 
   update: (element, valueAccessor, allBindingsAccessor, viewModel) ->
     value = ko.utils.unwrapObservable(valueAccessor())
-    $(element).parent().HideAllBubblePopups()
-    $(element).parent().RemoveBubblePopup()
-    $(element).parent().removeClass("error")
+    input = $(element).parent().children('input')
+    container = $(element).parent()
+    input.HideAllBubblePopups()
+    input.RemoveBubblePopup()
+    container.removeClass("error")
 
     if !!value
       options = {
@@ -31,8 +35,8 @@ ko.bindingHandlers.validationPopover =
         },
       }
 
-      $(element).parent().addClass("error")
-      $(element).parent().CreateBubblePopup(options)
+      container.addClass("error")
+      input.CreateBubblePopup(options)
 
       # TODO: unless we do this, the popup doesn't refresh its value
-      setTimeout((-> $(element).parent().SetBubblePopupOptions(options)), 400)
+      setTimeout((-> input.SetBubblePopupOptions(options)), 400)
