@@ -4,10 +4,9 @@ host: localhost:3000
 plugins:
   public_collection: on
   snapshot: on
-  channels: on
+  channels: off
   reminders: on
   alerts: on
-  account_completeness: on
   fred_api: on
   csd_api: on
 

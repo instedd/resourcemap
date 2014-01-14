@@ -24,37 +24,6 @@
             <!-- /ko -->
         <!-- /ko -->
     %br{:clear => "all"}/
-    - if Settings.is_on? :account_completeness
-      -# acount completeness
-      #profile-main{style: 'display:none'}
-        .box.plain.orange{ko(visible: 'collections().length < 1 || (!$root.isExist())')}
-          .sbox.grey.StateDisplay
-            .values
-
-              <!-- ko if: collections().length < 1 && (!$root.isExist()) -->
-              .M
-                %span.Fill/
-              .R
-                %span 0% Account Setup Completeness
-              <!-- /ko -->
-
-              <!-- ko if: (collections().length < 1 && $root.isExist()) || (collections().length > 0 && (!$root.isExist()))-->
-              .M
-                %span.Fill/
-              .R
-                %span 50% Account Setup Completeness
-              <!-- /ko -->
-              .L
-                <!-- ko if: collections().length < 1 -->
-                %button.fadd{ko(click: '$root.createCollection'),type: "button"}
-                  %span Create Your First Collection (+50%)
-                %br{:clear => "all"}/
-                <!-- /ko -->
-                <!-- ko if: !$root.isExist() -->
-                %button.fadd{onClick: "window.location='/gateways';return false;", type: "button"}
-                  %span Configure SMS Gateway (+50%)
-                <!-- /ko -->
-
 
   - if can? :create, Collection
     .tablebottom{ko(click: '$root.createCollection')}
