@@ -101,6 +101,7 @@
     vertical-align: middle;
 
     & + span {
+      cursor: pointer;
       margin-left: -4px;
       display: inline-block;
       vertical-align: middle;
