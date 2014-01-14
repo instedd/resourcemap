@@ -22,7 +22,7 @@
   <!-- ko if: !expanded() -->
   %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer', id: "Add more"} Add more...
   <!-- /ko -->
-  .superblyTagfieldClearer.select-many
+  .superblyTagfieldClearer
     <!-- ko if: expanded() -->
     #select-many-search{style:'width:250px'}
       <!-- ko if: options.length >= 5 -->
