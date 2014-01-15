@@ -1,6 +1,47 @@
 module Site::ActivityConcern
   extend ActiveSupport::Concern
 
+  class DefaultStrategy
+    def self.create_activity(item_type, action, collection_id, site_id, user_id, data)
+      Activity.create! item_type: item_type, action: action, collection_id: collection_id, site_id: site_id, user_id: user_id, data: data
+    end
+  end
+
+  class BulkStrategy
+    def initialize
+      @column_names = [:item_type, :action, :collection_id, :site_id, :user_id, :data]
+      @activities = []
+    end
+
+    def create_activity(item_type, action, collection_id, site_id, user_id, data)
+      @activities << [item_type, action, collection_id, site_id, user_id, data]
+      flush if @activities.length >= 1000
+    end
+
+    def flush
+      unless @activities.empty?
+        Activity.import @column_names, @activities, validate: false
+        @activities.clear
+      end
+    end
+  end
+
+  def self.strategy
+    Thread.current[:site_activity_concern] || DefaultStrategy
+  end
+
+  def self.strategy=(strategy)
+    Thread.current[:site_activity_concern] = strategy
+  end
+
+  def self.bulk
+    self.strategy = BulkStrategy.new
+    yield
+  ensure
+    self.strategy.flush
+    self.strategy = nil
+  end
+
   included do
     after_create :create_created_activity, :unless => :mute_activities
     before_update :record_name_was, :unless => :mute_activities
@@ -13,7 +54,8 @@ module Site::ActivityConcern
     site_data['lat'] = lat if lat
     site_data['lng'] = lng if lng
     site_data['properties'] = properties if properties.present?
-    Activity.create! item_type: 'site', action: 'created', collection_id: collection.id, site_id: id, user_id: user.id, data: site_data
+
+    Site::ActivityConcern.strategy.create_activity 'site', 'created', collection.id, id, user.id, site_data
   end
 
   def record_name_was
@@ -42,7 +84,7 @@ module Site::ActivityConcern
     end
 
     if site_changes.present?
-      Activity.create! item_type: 'site', action: 'changed', collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => @name_was || name, 'changes' => site_changes}
+      Site::ActivityConcern.strategy.create_activity 'site', 'changed', collection.id, id, user.id, {'name' => @name_was || name, 'changes' => site_changes}
     end
   end
 
@@ -62,6 +104,6 @@ module Site::ActivityConcern
   end
 
   def create_deleted_activity
-    Activity.create! item_type: 'site', action: 'deleted', collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => name}
+    Site::ActivityConcern.strategy.create_activity 'site', 'deleted', collection.id, id, user.id, {'name' => name}
   end
 end

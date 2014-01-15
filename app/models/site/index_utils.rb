@@ -46,22 +46,25 @@ module Site::IndexUtils
     end
   end
 
+  def self.strategy
+    Thread.current[:index_utils_strategy] || DefaultStrategy
+  end
+
+  def self.strategy=(strategy)
+    Thread.current[:index_utils_strategy] = strategy
+  end
+
   def self.bulk(index)
-    begin
-      strategy = BulkStrategy.new(index)
-      Thread.current[:index_utils_strategy] = strategy
-      yield
-    ensure
-      strategy.flush
-      Thread.current[:index_utils_strategy] = nil
-    end
+    self.strategy = BulkStrategy.new(index)
+    yield
+  ensure
+    self.strategy.flush
+    self.strategy = nil
   end
 
   def store(site, site_id, index, options = {})
     document = to_elastic_search(site, site_id)
-
-    strategy = Thread.current[:index_utils_strategy] || DefaultStrategy
-    strategy.store(document, index, options)
+    Site::IndexUtils.strategy.store(document, index, options)
   end
 
   def to_elastic_search(site, site_id)
