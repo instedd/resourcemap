@@ -1,9 +1,12 @@
+%h2 Select logo from uploaded image
+
 #settings
   = form_for collection do |f|
 
     = image_tag collection.logo_url(:croppable), id: 'cropbox'
 
     #logo-preview
+      %span.preview Preview
       #preview-container
         = image_tag collection.logo_url(:preview), id: 'preview'
 
