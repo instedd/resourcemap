@@ -7,8 +7,10 @@
         %a{ko(style: {marginLeft: "'' + (level * 20) + 'px'"}), href: 'javascript:void(0)'}
           %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
         %span{ko(text: :name)}
-    <!-- ko foreach: $root.currentCollection().fields() -->
+    <!-- ko foreach: $root.currentCollection().layers() -->
+    <!-- ko foreach: fields -->
     %td.l
+    <!-- /ko -->
     <!-- /ko -->
     %td.l
     %td.l
