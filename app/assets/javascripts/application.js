@@ -13,8 +13,9 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
-//= require jquery.fileupload
+//= require jquery.ui.widget
 //= require jquery.iframe-transport
+//= require jquery.fileupload
 //= require jquery.fixedheadertable.min
 //= require jquery.tablescroll
 //= require jquery.timeago

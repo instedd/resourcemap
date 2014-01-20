@@ -27,6 +27,6 @@ $( ->
     $("#fileupload").fileupload
       dataType: "json"
       done: (e, data) ->
-        $.each data.result.files, (index, file) ->
-          $("<p/>").text(file.name).appendTo document.body
+        $('#logo').attr('src', data.result)
+        $('.hidden-until-loaded').show()
 );

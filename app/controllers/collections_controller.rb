@@ -83,7 +83,10 @@ class CollectionsController < ApplicationController
   end
 
   def update
-    if collection.update_attributes params[:collection]
+    img = params[:collection][:logo]
+    if request.xhr? && !img.blank? && collection.update_attributes({logo: img})
+      render_json collection.logo_url(:grayscale)
+    elsif collection.update_attributes params[:collection]
       collection.recreate_index
       redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
     else
@@ -281,16 +284,6 @@ class CollectionsController < ApplicationController
     info[:new_site_properties] = collection.new_site_properties
 
     render_json info
-  end
-
-  def upload_logo
-    img = params[:logo]
-    if !img.blank? && collection.update_attributes({logo: img})
-      #TODO: If image already exists delete from uploads
-      redirect_to collection_edit_logo_path(collection)
-    else
-      render :index
-    end
   end
 
   def edit_logo
