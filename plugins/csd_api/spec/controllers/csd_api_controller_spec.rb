@@ -155,7 +155,6 @@ describe CsdApiController do
       body["facilityDirectory"].length.should eq(1)
       facility = body["facilityDirectory"]["facility"]
       facility["oid"].should eq("2.25.309768652999692686176651983274504471835.646.5.329800735698586629295641978511506172918")
-
     end
 
     it "should return CSD facility attributes for each CSD-field in the collection" do

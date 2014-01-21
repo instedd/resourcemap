@@ -26,11 +26,9 @@
     end
 
     def generate_facility_xml(xml, facility)
-      xml.tag!("facility") do
-        facility_properties = facility["_source"]["properties"]
+      facility_properties = facility["_source"]["properties"]
 
-        xml.tag!("oid", generate_oid(facility, facility_properties))
-
+      xml.tag!("facility", "oid" => generate_oid(facility, facility_properties)) do
         generate_identifiers(xml, facility_properties)
 
         generate_facility_types(xml, facility_properties)
@@ -53,6 +51,7 @@
 
         generate_record(xml, facility)
       end
+
       xml
     end
 
