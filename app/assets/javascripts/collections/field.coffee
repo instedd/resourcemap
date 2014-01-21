@@ -107,16 +107,21 @@ onCollections ->
         if value && name then name else ''
       else if @kind == 'date'
         if value
-          if @format == "dd_mm_yyyy"
-            [day, month, year] = value.split('/')
-            if day && month && year
+          if month && day && year && year > 1500 && month <= 12
+            if @format == "dd_mm_yyyy"
+              [day, month, year] = value.split('/')
+              value = "#{day}/#{month}/#{year}"
+            else
+              [month, day, year] = value.split('/')
               value = "#{month}/#{day}/#{year}"
+          else
+            return value
 
           date = new Date(value)
           date.setTime(date.getTime() + date.getTimezoneOffset() * 60000)
           @datePickerFormat(date)
         else
-          ''
+          ""
       else
         if value then value else ''
 
