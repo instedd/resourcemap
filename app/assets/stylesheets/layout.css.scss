@@ -563,10 +563,10 @@ td.loadmore { height: 36px }
 }
 
 .hierarchy {
-  .active { background:#d0d0d0 }
   img:hover { opacity: 0.5; }
   span:hover { opacity: 0.5; }
 }
+.hierarchy.active { background:#d0d0d0 }
 .header_text {margin-bottom: 5px; font-size: 18px;}
 
 .template_text {float:left;width: 600px;}
