@@ -25,7 +25,7 @@ User.blueprint do
   email
   password
   phone_number
-  confirmed_at { Time.now }
+  confirmed_at { Time.now.beginning_of_day }
 end
 
 Collection.blueprint do

@@ -294,9 +294,6 @@ describe CsdApiController do
       facility["record"]["updated"].should eq("2013-12-18T18:40:28+00:00")
       facility["record"]["sourceDirectory"].should eq("http://#{Settings.host}")
       facility["record"]["status"].should eq("inactive")
-
     end
-
   end
-
 end

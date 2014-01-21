@@ -1,6 +1,12 @@
 module Collection::CSDApiConcern
   extend ActiveSupport::Concern
 
+  def csd_oid_field
+    identifier_fields.find do |field|
+      (!field.metadata.blank?) && (entry(field.metadata,"CSDType") == "oid" )
+    end
+  end
+
   def facility_type_fields
     select_one_fields.select do |field|
       (!field.metadata.blank?) && (entry(field.metadata,"CSDType") == "facilityType" ) && has_entry(field.metadata, "OptionList")

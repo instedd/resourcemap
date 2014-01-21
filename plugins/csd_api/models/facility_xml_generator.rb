@@ -1,5 +1,4 @@
   class FacilityXmlGenerator
-
     def initialize(collection)
        # Used to generate 'otherId's
       @identifier_fields = collection.identifier_fields
@@ -22,13 +21,15 @@
 
       # Used to generate 'status' required
       @status_field = collection.facility_status_field
+
+      @oid_field = collection.csd_oid_field
     end
 
     def generate_facility_xml(xml, facility)
       xml.tag!("facility") do
-        xml.tag!("oid", generate_oid(facility))
-
         facility_properties = facility["_source"]["properties"]
+
+        xml.tag!("oid", generate_oid(facility, facility_properties))
 
         generate_identifiers(xml, facility_properties)
 
@@ -54,8 +55,6 @@
       end
       xml
     end
-
-    private
 
     def has_entry(metadata, metadata_key)
       metadata.values.find{|element| element["key"] == metadata_key}
@@ -168,16 +167,22 @@
       xml
     end
 
-    def generate_oid(facility)
-      # TODO: include as a user-defined collection's metadata
-      parent_id = "309768652999692686176651983274504471835"
+    def generate_oid(facility, facility_properties)
+      #If there's an explicitly set up OID, use its value as is, otherwise generate 
+      #one from the UUID.
+      if @oid_field
+        facility_properties[@oid_field.code] || ""
+      else
+        to_oid facility["_source"]["uuid"]
+      end
+    end
 
-      # TODO: calculate country from lat-long and obtain the code??
-      # 646 is rwanda, hardcoded for the momemnt
+    def to_oid(uuid)
+      #These should move to collection level settings
+      parent_id = "309768652999692686176651983274504471835"
       country_code = "646"
 
-      facility_in_decimal = facility["_source"]["uuid"].delete("-").hex
-      "2.25.#{parent_id}.#{country_code}.5.#{facility_in_decimal}"
+      "2.25.#{parent_id}.#{country_code}.5.#{uuid.delete("-").hex}"      
     end
 
     def generate_identifiers(xml, facility_properties)

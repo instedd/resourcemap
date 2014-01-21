@@ -32,7 +32,6 @@ module CsdApiHelper
 
             facility_xml_generator = FacilityXmlGenerator.new(collection)
 
-
             xml.tag!("facilityDirectory") do
               facilities.each do |facility|
                 if is_csd_complete(facility)
