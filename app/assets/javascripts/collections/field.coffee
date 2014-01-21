@@ -91,6 +91,9 @@ onCollections ->
     codeForLink: (api = false) =>
       if api then @code else @esCode
 
+    dateIsCorrect: (month,day,year) =>
+      return (month && day && year && year >= 1500 && year <= 2500 && month <= 12 && day <= 31)
+
     # The value of the UI.
     # If it's a select one or many, we need to get the label from the option code.
     valueUIFor: (value) =>
@@ -107,19 +110,22 @@ onCollections ->
         if value && name then name else ''
       else if @kind == 'date'
         if value
-          if month && day && year && year > 1500 && month <= 12
-            if @format == "dd_mm_yyyy"
-              [day, month, year] = value.split('/')
-              value = "#{day}/#{month}/#{year}"
-            else
-              [month, day, year] = value.split('/')
-              value = "#{month}/#{day}/#{year}"
+          if @format == "dd_mm_yyyy"
+            [day, month, year] = value.split('/')
+            formatted_value = "#{day}/#{month}/#{year}"
           else
-            return value
+            [month, day, year] = value.split('/')
+            formatted_value = "#{month}/#{day}/#{year}"
 
-          date = new Date(value)
-          date.setTime(date.getTime() + date.getTimezoneOffset() * 60000)
-          @datePickerFormat(date)
+          if !@dateIsCorrect(month,day,year)
+            return value
+          else
+            date = new Date(formatted_value)
+            if(date=="Invalid Date")
+              return value
+            else
+              date.setTime(date.getTime() + date.getTimezoneOffset() * 60000)
+              @datePickerFormat(date)
         else
           ""
       else

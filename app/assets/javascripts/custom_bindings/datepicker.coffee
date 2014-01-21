@@ -4,7 +4,6 @@ ko.bindingHandlers.datePicker =
 
     $(element).val ko.utils.unwrapObservable value
     unless $(element).is '[readonly]'
-      debugger
       $(element).datepicker
         dateFormat: 'yy-mm-dd'
         onSelect: (selectedDate) ->

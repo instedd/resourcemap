@@ -137,6 +137,31 @@ describe 'Collection', ->
       it 'should have optionsIds', ->
         expect(@field.optionsIds).toEqual(['', 1, 2])
 
+    describe 'Date field', ->
+      beforeEach ->
+        @field = new Field { id: 1, code: 'starting_date', name: 'Starting_date', kind: 'date'}
+
+      it 'day should be incorrect', ->
+        value = "12/35/2014"
+        [month, day, year] = value.split('/')
+        expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
+
+      it 'month should be incorrect', ->
+        value = "14/30/2014"
+        [month, day, year] = value.split('/')
+        expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
+
+      it 'year should be incorrect', ->
+        value = "7/30/3000"
+        [month, day, year] = value.split('/')
+        expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
+
+      it 'should be correct', ->
+        value = "7/30/2100"
+        [month, day, year] = value.split('/')
+        expect(@field.dateIsCorrect(month,day,year)).toBeTruthy()
+
+
     describe 'Select Many Field', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'color', name: 'Color', kind: 'select_many', config:

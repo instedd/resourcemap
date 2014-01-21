@@ -190,6 +190,7 @@ onLayers ->
   class @Field_date extends @FieldImpl
     constructor: (field) ->
       super(field)
+
       @format = ko.observable field.config?.format || 'mm_dd_yyyy'
 
     toJSON: (json) =>
