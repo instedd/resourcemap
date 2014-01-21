@@ -27,6 +27,10 @@ $( ->
     $("#fileupload").fileupload
       dataType: "json"
       done: (e, data) ->
-        $('#logo').attr('src', data.result)
+        if data.result.url
+          $('#logo').attr('src', data.result.url)
+        else
+          $('#logo').attr('src', data.result.logo.grayscale.url)
+          $('#logo-edit').attr('onclick', 'window.location = "/collections/' + data.result.id + '/edit_logo"')
         $('.hidden-until-loaded').show()
 );

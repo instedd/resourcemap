@@ -69,6 +69,8 @@ class CollectionsController < ApplicationController
   end
 
   def create
+    collection.name = "My collection" if request.xhr? && collection.name.blank?
+    p collection
     if current_user.create_collection collection
       current_user.collection_count += 1
       current_user.update_successful_outcome_status
@@ -83,9 +85,8 @@ class CollectionsController < ApplicationController
   end
 
   def update
-    img = params[:collection][:logo]
-    if request.xhr? && !img.blank? && collection.update_attributes({logo: img})
-      render_json collection.logo_url(:grayscale)
+    if request.xhr? && !params[:collection][:logo].blank? && collection.update_attributes(params[:collection])
+      render_json({url: collection.logo_url(:grayscale)})
     elsif collection.update_attributes params[:collection]
       collection.recreate_index
       redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
