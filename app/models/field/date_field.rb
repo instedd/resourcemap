@@ -62,6 +62,10 @@ class Field::DateField < Field
   end
 
   def valid_value?(value, site = nil)
+    valid_format?(value) && valid_year?(value)
+  end
+
+  def valid_format?(value)
     begin
       time = Time.iso8601(value)
       iso_value = format_date_iso_string(time)
@@ -72,10 +76,22 @@ class Field::DateField < Field
     true
   end
 
+  def valid_year?(value)
+    year = value.split('-')[0].to_i
+    if (year.to_i > 2100)
+      raise invalid_field_year_message()
+    end
+    true
+  end
+
   def format_date_iso_string(time)
     time.strftime "%Y-%m-%dT00:00:00Z"
   end
 
+
+  def invalid_field_year_message()
+    "Invalid date value in field #{code}. Year shouldn't be greater than 2100"
+  end
 
   def invalid_field_message()
     "Invalid date value in field #{code}. #{format_implementation.format_message()}"

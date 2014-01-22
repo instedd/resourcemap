@@ -2,6 +2,9 @@ Date::strftime = (format) ->
   format = format.replace key, value for key, value of @getParts()
   format
 
+Date::notValid = ->
+  return (isNaN(@getTime()))
+
 Date::getParts = ->
   month = @getMonth() + 1
   result =

@@ -112,16 +112,15 @@ onCollections ->
         if value
           if @format == "dd_mm_yyyy"
             [day, month, year] = value.split('/')
-            formatted_value = "#{day}/#{month}/#{year}"
           else
             [month, day, year] = value.split('/')
-            formatted_value = "#{month}/#{day}/#{year}"
-
           if !@dateIsCorrect(month,day,year)
             return value
           else
+            formatted_value = "#{month}/#{day}/#{year}"
             date = new Date(formatted_value)
-            if(date=="Invalid Date")
+            #Extra check. It is not strictly necessary.
+            if(date.notValid())
               return value
             else
               date.setTime(date.getTime() + date.getTimezoneOffset() * 60000)
