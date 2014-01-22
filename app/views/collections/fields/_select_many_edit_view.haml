@@ -20,7 +20,12 @@
       %span{ko(text: '$parent.labelFor($data)')}
       %a x
   <!-- ko if: !expanded() -->
+  <!-- ko if: value().length == 0 -->
+  %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer', id: "Add more"} Add...
+  <!-- /ko -->
+  <!-- ko if: value().length > 0 -->
   %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer', id: "Add more"} Add more...
+  <!-- /ko -->
   <!-- /ko -->
   .superblyTagfieldClearer
     <!-- ko if: expanded() -->
