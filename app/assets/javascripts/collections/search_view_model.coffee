@@ -22,7 +22,10 @@ onCollections ->
           @currentCollection(new CollectionHierarchy(rootCollection, @groupBy()))
         @lastSearch(null)
       else
-        @currentCollection(new CollectionSearch(rootCollection, @search(), @filters(), @sort(), @sortDirection()))
+        oldLogo = @currentCollection().logoUrl
+        newCollection = new CollectionSearch(rootCollection, @search(), @filters(), @sort(), @sortDirection())
+        newCollection.logoUrl = oldLogo
+        @currentCollection(newCollection)
         @lastSearch(@search())
 
       @currentCollection().loadMoreSites() if @currentCollection().sitesPage == 1
