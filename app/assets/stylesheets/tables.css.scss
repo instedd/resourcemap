@@ -96,6 +96,7 @@
   color: #555555;
   height: 35px;
   padding-top: 5px;
+  padding-right:5px;
 
   .cadd {
     vertical-align: middle;
@@ -112,7 +113,8 @@
 .left.panel.wp30 {
   @include box-sizing(border-box);
   @include transition(all ease-out 0.2s);
-  width: 24%;
+  width: 300px;
+  position:absolute;
   overflow: hidden;
   &.collapse {
     width: 0px;
@@ -122,20 +124,33 @@
 .left.panel.wp50 {
   @include box-sizing(border-box);
   @include transition(all ease-out 0.2s);
-  width: 50%;
+  width: 500px;
+  position:absolute;
+  &.collapse {
+    width: 0px;
+    overflow: hidden;
+  }
 }
 #right-panel.wp50 {
   @include box-sizing(border-box);
   @include transition(all ease-out 0.2s);
-  width: 50%;
+  width: 100%;
+  padding-left:500px;
+  padding-bottom:10px;
+
+  &.expand {
+    padding-left:10px;
+  }
 }
 #right-panel.wp70 {
   @include box-sizing(border-box);
   @include transition(all ease-out 0.2s);
-  width: 76%;
+  width: 100%;
+  padding-left:300px;
+  padding-bottom:10px;
 
   &.expand {
-    width: 100%;
+    padding-left:10px;
   }
 }
 
