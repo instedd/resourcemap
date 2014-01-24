@@ -37,7 +37,9 @@
     label {
       font-weight:bold;
       display: inline-block;
-      width:25%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      vertical-align:sub;
 
       &.error {
         display: inline-block !important;
@@ -69,6 +71,11 @@
     width: auto
   }
 }
+
+.left.panel.wp30 .tablescroll div label { width:130px; }
+.left.panel.wp30 .tablescroll div input { width:135px; }
+.left.panel.wp50 .tablescroll div label { width:250px; }
+.left.panel.wp50 .tablescroll div input { width:210px; }
 
 .tablescroll .GralTable tr:nth-child(2) { background:none !important }
 .tablescroll .GralTable tr.active td { background:#d0d0d0 }
