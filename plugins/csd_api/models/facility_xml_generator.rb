@@ -32,13 +32,13 @@ class FacilityXmlGenerator
 
       generate_other_names(xml, facility_properties)
 
+      generate_addresses(xml, facility_properties)
+
       xml.tag!("geocode") do
         xml.tag!("latitude", facility["_source"]["location"]["lat"])
         xml.tag!("longitude", facility["_source"]["location"]["lon"])
         xml.tag!("coordinateSystem", "WGS-84")
       end
-
-      generate_addresses(xml, facility_properties)
 
       generate_contact_points(xml, facility_properties)
 
