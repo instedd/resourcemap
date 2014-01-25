@@ -46,6 +46,10 @@ module Field::CSDApiConcern
   	csd_declared_type? "oid" 
   end
 
+  def csd_other_id?
+    self.is_a?(Field::IdentifierField) && !self.csd_oid?
+  end
+
   def csd_declared_type?(type)
   	!self.metadata.blank? && csd_type == type
   end

@@ -48,4 +48,16 @@ describe Collection::CSDApiConcern do
 			csd_coded_type_fields.map(&:id).should include(g.id, h.id)
 		end
 	end
+
+	describe 'csd_other_ids' do
+		it '' do
+			f = layer.identifier_fields.make
+			g = layer.identifier_fields.make.csd_oid!
+
+			other_ids = collection.csd_other_ids
+
+			other_ids.should have(1).item
+			other_ids[0].id.should eq(f.id)
+		end
+	end
 end

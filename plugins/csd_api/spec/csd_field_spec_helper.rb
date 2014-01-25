@@ -18,7 +18,9 @@ module CSDFieldSpecHelper
 
 				f = Field::#{kind.camelize}Field.make metadata: metadata
 
-				yield f
+				yield f if block_given?
+
+				f
 			end
 		}
 	end

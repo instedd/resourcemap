@@ -234,16 +234,16 @@ describe CsdApiController do
       # coded_type["codingSchema"].should eq("moh.gov.rw")
 
       # Should include 'otherId'
-      other_ids = facility["otherID"]
-      other_ids.length.should eq(2)
+      #other_ids = facility["otherID"]
+      #other_ids.length.should eq(2)
 
-      other_id_1 = other_ids.first
-      other_id_1["code"].should eq("12345")
-      other_id_1["assigningAuthorityName"].should eq("DHIS")
+      #other_id_1 = other_ids.first
+      #other_id_1["code"].should eq("12345")
+      #other_id_1["assigningAuthorityName"].should eq("DHIS")
 
-      other_id_2 = other_ids.last
-      other_id_2["code"].should eq(nil)
-      other_id_2["assigningAuthorityName"].should eq("RW")
+      #other_id_2 = other_ids.last
+      #other_id_2["code"].should eq(nil)
+      #other_id_2["assigningAuthorityName"].should eq("RW")
 
       # Should include 'name'
       name = facility["primaryName"]

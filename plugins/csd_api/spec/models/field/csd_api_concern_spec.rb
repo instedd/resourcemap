@@ -24,11 +24,17 @@ describe Field::CSDApiConcern do
 	end
 
 	describe "CSD field metadata" do
-		it "oid" do
-			identifier_with_metadata({"CSDType" => "oid"}) do |f|
-				f.should be_csd_oid
+		describe "oid" do
+			let (:oid_field) { identifier_with_metadata({"CSDType" => "oid"}) }
+
+			it "is an oid" do
+			 	oid_field.should be_csd_oid
 			end
-		end
+
+			it "is not an otherId" do
+				oid_field.should_not be_csd_other_id
+			end
+		end		
 
 		it "coded type" do
 			select_one_with_metadata({"CSDType" => "codedType", "codingSchema" => "foo"}) do |f|
@@ -75,6 +81,16 @@ describe Field::CSDApiConcern do
 		it "status" do
 			yes_no_with_metadata({"CSDType" => "status"}) do |f|
 				f.should be_csd_status
+			end
+		end
+
+		describe "otherId" do
+			it "is an identifier field" do
+				Field::IdentifierField.make.should be_csd_other_id
+			end
+
+			it "is not an oid" do
+				Field::IdentifierField.make.csd_oid!.should_not be_csd_other_id
 			end
 		end
 	end

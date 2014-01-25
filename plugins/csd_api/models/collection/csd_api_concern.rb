@@ -37,6 +37,10 @@ module Collection::CSDApiConcern
     yes_no_fields.find(&:csd_status?)
   end
 
+  def csd_other_ids
+    identifier_fields.select(&:csd_other_id?)
+  end
+
   private 
 
   def csd_contact_points_in(fields)

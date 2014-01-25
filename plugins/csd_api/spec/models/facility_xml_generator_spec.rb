@@ -82,4 +82,26 @@ describe FacilityXmlGenerator do
 			supermarkets_xml.text.should eq('Jumbo')
 		end
 	end
+
+	describe 'Other id generation' do
+		it '' do
+			oid_field = layer.identifier_fields.make.csd_oid!
+			other_id_field = layer.identifier_fields.make(config: { "context" => "DHIS", "agency" => "MOH" }.with_indifferent_access)
+
+			facility_properties[other_id_field.code] = 'my_moh_dhis_id'
+
+			generator = FacilityXmlGenerator.new collection
+
+			xml.tag!("root") do
+				generator.generate_other_ids xml, facility_properties
+			end
+
+			doc = Nokogiri.XML xml
+			doc.xpath("//otherID").length.should eq(1)
+
+			other_id = doc.xpath("//otherID[1]")
+			other_id.attr('code').value.should eq('my_moh_dhis_id')
+			other_id.attr('assigningAuthorityName').value.should eq('MOH')
+		end
+	end
 end
