@@ -10,6 +10,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MergedFormatter
 SimpleCov.start do
   add_filter "/spec/"
   add_filter "/.bundle/"
+  add_filter "/lib/treetop/command.rb"
 end
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
