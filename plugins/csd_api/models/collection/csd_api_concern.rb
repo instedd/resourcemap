@@ -1,62 +1,45 @@
 module Collection::CSDApiConcern
   extend ActiveSupport::Concern
 
-  def csd_oid_field
-    identifier_fields.find do |field|
-      (!field.metadata.blank?) && (entry(field.metadata,"CSDType") == "oid" )
-    end
+  def csd_oid
+    identifier_fields.find(&:csd_oid?)
   end
 
-  def facility_type_fields
-    select_one_fields.select do |field|
-      (!field.metadata.blank?) && (entry(field.metadata,"CSDType") == "facilityType" ) && has_entry(field.metadata, "OptionList")
-    end
+  def csd_coded_types
+    select_one_fields.select(&:csd_coded_type?)
   end
 
-  def facility_other_name_fields
-    text_fields.select do |field|
-     (!field.metadata.blank?) && (entry(field.metadata, "CSDType") == "otherName")
-    end
+  def csd_facility_types
+    select_one_fields.select(&:csd_facility_type?)
   end
 
-  def facility_address_fields
-    text_fields.select do |field|
-      (!field.metadata.blank?)  && (entry(field.metadata, "CSDType") == "address")
-    end.group_by{|field| entry(field.metadata, "CSDCode")}
+  def csd_other_names
+    text_fields.select(&:csd_other_name?)
   end
 
-  def facility_contact_point_fields
-    text_fields.select do |field|
-      (!field.metadata.blank?) && (entry(field.metadata, "CSDType") == "contactPoint")
-    end.group_by{|field| entry(field.metadata,"CSDCode")}
+  def csd_addresses
+    text_fields.select(&:csd_address?).group_by {|f| f.metadata_value_for("CSDCode") }
   end
 
-  def coded_type_for_contact_point_fields
-    select_one_fields.select do |field|
-      (!field.metadata.blank?) && (entry(field.metadata,"CSDType") == "contactPoint")
-    end.group_by{|field| entry(field.metadata,"CSDCode")}
+  def csd_text_contact_points
+    csd_contact_points_in text_fields
   end
 
-  def facility_language_fields
-    select_one_fields.select do |field|
-      (!field.metadata.blank?) && (entry(field.metadata, "CSDType") == "language")
-    end
+  def csd_select_one_contact_points
+    csd_contact_points_in select_one_fields
   end
 
-  def facility_status_field
-    yes_no_fields.find do |field|
-      (!field.metadata.blank?) && (entry(field.metadata, "CSDType") == "status")
-    end
+  def csd_languages
+    select_one_fields.select(&:csd_language?)
   end
 
-  def entry(metadata, metadata_key)
-    if has_entry(metadata, metadata_key)
-      metadata_entry = metadata.values.find{|element| element["key"] == metadata_key}
-      metadata_entry["value"]
-    end
+  def csd_status
+    yes_no_fields.find(&:csd_status?)
   end
 
-  def has_entry(metadata, metadata_key)
-    metadata.values.find{|element| element["key"] == metadata_key}
+  private 
+
+  def csd_contact_points_in(fields)
+    fields.select(&:csd_contact_point?).group_by {|f| f.metadata_value_for("CSDCode") }
   end
 end

@@ -1,28 +1,23 @@
   class FacilityXmlGenerator
     def initialize(collection)
-       # Used to generate 'otherId's
       @identifier_fields = collection.identifier_fields
 
-      # Used to generate 'facilityTypes'
-      @facility_type_fields = collection.facility_type_fields
+      @facility_type_fields = collection.csd_facility_types
 
-      # Used to generate 'otherNames'
-      @other_name_fields = collection.facility_other_name_fields
+      @other_name_fields = collection.csd_other_names
 
-      # Used to generate 'address'
-      @address_fields_by_type = collection.facility_address_fields
+      @address_fields_by_type = collection.csd_addresses
 
-      # Used to generate 'contactPoint'
-      @contact_point_fields_by_type = collection.facility_contact_point_fields
-      @coded_type_for_contact_point_fields_by_type = collection.coded_type_for_contact_point_fields
+      @contact_point_fields_by_type = collection.csd_text_contact_points
+      @coded_type_for_contact_point_fields_by_type = collection.csd_select_one_contact_points
 
-      # Used to generate 'language'
-      @language_fields = collection.facility_language_fields
+      @language_fields = collection.csd_languages
 
-      # Used to generate 'status' required
-      @status_field = collection.facility_status_field
+      @status_field = collection.csd_status
 
-      @oid_field = collection.csd_oid_field
+      @oid_field = collection.csd_oid
+
+      @coded_type_fields = collection.csd_coded_types
     end
 
     def generate_facility_xml(xml, facility)
@@ -31,7 +26,7 @@
       xml.tag!("facility", "oid" => generate_oid(facility, facility_properties)) do
         generate_identifiers(xml, facility_properties)
 
-        generate_facility_types(xml, facility_properties)
+        generate_coded_types(xml, facility_properties)
 
         xml.tag!("primaryName", facility["_source"]["name"])
 
@@ -54,6 +49,15 @@
 
       xml
     end
+
+    def generate_coded_types(xml, facility_properties)
+      @coded_type_fields.each do |f|
+        xml.tag!("codedType", "code" => facility_properties[f.code], "codingSchema" => f.metadata_value_for("codingSchema")) do
+          xml.text!(f.human_value_by_option_code(facility_properties[f.code]))
+        end
+      end
+    end
+
 
     def has_entry(metadata, metadata_key)
       metadata.values.find{|element| element["key"] == metadata_key}

@@ -16,6 +16,10 @@ class Field::SelectOneField < Field
     decode_option(option_label_or_code)
   end
 
+  def human_value_by_option_code(option_code)
+    human_value(decode(option_code))
+  end
+
   def api_value(value)
     option = config['options'].find { |o| o['id'] == value }
     return option ? option['code'] : value

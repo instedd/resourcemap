@@ -6,9 +6,17 @@ class CsdApi::Plugin < Plugin
     class: Collection,
     with: Collection::CSDApiConcern
 
+  extend_model \
+    class: Field,
+    with: Field::CSDApiConcern
+
+  #Why's this here?
+  extend_model \
+    class: Site,
+    with: Site::AlertConcerns
+
   routes {
     match 'collections/:collection_id/csd_api/get_directory_modifications' => 'csd_api#get_directory_modifications', :via => :post, as: :get_directory_modifications
     match 'collections/:collection_id/csd_api' => 'csd_api#index', :via => :get, :as => :csd_api_settings
-
   }
 end
