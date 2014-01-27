@@ -16,23 +16,40 @@ describe Field::CSDApiConcern do
 			f.should be_csd_oid
 		end
 
-		it "turns a field into part of a Contact element" do
-			f = Field::TextField.make.csd_contact! "A contact"
- 
-			f.should be_csd_contact
-			f.metadata_value_for("CSDCode").should eq("A contact")
-		end
+		describe "contact" do
+			it "turns a field into part of a Contact element" do
+				f = Field::TextField.make.csd_contact! "A contact"
+	 
+				f.should be_csd_contact
+				f.metadata_value_for("CSDCode").should eq("A contact")
+			end
 
-		it "turns a text field into a Contact's common name" do
-			f = Field::TextField.make.csd_contact_common_name! "A contact", "A name", "en"
+			describe "name" do
+				it "turns a text field into a Contact's common name" do
+					f = Field::TextField.make.csd_contact_common_name! "A contact", "A name", "en"
 
-			f.should be_csd_contact_common_name
-			f.metadata_value_for("language").should eq("en")
-		end
+					f.should be_csd_contact_common_name
+					f.metadata_value_for("language").should eq("en")
+				end
 
-		it "turns a text field into a Contact Name Surname" do
-			f = Field::TextField.make.csd_surname! "A contact", "A name"
-			f.should be_csd_surname
+				it "turns a text field into a Contact Name Surname" do
+					f = Field::TextField.make.csd_surname! "A contact", "A name"
+					f.should be_csd_surname
+				end
+			end
+
+			describe "address" do
+				it "turns a text field into a Contact Address Street Address Line" do 
+					f = Field::TextField.make.csd_address_line! "A contact", "An address", "streetLine"
+					f.should be_csd_address_line
+					f.metadata_value_for("CSDContactAddressLine").should eq("streetLine")
+				end
+
+				it "turns a text field into a child element of a Contact Address" do
+					f = Field::TextField.make.csd_contact_address! "A contact", "An address"
+					f.should be_csd_contact_address
+				end
+			end
 		end
 	end
 
@@ -130,6 +147,14 @@ describe Field::CSDApiConcern do
 				it "contact name surname" do
 					text_with_metadata({"CSDType" => "contact", "CSDCode" => "a_code", "CSDContactName" => "a_name", "CSDComponent" => "surname"}) do |f|
 						f.should be_csd_surname
+					end
+				end
+			end
+
+			describe "address" do
+				it "contact address top level" do
+					text_with_metadata({"CSDType" => "contact", "CSDCode" => "a_code", "CSDContactAddress" => "an_address"}) do |f|
+						f.should be_csd_contact_address
 					end
 				end
 			end

@@ -25,5 +25,17 @@ describe CSDContactMapping do
 			m = CSDContactMapping.new 'Contact', []
 			m.addresses.should be_empty
 		end
+
+		it 'has two addresses' do
+			address1 = Field::TextField.make.csd_contact_address! "Contact 1", "Address 1"
+			address2 = Field::TextField.make.csd_contact_address! "Contact 1", "Address 2"
+
+			m = CSDContactMapping.new("Contact 1", [address1, address2])
+
+			m.addresses.should have(2).items
+
+			m.addresses[0].class.should be(CSDAddressMapping)
+			m.addresses[1].class.should be(CSDAddressMapping)
+		end
 	end
 end

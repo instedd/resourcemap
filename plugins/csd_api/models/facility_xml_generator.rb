@@ -57,29 +57,36 @@ class FacilityXmlGenerator
   def generate_contacts(xml, facility_properties)
     #TODO: this should work automatically given the right object graph
     @contacts.each do |contact|
+      p "rendering contact"
       xml.tag!("contact") do
         xml.tag!("person") do
+          p "rendering person"
           contact.names.each do |name|
+            p "rendering name"
             xml.tag!("name") do
               name.common_names.each do |common_name|
+                p "rendering common name"
                 xml.tag!("commonName", "language" => common_name.language) do
                   xml.text!(facility_properties[common_name.field.code])
                 end                
               end
               xml.tag!("forename") do
+                p "rendering forename"
                 xml.text!(facility_properties[name.forename.code])
               end
               xml.tag!("surname") do
+                p "rendering surname"
                 xml.text!(facility_properties[name.surname.code])
               end
             end
           end
 
+          p "rendering address"
           contact.addresses.each do |address|
             xml.tag!("address") do
               address.address_lines.each do |address_line|
                 xml.tag!("addressLine", "component" => address_line.component) do
-                  xml.text!(address_line.text)
+                  xml.text!(facility_properties[address_line.field.code])
                 end
               end
             end

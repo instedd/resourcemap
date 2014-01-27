@@ -113,22 +113,42 @@ describe FacilityXmlGenerator do
 			andrew = {
 				common_name: layer.text_fields.make.csd_contact_common_name!("Contact 1", "Name 1", "en"),
 				forename: layer.text_fields.make.csd_forename!("Contact 1", "Name 1"),
-				surname: layer.text_fields.make.csd_surname!("Contact 1", "Name 1")
+				surname: layer.text_fields.make.csd_surname!("Contact 1", "Name 1"),
+				street_address: layer.text_fields.make.csd_address_line!("Contact 1", "Address 1", "streetAddress"),
+				city: layer.text_fields.make.csd_address_line!("Contact 1", "Address 1", "city"),
+				state_province: layer.text_fields.make.csd_address_line!("Contact 1", "Address 1", "stateProvince"),
+				country: layer.text_fields.make.csd_address_line!("Contact 1", "Address 1", "country"),
+				postal_code: layer.text_fields.make.csd_address_line!("Contact 1", "Address 1", "postalCode")
 			}
 
 			julio = {
 				common_name: layer.text_fields.make.csd_contact_common_name!("Contact 2", "Name 1", "en"),
 				forename: layer.text_fields.make.csd_forename!("Contact 2", "Name 1"),
-				surname: layer.text_fields.make.csd_surname!("Contact 2", "Name 1")
+				surname: layer.text_fields.make.csd_surname!("Contact 2", "Name 1"),
+				street_address: layer.text_fields.make.csd_address_line!("Contact 2", "Address 1", "streetAddress"),
+				city: layer.text_fields.make.csd_address_line!("Contact 2", "Address 1", "city"),
+				state_province: layer.text_fields.make.csd_address_line!("Contact 2", "Address 1", "stateProvince"),
+				country: layer.text_fields.make.csd_address_line!("Contact 2", "Address 1", "country"),
+				postal_code: layer.text_fields.make.csd_address_line!("Contact 2", "Address 1", "postalCode")
 			}
 
 			facility_properties[andrew[:common_name].code] = "Anderson, Andrew"
 			facility_properties[andrew[:forename].code] = "Andrew"
 			facility_properties[andrew[:surname].code] = "Anderson"
+			facility_properties[andrew[:street_address].code] = "2222 19th Ave SW"
+			facility_properties[andrew[:city].code] = "Santa Fe"
+			facility_properties[andrew[:state_province].code] = "NM"
+			facility_properties[andrew[:country].code] = "USA"
+			facility_properties[andrew[:postal_code].code] = "87124"
 
 			facility_properties[julio[:common_name].code] = "Juarez, Julio"
 			facility_properties[julio[:forename].code] = "Julio"
 			facility_properties[julio[:surname].code] = "Juarez"
+			facility_properties[julio[:street_address].code] = "2222 19th Ave SW"
+			facility_properties[julio[:city].code] = "Santa Fe"
+			facility_properties[julio[:state_province].code] = "NM"
+			facility_properties[julio[:country].code] = "USA"
+			facility_properties[julio[:postal_code].code] = "87124"
 
 			generator = FacilityXmlGenerator.new collection
 
@@ -137,8 +157,6 @@ describe FacilityXmlGenerator do
 			end
 
 			doc = Nokogiri.XML xml
-
-			binding.pry
 
 			doc.xpath("//contact").length.should eq(2)
 

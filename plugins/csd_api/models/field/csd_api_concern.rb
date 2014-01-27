@@ -56,6 +56,23 @@ module Field::CSDApiConcern
     self
   end
 
+  def csd_address_line!(contact_code, address_code, component)
+    put_in_metadata "CSDType", "contact"
+    put_in_metadata "CSDCode", contact_code
+    put_in_metadata "CSDContactAddress", address_code
+    put_in_metadata "CSDContactAddressLine", component
+    save!
+    self
+  end
+
+  def csd_contact_address!(contact_code, address_code)
+    put_in_metadata "CSDType", "contact"
+    put_in_metadata "CSDCode", contact_code
+    put_in_metadata "CSDContactAddress", address_code
+    save!
+    self
+  end
+
   def csd_status?
   	csd_declared_type? "status"
   end
@@ -121,6 +138,14 @@ module Field::CSDApiConcern
   def csd_surname?
     in_metadata?("CSDContactName") &&
     metadata_value_for("CSDComponent") == "surname"
+  end
+
+  def csd_address_line?
+    in_metadata?("CSDContactAddressLine")
+  end
+
+  def csd_contact_address?
+    in_metadata?("CSDContactAddress")
   end
 
   def csd_type
