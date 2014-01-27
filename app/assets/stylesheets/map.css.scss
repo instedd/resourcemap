@@ -152,7 +152,7 @@
 }
 
 .i18g-snapshot {
-  margin-top: 0px !important;
+  margin-top: -2px !important;
 }
 
 .w30 .active {
@@ -165,6 +165,11 @@
 
 .tablescroll div.snapshot_on {
   margin: 0;
+  padding:0;
+}
+
+td.with_snapshot {
+  vertical-align: bottom;
 }
 
 .new_snapshot .field_with_errors {

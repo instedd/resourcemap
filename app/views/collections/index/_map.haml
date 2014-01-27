@@ -10,18 +10,16 @@
       %tbody
         <!-- ko foreach: collections -->
         %tr
-          %td
+          %td{ko(css: {with_snapshot: 'currentSnapshot'})}
             %input{ko(checked: :checked), type: :checkbox}
             %a{ko(text: :name, attr: {title: :name}, click: '$root.enterCollection')}"
             <!-- ko if: currentSnapshot -->
             .snapshot_on.right
               .i18g-snapshot
-              %button.farrow{ko(click: '$root.enterCollection'), type: :button}
+              / %button.farrow{ko(click: '$root.enterCollection'), type: :button}
             .clear
             <!-- /ko -->
-            <!-- ko if: !currentSnapshot -->
             %button.farrow{ko(click: '$root.enterCollection'), type: :button}
-            <!-- /ko -->
         <!-- /ko -->
     %br{:clear => "all"}/
 

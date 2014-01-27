@@ -31,7 +31,7 @@
   }
 
   div {
-    padding:4px 8px;
+    padding:6px 8px;
     margin:5px 0 0 0;
 
     label {
@@ -72,10 +72,23 @@
   }
 }
 
-.left.panel.wp30 .tablescroll div label { width:130px; }
-.left.panel.wp30 .tablescroll div input { width:135px; }
-.left.panel.wp50 .tablescroll div label { width:250px; }
-.left.panel.wp50 .tablescroll div input { width:210px; }
+.left.panel.wp30 .tablescroll div {
+  label {
+    width:130px;
+  }
+  input {
+    width:135px;
+  }
+}
+
+.left.panel.wp50 .tablescroll div {
+  label {
+    width:250px;
+  }
+  input {
+    width:210px;
+  }
+}
 
 .tablescroll .GralTable tr:nth-child(2) { background:none !important }
 .tablescroll .GralTable tr.active td { background:#d0d0d0 }
