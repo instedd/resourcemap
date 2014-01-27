@@ -18,6 +18,8 @@ class FacilityXmlGenerator
     @oid_field = collection.csd_oid
 
     @coded_type_fields = collection.csd_coded_types
+
+    @contacts = collection.csd_contacts
   end
 
   def generate_facility_xml(xml, facility)
@@ -34,6 +36,8 @@ class FacilityXmlGenerator
 
       generate_addresses(xml, facility_properties)
 
+      generate_contacts(xml, facility_properties)
+
       xml.tag!("geocode") do
         xml.tag!("latitude", facility["_source"]["location"]["lat"])
         xml.tag!("longitude", facility["_source"]["location"]["lon"])
@@ -48,6 +52,41 @@ class FacilityXmlGenerator
     end
 
     xml
+  end
+
+  def generate_contacts(xml, facility_properties)
+    #TODO: this should work automatically given the right object graph
+    @contacts.each do |contact|
+      xml.tag!("contact") do
+        xml.tag!("person") do
+          contact.names.each do |name|
+            xml.tag!("name") do
+              name.common_names.each do |common_name|
+                xml.tag!("commonName", "language" => common_name.language) do
+                  xml.text!(facility_properties[common_name.field.code])
+                end                
+              end
+              xml.tag!("forename") do
+                xml.text!(facility_properties[name.forename.code])
+              end
+              xml.tag!("surname") do
+                xml.text!(facility_properties[name.surname.code])
+              end
+            end
+          end
+
+          contact.addresses.each do |address|
+            xml.tag!("address") do
+              address.address_lines.each do |address_line|
+                xml.tag!("addressLine", "component" => address_line.component) do
+                  xml.text!(address_line.text)
+                end
+              end
+            end
+          end
+        end
+      end
+    end
   end
 
   def generate_coded_types(xml, facility_properties)

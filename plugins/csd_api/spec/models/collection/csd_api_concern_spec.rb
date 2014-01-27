@@ -60,4 +60,29 @@ describe Collection::CSDApiConcern do
 			other_ids[0].id.should eq(f.id)
 		end
 	end
+
+	describe 'csd_contacts' do
+		it '' do
+			f1 = layer.text_fields.make.csd_contact! "Contact 1"
+			f2 = layer.text_fields.make.csd_contact! "Contact 1"
+			f3 = layer.text_fields.make.csd_contact! "Contact 1"
+
+			g1 = layer.text_fields.make.csd_contact! "Contact 2"
+			g2 = layer.text_fields.make.csd_contact! "Contact 2"
+			g3 = layer.text_fields.make.csd_contact! "Contact 2"
+
+			contacts = collection.csd_contacts
+
+			contacts.should have(2).items
+
+			contacts[0].class.should be(CSDContactMapping)
+			contacts[1].class.should be(CSDContactMapping)
+
+			contacts[0].contact.should eq("Contact 1")
+			contacts[0].all_components.map(&:id).should include(f1.id, f2.id, f3.id)
+
+			contacts[1].contact.should eq("Contact 2")
+			contacts[1].all_components.map(&:id).should include(g1.id, g2.id, g3.id)
+		end
+	end
 end

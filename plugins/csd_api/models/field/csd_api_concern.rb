@@ -14,6 +14,48 @@ module Field::CSDApiConcern
   	self
   end
 
+  def csd_contact!(contact_code)
+    put_in_metadata "CSDType", "contact"
+    put_in_metadata "CSDCode", contact_code
+    save!
+    self
+  end
+
+  def csd_contact_common_name!(contact_code, contact_name, language)
+    put_in_metadata "CSDType", "contact"
+    put_in_metadata "CSDCode", contact_code
+    put_in_metadata "CSDContactName", contact_name
+    put_in_metadata "CSDComponent", "commonName"
+    put_in_metadata "language", language
+    save!
+    self
+  end
+
+  def csd_contact_name!(contact_code, contact_name)
+    put_in_metadata "CSDType", "contact"
+    put_in_metadata "CSDCode", contact_code
+    put_in_metadata "CSDContactName", contact_name
+    save!
+    self
+  end
+
+  def csd_forename!(contact_code, contact_name)
+    csd_contact_name_child! contact_code, contact_name, "forename"
+  end
+
+  def csd_surname!(contact_code, contact_name)
+    csd_contact_name_child! contact_code, contact_name, "surname"
+  end
+
+  def csd_contact_name_child!(contact_code, contact_name, element_name)
+    put_in_metadata "CSDType", "contact"
+    put_in_metadata "CSDCode", contact_code
+    put_in_metadata "CSDContactName", contact_name
+    put_in_metadata "CSDComponent", element_name
+    save!
+    self
+  end
+
   def csd_status?
   	csd_declared_type? "status"
   end
@@ -47,11 +89,38 @@ module Field::CSDApiConcern
   end
 
   def csd_other_id?
-    self.is_a?(Field::IdentifierField) && !self.csd_oid?
+    self.is_a?(Field::IdentifierField) && !csd_oid?
   end
 
   def csd_declared_type?(type)
   	!self.metadata.blank? && csd_type == type
+  end
+
+  def csd_contact?
+    csd_declared_type?("contact") && in_metadata?("CSDCode")
+  end
+
+  def csd_contact_name?
+    csd_declared_type?("contact") && 
+    in_metadata?("CSDCode") &&
+    in_metadata?("CSDContactName")
+  end
+
+  def csd_contact_common_name?
+    csd_declared_type?("contact") && 
+    in_metadata?("CSDCode") &&
+    metadata_value_for("CSDComponent") == "commonName" &&
+    in_metadata?("language")
+  end
+
+  def csd_forename?
+    in_metadata?("CSDContactName") &&
+    metadata_value_for("CSDComponent") == "forename"
+  end
+
+  def csd_surname?
+    in_metadata?("CSDContactName") &&
+    metadata_value_for("CSDComponent") == "surname"
   end
 
   def csd_type
@@ -59,8 +128,8 @@ module Field::CSDApiConcern
   end
 
   #These methods should either:
-  # A) go away once we change the data structure to represent metadata, or
-	# B) at least move to Field::Field
+  # A) go away once we change the data structure to represent metadata, or at least
+	# B) move to Field::Field
   def metadata_value_for(metadata_key)
     if in_metadata?(metadata_key)
       metadata_entry = self.metadata.values.find{|element| element["key"] == metadata_key}

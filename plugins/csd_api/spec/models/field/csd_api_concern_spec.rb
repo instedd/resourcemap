@@ -6,20 +6,33 @@ describe Field::CSDApiConcern do
 
 	describe "configuring fields as CSD types" do
 		it "turns a select one field into a CSD coded type" do
-			f = Field::SelectOneField.make
-
-			f.csd_coded_type! "fruits"
-
+			f = Field::SelectOneField.make.csd_coded_type! "fruits"
 			f.should be_csd_coded_type
 			f.metadata_value_for("codingSchema").should eq("fruits")
 		end
 
 		it "turns a identifier field into a CSD OID" do
-			f = Field::IdentifierField.make
-
-			f.csd_oid!
-
+			f = Field::IdentifierField.make.csd_oid!
 			f.should be_csd_oid
+		end
+
+		it "turns a field into part of a Contact element" do
+			f = Field::TextField.make.csd_contact! "A contact"
+ 
+			f.should be_csd_contact
+			f.metadata_value_for("CSDCode").should eq("A contact")
+		end
+
+		it "turns a text field into a Contact's common name" do
+			f = Field::TextField.make.csd_contact_common_name! "A contact", "A name", "en"
+
+			f.should be_csd_contact_common_name
+			f.metadata_value_for("language").should eq("en")
+		end
+
+		it "turns a text field into a Contact Name Surname" do
+			f = Field::TextField.make.csd_surname! "A contact", "A name"
+			f.should be_csd_surname
 		end
 	end
 
@@ -91,6 +104,34 @@ describe Field::CSDApiConcern do
 
 			it "is not an oid" do
 				Field::IdentifierField.make.csd_oid!.should_not be_csd_other_id
+			end
+		end
+
+		describe "contact" do
+			it "contact top level" do
+				text_with_metadata({"CSDType" => "contact", "CSDCode" => "a_code"}) do |f|
+					f.should be_csd_contact
+				end
+			end
+
+			describe "name" do
+				it "contact name top level" do
+					text_with_metadata({"CSDType" => "contact", "CSDCode" => "a_code", "CSDContactName" => "a_name"}) do |f|
+						f.should be_csd_contact_name
+					end
+				end
+
+				it "contact name forename" do
+					text_with_metadata({"CSDType" => "contact", "CSDCode" => "a_code", "CSDContactName" => "a_name", "CSDComponent" => "forename"}) do |f|
+						f.should be_csd_forename
+					end
+				end
+
+				it "contact name surname" do
+					text_with_metadata({"CSDType" => "contact", "CSDCode" => "a_code", "CSDContactName" => "a_name", "CSDComponent" => "surname"}) do |f|
+						f.should be_csd_surname
+					end
+				end
 			end
 		end
 	end

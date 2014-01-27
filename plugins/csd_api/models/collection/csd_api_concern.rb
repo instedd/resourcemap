@@ -41,6 +41,12 @@ module Collection::CSDApiConcern
     identifier_fields.select(&:csd_other_id?)
   end
 
+  def csd_contacts
+    fields.select(&:csd_contact?)
+          .group_by{|field| field.metadata_value_for("CSDCode")}
+          .map{|contact| CSDContactMapping.new(contact[0], contact[1])}
+  end
+
   private 
 
   def csd_contact_points_in(fields)
