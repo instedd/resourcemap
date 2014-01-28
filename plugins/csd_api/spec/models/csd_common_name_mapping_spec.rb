@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CSDCommonNameMapping do
 	it '' do
-		common_name_en = Field::TextField.make.csd_contact_common_name! "Contact 1", "Name 1", "en"
+		common_name_en = Field::TextField.make.csd_common_name! "en"
 		
 		m = CSDCommonNameMapping.new common_name_en
 

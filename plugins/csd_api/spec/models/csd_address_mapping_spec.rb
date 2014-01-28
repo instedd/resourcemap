@@ -8,10 +8,8 @@ describe CSDAddressMapping do
 		end
 
 		it 'has two address lines' do
-			#Bad smell, we shouldn't have to define the contact, so that we can reuse addresses 
-			#below different kinds of elements
-			address_line1 = Field::TextField.make.csd_address_line!("Contact 1", "Address 1", "Component1")
-			address_line2 = Field::TextField.make.csd_address_line!("Contact 1", "Address 1", "Component2")
+			address_line1 = Field::TextField.make.csd_address_line!("Component1")
+			address_line2 = Field::TextField.make.csd_address_line!("Component2")
 
 			m = CSDAddressMapping.new 'An address', [address_line1, address_line2]
 			m.address_lines.should have(2).items

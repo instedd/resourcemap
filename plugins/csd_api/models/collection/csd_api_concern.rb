@@ -18,7 +18,7 @@ module Collection::CSDApiConcern
   end
 
   def csd_addresses
-    text_fields.select(&:csd_address?).group_by {|f| f.metadata_value_for("CSDCode") }
+    text_fields.select{|f| f.csd_address?(Field::CSDApiConcern::csd_facility_tag)}.group_by{|f| f.metadata_value_for("CSDCode") }
   end
 
   def csd_text_contact_points

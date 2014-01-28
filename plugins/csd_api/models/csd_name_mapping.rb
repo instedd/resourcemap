@@ -11,7 +11,7 @@ class CSDNameMapping
 
 		@forename = fields.find(&:csd_forename?)
 		@surname = fields.find(&:csd_surname?)
-		@common_names = fields.select(&:csd_contact_common_name?).map{|f| CSDCommonNameMapping.new(f)}
+		@common_names = fields.select(&:csd_common_name?).map{|f| CSDCommonNameMapping.new(f)}
 	end
 
 	def honorific

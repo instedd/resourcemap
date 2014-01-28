@@ -242,22 +242,6 @@ describe CsdApiController do
       other_names.last["language"].should eq "spanish"
       other_names.last["commonName"].should eq "Sitio A"
 
-      # Should include 'address', one for each type
-      addresses = facility["address"]
-      addresses.length.should eq(2)
-
-      fiscal_address = addresses.first
-      fiscal_address["type"].should eq("FiscalAddress")
-      fiscal_address["addressLine"].length.should eq(2)
-      fiscal_address["addressLine"][0].should eq("Buenos Aires")
-      fiscal_address["addressLine"][1].should eq("Balcarce 50")
-
-      real_address = addresses.last
-      real_address["type"].should eq("RealAddress")
-      real_address["addressLine"].length.should eq(2)
-      real_address["addressLine"][0].should eq("Vicente Lopez")
-      real_address["addressLine"][1].should eq("Bartolome Cruz 1818")
-
       # Should include 'geocode'
       facility["geocode"]["latitude"].should eq("10.0")
       facility["geocode"]["longitude"].should eq("20.0")

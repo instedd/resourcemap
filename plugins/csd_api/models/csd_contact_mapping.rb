@@ -9,12 +9,12 @@ class CSDContactMapping
 		@contact = contact_code
 		@all_components = fields
 
-		@names = fields.select(&:csd_contact_name?)
-										.group_by{|f| f.metadata_value_for("CSDContactName")}
+		@names = fields.select{|f| f.csd_name?(Field::CSDApiConcern::csd_contact_tag)}
+										.group_by{|f| f.csd_name_element}
 										.map{|name| CSDNameMapping.new(name[0], name[1])}
 
-		@addresses = fields.select(&:csd_contact_address?)
-												.group_by{|f| f.metadata_value_for("CSDContactAddress")}
+		@addresses = fields.select{|f| f.csd_address?(Field::CSDApiConcern::csd_contact_tag)}
+												.group_by{|f| f.csd_address_element}
 												.map{|address| CSDAddressMapping.new(address[0], address[1])}
 	end
 end

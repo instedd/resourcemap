@@ -4,6 +4,6 @@ class CSDAddressLineMapping
 
 	def initialize(field)
 		@field = field
-		@component = field.metadata_value_for "CSDContactAddressLine"
+		@component = field.metadata_value_for(Field::CSDApiConcern::csd_address_line_tag)
 	end
 end

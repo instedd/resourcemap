@@ -21,61 +21,63 @@ module Field::CSDApiConcern
     self
   end
 
-  def csd_contact!(contact_code)
+  def csd_contact(contact_code)
     put_in_metadata "CSDType", "contact"
     put_in_metadata "CSDCode", contact_code
+    self
+  end
+
+  def csd_contact!(contact_code)
+    csd_contact(contact_code)
     save!
     self
   end
 
-  def csd_contact_common_name!(contact_code, contact_name, language)
-    put_in_metadata "CSDType", "contact"
-    put_in_metadata "CSDCode", contact_code
-    put_in_metadata "CSDContactName", contact_name
-    put_in_metadata "CSDComponent", "commonName"
+  def csd_name(name_code, parent_tag)
+    put_in_metadata Field::CSDApiConcern::csd_name_tag, name_code
+    put_in_metadata "CSDChildOf", parent_tag
+    self
+  end
+
+  def csd_name!(name_code, parent_tag)
+    csd_name(name_code, parent_tag)
+    save!
+    self
+  end
+
+  def csd_common_name!(language)
+    put_in_metadata Field::CSDApiConcern::csd_common_name_tag, "commonName"
     put_in_metadata "language", language
     save!
     self
   end
 
-  def csd_contact_name!(contact_code, contact_name)
-    put_in_metadata "CSDType", "contact"
-    put_in_metadata "CSDCode", contact_code
-    put_in_metadata "CSDContactName", contact_name
+  def csd_forename!
+    put_in_metadata Field::CSDApiConcern::csd_forename_tag, ''
     save!
     self
   end
 
-  def csd_forename!(contact_code, contact_name)
-    csd_contact_name_child! contact_code, contact_name, "forename"
-  end
-
-  def csd_surname!(contact_code, contact_name)
-    csd_contact_name_child! contact_code, contact_name, "surname"
-  end
-
-  def csd_contact_name_child!(contact_code, contact_name, element_name)
-    put_in_metadata "CSDType", "contact"
-    put_in_metadata "CSDCode", contact_code
-    put_in_metadata "CSDContactName", contact_name
-    put_in_metadata "CSDComponent", element_name
+  def csd_surname!
+    put_in_metadata Field::CSDApiConcern::csd_surname_tag, ""
     save!
     self
   end
 
-  def csd_address_line!(contact_code, address_code, component)
-    put_in_metadata "CSDType", "contact"
-    put_in_metadata "CSDCode", contact_code
-    put_in_metadata "CSDContactAddress", address_code
-    put_in_metadata "CSDContactAddressLine", component
+  def csd_address(address_code, parent_tag)
+    put_in_metadata Field::CSDApiConcern::csd_address_tag, address_code
+    put_in_metadata "CSDChildOf", parent_tag
+    self
+  end
+
+  def csd_address!(address_code, parent_tag)
+    csd_address(address_code, parent_tag)
     save!
     self
   end
 
-  def csd_contact_address!(contact_code, address_code)
-    put_in_metadata "CSDType", "contact"
-    put_in_metadata "CSDCode", contact_code
-    put_in_metadata "CSDContactAddress", address_code
+  def csd_address_line!(component)
+    put_in_metadata Field::CSDApiConcern::csd_address_line_tag, component
     save!
     self
   end
@@ -119,8 +121,9 @@ module Field::CSDApiConcern
   	csd_declared_type? "contactPoint"
   end
 
-  def csd_address?
-  	csd_declared_type? "address"
+  def csd_address?(parent_tag)
+    in_metadata?(Field::CSDApiConcern::csd_address_tag) &&
+    metadata_value_for("CSDChildOf") == parent_tag
   end
 
   def csd_other_name?
@@ -156,31 +159,26 @@ module Field::CSDApiConcern
     csd_declared_type?("contact") && in_metadata?("CSDCode")
   end
 
-  def csd_contact_name?
-    csd_declared_type?("contact") && 
-    in_metadata?("CSDCode") &&
-    in_metadata?("CSDContactName")
+  def csd_name?(parent_tag)
+    in_metadata?(Field::CSDApiConcern::csd_name_tag) &&
+    metadata_value_for("CSDChildOf") == parent_tag
   end
 
-  def csd_contact_common_name?
-    csd_declared_type?("contact") && 
-    in_metadata?("CSDCode") &&
-    metadata_value_for("CSDComponent") == "commonName" &&
+  def csd_common_name?
+    in_metadata?(Field::CSDApiConcern::csd_common_name_tag) &&
     in_metadata?("language")
   end
 
   def csd_forename?
-    in_metadata?("CSDContactName") &&
-    metadata_value_for("CSDComponent") == "forename"
+    in_metadata?(Field::CSDApiConcern::csd_forename_tag)
   end
 
   def csd_surname?
-    in_metadata?("CSDContactName") &&
-    metadata_value_for("CSDComponent") == "surname"
+    in_metadata?(Field::CSDApiConcern::csd_surname_tag)
   end
 
   def csd_address_line?
-    in_metadata?("CSDContactAddressLine")
+    in_metadata?(Field::CSDApiConcern::csd_address_line_tag)
   end
 
   def csd_contact_address?
@@ -199,20 +197,62 @@ module Field::CSDApiConcern
   	metadata_value_for "CSDType"
   end
 
-  def self.csd_organization_tag
-    "CSDOrganization"
-  end
-
+  # CSD named elements
   def csd_organization_element
     metadata_value_for Field::CSDApiConcern::csd_organization_tag
+  end
+
+  def csd_service_element
+    metadata_value_for Field::CSDApiConcern::csd_service_tag
+  end
+
+  def csd_name_element
+    metadata_value_for Field::CSDApiConcern::csd_name_tag
+  end
+
+  def csd_address_element
+    metadata_value_for Field::CSDApiConcern::csd_address_tag
+  end
+
+  # CSD Tag inventory, refactor so its accessed as CSDTags::organization, CSDTags::service, etc
+  def self.csd_facility_tag
+    "CSDFacility"
+  end
+
+  def self.csd_organization_tag
+    "CSDOrganization"
   end
 
   def self.csd_service_tag
     "CSDService"
   end
 
-  def csd_service_element
-    metadata_value_for Field::CSDApiConcern::csd_service_tag
+  def self.csd_common_name_tag
+    "CSDCommonName"
+  end
+
+  def self.csd_surname_tag
+    "CSDSurname"
+  end
+
+  def self.csd_name_tag
+    "CSDName"
+  end
+
+  def self.csd_forename_tag
+    "CSDForename"
+  end
+
+  def self.csd_address_tag
+    "CSDAddress"
+  end
+
+  def self.csd_address_line_tag
+    "CSDAddressLine"
+  end
+
+  def self.csd_contact_tag
+    "CSDContact"
   end
 
   #These methods should either:

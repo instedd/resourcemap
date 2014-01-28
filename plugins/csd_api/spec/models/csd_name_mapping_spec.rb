@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe CSDNameMapping do
 	it '' do
-		forename = Field::TextField.make.csd_forename! "Contact 1", "Name 1"
-		surname = Field::TextField.make.csd_surname! "Contact 1", "Name 1"
-		common_name_en = Field::TextField.make.csd_contact_common_name! "Contact 1", "Name 1", "en"
-		common_name_es = Field::TextField.make.csd_contact_common_name! "Contact 1", "Name 1", "es"
+		forename = Field::TextField.make.csd_forename!
+		surname = Field::TextField.make.csd_surname!
+		common_name_en = Field::TextField.make.csd_common_name! "en"
+		common_name_es = Field::TextField.make.csd_common_name! "es"
 
 		m = CSDNameMapping.new "Name 1", [forename, surname, common_name_en, common_name_es]
 

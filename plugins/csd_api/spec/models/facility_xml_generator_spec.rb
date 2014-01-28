@@ -111,25 +111,25 @@ describe FacilityXmlGenerator do
 	describe 'Contact generation' do
 		it '' do
 			andrew = {
-				common_name: layer.text_fields.make.csd_contact_common_name!("Contact 1", "Name 1", "en"),
-				forename: layer.text_fields.make.csd_forename!("Contact 1", "Name 1"),
-				surname: layer.text_fields.make.csd_surname!("Contact 1", "Name 1"),
-				street_address: layer.text_fields.make.csd_address_line!("Contact 1", "Address 1", "streetAddress"),
-				city: layer.text_fields.make.csd_address_line!("Contact 1", "Address 1", "city"),
-				state_province: layer.text_fields.make.csd_address_line!("Contact 1", "Address 1", "stateProvince"),
-				country: layer.text_fields.make.csd_address_line!("Contact 1", "Address 1", "country"),
-				postal_code: layer.text_fields.make.csd_address_line!("Contact 1", "Address 1", "postalCode")
+				common_name: layer.text_fields.make.csd_contact("Contact 1").csd_name("Name 1", Field::CSDApiConcern::csd_contact_tag).csd_common_name!("en"),
+				forename: layer.text_fields.make.csd_contact("Contact 1").csd_name("Name 1", Field::CSDApiConcern::csd_contact_tag).csd_forename!,
+				surname: layer.text_fields.make.csd_contact("Contact 1").csd_name("Name 1", Field::CSDApiConcern::csd_contact_tag).csd_surname!,
+				street_address: layer.text_fields.make.csd_contact("Contact 1").csd_address("Address 1", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("streetAddress"),
+				city: layer.text_fields.make.csd_contact("Contact 1").csd_address("Address 1", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("city"),
+				state_province: layer.text_fields.make.csd_contact("Contact 1").csd_address("Address 1", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("stateProvince"),
+				country: layer.text_fields.make.csd_contact("Contact 1").csd_address("Address 1", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("country"),
+				postal_code: layer.text_fields.make.csd_contact("Contact 1").csd_address("Address 1", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("postalCode")
 			}
 
 			julio = {
-				common_name: layer.text_fields.make.csd_contact_common_name!("Contact 2", "Name 1", "en"),
-				forename: layer.text_fields.make.csd_forename!("Contact 2", "Name 1"),
-				surname: layer.text_fields.make.csd_surname!("Contact 2", "Name 1"),
-				street_address: layer.text_fields.make.csd_address_line!("Contact 2", "Address 1", "streetAddress"),
-				city: layer.text_fields.make.csd_address_line!("Contact 2", "Address 1", "city"),
-				state_province: layer.text_fields.make.csd_address_line!("Contact 2", "Address 1", "stateProvince"),
-				country: layer.text_fields.make.csd_address_line!("Contact 2", "Address 1", "country"),
-				postal_code: layer.text_fields.make.csd_address_line!("Contact 2", "Address 1", "postalCode")
+				common_name: layer.text_fields.make.csd_contact("Contact 2").csd_name("Name 1", Field::CSDApiConcern::csd_contact_tag).csd_common_name!("en"),
+				forename: layer.text_fields.make.csd_contact("Contact 2").csd_name("Name 1", Field::CSDApiConcern::csd_contact_tag).csd_forename!,
+				surname: layer.text_fields.make.csd_contact("Contact 2").csd_name("Name 1", Field::CSDApiConcern::csd_contact_tag).csd_surname!,
+				street_address: layer.text_fields.make.csd_contact("Contact 2").csd_address("Address 1", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("streetAddress"),
+				city: layer.text_fields.make.csd_contact("Contact 2").csd_address("Address 1", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("city"),
+				state_province: layer.text_fields.make.csd_contact("Contact 2").csd_address("Address 1", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("stateProvince"),
+				country: layer.text_fields.make.csd_contact("Contact 2").csd_address("Address 1", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("country"),
+				postal_code: layer.text_fields.make.csd_contact("Contact 2").csd_address("Address 1", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("postalCode")
 			}
 
 			facility_properties[andrew[:common_name].code] = "Anderson, Andrew"

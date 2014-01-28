@@ -8,8 +8,8 @@ describe CSDContactMapping do
 		end
 
 		it 'has two names' do
-			name1 = Field::TextField.make.csd_contact_name! "Contact 1", "Name 1"
-			name2 = Field::TextField.make.csd_contact_name! "Contact 1", "Name 2"
+			name1 = Field::TextField.make.csd_name! "Name 1", Field::CSDApiConcern::csd_contact_tag
+			name2 = Field::TextField.make.csd_name! "Name 2", Field::CSDApiConcern::csd_contact_tag
 
 			m = CSDContactMapping.new "Contact 1", [name1, name2]
 
@@ -27,8 +27,8 @@ describe CSDContactMapping do
 		end
 
 		it 'has two addresses' do
-			address1 = Field::TextField.make.csd_contact_address! "Contact 1", "Address 1"
-			address2 = Field::TextField.make.csd_contact_address! "Contact 1", "Address 2"
+			address1 = Field::TextField.make.csd_address! "Address 1", Field::CSDApiConcern::csd_contact_tag
+			address2 = Field::TextField.make.csd_address! "Address 2", Field::CSDApiConcern::csd_contact_tag
 
 			m = CSDContactMapping.new("Contact 1", [address1, address2])
 

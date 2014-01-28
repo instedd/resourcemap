@@ -21,6 +21,18 @@ describe Field::CSDApiConcern do
 			f.should be_csd_oid("AnElementType")
 		end
 
+		it "turns a text field into a CSD name" do
+			f = Field::TextField.make.csd_name!("a name", "parentTag")
+			f.should be_csd_name("parentTag")
+			f.metadata_value_for(Field::CSDApiConcern::csd_name_tag).should eq("a name")
+		end
+
+		it "turns a field into a CSD Address" do
+			f = Field::TextField.make.csd_address!("an address", "parentTag")
+			f.should be_csd_address("parentTag")
+			f.metadata_value_for(Field::CSDApiConcern::csd_address_tag).should eq("an address")
+		end
+
 		describe "contact" do
 			it "turns a field into part of a Contact element" do
 				f = Field::TextField.make.csd_contact! "A contact"
@@ -30,29 +42,24 @@ describe Field::CSDApiConcern do
 			end
 
 			describe "name" do
-				it "turns a text field into a Contact's common name" do
-					f = Field::TextField.make.csd_contact_common_name! "A contact", "A name", "en"
+				it "turns a text field into a common name" do
+					f = Field::TextField.make.csd_common_name!("en")
 
-					f.should be_csd_contact_common_name
+					f.should be_csd_common_name
 					f.metadata_value_for("language").should eq("en")
 				end
 
-				it "turns a text field into a Contact Name Surname" do
-					f = Field::TextField.make.csd_surname! "A contact", "A name"
+				it "turns a text field into a Surname" do
+					f = Field::TextField.make.csd_surname!
 					f.should be_csd_surname
 				end
 			end
 
 			describe "address" do
-				it "turns a text field into a Contact Address Street Address Line" do 
-					f = Field::TextField.make.csd_address_line! "A contact", "An address", "streetLine"
+				it "turns a text field into an Address Line" do 
+					f = Field::TextField.make.csd_address_line! "streetLine"
 					f.should be_csd_address_line
-					f.metadata_value_for("CSDContactAddressLine").should eq("streetLine")
-				end
-
-				it "turns a text field into a child element of a Contact Address" do
-					f = Field::TextField.make.csd_contact_address! "A contact", "An address"
-					f.should be_csd_contact_address
+					f.metadata_value_for(Field::CSDApiConcern::csd_address_line_tag).should eq("streetLine")
 				end
 			end
 		end
@@ -93,12 +100,6 @@ describe Field::CSDApiConcern do
 		it "other name" do
 			text_with_metadata({"CSDType" => "otherName"}) do |f|
 				f.should be_csd_other_name
-			end
-		end
-
-		it "address" do
-			text_with_metadata({"CSDType" => "address"}) do |f|
-				f.should be_csd_address
 			end
 		end
 
@@ -144,29 +145,21 @@ describe Field::CSDApiConcern do
 			end
 
 			describe "name" do
-				it "contact name top level" do
-					text_with_metadata({"CSDType" => "contact", "CSDCode" => "a_code", "CSDContactName" => "a_name"}) do |f|
-						f.should be_csd_contact_name
+				it "name top level" do
+					text_with_metadata({Field::CSDApiConcern::csd_name_tag => "a_name", "CSDChildOf" => "parent"}) do |f|
+						f.should be_csd_name("parent")
 					end
 				end
 
-				it "contact name forename" do
-					text_with_metadata({"CSDType" => "contact", "CSDCode" => "a_code", "CSDContactName" => "a_name", "CSDComponent" => "forename"}) do |f|
+				it "forename" do
+					text_with_metadata({Field::CSDApiConcern::csd_forename_tag => "forename"}) do |f|
 						f.should be_csd_forename
 					end
 				end
 
-				it "contact name surname" do
-					text_with_metadata({"CSDType" => "contact", "CSDCode" => "a_code", "CSDContactName" => "a_name", "CSDComponent" => "surname"}) do |f|
+				it "surname" do
+					text_with_metadata({Field::CSDApiConcern::csd_surname_tag => "surname"}) do |f|
 						f.should be_csd_surname
-					end
-				end
-			end
-
-			describe "address" do
-				it "contact address top level" do
-					text_with_metadata({"CSDType" => "contact", "CSDCode" => "a_code", "CSDContactAddress" => "an_address"}) do |f|
-						f.should be_csd_contact_address
 					end
 				end
 			end
@@ -179,18 +172,32 @@ describe Field::CSDApiConcern do
 			end
 		end
 
-		describe "organization" do
-			it "belongs to an organization" do
+		describe "named elements" do
+			it "it is an organization" do
 				text_with_metadata({Field::CSDApiConcern::csd_organization_tag => "Org 1"}) do |f|
 					f.should be_csd_organization
 					f.csd_organization_element.should eq("Org 1")
 				end
 			end
 
-			it "belongs to a service" do
+			it "it is a service" do
 				text_with_metadata({Field::CSDApiConcern::csd_service_tag => "Service 1"}) do |f|
 					f.should be_csd_service
 					f.csd_service_element.should eq("Service 1")
+				end
+			end
+
+			it "it is a name" do
+				text_with_metadata({Field::CSDApiConcern::csd_name_tag => "Name 1", "CSDChildOf" => "parentTag"}) do |f|
+					f.should be_csd_name("parentTag")
+					f.csd_name_element.should eq("Name 1")
+				end
+			end
+
+			it "is an address" do
+				text_with_metadata({Field::CSDApiConcern::csd_address_tag => "Address 1", "CSDChildOf" => "parentTag"}) do |f|
+					f.should be_csd_address("parentTag")
+					f.csd_address_element.should eq("Address 1")
 				end
 			end
 		end
