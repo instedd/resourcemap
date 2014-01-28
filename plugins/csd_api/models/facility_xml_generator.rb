@@ -63,7 +63,17 @@ class FacilityXmlGenerator
       @organizations.each do |org|
         xml.tag!("organization", "oid" => facility_properties[org.oid.code]) do
           org.services.each do |service|
-            xml.tag!("service", "oid" => facility_properties[service.oid.code])
+            xml.tag!("service", "oid" => facility_properties[service.oid.code]) do 
+              service.names.each do |name|
+                xml.tag!("name") do
+                  name.common_names.each do |common_name|
+                    xml.tag!("commonName", "language" => common_name.language) do
+                    xml.text!(facility_properties[common_name.field.code])
+                  end
+                  end                  
+                end
+              end
+            end
           end
         end
       end

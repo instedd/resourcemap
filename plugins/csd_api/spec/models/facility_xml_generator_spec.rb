@@ -237,7 +237,7 @@ describe FacilityXmlGenerator do
 						.csd_service("Service 1")
 						.csd_name("Name 1", Field::CSDApiConcern::csd_service_tag)
 						.csd_common_name!("en")
-				}
+				},
 				service2: {
 					oid: layer.text_fields.make
 						.csd_organization("Organization 1")
@@ -260,6 +260,8 @@ describe FacilityXmlGenerator do
 			end
 
 			doc = Nokogiri.XML xml
+
+			binding.pry
 
 			doc.xpath("//organizations").should have(1).items
 			doc.xpath("//organizations/organization").should have(1).item
