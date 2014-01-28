@@ -225,21 +225,33 @@ describe FacilityXmlGenerator do
 		it '' do
 			organization = {
 				oid: layer.text_fields.make
-										.csd_organization("Organization 1")
-										.csd_oid!(Field::CSDApiConcern.csd_organization_tag),
-				service1: layer.text_fields.make
-												.csd_organization("Organization 1")
-												.csd_service("Service 1")
-												.csd_oid!(Field::CSDApiConcern.csd_service_tag),
-				service2: layer.text_fields.make
-												.csd_organization("Organization 1")
-												.csd_service("Service 2")
-												.csd_oid!(Field::CSDApiConcern.csd_service_tag)
+					.csd_organization("Organization 1")
+					.csd_oid!(Field::CSDApiConcern.csd_organization_tag),
+				service1: { 
+					oid: layer.text_fields.make
+						.csd_organization("Organization 1")
+						.csd_service("Service 1")
+						.csd_oid!(Field::CSDApiConcern.csd_service_tag),
+					name: layer.text_fields.make
+						.csd_organization("Organization 1")
+						.csd_service("Service 1")
+						.csd_name("Name 1", Field::CSDApiConcern::csd_service_tag)
+						.csd_common_name!("en")
+				}
+				service2: {
+					oid: layer.text_fields.make
+						.csd_organization("Organization 1")
+						.csd_service("Service 2")
+						.csd_oid!(Field::CSDApiConcern.csd_service_tag)
+				}
 			}
 
 			facility_properties[organization[:oid].code] = "an_oid"
-			facility_properties[organization[:service1].code] = "service1 oid"
-			facility_properties[organization[:service2].code] = "service2 oid"
+
+			facility_properties[organization[:service1][:oid].code] = "service1 oid"
+			facility_properties[organization[:service1][:name].code] = "Connectathon Radiation Therapy"
+
+			facility_properties[organization[:service2][:oid].code] = "service2 oid"
 
 			generator = FacilityXmlGenerator.new collection
 
@@ -255,6 +267,9 @@ describe FacilityXmlGenerator do
 			doc.xpath("//organizations/organization[1]").attr('oid').value.should eq("an_oid")
 
 			doc.xpath("//organizations/organization[1]/service[1]").attr('oid').value.should eq("service1 oid")
+			doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").attr('language').value.should eq("en")
+			doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").text.should eq("Connectathon Radiation Therapy")
+
 			doc.xpath("//organizations/organization[1]/service[2]").attr('oid').value.should eq("service2 oid")
 		end
 	end
