@@ -14,7 +14,8 @@ module Field::CSDApiConcern
   	self
   end
 
-  def csd_oid!
+  def csd_oid!(for_element)
+    put_in_metadata "CSDAttributeFor", for_element
     put_in_metadata "CSDAttribute", "oid"
     save!
     self
@@ -87,7 +88,7 @@ module Field::CSDApiConcern
   end
 
   def csd_organization(organization)
-    put_in_metadata "CSDOrganization", organization
+    put_in_metadata Field::CSDApiConcern::csd_organization_tag, organization
     self
   end
 
@@ -97,7 +98,7 @@ module Field::CSDApiConcern
   end
 
   def csd_service(service)
-    put_in_metadata "CSDService", service
+    put_in_metadata Field::CSDApiConcern::csd_service_tag, service
     self
   end
 
@@ -138,7 +139,8 @@ module Field::CSDApiConcern
   	csd_declared_type? "facilityOid" 
   end
 
-  def csd_oid?
+  def csd_oid?(for_element)
+    metadata_value_for("CSDAttributeFor") == for_element &&
     metadata_value_for("CSDAttribute") == "oid"
   end
 
@@ -186,23 +188,31 @@ module Field::CSDApiConcern
   end
 
   def csd_organization?
-    in_metadata?("CSDOrganization")
+    in_metadata?(Field::CSDApiConcern::csd_organization_tag)
   end
 
   def csd_service?
-    in_metadata?("CSDService")
+    in_metadata?(Field::CSDApiConcern::csd_service_tag)
   end
 
   def csd_type
   	metadata_value_for "CSDType"
   end
 
+  def self.csd_organization_tag
+    "CSDOrganization"
+  end
+
   def csd_organization_element
-    metadata_value_for "CSDOrganization"
+    metadata_value_for Field::CSDApiConcern::csd_organization_tag
+  end
+
+  def self.csd_service_tag
+    "CSDService"
   end
 
   def csd_service_element
-    metadata_value_for "CSDService"
+    metadata_value_for Field::CSDApiConcern::csd_service_tag
   end
 
   #These methods should either:

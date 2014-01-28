@@ -17,8 +17,8 @@ describe Field::CSDApiConcern do
 		end
 
 		it "turns a text field into a generic OID" do
-			f = Field::TextField.make.csd_oid!
-			f.should be_csd_oid
+			f = Field::TextField.make.csd_oid!("AnElementType")
+			f.should be_csd_oid("AnElementType")
 		end
 
 		describe "contact" do
@@ -181,14 +181,14 @@ describe Field::CSDApiConcern do
 
 		describe "organization" do
 			it "belongs to an organization" do
-				text_with_metadata({"CSDOrganization" => "Org 1"}) do |f|
+				text_with_metadata({Field::CSDApiConcern::csd_organization_tag => "Org 1"}) do |f|
 					f.should be_csd_organization
 					f.csd_organization_element.should eq("Org 1")
 				end
 			end
 
 			it "belongs to a service" do
-				text_with_metadata({"CSDService" => "Service 1"}) do |f|
+				text_with_metadata({Field::CSDApiConcern::csd_service_tag => "Service 1"}) do |f|
 					f.should be_csd_service
 					f.csd_service_element.should eq("Service 1")
 				end

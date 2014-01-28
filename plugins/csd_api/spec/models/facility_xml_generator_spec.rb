@@ -226,15 +226,15 @@ describe FacilityXmlGenerator do
 			organization = {
 				oid: layer.text_fields.make
 										.csd_organization("Organization 1")
-										.csd_oid!,
+										.csd_oid!(Field::CSDApiConcern.csd_organization_tag),
 				service1: layer.text_fields.make
 												.csd_organization("Organization 1")
 												.csd_service("Service 1")
-												.csd_oid!,
+												.csd_oid!(Field::CSDApiConcern.csd_service_tag),
 				service2: layer.text_fields.make
 												.csd_organization("Organization 1")
 												.csd_service("Service 2")
-												.csd_oid!
+												.csd_oid!(Field::CSDApiConcern.csd_service_tag)
 			}
 
 			facility_properties[organization[:oid].code] = "an_oid"
@@ -248,8 +248,6 @@ describe FacilityXmlGenerator do
 			end
 
 			doc = Nokogiri.XML xml
-
-			binding.pry
 
 			doc.xpath("//organizations").should have(1).items
 			doc.xpath("//organizations/organization").should have(1).item

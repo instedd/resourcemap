@@ -88,8 +88,8 @@ describe Collection::CSDApiConcern do
 
 	describe 'csd_organizations' do
 		it '' do
-			o1 = layer.text_fields.make.csd_organization("Org 1").csd_oid! 
-			o2 = layer.text_fields.make.csd_organization("Org 2").csd_oid! 
+			o1 = layer.text_fields.make.csd_organization("Org 1").csd_oid!(Field::CSDApiConcern::csd_organization_tag) 
+			o2 = layer.text_fields.make.csd_organization("Org 2").csd_oid!(Field::CSDApiConcern::csd_organization_tag) 
 
 			orgs = collection.csd_organizations
 
