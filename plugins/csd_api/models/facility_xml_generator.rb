@@ -79,6 +79,14 @@ class FacilityXmlGenerator
                   xml.text!(language.field.human_value_by_option_code(facility_properties[language.field.code]))
                 end
               end
+
+              service.operating_hours.each do |oh|
+                xml.tag!("operatingHours") do
+                  xml.tag!("openFlag") do
+                    xml.text!(facility_properties[oh.open_flag.code] ? "1" : "0")
+                  end
+                end
+              end
             end
           end
         end

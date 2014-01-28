@@ -240,7 +240,23 @@ describe FacilityXmlGenerator do
 					language: layer.select_one_fields.make(config: language_config)
 						.csd_organization("Organization 1")
 						.csd_service("Service 1")
-						.csd_language!("BCP 47", Field::CSDApiConcern::csd_service_tag)
+						.csd_language!("BCP 47", Field::CSDApiConcern::csd_service_tag),
+					operating_hours: {
+						oh1: {
+							open_flag: layer.yes_no_fields.make
+								.csd_organization("Organization 1")
+								.csd_service("Service 1")
+								.csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag)
+								.csd_open_flag!
+						},
+						oh2: {
+							open_flag: layer.yes_no_fields.make
+								.csd_organization("Organization 1")
+								.csd_service("Service 1")
+								.csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag)
+								.csd_open_flag!
+						}
+					}
 				},
 				service2: {
 					oid: layer.text_fields.make
@@ -255,6 +271,9 @@ describe FacilityXmlGenerator do
 			facility_properties[organization[:service1][:oid].code] = "service1 oid"
 			facility_properties[organization[:service1][:name].code] = "Connectathon Radiation Therapy"
 			facility_properties[organization[:service1][:language].code] = "en"
+			facility_properties[organization[:service1][:operating_hours][:oh1][:open_flag].code] = true
+
+			facility_properties[organization[:service1][:operating_hours][:oh2][:open_flag].code] = false
 
 			facility_properties[organization[:service2][:oid].code] = "service2 oid"
 
@@ -265,8 +284,6 @@ describe FacilityXmlGenerator do
 			end
 
 			doc = Nokogiri.XML xml
-
-			binding.pry
 
 			doc.xpath("//organizations").should have(1).items
 			doc.xpath("//organizations/organization").should have(1).item
@@ -279,6 +296,8 @@ describe FacilityXmlGenerator do
 			doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('code').value.should eq("en")
 			doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingSchema').value.should eq("BCP 47")
 			doc.xpath("//organizations/organization[1]/service[1]/language[1]").text.should eq("English")
+			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/openFlag[1]").text.should eq("1")
+			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[2]/openFlag[1]").text.should eq("0")
 
 			doc.xpath("//organizations/organization[1]/service[2]").attr('oid').value.should eq("service2 oid")
 		end

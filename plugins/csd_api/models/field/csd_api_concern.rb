@@ -110,6 +110,29 @@ module Field::CSDApiConcern
     self
   end
 
+  def csd_operating_hours(oh_code, parent_tag)
+    put_in_metadata Field::CSDApiConcern::csd_operating_hours_tag, oh_code
+    put_in_metadata "CSDChildOf", parent_tag
+    self
+  end
+
+  def csd_operating_hours!(oh_code, parent_tag)
+    csd_operating_hours(oh_code, parent_tag)
+    save!
+    self
+  end
+
+  def csd_open_flag
+    put_in_metadata Field::CSDApiConcern::csd_open_flag_tag, ''
+    self
+  end
+
+  def csd_open_flag!
+    csd_open_flag
+    save!
+    self
+  end
+
   def csd_status?
   	csd_declared_type? "status"
   end
@@ -159,6 +182,15 @@ module Field::CSDApiConcern
 
   def csd_contact?
     csd_declared_type?("contact") && in_metadata?("CSDCode")
+  end
+
+  def csd_operating_hours?(parent_tag)
+    in_metadata?(Field::CSDApiConcern::csd_operating_hours_tag) &&
+    metadata_value_for("CSDChildOf") == parent_tag
+  end
+
+  def csd_open_flag?
+    in_metadata?(Field::CSDApiConcern::csd_open_flag_tag)
   end
 
   def csd_name?(parent_tag)
@@ -216,6 +248,10 @@ module Field::CSDApiConcern
     metadata_value_for Field::CSDApiConcern::csd_address_tag
   end
 
+  def csd_operating_hours_element
+    metadata_value_for Field::CSDApiConcern::csd_operating_hours_tag
+  end
+
   # CSD Tag inventory, refactor so its accessed as CSDTags::organization, CSDTags::service, etc
   def self.csd_facility_tag
     "CSDFacility"
@@ -259,6 +295,14 @@ module Field::CSDApiConcern
 
   def self.csd_language_tag
     "CSDLanguage"
+  end
+
+  def self.csd_operating_hours_tag
+    "CSDOperatingHours"
+  end
+
+  def self.csd_open_flag_tag
+    "CSDOpenFlag"
   end
 
   #These methods should either:
