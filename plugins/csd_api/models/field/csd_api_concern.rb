@@ -82,8 +82,9 @@ module Field::CSDApiConcern
     self
   end
 
-  def csd_language!(coding_schema)
-    put_in_metadata "CSDType", "language"
+  def csd_language!(coding_schema, parent_tag)
+    put_in_metadata Field::CSDApiConcern::csd_language_tag, ""
+    put_in_metadata "CSDChildOf", parent_tag
     put_in_metadata "codingSchema", coding_schema
     save!
     self
@@ -113,8 +114,9 @@ module Field::CSDApiConcern
   	csd_declared_type? "status"
   end
 
-  def csd_language?
-  	csd_declared_type? "language"
+  def csd_language?(parent_tag)
+    in_metadata?(Field::CSDApiConcern::csd_language_tag) &&
+    metadata_value_for("CSDChildOf") == parent_tag
   end
 
   def csd_contact_point?
@@ -253,6 +255,10 @@ module Field::CSDApiConcern
 
   def self.csd_contact_tag
     "CSDContact"
+  end
+
+  def self.csd_language_tag
+    "CSDLanguage"
   end
 
   #These methods should either:

@@ -68,9 +68,15 @@ class FacilityXmlGenerator
                 xml.tag!("name") do
                   name.common_names.each do |common_name|
                     xml.tag!("commonName", "language" => common_name.language) do
-                    xml.text!(facility_properties[common_name.field.code])
-                  end
+                      xml.text!(facility_properties[common_name.field.code])
+                    end
                   end                  
+                end
+              end
+
+              service.languages.each do |language|
+                xml.tag!("language", "code" => facility_properties[language.field.code], "codingSchema" => language.coding_schema) do
+                  xml.text!(language.field.human_value_by_option_code(facility_properties[language.field.code]))
                 end
               end
             end

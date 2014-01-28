@@ -66,8 +66,8 @@ describe Field::CSDApiConcern do
 
 		describe 'language' do
 			it "turns a select one field into a CSD language field" do
-				f = Field::SelectOneField.make.csd_language! "FooCodingSchema"
-				f.should be_csd_language
+				f = Field::SelectOneField.make.csd_language! "FooCodingSchema", "parentTag"
+				f.should be_csd_language("parentTag")
 			end
 		end
 	end
@@ -116,8 +116,8 @@ describe Field::CSDApiConcern do
 		end		
 
 		it "language" do
-			select_one_with_metadata({"CSDType" => "language"}) do |f|
-				f.should be_csd_language
+			select_one_with_metadata({Field::CSDApiConcern::csd_language_tag => "language", "CSDChildOf" => "parentTag"}) do |f|
+				f.should be_csd_language("parentTag")
 			end
 		end
 
@@ -166,8 +166,8 @@ describe Field::CSDApiConcern do
 		end
 
 		it "language" do
-			select_one_with_metadata({"CSDType" => "language", "codingSchema" => "FooCodingSchema"}) do |f|
-				f.should be_csd_language
+			select_one_with_metadata({Field::CSDApiConcern::csd_language_tag => "language", "codingSchema" => "FooCodingSchema", "CSDChildOf" => "parentTag"}) do |f|
+				f.should be_csd_language("parentTag")
 				f.metadata_value_for("codingSchema").should eq("FooCodingSchema")
 			end
 		end

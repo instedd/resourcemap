@@ -10,6 +10,14 @@ describe FacilityXmlGenerator do
 
 	let(:xml) { Builder::XmlMarkup.new(:encoding => 'utf-8', :escape => false) }
 
+	let(:language_config) {{
+				options: [
+					{id: 1, code: "en", label: "English"}, 
+					{id: 2, code: "es", label: "Spanish"},
+					{id: 3, code: "fr", label: "French"}
+				]	 
+			}.with_indifferent_access}
+
 	def set_facility_attribute(key, value)
 		facility["_source"][key] = value
 	end
@@ -185,16 +193,8 @@ describe FacilityXmlGenerator do
 
 	describe 'language generation' do
 		it '' do
-			language_config = {
-				options: [
-					{id: 1, code: "en", label: "English"}, 
-					{id: 2, code: "es", label: "Spanish"},
-					{id: 3, code: "fr", label: "French"}
-				]	 
-			}.with_indifferent_access
-
-			language1 = layer.select_one_fields.make(config: language_config).csd_language!("BCP 47")
-			language2 = layer.select_one_fields.make(config: language_config).csd_language!("BCP 47")
+			language1 = layer.select_one_fields.make(config: language_config).csd_language!("BCP 47", Field::CSDApiConcern::csd_facility_tag)
+			language2 = layer.select_one_fields.make(config: language_config).csd_language!("BCP 47", Field::CSDApiConcern::csd_facility_tag)
 
 			facility_properties[language1.code] = "en"
 			facility_properties[language2.code] = "es"
@@ -236,7 +236,11 @@ describe FacilityXmlGenerator do
 						.csd_organization("Organization 1")
 						.csd_service("Service 1")
 						.csd_name("Name 1", Field::CSDApiConcern::csd_service_tag)
-						.csd_common_name!("en")
+						.csd_common_name!("en"),
+					language: layer.select_one_fields.make(config: language_config)
+						.csd_organization("Organization 1")
+						.csd_service("Service 1")
+						.csd_language!("BCP 47", Field::CSDApiConcern::csd_service_tag)
 				},
 				service2: {
 					oid: layer.text_fields.make
@@ -250,6 +254,7 @@ describe FacilityXmlGenerator do
 
 			facility_properties[organization[:service1][:oid].code] = "service1 oid"
 			facility_properties[organization[:service1][:name].code] = "Connectathon Radiation Therapy"
+			facility_properties[organization[:service1][:language].code] = "en"
 
 			facility_properties[organization[:service2][:oid].code] = "service2 oid"
 
@@ -271,6 +276,9 @@ describe FacilityXmlGenerator do
 			doc.xpath("//organizations/organization[1]/service[1]").attr('oid').value.should eq("service1 oid")
 			doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").attr('language').value.should eq("en")
 			doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").text.should eq("Connectathon Radiation Therapy")
+			doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('code').value.should eq("en")
+			doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingSchema').value.should eq("BCP 47")
+			doc.xpath("//organizations/organization[1]/service[1]/language[1]").text.should eq("English")
 
 			doc.xpath("//organizations/organization[1]/service[2]").attr('oid').value.should eq("service2 oid")
 		end

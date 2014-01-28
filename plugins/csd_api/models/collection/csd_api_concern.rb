@@ -30,7 +30,7 @@ module Collection::CSDApiConcern
   end
 
   def csd_languages
-    select_one_fields.select(&:csd_language?)
+    select_one_fields.select{|f| f.csd_language?(Field::CSDApiConcern::csd_facility_tag)}
   end
 
   def csd_status
