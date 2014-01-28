@@ -53,6 +53,12 @@ module Collection::CSDApiConcern
           .map{|org| CSDOrganizationMapping.new(org[0], org[1])}
   end
 
+  def csd_operating_hours
+    fields.select{|f| f.csd_operating_hours?(Field::CSDApiConcern::csd_facility_tag)}
+          .group_by{|f| f.csd_operating_hours_element}
+          .map{|g| CSDOperatingHoursMapping.new(g[0], g[1])}
+  end
+
   private 
 
   def csd_contact_points_in(fields)

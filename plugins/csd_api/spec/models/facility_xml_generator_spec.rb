@@ -283,7 +283,7 @@ describe FacilityXmlGenerator do
 						.csd_organization("Organization 1")
 						.csd_service("Service 2")
 						.csd_oid!(Field::CSDApiConcern.csd_service_tag)
-				}
+				}				
 			}
 
 			facility_properties[organization[:oid].code] = "an_oid"
@@ -329,6 +329,60 @@ describe FacilityXmlGenerator do
 			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[2]/openFlag[1]").text.should eq("0")
 
 			doc.xpath("//organizations/organization[1]/service[2]").attr('oid').value.should eq("service2 oid")
+		end
+	end
+
+	describe 'facility operating hours' do
+		it '' do
+			facility_oh1 = {
+				open_flag: layer.yes_no_fields.make
+					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+					.csd_open_flag!,
+				day_of_the_week: layer.numeric_fields.make
+					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+					.csd_day_of_the_week!,
+				beginning_hour: layer.text_fields.make
+					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+					.csd_beginning_hour!,
+				ending_hour: layer.text_fields.make
+					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+					.csd_ending_hour!,
+				begin_effective_date: layer.text_fields.make
+					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+					.csd_begin_effective_date!
+			}
+
+			facility_oh2 = {
+				open_flag: layer.yes_no_fields.make
+					.csd_operating_hours("OH2", Field::CSDApiConcern::csd_facility_tag)
+					.csd_open_flag!
+			}
+			
+			facility_properties[facility_oh1[:open_flag].code] = true
+			facility_properties[facility_oh1[:day_of_the_week].code] = 1
+			facility_properties[facility_oh1[:beginning_hour].code] = "08:00:00"
+			facility_properties[facility_oh1[:ending_hour].code] = "18:00:00"
+			facility_properties[facility_oh1[:begin_effective_date].code] = "2013-12-01"
+
+			facility_properties[facility_oh2[:open_flag].code] = false
+
+			generator = FacilityXmlGenerator.new collection
+
+			xml.tag!("root") do
+				generator.generate_operating_hours xml, facility_properties, collection.csd_operating_hours
+			end
+
+			doc = Nokogiri.XML xml
+
+			doc.xpath("//operatingHours").should have(2).items
+
+			doc.xpath("//operatingHours[1]/openFlag[1]").text.should eq("1")
+			doc.xpath("//operatingHours[1]/dayOfTheWeek[1]").text.should eq("1")
+			doc.xpath("//operatingHours[1]/beginningHour[1]").text.should eq("08:00:00")
+			doc.xpath("//operatingHours[1]/endingHour[1]").text.should eq("18:00:00")
+			doc.xpath("//operatingHours[1]/beginEffectiveDate[1]").text.should eq("2013-12-01")
+
+			doc.xpath("//operatingHours[2]/openFlag[1]").text.should eq("0")
 		end
 	end
 end
