@@ -131,12 +131,10 @@ class FacilityXmlGenerator
 
   def generate_languages(xml, facility_properties)
     @language_fields.each do |language_field|
-      xml.tag!("language") do
-        value = facility_properties[language_field.code] || ""
-        xml.tag!("code", value)
-        # TODO: move this to a field's method
-        schema = entry(language_field.metadata, "OptionList") || ""
-        xml.tag!("codingSchema", schema)
+      value = facility_properties[language_field.code] || ""
+      schema = language_field.metadata_value_for("codingSchema") || ""
+      xml.tag!("language", "code" => value, "codingSchema" => schema) do
+        xml.text!(language_field.human_value_by_option_code(value))
       end
     end
     xml

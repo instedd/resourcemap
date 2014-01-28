@@ -228,23 +228,6 @@ describe CsdApiController do
 
       facility = body["facilityDirectory"]["facility"]
 
-      # Should include 'codedType'
-      # coded_type = facility["codedType"]
-      # coded_type["code"].should eq("one")
-      # coded_type["codingSchema"].should eq("moh.gov.rw")
-
-      # Should include 'otherId'
-      #other_ids = facility["otherID"]
-      #other_ids.length.should eq(2)
-
-      #other_id_1 = other_ids.first
-      #other_id_1["code"].should eq("12345")
-      #other_id_1["assigningAuthorityName"].should eq("DHIS")
-
-      #other_id_2 = other_ids.last
-      #other_id_2["code"].should eq(nil)
-      #other_id_2["assigningAuthorityName"].should eq("RW")
-
       # Should include 'name'
       name = facility["primaryName"]
       name.should eq 'Site A'
@@ -291,10 +274,6 @@ describe CsdApiController do
 
       contact2 = facility["contactPoint"][1]
       contact2["equipment"].should eq("Contact 2")
-
-      # Should include 'language'
-      facility["language"]["code"].should eq("french")
-      facility["language"]["codingSchema"].should eq("BCP 47")
 
       # Should include 'record'
       facility["record"]["created"].should eq("2013-12-18T18:40:28+00:00")

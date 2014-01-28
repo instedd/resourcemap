@@ -51,6 +51,13 @@ describe Field::CSDApiConcern do
 				end
 			end
 		end
+
+		describe 'language' do
+			it "turns a select one field into a CSD language field" do
+				f = Field::SelectOneField.make.csd_language! "FooCodingSchema"
+				f.should be_csd_language
+			end
+		end
 	end
 
 	describe "CSD field metadata" do
@@ -157,6 +164,13 @@ describe Field::CSDApiConcern do
 						f.should be_csd_contact_address
 					end
 				end
+			end
+		end
+
+		it "language" do
+			select_one_with_metadata({"CSDType" => "language", "codingSchema" => "FooCodingSchema"}) do |f|
+				f.should be_csd_language
+				f.metadata_value_for("codingSchema").should eq("FooCodingSchema")
 			end
 		end
 	end

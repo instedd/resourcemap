@@ -73,6 +73,13 @@ module Field::CSDApiConcern
     self
   end
 
+  def csd_language!(coding_schema)
+    put_in_metadata "CSDType", "language"
+    put_in_metadata "codingSchema", coding_schema
+    save!
+    self
+  end
+
   def csd_status?
   	csd_declared_type? "status"
   end

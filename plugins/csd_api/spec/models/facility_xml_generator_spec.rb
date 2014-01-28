@@ -182,4 +182,42 @@ describe FacilityXmlGenerator do
 			doc.xpath("//contact[2]/person/address/addressLine[@component='postalCode']").text.should eq("87124")
 		end
 	end
+
+	describe 'language generation' do
+		it '' do
+			language_config = {
+				options: [
+					{id: 1, code: "en", label: "English"}, 
+					{id: 2, code: "es", label: "Spanish"},
+					{id: 3, code: "fr", label: "French"}
+				]	 
+			}.with_indifferent_access
+
+			language1 = layer.select_one_fields.make(config: language_config).csd_language!("BCP 47")
+			language2 = layer.select_one_fields.make(config: language_config).csd_language!("BCP 47")
+
+			facility_properties[language1.code] = "en"
+			facility_properties[language2.code] = "es"
+
+			generator = FacilityXmlGenerator.new collection
+
+			xml.tag!("root") do
+				generator.generate_languages xml, facility_properties
+			end
+
+			doc = Nokogiri.XML xml
+
+			doc.xpath("//language").should have(2).items
+			
+			language1_xml = doc.xpath("//language[1]")
+			language1_xml.attr('code').value.should eq('en')
+			language1_xml.attr('codingSchema').value.should eq('BCP 47')
+			language1_xml.text.should eq('English')
+
+			language2_xml = doc.xpath("//language[2]")
+			language2_xml.attr('code').value.should eq('es')
+			language2_xml.attr('codingSchema').value.should eq('BCP 47')
+			language2_xml.text.should eq('Spanish')
+		end
+	end
 end
