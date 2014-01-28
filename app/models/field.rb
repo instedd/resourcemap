@@ -138,3 +138,5 @@ class Field < ActiveRecord::Base
     end
   end
 end
+
+

@@ -78,7 +78,7 @@ class Field::DateField < Field
 
   def valid_year?(value)
     year = value.split('-')[0].to_i
-    if (year.to_i > 2100)
+    if (year.to_i < min_year || year.to_i > max_year)
       raise invalid_field_year_message()
     end
     true
@@ -89,8 +89,16 @@ class Field::DateField < Field
   end
 
 
+  def min_year
+    1800
+  end
+
+  def max_year
+    Time.now.year+50
+  end
+
   def invalid_field_year_message()
-    "Invalid date value in field #{code}. Year shouldn't be greater than 2100"
+    "Invalid date value in field #{code}. Year should be between #{min_year} and #{max_year}"
   end
 
   def invalid_field_message()

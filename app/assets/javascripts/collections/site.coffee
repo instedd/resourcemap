@@ -60,7 +60,10 @@ onCollections ->
       if field.showInGroupBy && window.model.currentCollection()
         window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[esCode], newValue: value}])
 
-      @properties()[esCode] = value
+      if(field.kind == 'date')
+        @properties()[esCode] = field.fullDateFromValue()
+      else
+        @properties()[esCode] = value
 
       $.ajax({
         type: "POST",
@@ -95,7 +98,9 @@ onCollections ->
         if field.value()
           value = field.value()
 
-          @properties()[field.esCode] = value
+          if(field.kind != "date")
+            @properties()[field.esCode] = value
+
         else
           delete @properties()[field.esCode]
 
@@ -333,6 +338,8 @@ onCollections ->
 
       # Expand fields, clear filters (select_many),
       # and restore original field values if not saved
+      debugger
+
       for field in window.model.currentCollection().fields()
         field.expanded(false)
         field.filter('')

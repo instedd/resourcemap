@@ -12,7 +12,7 @@ describe 'Collection', ->
     describe 'Date Field With MM/DD/YYYY', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'creation', name: 'Creation', kind: 'date' }
-        @field.setValueFromSite('1012-12-26T03:00:00Z')
+        @field.setValueFromSite('1912-12-26T03:00:00Z')
 
       it 'should have value when set one', ->
         expect(@field.hasValue()).toBeTruthy()
@@ -22,20 +22,20 @@ describe 'Collection', ->
         expect(@field.value()).toEqual(undefined)
 
       it 'should get value for ui', ->
-        expect(@field.valueUI()).toEqual('12/26/1012')
+        expect(@field.valueUI()).toEqual('12/26/1912')
 
       it 'value should be the in date_picker_format if valueUI changes', ->
-        @field.valueUI('12/25/1012')
-        expect(@field.value()).toEqual('12/25/1012')
-        expect(@field.valueUI()).toEqual('12/25/1012')
+        @field.valueUI('12/25/1912')
+        expect(@field.value()).toEqual('12/25/1912')
+        expect(@field.valueUI()).toEqual('12/25/1912')
 
     describe 'Date Field With DD/MM/YYYY', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'creation', name: 'Creation', kind: 'date', config: { format: "dd_mm_yyyy" } }
-        @field.setValueFromSite('1012-12-26T03:00:00Z')
+        @field.setValueFromSite('1912-12-26T03:00:00Z')
 
       it 'should convert isoValue into the configured format', ->
-        expect(@field.value()).toEqual('26/12/1012')
+        expect(@field.value()).toEqual('26/12/1912')
 
       it 'should have value when set one', ->
         expect(@field.hasValue()).toBeTruthy()

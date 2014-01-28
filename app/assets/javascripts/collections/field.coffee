@@ -91,8 +91,13 @@ onCollections ->
     codeForLink: (api = false) =>
       if api then @code else @esCode
 
+    yearIsCorrect: (year) =>
+      maxYear = Date.today().getFullYear() + 50
+      minYear = 1800
+      return minYear <= year <= maxYear
+
     dateIsCorrect: (month,day,year) =>
-      return (month && day && year && year >= 1500 && year <= 2500 && month <= 12 && day <= 31)
+      return (month && day && year && @yearIsCorrect(year) && month <= 12 && day <= 31)
 
     # The value of the UI.
     # If it's a select one or many, we need to get the label from the option code.
@@ -195,6 +200,13 @@ onCollections ->
         @editing(false)
         @filter('')
         delete @originalValue
+
+    fullDateFromValue: =>
+      if @format == "dd_mm_yyyy"
+        [day, month, year] = @value().split('/')
+      else
+        [month, day, year] = @value().split('/')
+      new Date year, (month-1), day
 
     closeDatePickerAndSave: =>
       if $('#ui-datepicker-div:visible').length == 0

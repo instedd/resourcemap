@@ -138,29 +138,60 @@ describe 'Collection', ->
         expect(@field.optionsIds).toEqual(['', 1, 2])
 
     describe 'Date field', ->
-      beforeEach ->
-        @field = new Field { id: 1, code: 'starting_date', name: 'Starting_date', kind: 'date'}
+      describe 'Both formats', ->
+        beforeEach ->
+          @field = new Field { id: 1, code: 'starting_date', name: 'Starting_date', kind: 'date'}
 
-      it 'day should be incorrect', ->
-        value = "12/35/2014"
-        [month, day, year] = value.split('/')
-        expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
+        it 'day should be incorrect', ->
+          value = "12/35/2014"
+          [month, day, year] = value.split('/')
+          expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
 
-      it 'month should be incorrect', ->
-        value = "14/30/2014"
-        [month, day, year] = value.split('/')
-        expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
+        it 'month should be incorrect', ->
+          value = "14/30/2014"
+          [month, day, year] = value.split('/')
+          expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
 
-      it 'year should be incorrect', ->
-        value = "7/30/3000"
-        [month, day, year] = value.split('/')
-        expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
+        it 'year should be incorrect. Inferior limit', ->
+          value = "7/30/1799"
+          [month, day, year] = value.split('/')
+          expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
 
-      it 'should be correct', ->
-        value = "7/30/2100"
-        [month, day, year] = value.split('/')
-        expect(@field.dateIsCorrect(month,day,year)).toBeTruthy()
+        it 'year should be incorrect. Superior limit', ->
+          value = "7/30/2065"
+          [month, day, year] = value.split('/')
+          expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
 
+        it 'should be correct', ->
+          value = "7/30/1800"
+          [month, day, year] = value.split('/')
+          expect(@field.dateIsCorrect(month,day,year)).toBeTruthy()
+
+      describe 'mm_dd_yyyy', ->
+        beforeEach ->
+          @field = new Field { id: 1, code: 'starting_date', name: 'Starting_date', kind: 'date'}
+          @field.format = "mm_dd_yyyy"
+
+        it 'should keep value if date is correct', ->
+          @field.value = "12/14/1980"
+          expect(@field.valueUIFor(@field.value)).toEqual(@field.value)
+
+        it 'should keep value if date is incorrect', ->
+          @field.value = "14/14/1980"
+          expect(@field.valueUIFor(@field.value)).toEqual(@field.value)
+
+      describe 'dd_mm_yyyy', ->
+        beforeEach ->
+          @field = new Field { id: 1, code: 'starting_date', name: 'Starting_date', kind: 'date'}
+          @field.format = "dd_mm_yyyy"
+
+        it 'should keep value if date is correct', ->
+          @field.value = "12/14/1984"
+          expect(@field.valueUIFor(@field.value)).toEqual(@field.value)
+
+        it 'should keep value if date is incorrect', ->
+          @field.value = "40/7/2060"
+          expect(@field.valueUIFor(@field.value)).toEqual(@field.value)
 
     describe 'Select Many Field', ->
       beforeEach ->
