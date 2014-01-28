@@ -75,9 +75,15 @@
 .left.panel.wp30 .tablescroll div {
   label {
     width:130px;
+    vertical-align: middle;
   }
   input {
     width:135px;
+  }
+  span.value {
+    display: inline-block;
+    width: 144px;
+    vertical-align: middle;
   }
 }
 
