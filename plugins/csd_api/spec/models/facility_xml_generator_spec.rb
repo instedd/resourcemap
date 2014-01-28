@@ -20,7 +20,7 @@ describe FacilityXmlGenerator do
 
 	describe 'OID generation' do
 		it 'should use existing OID annotated field' do
-			oid_field = layer.identifier_fields.make.csd_oid!
+			oid_field = layer.identifier_fields.make.csd_facility_oid!
 			facility_properties[oid_field.code] = "oid_value"
 			
 			generator = FacilityXmlGenerator.new collection
@@ -87,7 +87,7 @@ describe FacilityXmlGenerator do
 
 	describe 'Other id generation' do
 		it '' do
-			oid_field = layer.identifier_fields.make.csd_oid!
+			oid_field = layer.identifier_fields.make.csd_facility_oid!
 			other_id_field = layer.identifier_fields.make(config: { "context" => "DHIS", "agency" => "MOH" }.with_indifferent_access)
 
 			facility_properties[other_id_field.code] = 'my_moh_dhis_id'
@@ -218,6 +218,46 @@ describe FacilityXmlGenerator do
 			language2_xml.attr('code').value.should eq('es')
 			language2_xml.attr('codingSchema').value.should eq('BCP 47')
 			language2_xml.text.should eq('Spanish')
+		end
+	end
+
+	describe 'organizations' do
+		it '' do
+			organization = {
+				oid: layer.text_fields.make
+										.csd_organization("Organization 1")
+										.csd_oid!,
+				service1: layer.text_fields.make
+												.csd_organization("Organization 1")
+												.csd_service("Service 1")
+												.csd_oid!,
+				service2: layer.text_fields.make
+												.csd_organization("Organization 1")
+												.csd_service("Service 2")
+												.csd_oid!
+			}
+
+			facility_properties[organization[:oid].code] = "an_oid"
+			facility_properties[organization[:service1].code] = "service1 oid"
+			facility_properties[organization[:service2].code] = "service2 oid"
+
+			generator = FacilityXmlGenerator.new collection
+
+			xml.tag!("root") do
+				generator.generate_organizations xml, facility_properties
+			end
+
+			doc = Nokogiri.XML xml
+
+			binding.pry
+
+			doc.xpath("//organizations").should have(1).items
+			doc.xpath("//organizations/organization").should have(1).item
+
+			doc.xpath("//organizations/organization[1]").attr('oid').value.should eq("an_oid")
+
+			doc.xpath("//organizations/organization[1]/service[1]").attr('oid').value.should eq("service1 oid")
+			doc.xpath("//organizations/organization[1]/service[2]").attr('oid').value.should eq("service2 oid")
 		end
 	end
 end

@@ -1,8 +1,8 @@
 module Collection::CSDApiConcern
   extend ActiveSupport::Concern
 
-  def csd_oid
-    identifier_fields.find(&:csd_oid?)
+  def csd_facility_oid
+    identifier_fields.find(&:csd_facility_oid?)
   end
 
   def csd_coded_types
@@ -45,6 +45,12 @@ module Collection::CSDApiConcern
     fields.select(&:csd_contact?)
           .group_by{|field| field.metadata_value_for("CSDCode")}
           .map{|contact| CSDContactMapping.new(contact[0], contact[1])}
+  end
+
+  def csd_organizations
+    fields.select(&:csd_organization?)
+          .group_by{|field| field.csd_organization_element}
+          .map{|org| CSDOrganizationMapping.new(org[0], org[1])}
   end
 
   private 

@@ -12,7 +12,12 @@ describe Field::CSDApiConcern do
 		end
 
 		it "turns a identifier field into a CSD OID" do
-			f = Field::IdentifierField.make.csd_oid!
+			f = Field::IdentifierField.make.csd_facility_oid!
+			f.should be_csd_facility_oid
+		end
+
+		it "turns a text field into a generic OID" do
+			f = Field::TextField.make.csd_oid!
 			f.should be_csd_oid
 		end
 
@@ -62,10 +67,10 @@ describe Field::CSDApiConcern do
 
 	describe "CSD field metadata" do
 		describe "oid" do
-			let (:oid_field) { identifier_with_metadata({"CSDType" => "oid"}) }
+			let (:oid_field) { identifier_with_metadata({"CSDType" => "facilityOid"}) }
 
-			it "is an oid" do
-			 	oid_field.should be_csd_oid
+			it "is the facility's oid" do
+			 	oid_field.should be_csd_facility_oid
 			end
 
 			it "is not an otherId" do
@@ -127,7 +132,7 @@ describe Field::CSDApiConcern do
 			end
 
 			it "is not an oid" do
-				Field::IdentifierField.make.csd_oid!.should_not be_csd_other_id
+				Field::IdentifierField.make.csd_facility_oid!.should_not be_csd_other_id
 			end
 		end
 
@@ -171,6 +176,22 @@ describe Field::CSDApiConcern do
 			select_one_with_metadata({"CSDType" => "language", "codingSchema" => "FooCodingSchema"}) do |f|
 				f.should be_csd_language
 				f.metadata_value_for("codingSchema").should eq("FooCodingSchema")
+			end
+		end
+
+		describe "organization" do
+			it "belongs to an organization" do
+				text_with_metadata({"CSDOrganization" => "Org 1"}) do |f|
+					f.should be_csd_organization
+					f.csd_organization_element.should eq("Org 1")
+				end
+			end
+
+			it "belongs to a service" do
+				text_with_metadata({"CSDService" => "Service 1"}) do |f|
+					f.should be_csd_service
+					f.csd_service_element.should eq("Service 1")
+				end
 			end
 		end
 	end

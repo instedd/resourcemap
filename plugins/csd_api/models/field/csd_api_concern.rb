@@ -8,10 +8,16 @@ module Field::CSDApiConcern
   	self
   end
 
-  def csd_oid!
-  	put_in_metadata "CSDType", "oid"
+  def csd_facility_oid!
+  	put_in_metadata "CSDType", "facilityOid"
   	save!
   	self
+  end
+
+  def csd_oid!
+    put_in_metadata "CSDAttribute", "oid"
+    save!
+    self
   end
 
   def csd_contact!(contact_code)
@@ -80,6 +86,26 @@ module Field::CSDApiConcern
     self
   end
 
+  def csd_organization(organization)
+    put_in_metadata "CSDOrganization", organization
+    self
+  end
+
+  def csd_organization!(organization)
+    csd_organization(organization).save!
+    self
+  end
+
+  def csd_service(service)
+    put_in_metadata "CSDService", service
+    self
+  end
+
+  def csd_service!(service)
+    csd_service(service).save!
+    self
+  end
+
   def csd_status?
   	csd_declared_type? "status"
   end
@@ -108,12 +134,16 @@ module Field::CSDApiConcern
   	csd_declared_type?("codedType") && in_metadata?("codingSchema")
   end
 
+  def csd_facility_oid?
+  	csd_declared_type? "facilityOid" 
+  end
+
   def csd_oid?
-  	csd_declared_type? "oid" 
+    metadata_value_for("CSDAttribute") == "oid"
   end
 
   def csd_other_id?
-    self.is_a?(Field::IdentifierField) && !csd_oid?
+    self.is_a?(Field::IdentifierField) && !csd_facility_oid?
   end
 
   def csd_declared_type?(type)
@@ -155,8 +185,24 @@ module Field::CSDApiConcern
     in_metadata?("CSDContactAddress")
   end
 
+  def csd_organization?
+    in_metadata?("CSDOrganization")
+  end
+
+  def csd_service?
+    in_metadata?("CSDService")
+  end
+
   def csd_type
   	metadata_value_for "CSDType"
+  end
+
+  def csd_organization_element
+    metadata_value_for "CSDOrganization"
+  end
+
+  def csd_service_element
+    metadata_value_for "CSDService"
   end
 
   #These methods should either:
@@ -170,7 +216,7 @@ module Field::CSDApiConcern
   end
 
   def in_metadata?(metadata_key)
-    !self.metadata.values.find{|element| element["key"] == metadata_key}.nil?
+    self.metadata && !self.metadata.values.find{|element| element["key"] == metadata_key}.nil?
   end
 
  	#This method in particular is really weird due to the metadata representation we're using.

@@ -15,11 +15,13 @@ class FacilityXmlGenerator
 
     @status_field = collection.csd_status
 
-    @oid_field = collection.csd_oid
+    @oid_field = collection.csd_facility_oid
 
     @coded_type_fields = collection.csd_coded_types
 
     @contacts = collection.csd_contacts
+
+    @organizations = collection.csd_organizations
   end
 
   def generate_facility_xml(xml, facility)
@@ -44,14 +46,28 @@ class FacilityXmlGenerator
         xml.tag!("coordinateSystem", "WGS-84")
       end
 
+      generate_languages(xml, facility_properties)
+
       generate_contact_points(xml, facility_properties)
 
-      generate_languages(xml, facility_properties)
+      generate_organizations(xml, facility_properties)
 
       generate_record(xml, facility)
     end
 
     xml
+  end
+
+  def generate_organizations(xml, facility_properties)
+    xml.tag!("organizations") do 
+      @organizations.each do |org|
+        xml.tag!("organization", "oid" => facility_properties[org.oid.code]) do
+          org.services.each do |service|
+            xml.tag!("service", "oid" => facility_properties[service.oid.code])
+          end
+        end
+      end
+    end
   end
 
   def generate_contacts(xml, facility_properties)

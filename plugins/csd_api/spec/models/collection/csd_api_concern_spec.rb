@@ -4,15 +4,15 @@ describe Collection::CSDApiConcern do
 	let(:collection) { Collection.make }
 	let(:layer) { collection.layers.make }
 
-	describe 'csd_oid_field' do
+	describe 'csd_facility_oid_field' do
 		it 'is nil if there is no field with the right metadata' do
-			collection.csd_oid.should be_nil
+			collection.csd_facility_oid.should be_nil
 		end
 
 		it 'chooses the right field given proper metadata configs' do
-			oid_field = layer.identifier_fields.make(metadata: { "0" => { "key" => "CSDType", "value"=>"oid"} })
+			oid_field = layer.identifier_fields.make.csd_facility_oid!
 
-			collection.csd_oid.id.should eq(oid_field.id)
+			collection.csd_facility_oid.id.should eq(oid_field.id)
 		end		
 	end
 
@@ -52,7 +52,7 @@ describe Collection::CSDApiConcern do
 	describe 'csd_other_ids' do
 		it '' do
 			f = layer.identifier_fields.make
-			g = layer.identifier_fields.make.csd_oid!
+			g = layer.identifier_fields.make.csd_facility_oid!
 
 			other_ids = collection.csd_other_ids
 
@@ -83,6 +83,20 @@ describe Collection::CSDApiConcern do
 
 			contacts[1].contact.should eq("Contact 2")
 			contacts[1].all_components.map(&:id).should include(g1.id, g2.id, g3.id)
+		end
+	end
+
+	describe 'csd_organizations' do
+		it '' do
+			o1 = layer.text_fields.make.csd_organization("Org 1").csd_oid! 
+			o2 = layer.text_fields.make.csd_organization("Org 2").csd_oid! 
+
+			orgs = collection.csd_organizations
+
+			orgs.should have(2).items
+
+			orgs[0].class.should be(CSDOrganizationMapping)
+			orgs[1].class.should be(CSDOrganizationMapping)
 		end
 	end
 end
