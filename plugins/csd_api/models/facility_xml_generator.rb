@@ -191,15 +191,12 @@ class FacilityXmlGenerator
   end
 
   def generate_record(xml, facility)
-    xml.tag!("record") do
-      xml.tag!("created", facility["_source"]["created_at"].to_datetime.iso8601)
-      xml.tag!("updated", facility["_source"]["updated_at"].to_datetime.iso8601)
-      # TODO: This field is required in the xsd. We need to discuss if a 'default' value is a good option here.
-      status = facility["_source"]["properties"][@status_field.code] rescue "active"
-      status_value = status ? "active" : "inactive"
-      xml.tag!("status", status_value)
-      xml.tag!("sourceDirectory", "http://#{Settings.host}")
-    end
+    xml.tag!("record", 
+      "created" => facility["_source"]["created_at"].to_datetime.iso8601, 
+      "updated" => facility["_source"]["updated_at"].to_datetime.iso8601, 
+      "status" => "Active",
+      "sourceDirectory" => "http://#{Settings.host}")
+    
     xml
   end
 

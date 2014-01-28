@@ -6,7 +6,7 @@ describe FacilityXmlGenerator do
 	let(:layer) { collection.layers.make }
 
 	# Bad Smell: we need to know how facilities are returned by an ES search to test this.
-	let(:facility) {{ "_source" => { "properties" => {} }}}
+	let(:facility) {{ "_source" => { "properties" => {}, "created_at" => DateTime.now, "updated_at" => DateTime.now }}}
 
 	let(:xml) { Builder::XmlMarkup.new(:encoding => 'utf-8', :escape => false) }
 
@@ -383,6 +383,25 @@ describe FacilityXmlGenerator do
 			doc.xpath("//operatingHours[1]/beginEffectiveDate[1]").text.should eq("2013-12-01")
 
 			doc.xpath("//operatingHours[2]/openFlag[1]").text.should eq("0")
+		end
+	end
+
+	# This will have to wait for a refactor :(
+	describe "record" do
+		it '' do
+			generator = FacilityXmlGenerator.new collection
+
+			xml.tag!("root") do
+				generator.generate_record(xml, facility)
+			end
+
+			doc = Nokogiri.XML xml
+
+			doc.xpath("//record").should have(1).item
+			doc.xpath("//record[1]").attr('created').value.should eq(facility["_source"]["created_at"].to_s)
+			doc.xpath("//record[1]").attr('updated').value.should eq(facility["_source"]["updated_at"].to_s)
+			doc.xpath("//record[1]").attr('status').value.should eq("Active")
+			doc.xpath("//record[1]").attr('sourceDirectory').value.should eq("http://localhost:3000")
 		end
 	end
 end
