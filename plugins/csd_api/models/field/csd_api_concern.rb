@@ -133,6 +133,50 @@ module Field::CSDApiConcern
     self
   end
 
+  def csd_day_of_the_week
+    put_in_metadata Field::CSDApiConcern::csd_day_of_the_week_tag, ''
+    self
+  end
+
+  def csd_day_of_the_week!
+    csd_day_of_the_week
+    save!
+    self
+  end
+
+  def csd_beginning_hour
+    put_in_metadata Field::CSDApiConcern::csd_beginning_hour_tag, ''
+    self
+  end
+
+  def csd_beginning_hour!
+    csd_beginning_hour
+    save!
+    self
+  end
+
+  def csd_ending_hour
+    put_in_metadata Field::CSDApiConcern::csd_ending_hour_tag, ''
+    self
+  end
+
+  def csd_ending_hour!
+    csd_ending_hour
+    save!
+    self
+  end
+
+  def csd_begin_effective_date
+    put_in_metadata Field::CSDApiConcern::csd_begin_effective_date_tag, ''
+    self
+  end
+
+  def csd_begin_effective_date!
+    csd_begin_effective_date
+    save!
+    self
+  end
+
   def csd_status?
   	csd_declared_type? "status"
   end
@@ -191,6 +235,22 @@ module Field::CSDApiConcern
 
   def csd_open_flag?
     in_metadata?(Field::CSDApiConcern::csd_open_flag_tag)
+  end
+
+  def csd_day_of_the_week?
+    in_metadata?(Field::CSDApiConcern::csd_day_of_the_week_tag)
+  end
+
+  def csd_beginning_hour?
+    in_metadata?(Field::CSDApiConcern::csd_beginning_hour_tag)
+  end
+
+  def csd_ending_hour?
+    in_metadata?(Field::CSDApiConcern::csd_ending_hour_tag)
+  end
+
+  def csd_begin_effective_date?
+    in_metadata?(Field::CSDApiConcern::csd_begin_effective_date_tag)
   end
 
   def csd_name?(parent_tag)
@@ -303,6 +363,22 @@ module Field::CSDApiConcern
 
   def self.csd_open_flag_tag
     "CSDOpenFlag"
+  end
+
+  def self.csd_day_of_the_week_tag
+    "CSDDayOfTheWeek"
+  end
+
+  def self.csd_beginning_hour_tag
+    "CSDBeginningHour"
+  end
+
+  def self.csd_ending_hour_tag
+    "CSDEndingHour"
+  end
+
+  def self.csd_begin_effective_date_tag
+    "CSDBeginEffectiveDate"
   end
 
   #These methods should either:

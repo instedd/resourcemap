@@ -247,7 +247,27 @@ describe FacilityXmlGenerator do
 								.csd_organization("Organization 1")
 								.csd_service("Service 1")
 								.csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag)
-								.csd_open_flag!
+								.csd_open_flag!,
+							day_of_the_week: layer.numeric_fields.make
+								.csd_organization("Organization 1")
+								.csd_service("Service 1")
+								.csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag)
+								.csd_day_of_the_week!,
+							beginning_hour: layer.text_fields.make
+								.csd_organization("Organization 1")
+								.csd_service("Service 1")
+								.csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag)
+								.csd_beginning_hour!,
+							ending_hour: layer.text_fields.make
+								.csd_organization("Organization 1")
+								.csd_service("Service 1")
+								.csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag)
+								.csd_ending_hour!,
+							begin_effective_date: layer.text_fields.make
+								.csd_organization("Organization 1")
+								.csd_service("Service 1")
+								.csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag)
+								.csd_begin_effective_date!
 						},
 						oh2: {
 							open_flag: layer.yes_no_fields.make
@@ -272,6 +292,10 @@ describe FacilityXmlGenerator do
 			facility_properties[organization[:service1][:name].code] = "Connectathon Radiation Therapy"
 			facility_properties[organization[:service1][:language].code] = "en"
 			facility_properties[organization[:service1][:operating_hours][:oh1][:open_flag].code] = true
+			facility_properties[organization[:service1][:operating_hours][:oh1][:day_of_the_week].code] = 1
+			facility_properties[organization[:service1][:operating_hours][:oh1][:beginning_hour].code] = "09:00:00"
+			facility_properties[organization[:service1][:operating_hours][:oh1][:ending_hour].code] = "12:00:00"
+			facility_properties[organization[:service1][:operating_hours][:oh1][:begin_effective_date].code] = "2013-12-01"
 
 			facility_properties[organization[:service1][:operating_hours][:oh2][:open_flag].code] = false
 
@@ -297,6 +321,11 @@ describe FacilityXmlGenerator do
 			doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingSchema').value.should eq("BCP 47")
 			doc.xpath("//organizations/organization[1]/service[1]/language[1]").text.should eq("English")
 			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/openFlag[1]").text.should eq("1")
+			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/dayOfTheWeek[1]").text.should eq("1")
+			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/beginningHour[1]").text.should eq("09:00:00")
+			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/endingHour[1]").text.should eq("12:00:00")
+			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/beginEffectiveDate[1]").text.should eq("2013-12-01")
+
 			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[2]/openFlag[1]").text.should eq("0")
 
 			doc.xpath("//organizations/organization[1]/service[2]").attr('oid').value.should eq("service2 oid")
