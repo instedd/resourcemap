@@ -338,8 +338,6 @@ onCollections ->
 
       # Expand fields, clear filters (select_many),
       # and restore original field values if not saved
-      debugger
-
       for field in window.model.currentCollection().fields()
         field.expanded(false)
         field.filter('')
