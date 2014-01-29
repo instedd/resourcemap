@@ -80,9 +80,20 @@ onCollections ->
       if @kind == 'date' && $.trim(value).length > 0
         # Value from server comes with utc time zone and creating a date here gives one
         # with the client's (browser) time zone, so we convert it back to utc
-        date = new Date(value)
-        date.setTime(date.getTime() + date.getTimezoneOffset() * 60000)
-        value = @datePickerFormat(date)
+
+        # Value first comes from server comes with a different format than next times,
+        # and for that reason an "if" statement is used.
+
+        if @format == "dd_mm_yyyy"
+          [day, month, year] = value.split('/')
+        else
+          [month, day, year] = value.split('/')
+        date = new Date(year,month,day)
+
+        if(date.notValid())
+          date = new Date(value)
+          date.setTime(date.getTime() + date.getTimezoneOffset() * 60000)
+          value = @datePickerFormat(date)
 
       value = '' unless value
 
@@ -124,7 +135,8 @@ onCollections ->
           else
             formatted_value = "#{month}/#{day}/#{year}"
             date = new Date(formatted_value)
-            #Extra check. It is not strictly necessary.
+            #Extra check. It's necessary, for example, when user
+            #is changin values on the fly.
             if(date.notValid())
               return value
             else
@@ -200,13 +212,6 @@ onCollections ->
         @editing(false)
         @filter('')
         delete @originalValue
-
-    fullDateFromValue: =>
-      if @format == "dd_mm_yyyy"
-        [day, month, year] = @value().split('/')
-      else
-        [month, day, year] = @value().split('/')
-      new Date year, (month-1), day
 
     closeDatePickerAndSave: =>
       if $('#ui-datepicker-div:visible').length == 0
