@@ -474,6 +474,12 @@ onCollections ->
       options.changeMonth = true
       options.changeYear = true
       options.yearRange = "1800:+50"
+
+      if (options.defaultDate? && options.defaultDate!="")
+        year = options.defaultDate.split('/')[2].to_int()
+        if(!Date.yearInRange(year))
+          options.yearRange = (year-10).toString()+":"+(year+10).toString()
+
       # fix dinamic DOM
       # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
       $(".ux-datepicker").removeClass('hasDatepicker')

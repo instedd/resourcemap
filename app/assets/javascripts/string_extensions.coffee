@@ -14,3 +14,6 @@ String::titleize = ->
   words = no_underscores.split ' '
   words = _.map words, (w) -> w.charAt(0).toUpperCase() + w.slice(1)
   words.join ' '
+
+String::to_int = () ->
+  parseInt(@)
