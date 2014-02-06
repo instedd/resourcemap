@@ -11,11 +11,9 @@
       %span{ko(html: :highlightedLat)}
     %td.padded
       %span{ko(html: :highlightedLng)}
-    <!-- ko foreach: $root.currentCollection().layers() -->
-    <!-- ko foreach: fields -->
+    <!-- ko foreach: $root.currentCollection().fieldsByLayers() -->
     %td.padded
-      %span{ko(attr: "{ title: $parents[1].highlightedPropertyValue($data) }", html: "$parents[1].highlightedPropertyValue($data)"), style: 'vertical-align:top'}
-    <!-- /ko -->
+      %span{ko(attr: "{ title: $parent.highlightedPropertyValue($data) }", html: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
     <!-- /ko -->
     %td.timeago.padded{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
     %td.padded
