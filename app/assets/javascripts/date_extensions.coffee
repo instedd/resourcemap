@@ -17,3 +17,4 @@ Date::getParts = ->
 
 Date.today = ->
   now = new Date(); today = new Date now.getFullYear(), now.getMonth(), now.getDate()
+
