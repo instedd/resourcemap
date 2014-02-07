@@ -18,11 +18,3 @@ Date::getParts = ->
 Date.today = ->
   now = new Date(); today = new Date now.getFullYear(), now.getMonth(), now.getDate()
 
-Date.minYear = () ->
-  1800
-
-Date.maxYear = () ->
-  Date.today().getFullYear()+70
-
-Date.yearInRange = (year) ->
-  Date.minYear() <= year <= Date.maxYear()
