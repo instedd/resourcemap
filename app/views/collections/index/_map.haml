@@ -201,7 +201,7 @@
               <!-- ko if: writeable -->
               %div.site_row.writeable{ko(click: 'edit')}
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
-                %label.field-name{ko(text: 'name', topPopover: "'Field Code: ' + code", css: { error: :error })}
+                %label.field-name{ko(text: "name + ':'", topPopover: "'Field Code: ' + code", css: { error: :error })}
                 <!-- ko if: hasValue() && !error() -->
                 %span.value{ko(text: :valueUI, visible: '!editing()')}
                 <!-- ko if: kind == 'site' && !editing() && !error() -->

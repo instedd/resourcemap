@@ -28,6 +28,14 @@ onCollections ->
           defaultOptions =[window.model.defaultGroupBy]
         defaultOptions.concat(@fields().filter((f) -> f.showInGroupBy))
 
+    fieldsByLayers: () =>
+      res = []
+      for l in @layers()
+        for f in l.fields
+          res.push f
+
+      res
+
     isSearch: => false
 
     sitesUrl: -> "/collections/#{@id}/sites.json"

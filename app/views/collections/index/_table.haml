@@ -48,7 +48,9 @@
     %col{width: '300'}
     %col{width: '100'}
     %col{width: '100'}
-    <!-- ko foreach: $root.currentCollection().fields() -->
+    -# The headers are duplicated, so if you change the way you iterate over them
+    -# you should also check this other part: 317c6348-873a-4aeb-98e5-56172b45aedc.
+    <!-- ko foreach: $root.currentCollection().fieldsByLayers() -->
     %col{ko(attr: { width: 'suggestedWidth()' })}
     <!-- /ko -->
     %col{width: '150'}
@@ -65,14 +67,14 @@
           %span{style: 'display:inline'} Lat
         %th
           %span{style: 'display:inline'} Long
-        <!-- ko foreach: $root.currentCollection().layers() -->
-        <!-- ko foreach: fields -->
+        -# the headers are duplicated, so if you change the way you iterate over them
+        -# you should also check this other part: 317c6348-873a-4aeb-98e5-56172b45aedc.
+        <!-- ko foreach: $root.currentCollection().fieldsByLayers() -->
         %th{ko(click: '$root.sortBy', style: {maxWidth: 'suggestedWidth()', minWidth: 'suggestedWidth()'}), style: 'overflow:hidden;cursor:pointer'}
           %span{ko(text: :name), style: 'display:inline'}
           <!-- ko if: $root.sort() == esCode -->
           %button{ko(style: {background: "'transparent url(#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png) no-repeat scroll center'", height: "'11px'", cssFloat: "'right'", float: "'right'", borderStyle: "'none'"})}
           <!-- /ko -->
-        <!-- /ko -->
         <!-- /ko -->
         %th{ko(click: '$root.sortByDate'), style: 'width:100%;min-width:100px;cursor:pointer'}
           %span{style: 'display:inline'} Last update
