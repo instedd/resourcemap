@@ -24,7 +24,16 @@ onCollections ->
       @logoUrl = data?.logo_url
       @loadCurrentSnapshotMessage()
       @loadAllSites()
+      @layers = ko.observableArray()
 
+
+    fieldsByLayers: () =>
+      res = []
+      for l in @layers()
+        for f in l.fields
+          res.push f
+
+      res
 
     loadAllSites: =>
       @allSites = ko.observable()

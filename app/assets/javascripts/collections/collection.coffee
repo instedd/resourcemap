@@ -9,7 +9,6 @@ onCollections ->
       @maxLat = data?.max_lat
       @minLng = data?.min_lng
       @maxLng = data?.max_lng
-      @layers = ko.observableArray()
       @fields = ko.observableArray()
 
       # The error in the name field of the current site
@@ -28,13 +27,7 @@ onCollections ->
           defaultOptions =[window.model.defaultGroupBy]
         defaultOptions.concat(@fields().filter((f) -> f.showInGroupBy))
 
-    fieldsByLayers: () =>
-      res = []
-      for l in @layers()
-        for f in l.fields
-          res.push f
 
-      res
 
     isSearch: => false
 
