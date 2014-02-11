@@ -31,15 +31,12 @@ class FacilityXmlGenerator
 
     xml.tag!("facility", "oid" => generate_oid(facility, facility_properties)) do
       generate_other_ids(xml, facility_properties)
-
       generate_coded_types(xml, facility_properties)
 
       xml.tag!("primaryName", facility["_source"]["name"])
 
       generate_other_names(xml, facility_properties)
-
       generate_addresses(xml, facility_properties)
-
       generate_contacts(xml, facility_properties)
 
       xml.tag!("geocode") do
@@ -49,13 +46,9 @@ class FacilityXmlGenerator
       end
 
       generate_languages(xml, facility_properties)
-
       generate_contact_points(xml, facility_properties)
-
       generate_organizations(xml, facility_properties)
-
       generate_operating_hours(xml, facility_properties, @operating_hours)
-
       generate_record(xml, facility)
     end
 
@@ -79,19 +72,19 @@ class FacilityXmlGenerator
 
         if oh.beginning_hour
           xml.tag!("beginningHour") do
-            xml.text!(facility_properties[oh.beginning_hour.code])
+            xml.text!(facility_properties[oh.beginning_hour.code] || "")
           end                  
         end
 
         if oh.ending_hour
           xml.tag!("endingHour") do
-            xml.text!(facility_properties[oh.ending_hour.code])
+            xml.text!(facility_properties[oh.ending_hour.code] || "")
           end
         end
 
         if oh.begin_effective_date 
           xml.tag!("beginEffectiveDate") do
-            xml.text!(facility_properties[oh.begin_effective_date.code])
+            xml.text!(facility_properties[oh.begin_effective_date.code] || "")
           end                  
         end
       end
@@ -108,16 +101,18 @@ class FacilityXmlGenerator
                 xml.tag!("name") do
                   name.common_names.each do |common_name|
                     xml.tag!("commonName", "language" => common_name.language) do
-                      xml.text!(facility_properties[common_name.field.code])
+                      xml.text!(facility_properties[common_name.field.code] || "")
                     end
                   end                  
                 end
               end
 
               service.languages.each do |language|
-                xml.tag!("language", "code" => facility_properties[language.field.code], "codingSchema" => language.coding_schema) do
-                  xml.text!(language.field.human_value_by_option_code(facility_properties[language.field.code]))
-                end
+                if facility_properties[language.field.code]
+                  xml.tag!("language", "code" => facility_properties[language.field.code], "codingSchema" => language.coding_schema) do
+                    xml.text!(language.field.human_value_by_option_code(facility_properties[language.field.code]))
+                  end
+                end                
               end
 
               generate_operating_hours(xml, facility_properties, service.operating_hours)              
@@ -131,36 +126,29 @@ class FacilityXmlGenerator
   def generate_contacts(xml, facility_properties)
     #TODO: this should work automatically given the right object graph
     @contacts.each do |contact|
-      p "rendering contact"
       xml.tag!("contact") do
         xml.tag!("person") do
-          p "rendering person"
           contact.names.each do |name|
-            p "rendering name"
             xml.tag!("name") do
               name.common_names.each do |common_name|
-                p "rendering common name"
                 xml.tag!("commonName", "language" => common_name.language) do
                   xml.text!(facility_properties[common_name.field.code])
                 end                
               end
               xml.tag!("forename") do
-                p "rendering forename"
                 xml.text!(facility_properties[name.forename.code])
               end
               xml.tag!("surname") do
-                p "rendering surname"
                 xml.text!(facility_properties[name.surname.code])
               end
             end
           end
 
-          p "rendering address"
           contact.addresses.each do |address|
             xml.tag!("address") do
               address.address_lines.each do |address_line|
                 xml.tag!("addressLine", "component" => address_line.component) do
-                  xml.text!(facility_properties[address_line.field.code])
+                  xml.text!(facility_properties[address_line.field.code] || "")
                 end
               end
             end

@@ -16,5 +16,7 @@ class CSDContactMapping
 		@addresses = fields.select{|f| f.csd_address?(Field::CSDApiConcern::csd_contact_tag)}
 												.group_by{|f| f.csd_address_element}
 												.map{|address| CSDAddressMapping.new(address[0], address[1])}
+
+		
 	end
 end
