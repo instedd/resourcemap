@@ -10,6 +10,7 @@ class MembershipsController < ApplicationController
     memberships = collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission]).all.map do |membership|
       membership.to_json
     end
+    #render_json({members: memberships, anonymous: {}})
     render_json memberships
   end
 
@@ -58,6 +59,11 @@ class MembershipsController < ApplicationController
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_layer_access params
     render_json :ok
+  end
+
+  def set_layer_access_anonymous_user
+    anonymous_membership = AnonymousMembership.new collection #params...
+    anonymous_membership.set_layer_access params
   end
 
   def set_admin

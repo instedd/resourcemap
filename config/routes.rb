@@ -65,6 +65,9 @@ ResourceMap::Application.routes.draw do
         post 'set_admin'
         post 'unset_admin'
       end
+
+      post 'set_anonymous_access', to: 'memberships#set_access'
+      post 'set_anonymous_layer_access', to: 'memberships#set_layer_access'
     end
     resources :sites_permission
 

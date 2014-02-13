@@ -5,7 +5,7 @@ describe MembershipsController do
 
   let(:user) { User.make email: 'foo@test.com' }
   let(:user_2) { User.make email: 'bar@test.com' }
-  let(:collection) { user.create_collection(Collection.make_unsaved) }
+  let(:collection) { user.create_collection(Collection.make_unsaved({public: true})) }
 
 
   describe "index" do
@@ -17,10 +17,10 @@ describe MembershipsController do
     it "collection admin should be able to write name and location" do
       get :index, collection_id: collection.id
       json = JSON.parse response.body
-      json[0]["user_id"].should eq(user.id)
-      json[0]["admin"].should eq(true)
-      json[0]["name"].should eq("update")
-      json[0]["location"].should eq("update")
+      json["members"][0]["user_id"].should eq(user.id)
+      json["members"][0]["admin"].should eq(true)
+      json["members"][0]["name"].should eq("update")
+      json["members"][0]["location"].should eq("update")
     end
 
     it "for collection member should include default_fields permissions in json" do
@@ -29,10 +29,41 @@ describe MembershipsController do
 
       get :index, collection_id: collection.id
       json = JSON.parse response.body
-      json[1]["user_id"].should eq(user_2.id)
-      json[1]["admin"].should eq(false)
-      json[1]["name"].should eq("update")
-      json[1]["location"].should eq("read")
+      json["members"][1]["user_id"].should eq(user_2.id)
+      json["members"][1]["admin"].should eq(false)
+      json["members"][1]["name"].should eq("update")
+      json["members"][1]["location"].should eq("read")
+    end
+
+    describe "anonymous" do
+      it "should not have read permissions in layers when collection is not public" do
+        get :index, collection_id: collection.id
+        json = JSON.parse response.body
+        json["anonymous"]["name"].should be_nil
+        json["anonymous"]["location"].should be_nil
+      end
+
+      let(:collection2) { user.create_collection(Collection.make_unsaved({public: true})) }
+
+      it "should have read permissions in layers when collection is public" do
+        get :index, collection_id: collection2.id
+        json = JSON.parse response.body
+        json["anonymous"]["name"].should eq("read")
+        json["anonymous"]["location"].should eq("read")
+      end
+
+      it "should update anonymous access from none to read" do
+        layer = collection2.layers.make({ anonymous_user_permission: "none" })
+
+        post :set_layer_access_anonymous_user, collection_id: collection2.id, layer_id: layer.id,
+        action: 'read'
+
+        json = JSON.parse response.body
+        json.should eq("ok")
+
+        layer.reload
+        layer.anonymous_user_permission.should eq("read")
+      end
     end
   end
 
