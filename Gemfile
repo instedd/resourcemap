@@ -22,7 +22,7 @@ gem 'newrelic_rpm'
 gem 'cancan', '~> 1.6.10'
 gem "omniauth"
 gem "omniauth-openid"
-gem 'alto_guisso', git: "https://bitbucket.org/instedd/alto_guisso.git", branch: 'master'
+gem 'alto_guisso', git: "https://bitbucket.org/instedd/alto_guisso.git", branch: 'master', ref: '1058fc24e37968e36bb8d5f84d8efc5455aa4afd'
 gem 'oj'
 gem 'nokogiri'
 gem 'carrierwave'
