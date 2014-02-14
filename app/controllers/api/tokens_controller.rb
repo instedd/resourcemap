@@ -1,5 +1,5 @@
 class Api::TokensController < ApplicationController
-  before_filter :authenticate_api_user!
+  before_filter :authenticate_user!
 
   def index 
     render :json => {:token => current_user.authentication_token}

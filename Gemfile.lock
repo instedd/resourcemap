@@ -1,6 +1,6 @@
 GIT
   remote: https://bitbucket.org/instedd/alto_guisso.git
-  revision: 94f02db8f24d2017e2d19f14cf17d3af5ebc7b44
+  revision: 1058fc24e37968e36bb8d5f84d8efc5455aa4afd
   branch: master
   specs:
     alto_guisso (0.0.1)
@@ -55,8 +55,8 @@ GEM
       i18n (= 0.6.1)
       multi_json (~> 1.0)
     ansi (1.4.3)
-    arel (3.0.3)
-    attr_required (1.0.0)
+    arel (3.0.2)
+    attr_required (0.0.5)
     bcrypt-ruby (3.0.1)
     brakeman (2.1.1)
       erubis (~> 2.6)
@@ -171,10 +171,10 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     method_source (0.8.2)
-    mime-types (1.25.1)
+    mime-types (1.25)
     mini_magick (3.7.0)
       subexec (~> 0.2.1)
-    multi_json (1.8.4)
+    multi_json (1.8.2)
     mysql2 (0.3.11)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
@@ -189,9 +189,9 @@ GEM
       json
       rest-client
     oj (1.3.2)
-    omniauth (1.2.1)
+    omniauth (1.1.4)
       hashie (>= 1.2, < 3)
-      rack (~> 1.0)
+      rack
     omniauth-openid (1.0.1)
       omniauth (~> 1.0)
       rack-openid (~> 1.3.1)
@@ -207,7 +207,7 @@ GEM
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
-    rack-oauth2 (1.0.7)
+    rack-oauth2 (1.0.5)
       activesupport (>= 2.3)
       attr_required (>= 0.0.5)
       httpclient (>= 2.2.0.2)
@@ -237,7 +237,7 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
-    rake (10.1.1)
+    rake (10.1.0)
     rb-fchange (0.0.5)
       ffi
     rb-fsevent (0.9.1)
@@ -275,7 +275,7 @@ GEM
       activesupport (>= 3.0)
       railties (>= 3.0)
       rspec (~> 2.10.0)
-    ruby-openid (2.5.0)
+    ruby-openid (2.3.0)
     ruby2ruby (2.0.6)
       ruby_parser (~> 3.1)
       sexp_processor (~> 4.0)
