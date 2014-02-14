@@ -1,5 +1,5 @@
 class FieldsController < ApplicationController
-  before_filter :authenticate_api_user!, :unless => Proc.new { collection && collection.public && (params[:action] == "index" || params[:action] == "show") }
+  before_filter :authenticate_user!, :unless => Proc.new { collection && collection.public && (params[:action] == "index" || params[:action] == "show") }
   before_filter :authenticate_collection_admin!, except: :index
 
   expose(:field) { fields.find params[:id] }
