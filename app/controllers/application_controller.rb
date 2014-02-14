@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.html {
         if current_user.is_guest
-          authenticate_user!
+          authenticate_api_user!
         else
          render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
         end
