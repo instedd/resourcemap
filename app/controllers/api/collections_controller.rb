@@ -76,7 +76,7 @@ class Api::CollectionsController < ApplicationController
   end
 
   def perform_search(*options)
-    except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size, :location_missing]
+    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size, :location_missing]
 
     search = new_search
 
@@ -93,13 +93,13 @@ class Api::CollectionsController < ApplicationController
       search.unlimited
     end
 
+    search.id(params[:site_id]) if params[:site_id]
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search] if params[:search]
     search.box *valid_box_coordinates if params[:box]
     search.select_fields(params[:fields]) if params[:fields]
     search.name(params[:name]) if params[:name]
     search.location_missing if params[:location_missing].present?
-
 
     if params[:lat] || params[:lng] || params[:radius]
       [:lat, :lng, :radius].each do |key|

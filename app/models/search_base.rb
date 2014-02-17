@@ -12,7 +12,11 @@ module SearchBase
   end
 
   def id(id)
-    @search.filter :term, id: id
+    if id.is_a?(Array)
+      @search.filter :terms, id: id
+    else
+      @search.filter :term, id: id
+    end
     self
   end
 

@@ -332,6 +332,57 @@ describe Api::CollectionsController do
     end
   end
 
+  describe "gets sites by id" do
+    before(:each) { sign_in user }
+
+    it "gets site by id" do
+      sites = 6.times.map { collection.sites.make }
+
+      site_id = sites[0].id
+      get :show, id: collection.id, site_id: site_id, format: :json
+
+      response.should be_ok
+
+      collection = JSON.parse response.body
+      collection["sites"].map { |s| s["id"] }.should eq([site_id])
+    end
+
+    it "gets sites by id" do
+      sites = 6.times.map { collection.sites.make }
+      site_ids = [sites[0].id, sites[2].id, sites[5].id]
+
+      get :show, id: collection.id, site_id: site_ids, format: :json
+
+      response.should be_ok
+
+      collection = JSON.parse response.body
+      collection["sites"].map { |s| s["id"] }.sort.should eq(site_ids)
+    end
+
+    it "gets sites by id, paged" do
+      sites = 6.times.map { collection.sites.make }
+      site_ids = [sites[0].id, sites[2].id, sites[3].id, sites[5].id]
+
+      get :show, id: collection.id, site_id: site_ids, page: 1, page_size: 2, format: :json
+
+      response.should be_ok
+
+      json = JSON.parse response.body
+      first_ids = json["sites"].map { |s| s["id"] }
+      first_ids.length.should eq(2)
+
+      get :show, id: collection.id, site_id: site_ids, page: 2, page_size: 2, format: :json
+
+      response.should be_ok
+
+      json = JSON.parse response.body
+      second_ids = json["sites"].map { |s| s["id"] }
+      second_ids.length.should eq(2)
+
+      (first_ids + second_ids).sort.should eq(site_ids)
+    end
+  end
+
   describe "destroy" do
     before(:each) { sign_in user }
 
