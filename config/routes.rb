@@ -57,6 +57,7 @@ ResourceMap::Application.routes.draw do
       collection do
         get 'invitable'
         get 'search'
+        post 'set_layer_access_anonymous_user'
       end
       member do
         post 'set_access'
@@ -65,9 +66,6 @@ ResourceMap::Application.routes.draw do
         post 'set_admin'
         post 'unset_admin'
       end
-
-      post 'set_anonymous_access', to: 'memberships#set_access'
-      post 'set_anonymous_layer_access', to: 'memberships#set_layer_access'
     end
     resources :sites_permission
 

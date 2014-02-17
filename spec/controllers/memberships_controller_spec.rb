@@ -55,11 +55,12 @@ describe MembershipsController do
       it "should update anonymous access from none to read" do
         layer = collection2.layers.make({ anonymous_user_permission: "none" })
 
-        post :set_layer_access_anonymous_user, collection_id: collection2.id, layer_id: layer.id,
-        action: 'read'
+        binding.pry
 
-        json = JSON.parse response.body
-        json.should eq("ok")
+        post :set_layer_access_anonymous_user, collection_id: collection2.id, layer_id: layer.id,
+        verb: 'read'
+
+        response.body.should eq('ok')
 
         layer.reload
         layer.anonymous_user_permission.should eq("read")
