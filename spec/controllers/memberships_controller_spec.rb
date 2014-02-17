@@ -36,6 +36,8 @@ describe MembershipsController do
     end
 
     describe "anonymous" do
+      let(:collection2) { user.create_collection(Collection.make_unsaved({public: true})) }
+
       it "should not have read permissions in layers when collection is not public" do
         get :index, collection_id: collection.id
         json = JSON.parse response.body
@@ -43,13 +45,24 @@ describe MembershipsController do
         json["anonymous"]["location"].should be_nil
       end
 
-      let(:collection2) { user.create_collection(Collection.make_unsaved({public: true})) }
-
       it "should have read permissions in layers when collection is public" do
         get :index, collection_id: collection2.id
         json = JSON.parse response.body
         json["anonymous"]["name"].should eq("read")
         json["anonymous"]["location"].should eq("read")
+      end
+
+      describe "previously configured layers" do
+        let(:l1) { collection2.layers.make({anonymous_user_permission: "read"}) }
+        let(:l2) { collection2.layers.make({anonymous_user_permission: "none"}) }
+
+        subject { get :index, collection_id: collection2.id }
+
+        it "should have proper permission" do
+          anon = JSON.parse(subject.body)["anonymous"]
+
+          [l1, l2].each {|l| anon[l.id.to_s].should eq(l.anonymous_user_permission)}
+        end
       end
 
       it "should update anonymous access from none to read" do
