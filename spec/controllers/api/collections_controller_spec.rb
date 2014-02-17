@@ -34,7 +34,6 @@ describe Api::CollectionsController do
 
     let!(:site2) {collection.sites.make :name => "Site A", properties: { hierarchy.es_code => 'bro' } }
 
-
     before(:each) { sign_in user }
 
     describe "GET JSON collection" do
@@ -331,7 +330,15 @@ describe Api::CollectionsController do
 
       end
     end
-
   end
 
+  describe "destroy" do
+    before(:each) { sign_in user }
+
+    it "destroys a collection" do
+      delete :destroy, id: collection.id
+      response.should be_ok
+      Collection.count.should eq(0)
+    end
+  end
 end
