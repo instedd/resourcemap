@@ -36,6 +36,48 @@ class CsdApiController < ApplicationController
     render template: 'directories', formats: [:xml], handler: :builder, layout: false
   end
 
+  def get_service_modifications
+    # Parse message
+    soap_message = Nokogiri::XML(request.body.read)
+
+    # Validation
+    soap_body = extract_soap_body(soap_message)
+
+    # Create the search object and apply updated_since filter
+    search = collection.new_search current_user_id: current_user.id
+    search.use_codes_instead_of_es_codes
+    search.unlimited
+    updated_since = soap_message.xpath('//soap:Body//csd:lastModified').children.first.content
+    search.after(updated_since)
+
+    @services = search.api_results
+    @request_id = soap_message.xpath("//soap:Header/wsa:MessageID").children.first.content
+    @collection = collection
+
+    render template: 'service_directory', formats: [:xml], handler: :builder, layout: false
+  end
+
+  def get_organization_modifications
+    # Parse message
+    soap_message = Nokogiri::XML(request.body.read)
+
+    # Validation
+    soap_body = extract_soap_body(soap_message)
+
+    # Create the search object and apply updated_since filter
+    search = collection.new_search current_user_id: current_user.id
+    search.use_codes_instead_of_es_codes
+    search.unlimited
+    updated_since = soap_message.xpath('//soap:Body//csd:lastModified').children.first.content
+    search.after(updated_since)
+
+    @organizations = search.api_results
+    @request_id = soap_message.xpath("//soap:Header/wsa:MessageID").children.first.content
+    @collection = collection
+
+    render template: 'organization_directory', formats: [:xml], handler: :builder, layout: false
+  end
+
   private
 
   def rescue_error(ex)
