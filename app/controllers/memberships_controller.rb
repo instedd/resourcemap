@@ -56,14 +56,12 @@ class MembershipsController < ApplicationController
 
   #TODO: move set_layer_access to the more generic set_access
   def set_layer_access
-    binding.pry
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_layer_access params
     render_json :ok
   end
 
   def set_layer_access_anonymous_user
-    binding.pry
     anonymous_membership = AnonymousMembership.new collection, current_user
     anonymous_membership.set_layer_access params
     render :text => "ok"
