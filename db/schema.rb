@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140213190224) do
+ActiveRecord::Schema.define(:version => 20140217193052) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -114,13 +114,14 @@ ActiveRecord::Schema.define(:version => 20140213190224) do
     t.integer  "collection_id"
     t.string   "name"
     t.boolean  "public"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
     t.integer  "ord"
     t.datetime "valid_since"
     t.datetime "valid_to"
     t.integer  "layer_id"
-    t.integer  "version",       :default => 0
+    t.integer  "version",                   :default => 0
+    t.string   "anonymous_user_permission", :default => "none"
   end
 
   add_index "layer_histories", ["layer_id"], :name => "index_layer_histories_on_layer_id"
