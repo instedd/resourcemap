@@ -125,6 +125,10 @@
   text-overflow:ellipsis;
 }
 
+.tablescroll .GralTable.tableview td.collectionCell .collectionName {
+  width:270px;
+}
+
 .tablescroll .GralTable td.collectionCell button.enterCollection.farrow {
   position:relative;
   float:left;

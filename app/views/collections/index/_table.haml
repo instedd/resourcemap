@@ -11,15 +11,15 @@
   %table.GralTable.tableview
     %thead
       %tr
-        %th{style: 'width:283px;padding-left:10px;'} Collection
+        %th{style:'width:300px;'} Collection
         %th{style: 'width:100%'} Last update
         %th
     %tbody
       <!-- ko foreach: collections -->
       %tr
-        %td
-          %span{ko(text: :name)}
-          %button.farrow{ko(click: '$root.enterCollection'), type: :button}
+        %td.collectionCell
+          %span.collectionName.tableMode{ko(text: :name)}
+          %button.enterCollection.farrow{ko(click: '$root.enterCollection'), type: :button}
         %td.l.timeago{ko(attr: {title: :updatedAt}, text: :updatedAtTimeago)}
       <!-- /ko -->
 .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
