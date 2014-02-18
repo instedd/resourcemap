@@ -6,7 +6,7 @@ class Api::CollectionsController < ApplicationController
   before_filter :authenticate_user!
   around_filter :rescue_with_check_api_docs
 
-  expose(:collection) { current_user.collections.find params[:id] }
+  expose(:collection) { current_user.collections.find(params[:collection_id] || params[:id]) }
 
   def index
     render_json current_user.collections.all
