@@ -18,8 +18,8 @@
       <!-- ko foreach: collections -->
       %tr
         %td.collectionCell
-          %span.collectionName.tableMode{ko(text: :name)}
-          %button.enterCollection.farrow{ko(click: '$root.enterCollection'), type: :button}
+          %span.collectionName{ko(text: :name)}
+          %button.enterRow.farrow{ko(click: '$root.enterCollection'), type: :button}
         %td.l.timeago{ko(attr: {title: :updatedAt}, text: :updatedAtTimeago)}
       <!-- /ko -->
 .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}

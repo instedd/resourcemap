@@ -129,16 +129,23 @@
   width:270px;
 }
 
-.tablescroll .GralTable td.collectionCell button.enterCollection.farrow {
+.tablescroll .GralTable td button.enterRow.farrow {
   position:relative;
   float:left;
   right:0px;
   top:0px;
 }
 
+.tablescroll .GralTable td.siteCell button.enterRow.farrow {
+  top:5px;
+}
 
 .tablescroll .GralTable {
   border-bottom: 1px #EEE solid;
+}
+
+.no_h_scrollbar {
+  overflow-wrap: break-word;
 }
 
 .stat-r { background:#ff4800; background-image:none !important; border-top:1px solid #bf3602; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }

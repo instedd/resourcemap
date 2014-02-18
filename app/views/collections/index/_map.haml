@@ -19,7 +19,7 @@
               / %button.farrow{ko(click: '$root.enterCollection'), type: :button}
             .clear
             <!-- /ko -->
-            %button.enterCollection.farrow{ko(click: '$root.enterCollection'), type: :button}            
+            %button.enterRow.farrow{ko(click: '$root.enterCollection'), type: :button}            
         <!-- /ko -->
     %br{:clear => "all"}/
 
@@ -148,7 +148,7 @@
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
       %span{ko(text: :name)}
-    .tablescroll.cheight
+    .tablescroll.cheight.no_h_scrollbar
       %table
         %tbody
           %tr
