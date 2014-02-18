@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131206170547) do
+ActiveRecord::Schema.define(:version => 20140217193052) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -114,13 +114,14 @@ ActiveRecord::Schema.define(:version => 20131206170547) do
     t.integer  "collection_id"
     t.string   "name"
     t.boolean  "public"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
     t.integer  "ord"
     t.datetime "valid_since"
     t.datetime "valid_to"
     t.integer  "layer_id"
-    t.integer  "version",       :default => 0
+    t.integer  "version",                   :default => 0
+    t.string   "anonymous_user_permission", :default => "none"
   end
 
   add_index "layer_histories", ["layer_id"], :name => "index_layer_histories_on_layer_id"
@@ -140,9 +141,10 @@ ActiveRecord::Schema.define(:version => 20131206170547) do
     t.integer  "collection_id"
     t.string   "name"
     t.boolean  "public"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
     t.integer  "ord"
+    t.string   "anonymous_user_permission", :default => "none"
   end
 
   add_index "layers", ["collection_id"], :name => "index_layers_on_collection_id"
@@ -320,18 +322,18 @@ ActiveRecord::Schema.define(:version => 20131206170547) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                                 :default => "", :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
+    t.string   "email",                  :default => "", :null => false
+    t.string   "encrypted_password",     :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                         :default => 0
+    t.integer  "sign_in_count",          :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                                            :null => false
-    t.datetime "updated_at",                                            :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.string   "phone_number"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -339,10 +341,10 @@ ActiveRecord::Schema.define(:version => 20131206170547) do
     t.string   "unconfirmed_email"
     t.boolean  "is_super_user"
     t.string   "authentication_token"
-    t.integer  "collection_count",                      :default => 0
-    t.integer  "layer_count",                           :default => 0
-    t.integer  "site_count",                            :default => 0
-    t.integer  "gateway_count",                         :default => 0
+    t.integer  "collection_count",       :default => 0
+    t.integer  "layer_count",            :default => 0
+    t.integer  "site_count",             :default => 0
+    t.integer  "gateway_count",          :default => 0
     t.boolean  "success_outcome"
   end
 
