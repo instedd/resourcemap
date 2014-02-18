@@ -10,8 +10,7 @@ class MembershipsController < ApplicationController
     memberships = collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission]).all.map do |membership|
       membership.to_json
     end
-    #render_json({members: memberships, anonymous: {}})
-    render_json memberships
+    render_json({members: memberships, anonymous: {}})
   end
 
   def create
