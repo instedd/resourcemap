@@ -208,4 +208,54 @@ label.error.field-name {
   color: #ff6600
 }
 
+#refine-container {
+  li.superblyTagItem {
+    float:left;
+    padding:3px;
+    margin-right:4px;
+    cursor:pointer;
+    margin-top:0px;
+  }
 
+  .refine {
+    float:left;
+    padding:3px;
+    cursor:pointer;
+    position:relative;
+  }
+
+  .site-count {
+    padding:3px;
+  }
+
+  .refine-popup.box {
+    position:absolute;
+    padding:3px;
+    z-index:10000;
+    width:600px;
+    max-height:300px;
+    overflow:auto;
+    -webkit-box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  #refine-row {
+    cursor:pointer;
+    padding-top:6px;
+  }
+
+  .filter-content {
+    padding:10px;
+    margin-left:10px;
+  }
+
+  .clickable {
+    cursor:pointer;
+  }
+
+  img.arrow {
+    position:relative;
+    top:1px;
+    width: 11;
+    height: 11;
+  }
+}

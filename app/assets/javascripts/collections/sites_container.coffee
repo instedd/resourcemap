@@ -74,7 +74,7 @@ onCollections ->
         @loadMoreSites()
 
 
-      # Toogle select folder
+      # Toggle select folder
       if !@expanded()
         window.model.selectHierarchy(this)
       else

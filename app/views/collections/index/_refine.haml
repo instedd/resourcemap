@@ -3,30 +3,30 @@
   Group by
   %select{ko(value: '$root.groupBy', options: :groupByOptions, optionsText: "'name'")}
 <!-- /ko -->
-.left.site-count{style: 'padding:3px;'}
+.left.site-count
   %span{ko(text: :siteCountText)}
 .left.superblyTagItems
   <!-- ko foreach: filters() -->
-  %li.superblyTagItem{style: 'float:left;padding:3px;margin-right:4px;cursor:pointer'}
+  %li.superblyTagItem
     %span{ko(text: '$root.filterDescription($data)')}
     %a{ko(click: '$root.removeFilter')} x
   <!-- /ko -->
-  .refine{ko(click: 'toggleRefinePopup'), style: 'float:left;padding:3px;cursor:pointer;position:relative;top:1px'}
+  .refine{ko(click: 'toggleRefinePopup')}
     <!-- ko if: filters().length == 0 -->
     Refine results
     <!-- /ko -->
     <!-- ko if: filters().length > 0 -->
     Refine further
     <!-- /ko -->
-    %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (showingRefinePopup() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+    %img.arrow{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (showingRefinePopup() ? 'Down' : 'Right') + '.png'"})}
   <!-- ko if: showingRefinePopup() -->
-  .refine-popup.box{style: 'position:absolute;padding:3px;z-index:10000;width:600px;max-height:300px;overflow:auto;-webkit-box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2)'}
+  .refine-popup.box
     <!-- ko if: !inSearch() || !currentCollection().hasDateFilter() -->
-    #div{ko(click: 'function(data, event) { toggleRefineProperty("update") }'), style: 'cursor:pointer'}
-      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expandedRefineProperty() == \"update\" ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+    .clickable{ko(click: 'function(data, event) { toggleRefineProperty("update") }')}
+      %img.arrow{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expandedRefineProperty() == \"update\" ? 'Down' : 'Right') + '.png'"})}
       %span Updated within
     <!-- ko if: expandedRefineProperty() == 'update' -->
-    #div{style: 'padding:10px;margin-left:10px'}
+    .filter-content
       %input#refine-last-hour{ko(click: '$root.filterByLastHour'), type: :radio, name: 'refine-update'}
       %label{:for => 'refine-last-hour'} the last hour
       %br/
@@ -42,20 +42,20 @@
     <!-- /ko -->
     <!-- /ko -->
     <!-- ko ifnot: $root.filteringByProperty(FilterByLocationMissing) -->
-    #div{ko(click: 'function(data, event) { toggleRefineProperty("location_missing") }'), style: 'cursor:pointer;padding-top:6px'}
-      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expandedRefineProperty() == \"location_missing\" ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+    #refine-row{ko(click: 'function(data, event) { toggleRefineProperty("location_missing") }')}
+      %img.arrow{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expandedRefineProperty() == \"location_missing\" ? 'Down' : 'Right') + '.png'"})}
       %span Location missing
       <!-- ko if: expandedRefineProperty() == 'location_missing' -->
-      #div{ko(click: '$root.filterByLocationMissing'), style: 'cursor:pointer;padding:10px;margin-left:10px'}
+      .filter-content.clickable{ko(click: '$root.filterByLocationMissing')}
         %a.white.button{ko(click: '$root.filterByLocationMissing')} OK
       <!-- /ko -->
     <!-- /ko -->
     <!-- ko foreach: currentCollection().refineFields() -->
-    #div{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.esCode) }'), style: 'cursor:pointer;padding-top:6px'}
-      %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == esCode ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
+    #refine-row{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.esCode) }')}
+      %img.arrow{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == esCode ? 'Down' : 'Right') + '.png'"})}
       %span{ko(text: :name)}
     <!-- ko if: $root.expandedRefineProperty() == esCode -->
-    #div{style: 'padding:10px;margin-left:10px'}
+    .filter-content
       <!-- ko if: kind == 'text' || kind == 'user' || isPluginKind() -->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
         %option{value: '='} starts with
