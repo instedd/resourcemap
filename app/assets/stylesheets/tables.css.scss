@@ -105,10 +105,33 @@
 .tablescroll .GralTable td div span.value { margin-top:0px; white-space:nowrap; vertical-align:top; cursor:pointer }
 .tablescroll .GralTable td div p { display:inline-block; padding:0; margin:0px 0 0 0; vertical-align:middle; white-space:nowrap }
 .tablescroll .GralTable td div p a { color:inherit }
-.tablescroll .GralTable td button.farrow { float:right  }
+.tablescroll .GralTable td button.farrow {   }
 .tablescroll .GralTable th.r { text-align:right }
 .tablescroll .GralTable td.r { text-align:right }
 .tablescroll .GralTable td span { white-space: nowrap; vertical-align:middle; /*height:4px*/ }
+
+/* My collections view */
+.tablescroll .GralTable td.collectionCell input {
+  float:left;
+  margin-top:8px;
+}
+
+.tablescroll .GralTable td.collectionCell .collectionName {
+  width:230px;
+  float:left;
+  margin-top:6px;
+  margin-left:4px;
+  overflow: hidden;
+  text-overflow:ellipsis;
+}
+
+.tablescroll .GralTable td.collectionCell button.enterCollection.farrow {
+  position:relative;
+  float:left;
+  right:0px;
+  top:0px;
+}
+
 
 .tablescroll .GralTable {
   border-bottom: 1px #EEE solid;
