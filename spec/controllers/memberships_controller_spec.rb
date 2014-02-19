@@ -5,7 +5,7 @@ describe MembershipsController do
 
   let(:user) { User.make email: 'foo@test.com' }
   let(:user_2) { User.make email: 'bar@test.com' }
-  let(:collection) { user.create_collection(Collection.make_unsaved({public: true})) }
+  let(:collection) { user.create_collection(Collection.make_unsaved) }
 
 
   describe "index" do
@@ -36,29 +36,31 @@ describe MembershipsController do
     end
 
     describe "anonymous" do
-      let(:collection2) { user.create_collection(Collection.make_unsaved({public: true})) }
+      let(:collection2) { user.create_collection(Collection.make({public: true})) }
 
-      it "should not have read permissions in layers when collection is not public" do
-        get :index, collection_id: collection.id
-        json = JSON.parse response.body
-        json["anonymous"]["name"].should be_nil
-        json["anonymous"]["location"].should be_nil
-      end
+      describe "built in fields" do
+        it "should not have read permissions in name or location when collection is private" do
+          get :index, collection_id: collection.id
+          json = JSON.parse response.body
+          json["anonymous"]["name"].should eq("none")
+          json["anonymous"]["location"].should eq("none")
+        end
 
-      it "should have read permissions in layers when collection is public" do
-        get :index, collection_id: collection2.id
-        json = JSON.parse response.body
-        json["anonymous"]["name"].should eq("read")
-        json["anonymous"]["location"].should eq("read")
+        it "should have read permissions in layers when collection is public" do
+          get :index, collection_id: collection2.id
+          json = JSON.parse response.body
+          json["anonymous"]["name"].should eq("read")
+          json["anonymous"]["location"].should eq("read")
+        end
       end
 
       describe "previously configured layers" do
-        let(:l1) { collection2.layers.make({anonymous_user_permission: "read"}) }
-        let(:l2) { collection2.layers.make({anonymous_user_permission: "none"}) }
-
         subject { get :index, collection_id: collection2.id }
 
         it "should have proper permission" do
+          l1 = collection2.layers.make({anonymous_user_permission: "read"})
+          l2 = collection2.layers.make({anonymous_user_permission: "none"})
+
           anon = JSON.parse(subject.body)["anonymous"]
 
           [l1, l2].each {|l| anon[l.id.to_s].should eq(l.anonymous_user_permission)}

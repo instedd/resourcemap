@@ -31,6 +31,7 @@ end
 Collection.blueprint do
   name
   icon {'default'}
+  public { false }
 end
 
 Site.blueprint do
