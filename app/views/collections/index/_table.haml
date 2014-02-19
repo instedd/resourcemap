@@ -3,7 +3,7 @@
 .tableheader.expanded
   %div.title My Collections
   .mapheader.right
-    %button.icon_button.right{ko(click: '$root.tooglefullscreen', css: {frestore: '$root.fullscreen()', ffullscreen: '!$root.fullscreen()'}) }
+    %button.icon_button.right{ko(click: '$root.togglefullscreen', css: {frestore: '$root.fullscreen()', ffullscreen: '!$root.fullscreen()'}) }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: "{active: !$root.showingMap()}")}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: "{active: $root.showingMap()}")}
     %br{clear: "all"}
@@ -11,15 +11,15 @@
   %table.GralTable.tableview
     %thead
       %tr
-        %th{style: 'width:283px;padding-left:10px;'} Collection
+        %th{style:'width:300px;'} Collection
         %th{style: 'width:100%'} Last update
         %th
     %tbody
       <!-- ko foreach: collections -->
       %tr
-        %td
-          %span{ko(text: :name)}
-          %button.farrow{ko(click: '$root.enterCollection'), type: :button}
+        %td.collectionCell
+          %span.collectionName{ko(text: :name)}
+          %button.enterRow.farrow{ko(click: '$root.enterCollection'), type: :button}
         %td.l.timeago{ko(attr: {title: :updatedAt}, text: :updatedAtTimeago)}
       <!-- /ko -->
 .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
@@ -39,7 +39,7 @@
       %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
   = render 'collections/index/export'
   .mapheader.right
-    %button.icon_button.right{ko(click: '$root.tooglefullscreen', css: {frestore: '$root.fullscreen()', ffullscreen: '!$root.fullscreen()'}) }
+    %button.icon_button.right{ko(click: '$root.togglefullscreen', css: {frestore: '$root.fullscreen()', ffullscreen: '!$root.fullscreen()'}) }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
     %button.icon_button.fmap.right{ko(click: '$root.showMap', css: {active: "$root.showingMap()"})}
     %br{clear: "all"}

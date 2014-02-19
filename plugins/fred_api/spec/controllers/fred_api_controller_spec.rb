@@ -112,7 +112,7 @@ describe FredApiController do
     end
 
     describe 'limit' do
-      (3..100).each do |i|
+      (3..5).each do |i|
         let!("site#{i}".to_sym) { collection.sites.make name: "Site C#{i}", properties:{ date.es_code => "2012-10-26T00:00:00Z"} }
       end
 
@@ -128,13 +128,11 @@ describe FredApiController do
       end
 
       it 'should not limit the number of facilities when limit=off' do
-
-
         get :facilities, format: 'json', limit: "off", collection_id: collection.id
         json = (JSON.parse response.body)["facilities"]
 
-        # 98 sites created inside this test case, and 2 under "query list of facilities" describe scope
-        json.length.should eq(100)
+        # 3 sites created inside this test case, and 2 under "query list of facilities" describe scope
+        json.length.should eq(5)
       end
     end
 
@@ -209,8 +207,7 @@ describe FredApiController do
     end
 
     it "should filter by updated_at" do
-      #this query has a 2 seconds bound
-      sleep 3
+      Timecop.travel(3.seconds.from_now)
       site3 = collection.sites.make name: 'Site C'
       iso_updated_at = Time.zone.parse(site3.updated_at.to_s).utc.iso8601
       get :facilities, format: 'json', updatedAt: iso_updated_at, collection_id: collection.id
@@ -220,8 +217,7 @@ describe FredApiController do
     end
 
     it "should filter by created_at" do
-      #this query has a 2 seconds bound
-      sleep 3
+      Timecop.travel(3.seconds.from_now)
       site3 = collection.sites.make name: 'Site C'
       iso_created_at = Time.zone.parse(site3.created_at.to_s).utc.iso8601
       get :facilities, format: 'json', createdAt: iso_created_at, collection_id: collection.id
@@ -238,7 +234,7 @@ describe FredApiController do
     end
 
     it "should filter by updated since" do
-      sleep 3
+      Timecop.travel(3.seconds.from_now)
       iso_before_update = Time.zone.now.utc.iso8601
       site1.name = "Site A New"
       site1.save!
@@ -249,7 +245,7 @@ describe FredApiController do
     end
 
     it "should filter by updated since with miliseconds" do
-      sleep 3
+      Timecop.travel(3.seconds.from_now)
       iso_before_update = Time.zone.now.utc.iso8601 5
       site1.name = "Site A New"
       site1.save!

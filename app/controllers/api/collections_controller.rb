@@ -2,8 +2,11 @@ class Api::CollectionsController < ApplicationController
   include Api::JsonHelper
   include Api::GeoJsonHelper
 
+  skip_before_filter :verify_authenticity_token
   before_filter :authenticate_user!
   around_filter :rescue_with_check_api_docs
+
+  expose(:collection) { current_user.collections.find(params[:collection_id] || params[:id]) }
 
   def index
     render_json current_user.collections.all
@@ -59,6 +62,11 @@ class Api::CollectionsController < ApplicationController
     render_json collection_geo_json(collection, @results)
   end
 
+  def destroy
+    collection.destroy
+    head :ok
+  end
+
   private
 
   def perform_histogram_search(field, filters=nil)
@@ -68,7 +76,7 @@ class Api::CollectionsController < ApplicationController
   end
 
   def perform_search(*options)
-    except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size, :location_missing]
+    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size, :location_missing]
 
     search = new_search
 
@@ -85,8 +93,7 @@ class Api::CollectionsController < ApplicationController
       search.unlimited
     end
 
-
-
+    search.id(params[:site_id]) if params[:site_id]
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search] if params[:search]
     search.box *valid_box_coordinates if params[:box]
@@ -94,12 +101,10 @@ class Api::CollectionsController < ApplicationController
     search.name(params[:name]) if params[:name]
     search.location_missing if params[:location_missing].present?
 
-
     if params[:lat] || params[:lng] || params[:radius]
       [:lat, :lng, :radius].each do |key|
         raise "Missing '#{key}' parameter" unless params[key]
         raise "Missing '#{key}' value" unless !params[key].blank?
-
       end
       search.radius params[:lat], params[:lng], params[:radius]
     end
@@ -137,7 +142,6 @@ class Api::CollectionsController < ApplicationController
   def rescue_with_check_api_docs
     yield
   rescue => ex
-
     Rails.logger.info ex.message
     Rails.logger.info ex.backtrace
 

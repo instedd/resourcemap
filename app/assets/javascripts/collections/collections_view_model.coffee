@@ -78,7 +78,7 @@ onCollections ->
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
 
-    @tooglefullscreen: ->
+    @togglefullscreen: ->
       if !@fullscreen()
         @fullscreen(true)
         $("body").addClass("fullscreen")
@@ -90,13 +90,14 @@ onCollections ->
         @fullscreen(false)
         @fullscreenExpanded(false)
         $("body").removeClass("fullscreen")
-        $('#collections-main .left').show()
         $('.expand-collapse_button').hide()
+        $('.left.panel').removeClass('collapse')
+        $('#right-panel').removeClass('expand')
         @reloadMapSites()
       @makeFixedHeaderTable()
 
 
-    @toogleExpandFullScreen: ->
+    @toggleExpandFullScreen: ->
       if @fullscreen() && !@fullscreenExpanded()
         @fullscreenExpanded(true)
         $('#collections-main .left').addClass("collapse")

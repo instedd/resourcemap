@@ -341,6 +341,7 @@ body.fullscreen #container {
 .box.slightly-padded .tablescroll .GralTable td div {
   display:inline-block;
   overflow:hidden;
+  text-overflow:ellipsis;
   margin-top: 7px;
 }
 
@@ -348,7 +349,7 @@ body.fullscreen #container {
 
   td {
     position: relative;
-    padding: 0 35px 0 5px;
+    padding: 0 5px 0 5px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -367,6 +368,7 @@ body.fullscreen #container {
   }
 
 }
+
 .grayselected {
   @include border-radius(5px);
   background: #EBEBEB;

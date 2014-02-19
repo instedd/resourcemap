@@ -111,6 +111,4 @@ describe "Luhn" do
       create_site_and_assign_default_values(nil)
     end.should_not raise_exception(ActiveRecord::RecordInvalid, /The value already exists in the collection/)
   end
-
-
 end
