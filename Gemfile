@@ -39,6 +39,7 @@ group :test do
   gem 'simplecov'
   gem 'simplecov-rcov'
   gem 'brakeman'
+  gem 'timecop'
 end
 
 group :test, :development do

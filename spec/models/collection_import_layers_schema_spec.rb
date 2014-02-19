@@ -10,7 +10,7 @@ describe Collection::ImportLayersSchemaConcern do
 	it 'should import json_layer without fields' do
 		json = [other_layer].to_json
 		collection.layers.count.should eq(0)
-		sleep 2
+		Timecop.travel(2.seconds.from_now)
 		collection.import_schema(json, user)
 		collection.layers.count.should eq(1)
 		collection_new_layer = collection.layers.first
@@ -24,10 +24,10 @@ describe Collection::ImportLayersSchemaConcern do
 	end
 
 	it 'should import json_layer with numeric field' do
-		other_layer.numeric_fields.make code: 'numBeds', name: 'Number of Beds', config: { :allows_decimals => "true" } 
+		other_layer.numeric_fields.make code: 'numBeds', name: 'Number of Beds', config: { :allows_decimals => "true" }
 		other_field = other_layer.fields.first
 		json = other_collection.layers.includes(:fields).to_json(include: :fields)
-		sleep 2
+		Timecop.travel(2.seconds.from_now)
 		collection.import_schema(json, user)
 		collection.fields.count.should eq(1)
 		new_field = collection.fields.first
@@ -51,5 +51,5 @@ describe Collection::ImportLayersSchemaConcern do
 		new_field = collection.fields.first
 		new_field.hierarchy_options.length.should eq(3)
 	end
-	
+
 end
