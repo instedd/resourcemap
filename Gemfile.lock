@@ -1,6 +1,6 @@
 GIT
   remote: https://bitbucket.org/instedd/alto_guisso.git
-  revision: 1058fc24e37968e36bb8d5f84d8efc5455aa4afd
+  revision: 94f02db8f24d2017e2d19f14cf17d3af5ebc7b44
   branch: master
   specs:
     alto_guisso (0.0.1)
@@ -188,7 +188,7 @@ GEM
     nuntium_api (0.20)
       json
       rest-client
-    oj (1.3.2)
+    oj (2.5.5)
     omniauth (1.1.4)
       hashie (>= 1.2, < 3)
       rack
