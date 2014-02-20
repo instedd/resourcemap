@@ -24,8 +24,9 @@ describe Anonymous do
       subject { anonymous2.send("#{builtin_field}_permission") }
       it { should eq('read') }
     end
+  end
 
-  describe "layer_default_permission" do
+  describe "default_layer_permission" do
       let(:layer) { collection.layers.make }
       subject{
         layer
@@ -47,13 +48,15 @@ describe Anonymous do
     end
   end
 
-  ['read','none'].each do |level|
+  ['read', 'none'].each do |level|
     describe "set_layer_#{level}able_access" do
-      let(:layer) { collection.layers.make({anonymous_user_permission: level}) }
-      layer
-      anonymous.set_acces
+      let(:layer) { collection.layers.make }
 
+      it '' do
+        anonymous.set_layer_access(layer.id, level)
+        anonymous.to_json[layer.id.to_s].should eq(level)
+      end
     end
-
   end
+
 end

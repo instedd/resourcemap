@@ -4,10 +4,10 @@ class Anonymous
     @granting_user = granting_user
   end
 
-  def set_layer_access(options = {})
-    l = @collection.layers.find(options[:layer_id])
+  def set_layer_access(layer_id, access_level)
+    l = @collection.layers.find(layer_id)
     l.user = @granting_user
-    l.anonymous_user_permission = options[:verb]
+    l.anonymous_user_permission = access_level
     l.save!
   end
 

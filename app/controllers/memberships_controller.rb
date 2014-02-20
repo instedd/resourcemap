@@ -64,7 +64,7 @@ class MembershipsController < ApplicationController
 
   def set_layer_access_anonymous_user
     anonymous_membership = Anonymous.new collection, current_user
-    anonymous_membership.set_layer_access params
+    anonymous_membership.set_layer_access params[:layer_id], params[:verb]
     render :text => "ok"
   end
 
