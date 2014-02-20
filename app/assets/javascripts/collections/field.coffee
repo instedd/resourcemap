@@ -15,6 +15,7 @@ onCollections ->
       @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
 
       @value = ko.observable()
+
       @hasValue = ko.computed =>
         if @kind == 'yes_no'
           true
