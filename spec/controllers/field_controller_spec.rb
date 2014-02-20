@@ -91,7 +91,6 @@ describe FieldsController do
     message.should include("The field 'text' is not a hierarchy.")
   end
 
-
   it "should show proper error message if the under parameter is not found" do
     sign_in admin
 
@@ -109,7 +108,6 @@ describe FieldsController do
     message = (JSON.parse response.body)["message"]
     message.should include("Invalid hierarchy option 'invalid' in field 'hierarchy'")
   end
-
 
   it "should respond true if a certain node is under another" do
     sign_in admin

@@ -79,7 +79,6 @@ describe Api::CollectionsController do
     end
 
     describe "GET JSON collection with query fieldeters" do
-
       it "should retrieve sites under certain item in a hierarchy field" do
         get :show, id: collection.id, format: 'json', hierarchy.code => { under: 'Dad' }
         response.should be_success
@@ -102,9 +101,7 @@ describe Api::CollectionsController do
         json["sites"].length.should eq(1)
         json["sites"][0]["name"].should eq("b")
       end
-
     end
-
 
     describe "GET RSS collection" do
       before(:each) do
@@ -149,10 +146,7 @@ describe Api::CollectionsController do
         rss["rss"]["channel"]["item"][1]["properties"][site_ref.code].should eq(site2.id.to_s)
         rss["rss"]["channel"]["item"][1]["properties"][date.code].should eq('10/24/2012')
         rss["rss"]["channel"]["item"][1]["properties"][director.code].should eq(user.email)
-
-
       end
-
     end
 
     describe "GET CSV collection" do
@@ -164,13 +158,10 @@ describe Api::CollectionsController do
 
       it "should return CSV" do
         csv =  CSV.parse response.body
-
         csv.length.should eq(3)
 
         csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, yes_no.code, select_one.code, select_many.code, hierarchy.code, site_ref.code, date.code, director.code, 'last updated'])
-
         csv.should include [site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "bro", "", "", "", site2.updated_at.to_datetime.rfc822]
-
         csv.should include [site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'yes', 'one', 'one, two', 'dad', site2.id.to_s, '10/24/2012', user.email, site.updated_at.to_datetime.rfc822]
       end
     end
@@ -179,7 +170,6 @@ describe Api::CollectionsController do
       let!(:member) { User.make }
       let!(:membership) { collection.memberships.create! :user_id => member.id, admin: false }
       let!(:layer_member_none) { LayerMembership.make layer: layer, membership: membership, read: false }
-
 
       before(:each) do
         sign_out user
@@ -194,11 +184,9 @@ describe Api::CollectionsController do
         csv.should include [site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, site2.updated_at.to_datetime.rfc822]
         csv.should include [site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.updated_at.to_datetime.rfc822]
       end
-
     end
 
     describe "validate query fields" do
-
       it "should validate numeric fields in equal queries" do
         get :show, id: collection.id, format: 'csv', numeric.code => "invalid"
         response.response_code.should be(400)
@@ -280,7 +268,6 @@ describe Api::CollectionsController do
         histogram['foo'].should eq(2)
       end
     end
-
   end
 
   describe "Date fields" do
@@ -292,7 +279,6 @@ describe Api::CollectionsController do
     before(:each) { sign_in user }
 
     describe "get dates fields in the right format"  do
-
       it "should get CSV with right date format" do
         get :show, id: collection.id, format: 'csv'
         csv =  CSV.parse response.body
@@ -327,7 +313,6 @@ describe Api::CollectionsController do
         rss["rss"]["channel"]["item"]["properties"].length.should eq(2)
         rss["rss"]["channel"]["item"]["properties"][date_mdy.code].should eq("10/24/2012")
         rss["rss"]["channel"]["item"]["properties"][date_dmy.code].should eq("24/10/2012")
-
       end
     end
   end

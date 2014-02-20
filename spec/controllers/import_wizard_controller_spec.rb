@@ -51,5 +51,4 @@ describe ImportWizardsController do
     json_response = JSON.parse response.body
     json_response["status"].should eq("not_found")
   end
-
 end

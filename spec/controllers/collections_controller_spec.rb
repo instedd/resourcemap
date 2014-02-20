@@ -65,15 +65,15 @@ describe CollectionsController do
   end
 
   describe "get ES resutls" do
-      before(:each) do
-        layer = collection.layers.make
+    before(:each) do
+      layer = collection.layers.make
 
-        text = layer.text_fields.make :code => 'text'
-        numeric = layer.numeric_fields.make :code => 'numeric'
+      text = layer.text_fields.make :code => 'text'
+      numeric = layer.numeric_fields.make :code => 'numeric'
 
-        @site1 = collection.sites.make :name => "site1", :properties => {text.es_code => 'foo', numeric.es_code => 1 }
-        @site2 = collection.sites.make :name => "osite2", :properties => {text.es_code => 'bar', numeric.es_code => 2 }
-      end
+      @site1 = collection.sites.make :name => "site1", :properties => {text.es_code => 'foo', numeric.es_code => 1 }
+      @site2 = collection.sites.make :name => "osite2", :properties => {text.es_code => 'bar', numeric.es_code => 2 }
+    end
 
     it "should get json of all field names and codes in a collection" do
       get :sites_by_term, collection_id: collection.id, format: 'json'
@@ -104,7 +104,6 @@ describe CollectionsController do
     let(:not_member) { User.make }
     let(:member) { User.make }
 
-
     before(:each) do
       sign_out user
       collection.memberships.create! :user_id => member.id, admin: false
@@ -134,7 +133,6 @@ describe CollectionsController do
       post :create_snapshot, collection_id: collection.id, snapshot: {name: 'my snapshot'}
       response.status.should eq(403)
     end
-
   end
 
   describe "analytic" do
@@ -145,7 +143,6 @@ describe CollectionsController do
         u = User.find user
         u.collection_count
       }.from(0).to(1)
-
     end
   end
 
@@ -174,7 +171,6 @@ describe CollectionsController do
   end
 
   describe "Permissions" do
-
     it "should get current_user_membership" do
       get :current_user_membership, collection_id: collection.id, format: 'json'
       response.should be_success
@@ -209,5 +205,4 @@ describe CollectionsController do
       info["no_location"].should be_true
     end
   end
-
 end

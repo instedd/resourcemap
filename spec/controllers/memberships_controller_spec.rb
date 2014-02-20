@@ -7,9 +7,7 @@ describe MembershipsController do
   let(:user_2) { User.make email: 'bar@test.com' }
   let(:collection) { user.create_collection(Collection.make_unsaved) }
 
-
   describe "index" do
-
     let(:membership) { collection.memberships.create! user_id: user_2.id, admin: false }
 
     before(:each) { sign_in user }
@@ -37,7 +35,6 @@ describe MembershipsController do
   end
 
   describe "search" do
-
     before(:each) { sign_in user }
 
     it "should find users that have membership" do
