@@ -9,9 +9,7 @@ describe MembershipsController do
 
   describe "index" do
 
-    before(:each) {
-      sign_in user
-    }
+    before(:each) { sign_in user }
 
     let(:layer) { collection.layers.make }
     it "should include admins's membership " do
