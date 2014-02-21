@@ -7,12 +7,9 @@ class MembershipsController < ApplicationController
   end
 
   def index
-    memberships = collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission]).all.map do |membership|
-      membership.to_json
-    end
-
+    memberships = collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission])
     anonymous = Anonymous.new collection, current_user
-    render_json({members: memberships, anonymous: anonymous.to_json})
+    render_json({members: memberships, anonymous: anonymous})
   end
 
   def create

@@ -98,7 +98,8 @@ describe Membership do
   describe "export to json" do
 
     it "should export from a admin membership" do
-      json = membership_admin.to_json.with_indifferent_access
+      json = membership_admin.as_json.with_indifferent_access
+      json["user_id"].should eq(user.id)
       json["user_display_name"].should eq(user.email)
       json["admin"].should eq(true)
       json["layers"].count.should eq(0)
@@ -110,7 +111,8 @@ describe Membership do
 
     it "should export from a member membership" do
       membership.set_access(object: "name", new_action: "update")
-      json = membership.to_json.with_indifferent_access
+      json = membership.as_json.with_indifferent_access
+      json["user_id"].should eq(member.id)
       json["user_display_name"].should eq(member.email)
       json["admin"].should eq(false)
       json["layers"].count.should eq(0)
@@ -122,7 +124,7 @@ describe Membership do
 
     it "should export from a guest membership" do
       guest = User.make is_guest: true
-      json = collection.membership_for(guest).to_json.with_indifferent_access
+      json = collection.membership_for(guest).as_json.with_indifferent_access
       json["admin"].should eq(false)
       json["layers"].count.should eq(0)
       json["sites"]["read"].should eq(nil)

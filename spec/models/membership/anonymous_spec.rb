@@ -5,8 +5,8 @@ describe Anonymous do
   let(:collection) { user.create_collection(Collection.make_unsaved) }
   let(:anonymous) { Anonymous.new collection, user }
 
-  describe '#to_json' do
-    subject { anonymous.to_json }
+  describe '#as_json' do
+    subject { anonymous.as_json }
 
     its([:name]) { should eq('none') }
     its([:location]) { should eq('none') }
@@ -30,7 +30,7 @@ describe Anonymous do
       let(:layer) { collection.layers.make }
       subject{
         layer
-        anonymous.to_json[layer.id.to_s]
+        anonymous.as_json[layer.id.to_s]
       }
       it {should eq("none")}
   end
@@ -41,7 +41,7 @@ describe Anonymous do
 
       subject {
         layer
-        anonymous.to_json[layer.id.to_s]
+        anonymous.as_json[layer.id.to_s]
       }
 
       it { should eq(level) }
@@ -54,7 +54,7 @@ describe Anonymous do
 
       it '' do
         anonymous.set_layer_access(layer.id, level)
-        anonymous.to_json[layer.id.to_s].should eq(level)
+        anonymous.layer_access(layer.id).should eq(level)
       end
     end
   end

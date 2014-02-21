@@ -19,12 +19,16 @@ class Anonymous
     name_location_permission
   end
 
-  def to_json
+  def as_json(options = {})
     json = { name: name_permission, location: location_permission }
     @collection.layers.each do |layer|
       json[layer[:id].to_s] = layer[:anonymous_user_permission]
     end
     json
+  end
+
+  def layer_access(layer_id)
+    @collection.layers.find(layer_id).anonymous_user_permission
   end
 
   private
