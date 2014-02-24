@@ -52,7 +52,6 @@ class Field::HierarchyField < Field
   end
 
   def valid_value?(hierarchy_code, site = nil)
-
     if find_hierarchy_option_by_id(hierarchy_code)
       true
     else
@@ -167,8 +166,8 @@ class Field::HierarchyField < Field
 
   def find_hierarchy_option_by_id(value)
     if @cache_for_read
-      @options_by_id ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:id]] = opt[:name] }
-      return @options_by_id[value]
+      @options_by_id ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:id].to_s] = opt[:name] }
+      return @options_by_id[value.to_s]
     end
 
     hierarchy_options.find { |opt| opt[:id].to_s == value.to_s }

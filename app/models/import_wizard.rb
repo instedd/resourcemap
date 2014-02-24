@@ -250,7 +250,7 @@ class ImportWizard
           collection.fields.reload
 
           # Generate default values for luhn fields
-          luhn_fields = collection.identifier_fields.select{ |field| field.has_luhn_format?}
+          luhn_fields = collection.identifier_fields.select(&:has_luhn_format?)
 
           luhn_fields.each  do |luhn_field|
 
