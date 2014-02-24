@@ -1,5 +1,6 @@
 class LayersController < ApplicationController
 
+  before_filter :authenticate_api_user!
   before_filter :fix_field_config, only: [:create, :update]
 
   authorize_resource :layer, :decent_exposure => true, :except => :create
