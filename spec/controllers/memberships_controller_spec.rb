@@ -5,7 +5,7 @@ describe MembershipsController do
 
   let(:user) { User.make email: 'foo@test.com' }
   let(:collection) { user.create_collection(Collection.make_unsaved) }
-  let(:anonymous) { Anonymous.new collection, user }
+  let(:anonymous) { Membership::Anonymous.new collection, user }
 
   describe "index" do
 

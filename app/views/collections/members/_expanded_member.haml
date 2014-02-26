@@ -8,7 +8,7 @@
       .permissionColumn{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
 
     .permissionColumn.admin
-      %input{ko(checked: :admin), type: :checkbox}
+      %input{ko(checked: :admin, visible: :showAdminCheckbox), type: :checkbox}
     .lastColumn
 
   .defaultLayerPermissionsRow

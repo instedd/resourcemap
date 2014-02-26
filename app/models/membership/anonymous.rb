@@ -1,13 +1,21 @@
-class Anonymous
+class Membership::Anonymous
   def initialize(collection, granting_user)
     @collection = collection
     @granting_user = granting_user
   end
 
-  def set_layer_access(layer_id, access_level)
+  def set_layer_access(layer_id, verb, access)
+    raise(ArgumentError, "verb must be read") unless verb == "read"
+
+    if access == "true"
+      permission = "read"
+    else
+      permission = "none"
+    end
+
     l = @collection.layers.find(layer_id)
     l.user = @granting_user
-    l.anonymous_user_permission = access_level
+    l.anonymous_user_permission = permission
     l.save!
   end
 
@@ -20,10 +28,19 @@ class Anonymous
   end
 
   def as_json(options = {})
-    json = { name: name_permission, location: location_permission }
-    @collection.layers.each do |layer|
-      json[layer[:id].to_s] = layer[:anonymous_user_permission]
+    json = {
+      name: name_permission,
+      location: location_permission,
+    }
+
+    json[:layers] = @collection.layers.map do |layer|
+      access_level = {}
+      access_level[:read] = (layer.anonymous_user_permission == "read") || (layer.anonymous_user_permission == "write")
+      access_level[:write] = layer.anonymous_user_permission == "write"
+      access_level[:layer_id] = layer.id
+      access_level
     end
+
     json
   end
 

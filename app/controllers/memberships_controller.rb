@@ -7,8 +7,8 @@ class MembershipsController < ApplicationController
   end
 
   def index
-    memberships = collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission])
-    anonymous = Anonymous.new collection, current_user
+    memberships = collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission, :layer_memberships])
+    anonymous = Membership::Anonymous.new collection, current_user
     render_json({members: memberships, anonymous: anonymous})
   end
 
@@ -46,6 +46,15 @@ class MembershipsController < ApplicationController
     redirect_to collection_members_path(collection)
   end
 
+  def set_layer_access
+    if params[:isAnonymous]
+      set_layer_access_anonymous_user params
+    else
+      set_layer_access_normal_user params
+    end
+    render_json :ok
+  end
+
   def set_access
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_access params
@@ -53,16 +62,14 @@ class MembershipsController < ApplicationController
   end
 
   #TODO: move set_layer_access to the more generic set_access
-  def set_layer_access
+  def set_layer_access_normal_user(params)
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_layer_access params
-    render_json :ok
   end
 
-  def set_layer_access_anonymous_user
-    anonymous_membership = Anonymous.new collection, current_user
-    anonymous_membership.set_layer_access params[:layer_id], params[:verb]
-    render :text => "ok"
+  def set_layer_access_anonymous_user(params)
+    anonymous_membership = Membership::Anonymous.new collection, current_user
+    anonymous_membership.set_layer_access params[:layer_id], params[:verb], params[:access]
   end
 
   def set_admin

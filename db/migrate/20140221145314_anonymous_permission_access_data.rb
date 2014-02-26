@@ -8,9 +8,13 @@ class AnonymousPermissionAccessData < ActiveRecord::Migration
   end
 
   def up
-    Layer.find_each do |l|
-      l.anonymous_user_permission = l.collection.public ? "read" : "none"
-      l.save!
+    Layer.transaction do
+      Collection.includes(:layers).where(:public => true).find_each do |c|
+        c.layers.each do |l|
+          l.anonymous_user_permission = "read"
+          l.save!
+        end
+      end
     end
   end
 

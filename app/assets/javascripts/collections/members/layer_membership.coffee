@@ -12,8 +12,8 @@ class @LayerMembership
       @write = ko.observable layer_membership.write
     else
       # If there isn't a LayerMembership object corresponding to the given layer, all permissions are denied.
-      @read = ko.observable false
-      @write = ko.observable false
+      @read = ko.observable membership.defaultRead()
+      @write = ko.observable membership.defaultWrite()
 
     @noneChecked = ko.computed
       read: =>
@@ -24,7 +24,7 @@ class @LayerMembership
       write: (val) =>
         _self.write false
         _self.read false
-        $.post "/collections/#{membership.collectionId()}/memberships/#{membership.userId()}/set_layer_access.json", { layer_id: _self.layerId(), verb: 'read', access: false}
+        $.post "/collections/#{membership.collectionId()}/memberships/#{membership.userId()}/set_layer_access.json", { layer_id: _self.layerId(), verb: 'read', access: false, isAnonymous: membership.isAnonymous}
 
     @readChecked = ko.computed
       read: =>
@@ -35,7 +35,7 @@ class @LayerMembership
       write: (val) =>
         _self.write false
         _self.read true
-        $.post "/collections/#{membership.collectionId()}/memberships/#{membership.userId()}/set_layer_access.json", { layer_id: _self.layerId(), verb: 'read', access: true}
+        $.post "/collections/#{membership.collectionId()}/memberships/#{membership.userId()}/set_layer_access.json", { layer_id: _self.layerId(), verb: 'read', access: true, isAnonymous: membership.isAnonymous}
 
 
     @updateChecked = ko.computed
@@ -47,5 +47,5 @@ class @LayerMembership
       write: (val) =>
         _self.write true
         _self.read true
-        $.post "/collections/#{membership.collectionId()}/memberships/#{membership.userId()}/set_layer_access.json", { layer_id: _self.layerId(), verb: 'write', access: true}
+        $.post "/collections/#{membership.collectionId()}/memberships/#{membership.userId()}/set_layer_access.json", { layer_id: _self.layerId(), verb: 'write', access: true, isAnonymous: membership.isAnonymous}
 

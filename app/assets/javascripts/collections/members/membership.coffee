@@ -1,3 +1,5 @@
+#= require collections/members/expandable
+
 class @Membership extends Expandable
   constructor: (root, data) ->
     _self = @
@@ -10,6 +12,10 @@ class @Membership extends Expandable
     @collectionId = ko.observable root.collectionId()
     @namePermission = ko.observable data?.name
     @locationPermission = ko.observable data?.location
+
+    @showAdminCheckbox = true
+    @defaultRead = ko.observable(false)
+    @defaultWrite = ko.observable(false)
 
     rootLayers = data?.layers ? []
     @layers = ko.observableArray $.map(root.layers(), (x) => new LayerMembership(x, rootLayers, _self))
