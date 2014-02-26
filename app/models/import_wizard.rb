@@ -250,7 +250,7 @@ class ImportWizard
           collection.fields.reload
 
           # Generate default values for luhn fields
-          luhn_fields = collection.identifier_fields.select{ |field| field.has_luhn_format?}
+          luhn_fields = collection.identifier_fields.select(&:has_luhn_format?)
 
           luhn_fields.each  do |luhn_field|
 
@@ -344,6 +344,15 @@ class ImportWizard
       # We need to store the maximum value in each luhn field in the csv in order to not search it again during the import
       max_luhn_value_in_csv = "0"
 
+      # For identifier fields we build a hash of values to list of indices so we
+      # can find out repretitions faster.
+      if field.kind == 'identifier'
+        values_to_indices = Hash.new { |h, k| h[k] = [] }
+        csv_column.each_with_index do |csv_field_value, field_number|
+          values_to_indices[csv_field_value] << field_number
+        end
+      end
+
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
           existing_site_id = nil
@@ -361,11 +370,13 @@ class ImportWizard
           end
 
           # identifiers specific validation
-          if field.kind == 'identifier'
-            repetitions = csv_column.each_index.select{|i| !csv_field_value.blank? && csv_column[i] == csv_field_value }
-
-            raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}" if repetitions.length > 1
+          if field.kind == 'identifier' && !csv_field_value.blank?
+            repetitions = values_to_indices[csv_field_value]
+            if repetitions.length > 1
+              raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}"
+            end
           end
+
           value = validate_column_value(column_spec, csv_field_value, field, collection, existing_site_id)
 
           # Store the max value for Luhn generation
@@ -487,6 +498,7 @@ class ImportWizard
       column_spec[:validate_format_value_cached_field] ||= begin
         column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
         field = Field.new kind: column_spec[:kind].to_s, code: column_header, config: column_spec[:config]
+        field.cache_for_read
 
         # We need the collection to validate site_fields
         field.collection = collection

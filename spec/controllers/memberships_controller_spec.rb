@@ -8,6 +8,7 @@ describe MembershipsController do
   let(:anonymous) { Membership::Anonymous.new collection, user }
 
   describe "index" do
+    let(:membership) { collection.memberships.create! user_id: user_2.id, admin: false }
 
     before(:each) { sign_in user }
 
@@ -31,7 +32,6 @@ describe MembershipsController do
   end
 
   describe "search" do
-
     before(:each) { sign_in user }
 
     it "should find users that have membership" do

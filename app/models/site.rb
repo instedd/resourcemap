@@ -119,7 +119,7 @@ class Site < ActiveRecord::Base
   end
 
   def valid_properties
-    fields = collection.fields.index_by(&:es_code)
+    fields = collection.fields.each(&:cache_for_read).index_by(&:es_code)
 
     properties.each do |es_code, value|
       field = fields[es_code]

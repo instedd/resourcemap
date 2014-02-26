@@ -57,6 +57,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_collection_admin!
+    head :unauthorized and return if current_user.is_guest
     head :forbidden unless current_user.admins?(collection)
   end
 

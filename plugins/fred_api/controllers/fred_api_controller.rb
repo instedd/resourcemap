@@ -1,5 +1,5 @@
 class FredApiController < ApplicationController
-  before_filter :authenticate_user_without_guisso!
+  before_filter :authenticate_api_user!
   before_filter :authenticate_collection_admin!
 
   before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :update_facility]

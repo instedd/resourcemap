@@ -36,7 +36,9 @@ class Field::SelectOneField < Field
 
   def valid_value?(option_code, site=nil)
     if @cache_for_read
-      raise invalid_field_message unless @options_by_id_in_cache.values.include?(option_code)
+      prepare_cache_for_read
+
+      raise invalid_field_message unless @options_by_id_in_cache.keys.include?(option_code.to_s)
       option_code
     else
       check_option_exists(option_code)
@@ -59,7 +61,7 @@ class Field::SelectOneField < Field
 
   # TODO: Integrate with decode used in update
   def query_value(value, use_codes_instead_of_es_codes)
-    if @cache_for_read && !@options_by_code_or_label_in_cache
+    if @cache_for_read
       prepare_cache_for_read
     end
 
@@ -99,9 +101,10 @@ class Field::SelectOneField < Field
   end
 
   def decode_option(value)
-    if @cache_for_read && !@options_by_code_or_label_in_cache
+    if @cache_for_read
       prepare_cache_for_read
     end
+
     value_id = nil
     if @cache_for_read
       value_id = @options_by_code_or_label_in_cache[value.to_s]
@@ -118,6 +121,8 @@ class Field::SelectOneField < Field
   end
 
   def prepare_cache_for_read
+    return if @options_by_code_or_label_in_cache
+
     @options_by_code_or_label_in_cache = {}
     @options_by_id_in_cache = {}
 

@@ -81,8 +81,18 @@ class ImportWizard::ImportSpecs
           # Set field to code if there's no label defined
           new_field_name = spec[:label].present? ? spec[:label] : spec[:code]
 
-          @new_fields[spec[:code]] = layer.fields.new code: spec[:code], name: new_field_name, kind: spec[:kind], ord: spec_i, config: spec[:config]
-          @new_fields[spec[:code]].layer = layer
+          field = layer.fields.new code: spec[:code], name: new_field_name, kind: spec[:kind], ord: spec_i, config: spec[:config]
+          field.layer = layer
+
+          # Special optimization for identifier fields, so we don't read ids from the
+          # database all the time. This can't be enabled for 'select_one' or other fields
+          # because their options might get built during the import wizard phase.
+          if field.kind == 'identifier'
+            field.cache_for_read
+          end
+
+          @new_fields[spec[:code]] = field
+
           spec_i += 1
         end
       end

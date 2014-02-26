@@ -1,5 +1,5 @@
 class CsdApiController < ApplicationController
-  before_filter :authenticate_user_without_guisso!
+  before_filter :authenticate_api_user!
 
   Mime::Type.register "application/wsdl+xml", :wsdl
   Mime::Type.unregister :xml

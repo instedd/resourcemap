@@ -1,8 +1,12 @@
 require 'bundler/capistrano'
-require 'rvm/capistrano'
+if ENV['RVM']
+  require 'rvm/capistrano'
+  set :rvm_ruby_string, '1.9.3'
+  set :rvm_type, :system
+else
+  default_run_options[:shell] = "/bin/bash --login"
+end
 
-set :rvm_ruby_string, '1.9.3'
-set :rvm_type, :system
 set :application, "resource_map"
 set :repository,  "https://bitbucket.org/instedd/resource_map"
 set :scm, :mercurial
@@ -24,8 +28,8 @@ namespace :deploy do
   end
 
   task :symlink_configs, :roles => :app do
-    %W(settings.yml google_maps.key guisso.yml nuntium.yml newrelic.yml).each do |file|
-      run "ln -nfs #{shared_path}/#{file} #{release_path}/config/"
+    %W(database.yml settings.yml google_maps.key guisso.yml nuntium.yml newrelic.yml).each do |file|
+      run "test -e #{shared_path}/#{file} && ln -nfs #{shared_path}/#{file} #{release_path}/config/ || true"
     end
   end
 
@@ -37,8 +41,13 @@ end
 namespace :foreman do
   desc 'Export the Procfile to Ubuntu upstart scripts'
   task :export, :roles => :app do
-    run "echo -e \"PATH=$PATH\\nGEM_HOME=$GEM_HOME\\nGEM_PATH=$GEM_PATH\\nRAILS_ENV=production\" >  #{current_path}/.env"
-    run "cd #{current_path} && rvmsudo bundle exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"resque=1,resque_scheduler=1\""
+    if ENV['RVM']
+      run "echo -e \"PATH=$PATH\\nGEM_HOME=$GEM_HOME\\nGEM_PATH=$GEM_PATH\\nRAILS_ENV=production\" >  #{current_path}/.env"
+      run "cd #{current_path} && rvmsudo bundle exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"resque=1,resque_scheduler=1\""
+    else
+      run "echo -e \"PATH=$PATH\\nRAILS_ENV=production\" >  #{current_path}/.env"
+      run "cd #{current_path} && #{try_sudo} bundle exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"resque=1,resque_scheduler=1\""
+    end
   end
 
   desc "Start the application services"

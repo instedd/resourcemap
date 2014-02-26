@@ -17,9 +17,7 @@ describe Ability do
   let!(:user_ability) { Ability.new(user)}
   let!(:guest_ability) { Ability.new(guest)}
 
-
   describe "Collection Abilities" do
-
     it "Destroy collection" do
       admin_ability.should be_able_to(:destroy, collection)
       member_ability.should_not be_able_to(:destroy, collection)
@@ -51,7 +49,6 @@ describe Ability do
 
       user_ability.should be_able_to(:read, public_collection)
       user_ability.should_not be_able_to(:update, public_collection)
-
     end
 
     it "Manage snapshots" do
@@ -213,5 +210,4 @@ describe Ability do
       it { guest_ability.should_not be_able_to(:update_site_property, field_in_public_collection, site_in_public_collection) }
     end
   end
-
 end
