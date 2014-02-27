@@ -12,6 +12,7 @@ class @Membership extends Expandable
     @collectionId = ko.observable root.collectionId()
     @namePermission = ko.observable data?.name
     @locationPermission = ko.observable data?.location
+    @isAnonymous = false
 
     @showAdminCheckbox = true
     @defaultRead = ko.observable(false)
@@ -23,6 +24,8 @@ class @Membership extends Expandable
     @sitesWithCustomPermissions = ko.observableArray SiteCustomPermission.arrayFromJson(data?.sites, @)
 
     @callModuleConstructors(arguments)
+
+    @set_layer_access_path = ko.computed => "/collections/#{@collectionId()}/memberships/#{@userId()}/set_layer_access.json"
     super
 
     for action in ['none', 'read', 'update']
@@ -80,14 +83,16 @@ class @Membership extends Expandable
       write: (val) =>
         return unless val
 
-        @readNameChecked(true)
-        @readLocationChecked(true)
+        if(!@isAnonymous)
+          @readNameChecked(true)
+          @readLocationChecked(true)
 
         _self = @
+
         _.each @layers(), (layer) ->
           layer.read false
           layer.write false
-          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'read', access: false}
+          $.post _self.set_layer_access_path(), { layer_id: layer.layerId(), verb: 'read', access: false}
 
 
     @allLayersRead = ko.computed
@@ -97,14 +102,15 @@ class @Membership extends Expandable
       write: (val) =>
         return unless val
 
-        @readNameChecked(true)
-        @readLocationChecked(true)
+        if(!@isAnonymous)
+          @readNameChecked(true)
+          @readLocationChecked(true)
 
         _self = @
         _.each @layers(), (layer) ->
           layer.read true
           layer.write false
-          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'read', access: true}
+          $.post _self.set_layer_access_path(), { layer_id: layer.layerId(), verb: 'read', access: true}
 
 
     @allLayersUpdate = ko.computed
@@ -121,7 +127,7 @@ class @Membership extends Expandable
         _.each @layers(), (layer) ->
           layer.write true
           layer.read true
-          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'write', access: true}
+          $.post _self.set_layer_access_path(), { layer_id: layer.layerId(), verb: 'write', access: true}
 
     @isNotAdmin = ko.computed => not @admin()
 
@@ -176,6 +182,10 @@ class @Membership extends Expandable
         "#{base_uri}/theme/images/icons/misc/black/arrowDown.png"
       else
         "#{base_uri}/theme/images/icons/misc/black/arrowRight.png"
+
+
+  updateCheckboxVisible: () =>
+    return !@isAnonymous
 
   toggleDefaultLayerPermissions: =>
     @defaultLayerPermissionsExpanded(not @defaultLayerPermissionsExpanded())

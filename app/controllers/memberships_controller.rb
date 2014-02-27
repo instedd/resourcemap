@@ -24,8 +24,7 @@ class MembershipsController < ApplicationController
 
   def invitable
     users = User.
-      where('email LIKE ?', "#{params[:term]}%").
-      where("id not in (?)", collection.memberships.value_of(:user_id)).
+      where('email LIKE ?', "#{params[:term]}%").      where("id not in (?)", collection.memberships.value_of(:user_id)).
       order('email')
     render_json users.pluck(:email)
   end
@@ -46,15 +45,6 @@ class MembershipsController < ApplicationController
     redirect_to collection_members_path(collection)
   end
 
-  def set_layer_access
-    if params[:isAnonymous]
-      set_layer_access_anonymous_user params
-    else
-      set_layer_access_normal_user params
-    end
-    render_json :ok
-  end
-
   def set_access
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_access params
@@ -62,14 +52,16 @@ class MembershipsController < ApplicationController
   end
 
   #TODO: move set_layer_access to the more generic set_access
-  def set_layer_access_normal_user(params)
+  def set_layer_access
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_layer_access params
+    render_json :ok
   end
 
-  def set_layer_access_anonymous_user(params)
+  def set_layer_access_anonymous_user
     anonymous_membership = Membership::Anonymous.new collection, current_user
     anonymous_membership.set_layer_access params[:layer_id], params[:verb], params[:access]
+    render_json :ok
   end
 
   def set_admin

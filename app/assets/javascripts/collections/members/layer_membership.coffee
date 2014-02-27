@@ -24,7 +24,7 @@ class @LayerMembership
       write: (val) =>
         _self.write false
         _self.read false
-        $.post "/collections/#{membership.collectionId()}/memberships/#{membership.userId()}/set_layer_access.json", { layer_id: _self.layerId(), verb: 'read', access: false, isAnonymous: membership.isAnonymous}
+        $.post membership.set_layer_access_path(), {layer_id: _self.layerId(), verb: 'read', access: false}
 
     @readChecked = ko.computed
       read: =>
@@ -35,8 +35,7 @@ class @LayerMembership
       write: (val) =>
         _self.write false
         _self.read true
-        $.post "/collections/#{membership.collectionId()}/memberships/#{membership.userId()}/set_layer_access.json", { layer_id: _self.layerId(), verb: 'read', access: true, isAnonymous: membership.isAnonymous}
-
+        $.post membership.set_layer_access_path(), {layer_id: _self.layerId(), verb: 'read', access: true}
 
     @updateChecked = ko.computed
       read: =>
@@ -47,5 +46,4 @@ class @LayerMembership
       write: (val) =>
         _self.write true
         _self.read true
-        $.post "/collections/#{membership.collectionId()}/memberships/#{membership.userId()}/set_layer_access.json", { layer_id: _self.layerId(), verb: 'write', access: true, isAnonymous: membership.isAnonymous}
-
+        $.post membership.set_layer_access_path(), {layer_id: _self.layerId(), verb: 'write', access: true}

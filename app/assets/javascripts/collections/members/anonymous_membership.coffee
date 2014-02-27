@@ -9,4 +9,8 @@ class @AnonymousMembership extends Membership
     @isAnonymous = true
     @defaultRead(true)
     @defaultWrite(true)
+    @namePermission("read")
+    @locationPermission("read")
+    @set_layer_access_path = ko.computed => "/collections/#{@collectionId()}/memberships/set_layer_access_anonymous_user.json"
+
 

@@ -19,10 +19,17 @@
         %span.memberDetailsTitle
           Default permissions for all sites
 
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        %hr.underlineExpandedMember
-          %input{ko(disable: :admin, checked: "allLayers#{permission}", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
+    .permissionColumn
+      %hr.underlineExpandedMember
+        %input{ko(disable: :admin, checked: "allLayersNone", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
+
+    .permissionColumn
+      %hr.underlineExpandedMember
+        %input{ko(disable: :admin, checked: "allLayersRead", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
+
+    .permissionColumn
+      %hr.underlineExpandedMember
+        %input{ko(disable: :admin, checked: "allLayersUpdate", :attr => { "name" => "userId" }, visible: "updateCheckboxVisible()"), :value => "all", :type => 'radio'}
 
     .permissionColumn.admin
       %hr.underlineExpandedMember
@@ -31,24 +38,29 @@
   /ko if: defaultLayerPermissionsExpanded
   .layerRow
     .memberHeaderColumn Name
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        - if permission == 'None'
-          %input{ko(disable: true), :type => 'radio'}
-        - else
-          %input{ko(disable: "admin()", checked: "#{permission.downcase}NameChecked"), :value => "true", :type => 'radio'}
+    .permissionColumn
+      %input{ko(disable: true), :type => 'radio'}
+
+    .permissionColumn
+      %input{ko(disable: "admin()", checked: "readNameChecked"), :value => "true", :type => 'radio'}
+
+    .permissionColumn
+      %input{ko(disable: "admin()", checked: "updateNameChecked", visible: "updateCheckboxVisible()"), :value => "true", :type => 'radio'}
 
     .permissionColumn.admin
     .lastColumn
 
+
   .layerRow
     .memberHeaderColumn Location
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        - if permission == 'None'
-          %input{ko(disable: true), :type => 'radio'}
-        - else
-          %input{ko(disable: "admin()", checked: "#{permission.downcase}LocationChecked"), :value => "true", :type => 'radio'}
+    .permissionColumn
+      %input{ko(disable: true), :type => 'radio'}
+
+    .permissionColumn
+      %input{ko(disable: "admin()", checked: "readLocationChecked"), :value => "true", :type => 'radio'}
+
+    .permissionColumn
+      %input{ko(disable: "admin()", checked: "updateLocationChecked", visible: "updateCheckboxVisible()"), :value => "true", :type => 'radio'}
 
     .permissionColumn.admin
     .lastColumn
@@ -57,14 +69,18 @@
   /ko foreach: layers
   .layerRow
     .memberHeaderColumn{ko(text: "layerName()")}
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        %input{ko(disable: "$parent.admin()", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
+    .permissionColumn
+      %input{ko(disable: "$parent.admin()", checked: "noneChecked"), :value => "true", :type => 'radio'}
+    .permissionColumn
+      %input{ko(disable: "$parent.admin()", checked: "readChecked"), :value => "true", :type => 'radio'}
+    .permissionColumn
+      %input{ko(disable: "$parent.admin()", checked: "updateChecked", visible: "$parent.updateCheckboxVisible()"), :value => "true", :type => 'radio'}
     .permissionColumn.admin
     .lastColumn
   //ko
   //ko
 
+  /ko if: !isAnonymous
   .customPermissionsTitleRow
     .memberHeaderColumn
       .frame
@@ -107,3 +123,5 @@
   .removeMemberRow
     .memberHeaderColumn
       = render './ko_confirm_box', :action_description => 'Remove this member', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to remove this member from the collection?'
+
+  //ko
