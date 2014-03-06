@@ -36,6 +36,8 @@ class @LayerMembership
         _self.write false
         _self.read true
         $.post membership.set_layer_access_path(), {layer_id: _self.layerId(), verb: 'read', access: true}
+        if membership.isAnonymous
+          membership.setNameLocation('read')
 
     @updateChecked = ko.computed
       read: =>

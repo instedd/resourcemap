@@ -24,7 +24,7 @@ class MembershipsController < ApplicationController
 
   def invitable
     users = User.
-      where('email LIKE ?', "#{params[:term]}%").      where("id not in (?)", collection.memberships.value_of(:user_id)).
+      where('email LIKE ?', "#{params[:term]}%").where("id not in (?)", collection.memberships.value_of(:user_id)).
       order('email')
     render_json users.pluck(:email)
   end
@@ -48,6 +48,12 @@ class MembershipsController < ApplicationController
   def set_access
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_access params
+    render_json :ok
+  end
+
+  def set_access_anonymous_user
+    anonymous_membership = Membership::Anonymous.new collection, current_user
+    anonymous_membership.set_access params[:object], params[:new_action]
     render_json :ok
   end
 

@@ -39,7 +39,7 @@
   .layerRow
     .memberHeaderColumn Name
     .permissionColumn
-      %input{ko(disable: true), :type => 'radio'}
+      %input{ko(disable: "nameLocationDisabled()", checked: "noneNameChecked"), :value => "true", :type => 'radio'}
 
     .permissionColumn
       %input{ko(disable: "admin()", checked: "readNameChecked"), :value => "true", :type => 'radio'}
@@ -54,7 +54,7 @@
   .layerRow
     .memberHeaderColumn Location
     .permissionColumn
-      %input{ko(disable: true), :type => 'radio'}
+      %input{ko(disable: "nameLocationDisabled()", checked: "noneLocationChecked"), :value => "true", :type => 'radio'}
 
     .permissionColumn
       %input{ko(disable: "admin()", checked: "readLocationChecked"), :value => "true", :type => 'radio'}

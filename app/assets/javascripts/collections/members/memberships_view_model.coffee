@@ -11,7 +11,6 @@ class @MembershipsViewModel
     # Where AnonymousMembership inherits from Membership
     membership_models = $.map(memberships.members, (x) -> new Membership(_self, x))
     membership_models.unshift(new AnonymousMembership(_self, memberships.anonymous))
-
     @memberships = ko.observableArray membership_models
 
     @admin = ko.observable admin

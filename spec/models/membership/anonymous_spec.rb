@@ -13,16 +13,9 @@ describe Membership::Anonymous do
   end
 
   ['name', 'location'].each do |builtin_field|
-    describe "##{builtin_field}_private_permission" do
+    describe "##{builtin_field}_default_permission" do
       subject { anonymous.send("#{builtin_field}_permission") }
       it { should eq('none') }
-    end
-
-    describe "##{builtin_field}_public_permission" do
-      let(:collection2) {user.create_collection(Collection.make_unsaved({public: true}))}
-      let(:anonymous2) { Membership::Anonymous.new collection2, user }
-      subject { anonymous2.send("#{builtin_field}_permission") }
-      it { should eq('read') }
     end
   end
 
@@ -75,6 +68,19 @@ describe Membership::Anonymous do
           anonymous.layer_access(layer.id).should eq("read")
         else
           anonymous.layer_access(layer.id).should eq("none")
+        end
+      end
+    end
+  end
+
+  ["name","location"].each do |object|
+    describe "set #{object}" do
+      ["none","read"].each do |level|
+        describe "#{level}able permissions" do
+          it '' do
+            anonymous.set_access(object,level)
+            anonymous.send("#{object}_permission").should eq(level)
+          end
         end
       end
     end

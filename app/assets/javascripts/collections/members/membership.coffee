@@ -2,6 +2,7 @@
 
 class @Membership extends Expandable
   constructor: (root, data) ->
+    super
     _self = @
     @root = root
 
@@ -26,7 +27,18 @@ class @Membership extends Expandable
     @callModuleConstructors(arguments)
 
     @set_layer_access_path = ko.computed => "/collections/#{@collectionId()}/memberships/#{@userId()}/set_layer_access.json"
-    super
+
+    @set_access_path = ko.computed => "/collections/#{@collectionId()}/memberships/#{@userId()}/set_access.json"
+
+    @allNoneNameLocationPerm = ko.observable('read')
+
+    @writeNamePermission = (action) =>
+      @namePermission(action)
+      $.post @set_access_path(), { object: 'name', new_action: action}
+
+    @writeLocationPermission = (action) =>
+      @locationPermission(action)
+      $.post @set_access_path(), { object: 'location', new_action: action}
 
     for action in ['none', 'read', 'update']
       do (action) =>
@@ -37,8 +49,7 @@ class @Membership extends Expandable
             else
               ""
           write: (val) =>
-            @namePermission(action)
-            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_access.json", { object: 'name', new_action: action}
+            @writeNamePermission action
 
         this["#{action}LocationChecked"] = ko.computed
           read: =>
@@ -47,8 +58,7 @@ class @Membership extends Expandable
             else
               ""
           write: (val) =>
-            @locationPermission(action)
-            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_access.json", { object: 'location', new_action: action}
+            @writeLocationPermission action
 
     all = (permitted) ->
       _.all _self.layers(), (l) => permitted l
@@ -78,14 +88,17 @@ class @Membership extends Expandable
 
     @allLayersNone = ko.computed
       read: =>
-        return 'all' if ((all nonePermission) && @namePermission() == 'read' && @locationPermission() == 'read')
+        return 'all' if ((all nonePermission) && @namePermission() == @allNoneNameLocationPerm() && @locationPermission() == @allNoneNameLocationPerm() )
         ''
       write: (val) =>
         return unless val
 
-        if(!@isAnonymous)
+        if !@isAnonymous
           @readNameChecked(true)
           @readLocationChecked(true)
+        else
+          @noneNameChecked(true)
+          @noneLocationChecked(true)
 
         _self = @
 
@@ -94,7 +107,6 @@ class @Membership extends Expandable
           layer.write false
           $.post _self.set_layer_access_path(), { layer_id: layer.layerId(), verb: 'read', access: false}
 
-
     @allLayersRead = ko.computed
       read: =>
         return 'all' if ((all readPermission) && @namePermission() == 'read' && @locationPermission() == 'read')
@@ -102,9 +114,8 @@ class @Membership extends Expandable
       write: (val) =>
         return unless val
 
-        if(!@isAnonymous)
-          @readNameChecked(true)
-          @readLocationChecked(true)
+        @readNameChecked(true)
+        @readLocationChecked(true)
 
         _self = @
         _.each @layers(), (layer) ->
@@ -183,6 +194,8 @@ class @Membership extends Expandable
       else
         "#{base_uri}/theme/images/icons/misc/black/arrowRight.png"
 
+  nameLocationDisabled: () =>
+    return !@isAnonymous
 
   updateCheckboxVisible: () =>
     return !@isAnonymous

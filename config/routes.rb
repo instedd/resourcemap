@@ -58,6 +58,7 @@ ResourceMap::Application.routes.draw do
         get 'invitable'
         get 'search'
         post 'set_layer_access_anonymous_user'
+        post 'set_access_anonymous_user'
       end
       member do
         post 'set_access'

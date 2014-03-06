@@ -4,6 +4,15 @@ class Membership::Anonymous
     @granting_user = granting_user
   end
 
+  def set_access(built_in_layer, access)
+    raise(ArgumentError, "Undefined element #{built_in_layer} for membership.") unless built_in_layer == 'name' || built_in_layer == 'location'
+
+    @collection.anonymous_name_permission = access if built_in_layer == 'name'
+    @collection.anonymous_location_permission = access if built_in_layer == 'location'
+
+    @collection.save!
+  end
+
   def set_layer_access(layer_id, verb, access)
     raise(ArgumentError, "verb must be read") unless verb == "read"
 
@@ -20,11 +29,11 @@ class Membership::Anonymous
   end
 
   def name_permission
-    name_location_permission
+    @collection.anonymous_name_permission
   end
 
   def location_permission
-    name_location_permission
+    @collection.anonymous_location_permission
   end
 
   def as_json(options = {})
@@ -46,13 +55,6 @@ class Membership::Anonymous
 
   def layer_access(layer_id)
     @collection.layers.find(layer_id).anonymous_user_permission
-  end
-
-  private
-
-  def name_location_permission
-    permission = @collection.public ? "read" : "none"
-    permission
   end
 
 end
