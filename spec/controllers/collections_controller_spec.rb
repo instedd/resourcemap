@@ -4,7 +4,7 @@ describe CollectionsController do
   include Devise::TestHelpers
   render_views
   let(:user) { User.make }
-  let(:collection) { user.create_collection(Collection.make public: false) }
+  let(:collection) { user.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read'))}
 
   before(:each) {sign_in user}
 
@@ -16,7 +16,8 @@ describe CollectionsController do
 
   # Issue #627
   it "should not get public repeated one time for each membership" do
-    collection.public = true
+    collection.anonymous_name_permission = 'read'
+    collection.anonymous_location_permission = 'read'
     collection.save
 
     user2 = collection.users.make email: 'user2@email.com'

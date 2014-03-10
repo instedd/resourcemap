@@ -12,9 +12,9 @@ class Ability
 
     # User can read collection if she is a collection member or if the collection is public
     can [:read, :sites_by_term, :search, :sites_info, :current_user_membership], Collection, :memberships => { :user_id => user.id }
-    can [:read, :sites_by_term, :search, :sites_info, :current_user_membership], Collection, :public => true
+    can [:read, :sites_by_term, :search, :sites_info, :current_user_membership], Collection, :anonymous_name_permission => "read"
 
-    can [:search, :index], Site, :collection => {:public => true}
+    can [:search, :index], Site, :collection => {:anonymous_name_permission => "read"}
     can [:search, :index], Site, :collection => {:memberships => { :user_id => user.id }}
     can :delete, Site, :collection => {:memberships => { :user_id => user.id , :admin => true } }
 
@@ -38,7 +38,7 @@ class Ability
       can :read, Layer, :collection => { :memberships => { :user_id => user.id} }, :id => user.readable_layer_ids
     else
       # ...or if the user is guest
-      can :read, Layer, :collection => {:public => true}
+      can :read, Layer, :anonymous_user_permission => "read"
     end
 
 
@@ -57,7 +57,7 @@ class Ability
       can :read, LayerHistory, :collection => { :memberships => { :user_id => user.id, :admin => true } }
       can :read, LayerHistory, :collection => { :memberships => { :user_id => user.id} }, :layer_id => user.readable_layer_ids
     else
-      can :read, LayerHistory, :collection => {:public => true}
+      can :read, LayerHistory, :layer_id => user.readable_layer_ids
     end
 
     ### Site properties ###

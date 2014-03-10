@@ -31,7 +31,8 @@ end
 Collection.blueprint do
   name
   icon {'default'}
-  public { false }
+  anonymous_name_permission {'none'}
+  anonymous_location_permission {'none'}
 end
 
 Site.blueprint do
