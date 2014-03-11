@@ -123,7 +123,8 @@ ResourceMap::Application.routes.draw do
 
   namespace :api do
     get 'collections' => 'collections#index',as: :collections
-    get 'collections/:id' => 'collections#show',as: :collection
+    post 'collections' => 'collections#create', as: :create_collection
+    get 'collections/:id' => 'collections#show', as: :collection
     get 'collections/:id/sample_csv' => 'collections#sample_csv',as: :sample_csv
     get 'collections/:collection_id/histogram/:field_id' => 'collections#histogram_by_field',as: :histogram_by_field
     get 'collections/:id/count' => 'collections#count',as: :count
