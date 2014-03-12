@@ -60,7 +60,7 @@ describe ExecVisitor, "Process query command" do
       end
 
       it "should return no result for public collection" do
-        @collection.public = true and @collection.save
+        @collection.anonymous_name_permission = true and @collection.save
         @visitor.visit_query_command(@node).should == "[\"AB\"] in There is no site matched"
       end
     end

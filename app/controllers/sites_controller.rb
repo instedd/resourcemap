@@ -1,5 +1,5 @@
 class SitesController < ApplicationController
-  before_filter :authenticate_api_user!, :except => [:index, :search], :unless => Proc.new { collection && collection.public }
+  before_filter :authenticate_api_user!, :except => [:index, :search], :unless => Proc.new { collection && collection.anonymous_name_permission == 'read' }
   before_filter :authenticate_collection_admin!, :only => :update
 
   authorize_resource :only => [:index, :search], :decent_exposure => true

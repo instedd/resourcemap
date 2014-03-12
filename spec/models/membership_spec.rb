@@ -9,7 +9,8 @@ describe Membership do
   it { should have_one :location_permission }
 
   let(:user) { User.make }
-  let(:collection) { user.create_collection(Collection.make_unsaved public: true)}
+  let(:collection) { user.create_collection(Collection.make_unsaved(anonymous_name_permission: 'read',
+    anonymous_location_permission: 'read') )}
   let(:membership_admin) { collection.memberships.find_by_admin(true)}
   let(:layer) { collection.layers.make }
 

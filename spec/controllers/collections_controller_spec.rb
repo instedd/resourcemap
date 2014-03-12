@@ -29,7 +29,8 @@ describe CollectionsController do
   end
 
   it "should get public collection being a guest user" do
-    collection.public = true
+    collection.anonymous_name_permission = 'read'
+    collection.anonymous_location_permission = 'read'
     collection.save
 
     sign_out user
@@ -45,7 +46,7 @@ describe CollectionsController do
     # load collection
     collection
 
-    other_collection = Collection.make public: true
+    other_collection = Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read')
     user2 = other_collection.users.make email: 'user2@email.com'
     other_collection.memberships.create! user_id: user2.id
 
@@ -55,13 +56,12 @@ describe CollectionsController do
   end
 
   it "admin should be able to update all collection's fields" do
-    put :update, id: collection.id, collection: {"name"=>"new name", "description"=>"new description", "public"=>"1", "icon"=>"default"}
+    put :update, id: collection.id, collection: {"name"=>"new name", "description"=>"new description", "icon"=>"default"}
     response.should be_redirect
 
     updated_collection = Collection.find_by_name "new name"
     updated_collection.should be
     updated_collection.description.should eq("new description")
-    updated_collection.public.should be_true
     updated_collection.icon.should eq("default")
   end
 
@@ -101,7 +101,7 @@ describe CollectionsController do
   end
 
   describe "Permissions" do
-    let(:public_collection) { user.create_collection(Collection.make public: true) }
+    let(:public_collection) { user.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read')) }
     let(:not_member) { User.make }
     let(:member) { User.make }
 
@@ -148,7 +148,7 @@ describe CollectionsController do
   end
 
   describe "public access" do
-    let(:public_collection) { user.create_collection(Collection.make public: true) }
+    let(:public_collection) { user.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read') ) }
     before(:each) { sign_out :user }
 
     it 'should get index as guest' do

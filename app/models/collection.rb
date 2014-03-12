@@ -42,7 +42,7 @@ class Collection < ActiveRecord::Base
   end
 
   def membership_for(user)
-    if user.is_guest && self.public
+    if user.is_guest && (self.anonymous_name_permission == 'read')
       # Dummy membership with read permission
       m = Membership.new collection: self, user: user, admin: false
       m.create_default_associations

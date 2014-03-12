@@ -65,7 +65,7 @@ class User < ActiveRecord::Base
   end
 
   def can_view?(collection, option)
-    return collection.public if collection.public
+    return true if (collection.anonymous_name_permission == 'read')
     membership = self.memberships.where(:collection_id => collection.id).first
     return false unless membership
     return membership.admin if membership.admin
