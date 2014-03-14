@@ -7,12 +7,12 @@ class Ability
     ### Collection ###
 
     # Admin abilities
-    can [:destroy, :create_snapshot, :recreate_index, :update, :members, :import_layers_from, :upload_logo, :edit_logo], Collection, :memberships => { :user_id => user.id , :admin => true }
+    can [:destroy, :create_snapshot, :recreate_index, :update, :members, :import_layers_from, :upload_logo, :edit_logo, :export], Collection, :memberships => { :user_id => user.id , :admin => true }
     can :manage, Snapshot, :collection => {:memberships => { :user_id => user.id , :admin => true } }
 
     # User can read collection if she is a collection member or if the collection is public
     can [:read, :sites_by_term, :search, :sites_info, :current_user_membership], Collection, :memberships => { :user_id => user.id }
-    can [:read, :sites_by_term, :search, :sites_info, :current_user_membership], Collection, :anonymous_name_permission => "read"
+    can [:read, :sites_by_term, :search, :sites_info, :current_user_membership, :export], Collection, :anonymous_name_permission => "read"
 
     can [:search, :index], Site, :collection => {:anonymous_name_permission => "read"}
     can [:search, :index], Site, :collection => {:memberships => { :user_id => user.id }}
@@ -23,7 +23,7 @@ class Ability
     end
 
     # Member Abilities
-    can [:csv_template, :upload_csv, :unload_current_snapshot, :load_snapshot, :register_gateways, :message_quota, :reminders, :settings, :quotas], Collection, :memberships => { :user_id => user.id }
+    can [:csv_template, :upload_csv, :unload_current_snapshot, :load_snapshot, :register_gateways, :message_quota, :reminders, :settings, :quotas, :export], Collection, :memberships => { :user_id => user.id }
 
     # In progress
     can :max_value_of_property, Collection, :memberships => { :user_id => user.id }
@@ -75,6 +75,8 @@ class Ability
         admin || (lm && lm.write)
       end
     end
+
+
 
   end
 

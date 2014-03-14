@@ -1,5 +1,6 @@
 class GuestUser < User
   def initialize
+    super
     @is_guest = true
   end
 

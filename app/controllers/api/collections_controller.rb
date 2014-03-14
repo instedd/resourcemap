@@ -3,16 +3,19 @@ class Api::CollectionsController < ApplicationController
   include Api::GeoJsonHelper
 
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_api_user!
+  before_filter :authenticate_api_user!, :except => [:show]
+  before_filter :authenticate_collection_user!
   around_filter :rescue_with_check_api_docs
 
-  expose(:collection) { current_user.collections.find(params[:collection_id] || params[:id]) }
+  expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
 
   def index
     render_json current_user.collections.all
   end
 
   def show
+    authorize! :export, collection
+
     options = [:sort]
 
     if params[:format] == 'csv' || params[:page] == 'all'

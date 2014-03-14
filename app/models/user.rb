@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
     if !is_guest
       self.memberships.find_by_collection_id(collection.id)
     else
-      if collection.public
+      if (collection.anonymous_name_permission == 'read')
         Membership.new(collection_id: collection.id)
       else
         nil
@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
   end
 
   def belongs_to?(collection)
-    memberships.where(:collection_id => collection.id).exists?
+    collection.anonymous_name_permission == "read" || memberships.where(:collection_id => collection.id).exists?
   end
 
   def membership_in(collection)
