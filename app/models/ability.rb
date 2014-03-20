@@ -76,8 +76,6 @@ class Ability
       end
     end
 
-
-
   end
 
   def user_memberships(user)
