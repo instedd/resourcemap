@@ -17,7 +17,8 @@
       .defaultLayerPermissionsTitle{ko(click: :toggleDefaultLayerPermissions)}
         %img.members-collapse-icon{ko(attr: {src: "defaultLayerPermissionsArrow('#{InsteddRails.url}')" })}
         %span.memberDetailsTitle
-          Default permissions for all sites
+          Permissions per layer
+
 
     .permissionColumn
       %hr.underlineExpandedMember
@@ -79,46 +80,6 @@
     .lastColumn
   //ko
   //ko
-
-  /ko if: !isAnonymous
-  .customPermissionsTitleRow
-    .memberHeaderColumn
-      .frame
-        .memberDetailsTitle{ko(text: 'site_permissions_title')}
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        .frame
-    .permissionColumn.admin
-      .frame
-    .lastColumn
-
-  /ko foreach: sitesWithCustomPermissions
-  .customPermissionRow
-    .memberHeaderColumn
-      .frame
-        .memberCustomPermissionsSiteName{ko(text: 'name')}
-        %button.clist-remove.memberRemoveCustomPermissionSite{ko(click: "$parent.removeCustomPermission")}
-        %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        .frame
-          %input{ko(disable: "$parent.admin", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
-        %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
-    .permissionColumn.admin
-      .frame
-        %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
-    .lastColumn
-  //ko
-
-  .addCustomPermissionRow{ko(attr: { "id" => "customPermissionsAutocompleteId()" })}
-    .memberHeaderColumn
-      .frame
-        %input.autocomplete-site-input.ux-search{ ko(autocomplete: :customSite, value: :customSite, valueUpdate: :afterkeydown, source: "searchSitesUrl()", event: {keydown: :keyPress, blur: :save}), type: :text, placeholder: 'Add custom permissions for site' }
-        %button.clist-add{ko(click: :createCustomPermissionForSite)}
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-    .permissionColumn.admin
-    .lastColumn
 
   .removeMemberRow
     .memberHeaderColumn

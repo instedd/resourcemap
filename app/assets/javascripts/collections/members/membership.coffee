@@ -176,7 +176,7 @@ class @Membership extends Expandable
           # Check that a site with that name exists
           _.each data, (s) ->
             if s.name == _self.customSite()
-              new_permission = new SiteCustomPermission s.id, s.name, false, false, _self
+              new_permission = new SiteCustomPermission s.id, s.name, true, true, _self
               _self.sitesWithCustomPermissions.push new_permission
               _self.customSite ""
               _self.saveCustomSitePermissions()
