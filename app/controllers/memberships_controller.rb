@@ -1,5 +1,5 @@
 class MembershipsController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_api_user!
   before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin, :index]
 
   def collections_i_admin
