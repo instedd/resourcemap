@@ -148,7 +148,7 @@ describe Ability do
       let!(:layer_in_public_collection) { Layer.make collection: public_collection, user: admin, anonymous_user_permission: 'read' }
 
       it { admin_ability.should be_able_to(:read, layer_in_public_collection) }
-      it { user_ability.should_not be_able_to(:read, layer_in_public_collection) }
+      it { user_ability.should be_able_to(:read, layer_in_public_collection) }
       it { guest_ability.should be_able_to(:read, layer_in_public_collection) }
     end
 

@@ -30,17 +30,14 @@ class Ability
 
 
     ### Layer ###
+    can :read, Layer, :anonymous_user_permission => "read"
 
     if !user.is_guest
       # A user may read a layer if she's the collection administrator...
       can :read, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
       # ...or if she has been given explicit read access to it.
       can :read, Layer, :collection => { :memberships => { :user_id => user.id} }, :id => user.readable_layer_ids
-    else
-      # ...or if the user is guest
-      can :read, Layer, :anonymous_user_permission => "read"
     end
-
 
     # A user can write a layer only if she is the collection admin
     can :update, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
@@ -70,12 +67,16 @@ class Ability
         false
       else
         membership = user_memberships(user).find{|um| um.collection_id == field.collection_id}
-        admin = membership.try(:admin?)
-        lm = membership.layer_memberships.find{|layer_membership| layer_membership.layer_id == field.layer_id}
-        admin || (lm && lm.write)
+
+        if membership
+          admin = membership.try(:admin?)
+          lm = membership.layer_memberships.find{|layer_membership| layer_membership.layer_id == field.layer_id}
+          admin || (lm && lm.write)
+        else
+          false
+        end
       end
     end
-
   end
 
   def user_memberships(user)
