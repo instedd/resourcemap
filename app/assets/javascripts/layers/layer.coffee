@@ -43,5 +43,4 @@ onLayers ->
       id: @id()
       name: @name()
       ord: @ord()
-      public: @public()
       fields_attributes: $.map(@fields(), (x) -> x.toJSON())

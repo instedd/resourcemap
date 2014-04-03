@@ -1,5 +1,8 @@
+#= require collections/members/expandable
+
 class @Membership extends Expandable
   constructor: (root, data) ->
+    super
     _self = @
     @root = root
 
@@ -10,6 +13,11 @@ class @Membership extends Expandable
     @collectionId = ko.observable root.collectionId()
     @namePermission = ko.observable data?.name
     @locationPermission = ko.observable data?.location
+    @isAnonymous = false
+
+    @showAdminCheckbox = true
+    @defaultRead = ko.observable(false)
+    @defaultWrite = ko.observable(false)
 
     rootLayers = data?.layers ? []
     @layers = ko.observableArray $.map(root.layers(), (x) => new LayerMembership(x, rootLayers, _self))
@@ -17,7 +25,20 @@ class @Membership extends Expandable
     @sitesWithCustomPermissions = ko.observableArray SiteCustomPermission.arrayFromJson(data?.sites, @)
 
     @callModuleConstructors(arguments)
-    super
+
+    @set_layer_access_path = ko.computed => "/collections/#{@collectionId()}/memberships/#{@userId()}/set_layer_access.json"
+
+    @set_access_path = ko.computed => "/collections/#{@collectionId()}/memberships/#{@userId()}/set_access.json"
+
+    @allNoneNameLocationPerm = ko.observable('read')
+
+    @writeNamePermission = (action) =>
+      @namePermission(action)
+      $.post @set_access_path(), { object: 'name', new_action: action}
+
+    @writeLocationPermission = (action) =>
+      @locationPermission(action)
+      $.post @set_access_path(), { object: 'location', new_action: action}
 
     for action in ['none', 'read', 'update']
       do (action) =>
@@ -28,8 +49,7 @@ class @Membership extends Expandable
             else
               ""
           write: (val) =>
-            @namePermission(action)
-            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_access.json", { object: 'name', new_action: action}
+            @writeNamePermission action
 
         this["#{action}LocationChecked"] = ko.computed
           read: =>
@@ -38,8 +58,7 @@ class @Membership extends Expandable
             else
               ""
           write: (val) =>
-            @locationPermission(action)
-            $.post "/collections/#{@collectionId()}/memberships/#{@userId()}/set_access.json", { object: 'location', new_action: action}
+            @writeLocationPermission action
 
     all = (permitted) ->
       _.all _self.layers(), (l) => permitted l
@@ -69,20 +88,24 @@ class @Membership extends Expandable
 
     @allLayersNone = ko.computed
       read: =>
-        return 'all' if ((all nonePermission) && @namePermission() == 'read' && @locationPermission() == 'read')
+        return 'all' if ((all nonePermission) && @namePermission() == @allNoneNameLocationPerm() && @locationPermission() == @allNoneNameLocationPerm() )
         ''
       write: (val) =>
         return unless val
 
-        @readNameChecked(true)
-        @readLocationChecked(true)
+        if !@isAnonymous
+          @readNameChecked(true)
+          @readLocationChecked(true)
+        else
+          @noneNameChecked(true)
+          @noneLocationChecked(true)
 
         _self = @
+
         _.each @layers(), (layer) ->
           layer.read false
           layer.write false
-          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'read', access: false}
-
+          $.post _self.set_layer_access_path(), { layer_id: layer.layerId(), verb: 'read', access: false}
 
     @allLayersRead = ko.computed
       read: =>
@@ -98,7 +121,7 @@ class @Membership extends Expandable
         _.each @layers(), (layer) ->
           layer.read true
           layer.write false
-          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'read', access: true}
+          $.post _self.set_layer_access_path(), { layer_id: layer.layerId(), verb: 'read', access: true}
 
 
     @allLayersUpdate = ko.computed
@@ -115,7 +138,7 @@ class @Membership extends Expandable
         _.each @layers(), (layer) ->
           layer.write true
           layer.read true
-          $.post "/collections/#{root.collectionId()}/memberships/#{_self.userId()}/set_layer_access.json", { layer_id: layer.layerId(), verb: 'write', access: true}
+          $.post _self.set_layer_access_path(), { layer_id: layer.layerId(), verb: 'write', access: true}
 
     @isNotAdmin = ko.computed => not @admin()
 
@@ -153,7 +176,7 @@ class @Membership extends Expandable
           # Check that a site with that name exists
           _.each data, (s) ->
             if s.name == _self.customSite()
-              new_permission = new SiteCustomPermission s.id, s.name, false, false, _self
+              new_permission = new SiteCustomPermission s.id, s.name, true, true, _self
               _self.sitesWithCustomPermissions.push new_permission
               _self.customSite ""
               _self.saveCustomSitePermissions()
@@ -170,6 +193,12 @@ class @Membership extends Expandable
         "#{base_uri}/theme/images/icons/misc/black/arrowDown.png"
       else
         "#{base_uri}/theme/images/icons/misc/black/arrowRight.png"
+
+  nameLocationDisabled: () =>
+    return !@isAnonymous
+
+  updateCheckboxVisible: () =>
+    return !@isAnonymous
 
   toggleDefaultLayerPermissions: =>
     @defaultLayerPermissionsExpanded(not @defaultLayerPermissionsExpanded())

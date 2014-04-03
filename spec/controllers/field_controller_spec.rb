@@ -37,7 +37,7 @@ describe FieldsController do
   end
 
   it "should not get field mapping if not logged in and collection is public" do
-    collection = admin.create_collection(Collection.make public: true)
+    collection = admin.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read'))
 
     get :mapping, collection_id: collection.id, format: 'json'
 

@@ -9,7 +9,7 @@ class ExecVisitor < Visitor
 def initialize(context={})
     self.context = context
   end
-  
+
   def visit_query_command(node)
     if collection = Collection.find_by_id(node.collection_id.value)
       #raise MSG[:can_not_use_gateway] unless can_use_gateway?(collection)
@@ -22,7 +22,7 @@ def initialize(context={})
 
   def visit_update_command(node)
     id = node.resource_id.text_value
-     
+
     if site = Site.find_by_id_with_prefix(id)
       #raise MSG[:can_not_use_gateway] unless can_use_gateway?(site.collection)
       raise MSG[:can_not_update]      unless can_update?(node.property_list, node.sender, site)
@@ -48,7 +48,7 @@ def initialize(context={})
   end
 
   private
-  
+
   def update(site, node, sender)
     properties = node_to_properties(node)
     update_properties site, sender, properties

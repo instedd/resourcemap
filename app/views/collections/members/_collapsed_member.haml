@@ -8,5 +8,5 @@
       .permissionColumn.collapsed{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
 
     .permissionColumn.admin.collapsed
-      %input{ko(checked: :admin), type: :checkbox}
+      %input{ko(checked: :admin, visible: :showAdminCheckbox), type: :checkbox}
     .lastColumn.collapsed

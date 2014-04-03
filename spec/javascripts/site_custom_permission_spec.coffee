@@ -27,8 +27,8 @@ describe 'SiteCustomPermission', ->
       permissions = SiteCustomPermission.arrayFromJson(sites)
 
       expect(permissions.length).toBe 1
-      expect(permissions[0].can_write()).toBe true
-      expect(permissions[0].can_read()).toBe true
+      expect(permissions[0].cannot_write()).toBe true
+      expect(permissions[0].cannot_read()).toBe false
       expect(permissions[0].id()).toBe "8376"
       expect(permissions[0].name()).toBe "Site 3"
 
@@ -57,8 +57,8 @@ describe 'SiteCustomPermission', ->
       permissions = SiteCustomPermission.arrayFromJson(sites)
 
       expect(permissions.length).toBe 2
-      expect(_.any(permissions, (p) -> p.id() == "1283" and p.can_read() and p.can_write())).toBe true
-      expect(_.any(permissions, (p) -> p.id() == "8376" and p.can_read() and not p.can_write())).toBe true
+      expect(_.any(permissions, (p) -> p.id() == "1283" and p.cannot_read() and p.cannot_write())).toBe true
+      expect(_.any(permissions, (p) -> p.id() == "8376" and p.cannot_read() and p.cannot_write())).toBe true
 
     it 'works when write is null', ->
       sites =
@@ -70,8 +70,8 @@ describe 'SiteCustomPermission', ->
       permissions = SiteCustomPermission.arrayFromJson(sites)
 
       expect(permissions.length).toBe 2
-      expect(_.any(permissions, (p) -> p.id() == "1283" and p.can_read() and p.can_write())).toBe true
-      expect(_.any(permissions, (p) -> p.id() == "8376" and p.can_read() and p.can_write())).toBe true
+      expect(_.any(permissions, (p) -> p.id() == "1283" and p.cannot_read() and p.cannot_write())).toBe true
+      expect(_.any(permissions, (p) -> p.id() == "8376" and p.cannot_read() and p.cannot_write())).toBe true
 
     it 'works when read is null', ->
       sites =
@@ -83,6 +83,5 @@ describe 'SiteCustomPermission', ->
       permissions = SiteCustomPermission.arrayFromJson(sites)
 
       expect(permissions.length).toBe 1
-      expect(_.any(permissions, (p) -> p.id() == "1283" and p.can_read() and p.can_write())).toBe true
-
+      expect(_.any(permissions, (p) -> p.id() == "1283" and not p.cannot_read() and p.cannot_write())).toBe true
 

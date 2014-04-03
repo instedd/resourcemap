@@ -42,13 +42,16 @@ class Collection < ActiveRecord::Base
   end
 
   def membership_for(user)
-    if user.is_guest && self.public
-      # Dummy membership with read permission
-      m = Membership.new collection: self, user: user, admin: false
-      m.create_default_associations
-      m
+    membership = memberships.where(user_id: user.id).first
+    if user.is_guest or !membership
+      if (self.anonymous_name_permission == 'read')
+        # Dummy membership with read permission
+        m = Membership.new collection: self, user: user, admin: false
+        m.create_default_associations
+        m
+      end
     else
-      memberships.where(user_id: user.id).first
+      membership
     end
   end
 

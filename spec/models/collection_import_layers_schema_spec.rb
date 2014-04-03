@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Collection::ImportLayersSchemaConcern do
 	let(:collection) { Collection.make }
 	let(:other_collection) { Collection.make }
-	let(:other_layer) { other_collection.layers.make name: "Adminsitrative Information", ord: 1, public: false }
+	let(:other_layer) { other_collection.layers.make name: "Adminsitrative Information", ord: 1, anonymous_user_permission: 'none' }
 
 	let(:user) { User.make}
 
@@ -20,7 +20,7 @@ describe Collection::ImportLayersSchemaConcern do
 		collection_new_layer.collection_id.should_not eq(other_layer.collection_id)
 		collection_new_layer.created_at.should_not eq(other_layer.created_at)
 		collection_new_layer.updated_at.should_not eq(other_layer.updated_at)
-		collection_new_layer.public.should eq(false)
+		collection_new_layer.anonymous_user_permission.should eq('none')
 	end
 
 	it 'should import json_layer with numeric field' do
