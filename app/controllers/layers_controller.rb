@@ -1,7 +1,13 @@
 class LayersController < ApplicationController
 
   before_filter :authenticate_api_user!
+
+  # We removed the public attribute from layers, but we'll accept requests sending it
+  # so we don't break compatibility with already running clients.
+  before_filter :ignore_public_attribute
+
   before_filter :fix_field_config, only: [:create, :update]
+
 
   authorize_resource :layer, :decent_exposure => true, :except => :create
 
@@ -133,5 +139,9 @@ class LayersController < ApplicationController
     end
 
     params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
+  end
+
+  def ignore_public_attribute
+    params[:layer].delete(:public) if params[:layer] && params[:layer][:public]
   end
 end

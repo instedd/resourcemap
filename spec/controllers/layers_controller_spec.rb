@@ -12,6 +12,16 @@ describe LayersController do
 
   before(:each) {sign_in user}
 
+  describe "Backwards Compatibility" do
+    it "should ignore layer updates with public param" do
+      json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', public: 'public', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
+
+      post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+
+      response.should be_success
+    end
+  end
+
   it "should update field.layer_id" do
     layer.fields.count.should eq(1)
     json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
