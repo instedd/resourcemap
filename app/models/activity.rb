@@ -2,7 +2,8 @@ class Activity < ActiveRecord::Base
   ItemTypesAndActions = {
     'collection' => %w(created imported csv_imported),
     'layer' => %w(created changed deleted),
-    'site' => %w(created changed deleted)
+    'site' => %w(created changed deleted),
+    'membership' => %w(created changed deleted)
   }
   Kinds = Activity::ItemTypesAndActions.map { |item_type, actions| actions.map { |action| "#{item_type},#{action}" } }.flatten.freeze
 
