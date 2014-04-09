@@ -37,6 +37,12 @@ class Activity < ActiveRecord::Base
       site_changed_text
     when ['site', 'deleted']
       "Site '#{data['name']}' was deleted"
+    when ['membership', 'created']
+      "Membership was created"
+    when ['membership', 'changed']
+      "Membership changed"
+    when ['membership', 'deleted']
+      "Membership was deleted"
     end
   end
 
