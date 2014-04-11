@@ -219,4 +219,15 @@ class Collection < ActiveRecord::Base
       hash[field.es_code] = value if value
     end
   end
+
+  def layers_to_json(at_present, user)
+    if at_present
+      layers.includes(:fields).select{|l| user.can?(:read, l)}.as_json(include: :fields)
+    else
+      layers.includes(:field_histories)
+        .where("field_histories.valid_since <= :date && (:date < field_histories.valid_to || field_histories.valid_to is null)", date: current_user_snapshot.snapshot.date)
+        .select{|l| user.can?(:read, l)}
+        .as_json(include: :field_histories)
+    end
+  end
 end

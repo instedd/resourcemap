@@ -54,6 +54,9 @@ ActiveRecord::Schema.define(:version => 20140217193052) do
     t.string   "icon"
     t.integer  "quota",                                      :default => 0
     t.string   "logo"
+    t.string   "anonymous_name_permission",                                    :default => "none"
+    t.string   "anonymous_location_permission",                                :default => "none"
+    t.boolean  "public"
   end
 
   create_table "field_histories", :force => true do |t|
@@ -145,6 +148,7 @@ ActiveRecord::Schema.define(:version => 20140217193052) do
     t.datetime "updated_at",                                    :null => false
     t.integer  "ord"
     t.string   "anonymous_user_permission", :default => "none"
+    t.boolean  "public"
   end
 
   add_index "layers", ["collection_id"], :name => "index_layers_on_collection_id"

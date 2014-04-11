@@ -39,6 +39,7 @@ class FieldsController < ApplicationController
     end
   end
 
+  # Should be removed?
   def mapping
     render_json collection.fields.map{|f| {name: f.name, id: f.id, code: f.code, kind: f.kind}}
   end
