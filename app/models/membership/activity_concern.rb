@@ -14,8 +14,12 @@ module Membership::ActivityConcern
     end
   end
 
+  def create_activity_for_member
+    Activity.create! item_type: 'membership', action: 'created', collection_id: collection.id, user_id: user_id, 'data' => {}
+  end
+
   def create_activity_if_destroy_member
-    Activity.create! item_type: 'membership', action: 'deleted', collection_id: collection.id, user_id: user_id, 'data' => {'email' => user.email}
+    Activity.create! item_type: 'membership', action: 'deleted', collection_id: collection.id, user_id: user_id, 'data' => {}
   end
 
 end

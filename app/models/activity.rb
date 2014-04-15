@@ -3,7 +3,8 @@ class Activity < ActiveRecord::Base
     'collection' => %w(created imported csv_imported),
     'layer' => %w(created changed deleted),
     'site' => %w(created changed deleted),
-    'membership' => %w(created changed deleted)
+    'membership' => %w(created deleted),
+    'layer_membership' => %w(created changed)
   }
   Kinds = Activity::ItemTypesAndActions.map { |item_type, actions| actions.map { |action| "#{item_type},#{action}" } }.flatten.freeze
 
@@ -39,11 +40,17 @@ class Activity < ActiveRecord::Base
     when ['site', 'deleted']
       "Site '#{data['name']}' was deleted"
     when ['membership', 'created']
-      "Membership was created"
-    when ['membership', 'changed']
-      "Membership changed"
+      "Membership was created "
     when ['membership', 'deleted']
-      "Membership was deleted"
+      "Membership was deleted "
+    when ['layer_membership', 'created']
+      new_layer_membership_permission
+    when ['layer_membership', 'changed']
+      return unless (data['write'].count == 2)
+      layer_membership_permission_changed
+    when ['layer_membership', 'deleted']
+      return unless (data['read'])
+      layer_membership_permission_deleted
     end
   end
 
@@ -122,6 +129,35 @@ class Activity < ActiveRecord::Base
     else
       "Layer '#{data['name']}' changed: #{changes}"
     end
+  end
+
+  def new_layer_membership_permission
+    if (data['read'] && data['write'])
+      permission = 'Write'
+    elsif (data['read'] && !data['write'])
+      permission = 'Read'
+    else
+      permission = 'None'
+    end
+    " '#{permission}' permission created for layer '#{data['name']}' "
+  end
+
+  def layer_membership_permission_changed
+      write_changes = data['write']
+      if (!write_changes[0] && write_changes[1])
+        "Permission changed from read to write in layer '#{data['name']}'"
+      elsif (write_changes[0] && !write_changes[1])
+        "Permission changed from write to read in layer '#{data['name']}'"
+      end
+  end
+
+  def layer_membership_permission_deleted
+      if (data['write'])
+        previous_permission = "Write"
+      else
+        previous_permission = "Read"
+      end
+      "'#{previous_permission}' permission was deleted in layer '#{data['name']}' "
   end
 
   def layer_changes_text

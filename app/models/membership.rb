@@ -68,18 +68,38 @@ class Membership < ActiveRecord::Base
     end
 
     lm = layer_memberships.where(:layer_id => options[:layer_id]).first
+
     if lm
       lm.read = read unless read.nil?
       lm.write = write unless write.nil?
 
       if lm.read || lm.write
+        #Changes passed as parameter
+        create_activity_if_permission_changed lm, lm.changes()
         lm.save!
       else
+        create_activity_if_destroy_permission lm, lm.changes()
         lm.destroy
       end
     else
       layer_memberships.create! :layer_id => options[:layer_id], :read => read, :write => write
     end
+  end
+
+  def create_activity_if_permission_changed(lm, changes)
+    return unless changes['write']
+
+    data = changes
+    data['name'] = lm.layer.name
+
+    Activity.create! item_type: 'layer_membership', action: 'changed', collection_id: lm.layer.collection_id, user_id: lm.membership.user_id, 'data' => data
+  end
+
+  def create_activity_if_destroy_permission(lm, changes)
+    return unless (changes['read'][0] && !changes['read'][1])
+    data = changes
+    data['name'] = lm.layer.name
+    Activity.create! item_type: 'layer_membership', action: 'deleted', collection_id: lm.layer.collection_id, user_id: lm.membership.user_id, 'data' => data
   end
 
   def as_json(options = {})
