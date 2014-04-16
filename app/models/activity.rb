@@ -4,7 +4,7 @@ class Activity < ActiveRecord::Base
     'layer' => %w(created changed deleted),
     'site' => %w(created changed deleted),
     'membership' => %w(created deleted),
-    'layer_membership' => %w(created changed)
+    'layer_membership' => %w(created changed deleted)
   }
   Kinds = Activity::ItemTypesAndActions.map { |item_type, actions| actions.map { |action| "#{item_type},#{action}" } }.flatten.freeze
 
@@ -40,17 +40,21 @@ class Activity < ActiveRecord::Base
     when ['site', 'deleted']
       "Site '#{data['name']}' was deleted"
     when ['membership', 'created']
-      "Membership was created "
+      "Membership was created"
     when ['membership', 'deleted']
-      "Membership was deleted "
+      "Membership was deleted"
     when ['layer_membership', 'created']
       new_layer_membership_permission
     when ['layer_membership', 'changed']
       return unless (data['write'].count == 2)
       layer_membership_permission_changed
     when ['layer_membership', 'deleted']
-      return unless (data['read'])
-      layer_membership_permission_deleted
+      #Case added to generate test. In general, data['read'] has a value.
+      if data['read']
+        layer_membership_permission_deleted
+      else
+        "Permission was deleted in layer '#{data['name']}'" unless (data['read'])
+      end
     end
   end
 
@@ -139,7 +143,7 @@ class Activity < ActiveRecord::Base
     else
       permission = 'None'
     end
-    " '#{permission}' permission created for layer '#{data['name']}' "
+    "#{permission} permission created for layer '#{data['name']}'"
   end
 
   def layer_membership_permission_changed
@@ -157,7 +161,7 @@ class Activity < ActiveRecord::Base
       else
         previous_permission = "Read"
       end
-      "'#{previous_permission}' permission was deleted in layer '#{data['name']}' "
+      "#{previous_permission} permission was deleted in layer '#{data['name']}'"
   end
 
   def layer_changes_text

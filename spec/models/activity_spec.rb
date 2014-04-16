@@ -343,10 +343,75 @@ describe Activity do
       'description' => "Site '#{site.name}' was deleted"
   end
 
+  let(:user2) { collection.users.make email: 'user2@email.com'}
+  it "creates one after creating a membership but not the first one" do
+    Activity.delete_all
+    membership = collection.memberships.create! user_id: user2.id
+    assert_activity 'membership', 'created',
+      'collection_id' => collection.id,
+      'user_id' => user2.id,
+      'data' => {},
+      'description' => "Membership was created"
+  end
+
+  it "creates one after destroying a membership" do
+    membership = collection.memberships.create! user_id: user2.id
+    Activity.delete_all
+    membership.destroy
+    assert_activity 'membership', 'deleted',
+      'collection_id' => collection.id,
+      'user_id' => user2.id,
+      'data' => {},
+      'description' => "Membership was deleted"
+  end
+
+  it "creates one after creating a layer_membership" do
+    membership = collection.memberships.create! user_id: user2.id
+    layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
+    Activity.delete_all
+    layer_membership = LayerMembership.create! :layer_id => layer.id, :membership => membership, :read => true, :write => false
+    assert_activity 'layer_membership', 'created',
+      'collection_id' => collection.id,
+      'user_id' => user2.id,
+      'layer_id' => layer.id,
+      'description' => "Read permission created for layer '#{layer.name}'"
+  end
+
+  it "creates one after destroying a layer_membership" do
+    membership = collection.memberships.create! user_id: user2.id
+    layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
+    layer_membership = LayerMembership.create! :layer_id => layer.id, :membership => membership, :read => true, :write => false
+    Activity.delete_all
+    layer_membership.destroy
+    assert_activity 'layer_membership', 'deleted',
+      'collection_id' => collection.id,
+      'user_id' => user2.id,
+      'layer_id' => layer.id,
+      'description' => "Permission was deleted in layer '#{layer.name}'"
+  end
+
+  it "creates one after changing a leyer_membership by setting layer access" do
+    membership = collection.memberships.create! user_id: user2.id
+    layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
+    layer_membership = LayerMembership.create! :layer_id => layer.id, :membership => membership, :read => true, :write => false
+    Activity.delete_all
+    params = {:layer_id => layer.id, :verb => :write, :access => true}
+    membership.set_layer_access params
+
+    assert_activity 'layer_membership', 'changed',
+      'collection_id' => collection.id,
+      'user_id' => user2.id,
+      'layer_id' => layer.id,
+      'description' => "Permission changed from read to write in layer '#{layer.name}'"
+  end
+
   def assert_activity(item_type, action, options = {})
     activities = Activity.all
-    activities.length.should eq(1)
-
+    if (item_type == 'collection' && action == 'created')
+      activities.length.should eq(2)
+    else
+      activities.length.should eq(1)
+    end
     activities[0].item_type.should eq(item_type)
     activities[0].action.should eq(action)
     options.each do |key, value|

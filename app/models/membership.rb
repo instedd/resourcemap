@@ -78,7 +78,6 @@ class Membership < ActiveRecord::Base
         create_activity_if_permission_changed lm, lm.changes()
         lm.save!
       else
-        create_activity_if_destroy_permission lm, lm.changes()
         lm.destroy
       end
     else
@@ -92,15 +91,9 @@ class Membership < ActiveRecord::Base
     data = changes
     data['name'] = lm.layer.name
 
-    Activity.create! item_type: 'layer_membership', action: 'changed', collection_id: lm.layer.collection_id, user_id: lm.membership.user_id, 'data' => data
+    Activity.create! item_type: 'layer_membership', action: 'changed', collection_id: lm.layer.collection_id, layer_id: lm.layer.id, user_id: lm.membership.user_id, 'data' => data
   end
 
-  def create_activity_if_destroy_permission(lm, changes)
-    return unless (changes['read'][0] && !changes['read'][1])
-    data = changes
-    data['name'] = lm.layer.name
-    Activity.create! item_type: 'layer_membership', action: 'deleted', collection_id: lm.layer.collection_id, user_id: lm.membership.user_id, 'data' => data
-  end
 
   def as_json(options = {})
     {

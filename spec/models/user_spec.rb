@@ -100,11 +100,11 @@ describe User do
 
       it "should return true when two field have the same code 'AB' but difference collection_id" do
         @collection1 = Collection.make
-        @layer1 = @collection1.layers.create(:name => "school")
+        @layer1 = @collection1.layers.make :name => "school"
         @field1 = Field.create(:collection_id => @collection1.id, :layer_id => @layer1.id, :code => "AB", :ord => 1, :kind => "numeric")
         @site1  = @collection1.sites.make
         membership = @collection1.memberships.create(:user => @user, :admin => false)
-        membership.layer_memberships.create(:layer_id => @layer1.id, :read => true, :write => true)
+        membership.layer_memberships.create(:layer_id => @layer1.id, :read => true, :write => true, :membership_id => membership.id)
         @user.validate_layer_write_permission(@site1, @properties).should be_true
       end
     end
