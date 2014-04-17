@@ -6,6 +6,7 @@ describe MembershipsController do
   let(:user) { User.make email: 'foo@test.com' }
   let(:user_2) { User.make email: 'bar@test.com' }
   let(:collection) { user.create_collection(Collection.make_unsaved) }
+  let(:anonymous) { Membership::Anonymous.new collection, user }
 
   describe "index" do
     let(:membership) { collection.memberships.create! user_id: user_2.id, admin: false }
@@ -13,11 +14,9 @@ describe MembershipsController do
     it "collection admin should be able to write name and location" do
       sign_in user
       get :index, collection_id: collection.id
+      user_membership = collection.memberships.where(user_id:user.id).first
       json = JSON.parse response.body
-      json[0]["user_id"].should eq(user.id)
-      json[0]["admin"].should eq(true)
-      json[0]["name"].should eq("update")
-      json[0]["location"].should eq("update")
+      json["members"][0].should eq(user_membership.as_json.with_indifferent_access)
     end
 
     it "should not return memberships for non admin user" do
@@ -26,18 +25,14 @@ describe MembershipsController do
       response.body.should be_blank
     end
 
-    it "for collection member should include default_fields permissions in json" do
-      sign_in user
-      membership.set_access(object: 'name', new_action: 'update')
-      membership.set_access(object: 'location', new_action: 'read')
 
+    it "should include anonymous's membership " do
+      layer
       get :index, collection_id: collection.id
       json = JSON.parse response.body
-      json[1]["user_id"].should eq(user_2.id)
-      json[1]["admin"].should eq(false)
-      json[1]["name"].should eq("update")
-      json[1]["location"].should eq("read")
+      json["anonymous"].should eq(anonymous.as_json.with_indifferent_access)
     end
+
   end
 
   describe "search" do

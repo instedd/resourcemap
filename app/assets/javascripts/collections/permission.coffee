@@ -7,4 +7,4 @@ onCollections ->
       @someSites = data?.some_sites.map (x) -> parseInt x.id
 
     canAccess: (siteId) ->
-      @allSites or @someSites.indexOf(siteId) > -1
+      @allSites or !(@someSites.indexOf(siteId) > -1)

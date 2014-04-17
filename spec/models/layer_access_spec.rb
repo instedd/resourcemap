@@ -46,6 +46,27 @@ describe "layer access" do
     end
   end
 
+  describe "guest user" do
+    let!(:guest_user) { GuestUser.new }
+    let!(:user_ability) {Ability.new guest_user}
+    let!(:collection2) { Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read') }
+    let!(:l1) { collection2.layers.make(anonymous_user_permission: 'read') }
+    let!(:l2) { collection2.layers.make}
+
+    it "can read if layer has read permission for anonymous" do
+      (user_ability.can? :read, l1).should be_true
+    end
+
+    it "can't read if collection hasn't got read permission for anonymous" do
+      (user_ability.can? :read, l2).should be_false
+    end
+
+    it "is not able to update layers" do
+      (user_ability.can? :update, l1, collection2).should be_false
+      (user_ability.can? :update, l2, collection2).should be_false
+    end
+  end
+
   describe "snapshots" do
 
     it "should return layers form snapshot" do

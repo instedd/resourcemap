@@ -45,7 +45,7 @@ describe Ability do
     end
 
     it "Public Collection Abilities" do
-      public_collection = admin.create_collection Collection.make public: true
+      public_collection = admin.create_collection Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read')
 
       user_ability.should be_able_to(:read, public_collection)
       user_ability.should_not be_able_to(:update, public_collection)
@@ -143,22 +143,23 @@ describe Ability do
       it { guest_ability.should_not be_able_to(:read, layer) }
     end
 
-    describe "Should read layers if the collection is public" do
-      let!(:public_collection) { admin.create_collection Collection.make public: true}
-      let!(:layer_in_public_collection) { Layer.make collection: public_collection, user: admin }
+    describe "Should read layers if it has anonymous_user read permission" do
+      let!(:public_collection) { admin.create_collection Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read') }
+      let!(:layer_in_public_collection) { Layer.make collection: public_collection, user: admin, anonymous_user_permission: 'read' }
 
       it { admin_ability.should be_able_to(:read, layer_in_public_collection) }
-      it { user_ability.should_not be_able_to(:read, layer_in_public_collection) }
+      it { user_ability.should be_able_to(:read, layer_in_public_collection) }
       it { guest_ability.should be_able_to(:read, layer_in_public_collection) }
     end
 
     # Issue #574
     describe "Should not read duplicated layers for guest user if the collection is public" do
-      let!(:public_collection) { admin.create_collection Collection.make public: true}
+      let!(:public_collection) { admin.create_collection Collection.make(anonymous_name_permission: 'read',
+        anonymous_location_permission: 'read')}
       # Public collection with more than one membership were given duplicated results.
       let!(:membership) { public_collection.memberships.create! :user_id => member.id, admin: false }
 
-      let!(:layer_in_public_collection) { Layer.make collection: public_collection, user: admin }
+      let!(:layer_in_public_collection) { Layer.make collection: public_collection, user: admin, anonymous_user_permission: 'read' }
 
       it { public_collection.layers.accessible_by(guest_ability).count.should eq(1) }
     end
@@ -202,7 +203,7 @@ describe Ability do
     end
 
     describe "guest user should not be able to update site property" do
-      let!(:public_collection) { admin.create_collection Collection.make public: true}
+      let!(:public_collection) { admin.create_collection Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read') }
       let!(:layer_in_public_collection) { Layer.make collection: public_collection, user: admin }
       let!(:field_in_public_collection) { Field::TextField.make collection: public_collection, layer: layer_in_public_collection }
       let!(:site_in_public_collection) { public_collection.sites.make }

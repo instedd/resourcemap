@@ -8,7 +8,8 @@ describe Collection do
   it { should have_many :thresholds }
 
   let(:user) { User.make }
-  let(:collection) { user.create_collection Collection.make_unsaved public: true}
+  let(:collection) { user.create_collection Collection.make_unsaved(anonymous_name_permission: 'read', anonymous_location_permission: 'read')}
+  let(:collection2) { user.create_collection Collection.make_unsaved(anonymous_name_permission: 'none', anonymous_location_permission: 'none')}
   let(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'foo', name: 'Foo', ord: 1}] }
   let(:field) { layer.fields.first }
 
@@ -116,9 +117,15 @@ describe Collection do
       membership.admin.should be(false)
     end
 
-    it "should not obtain membership for user who is not member of the collection" do
+    it "should obtain membership if collection has anonymous read permission and user is not member " do
       non_member = User.make
       membership = collection.membership_for(non_member)
+      membership.should_not be_nil
+    end
+
+    it "should not obtain membership if collection doesn't have anonymous read permission and useris not member" do
+      non_member = User.make
+      membership = collection2.membership_for(non_member)
       membership.should be_nil
     end
 

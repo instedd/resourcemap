@@ -8,7 +8,7 @@
       .permissionColumn{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
 
     .permissionColumn.admin
-      %input{ko(checked: :admin), type: :checkbox}
+      %input{ko(checked: :admin, visible: :showAdminCheckbox), type: :checkbox}
     .lastColumn
 
   .defaultLayerPermissionsRow
@@ -17,12 +17,20 @@
       .defaultLayerPermissionsTitle{ko(click: :toggleDefaultLayerPermissions)}
         %img.members-collapse-icon{ko(attr: {src: "defaultLayerPermissionsArrow('#{InsteddRails.url}')" })}
         %span.memberDetailsTitle
-          Default permissions for all sites
+          Permissions per layer
 
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        %hr.underlineExpandedMember
-          %input{ko(disable: :admin, checked: "allLayers#{permission}", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
+
+    .permissionColumn
+      %hr.underlineExpandedMember
+        %input{ko(disable: :admin, checked: "allLayersNone", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
+
+    .permissionColumn
+      %hr.underlineExpandedMember
+        %input{ko(disable: :admin, checked: "allLayersRead", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
+
+    .permissionColumn
+      %hr.underlineExpandedMember
+        %input{ko(disable: :admin, checked: "allLayersUpdate", :attr => { "name" => "userId" }, visible: "updateCheckboxVisible()"), :value => "all", :type => 'radio'}
 
     .permissionColumn.admin
       %hr.underlineExpandedMember
@@ -31,24 +39,29 @@
   /ko if: defaultLayerPermissionsExpanded
   .layerRow
     .memberHeaderColumn Name
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        - if permission == 'None'
-          %input{ko(disable: true), :type => 'radio'}
-        - else
-          %input{ko(disable: "admin()", checked: "#{permission.downcase}NameChecked"), :value => "true", :type => 'radio'}
+    .permissionColumn
+      %input{ko(disable: "nameLocationDisabled()", checked: "noneNameChecked"), :value => "true", :type => 'radio'}
+
+    .permissionColumn
+      %input{ko(disable: "admin()", checked: "readNameChecked"), :value => "true", :type => 'radio'}
+
+    .permissionColumn
+      %input{ko(disable: "admin()", checked: "updateNameChecked", visible: "updateCheckboxVisible()"), :value => "true", :type => 'radio'}
 
     .permissionColumn.admin
     .lastColumn
 
+
   .layerRow
     .memberHeaderColumn Location
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        - if permission == 'None'
-          %input{ko(disable: true), :type => 'radio'}
-        - else
-          %input{ko(disable: "admin()", checked: "#{permission.downcase}LocationChecked"), :value => "true", :type => 'radio'}
+    .permissionColumn
+      %input{ko(disable: "nameLocationDisabled()", checked: "noneLocationChecked"), :value => "true", :type => 'radio'}
+
+    .permissionColumn
+      %input{ko(disable: "admin()", checked: "readLocationChecked"), :value => "true", :type => 'radio'}
+
+    .permissionColumn
+      %input{ko(disable: "admin()", checked: "updateLocationChecked", visible: "updateCheckboxVisible()"), :value => "true", :type => 'radio'}
 
     .permissionColumn.admin
     .lastColumn
@@ -57,53 +70,19 @@
   /ko foreach: layers
   .layerRow
     .memberHeaderColumn{ko(text: "layerName()")}
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        %input{ko(disable: "$parent.admin()", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
+    .permissionColumn
+      %input{ko(disable: "$parent.admin()", checked: "noneChecked"), :value => "true", :type => 'radio'}
+    .permissionColumn
+      %input{ko(disable: "$parent.admin()", checked: "readChecked"), :value => "true", :type => 'radio'}
+    .permissionColumn
+      %input{ko(disable: "$parent.admin()", checked: "updateChecked", visible: "$parent.updateCheckboxVisible()"), :value => "true", :type => 'radio'}
     .permissionColumn.admin
     .lastColumn
   //ko
   //ko
-
-  .customPermissionsTitleRow
-    .memberHeaderColumn
-      .frame
-        .memberDetailsTitle{ko(text: 'site_permissions_title')}
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        .frame
-    .permissionColumn.admin
-      .frame
-    .lastColumn
-
-  /ko foreach: sitesWithCustomPermissions
-  .customPermissionRow
-    .memberHeaderColumn
-      .frame
-        .memberCustomPermissionsSiteName{ko(text: 'name')}
-        %button.clist-remove.memberRemoveCustomPermissionSite{ko(click: "$parent.removeCustomPermission")}
-        %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-        .frame
-          %input{ko(disable: "$parent.admin", checked: "#{permission.downcase}Checked"), :value => "true", :type => 'radio'}
-        %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
-    .permissionColumn.admin
-      .frame
-        %hr.underlineExpandedMember{ko(visible: '$index() < $parent.sitesWithCustomPermissions().length - 1')}
-    .lastColumn
-  //ko
-
-  .addCustomPermissionRow{ko(attr: { "id" => "customPermissionsAutocompleteId()" })}
-    .memberHeaderColumn
-      .frame
-        %input.autocomplete-site-input.ux-search{ ko(autocomplete: :customSite, value: :customSite, valueUpdate: :afterkeydown, source: "searchSitesUrl()", event: {keydown: :keyPress, blur: :save}), type: :text, placeholder: 'Add custom permissions for site' }
-        %button.clist-add{ko(click: :createCustomPermissionForSite)}
-    - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn
-    .permissionColumn.admin
-    .lastColumn
 
   .removeMemberRow
     .memberHeaderColumn
       = render './ko_confirm_box', :action_description => 'Remove this member', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to remove this member from the collection?'
+
+  //ko

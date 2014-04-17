@@ -82,8 +82,7 @@ class Membership < ActiveRecord::Base
     end
   end
 
-
-  def to_json
+  def as_json(options = {})
     {
       user_id: user_id,
       user_display_name: user.display_name,

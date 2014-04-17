@@ -15,16 +15,29 @@ class User < ActiveRecord::Base
   attr_accessor :is_guest
 
   def membership_for_collection(collection)
-    if !is_guest
-      self.memberships.find_by_collection_id(collection.id)
-    else
-      if collection.public
+    membership = self.memberships.find_by_collection_id(collection.id)
+    if is_guest || !membership
+      if (collection.anonymous_name_permission == 'read')
         Membership.new(collection_id: collection.id)
       else
         nil
       end
+    else
+      membership
     end
   end
+
+  # def membership_for_collection(collection)
+  #   if !is_guest
+  #     self.memberships.find_by_collection_id(collection.id)
+  #   else
+  #     if (collection.anonymous_name_permission == 'read')
+  #       membership.new(collection_id: collection.id)
+  #     else
+  #       nil
+  #     end
+  #   end
+  # end
 
   # In order to use it in the ability file
   # this loads accessible layers for ALL the user's collections.
@@ -49,7 +62,7 @@ class User < ActiveRecord::Base
   end
 
   def belongs_to?(collection)
-    memberships.where(:collection_id => collection.id).exists?
+    collection.anonymous_name_permission == "read" || memberships.where(:collection_id => collection.id).exists?
   end
 
   def membership_in(collection)
@@ -65,7 +78,7 @@ class User < ActiveRecord::Base
   end
 
   def can_view?(collection, option)
-    return collection.public if collection.public
+    return true if (collection.anonymous_name_permission == 'read')
     membership = self.memberships.where(:collection_id => collection.id).first
     return false unless membership
     return membership.admin if membership.admin

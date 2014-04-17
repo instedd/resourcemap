@@ -7,10 +7,9 @@ class MembershipsController < ApplicationController
   end
 
   def index
-    memberships = collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission]).all.map do |membership|
-      membership.to_json
-    end
-    render_json memberships
+    memberships = collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission, :layer_memberships])
+    anonymous = Membership::Anonymous.new collection, current_user
+    render_json({members: memberships, anonymous: anonymous})
   end
 
   def create
@@ -49,10 +48,22 @@ class MembershipsController < ApplicationController
     render_json :ok
   end
 
+  def set_access_anonymous_user
+    anonymous_membership = Membership::Anonymous.new collection, current_user
+    anonymous_membership.set_access params[:object], params[:new_action]
+    render_json :ok
+  end
+
   #TODO: move set_layer_access to the more generic set_access
   def set_layer_access
     membership = collection.memberships.find_by_user_id params[:id]
     membership.set_layer_access params
+    render_json :ok
+  end
+
+  def set_layer_access_anonymous_user
+    anonymous_membership = Membership::Anonymous.new collection, current_user
+    anonymous_membership.set_layer_access params[:layer_id], params[:verb], params[:access]
     render_json :ok
   end
 

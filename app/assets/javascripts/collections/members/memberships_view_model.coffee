@@ -5,9 +5,14 @@ class @MembershipsViewModel
     @collectionId = ko.observable(collectionId)
 
     @selectedLayer = ko.observable()
+
     @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
 
-    @memberships = ko.observableArray $.map(memberships, (x) -> new Membership(_self, x))
+    # Where AnonymousMembership inherits from Membership
+    membership_models = $.map(memberships.members, (x) -> new Membership(_self, x))
+    membership_models.unshift(new AnonymousMembership(_self, memberships.anonymous))
+    @memberships = ko.observableArray membership_models
+
     @admin = ko.observable admin
 
     @groupBy = ko.observable("Users")

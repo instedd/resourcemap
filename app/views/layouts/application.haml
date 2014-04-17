@@ -2,7 +2,13 @@
   :javascript
     $.handleAjaxError = function(xhr) {
       if (!xhr || (xhr.status !== 0 && xhr.readyState !== 0)) {
-        $.status.showError('Unexpected error occurred, please refresh the page.');
+        try {
+          msg = JSON.parse(xhr.responseText).message;
+          if (msg == "Access Denied") $.status.showError(msg);
+          else $.status.showError('Unexpected error occurred, please refresh the page.');
+        } catch (err) {
+          $.status.showError('Unexpected error occurred, please refresh the page.');
+        }
       }
     };
 
