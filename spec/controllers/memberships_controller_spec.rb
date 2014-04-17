@@ -10,6 +10,7 @@ describe MembershipsController do
 
   describe "index" do
     let(:membership) { collection.memberships.create! user_id: user_2.id, admin: false }
+    let(:layer) { collection.layers.make }
 
     it "collection admin should be able to write name and location" do
       sign_in user
@@ -28,6 +29,7 @@ describe MembershipsController do
 
     it "should include anonymous's membership " do
       layer
+      sign_in user
       get :index, collection_id: collection.id
       json = JSON.parse response.body
       json["anonymous"].should eq(anonymous.as_json.with_indifferent_access)

@@ -55,7 +55,6 @@ ActiveRecord::Schema.define(:version => 20140312201916) do
     t.string   "logo"
     t.string   "anonymous_name_permission",                                    :default => "none"
     t.string   "anonymous_location_permission",                                :default => "none"
-    t.boolean  "public"
   end
 
   create_table "field_histories", :force => true do |t|

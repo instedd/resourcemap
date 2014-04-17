@@ -6,7 +6,7 @@ class Api::MembershipsController < ApiController
   around_filter :rescue_with_check_api_docs
 
   def index
-    render_json collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission]).map{|m| m.to_json}
+    render_json collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission])
   end
 
   def create
