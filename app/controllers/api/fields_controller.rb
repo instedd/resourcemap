@@ -1,4 +1,4 @@
-class Api::FieldsController < ApplicationController
+class Api::FieldsController < ApiController
   before_filter :authenticate_api_user!
 
   def index

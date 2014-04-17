@@ -10,9 +10,8 @@ describe MembershipsController do
   describe "index" do
     let(:membership) { collection.memberships.create! user_id: user_2.id, admin: false }
 
-    before(:each) { sign_in user }
-
     it "collection admin should be able to write name and location" do
+      sign_in user
       get :index, collection_id: collection.id
       json = JSON.parse response.body
       json[0]["user_id"].should eq(user.id)
@@ -21,7 +20,14 @@ describe MembershipsController do
       json[0]["location"].should eq("update")
     end
 
+    it "should not return memberships for non admin user" do
+      sign_in user_2
+      get :index, collection_id: collection.id
+      response.body.should be_blank
+    end
+
     it "for collection member should include default_fields permissions in json" do
+      sign_in user
       membership.set_access(object: 'name', new_action: 'update')
       membership.set_access(object: 'location', new_action: 'read')
 

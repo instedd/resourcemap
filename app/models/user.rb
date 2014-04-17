@@ -133,4 +133,11 @@ class User < ActiveRecord::Base
     @ability ||= Ability.new(self)
   end
   delegate :can?, :cannot?, :to => :ability
+
+  def self.invitable_to_collection(search_term, user_id)
+    User.
+      where('email LIKE ?', "#{search_term}%").
+      where("id not in (?)", user_id).
+      order('email')
+  end
 end

@@ -14,9 +14,8 @@ class MembershipsController < ApplicationController
   end
 
   def create
-    user = User.find_by_email params[:email]
-    if user && !user.memberships.where(:collection_id => collection.id).exists?
-      user.memberships.create! :collection_id => collection.id
+    status, membership = Membership.check_and_create(params[:email], collection.id)
+    if status == :added
       render_json({status: :added, user_id: user.id, user_display_name: user.display_name})
     else
       render_json({status: :not_added})
@@ -24,10 +23,7 @@ class MembershipsController < ApplicationController
   end
 
   def invitable
-    users = User.
-      where('email LIKE ?', "#{params[:term]}%").
-      where("id not in (?)", collection.memberships.value_of(:user_id)).
-      order('email')
+    users = User.invitable_to_collection(params[:term], collection.memberships.value_of(:user_id))
     render_json users.pluck(:email)
   end
 

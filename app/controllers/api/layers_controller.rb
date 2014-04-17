@@ -1,4 +1,4 @@
-class Api::LayersController < ApplicationController
+class Api::LayersController < ApiController
 
   skip_before_filter :verify_authenticity_token
   before_filter :authenticate_api_user!

@@ -14,7 +14,7 @@ class Collection < ActiveRecord::Base
   has_many :memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
-  has_many :layers, order: 'ord', dependent: :destroy
+  has_many :layers, order: 'layers.ord', dependent: :destroy
   has_many :fields, order: 'ord'
   has_many :thresholds, dependent: :destroy
   has_many :reminders, dependent: :destroy
@@ -224,6 +224,7 @@ class Collection < ActiveRecord::Base
     if at_present
       layers.includes(:fields).select{|l| user.can?(:read, l)}.as_json(include: :fields)
     else
+      current_user_snapshot = UserSnapshot.for(user, self)
       layers.includes(:field_histories)
         .where("field_histories.valid_since <= :date && (:date < field_histories.valid_to || field_histories.valid_to is null)", date: current_user_snapshot.snapshot.date)
         .select{|l| user.can?(:read, l)}

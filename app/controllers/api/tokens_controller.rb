@@ -1,4 +1,4 @@
-class Api::TokensController < ApplicationController
+class Api::TokensController < ApiController
   before_filter :authenticate_api_user!
 
   def index

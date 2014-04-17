@@ -86,4 +86,5 @@ class ApplicationController < ActionController::Base
     options = options.merge(text: object.to_json_oj, content_type: 'application/json')
     render options
   end
+
 end

@@ -1,4 +1,4 @@
-class Api::SitesController < ApplicationController
+class Api::SitesController < ApiController
   include Api::JsonHelper
 
   before_filter :authenticate_api_user!
