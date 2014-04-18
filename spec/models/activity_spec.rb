@@ -390,7 +390,7 @@ describe Activity do
       'description' => "Permission was deleted in layer '#{layer.name}'"
   end
 
-  it "creates one after changing a leyer_membership by setting layer access" do
+  it "creates one after changing a layer_membership by setting layer access" do
     membership = collection.memberships.create! user_id: user2.id
     layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
     layer_membership = LayerMembership.create! :layer_id => layer.id, :membership => membership, :read => true, :write => false
@@ -403,6 +403,30 @@ describe Activity do
       'user_id' => user2.id,
       'layer_id' => layer.id,
       'description' => "Permission changed from read to write in layer '#{layer.name}'"
+  end
+
+  it "creates one after changing name permission" do
+    Activity.delete_all
+    membership = collection.memberships.first
+    params = {:object => 'name', :new_action => 'update'}
+    membership.set_access params
+
+    assert_activity 'name_permission', 'changed',
+      'collection_id' => collection.id,
+      'user_id' => user.id,
+      'description' => "Name permission changed from read to update"
+  end
+
+  it "creates one after changing location permission" do
+    Activity.delete_all
+    membership = collection.memberships.first
+    params = {:object => 'location', :new_action => 'update'}
+    membership.set_access params
+
+    assert_activity 'location_permission', 'changed',
+      'collection_id' => collection.id,
+      'user_id' => user.id,
+      'description' => "Location permission changed from read to update"
   end
 
   def assert_activity(item_type, action, options = {})

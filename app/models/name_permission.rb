@@ -4,6 +4,7 @@ class NamePermission < ActiveRecord::Base
 
   def set_access(action_value)
     self.action = action_value
+    create_activity_if_permission_changed changes
     self.save!
   end
 
@@ -13,6 +14,11 @@ class NamePermission < ActiveRecord::Base
 
   def can_update?
     action == "update"
+  end
+
+  def create_activity_if_permission_changed(changes)
+    data = changes
+    Activity.create! item_type: 'name_permission', action: 'changed', collection_id: membership.collection_id, user_id: membership.user_id, data: data
   end
 
 end
