@@ -8,6 +8,14 @@ describe Api::CollectionsController do
   let(:collection) { user.create_collection(Collection.make) }
   let(:layer) { collection.layers.make }
 
+  describe "Create" do
+    it "should allow user to create a new collection" do
+      sign_in user
+      post :create, format: 'json', :collection => { :name => "My new collection" }
+      response.should be_success
+    end
+  end
+
   describe "All fields" do
     let(:text) { layer.text_fields.make :code => 'text'}
     let(:numeric) { layer.numeric_fields.make :code => 'numeric' }
@@ -369,12 +377,21 @@ describe Api::CollectionsController do
   end
 
   describe "destroy" do
-    before(:each) { sign_in user }
-
     it "destroys a collection" do
+      sign_in user
       delete :destroy, id: collection.id
       response.should be_ok
       Collection.count.should eq(0)
+    end
+
+    it "doesnt allow a non-admin member to destroy a collection" do
+      user2 = User.make
+      collection.memberships.create! :user_id => user2.id, admin: false 
+      
+      delete :destroy, id: collection.id
+      
+      response.code.should eq("403")
+      Collection.count.should eq(1)
     end
   end
 end
