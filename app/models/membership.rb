@@ -102,10 +102,10 @@ class Membership < ActiveRecord::Base
     if !user
       [:missing_user]
     elsif user.memberships.where(:collection_id => collection_id).exists?
-      [:membership_exists]
+      [:membership_exists, user.memberships.where(:collection_id => collection_id), user]
     else
       membership = user.memberships.create! :collection_id => collection_id
-      [:added, membership]
+      [:added, membership, user]
     end
   end
 

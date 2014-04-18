@@ -10,8 +10,7 @@ class Api::MembershipsController < ApiController
   end
 
   def create
-    status, membership = Membership.check_and_create(params[:email], collection.id)
-    user = User.find_by_email(params[:email])
+    status, membership, user = Membership.check_and_create(params[:email], collection.id)
     if status == :added || status == :membership_exists
       render_json({status: :added, user_id: user.id, user_display_name: user.display_name}, status: 200)
     elsif status == :missing_user

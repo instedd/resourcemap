@@ -131,8 +131,4 @@ class LayersController < ApplicationController
 
     params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
   end
-
-  def ignore_public_attribute
-    params[:layer].delete(:public) if params[:layer] && params[:layer][:public]
-  end
 end

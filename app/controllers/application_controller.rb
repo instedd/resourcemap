@@ -87,4 +87,8 @@ class ApplicationController < ActionController::Base
     render options
   end
 
+  def ignore_public_attribute
+    params[:layer].delete(:public) if params[:layer] && params[:layer][:public]
+  end
+
 end

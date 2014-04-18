@@ -13,7 +13,7 @@ class MembershipsController < ApplicationController
   end
 
   def create
-    status, membership = Membership.check_and_create(params[:email], collection.id)
+    status, membership, user = Membership.check_and_create(params[:email], collection.id)
     if status == :added
       render_json({status: :added, user_id: user.id, user_display_name: user.display_name})
     else

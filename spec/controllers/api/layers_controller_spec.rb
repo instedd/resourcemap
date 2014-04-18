@@ -22,6 +22,7 @@ describe Api::LayersController do
 
   it "should get layers for a snapshot" do
     snapshot = collection.snapshots.create! date: Time.now, name: 'last_hour'
+    sleep 1
     collection.layers.last.destroy
     user_snapshot = UserSnapshot.for(user, collection)
     user_snapshot.go_to!('last_hour')
