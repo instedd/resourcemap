@@ -7,8 +7,14 @@ class Membership::Anonymous
   def set_access(built_in_layer, access)
     raise(ArgumentError, "Undefined element #{built_in_layer} for membership.") unless built_in_layer == 'name' || built_in_layer == 'location'
 
-    @collection.anonymous_name_permission = access if built_in_layer == 'name'
-    @collection.anonymous_location_permission = access if built_in_layer == 'location'
+    if built_in_layer == 'name'
+      @collection.anonymous_name_permission = access
+      changes = @collection.changes()
+    else
+      @collection.anonymous_location_permission = access
+      changes = @collection.changes()
+    end
+    create_activity_when_name_or_location_changed built_in_layer, access, changes
 
     @collection.save!
   end
@@ -55,6 +61,19 @@ class Membership::Anonymous
 
   def layer_access(layer_id)
     @collection.layers.find(layer_id).anonymous_user_permission
+  end
+
+  def create_activity_when_name_or_location_changed(built_in_layer, access, changes)
+    if built_in_layer == 'name'
+      changes = changes['anonymous_name_permission']
+    else
+      changes = changes['anonymous_location_permission']
+    end
+    data = {}
+    data['built_in_layer'] = built_in_layer
+    data['changes'] = changes
+    Activity.create! item_type: 'anonymous_name_location_permission', action: 'changed',
+    collection_id: @collection.id, data: data
   end
 
 end

@@ -32,7 +32,7 @@ class ActivitiesController < ApplicationController
           {
             id: activity.id,
             collection: activity.collection.name,
-            user: activity.user.display_name,
+            user: activity.display_name_for_user,
             description: activity.description,
             created_at: activity.created_at
           }

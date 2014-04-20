@@ -6,7 +6,8 @@ class Activity < ActiveRecord::Base
     'membership' => %w(created deleted),
     'layer_membership' => %w(created changed deleted),
     'name_permission' => %w(changed),
-    'location_permission' => %w(changed)
+    'location_permission' => %w(changed),
+    'anonymous_name_location_permission' => %w(changed)
   }
   Kinds = Activity::ItemTypesAndActions.map { |item_type, actions| actions.map { |action| "#{item_type},#{action}" } }.flatten.freeze
 
@@ -61,6 +62,8 @@ class Activity < ActiveRecord::Base
       "Name permission changed from #{data['action'][0]} to #{data['action'][1]}"
     when['location_permission', 'changed']
       "Location permission changed from #{data['action'][0]} to #{data['action'][1]}"
+    when['anonymous_name_location_permission', 'changed']
+      anonymous_name_location_changed
     end
   end
 
@@ -72,6 +75,14 @@ class Activity < ActiveRecord::Base
       layer_id
     when 'site'
       site_id
+    end
+  end
+
+  def display_name_for_user
+    if user
+      user.display_name
+    else
+      'Anonymous user'
     end
   end
 
@@ -162,12 +173,19 @@ class Activity < ActiveRecord::Base
   end
 
   def layer_membership_permission_deleted
-      if (data['write'])
-        previous_permission = "Write"
-      else
-        previous_permission = "Read"
-      end
-      "#{previous_permission} permission was deleted in layer '#{data['name']}'"
+    if (data['write'])
+      previous_permission = "Write"
+    else
+      previous_permission = "Read"
+    end
+    "#{previous_permission} permission was deleted in layer '#{data['name']}'"
+  end
+
+  def anonymous_name_location_changed
+    built_in_layer = data['built_in_layer']
+    previous_permission = data['changes'][0]
+    new_permission = data['changes'][1]
+    "#{built_in_layer.capitalize} permission changed from #{previous_permission} to #{new_permission}"
   end
 
   def layer_changes_text
@@ -250,4 +268,5 @@ class Activity < ActiveRecord::Base
       '(nothing)'
     end
   end
+
 end
