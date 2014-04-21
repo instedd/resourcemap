@@ -17,7 +17,8 @@ class LocationPermission < ActiveRecord::Base
   end
 
   def create_activity_if_permission_changed(changes)
-    data = changes
+    data = {}
+    data['changes'] = changes['action']
     Activity.create! item_type: 'location_permission', action: 'changed', collection_id: membership.collection_id, user_id: membership.user_id, data: data
   end
 

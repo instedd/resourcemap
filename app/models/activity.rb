@@ -7,7 +7,8 @@ class Activity < ActiveRecord::Base
     'layer_membership' => %w(created changed deleted),
     'name_permission' => %w(changed),
     'location_permission' => %w(changed),
-    'anonymous_name_location_permission' => %w(changed)
+    'anonymous_name_location_permission' => %w(changed),
+    'anonymous_layer_permission' => %w(changed)
   }
   Kinds = Activity::ItemTypesAndActions.map { |item_type, actions| actions.map { |action| "#{item_type},#{action}" } }.flatten.freeze
 
@@ -59,11 +60,13 @@ class Activity < ActiveRecord::Base
         "Permission was deleted in layer '#{data['name']}'" unless (data['read'])
       end
     when ['name_permission', 'changed']
-      "Name permission changed from #{data['action'][0]} to #{data['action'][1]}"
+      "Name permission changed from #{data['changes'][0]} to #{data['changes'][1]}"
     when['location_permission', 'changed']
-      "Location permission changed from #{data['action'][0]} to #{data['action'][1]}"
+      "Location permission changed from #{data['changes'][0]} to #{data['changes'][1]}"
     when['anonymous_name_location_permission', 'changed']
       anonymous_name_location_changed
+    when['anonymous_layer_permission', 'changed']
+      "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in layer '#{data['name']}'"
     end
   end
 

@@ -32,6 +32,9 @@ class Layer < ActiveRecord::Base
 
   after_update :create_updated_activity, :unless => :mute_activities
   def create_updated_activity
+    #Activities when 'anonymous_user_permission' field changed are created in set_layer_access method of anonymous membership class
+    return if changes['anonymous_user_permission']
+
     layer_changes = changes.except('updated_at').to_hash
 
     after_update_fields = fields.all
