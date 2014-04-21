@@ -129,7 +129,7 @@ namespace :api do
         get 'sample_csv', as: :sample_csv
         get 'count', as: :count
         get 'geo', as: :geojson
-        resources :layers, only: [:index]
+        resources :layers, only: [:index, :create]
         resources :memberships, only: [:index, :create] do
           collection do
             get 'invitable'

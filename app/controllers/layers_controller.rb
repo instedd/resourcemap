@@ -36,13 +36,7 @@ class LayersController < ApplicationController
   end
 
   def create
-    layer = layers.new params[:layer]
-    layer.user = current_user
-    authorize! :create, layer
-    layer.save!
-    current_user.layer_count += 1
-    current_user.update_successful_outcome_status
-    current_user.save!
+    layer = current_user.create_layer_for(collection, params[:layer])
     render_json layer.as_json(include: :fields)
   end
 

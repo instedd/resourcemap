@@ -33,4 +33,10 @@ describe Api::LayersController do
     json[0]['id'].should eq(layer.id)
     json[1]['id'].should eq(layer2.id)
   end
+
+  it "should create a layer" do
+    post :create, id: collection.id, layer: { name: 'layer_01', fields_attributes: {"0" => {name: "Numeric field", code: "numeric_field", kind: "numeric", ord: 1}}, ord: 1}
+    collection.layers.count.should eq(3)
+    collection.layers.map(&:name).should include("layer_01")
+  end
 end

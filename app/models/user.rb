@@ -153,4 +153,14 @@ class User < ActiveRecord::Base
       where("id not in (?)", user_id).
       order('email')
   end
+
+  def create_layer_for(collection, params)
+    layer = collection.layers.new params
+    layer.user = self
+    can? :create, layer
+    layer.save!
+    self.layer_count += 1
+    update_successful_outcome_status
+    self.save!
+  end
 end
