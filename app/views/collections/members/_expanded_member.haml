@@ -81,8 +81,10 @@
   //ko
   //ko
 
+  /ko if: !isAnonymous
   .removeMemberRow
     .memberHeaderColumn
       = render './ko_confirm_box', :action_description => 'Remove this member', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to remove this member from the collection?'
+  //ko
 
   //ko
