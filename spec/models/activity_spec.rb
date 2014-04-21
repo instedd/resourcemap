@@ -429,6 +429,37 @@ describe Activity do
       'description' => "Location permission changed from read to update"
   end
 
+  it "creates one after changing name permission for anonymous user" do
+    Activity.delete_all
+    anonymous_membership = Membership::Anonymous.new collection, user
+    anonymous_membership.set_access 'name', 'read'
+
+    assert_activity 'anonymous_name_location_permission', 'changed',
+      'collection_id' => collection.id,
+      'description' => "Name permission changed from none to read"
+  end
+
+  it "creates one after changing location permission for anonymous user" do
+    Activity.delete_all
+    anonymous_membership = Membership::Anonymous.new collection, user
+    anonymous_membership.set_access 'location', 'read'
+
+    assert_activity 'anonymous_name_location_permission', 'changed',
+      'collection_id' => collection.id,
+      'description' => "Location permission changed from none to read"
+  end
+
+  it "creates one after changing layer permission for anonymous user" do
+    layer = collection.layers.make user: user, name: 'Layer1'
+    Activity.delete_all
+    anonymous_membership = Membership::Anonymous.new collection, user
+    anonymous_membership.set_layer_access layer.id, 'read', 'true'
+
+    assert_activity 'anonymous_layer_permission', 'changed',
+      'collection_id' => collection.id,
+      'description' => "Permission changed from none to read in layer 'Layer1'"
+  end
+
   def assert_activity(item_type, action, options = {})
     activities = Activity.all
     if (item_type == 'collection' && action == 'created')
