@@ -21,8 +21,17 @@ class ApiController < ApplicationController
     render_json({message: message, error_code: 2}, status: 422)
   end
 
+  def render_error_response_403(message = "Forbidden")
+    render_json({message: message, error_code: 3}, status: 403)
+  end
+
   rescue_from ActiveRecord::RecordNotFound do |x|
     render_error_response_422
   end
+
+  rescue_from CanCan::AccessDenied do |x|
+    render_error_response_403
+  end
+
 
 end

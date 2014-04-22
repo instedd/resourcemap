@@ -145,7 +145,7 @@ class User < ActiveRecord::Base
   def ability
     @ability ||= Ability.new(self)
   end
-  delegate :can?, :cannot?, :to => :ability
+  delegate :can?, :cannot?, :authorize!, :to => :ability
 
   def self.invitable_to_collection(search_term, user_id)
     User.
@@ -157,7 +157,7 @@ class User < ActiveRecord::Base
   def create_layer_for(collection, params)
     layer = collection.layers.new params
     layer.user = self
-    can? :create, layer
+    authorize! :create, layer, message: "Not authorized to create layer"
     layer.save!
     self.layer_count += 1
     update_successful_outcome_status
