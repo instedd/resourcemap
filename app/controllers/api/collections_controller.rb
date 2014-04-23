@@ -3,7 +3,7 @@ class Api::CollectionsController < ApplicationController
   include Api::GeoJsonHelper
 
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_api_user!, :except => [:show]
+  before_filter :authenticate_api_user!
   before_filter :authenticate_collection_user!, :except => [:create]
   around_filter :rescue_with_check_api_docs
 
