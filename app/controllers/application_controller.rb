@@ -62,7 +62,11 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_site_user!
-    head :forbidden unless current_user.belongs_to?(site.collection)
+    forbidden_response unless current_user.belongs_to?(site.collection)
+  end
+
+  def forbidden_response
+    head :forbidden
   end
 
   def show_collections_breadcrumb

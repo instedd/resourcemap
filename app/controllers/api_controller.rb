@@ -17,7 +17,7 @@ class ApiController < ApplicationController
     render_json({message: "#{message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/REST_API", error_code: error_code}, status: 400)
   end
 
-  def render_error_response_422(message = "Entity not found")
+  def render_error_response_422(message = "Unprocessable Entity")
     render_json({message: message, error_code: 2}, status: 422)
   end
 
@@ -27,6 +27,10 @@ class ApiController < ApplicationController
 
   rescue_from ActiveRecord::RecordNotFound do |x|
     render_error_response_422
+  end
+
+  def forbidden_response
+    render_error_response_403
   end
 
   rescue_from CanCan::AccessDenied do |x|

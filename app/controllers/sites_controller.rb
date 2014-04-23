@@ -83,7 +83,7 @@ class SitesController < ApplicationController
     field = site.collection.fields.where_es_code_is params[:es_code]
 
     #Pending: Check custom site permission
-    return head :forbidden unless can?(:update_site_property, field)
+    return forbidden_response unless can?(:update_site_property, field)
 
     site.user = current_user
     site.properties_will_change!

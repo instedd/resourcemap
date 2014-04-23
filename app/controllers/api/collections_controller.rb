@@ -3,7 +3,7 @@ class Api::CollectionsController < ApiController
   include Api::GeoJsonHelper
 
   before_filter :authenticate_api_user!, :except => [:show]
-  before_filter :authenticate_collection_user!, :except => [:create]
+  before_filter :authenticate_collection_user!, :except => [:create, :show]
 
   expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
 

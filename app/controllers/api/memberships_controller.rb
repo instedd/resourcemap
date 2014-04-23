@@ -1,9 +1,6 @@
 class Api::MembershipsController < ApiController
 
-  skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_api_user!
   before_filter :authenticate_collection_admin!, :only => [:create, :index]
-  around_filter :rescue_with_check_api_docs
 
   def index
     render_json collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission])

@@ -31,4 +31,20 @@ class Api::SitesController < ApiController
       format.json { render_json histories.map{|h| h.attributes.merge({user: h.user.try(:email)})} }
     end
   end
+
+  def update_property
+    field = site.collection.fields.where_es_code_is params[:es_code]
+    site.user = current_user
+    authorize! :update_site_property, field, "Not authorized to edit site"
+    site.properties_will_change!
+    site.assign_default_values_for_update
+    site.properties[params[:es_code]] = field.decode_from_ui(params[:value])
+    if site.valid?
+      site.save!
+      render_json(site, :status => 200)
+    else
+      error_message = site.errors[:properties][0][params[:es_code]]
+      render_error_response_422(error_message)
+    end
+  end
 end
