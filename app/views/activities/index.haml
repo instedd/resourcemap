@@ -48,6 +48,18 @@
                     %input{ko(checked: 'selectedKinds'), value: 'site,deleted', type: 'checkbox', checked: 'checked'} Site deleted
                   %td
                     %input{ko(checked: 'selectedKinds'), value: 'layer,deleted', type: 'checkbox', checked: 'checked'} Layer deleted
+                %tr
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'membership,created', type: 'checkbox', checked: 'checked'} Membership created
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'membership,deleted', type: 'checkbox', checked: 'checked'} Membership deleted
+                %tr
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'name_permission,changed;location_permission,changed;layer_membership,created;layer_membership,deleted;layer_membership,changed', type: 'checkbox', checked: 'checked'} User's changed permissions
+                %tr
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'anonymous_name_location_permission,changed;anonymous_layer_permission,changed', type: 'checkbox', checked: 'checked'} Anonymous changed permissions
+
       %tr
         %td
           %span{ko(click: 'checkAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'} check all

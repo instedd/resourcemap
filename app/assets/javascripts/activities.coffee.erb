@@ -26,13 +26,17 @@
       @loading = ko.observable false
       @pushActivities activities
       @selectedCollectionIds = ko.observableArray $.map($('.collection_id'), (x) -> x.value)
-      @selectedKinds = ko.observableArray <%= Activity::Kinds.to_json %>
+      @selectedKinds = ko.observableArray []
 
       @collectionsCount = $('.collection_id').length
       @kindsCount = <%= Activity::Kinds.length %>
 
       @selectedCollectionIds.subscribe => @refreshActivities()
       @selectedKinds.subscribe => @refreshActivities()
+
+      #The elements in these arrays must keep the same order as their appearances in the index.
+      @changedPermissions = ['name_permission,changed','location_permission,changed','layer_membership,created','layer_membership,deleted','layer_membership,changed']
+      @anonymousChangedPermissions = ['anonymous_name_location_permission,changed','anonymous_layer_permission,changed']
 
     pushActivities: (activities) =>
       if activities.length == 25
@@ -63,6 +67,11 @@
         q.kinds = [0]
       else if @selectedKinds().length < @kindsCount
         q.kinds = @selectedKinds()
+        new_kinds = []
+        for item in q.kinds
+          do (item) =>
+            new_kinds = new_kinds.concat(item.split(';'))
+        q.kinds = new_kinds
 
       q
 
@@ -77,9 +86,20 @@
     uncheckAllCollectionIds: =>
       @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
 
-    checkAllKinds: =>
+    kindsFromActivities: =>
       kinds = <%= Activity::Kinds.to_json %>
-      @selectedKinds(kinds) if @selectedKinds().length != @kindsCount
+      kinds_copy = kinds.slice(0)
+
+      for kind in kinds_copy
+        i = kinds.indexOf(kind)
+        if (@changedPermissions.indexOf(kind) > -1 || @anonymousChangedPermissions.indexOf(kind) > -1)
+          kinds.splice(i,1)
+      kinds.push(@changedPermissionsToString(@changedPermissions))
+      kinds.push(@changedPermissionsToString(@anonymousChangedPermissions))
+      kinds
+
+    checkAllKinds: =>
+      @selectedKinds(@kindsFromActivities()) if @selectedKinds().length != @kindsCount
 
     uncheckAllKinds: =>
       @selectedKinds([]) if @selectedKinds().length != 0
@@ -94,9 +114,16 @@
 
     refreshTimeago: => $('.timeago').timeago()
 
+    changedPermissionsToString: (permissions) =>
+      changedPermissionsToString = ""
+      for permission in permissions
+        changedPermissionsToString = changedPermissionsToString.concat(permission).concat(';')
+      changedPermissionsToString.substring(0, changedPermissionsToString.length - 1)
+
   $.get "/activity.json", {}, (activities) =>
     window.model = new ActivitiesViewModel(activities)
     ko.applyBindings window.model
+    window.model.checkAllKinds( )
 
     $('.hidden-until-loaded').show()
     window.model.refreshTimeago()
