@@ -39,8 +39,7 @@ class Api::SitesController < ApiController
     site.properties_will_change!
     site.assign_default_values_for_update
     site.properties[params[:es_code]] = field.decode_from_ui(params[:value])
-    if site.valid?
-      site.save!
+    if site.valid? && site.save
       render_json(site, :status => 200)
     else
       error_message = site.errors[:properties][0][params[:es_code]]

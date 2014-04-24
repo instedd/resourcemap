@@ -22,7 +22,8 @@ describe SitesController do
 
   before(:each) { sign_in user }
 
-  #TODO: Move this functionality to api and rescue validation-exceptions with response_code = 400 and a 'check api doc' message
+  #TODO: Move this functionality to api and rescue validation-exceptions with response_code = 422 and a 'check api doc' message
+  # Done. Although this functionality will also stay here for UI purposes.
 
   it 'should validate format for numeric field' do
     post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number'

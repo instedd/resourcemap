@@ -123,7 +123,7 @@ ResourceMap::Application.routes.draw do
 
   match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
 
-namespace :api do
+  namespace :api do
     resources :collections, only: [:index, :create, :show, :destroy] do
       member do
         get 'sample_csv', as: :sample_csv
@@ -144,8 +144,14 @@ namespace :api do
         # get 'collections/:id/fields/mapping' => 'fields#mapping'
       end
     end
+
+    resources :sites, only: [:show] do
+      member do
+        post :update_property
+      end
+      # get 'sites/:id' => 'sites#show', as: :site
+    end
     get 'histogram/:field_id', to: 'collections#histogram_by_field', as: :histogram_by_field
-    get 'sites/:id' => 'sites#show', as: :site
     get 'collections/:collection_id/sites/:id/histories' => 'sites#histories', as: :histories
     get 'activity' => 'activities#index', as: :activity
     resources :tokens, :only => [:index, :destroy]
