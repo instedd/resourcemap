@@ -36,14 +36,25 @@ class Api::SitesController < ApiController
     field = site.collection.fields.where_es_code_is params[:es_code]
     site.user = current_user
     authorize! :update_site_property, field, "Not authorized to edit site"
-    site.properties_will_change!
-    site.assign_default_values_for_update
-    site.properties[params[:es_code]] = field.decode_from_ui(params[:value])
-    if site.valid? && site.save
+    updated = site.update_single_property!(params[:es_code], params[:value])
+    if updated
       render_json(site, :status => 200)
     else
       error_message = site.errors[:properties][0][params[:es_code]]
       render_error_response_422(error_message)
     end
+  end
+
+  def destroy
+    authorize! :delete, site, "Not authorized to delete site"
+    site.user = current_user
+    if site.destroy
+      render_json site, status: 200
+    else
+      render_generic_error_response("Could not delete site")
+    end
+  end
+
+  def partial_update
   end
 end

@@ -48,7 +48,7 @@ class SitesController < ApplicationController
   end
 
   # This action updates the entire entity.
-  # It perform a full update, erasing the values for the fields that are not present in the request
+  # It performs a full update, erasing the values for the fields that are not present in the request
   # It is only accessible by admins: there are no permission validations in the code
   def update
     site_params = JSON.parse params[:site]
@@ -86,11 +86,8 @@ class SitesController < ApplicationController
     return forbidden_response unless can?(:update_site_property, field)
 
     site.user = current_user
-    site.properties_will_change!
-    site.assign_default_values_for_update
-    site.properties[params[:es_code]] = field.decode_from_ui(params[:value])
-    if site.valid?
-      site.save!
+    updated = site.update_single_property!(params[:es_code], params[:value])
+    if updated
       render_json(site, :status => 200, :layout => false)
     else
       error_message = site.errors[:properties][0][params[:es_code]]
@@ -141,31 +138,19 @@ class SitesController < ApplicationController
     parameters
   end
 
-  # TODO: Integrate with cancan
   def validate_and_process_parameters(site, site_params)
     user_membership = current_user.membership_in(collection)
 
     if site_params.has_key?("name")
-      if user_membership.can_update?("name")
-        site.name = site_params["name"]
-      else
-        raise CanCan::AccessDenied.new("Not authorized to update Site name", :update, Site)
-      end
+      authorize! :update_name, user_membership, "Not authorized to update Site name"
+      site.name = site_params["name"]
     end
 
     if site_params.has_key?("lat")
-      if user_membership.can_update?("location")
+      authorize! :update_location, user_membership, "Not authorized to update Site location"
+      if site_params.has_key?("lng")
         site.lat = site_params["lat"]
-      else
-        raise CanCan::AccessDenied.new("Not authorized to update Site location", :update, Site)
-      end
-    end
-
-    if site_params.has_key?("lng")
-      if user_membership.can_update?("location")
         site.lng = site_params["lng"]
-      else
-        raise CanCan::AccessDenied.new("Not authorized to update Site location", :update, Site)
       end
     end
 
@@ -178,11 +163,8 @@ class SitesController < ApplicationController
         next if value == site.properties[es_code]
 
         field = fields[es_code]
-        if field && can?(:update_site_property, field)
-          site.properties[es_code] = field.decode_from_ui(value)
-        else
-          raise CanCan::AccessDenied.new("Not authorized to update Site property with code #{es_code}", :update, Site)
-        end
+        authorize! :update_site_property, field, "Not authorized to update Site property with code #{es_code}"
+        site.properties[es_code] = field.decode_from_ui(value)
       end
     end
 

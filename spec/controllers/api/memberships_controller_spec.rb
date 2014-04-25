@@ -49,9 +49,7 @@ describe Api::MembershipsController do
       it "should return error for non-existant collection" do
         new_user = User.make
         post :create, id: 0, email: new_user.email
-        response.status.should eq(422)
-        json = JSON.parse response.body
-        json['error_code'].should eq(2)
+        response.status.should eq(400)
       end
 
       it "should return the membership if it already exists" do
@@ -69,7 +67,8 @@ describe Api::MembershipsController do
 
     it "should not get memberships" do
       get :index, id: collection.id
-      response.body.should be_blank
+      json = JSON.parse response.body
+      json['message'].should include("Forbidden")
     end
 
   end

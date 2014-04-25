@@ -102,6 +102,14 @@ class Site < ActiveRecord::Base
     self
   end
 
+  def update_single_property!(es_code, value)
+    field = collection.fields.where_es_code_is es_code
+    properties_will_change!
+    assign_default_values_for_update
+    properties[es_code] = field.decode_from_ui(value)
+    self.valid? && self.save!
+  end
+
 
   private
 

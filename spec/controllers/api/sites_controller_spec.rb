@@ -52,6 +52,26 @@ describe Api::SitesController do
     end
   end
 
+  context "destroy" do
+    let!(:site) { collection.sites.make }
+
+    it "should remove a site" do
+      expect {
+        delete :destroy, id: site.id
+      }.to change(Site, :count).by(-1)
+      response.status.should eq(200)
+    end
+
+    it "should return 400 if unable to destroy" do
+      Site.any_instance.stub(:destroy).and_return(false)
+
+      delete :destroy, id: site.id
+      json = JSON.parse response.body
+      json['message'].should include("Could not delete site")
+      response.status.should eq(400)
+    end
+  end
+
   context "update single property" do
     let(:site) { collection.sites.make id: 1234}
     let(:layer) { collection.layers.make }

@@ -145,11 +145,10 @@ ResourceMap::Application.routes.draw do
       end
     end
 
-    resources :sites, only: [:show] do
+    resources :sites, only: [:show, :destroy] do
       member do
         post :update_property
       end
-      # get 'sites/:id' => 'sites#show', as: :site
     end
     get 'histogram/:field_id', to: 'collections#histogram_by_field', as: :histogram_by_field
     get 'collections/:collection_id/sites/:id/histories' => 'sites#histories', as: :histories

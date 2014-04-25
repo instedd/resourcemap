@@ -77,6 +77,14 @@ class Ability
         end
       end
     end
+
+    can :update_name, Membership do |user_membership|
+      user_membership.can_update?("name")
+    end
+
+    can :update_location, Membership do |user_membership|
+      user_membership.can_update?("location")
+    end
   end
 
   def user_memberships(user)
