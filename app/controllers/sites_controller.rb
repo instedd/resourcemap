@@ -142,12 +142,12 @@ class SitesController < ApplicationController
     user_membership = current_user.membership_in(collection)
 
     if site_params.has_key?("name")
-      authorize! :update_name, user_membership, "Not authorized to update Site name"
+      authorize! :update_name, user_membership, "Not authorized to update site name"
       site.name = site_params["name"]
     end
 
     if site_params.has_key?("lat")
-      authorize! :update_location, user_membership, "Not authorized to update Site location"
+      authorize! :update_location, user_membership, "Not authorized to update site location"
       if site_params.has_key?("lng")
         site.lat = site_params["lat"]
         site.lng = site_params["lng"]
@@ -163,7 +163,7 @@ class SitesController < ApplicationController
         next if value == site.properties[es_code]
 
         field = fields[es_code]
-        authorize! :update_site_property, field, "Not authorized to update Site property with code #{es_code}"
+        authorize! :update_site_property, field, "Not authorized to update site property with code #{es_code}"
         site.properties[es_code] = field.decode_from_ui(value)
       end
     end
