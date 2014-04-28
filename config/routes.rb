@@ -145,9 +145,10 @@ ResourceMap::Application.routes.draw do
       end
     end
 
-    resources :sites, only: [:show, :destroy] do
+    resources :sites, only: [:show, :destroy, :update] do
       member do
         post :update_property
+        post :partial_update
       end
     end
     get 'histogram/:field_id', to: 'collections#histogram_by_field', as: :histogram_by_field

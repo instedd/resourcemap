@@ -110,6 +110,56 @@ class Site < ActiveRecord::Base
     self.valid? && self.save!
   end
 
+  def validate_and_process_parameters(site_params, user)
+    user_membership = user.membership_in(collection)
+
+    if site_params.has_key?("name")
+      user.authorize! :update_name, user_membership, "Not authorized to update site name"
+      self.name = site_params["name"]
+    end
+
+    if site_params.has_key?("lat")
+      user.authorize! :update_location, user_membership, "Not authorized to update site location"
+      if site_params.has_key?("lng")
+        self.lat = site_params["lat"]
+        self.lng = site_params["lng"]
+      end
+    end
+
+    if site_params.has_key?("properties")
+      fields = collection.fields.index_by(&:es_code)
+
+      site_params["properties"].each_pair do |es_code, value|
+
+        #Next if there is no changes in the property
+        next if value == self.properties[es_code]
+
+        field = fields[es_code]
+        user.authorize! :update_site_property, field, "Not authorized to update site property with code #{es_code}"
+        self.properties[es_code] = field.decode_from_ui(value)
+      end
+    end
+
+    # after, so if the user update the whole site
+    # the auto_reset is reseted
+    if self.changed?
+      self.assign_default_values_for_update
+    end
+  end
+
+  def decode_properties_from_ui(parameters)
+    fields = collection.fields.index_by(&:es_code)
+    decoded_properties = {}
+    site_properties = parameters.delete "properties"
+    site_properties ||= {}
+    site_properties.each_pair do |es_code, value|
+      decoded_properties[es_code] = fields[es_code].decode_from_ui(value)
+    end
+
+    parameters["properties"] = decoded_properties
+    parameters
+  end
+
 
   private
 

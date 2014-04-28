@@ -32,7 +32,7 @@ class SitesController < ApplicationController
 
     site = collection.sites.new(user: current_user)
 
-    validate_and_process_parameters(site, site_params)
+    site.validate_and_process_parameters(site_params, current_user)
 
     site.assign_default_values_for_create
 
@@ -54,7 +54,7 @@ class SitesController < ApplicationController
     site_params = JSON.parse params[:site]
     site.user = current_user
     site.properties_will_change!
-    site.attributes = decode_from_ui(site_params)
+    site.attributes = site.decode_properties_from_ui(site_params)
 
     if site.valid?
       site.save!
@@ -69,7 +69,7 @@ class SitesController < ApplicationController
     site_params = JSON.parse params[:site]
     site.user = current_user
 
-    validate_and_process_parameters(site, site_params)
+    site.validate_and_process_parameters(site_params, current_user)
 
     if site.valid?
       site.save!
@@ -121,58 +121,6 @@ class SitesController < ApplicationController
     site.user = current_user
     site.destroy
     render_json site
-  end
-
-  private
-
-  def decode_from_ui(parameters)
-    fields = collection.fields.index_by(&:es_code)
-    decoded_properties = {}
-    site_properties = parameters.delete "properties"
-    site_properties ||= {}
-    site_properties.each_pair do |es_code, value|
-      decoded_properties[es_code] = fields[es_code].decode_from_ui(value)
-    end
-
-    parameters["properties"] = decoded_properties
-    parameters
-  end
-
-  def validate_and_process_parameters(site, site_params)
-    user_membership = current_user.membership_in(collection)
-
-    if site_params.has_key?("name")
-      authorize! :update_name, user_membership, "Not authorized to update site name"
-      site.name = site_params["name"]
-    end
-
-    if site_params.has_key?("lat")
-      authorize! :update_location, user_membership, "Not authorized to update site location"
-      if site_params.has_key?("lng")
-        site.lat = site_params["lat"]
-        site.lng = site_params["lng"]
-      end
-    end
-
-    if site_params.has_key?("properties")
-      fields = collection.fields.index_by(&:es_code)
-
-      site_params["properties"].each_pair do |es_code, value|
-
-        #Next if there is no changes in the property
-        next if value == site.properties[es_code]
-
-        field = fields[es_code]
-        authorize! :update_site_property, field, "Not authorized to update site property with code #{es_code}"
-        site.properties[es_code] = field.decode_from_ui(value)
-      end
-    end
-
-    # after, so if the user update the whole site
-    # the auto_reset is reseted
-    if site.changed?
-      site.assign_default_values_for_update
-    end
   end
 
 end

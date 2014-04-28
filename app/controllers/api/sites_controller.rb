@@ -56,5 +56,30 @@ class Api::SitesController < ApiController
   end
 
   def partial_update
+    site_params = JSON.parse params[:site]
+    site.user = current_user
+    site.validate_and_process_parameters(site_params, current_user)
+
+    render_update_response(site)
+  end
+
+  def update
+    authorize! :update, site, "Not authorized to perform a full update on site"
+    site_params = JSON.parse params[:site]
+    site.user = current_user
+    site.properties_will_change!
+    site.attributes = site.decode_properties_from_ui(site_params)
+
+    render_update_response(site)
+  end
+
+  private
+
+  def render_update_response(site)
+    if site.valid? && site.save!
+      render_json(site, status: 200)
+    else
+      render_error_response_422(site.errors.messages)
+    end
   end
 end

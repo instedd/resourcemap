@@ -78,6 +78,9 @@ class Ability
       end
     end
 
+    # Full update, only admins have rights to do this
+    can :update, Site, :collection => { :memberships => { :user_id => user.id, :admin => true } }
+
     can :update_name, Membership do |user_membership|
       user_membership.can_update?("name")
     end

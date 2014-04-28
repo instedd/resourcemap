@@ -10,7 +10,13 @@ class ApiController < ApplicationController
     Rails.logger.info ex.message
     Rails.logger.info ex.backtrace
 
-    render_generic_error_response(ex.message)
+    if ex.is_a?(CanCan::AccessDenied)
+      render_error_response_403
+    elsif ex.is_a?(ActiveRecord::RecordNotFound)
+      render_error_response_422
+    else
+      render_generic_error_response(ex.message)
+    end
   end
 
   def render_generic_error_response(message = "", error_code = 1)
@@ -25,15 +31,7 @@ class ApiController < ApplicationController
     render_json({message: api_error_message(message), error_code: 3}, status: 403)
   end
 
-  rescue_from ActiveRecord::RecordNotFound do |x|
-    render_error_response_422
-  end
-
   def forbidden_response
-    render_error_response_403
-  end
-
-  rescue_from CanCan::AccessDenied do |x|
     render_error_response_403
   end
 
@@ -41,6 +39,4 @@ class ApiController < ApplicationController
     check_api_text = 'Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/REST_API'
     "#{message} - #{check_api_text}"
   end
-
-
 end

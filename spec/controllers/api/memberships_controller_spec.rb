@@ -49,7 +49,7 @@ describe Api::MembershipsController do
       it "should return error for non-existant collection" do
         new_user = User.make
         post :create, id: 0, email: new_user.email
-        response.status.should eq(400)
+        response.status.should eq(422)
       end
 
       it "should return the membership if it already exists" do
