@@ -38,9 +38,7 @@ class SitesController < ApplicationController
 
     if site.valid?
       site.save!
-      current_user.site_count += 1
-      current_user.update_successful_outcome_status
-      current_user.save!
+      current_user.increase_site_count_and_status
       render_json site, :layout => false
     else
       render_json site.errors.messages, status: :unprocessable_entity, :layout => false

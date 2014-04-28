@@ -2,10 +2,25 @@ class Api::SitesController < ApiController
   include Api::JsonHelper
 
   before_filter :authenticate_api_user!
-  before_filter :authenticate_site_user!
+  before_filter :authenticate_site_user!, except: [:create]
 
   expose(:site)
-  expose(:collection) { site.collection }
+  expose(:collection) { site.collection if site.present? }
+
+  def create
+    site_params = JSON.parse params[:site]
+    collection = Collection.find(params[:id])
+    site = collection.sites.new(user: current_user)
+    site.validate_and_process_parameters(site_params, current_user)
+    site.assign_default_values_for_create
+
+    if site.valid? && site.save!
+      current_user.increase_site_count_and_status
+      render_json site, status: 200
+    else
+      render_error_response_422(site.errors.messages)
+    end
+  end
 
   def show
     search = new_search

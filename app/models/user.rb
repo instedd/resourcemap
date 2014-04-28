@@ -163,4 +163,10 @@ class User < ActiveRecord::Base
     update_successful_outcome_status
     self.save!
   end
+
+  def increase_site_count_and_status
+    self.site_count += 1
+    update_successful_outcome_status
+    self.save!
+  end
 end

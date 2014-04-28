@@ -129,6 +129,7 @@ ResourceMap::Application.routes.draw do
         get 'sample_csv', as: :sample_csv
         get 'count', as: :count
         get 'geo', as: :geojson
+        get 'sites', to: 'sites#create'
         resources :layers, only: [:index, :create]
         resources :memberships, only: [:index, :create] do
           collection do
