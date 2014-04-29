@@ -44,12 +44,13 @@ class Activity < ActiveRecord::Base
     when ['site', 'deleted']
       "Site '#{data['name']}' was deleted"
     when ['membership', 'created']
-      "Membership was created"
+      "Member #{data['user']} was added"
     when ['membership', 'deleted']
-      "Membership was deleted"
+      "Member #{data['user']} was removed"
     when ['layer_membership', 'created']
       new_layer_membership_permission
     when ['layer_membership', 'changed']
+      #It must be 'write' changes to be a valid layer_membership change.
       return unless (data['write'].count == 2)
       layer_membership_permission_changed
     when ['layer_membership', 'deleted']
@@ -60,13 +61,13 @@ class Activity < ActiveRecord::Base
         "Permission was deleted in layer '#{data['name']}'" unless (data['read'])
       end
     when ['name_permission', 'changed']
-      "Name permission changed from #{data['changes'][0]} to #{data['changes'][1]}"
+      "Name permission changed from #{data['changes'][0]} to #{data['changes'][1]} for #{data['user']}"
     when['location_permission', 'changed']
-      "Location permission changed from #{data['changes'][0]} to #{data['changes'][1]}"
+      "Location permission changed from #{data['changes'][0]} to #{data['changes'][1]} for #{data['user']}"
     when['anonymous_name_location_permission', 'changed']
       anonymous_name_location_changed
     when['anonymous_layer_permission', 'changed']
-      "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in layer '#{data['name']}'"
+      "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in layer '#{data['name']}' for anonymous user"
     end
   end
 
@@ -78,14 +79,6 @@ class Activity < ActiveRecord::Base
       layer_id
     when 'site'
       site_id
-    end
-  end
-
-  def display_name_for_user
-    if user
-      user.display_name
-    else
-      'Anonymous user'
     end
   end
 
@@ -163,15 +156,15 @@ class Activity < ActiveRecord::Base
     else
       permission = 'None'
     end
-    "#{permission} permission created for layer '#{data['name']}'"
+    "#{permission} permission created in layer '#{data['name']}' for #{data['user']}"
   end
 
   def layer_membership_permission_changed
       write_changes = data['write']
       if (!write_changes[0] && write_changes[1])
-        "Permission changed from read to write in layer '#{data['name']}'"
+        "Permission changed from read to write in layer '#{data['name']}' for #{data['user']}"
       elsif (write_changes[0] && !write_changes[1])
-        "Permission changed from write to read in layer '#{data['name']}'"
+        "Permission changed from write to read in layer '#{data['name']}' for #{data['user']}"
       end
   end
 
@@ -181,14 +174,14 @@ class Activity < ActiveRecord::Base
     else
       previous_permission = "Read"
     end
-    "#{previous_permission} permission was deleted in layer '#{data['name']}'"
+    "#{previous_permission} permission was deleted in layer '#{data['name']}' for #{data['user']}"
   end
 
   def anonymous_name_location_changed
     built_in_layer = data['built_in_layer']
     previous_permission = data['changes'][0]
     new_permission = data['changes'][1]
-    "#{built_in_layer.capitalize} permission changed from #{previous_permission} to #{new_permission}"
+    "#{built_in_layer.capitalize} permission changed from #{previous_permission} to #{new_permission} for anonymous user"
   end
 
   def layer_changes_text

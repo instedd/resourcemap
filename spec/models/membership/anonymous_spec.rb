@@ -63,6 +63,7 @@ describe Membership::Anonymous do
       let(:layer) { collection.layers.make }
 
       it '' do
+        anonymous.activity_user = user
         anonymous.set_layer_access(layer.id, "read", access)
         if (access == "true")
           anonymous.layer_access(layer.id).should eq("read")
@@ -78,6 +79,7 @@ describe Membership::Anonymous do
       ["none","read"].each do |level|
         describe "#{level}able permissions" do
           it '' do
+            anonymous.activity_user = user
             anonymous.set_access(object,level)
             anonymous.send("#{object}_permission").should eq(level)
           end

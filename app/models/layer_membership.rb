@@ -1,6 +1,6 @@
 class LayerMembership < ActiveRecord::Base
-  include LayerMembershipActivityConcern
 
+  include LayerMembershipActivityConcern
   belongs_to :membership
   belongs_to :layer
 

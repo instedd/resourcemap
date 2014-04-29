@@ -1,4 +1,5 @@
 class NamePermission < ActiveRecord::Base
+  include NameLocationPermissionActivityConcern
   belongs_to :membership
   validates :action, :inclusion => { :in => ["read", "update", "none"]}
 
@@ -17,9 +18,12 @@ class NamePermission < ActiveRecord::Base
   end
 
   def create_activity_if_permission_changed(changes)
-    data = {}
-    data['changes'] = changes['action']
-    Activity.create! item_type: 'name_permission', action: 'changed', collection_id: membership.collection_id, user_id: membership.user_id, data: data
+    if activity_user
+      data = {}
+      data['changes'] = changes['action']
+      data['user'] = membership.user.email
+      Activity.create! item_type: 'name_permission', action: 'changed', collection_id: membership.collection_id, user_id: activity_user.id, data: data
+    end
   end
 
 end

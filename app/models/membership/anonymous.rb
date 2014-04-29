@@ -2,6 +2,7 @@ class Membership::Anonymous
   def initialize(collection, granting_user)
     @collection = collection
     @granting_user = granting_user
+    @activity_user = {}
   end
 
   def set_access(built_in_layer, access)
@@ -64,6 +65,10 @@ class Membership::Anonymous
     @collection.layers.find(layer_id).anonymous_user_permission
   end
 
+  def activity_user=(user)
+    @activity_user = user
+  end
+
   def create_activity_when_name_or_location_permission_changed(built_in_layer, access, changes)
     if built_in_layer == 'name'
       changes = changes['anonymous_name_permission']
@@ -73,8 +78,7 @@ class Membership::Anonymous
     data = {}
     data['built_in_layer'] = built_in_layer
     data['changes'] = changes
-    Activity.create! item_type: 'anonymous_name_location_permission', action: 'changed',
-    collection_id: @collection.id, data: data
+    Activity.create! item_type: 'anonymous_name_location_permission', action: 'changed', user_id: @activity_user.id, collection_id: @collection.id, data: data
   end
 
   def create_activity_when_layer_permission_changed(layer, changes)
@@ -82,7 +86,7 @@ class Membership::Anonymous
     data['name'] = layer.name
     data['changes'] = changes['anonymous_user_permission']
     Activity.create! item_type: 'anonymous_layer_permission', action: 'changed',
-    collection_id: @collection.id, data: data
+      collection_id: @collection.id, user_id: @activity_user.id, data: data
   end
 
 end

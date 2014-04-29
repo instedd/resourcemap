@@ -2,6 +2,9 @@ module Membership::ActivityConcern
   extend ActiveSupport::Concern
 
   included do
+    # The user that creates/makes changes to this object
+    attr_accessor :activity_user
+
     after_create :create_activity_if_first_user
     after_create :create_activity_for_member
     after_destroy :create_activity_if_destroy_member
@@ -15,11 +18,15 @@ module Membership::ActivityConcern
   end
 
   def create_activity_for_member
-    Activity.create! item_type: 'membership', action: 'created', collection_id: collection.id, user_id: user_id, 'data' => {}
+    if activity_user
+      Activity.create! item_type: 'membership', action: 'created', collection_id: collection.id, user_id: activity_user.id, 'data' => {'user' => user.email}
+    end
   end
 
   def create_activity_if_destroy_member
-    Activity.create! item_type: 'membership', action: 'deleted', collection_id: collection.id, user_id: user_id, 'data' => {}
+    if activity_user
+      Activity.create! item_type: 'membership', action: 'deleted', collection_id: collection.id, user_id: activity_user.id, 'data' => {'user' => user.email}
+    end
   end
 
 end

@@ -14,6 +14,7 @@ describe ImportWizardsController do
 
   it "should not allow to create a new field to a non-admin user" do
     sign_out user
+    membership.activity_user = user2
     membership.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
     membership.set_layer_access :verb => :write, :access => true, :layer_id => layer.id
     sign_in user2

@@ -43,8 +43,10 @@ class Membership < ActiveRecord::Base
   def set_access(options = {})
     object = options[:object]
     if object == 'name'
+      name_permission.activity_user = activity_user
       name_permission.set_access(options[:new_action])
     elsif object == 'location'
+      location_permission.activity_user = activity_user
       location_permission.set_access(options[:new_action])
     else
       raise "Undefined element #{object} for membership."
@@ -70,6 +72,7 @@ class Membership < ActiveRecord::Base
     lm = layer_memberships.where(:layer_id => options[:layer_id]).first
 
     if lm
+      lm.activity_user = activity_user
       lm.read = read unless read.nil?
       lm.write = write unless write.nil?
 
@@ -81,7 +84,9 @@ class Membership < ActiveRecord::Base
         lm.destroy
       end
     else
-      layer_memberships.create! :layer_id => options[:layer_id], :read => read, :write => write
+      new_lm = layer_memberships.new :layer_id => options[:layer_id], :read => read, :write => write
+      new_lm.activity_user = activity_user
+      new_lm.save!
     end
   end
 
@@ -90,8 +95,9 @@ class Membership < ActiveRecord::Base
 
     data = changes
     data['name'] = lm.layer.name
+    data['user'] = lm.membership.user.email
 
-    Activity.create! item_type: 'layer_membership', action: 'changed', collection_id: lm.layer.collection_id, layer_id: lm.layer.id, user_id: lm.membership.user_id, 'data' => data
+    Activity.create! item_type: 'layer_membership', action: 'changed', collection_id: lm.layer.collection_id, user_id: activity_user.id, layer_id: lm.layer.id, user_id: activity_user.id, 'data' => data
   end
 
 

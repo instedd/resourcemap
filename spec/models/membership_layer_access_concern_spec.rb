@@ -27,6 +27,7 @@ describe Membership::LayerAccessConcern do
       it "grants read access and denies write access" do
         LayerMembership.create! :layer_id => layer.id, :membership => membership2, :read => false, :write => true
 
+        membership2.activity_user = user
         membership2.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
 
         lms = LayerMembership.all

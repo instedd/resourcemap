@@ -15,7 +15,9 @@ class MembershipsController < ApplicationController
   def create
     user = User.find_by_email params[:email]
     if user && !user.memberships.where(:collection_id => collection.id).exists?
-      user.memberships.create! :collection_id => collection.id
+      membership = collection.memberships.new user: user
+      membership.activity_user = current_user
+      membership.save!
       render_json({status: :added, user_id: user.id, user_display_name: user.display_name})
     else
       render_json({status: :not_added})
@@ -40,6 +42,7 @@ class MembershipsController < ApplicationController
   def destroy
     membership = collection.memberships.find_by_user_id params[:id]
     if membership.user_id != current_user.id
+      membership.activity_user = current_user
       membership.destroy
     end
     redirect_to collection_members_path(collection)
@@ -47,12 +50,14 @@ class MembershipsController < ApplicationController
 
   def set_access
     membership = collection.memberships.find_by_user_id params[:id]
+    membership.activity_user = current_user
     membership.set_access params
     render_json :ok
   end
 
   def set_access_anonymous_user
     anonymous_membership = Membership::Anonymous.new collection, current_user
+    anonymous_membership.activity_user = current_user
     anonymous_membership.set_access params[:object], params[:new_action]
     render_json :ok
   end
@@ -60,12 +65,14 @@ class MembershipsController < ApplicationController
   #TODO: move set_layer_access to the more generic set_access
   def set_layer_access
     membership = collection.memberships.find_by_user_id params[:id]
+    membership.activity_user = current_user
     membership.set_layer_access params
     render_json :ok
   end
 
   def set_layer_access_anonymous_user
     anonymous_membership = Membership::Anonymous.new collection, current_user
+    anonymous_membership.activity_user = current_user
     anonymous_membership.set_layer_access params[:layer_id], params[:verb], params[:access]
     render_json :ok
   end
