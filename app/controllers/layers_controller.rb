@@ -43,7 +43,7 @@ class LayersController < ApplicationController
   def update
     # FIX: For some reason using the exposed layer here results in duplicated fields being created
     layer = collection.layers.find params[:id]
-    fix_layer_fields_for_update(layer)
+    params[:layer][:fields_attributes] = layer.fix_layer_fields_for_update(params[:layer][:fields_attributes])
     layer.user = current_user
     layer.update_attributes! params[:layer]
     layer.reload
@@ -101,28 +101,5 @@ class LayersController < ApplicationController
         sanitize_items item[:sub]
       end
     end
-  end
-
-  # Instead of sending the _destroy flag to destroy fields (complicates things on the client side code)
-  # we check which are the current fields ids, which are the new ones and we delete those fields
-  # whose ids don't show up in the new ones and then we add the _destroy flag.
-  #
-  # That way we preserve existing fields and we can know if their codes change, to trigger a reindex
-  def fix_layer_fields_for_update(layer)
-    fields = layer.fields
-
-    fields_ids = fields.map(&:id).compact
-    new_ids = params[:layer][:fields_attributes].values.map { |x| x[:id].try(:to_i) }.compact
-    removed_fields_ids = fields_ids - new_ids
-
-    max_key = params[:layer][:fields_attributes].keys.map(&:to_i).max
-    max_key += 1
-
-    removed_fields_ids.each do |id|
-      params[:layer][:fields_attributes][max_key.to_s] = {id: id, _destroy: true}
-      max_key += 1
-    end
-
-    params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
   end
 end

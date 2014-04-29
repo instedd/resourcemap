@@ -64,7 +64,7 @@ class Api::SitesController < ApiController
     authorize! :delete, site, "Not authorized to delete site"
     site.user = current_user
     if site.destroy
-      render_json site, status: 200
+      head :ok
     else
       render_generic_error_response("Could not delete site")
     end

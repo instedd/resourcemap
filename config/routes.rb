@@ -130,7 +130,7 @@ ResourceMap::Application.routes.draw do
         get 'count', as: :count
         get 'geo', as: :geojson
         get 'sites', to: 'sites#create'
-        resources :layers, only: [:index, :create]
+        resources :layers, only: [:index, :create, :update, :destroy]
         resources :memberships, only: [:index, :create] do
           collection do
             get 'invitable'

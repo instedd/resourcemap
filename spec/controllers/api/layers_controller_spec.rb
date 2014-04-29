@@ -8,11 +8,11 @@ describe Api::LayersController do
   let(:collection) { user.create_collection(Collection.make) }
   let!(:layer) {Layer.make collection: collection, user: user}
   let!(:layer2) {Layer.make collection: collection, user: user}
+  let!(:numeric) {layer.numeric_fields.make }
 
+  before(:each) {sign_in user}
 
   context "as admin" do
-    before(:each) {sign_in user}
-
     it "should get layers for a collection at present" do
       get :index, id: collection.id
       json = JSON.parse response.body
@@ -41,12 +41,47 @@ describe Api::LayersController do
       collection.layers.count.should eq(3)
       collection.layers.map(&:name).should include("layer_01")
     end
+
+    it "should update field.layer_id" do
+      layer.fields.count.should eq(1)
+      json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
+
+      post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+
+      layer.fields.count.should eq(0)
+      layer2.fields.count.should eq(1)
+      layer2.fields.first.name.should eq(numeric.name)
+
+      histories = FieldHistory.where :field_id => numeric.id
+
+      histories.count.should eq(2)
+
+      histories.first.layer_id.should eq(layer.id)
+      histories.first.valid_to.should_not be_nil
+
+      histories.last.valid_to.should be_nil
+      histories.last.layer_id.should eq(layer2.id)
+    end
+
+    it "should update a layer's fields" do
+      json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: "New name", ord: numeric.ord}}}
+
+      post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+
+      response.should be_success
+      layer.fields.count.should eq(1)
+      layer.fields.first.name.should eq("New name")
+    end
+
+    it "should delete a layer" do
+
+    end
   end
 
   context "as non authorized user" do
     let(:non_admin) { User.make }
 
-    before(:each) { sign_in non_admin }
+    before(:each) { sign_out user; sign_in non_admin }
 
     it "should not get layers" do
       get :index, id: collection.id
@@ -65,6 +100,21 @@ describe Api::LayersController do
       json.count.should eq(1)
       json.first["id"].should eq(layer.id)
     end
+
+    it "should not delete layers"
+
+    it "should not update layers"
   end
+
+  describe "Backwards Compatibility" do
+    it "should ignore layer updates with public param" do
+      json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', public: 'public', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
+
+      post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+
+      response.should be_success
+    end
+  end
+
 
 end
