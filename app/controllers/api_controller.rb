@@ -13,7 +13,7 @@ class ApiController < ApplicationController
     if ex.is_a?(CanCan::AccessDenied)
       render_error_response_403
     elsif ex.is_a?(ActiveRecord::RecordNotFound)
-      render_error_response_422
+      render_error_response_422(ex.message)
     else
       render_generic_error_response(ex.message)
     end

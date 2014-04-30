@@ -7,9 +7,9 @@ describe MembershipsController do
   let(:user_2) { User.make email: 'bar@test.com' }
   let(:collection) { user.create_collection(Collection.make_unsaved) }
   let(:anonymous) { Membership::Anonymous.new collection, user }
+  let(:membership) { collection.memberships.create! user_id: user_2.id, admin: false }
 
   describe "index" do
-    let(:membership) { collection.memberships.create! user_id: user_2.id, admin: false }
     let(:layer) { collection.layers.make }
 
     it "collection admin should be able to write name and location" do
@@ -34,7 +34,6 @@ describe MembershipsController do
       json = JSON.parse response.body
       json["anonymous"].should eq(anonymous.as_json.with_indifferent_access)
     end
-
   end
 
   describe "search" do
@@ -58,6 +57,25 @@ describe MembershipsController do
         get :search, collection_id: collection.id
         JSON.parse(response.body).count.should == 1
       end
+    end
+  end
+
+  describe "admin flag" do
+    before(:each) { sign_in user }
+
+    it "should set admin" do
+      membership
+      post :set_admin, collection_id: collection.id, id: user_2.id
+      membership = collection.memberships.find_by_user_id user_2.id
+      membership.admin.should be_true
+    end
+
+    it "should unset admin" do
+      membership.change_admin_flag(true)
+      membership.admin.should be_true
+      post :unset_admin, collection_id: collection.id, id: user_2.id
+      membership = collection.memberships.find_by_user_id user_2.id
+      membership.admin.should be_false
     end
   end
 end

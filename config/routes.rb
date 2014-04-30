@@ -131,7 +131,11 @@ ResourceMap::Application.routes.draw do
         get 'geo', as: :geojson
         get 'sites', to: 'sites#create'
         resources :layers, only: [:index, :create, :update, :destroy]
-        resources :memberships, only: [:index, :create] do
+        resources :memberships, only: [:index, :create, :destroy] do
+          member do
+            post :set_admin
+            post :unset_admin
+          end
           collection do
             get 'invitable'
           end

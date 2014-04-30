@@ -60,6 +60,13 @@ describe Api::MembershipsController do
         collection.memberships.count.should eq(2)
       end
     end
+
+    it "should delete a membership" do
+      collection.memberships.count.should eq(2)
+      delete :destroy, collection_id: collection.id, id: non_admin_user.id
+      response.should be_ok
+      collection.memberships.count.should eq(1)
+    end
   end
 
   describe 'as member' do
@@ -71,5 +78,29 @@ describe Api::MembershipsController do
       json['message'].should include("Forbidden")
     end
 
+    it "should not delete a membership" do
+      delete :destroy, collection_id: collection.id, id: user.id
+      response.should be_forbidden
+    end
+
+  end
+
+  describe "admin flag" do
+    before(:each) { sign_in user }
+
+    it "should set admin" do
+      post :set_admin, collection_id: collection.id, id: non_admin_user.id
+      membership = collection.memberships.find_by_user_id non_admin_user.id
+      membership.admin.should be_true
+    end
+
+    it "should unset admin" do
+      membership = collection.memberships.find_by_user_id non_admin_user.id
+      membership.change_admin_flag(true)
+      membership.admin.should be_true
+      post :unset_admin, collection_id: collection.id, id: non_admin_user.id
+      membership = collection.memberships.find_by_user_id non_admin_user.id
+      membership.admin.should be_false
+    end
   end
 end

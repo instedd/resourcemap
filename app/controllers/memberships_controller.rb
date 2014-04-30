@@ -1,6 +1,7 @@
 class MembershipsController < ApplicationController
   before_filter :authenticate_api_user!
   before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin, :index]
+  before_filter :load_membership, only: [:destroy, :set_access, :set_layer_access, :set_admin, :unset_admin]
 
   def collections_i_admin
     render_json current_user.collections_i_admin(params)
@@ -35,16 +36,14 @@ class MembershipsController < ApplicationController
   end
 
   def destroy
-    membership = collection.memberships.find_by_user_id params[:id]
-    if membership.user_id != current_user.id
-      membership.destroy
+    if @membership.user_id != current_user.id
+      @membership.destroy
     end
     redirect_to collection_members_path(collection)
   end
 
   def set_access
-    membership = collection.memberships.find_by_user_id params[:id]
-    membership.set_access params
+    @membership.set_access params
     render_json :ok
   end
 
@@ -56,8 +55,7 @@ class MembershipsController < ApplicationController
 
   #TODO: move set_layer_access to the more generic set_access
   def set_layer_access
-    membership = collection.memberships.find_by_user_id params[:id]
-    membership.set_layer_access params
+    @membership.set_layer_access params
     render_json :ok
   end
 
@@ -68,20 +66,18 @@ class MembershipsController < ApplicationController
   end
 
   def set_admin
-    change_admin_flag true
+    @membership.change_admin_flag true
+    render_json :ok
   end
 
   def unset_admin
-    change_admin_flag false
+    @membership.change_admin_flag false
+    render_json :ok
   end
 
   private
 
-  def change_admin_flag(new_value)
-    membership = collection.memberships.find_by_user_id params[:id]
-    membership.admin = new_value
-    membership.save!
-
-    render_json :ok
+  def load_membership
+    @membership = collection.memberships.find_by_user_id params[:id]
   end
 end

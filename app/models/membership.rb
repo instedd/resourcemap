@@ -109,4 +109,9 @@ class Membership < ActiveRecord::Base
     end
   end
 
+  def change_admin_flag(new_value)
+    self.admin = new_value
+    self.save!
+  end
+
 end
