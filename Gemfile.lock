@@ -134,12 +134,13 @@ GEM
       guard (>= 1.1.0)
       multi_json
       thor
-    haml (3.1.6)
-    haml-rails (0.3.4)
-      actionpack (~> 3.0)
-      activesupport (~> 3.0)
-      haml (~> 3.0)
-      railties (~> 3.0)
+    haml (4.0.5)
+      tilt
+    haml-rails (0.4)
+      actionpack (>= 3.1, < 4.1)
+      activesupport (>= 3.1, < 4.1)
+      haml (>= 3.1, < 4.1)
+      railties (>= 3.1, < 4.1)
     hashie (2.0.5)
     hashr (0.0.22)
     highline (1.6.19)
@@ -373,7 +374,7 @@ DEPENDENCIES
   faker
   foreman
   guard-jasmine
-  haml-rails
+  haml-rails (~> 0.4)
   ice_cube
   instedd-rails (= 0.0.17)
   jasminerice
