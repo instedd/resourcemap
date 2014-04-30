@@ -74,7 +74,10 @@ describe Api::LayersController do
     end
 
     it "should delete a layer" do
-
+      collection.layers.count.should eq(2)
+      delete :destroy, id: layer.id
+      response.should be_ok
+      collection.layers.count.should eq(1)
     end
   end
 
@@ -101,9 +104,18 @@ describe Api::LayersController do
       json.first["id"].should eq(layer.id)
     end
 
-    it "should not delete layers"
+    it "should not delete layers" do
+      delete :destroy, id: layer.id
+      response.status.should eq(403)
+    end
 
-    it "should not update layers"
+    it "should not update layers" do
+      json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: "New name", ord: numeric.ord}}}
+
+      post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+      response.should be_forbidden
+    end
+
   end
 
   describe "Backwards Compatibility" do

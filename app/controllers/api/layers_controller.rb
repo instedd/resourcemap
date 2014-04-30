@@ -5,6 +5,8 @@ class Api::LayersController < ApiController
   before_filter :ignore_public_attribute
   expose(:layer)
 
+  authorize_resource :layer, only: [:destroy, :update], :decent_exposure => true
+
   def index
     render_json collection.layers_to_json(current_user_snapshot.at_present?, current_user)
   end
