@@ -50,6 +50,9 @@ class Api::MembershipsController < ApiController
   end
 
   def set_layer_access
+    membership = collection.memberships.find_by_user_id params[:id]
+    membership.set_layer_access params
+    render_json :ok
   end
 
 end
