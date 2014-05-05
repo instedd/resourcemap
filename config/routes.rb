@@ -124,27 +124,29 @@ ResourceMap::Application.routes.draw do
   match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
 
   namespace :api do
-    resources :collections, only: [:index, :create, :show, :destroy] do
+    resources :collections, except: [:update] do
+      resources :memberships, only: [:index, :create, :destroy] do
+        member do
+          post :set_admin
+          post :unset_admin
+        end
+        collection do
+          get 'invitable'
+        end
+      end
+
+      resources :layers, except: [:show]
+      resources :fields, only: [:index] do
+        collection do
+          get 'mapping'
+        end
+      end
+
       member do
         get 'sample_csv', as: :sample_csv
         get 'count', as: :count
         get 'geo', as: :geojson
         get 'sites', to: 'sites#create'
-        resources :layers, only: [:index, :create, :update, :destroy]
-        resources :memberships, only: [:index, :create, :destroy] do
-          member do
-            post :set_admin
-            post :unset_admin
-          end
-          collection do
-            get 'invitable'
-          end
-        end
-        resources :fields, only: [:index] do
-          collection do
-            get 'mapping'
-          end
-        end
         # get 'collections/:id/fields' => 'fields#index',as: :fields
         # get 'collections/:id/fields/mapping' => 'fields#mapping'
       end
