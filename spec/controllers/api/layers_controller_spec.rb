@@ -14,7 +14,7 @@ describe Api::LayersController do
 
   context "as admin" do
     it "should get layers for a collection at present" do
-      get :index, id: collection.id
+      get :index, collection_id: collection.id
       json = JSON.parse response.body
 
       json.length.should eq(2)
@@ -28,7 +28,7 @@ describe Api::LayersController do
       collection.layers.last.destroy
       user_snapshot = UserSnapshot.for(user, collection)
       user_snapshot.go_to!('last_hour')
-      get :index, id: collection.id
+      get :index, collection_id: collection.id
       json = JSON.parse response.body
 
       json.length.should eq(2)
@@ -37,7 +37,7 @@ describe Api::LayersController do
     end
 
     it "should create a layer" do
-      post :create, id: collection.id, layer: { name: 'layer_01', fields_attributes: {"0" => {name: "Numeric field", code: "numeric_field", kind: "numeric", ord: 1}}, ord: 1}
+      post :create, collection_id: collection.id, layer: { name: 'layer_01', fields_attributes: {"0" => {name: "Numeric field", code: "numeric_field", kind: "numeric", ord: 1}}, ord: 1}
       collection.layers.count.should eq(3)
       collection.layers.map(&:name).should include("layer_01")
     end
@@ -75,7 +75,7 @@ describe Api::LayersController do
 
     it "should delete a layer" do
       collection.layers.count.should eq(2)
-      delete :destroy, id: layer.id
+      delete :destroy, collection_id: collection.id, id: layer.id
       response.should be_ok
       collection.layers.count.should eq(1)
     end
@@ -87,7 +87,7 @@ describe Api::LayersController do
     before(:each) { sign_out user; sign_in non_admin }
 
     it "should not get layers" do
-      get :index, id: collection.id
+      get :index, collection_id: collection.id
       json = JSON.parse response.body
 
       json.should be_empty
@@ -98,14 +98,14 @@ describe Api::LayersController do
       collection.memberships.count.should eq(2)
       membership = collection.memberships.find_by_user_id non_admin.id
       membership.set_layer_access({verb: 'read', access: true, layer_id: layer.id})
-      get :index, id: collection.id
+      get :index, collection_id: collection.id
       json = JSON.parse response.body
       json.count.should eq(1)
       json.first["id"].should eq(layer.id)
     end
 
     it "should not delete layers" do
-      delete :destroy, id: layer.id
+      delete :destroy, collection_id: collection.id, id: layer.id
       response.status.should eq(403)
     end
 
