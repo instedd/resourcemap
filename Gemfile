@@ -7,6 +7,7 @@ gem 'haml-rails', '~> 0.4'
 gem 'gettext', '~> 3.1.2'
 gem 'gettext_i18n_rails'
 gem 'ruby_parser', :require => false, :group => :development
+gem 'haml-magic-translations'
 gem 'decent_exposure'
 gem "instedd-rails", '0.0.17'
 gem "breadcrumbs_on_rails"

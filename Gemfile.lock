@@ -142,6 +142,8 @@ GEM
       thor
     haml (4.0.5)
       tilt
+    haml-magic-translations (4.1.0)
+      haml (~> 4.0)
     haml-rails (0.4)
       actionpack (>= 3.1, < 4.1)
       activesupport (>= 3.1, < 4.1)
@@ -384,6 +386,7 @@ DEPENDENCIES
   gettext (~> 3.1.2)
   gettext_i18n_rails
   guard-jasmine
+  haml-magic-translations
   haml-rails (~> 0.4)
   ice_cube
   instedd-rails (= 0.0.17)
