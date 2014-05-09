@@ -4,7 +4,7 @@
 
 .tabsline
   #thresholds-main.hidden-until-loaded{ ko(css: { ready: :isReady }) }
-    - if collection_admin? 
+    - if collection_admin?
       %h2 Alert
     <!-- ko foreach :thresholds -->
     <!-- ko if: $data != $root.currentThreshold() -->
@@ -17,7 +17,7 @@
         %span
 
           %span{ ko(text: :propertyName) }
-          &rarr; in
+          → ; in
           <!-- ko if: isAllSite() == "true" -->
           all sites
           <!-- /ko -->
@@ -203,7 +203,7 @@
     %br/
     <!-- /ko -->
 
-    - if collection_admin? 
+    - if collection_admin?
       <!-- ko if: fields().length == 0 -->
       Please
       %strong add Layers
