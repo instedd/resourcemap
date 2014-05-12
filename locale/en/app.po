@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-12 15:24-0300\n"
+"POT-Creation-Date: 2014-05-12 15:46-0300\n"
 "PO-Revision-Date: 2014-05-12 12:47-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,6 +39,24 @@ msgid "(no value)"
 msgstr ""
 
 msgid ","
+msgstr ""
+
+msgid "85512345678"
+msgstr ""
+
+msgid "<!-- /ko -->"
+msgstr ""
+
+msgid "<!-- ko foreach: activities -->"
+msgstr ""
+
+msgid "<!-- ko if: !expanded() && canBeExpanded() -->"
+msgstr ""
+
+msgid "<!-- ko if: hasMore() && !loading() -->"
+msgstr ""
+
+msgid "<!-- ko if: loading() -->"
 msgstr ""
 
 msgid "API access"
@@ -195,6 +213,9 @@ msgid "Done"
 msgstr ""
 
 msgid "Edit"
+msgstr ""
+
+msgid "Edit Account"
 msgstr ""
 
 msgid "Edit or create a hierarchy for this field."
@@ -683,6 +704,9 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
+msgid "Unhappy?"
+msgstr ""
+
 msgid "Update"
 msgstr ""
 
@@ -857,6 +881,9 @@ msgstr ""
 msgid "is:"
 msgstr ""
 
+msgid "leave blank if you don't want to change it"
+msgstr ""
+
 msgid "new"
 msgstr ""
 
@@ -902,13 +929,13 @@ msgstr ""
 msgid "uncheck all"
 msgstr ""
 
+msgid "we need your current password to confirm your changes"
+msgstr ""
+
 msgid "with errors"
 msgstr ""
 
 msgid "x"
-msgstr ""
-
-msgid "|"
 msgstr ""
 
 msgid "→;"
