@@ -104,7 +104,7 @@
       %a.button.white{ko(click: '$root.filterByProperty')} OK
       //ko
 
-      <!-- ko if: kind == 'date'-->
+      /ko if: kind == 'date'
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
         %option{value: '='} is between
         %option{value: 'empty'} has no value

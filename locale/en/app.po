@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the app package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-12 12:47-0300\n"
+"POT-Creation-Date: 2014-05-12 15:24-0300\n"
 "PO-Revision-Date: 2014-05-12 12:47-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,15 +41,6 @@ msgstr ""
 msgid ","
 msgstr ""
 
-msgid "<!-- ko if: hasMoreSites() && !loadingSites()-->"
-msgstr ""
-
-msgid "<!-- ko if: hasMoreSites() && loadingSites()-->"
-msgstr ""
-
-msgid "<!-- ko if: kind == 'date'-->"
-msgstr ""
-
 msgid "API access"
 msgstr ""
 
@@ -70,6 +60,9 @@ msgid "Add Gateway"
 msgstr ""
 
 msgid "Add columns for new fields"
+msgstr ""
+
+msgid "Add form field"
 msgstr ""
 
 msgid "Add member"
@@ -138,6 +131,9 @@ msgstr ""
 msgid "Collaborative:"
 msgstr ""
 
+msgid "Collapse all"
+msgstr ""
+
 msgid "Collection"
 msgstr ""
 
@@ -198,6 +194,12 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
+msgid "Edit"
+msgstr ""
+
+msgid "Edit or create a hierarchy for this field."
+msgstr ""
+
 msgid "Email"
 msgstr ""
 
@@ -220,6 +222,9 @@ msgid "Features"
 msgstr ""
 
 msgid "Field semantics, usually meaningful to external systems that depend on Resource Map"
+msgstr ""
+
+msgid "Fields"
 msgstr ""
 
 msgid "Find out how →"
@@ -285,6 +290,9 @@ msgstr ""
 msgid "Icon"
 msgstr ""
 
+msgid "Id:"
+msgstr ""
+
 msgid "Identify"
 msgstr ""
 
@@ -307,6 +315,9 @@ msgid "Import finished!"
 msgstr ""
 
 msgid "Import in progress."
+msgstr ""
+
+msgid "Import layers from collection:"
 msgstr ""
 
 msgid "Import wizard"
@@ -378,6 +389,9 @@ msgstr ""
 msgid "Make better decisions"
 msgstr ""
 
+msgid "Manage layers and fields of this collection's sites"
+msgstr ""
+
 msgid "Manage who can see this collection and who can read/write its layers"
 msgstr ""
 
@@ -399,6 +413,9 @@ msgstr ""
 msgid "Monitoring Food Prices and Supply Levels"
 msgstr ""
 
+msgid "Move to layer..."
+msgstr ""
+
 msgid "My Collections"
 msgstr ""
 
@@ -412,6 +429,9 @@ msgid "National Gateway(Only Some Country Supported)"
 msgstr ""
 
 msgid "New Site"
+msgstr ""
+
+msgid "New item"
 msgstr ""
 
 msgid "None"
@@ -511,6 +531,12 @@ msgid "SMS Gateway"
 msgstr ""
 
 msgid "Save"
+msgstr ""
+
+msgid "Save layer"
+msgstr ""
+
+msgid "Saving layer, please wait..."
 msgstr ""
 
 msgid "See everything on the map for a birds-eye view"
@@ -744,6 +770,9 @@ msgstr ""
 msgid "You don't need to leave this window open while the data is imported, we'll take care of that for you. However, if you're still here when the importation ends, we'll let you know so you can start working on your new data right away."
 msgstr ""
 
+msgid "You have no items yet"
+msgstr ""
+
 msgid "Your team can record, track and analyze food prices and supplies"
 msgstr ""
 
@@ -793,6 +822,9 @@ msgid "has no value"
 msgstr ""
 
 msgid "important alerts instantly and address them proactively"
+msgstr ""
+
+msgid "invisible"
 msgstr ""
 
 msgid "is"
@@ -882,11 +914,6 @@ msgstr ""
 msgid "→;"
 msgstr ""
 
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the app package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 #~ msgid "i18n project description"
 #~ msgstr ""
 #~ "Project-Id-Version: app 1.0.0\n"

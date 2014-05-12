@@ -17,12 +17,12 @@
   //ko
   /ko template: {name: 'table-sites-template', with: $data}
   //ko
-  <!-- ko if: hasMoreSites() && !loadingSites()-->
+  /ko if: hasMoreSites() && !loadingSites()
   %tr
     %td.loadmore
       = link_to "Load more sites...", 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + level * 20) + 'px'"})
   //ko
-  <!-- ko if: hasMoreSites() && loadingSites()-->
+  /ko if: hasMoreSites() && loadingSites()
   %tr
     %td.loadmore
       %span{ko(style: {marginLeft: "'' + (30 + (level + 1) * 20) + 'px'"})} Loading...
