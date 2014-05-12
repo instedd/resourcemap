@@ -10,10 +10,10 @@
     .name{ko(click: :toggleExpand)}
       %span.arrow
       %a.n-label
-        #{ko_text(:name)}
+        = ko_text(:name)
         %span.number
           Id:
-          #{ko_text(:id)}
+          = ko_text(:id)
     /ko if: expanded
     %ul.h-editor
       /ko template: {name: 'hierarchy-items-template', foreach: hierarchyItems}
@@ -95,16 +95,16 @@
       %hr/
       - if current_user_snapshot.at_present?
         .bottom-actions
-          /ko if: $root.savingLayer()
+          / ko if: $root.savingLayer()
           Saving layer, please wait...
-          //ko
-          /ko if: !$root.savingLayer()
+          / /ko
+          / ko if: !$root.savingLayer()
           %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button, title: 'Save layer'} Save layer
           %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'} Cancel
-          //ko
-          /ko if: !valid()
+          / /ko
+          / ko if: !valid()
           %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
-          //ko
+          / /ko
     //ko
 
     /ko if: $data != $root.currentLayer()
