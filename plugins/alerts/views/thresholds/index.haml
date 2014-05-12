@@ -95,33 +95,33 @@
         /ko foreach :conditions
         %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
 
-        <!--  ko if: field().operators().length == 1 -->
+        /ko if: field().operators().length == 1
         %span{ ko(text: 'field().operators()[0].label') }
         %select{ ko(options: 'field().options', optionsText: "'label'", optionsValue:"'id'", value: :value) }
-        <!--  /ko -->
+        //ko
 
-        <!--  ko if: field().operators().length > 1 -->
+        /ko if: field().operators().length > 1
         %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
 
-        <!--    ko if: !(field().kind() == 'text') -->
+        /ko if: !(field().kind() == 'text')
         %select{ ko(options: 'ValueType.ALL', optionsText: "'label'", value: :valueType) }
-        <!--    /ko -->
+        //ko
 
         %label{ ko(css: { error: '!valid()' }) }
         %span.w06
           %input{ ko(value: :value, valueUpdate: :afterkeydown, css: { error: '!valid()' }), type: :text, style: 'width:60px' }
 
-        <!--    ko if: !(field().kind() == 'text') -->
-        <!--      ko if: valueType().label() == 'a percentage of' -->
-        \% compared to
+        /ko if: !(field().kind() == 'text')
+        /ko if: valueType().label() == 'a percentage of'
+        = "% compared to"
         %select{ ko(options: '$root.compareFields', optionsText: "'name'", value: :compareField, hasfocus: true) }
-        <!--      /ko -->
-        <!--    /ko -->
+        //ko
+        //ko
 
-        <!--  /ko -->
+        //ko
         %button.premove{ ko(click: '$parent.removeCondition') }
         %br
-        <!--/ko -->
+        //ko
       %button.fadd{ko(click: :addNewCondition) }
         Add another condition
       %hr
