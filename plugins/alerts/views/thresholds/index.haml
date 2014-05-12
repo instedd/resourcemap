@@ -6,8 +6,8 @@
   #thresholds-main.hidden-until-loaded{ ko(css: { ready: :isReady }) }
     - if collection_admin?
       %h2 Alert
-    <!-- ko foreach :thresholds -->
-    <!-- ko if: $data != $root.currentThreshold() -->
+    /ko foreach :thresholds
+    /ko if: $data != $root.currentThreshold()
     .box.grey.w60
       .toptitle
         .ord-buttons
@@ -18,38 +18,38 @@
 
           %span{ ko(text: :propertyName) }
           → ; in
-          <!-- ko if: isAllSite() == "true" -->
+          /ko if: isAllSite() == "true"
           all sites
-          <!-- /ko -->
-          <!-- ko if: !(isAllSite() == "true") -->
-          <!-- ko foreach: alertSites -->
+          //ko
+          /ko if: !(isAllSite() == "true")
+          /ko foreach: alertSites
           %span{ ko(text: :name) }
-          <!-- /ko -->
-          <!-- /ko -->
+          //ko
+          //ko
 
           -# list all conditions
-          <!-- ko foreach :conditions -->
-          <!-- ko if: $parent.isFirstCondition($data) -->
+          /ko foreach :conditions
+          /ko if: $parent.isFirstCondition($data)
           When
-          <!-- /ko -->
-          <!-- ko if: !$parent.isFirstCondition($data) -->
-          <!-- ko if: $parent.isAllCondition() == "true" -->
+          //ko
+          /ko if: !$parent.isFirstCondition($data)
+          /ko if: $parent.isAllCondition() == "true"
           and
-          <!-- /ko -->
-          <!-- ko if: !($parent.isAllCondition() == "true") -->
+          //ko
+          /ko if: !($parent.isAllCondition() == "true")
           or
-          <!-- /ko -->
-          <!-- /ko -->
+          //ko
+          //ko
           %span{ ko(text: 'field().name()') }
           %span{ ko(text: 'op().label()') }
           %span{ ko(text: 'formattedValue') }
 
-          <!-- ko if: valueType().label() == 'a percentage of' -->
+          /ko if: valueType().label() == 'a percentage of'
           of
           %span{ ko(text: 'compareField().name()') }
-          <!-- /ko -->
+          //ko
 
-          <!-- /ko -->
+          //ko
           ,change icon to:
           %br
           .alert-icon
@@ -62,10 +62,10 @@
         %button.fdelete{ ko(click: '$root.deleteThreshold') }
 
       %button.farrow{ ko(click: '$root.editThreshold') } Edit
-    <!-- /ko -->
+    //ko
 
     -# Form editor
-    <!-- ko if: $data == $root.currentThreshold() -->
+    /ko if: $data == $root.currentThreshold()
     .box.w90
       .rightbuttons
         -#%button.fdelete{ ko(visible: '!isNewRecord') }
@@ -92,7 +92,7 @@
         %input{"data-bind" => "checked: isAllCondition", :value => "false", :name => "condition", :type => "radio"}
         %label Any of the following conditions
         %br
-        <!-- ko foreach :conditions -->
+        /ko foreach :conditions
         %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
 
         <!--  ko if: field().operators().length == 1 -->
@@ -183,11 +183,11 @@
             [
             %span{ko(click: 'addSiteNameToMessageNotification')}Site Name
             ]
-            <!-- ko foreach: $root.fields -->
+            /ko foreach: $root.fields
             [
             %span{ ko(text: :name, click: '$parent.addFieldNameToMessageNotification') }
             ]
-            <!-- /ko -->
+            //ko
         %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: 'This alert is about [site name]. Occupation is now at [occupation]', maxlength: 140, rows: 4 }
         .clear
       %hr/
@@ -195,36 +195,36 @@
       .bottom-actions
         %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
         %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
-        <!-- ko if: !valid() -->
+        /ko if: !valid()
         %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
-        <!-- /ko -->
-    <!-- /ko -->
+        //ko
+    //ko
 
     %br/
-    <!-- /ko -->
+    //ko
 
     - if collection_admin?
-      <!-- ko if: fields().length == 0 -->
+      /ko if: fields().length == 0
       Please
       %strong add Layers
       first before managing your thresholds.
-      <!-- /ko -->
+      //ko
 
     -# New threshold link
-    <!-- ko if: fields().length -->
+    /ko if: fields().length
     .box.grey.add{ ko(visible: '!currentThreshold()', click: 'addThreshold'), style: 'display:none'}
       %span
         Add Alert
       %button.cadd.right
       %br{clear: :all}
-    <!-- /ko -->
-    <!-- /ko -->
+    //ko
+    //ko
 
     -# New threshold link
-    <!-- ko if: fields().length -->
+    /ko if: fields().length
     .box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
       %span
         Add Alert
       %button.cadd.right
       %br{clear: :all}
-    <!-- /ko -->
+    //ko

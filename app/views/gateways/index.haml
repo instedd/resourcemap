@@ -1,8 +1,8 @@
 %h1 SMS Gateway
 .tabsline
   #gateways-main.hidden-until-loaded
-    <!-- ko foreach: gateways -->
-    <!-- ko if: $data != $root.currentGateway() -->
+    /ko foreach: gateways
+    /ko if: $data != $root.currentGateway()
     .box.grey.w60
       .toptitle
         %span{ko(text: :name)}
@@ -47,10 +47,10 @@
 
         %button.fclose{ko(click: '$root.cancel')} Cancel
     %br
-    <!-- /ko -->
+    //ko
 
     -# Form editor or new
-    <!-- ko if: $data == $root.currentGateway() -->
+    /ko if: $data == $root.currentGateway()
     .box.w60
       .middlebuttons
         %label{ko(visible: '!nationalSetup()', css: {error: 'nameError'})} Name
@@ -98,13 +98,13 @@
         .bottom-actions
           %button.white{ ko(click: '$root.saveGateway', enable: :valid) } Save
           %a.tgrey{ ko(click: '$root.cancelGateway'), href: 'javascript:void(0)' } Cancel
-          <!-- ko if: !valid() -->
+          /ko if: !valid()
           %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
-          <!-- /ko -->
+          //ko
 
     %br
-    <!-- /ko -->
-    <!-- /ko -->
+    //ko
+    //ko
 
     .box.grey.add{ ko(visible: '!currentGateway()', click: 'addGateway'), style: 'display:none'}
       %span

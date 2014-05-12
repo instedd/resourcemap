@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the app package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-
-msgid "i18n project description"
+#, fuzzy
+msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-09 16:19-0300\n"
-"PO-Revision-Date: 2014-05-09 16:19-0300\n"
+"POT-Creation-Date: 2014-05-12 12:47-0300\n"
+"PO-Revision-Date: 2014-05-12 12:47-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -42,211 +42,13 @@ msgstr ""
 msgid ","
 msgstr ""
 
-msgid "<!--   /ko -->"
-msgstr ""
-
-msgid "<!--   ko template: {name: 'table-hierarchy-items-template', with: $data} -->"
-msgstr ""
-
-msgid "<!-- /ko -->"
-msgstr ""
-
-msgid "<!-- ko foreach: $root.currentCollection().fieldsByLayers() -->"
-msgstr ""
-
-msgid "<!-- ko foreach: activities -->"
-msgstr ""
-
-msgid "<!-- ko foreach: collections -->"
-msgstr ""
-
-msgid "<!-- ko foreach: currentCollection().refineFields() -->"
-msgstr ""
-
-msgid "<!-- ko foreach: fieldHierarchyItems -->"
-msgstr ""
-
-msgid "<!-- ko foreach: filters() -->"
-msgstr ""
-
-msgid "<!-- ko foreach: gateways -->"
-msgstr ""
-
-msgid "<!-- ko foreach: hierarchyItems -->"
-msgstr ""
-
-msgid "<!-- ko foreach: sites -->"
-msgstr ""
-
-msgid "<!-- ko if: !currentCollection() && !editingSite() -->"
-msgstr ""
-
-msgid "<!-- ko if: !currentSnapshot-->"
-msgstr ""
-
-msgid "<!-- ko if: !editingSite() -->"
-msgstr ""
-
-msgid "<!-- ko if: !expanded() && canBeExpanded() -->"
-msgstr ""
-
-msgid "<!-- ko if: !expanded() -->"
-msgstr ""
-
-msgid "<!-- ko if: !fullscreen() -->"
-msgstr ""
-
-msgid "<!-- ko if: !inSearch() && currentCollection() && currentCollection().groupByOptions().length > 1 -->"
-msgstr ""
-
-msgid "<!-- ko if: !inSearch() || !currentCollection().hasDateFilter() -->"
-msgstr ""
-
-msgid "<!-- ko if: !isSearch() && $root.groupBy().esCode != '' -->"
-msgstr ""
-
-msgid "<!-- ko if: !showingMap() -->"
-msgstr ""
-
-msgid "<!-- ko if: !valid() -->"
-msgstr ""
-
-msgid "<!-- ko if: !value() || value().length == 0 -->"
-msgstr ""
-
-msgid "<!-- ko if: $data != $root.currentGateway() -->"
-msgstr ""
-
-msgid "<!-- ko if: $data == $root.currentGateway() -->"
-msgstr ""
-
-msgid "<!-- ko if: $root.expandedRefineProperty() == esCode -->"
-msgstr ""
-
-msgid "<!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->"
-msgstr ""
-
-msgid "<!-- ko if: $root.sort() == 'name' -->"
-msgstr ""
-
-msgid "<!-- ko if: $root.sort() == 'updated_at' -->"
-msgstr ""
-
-msgid "<!-- ko if: $root.sort() == esCode -->"
-msgstr ""
-
-msgid "<!-- ko if: currentCollection() -->"
-msgstr ""
-
-msgid "<!-- ko if: currentSnapshot() -->"
-msgstr ""
-
-msgid "<!-- ko if: expanded -->"
-msgstr ""
-
-msgid "<!-- ko if: expanded() -->"
-msgstr ""
-
-msgid "<!-- ko if: expandedRefineProperty() == 'location_missing' -->"
-msgstr ""
-
-msgid "<!-- ko if: expandedRefineProperty() == 'update' -->"
-msgstr ""
-
-msgid "<!-- ko if: filters().length == 0 -->"
-msgstr ""
-
-msgid "<!-- ko if: filters().length > 0 -->"
-msgstr ""
-
-msgid "<!-- ko if: hasMore() && !loading() -->"
-msgstr ""
-
 msgid "<!-- ko if: hasMoreSites() && !loadingSites()-->"
 msgstr ""
 
 msgid "<!-- ko if: hasMoreSites() && loadingSites()-->"
 msgstr ""
 
-msgid "<!-- ko if: id != '' -->"
-msgstr ""
-
-msgid "<!-- ko if: kind == '%s' -->"
-msgstr ""
-
 msgid "<!-- ko if: kind == 'date'-->"
-msgstr ""
-
-msgid "<!-- ko if: kind == 'hierarchy' -->"
-msgstr ""
-
-msgid "<!-- ko if: kind == 'numeric' -->"
-msgstr ""
-
-msgid "<!-- ko if: kind == 'select_one' || kind == 'select_many' -->"
-msgstr ""
-
-msgid "<!-- ko if: kind == 'site' -->"
-msgstr ""
-
-msgid "<!-- ko if: kind == 'text' || kind == 'user' || isPluginKind() -->"
-msgstr ""
-
-msgid "<!-- ko if: kind == 'yes_no' -->"
-msgstr ""
-
-msgid "<!-- ko if: kind() == '%s' -->"
-msgstr ""
-
-msgid "<!-- ko if: lastSearch() -->"
-msgstr ""
-
-msgid "<!-- ko if: loading() -->"
-msgstr ""
-
-msgid "<!-- ko if: options.length >= 5 -->"
-msgstr ""
-
-msgid "<!-- ko if: showingMap() -->"
-msgstr ""
-
-msgid "<!-- ko if: showingRefinePopup() -->"
-msgstr ""
-
-msgid "<!-- ko if: value() && value().length > 0 -->"
-msgstr ""
-
-msgid "<!-- ko ifnot: $root.filteringByProperty(FilterByLocationMissing) -->"
-msgstr ""
-
-msgid "<!-- ko template: {name: 'custom-logo-template'} -->"
-msgstr ""
-
-msgid "<!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->"
-msgstr ""
-
-msgid "<!-- ko template: {name: 'map-hierarchy-items-template', with: hierarchyItems} -->"
-msgstr ""
-
-msgid "<!-- ko template: {name: 'map-sites-template', with: $data} -->"
-msgstr ""
-
-msgid "<!-- ko template: {name: 'refine-hierarchy-items-template', with: fieldHierarchyItems} -->"
-msgstr ""
-
-msgid "<!-- ko template: {name: 'save-field-hierarchy-items-template', foreach: fieldHierarchyItems } -->"
-msgstr ""
-
-msgid "<!-- ko template: {name: 'save-field-hierarchy-items-template', foreach: fieldHierarchyItems} -->"
-msgstr ""
-
-msgid "<!-- ko template: {name: 'table-hierarchy-items-template', with: hierarchyItems} -->"
-msgstr ""
-
-msgid "<!-- ko template: {name: 'table-sites-template', with: $data} -->"
-msgstr ""
-
-msgid "<!-- ko with: currentCollection -->"
 msgstr ""
 
 msgid "API access"
@@ -1079,3 +881,22 @@ msgstr ""
 
 msgid "→;"
 msgstr ""
+
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the app package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#~ msgid "i18n project description"
+#~ msgstr ""
+#~ "Project-Id-Version: app 1.0.0\n"
+#~ "Report-Msgid-Bugs-To: \n"
+#~ "POT-Creation-Date: 2014-05-09 16:19-0300\n"
+#~ "PO-Revision-Date: 2014-05-09 16:19-0300\n"
+#~ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+#~ "Language-Team: LANGUAGE <LL@li.org>\n"
+#~ "Language: \n"
+#~ "MIME-Version: 1.0\n"
+#~ "Content-Type: text/plain; charset=UTF-8\n"
+#~ "Content-Transfer-Encoding: 8bit\n"
+#~ "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"

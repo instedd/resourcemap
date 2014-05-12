@@ -3,11 +3,11 @@
 %script{type: "text/html", id: "save-field-hierarchy-items-template"}
   .hierarchy{ko(css: {active: 'selected()'})}
     %a{ko(style: {marginLeft: "'' + (level * 20) + 'px'"}), href: 'javascript:void(0)'}
-      <!-- ko if: id != '' -->
+      /ko if: id != ''
       %img{ko(click: :toggleExpand, attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"}), style: 'position:relative;top:2px'}
-      <!-- /ko -->
+      //ko
       %span{ko(click: :selectAndSave, text: :name, clickBubble: false)}
-  <!-- ko if: expanded -->
-  <!-- ko template: {name: 'save-field-hierarchy-items-template', foreach: fieldHierarchyItems} -->
-  <!-- /ko -->
-  <!-- /ko -->
+  /ko if: expanded
+  /ko template: {name: 'save-field-hierarchy-items-template', foreach: fieldHierarchyItems}
+  //ko
+  //ko

@@ -66,24 +66,24 @@
           %th User
           %th Activity
           %th Time
-        <!-- ko foreach: activities -->
+        /ko foreach: activities
         %tr{style: 'height:32px'}
           %td{ko(text: :collection), style: 'min-width:120px'}
           %td{ko(text: :user)}
           %td
             %span{ko(text: :displayedDescription), style: 'display:inline'}
-            <!-- ko if: !expanded() && canBeExpanded() -->
+            /ko if: !expanded() && canBeExpanded()
             %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'} show more
-            <!-- /ko -->
+            //ko
           %td.timeago{ko(attr: {title: :createdAt}, text: :createdAt), style: 'min-width:150px'}
-        <!-- /ko -->
-        <!-- ko if: hasMore() && !loading() -->
+        //ko
+        /ko if: hasMore() && !loading()
         %tr{style: 'height:32px'}
           %td{ko(click: :loadMore), colspan: 4, align: :center, style: 'text-decoration:underline;cursor:pointer'}
             Load more
-        <!-- /ko -->
-        <!-- ko if: loading() -->
+        //ko
+        /ko if: loading()
         %tr{style: 'height:32px'}
           %td{colspan: 4, align: :center}
             Loading...
-        <!-- /ko -->
+        //ko
