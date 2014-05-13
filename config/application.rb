@@ -81,6 +81,7 @@ end
 
 Haml::MagicTranslations.enable(:i18n)
 I18n.load_path += Dir["locale/en/*.{po}"]
+#I18n.load_path += Dir["locale/fr/*.{po}"]
 FastGettext.add_text_domain 'app', :path => 'locale', :type => :po
 FastGettext.default_text_domain = 'app'
-FastGettext.default_available_locales = ['en']
+FastGettext.default_available_locales = ['en','fr']

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-12 16:04-0300\n"
-"PO-Revision-Date: 2014-05-12 16:04-0300\n"
+"POT-Creation-Date: 2014-05-13 14:57-0300\n"
+"PO-Revision-Date: 2014-05-13 14:57-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -43,21 +43,6 @@ msgid ","
 msgstr ""
 
 msgid "85512345678"
-msgstr ""
-
-msgid "<!-- /ko -->"
-msgstr ""
-
-msgid "<!-- ko foreach: activities -->"
-msgstr ""
-
-msgid "<!-- ko if: !expanded() && canBeExpanded() -->"
-msgstr ""
-
-msgid "<!-- ko if: hasMore() && !loading() -->"
-msgstr ""
-
-msgid "<!-- ko if: loading() -->"
 msgstr ""
 
 msgid "API access"
@@ -211,6 +196,12 @@ msgid "Define basic information about this collection"
 msgstr ""
 
 msgid "Done"
+msgstr ""
+
+msgid "Download a CSV with all the sites in this collection"
+msgstr ""
+
+msgid "Download a template CSV file"
 msgstr ""
 
 msgid "Edit"
@@ -478,6 +469,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Original filename"
+msgstr ""
+
+msgid "Overview"
 msgstr ""
 
 msgid "Password"

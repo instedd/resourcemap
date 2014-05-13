@@ -11,6 +11,8 @@ class ApplicationController < ActionController::Base
   expose(:reminders) { collection.reminders }
   expose(:reminder)
 
+  before_filter :set_gettext_locale
+
   expose(:new_search_options) do
     if current_user_snapshot.at_present?
       {current_user: current_user}
