@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "fffProject-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-13 16:53-0300\n"
+"POT-Creation-Date: 2014-05-13 17:19-0300\n"
 "PO-Revision-Date: 2014-05-13 13:26-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French\n"
@@ -200,10 +200,6 @@ msgstr "fffCollections"
 
 msgid "Column Settings"
 msgstr "fffColumn Settings"
-
-#, fuzzy
-msgid "Conditions"
-msgstr "fffCollections"
 
 msgid "Confirmed At"
 msgstr "fffConfirmed At"
@@ -632,6 +628,10 @@ msgid "SMS Gateway"
 msgstr "fffSMS Gateway"
 
 #, fuzzy
+msgid "SMS Gateways"
+msgstr "fffSMS Gateway"
+
+#, fuzzy
 msgid "SMS Settings"
 msgstr "fffSettings"
 
@@ -929,8 +929,9 @@ msgstr ""
 msgid "add Layers"
 msgstr "fffLayers"
 
-msgid "fffalerts"
-msgstr ""
+#, fuzzy
+msgid "alerts"
+msgstr "fffAlerts"
 
 msgid "all"
 msgstr "fffall"
