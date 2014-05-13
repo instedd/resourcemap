@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-13 14:57-0300\n"
-"PO-Revision-Date: 2014-05-13 14:57-0300\n"
+"POT-Creation-Date: 2014-05-13 16:53-0300\n"
+"PO-Revision-Date: 2014-05-13 16:53-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -42,7 +42,13 @@ msgstr ""
 msgid ","
 msgstr ""
 
+msgid ",change icon to:"
+msgstr ""
+
 msgid "85512345678"
+msgstr ""
+
+msgid "<!-- /ko-->"
 msgstr ""
 
 msgid "API access"
@@ -60,7 +66,16 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
+msgid "Add Alert"
+msgstr ""
+
 msgid "Add Gateway"
+msgstr ""
+
+msgid "Add Reminder"
+msgstr ""
+
+msgid "Add another condition"
 msgstr ""
 
 msgid "Add columns for new fields"
@@ -90,6 +105,21 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
+msgid "Agency"
+msgstr ""
+
+msgid "Alert"
+msgstr ""
+
+msgid "Alerts"
+msgstr ""
+
+msgid "All of following conditions"
+msgstr ""
+
+msgid "All sites"
+msgstr ""
+
 msgid "Allow decimal numbers"
 msgstr ""
 
@@ -99,10 +129,19 @@ msgstr ""
 msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
 msgstr ""
 
+msgid "Any of the following conditions"
+msgstr ""
+
 msgid "Apply"
 msgstr ""
 
+msgid "Apply this alert to"
+msgstr ""
+
 msgid "Attributes"
+msgstr ""
+
+msgid "CSD API Settings"
 msgstr ""
 
 msgid "CSV"
@@ -118,6 +157,9 @@ msgid "Center for Malaria Parasitology and Entomology"
 msgstr ""
 
 msgid "Change basic information about this collection"
+msgstr ""
+
+msgid "Change site display on map"
 msgstr ""
 
 msgid "Check the"
@@ -156,10 +198,16 @@ msgstr ""
 msgid "Column Settings"
 msgstr ""
 
+msgid "Conditions"
+msgstr ""
+
 msgid "Confirmed At"
 msgstr ""
 
 msgid "Contact the administrator if you think you should."
+msgstr ""
+
+msgid "Context"
 msgstr ""
 
 msgid "Create Collection"
@@ -193,6 +241,9 @@ msgid "Define and track custom data types and variables"
 msgstr ""
 
 msgid "Define basic information about this collection"
+msgstr ""
+
+msgid "Do not send notifications"
 msgstr ""
 
 msgid "Done"
@@ -244,6 +295,9 @@ msgid "Find out how →"
 msgstr ""
 
 msgid "Fix the errors to start importing"
+msgstr ""
+
+msgid "Format"
 msgstr ""
 
 msgid "Format that will be used to display and update date values for this field."
@@ -423,6 +477,9 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
+msgid "Message"
+msgstr ""
+
 msgid "Monitoring Food Prices and Supply Levels"
 msgstr ""
 
@@ -456,6 +513,12 @@ msgstr ""
 msgid "Note: your last import to this collection was based on a file named %s, %s ago."
 msgstr ""
 
+msgid "Notifications"
+msgstr ""
+
+msgid "Notify these people"
+msgstr ""
+
 msgid "Now specify how to map each column to a field."
 msgstr ""
 
@@ -483,7 +546,16 @@ msgstr ""
 msgid "Permissions per layer"
 msgstr ""
 
+msgid "Please"
+msgstr ""
+
 msgid "Please contact InSTEDD for support."
+msgstr ""
+
+msgid "Please fill all the required information to configure this collection to be accessible via CSD API."
+msgstr ""
+
+msgid "Please select the SMS gateways to be used for this collection. When using more than one gateway the system will use one of the other gateways if the primary fails."
 msgstr ""
 
 msgid "Please select what you want to update with this input:"
@@ -493,6 +565,9 @@ msgid "Possible values for this field."
 msgstr ""
 
 msgid "Preview"
+msgstr ""
+
+msgid "Properties"
 msgstr ""
 
 msgid "Quota"
@@ -517,6 +592,9 @@ msgid "Refine further"
 msgstr ""
 
 msgid "Refine results"
+msgstr ""
+
+msgid "Reminders"
 msgstr ""
 
 msgid "Remove columns for fields you are not interested in updating"
@@ -546,6 +624,9 @@ msgstr ""
 msgid "SMS Gateway"
 msgstr ""
 
+msgid "SMS Settings"
+msgstr ""
+
 msgid "Save"
 msgstr ""
 
@@ -555,6 +636,9 @@ msgstr ""
 msgid "Saving layer, please wait..."
 msgstr ""
 
+msgid "Saving reminder, please wait..."
+msgstr ""
+
 msgid "See everything on the map for a birds-eye view"
 msgstr ""
 
@@ -562,6 +646,12 @@ msgid "Select logo from uploaded image"
 msgstr ""
 
 msgid "Send Now!"
+msgstr ""
+
+msgid "Send emails to:"
+msgstr ""
+
+msgid "Send text messages to:"
 msgstr ""
 
 msgid "Set SMS quota for individual collection"
@@ -591,6 +681,9 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
+msgid "Site Name"
+msgstr ""
+
 msgid "Site changed"
 msgstr ""
 
@@ -604,6 +697,9 @@ msgid "Sites"
 msgstr ""
 
 msgid "Snapshots"
+msgstr ""
+
+msgid "Some sites"
 msgstr ""
 
 msgid "Sorry, something failed during the import. Please contact InSTEDD for support."
@@ -645,6 +741,9 @@ msgstr ""
 msgid "The android phone sms gateway allow you to use any adroid device as a local gateway for sending and receiving system SMS message"
 msgstr ""
 
+msgid "The context in which the agency uses this identifier"
+msgstr ""
+
 msgid "The data type to fill in this field."
 msgstr ""
 
@@ -652,6 +751,9 @@ msgid "The health of any community is intimately related to the health of the en
 msgstr ""
 
 msgid "The name of this field as it is presented."
+msgstr ""
+
+msgid "The organization for which this identifier is meaningful"
 msgstr ""
 
 msgid "The page you are trying to access doesn't exist or you don't have permission for accessing it."
@@ -732,6 +834,9 @@ msgstr ""
 msgid "Use it for free in the cloud OR download the code, it’s open source!"
 msgstr ""
 
+msgid "Use the following expressions to fill your message with sites data"
+msgstr ""
+
 msgid "User"
 msgstr ""
 
@@ -771,6 +876,9 @@ msgstr ""
 msgid "What can I use it for?"
 msgstr ""
 
+msgid "When"
+msgstr ""
+
 msgid "Whether you're helping economically  disadvantaged people find nutritious, fresh, and affordable produce,  managing food banks, or simply trying to chart the most popular edibles  in a given area, Resource Map makes it easy. And since Resource Map can  be updated using almost any cellular phone, your resource data is always  just as fresh as the food."
 msgstr ""
 
@@ -801,7 +909,22 @@ msgstr ""
 msgid "Your team can record, track and analyze resources"
 msgstr ""
 
+msgid "["
+msgstr ""
+
+msgid "]"
+msgstr ""
+
+msgid "add Layers"
+msgstr ""
+
+msgid "alerts"
+msgstr ""
+
 msgid "all"
+msgstr ""
+
+msgid "all sites"
 msgstr ""
 
 msgid "and"
@@ -832,6 +955,12 @@ msgid "equals"
 msgstr ""
 
 msgid "existing"
+msgstr ""
+
+msgid "first before managing your thresholds."
+msgstr ""
+
+msgid "for"
 msgstr ""
 
 msgid "for anyone to use to help increase their social impact"
@@ -882,6 +1011,9 @@ msgstr ""
 msgid "new"
 msgstr ""
 
+msgid "of"
+msgstr ""
+
 msgid "or"
 msgstr ""
 
@@ -889,6 +1021,9 @@ msgid "please select collection to set message quota"
 msgstr ""
 
 msgid "processing the hierarchy file"
+msgstr ""
+
+msgid "repeat"
 msgstr ""
 
 msgid "resource allocations without a complex and expensive GIS"
@@ -901,6 +1036,9 @@ msgid "set message quota to the selected collection"
 msgstr ""
 
 msgid "show more"
+msgstr ""
+
+msgid "site's owner will receive this reminder"
 msgstr ""
 
 msgid "sites"
@@ -931,6 +1069,9 @@ msgid "with errors"
 msgstr ""
 
 msgid "x"
+msgstr ""
+
+msgid "→ ; in"
 msgstr ""
 
 msgid "→;"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "fffProject-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-13 14:57-0300\n"
+"POT-Creation-Date: 2014-05-13 16:53-0300\n"
 "PO-Revision-Date: 2014-05-13 13:26-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French\n"
@@ -42,8 +42,14 @@ msgstr "fff(no value)"
 msgid ","
 msgstr "fff,"
 
+msgid ",change icon to:"
+msgstr ""
+
 msgid "85512345678"
 msgstr "fff85512345678"
+
+msgid "<!-- /ko-->"
+msgstr ""
 
 msgid "API access"
 msgstr "fffAPI access"
@@ -60,8 +66,18 @@ msgstr "fffsomeText"
 msgid "Activity"
 msgstr "fffActivity"
 
+msgid "Add Alert"
+msgstr ""
+
 msgid "Add Gateway"
 msgstr "fffAdd Gateway"
+
+#, fuzzy
+msgid "Add Reminder"
+msgstr "fffAdd member"
+
+msgid "Add another condition"
+msgstr ""
 
 msgid "Add columns for new fields"
 msgstr "fffAdd columns for new fields"
@@ -90,6 +106,22 @@ msgstr "fffAdmin"
 msgid "Advanced"
 msgstr "fffAdvanced"
 
+msgid "Agency"
+msgstr ""
+
+msgid "Alert"
+msgstr ""
+
+msgid "Alerts"
+msgstr "fffAlerts"
+
+msgid "All of following conditions"
+msgstr ""
+
+#, fuzzy
+msgid "All sites"
+msgstr "fffsites"
+
 msgid "Allow decimal numbers"
 msgstr "fffAllow decimal numbers"
 
@@ -99,11 +131,21 @@ msgstr "fffAndroid Phone SMS Gateway -Advanced Setup"
 msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
 msgstr "fffAndroid Phone SMS Gateway -Basic Setup(Recommended)"
 
+msgid "Any of the following conditions"
+msgstr ""
+
 msgid "Apply"
 msgstr "fffApply"
 
+msgid "Apply this alert to"
+msgstr ""
+
 msgid "Attributes"
 msgstr "fffAttributes"
+
+#, fuzzy
+msgid "CSD API Settings"
+msgstr "fffColumn Settings"
 
 msgid "CSV"
 msgstr "fffCSV"
@@ -119,6 +161,9 @@ msgstr "fffCenter for Malaria Parasitology and Entomology"
 
 msgid "Change basic information about this collection"
 msgstr "fffChange basic information about this collection"
+
+msgid "Change site display on map"
+msgstr ""
 
 msgid "Check the"
 msgstr "fffCheck the"
@@ -156,11 +201,18 @@ msgstr "fffCollections"
 msgid "Column Settings"
 msgstr "fffColumn Settings"
 
+#, fuzzy
+msgid "Conditions"
+msgstr "fffCollections"
+
 msgid "Confirmed At"
 msgstr "fffConfirmed At"
 
 msgid "Contact the administrator if you think you should."
 msgstr "fffContact the administrator if you think you should."
+
+msgid "Context"
+msgstr ""
 
 msgid "Create Collection"
 msgstr "fffCreate Collection"
@@ -194,6 +246,9 @@ msgstr "fffDefine and track custom data types and variables"
 
 msgid "Define basic information about this collection"
 msgstr "fffDefine basic information about this collection"
+
+msgid "Do not send notifications"
+msgstr ""
 
 msgid "Done"
 msgstr "fffDone"
@@ -245,6 +300,10 @@ msgstr "fffFind out how →"
 
 msgid "Fix the errors to start importing"
 msgstr "fffFix the errors to start importing"
+
+#, fuzzy
+msgid "Format"
+msgstr "fffDate Format"
 
 msgid "Format that will be used to display and update date values for this field."
 msgstr "fffFormat that will be used to display and update date values for this field."
@@ -423,6 +482,9 @@ msgstr "fffMember → Site → Layer"
 msgid "Members"
 msgstr "fffMembers"
 
+msgid "Message"
+msgstr ""
+
 msgid "Monitoring Food Prices and Supply Levels"
 msgstr "fffMonitoring Food Prices and Supply Levels"
 
@@ -456,6 +518,13 @@ msgstr "fffsomeText"
 msgid "Note: your last import to this collection was based on a file named %s, %s ago."
 msgstr "fffsomeText"
 
+#, fuzzy
+msgid "Notifications"
+msgstr "fffCollections"
+
+msgid "Notify these people"
+msgstr ""
+
 msgid "Now specify how to map each column to a field."
 msgstr "fffNow specify how to map each column to a field."
 
@@ -483,8 +552,17 @@ msgstr "fffPassword :"
 msgid "Permissions per layer"
 msgstr "fffPermissions per layer"
 
+msgid "Please"
+msgstr ""
+
 msgid "Please contact InSTEDD for support."
 msgstr "fffPlease contact InSTEDD for support."
+
+msgid "Please fill all the required information to configure this collection to be accessible via CSD API."
+msgstr ""
+
+msgid "Please select the SMS gateways to be used for this collection. When using more than one gateway the system will use one of the other gateways if the primary fails."
+msgstr ""
 
 msgid "Please select what you want to update with this input:"
 msgstr "fffPlease select what you want to update with this input:"
@@ -494,6 +572,9 @@ msgstr "fffPossible values for this field."
 
 msgid "Preview"
 msgstr "fffPreview"
+
+msgid "Properties"
+msgstr ""
 
 msgid "Quota"
 msgstr "fffQuota"
@@ -518,6 +599,10 @@ msgstr "fffRefine further"
 
 msgid "Refine results"
 msgstr "fffRefine results"
+
+#, fuzzy
+msgid "Reminders"
+msgstr "fffReminders"
 
 msgid "Remove columns for fields you are not interested in updating"
 msgstr "fffRemove columns for fields you are not interested in updating"
@@ -546,6 +631,10 @@ msgstr "fffSMS Enabled:"
 msgid "SMS Gateway"
 msgstr "fffSMS Gateway"
 
+#, fuzzy
+msgid "SMS Settings"
+msgstr "fffSettings"
+
 msgid "Save"
 msgstr "fffSave"
 
@@ -553,6 +642,10 @@ msgid "Save layer"
 msgstr "fffSave layer"
 
 msgid "Saving layer, please wait..."
+msgstr "fffSaving layer, please wait..."
+
+#, fuzzy
+msgid "Saving reminder, please wait..."
 msgstr "fffSaving layer, please wait..."
 
 msgid "See everything on the map for a birds-eye view"
@@ -563,6 +656,12 @@ msgstr "fffSelect logo from uploaded image"
 
 msgid "Send Now!"
 msgstr "fffSend Now!"
+
+msgid "Send emails to:"
+msgstr ""
+
+msgid "Send text messages to:"
+msgstr ""
 
 msgid "Set SMS quota for individual collection"
 msgstr "fffSet SMS quota for individual collection"
@@ -591,6 +690,10 @@ msgstr "fffSinged Up"
 msgid "Site"
 msgstr "fffSite"
 
+#, fuzzy
+msgid "Site Name"
+msgstr "fffSite changed"
+
 msgid "Site changed"
 msgstr "fffSite changed"
 
@@ -605,6 +708,9 @@ msgstr "fffSites"
 
 msgid "Snapshots"
 msgstr "fffSnapshots"
+
+msgid "Some sites"
+msgstr ""
 
 msgid "Sorry, something failed during the import. Please contact InSTEDD for support."
 msgstr "fffSorry, something failed during the import. Please contact InSTEDD for support."
@@ -645,6 +751,9 @@ msgstr "fffThe abbreviation used to report via SMS."
 msgid "The android phone sms gateway allow you to use any adroid device as a local gateway for sending and receiving system SMS message"
 msgstr "fffsomeText"
 
+msgid "The context in which the agency uses this identifier"
+msgstr ""
+
 msgid "The data type to fill in this field."
 msgstr "fffThe data type to fill in this field."
 
@@ -653,6 +762,9 @@ msgstr "fffsomeText"
 
 msgid "The name of this field as it is presented."
 msgstr "fffThe name of this field as it is presented."
+
+msgid "The organization for which this identifier is meaningful"
+msgstr ""
 
 msgid "The page you are trying to access doesn't exist or you don't have permission for accessing it."
 msgstr ""
@@ -732,6 +844,9 @@ msgstr "fffUse SMS to query, update or receive alerts from the system"
 msgid "Use it for free in the cloud OR download the code, it’s open source!"
 msgstr "fffUse it for free in the cloud OR download the code, it’s open source!"
 
+msgid "Use the following expressions to fill your message with sites data"
+msgstr ""
+
 msgid "User"
 msgstr "fffUser"
 
@@ -771,6 +886,9 @@ msgstr "fffsomeText"
 msgid "What can I use it for?"
 msgstr "fffWhat can I use it for?"
 
+msgid "When"
+msgstr ""
+
 msgid "Whether you're helping economically  disadvantaged people find nutritious, fresh, and affordable produce,  managing food banks, or simply trying to chart the most popular edibles  in a given area, Resource Map makes it easy. And since Resource Map can  be updated using almost any cellular phone, your resource data is always  just as fresh as the food."
 msgstr "fffsomeText"
 
@@ -801,8 +919,25 @@ msgstr "fffYour team can record, track and analyze medical supplies and resource
 msgid "Your team can record, track and analyze resources"
 msgstr "fffYour team can record, track and analyze resources"
 
+msgid "["
+msgstr ""
+
+msgid "]"
+msgstr ""
+
+#, fuzzy
+msgid "add Layers"
+msgstr "fffLayers"
+
+msgid "fffalerts"
+msgstr ""
+
 msgid "all"
 msgstr "fffall"
+
+#, fuzzy
+msgid "all sites"
+msgstr "fffsites"
 
 msgid "and"
 msgstr "fffand"
@@ -833,6 +968,13 @@ msgstr "fffequals"
 
 msgid "existing"
 msgstr "fffexisting"
+
+msgid "first before managing your thresholds."
+msgstr ""
+
+#, fuzzy
+msgid "for"
+msgstr "fffor"
 
 msgid "for anyone to use to help increase their social impact"
 msgstr "ffffor anyone to use to help increase their social impact"
@@ -882,6 +1024,9 @@ msgstr "fffleave blank if you don't want to change it"
 msgid "new"
 msgstr "fffnew"
 
+msgid "of"
+msgstr ""
+
 msgid "or"
 msgstr "fffor"
 
@@ -890,6 +1035,9 @@ msgstr "fffplease select collection to set message quota"
 
 msgid "processing the hierarchy file"
 msgstr "fffprocessing the hierarchy file"
+
+msgid "repeat"
+msgstr ""
 
 msgid "resource allocations without a complex and expensive GIS"
 msgstr "fffresource allocations without a complex and expensive GIS"
@@ -902,6 +1050,9 @@ msgstr "fffset message quota to the selected collection"
 
 msgid "show more"
 msgstr "fffshow more"
+
+msgid "site's owner will receive this reminder"
+msgstr ""
 
 msgid "sites"
 msgstr "fffsites"
@@ -932,6 +1083,9 @@ msgstr "fffwith errors"
 
 msgid "x"
 msgstr "fffx"
+
+msgid "→ ; in"
+msgstr ""
 
 msgid "→;"
 msgstr "fff→;"
