@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-14 14:29-0300\n"
-"PO-Revision-Date: 2014-05-14 14:29-0300\n"
+"POT-Creation-Date: 2014-05-14 17:24-0300\n"
+"PO-Revision-Date: 2014-05-14 17:24-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -33,10 +33,25 @@ msgstr ""
 msgid "%s."
 msgstr ""
 
+msgid "%{kind} field %{name} %code %key changed to %field_key"
+msgstr ""
+
+msgid "%{kind} field %{name} %{code} options changed from %{old_options} to %{new_options}"
+msgstr ""
+
+msgid "%{kind} field %{name} %{code} was added"
+msgstr ""
+
+msgid "%{kind} field %{name} %{code} was deleted"
+msgstr ""
+
 msgid "(85512345678)"
 msgstr ""
 
 msgid "(no value)"
+msgstr ""
+
+msgid "(nothing)"
 msgstr ""
 
 msgid ","
@@ -423,10 +438,16 @@ msgstr ""
 msgid "Lat"
 msgstr ""
 
+msgid "Layer %{layer} changed: %{changes}"
+msgstr ""
+
 msgid "Layer %{layer} was created with fields: %{fields}"
 msgstr ""
 
 msgid "Layer %{layer} was deleted"
+msgstr ""
+
+msgid "Layer %{layer} was renamed to %{changes}"
 msgstr ""
 
 msgid "Layer changed"
@@ -1029,7 +1050,13 @@ msgstr ""
 msgid "leave blank if you don't want to change it"
 msgstr ""
 
+msgid "name changed from %{first_change} to %{second_change}"
+msgstr ""
+
 msgid "new"
+msgstr ""
+
+msgid "no"
 msgstr ""
 
 msgid "of"
@@ -1080,6 +1107,9 @@ msgstr ""
 msgid "the last week"
 msgstr ""
 
+msgid "true"
+msgstr ""
+
 msgid "uncheck all"
 msgstr ""
 
@@ -1090,6 +1120,9 @@ msgid "with errors"
 msgstr ""
 
 msgid "x"
+msgstr ""
+
+msgid "yes"
 msgstr ""
 
 msgid "→ ; in"

@@ -111,9 +111,9 @@ class Activity < ActiveRecord::Base
   def layer_changed_text
     only_name_changed, changes = layer_changes_text
     if only_name_changed
-      "Layer %{layer} was renamed to %{changes}" % {layer: "'#{data['name']}'", changes: "'#{data['changes']['name'][1]}'"}
+      _("Layer %{layer} was renamed to %{changes}") % {layer: "'#{data['name']}'", changes: "'#{data['changes']['name'][1]}'"}
     else
-      "Layer %{layer} changed: %{changes}" % {layer: "'#{data['name']}'", changes: "#{changes}"}
+      _("Layer %{layer} changed: %{changes}") % {layer: "'#{data['name']}'", changes: "#{changes}"}
     end
   end
 
@@ -122,13 +122,13 @@ class Activity < ActiveRecord::Base
     only_name_changed = false
 
     if (change = data['changes']['name'])
-      text_changes << "name changed from %{first_change} to %{second_change}" % {first_change: "#{change[0]}", second_change: "#{change[1]}"}
+      text_changes << _("name changed from %{first_change} to %{second_change}") % {first_change: "#{change[0]}", second_change: "#{change[1]}"}
       only_name_changed = true
     end
 
     if data['changes']['added']
       data['changes']['added'].each do |field|
-        text_changes << "%{kind} field %{name} %{code} was added" % {kind: "#{field['kind']}", name: "'#{field['name']}'", code: "(#{field['code']})"}
+        text_changes << _("%{kind} field %{name} %{code} was added") % {kind: "#{field['kind']}", name: "'#{field['name']}'", code: "(#{field['code']})"}
       end
       only_name_changed = false
     end
@@ -137,7 +137,7 @@ class Activity < ActiveRecord::Base
       data['changes']['changed'].each do |field|
         ['name', 'code', 'kind'].each do |key|
           if field[key].is_a? Array
-            text_changes << "#{old_value field['kind']} field '#{old_value field['name']}' (#{old_value field['code']}) #{key} changed to '#{field[key][1]}'"
+            text_changes << _("%{kind} field %{name} %code %key changed to %field_key") % {kind: "#{old_value field['kind']}", name: "#{old_value field['name']}", code: "(#{old_value field['code']})", key: "#{key}", field_key: "'#{field[key][1]}'"}
           end
         end
 
@@ -145,7 +145,7 @@ class Activity < ActiveRecord::Base
           old_options = (field['config'][0] || {})['options']
           new_options = (field['config'][1] || {})['options']
           if old_options != new_options
-            text_changes << "#{old_value field['kind']} field '#{old_value field['name']}' (#{old_value field['code']}) options changed from #{format_options old_options} to #{format_options new_options}"
+            text_changes << _("%{kind} field %{name} %{code} options changed from %{old_options} to %{new_options}") % {kind: "#{old_value field['kind']}", name: "'#{old_value field['name']}'", code: "(#{old_value field['code']})", old_options: "#{format_options old_options}", new_options: "#{format_options new_options}"}
           end
         end
       end
@@ -154,7 +154,7 @@ class Activity < ActiveRecord::Base
 
     if data['changes']['deleted']
       data['changes']['deleted'].each do |field|
-        text_changes << "#{field['kind']} field '#{field['name']}' (#{field['code']}) was deleted"
+        text_changes << _("%{kind} field %{name} %{code} was deleted") % {kind: "#{field['kind']}", name: "'#{field['name']}'", code: "(#{field['code']})"}
       end
       only_name_changed = false
     end
@@ -168,7 +168,7 @@ class Activity < ActiveRecord::Base
 
   def format_value(field, value)
     if field && field.yes_no?
-      value == 'true' || value == '1' ? 'yes' : 'no'
+      value == _('true') || value == '1' ? _('yes') : _('no')
     elsif field && field.select_one?
       format_option field, value
     elsif field && field.select_many? && value.is_a?(Array)
@@ -194,7 +194,7 @@ class Activity < ActiveRecord::Base
     if lat
       "(#{((lat) * 1e6).round / 1e6.to_f}, #{((lng) * 1e6).round / 1e6.to_f})"
     else
-      '(nothing)'
+      _('(nothing)')
     end
   end
 end
