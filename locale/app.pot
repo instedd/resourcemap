@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-13 17:19-0300\n"
-"PO-Revision-Date: 2014-05-13 17:19-0300\n"
+"POT-Creation-Date: 2014-05-14 14:29-0300\n"
+"PO-Revision-Date: 2014-05-14 14:29-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -46,9 +46,6 @@ msgid ",change icon to:"
 msgstr ""
 
 msgid "85512345678"
-msgstr ""
-
-msgid "<!-- /ko-->"
 msgstr ""
 
 msgid "API access"
@@ -181,6 +178,9 @@ msgid "Collapse all"
 msgstr ""
 
 msgid "Collection"
+msgstr ""
+
+msgid "Collection '%{name}' was created"
 msgstr ""
 
 msgid "Collection CSV imported"
@@ -372,6 +372,9 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
+msgid "Import CSV: %{sites}"
+msgstr ""
+
 msgid "Import existing resource allocation data from spreadsheets"
 msgstr ""
 
@@ -388,6 +391,9 @@ msgid "Import layers from collection:"
 msgstr ""
 
 msgid "Import wizard"
+msgstr ""
+
+msgid "Import wizard: %{sites}"
 msgstr ""
 
 msgid "Importing data"
@@ -415,6 +421,12 @@ msgid "Last update"
 msgstr ""
 
 msgid "Lat"
+msgstr ""
+
+msgid "Layer %{layer} was created with fields: %{fields}"
+msgstr ""
+
+msgid "Layer %{layer} was deleted"
 msgstr ""
 
 msgid "Layer changed"
@@ -682,6 +694,12 @@ msgid "Singed Up"
 msgstr ""
 
 msgid "Site"
+msgstr ""
+
+msgid "Site %{site} was created"
+msgstr ""
+
+msgid "Site %{site} was deleted"
 msgstr ""
 
 msgid "Site Name"

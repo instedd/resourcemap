@@ -3,12 +3,12 @@
 # This file is distributed under the same license as the app package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
 #
-msgid ""
-msgstr ""
-"fffProject-Id-Version: app 1.0.0\n"
+msgid "i18n Project's info"
+msgstr "fff"
+"Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-13 17:19-0300\n"
-"PO-Revision-Date: 2014-05-13 13:26-0300\n"
+"POT-Creation-Date: 2014-05-14 14:29-0300\n"
+"PO-Revision-Date: 2014-05-14 14:29-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -43,13 +43,10 @@ msgid ","
 msgstr "fff,"
 
 msgid ",change icon to:"
-msgstr ""
+msgstr "fff,change icon to:"
 
 msgid "85512345678"
 msgstr "fff85512345678"
-
-msgid "<!-- /ko-->"
-msgstr ""
 
 msgid "API access"
 msgstr "fffAPI access"
@@ -57,27 +54,32 @@ msgstr "fffAPI access"
 msgid "Access the API in"
 msgstr "fffAccess the API in"
 
-msgid "Accurately tracking and allocating resources is critical to getting the  most from every asset at your disposal. Resource Map can help you maximize your resource allocation and usage."
-msgstr "fffsomeText"
+msgid ""
+"Accurately tracking and allocating resources is critical to getting the  most "
+"from every asset at your disposal. Resource Map can help you maximize your res"
+"ource allocation and usage."
+msgstr "fffSomeText"
 
-msgid "Accurately tracking and allocating resources is critical to getting the most from every asset at your disposal. Here are a few ways that Resource Map can help you maximize your resource allocation and usage:"
-msgstr "fffsomeText"
+msgid ""
+"Accurately tracking and allocating resources is critical to getting the most f"
+"rom every asset at your disposal. Here are a few ways that Resource Map can he"
+"lp you maximize your resource allocation and usage:"
+msgstr "fffSomeText"
 
 msgid "Activity"
 msgstr "fffActivity"
 
 msgid "Add Alert"
-msgstr ""
+msgstr "fffAdd Alert"
 
 msgid "Add Gateway"
 msgstr "fffAdd Gateway"
 
-#, fuzzy
 msgid "Add Reminder"
-msgstr "fffAdd member"
+msgstr "fffAdd Reminder"
 
 msgid "Add another condition"
-msgstr ""
+msgstr "fffAdd another condition"
 
 msgid "Add columns for new fields"
 msgstr "fffAdd columns for new fields"
@@ -107,20 +109,19 @@ msgid "Advanced"
 msgstr "fffAdvanced"
 
 msgid "Agency"
-msgstr ""
+msgstr "fffAgency"
 
 msgid "Alert"
-msgstr ""
+msgstr "fffAlert"
 
 msgid "Alerts"
 msgstr "fffAlerts"
 
 msgid "All of following conditions"
-msgstr ""
+msgstr "fffAll of following conditions"
 
-#, fuzzy
 msgid "All sites"
-msgstr "fffsites"
+msgstr "fffAll sites"
 
 msgid "Allow decimal numbers"
 msgstr "fffAllow decimal numbers"
@@ -132,20 +133,19 @@ msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
 msgstr "fffAndroid Phone SMS Gateway -Basic Setup(Recommended)"
 
 msgid "Any of the following conditions"
-msgstr ""
+msgstr "fffAny of the following conditions"
 
 msgid "Apply"
 msgstr "fffApply"
 
 msgid "Apply this alert to"
-msgstr ""
+msgstr "fffApply this alert to"
 
 msgid "Attributes"
 msgstr "fffAttributes"
 
-#, fuzzy
 msgid "CSD API Settings"
-msgstr "fffColumn Settings"
+msgstr "fffCSD API Settings"
 
 msgid "CSV"
 msgstr "fffCSV"
@@ -163,7 +163,7 @@ msgid "Change basic information about this collection"
 msgstr "fffChange basic information about this collection"
 
 msgid "Change site display on map"
-msgstr ""
+msgstr "fffChange site display on map"
 
 msgid "Check the"
 msgstr "fffCheck the"
@@ -186,6 +186,9 @@ msgstr "fffCollapse all"
 msgid "Collection"
 msgstr "fffCollection"
 
+msgid "Collection '%{name}' was created"
+msgstr "fffCollection '%{name}' was created"
+
 msgid "Collection CSV imported"
 msgstr "fffCollection CSV imported"
 
@@ -201,6 +204,9 @@ msgstr "fffCollections"
 msgid "Column Settings"
 msgstr "fffColumn Settings"
 
+msgid "Conditions"
+msgstr "fffConditions"
+
 msgid "Confirmed At"
 msgstr "fffConfirmed At"
 
@@ -208,7 +214,7 @@ msgid "Contact the administrator if you think you should."
 msgstr "fffContact the administrator if you think you should."
 
 msgid "Context"
-msgstr ""
+msgstr "fffContext"
 
 msgid "Create Collection"
 msgstr "fffCreate Collection"
@@ -244,7 +250,7 @@ msgid "Define basic information about this collection"
 msgstr "fffDefine basic information about this collection"
 
 msgid "Do not send notifications"
-msgstr ""
+msgstr "fffDo not send notifications"
 
 msgid "Done"
 msgstr "fffDone"
@@ -285,8 +291,10 @@ msgstr "fffExport your Resource Map database for further analysis in other appli
 msgid "Features"
 msgstr "fffFeatures"
 
-msgid "Field semantics, usually meaningful to external systems that depend on Resource Map"
-msgstr ""
+msgid ""
+"Field semantics, usually meaningful to external systems that depend on Resourc"
+"e Map"
+msgstr "fffSomeText"
 
 msgid "Fields"
 msgstr "fffFields"
@@ -297,9 +305,8 @@ msgstr "fffFind out how →"
 msgid "Fix the errors to start importing"
 msgstr "fffFix the errors to start importing"
 
-#, fuzzy
 msgid "Format"
-msgstr "fffDate Format"
+msgstr "fffFormat"
 
 msgid "Format that will be used to display and update date values for this field."
 msgstr "fffFormat that will be used to display and update date values for this field."
@@ -328,8 +335,16 @@ msgstr "fffGateways"
 msgid "Get updates"
 msgstr "fffGet updates"
 
-msgid "Getting started with Resource Map is simple. Just enter resource allocation data manually or upload an existing spreadsheet containing the data. Once your data is online, it's easy to keep tabs on resources visually, on a real-time map, using any computer or smartphone. Even better, field teams can receive alerts, update resource deployment, and query resource status using any phone that can send and receive text messages, in addition to using a computer or smartphone. If you can get a cell phone signal, you can view and manage resources with Resource Map."
-msgstr "fffText2"
+msgid ""
+"Getting started with Resource Map is simple. Just enter resource allocation da"
+"ta manually or upload an existing spreadsheet containing the data. Once your d"
+"ata is online, it's easy to keep tabs on resources visually, on a real-time ma"
+"p, using any computer or smartphone. Even better, field teams can receive aler"
+"ts, update resource deployment, and query resource status using any phone that"
+" can send and receive text messages, in addition to using a computer or smartp"
+"hone. If you can get a cell phone signal, you can view and manage resources wi"
+"th Resource Map."
+msgstr "fffSomeText"
 
 msgid "Go back to present"
 msgstr "fffGo back to present"
@@ -364,14 +379,21 @@ msgstr "fffId:"
 msgid "Identify"
 msgstr "fffIdentify"
 
-msgid "If you change an option code the sites' properties with this value will be lost."
-msgstr ""
+msgid ""
+"If you change an option code the sites' properties with this value will be los"
+"t."
+msgstr "fffSomeText"
 
-msgid "If you notice issues with some characters (such as accents) try exporting the CSV with UTF-8 encoding."
-msgstr "fffsomeText"
+msgid ""
+"If you notice issues with some characters (such as accents) try exporting the "
+"CSV with UTF-8 encoding."
+msgstr "fffSomeText"
 
 msgid "Import"
 msgstr "fffImport"
+
+msgid "Import CSV: %{sites}"
+msgstr "fffImport CSV: %{sites}"
 
 msgid "Import existing resource allocation data from spreadsheets"
 msgstr "fffImport existing resource allocation data from spreadsheets"
@@ -391,17 +413,30 @@ msgstr "fffImport layers from collection:"
 msgid "Import wizard"
 msgstr "fffImport wizard"
 
+msgid "Import wizard: %{sites}"
+msgstr "fffImport wizard: %{sites}"
+
 msgid "Importing data"
 msgstr "fffImporting data"
 
 msgid "Importing, please wait. This might take several minutes."
 msgstr "fffImporting, please wait. This might take several minutes."
 
-msgid "In a limited number of countries we have a gateway provided by a local phone company that can be used to send and recieve system messages. Please select the list below to"
-msgstr "fffsomeText"
+msgid ""
+"In a limited number of countries we have a gateway provided by a local phone c"
+"ompany that can be used to send and recieve system messages. Please select the"
+" list below to"
+msgstr "fffSomeText"
 
-msgid "In an emergency medical situation, when lives may hang in the balance, the last thing you want to do is waste time finding supplies, personnel, and mobile or permanent treatment facilities. With Resource Map, you can quickly locate and manage critical resources on a real-time map using a computer or smartphone. On an emergency scene, when you might not have access to computers or smartphones, you and your team can view and update resource allocations with any phone capable of text messaging."
-msgstr "fffsomeText"
+msgid ""
+"In an emergency medical situation, when lives may hang in the balance, the las"
+"t thing you want to do is waste time finding supplies, personnel, and mobile o"
+"r permanent treatment facilities. With Resource Map, you can quickly locate an"
+"d manage critical resources on a real-time map using a computer or smartphone."
+" On an emergency scene, when you might not have access to computers or smartph"
+"ones, you and your team can view and update resource allocations with any phon"
+"e capable of text messaging."
+msgstr "fffSomeText"
 
 msgid "Insightful:"
 msgstr "fffInsightful:"
@@ -417,6 +452,12 @@ msgstr "fffLast update"
 
 msgid "Lat"
 msgstr "fffLat"
+
+msgid "Layer %{layer} was created with fields: %{fields}"
+msgstr "fffLayer %{layer} was created with fields: %{fields}"
+
+msgid "Layer %{layer} was deleted"
+msgstr "fffLayer %{layer} was deleted"
 
 msgid "Layer changed"
 msgstr "fffLayer changed"
@@ -469,8 +510,14 @@ msgstr "fffManaging Disease Prevention Supplies"
 msgid "Map Ready:"
 msgstr "fffMap Ready:"
 
-msgid "Medicine is at its best when it helps people avoid illness in the first place. Resource Map aids prevention efforts by giving teams new ways to manage key supply chain items, such as vaccines, vitamins, and other disease prevention tools. And by uploading statistics on various measures of health, you can even use Resource Map to monitor the effectiveness of your interventions. After all, a healthy community is one of your most important resources."
-msgstr "fffsomeText"
+msgid ""
+"Medicine is at its best when it helps people avoid illness in the first place."
+" Resource Map aids prevention efforts by giving teams new ways to manage key s"
+"upply chain items, such as vaccines, vitamins, and other disease prevention to"
+"ols. And by uploading statistics on various measures of health, you can even u"
+"se Resource Map to monitor the effectiveness of your interventions. After all,"
+" a healthy community is one of your most important resources."
+msgstr "fffSomeText"
 
 msgid "Member → Site → Layer"
 msgstr "fffMember → Site → Layer"
@@ -479,7 +526,7 @@ msgid "Members"
 msgstr "fffMembers"
 
 msgid "Message"
-msgstr ""
+msgstr "fffMessage"
 
 msgid "Monitoring Food Prices and Supply Levels"
 msgstr "fffMonitoring Food Prices and Supply Levels"
@@ -508,18 +555,21 @@ msgstr "fffNew item"
 msgid "None"
 msgstr "fffNone"
 
-msgid "Note: your last import to this collection failed, and was based on a file named %s, %s ago."
-msgstr "fffsomeText"
+msgid ""
+"Note: your last import to this collection failed, and was based on a file name"
+"d %s, %s ago."
+msgstr "fffSomeText"
 
-msgid "Note: your last import to this collection was based on a file named %s, %s ago."
-msgstr "fffsomeText"
+msgid ""
+"Note: your last import to this collection was based on a file named %s, %s ago"
+"."
+msgstr "fffSomeText"
 
-#, fuzzy
 msgid "Notifications"
-msgstr "fffCollections"
+msgstr "fffNotifications"
 
 msgid "Notify these people"
-msgstr ""
+msgstr "fffNotify these people"
 
 msgid "Now specify how to map each column to a field."
 msgstr "fffNow specify how to map each column to a field."
@@ -549,16 +599,21 @@ msgid "Permissions per layer"
 msgstr "fffPermissions per layer"
 
 msgid "Please"
-msgstr ""
+msgstr "fffPlease"
 
 msgid "Please contact InSTEDD for support."
 msgstr "fffPlease contact InSTEDD for support."
 
-msgid "Please fill all the required information to configure this collection to be accessible via CSD API."
-msgstr ""
+msgid ""
+"Please fill all the required information to configure this collection to be ac"
+"cessible via CSD API."
+msgstr "fffSomeText"
 
-msgid "Please select the SMS gateways to be used for this collection. When using more than one gateway the system will use one of the other gateways if the primary fails."
-msgstr ""
+msgid ""
+"Please select the SMS gateways to be used for this collection. When using more"
+" than one gateway the system will use one of the other gateways if the primary"
+" fails."
+msgstr "fffSomeText"
 
 msgid "Please select what you want to update with this input:"
 msgstr "fffPlease select what you want to update with this input:"
@@ -570,7 +625,7 @@ msgid "Preview"
 msgstr "fffPreview"
 
 msgid "Properties"
-msgstr ""
+msgstr "fffProperties"
 
 msgid "Quota"
 msgstr "fffQuota"
@@ -596,7 +651,6 @@ msgstr "fffRefine further"
 msgid "Refine results"
 msgstr "fffRefine results"
 
-#, fuzzy
 msgid "Reminders"
 msgstr "fffReminders"
 
@@ -627,13 +681,11 @@ msgstr "fffSMS Enabled:"
 msgid "SMS Gateway"
 msgstr "fffSMS Gateway"
 
-#, fuzzy
 msgid "SMS Gateways"
-msgstr "fffSMS Gateway"
+msgstr "fffSMS Gateways"
 
-#, fuzzy
 msgid "SMS Settings"
-msgstr "fffSettings"
+msgstr "fffSMS Settings"
 
 msgid "Save"
 msgstr "fffSave"
@@ -644,9 +696,8 @@ msgstr "fffSave layer"
 msgid "Saving layer, please wait..."
 msgstr "fffSaving layer, please wait..."
 
-#, fuzzy
 msgid "Saving reminder, please wait..."
-msgstr "fffSaving layer, please wait..."
+msgstr "fffSaving reminder, please wait..."
 
 msgid "See everything on the map for a birds-eye view"
 msgstr "fffSee everything on the map for a birds-eye view"
@@ -658,10 +709,10 @@ msgid "Send Now!"
 msgstr "fffSend Now!"
 
 msgid "Send emails to:"
-msgstr ""
+msgstr "fffSend emails to:"
 
 msgid "Send text messages to:"
-msgstr ""
+msgstr "fffSend text messages to:"
 
 msgid "Set SMS quota for individual collection"
 msgstr "fffSet SMS quota for individual collection"
@@ -690,9 +741,14 @@ msgstr "fffSinged Up"
 msgid "Site"
 msgstr "fffSite"
 
-#, fuzzy
+msgid "Site %{site} was created"
+msgstr "fffSite %{site} was created"
+
+msgid "Site %{site} was deleted"
+msgstr "fffSite %{site} was deleted"
+
 msgid "Site Name"
-msgstr "fffSite changed"
+msgstr "fffSite Name"
 
 msgid "Site changed"
 msgstr "fffSite changed"
@@ -710,7 +766,7 @@ msgid "Snapshots"
 msgstr "fffSnapshots"
 
 msgid "Some sites"
-msgstr ""
+msgstr "fffSome sites"
 
 msgid "Sorry, something failed during the import. Please contact InSTEDD for support."
 msgstr "fffSorry, something failed during the import. Please contact InSTEDD for support."
@@ -742,32 +798,47 @@ msgstr "fffTesting Environmental Health"
 msgid "The National Center for Parasitology, Entomology and Malaria Control (CNM)"
 msgstr "fffThe National Center for Parasitology, Entomology and Malaria Control (CNM)"
 
-msgid "The Rwanda Ministry of Health uses Resource Map as its Facility Registry service. The Facility Registry provides the master list of hospitals, clinics and health services and is a building block of Rwanda's national Health Information System, which integrates Resource Map data into clinical and public health workflows and tools across the country."
-msgstr "fffsomeText"
+msgid ""
+"The Rwanda Ministry of Health uses Resource Map as its Facility Registry servi"
+"ce. The Facility Registry provides the master list of hospitals, clinics and h"
+"ealth services and is a building block of Rwanda's national Health Information"
+" System, which integrates Resource Map data into clinical and public health wo"
+"rkflows and tools across the country."
+msgstr "fffSomeText"
 
 msgid "The abbreviation used to report via SMS."
 msgstr "fffThe abbreviation used to report via SMS."
 
-msgid "The android phone sms gateway allow you to use any adroid device as a local gateway for sending and receiving system SMS message"
-msgstr "fffsomeText"
+msgid ""
+"The android phone sms gateway allow you to use any adroid device as a local ga"
+"teway for sending and receiving system SMS message"
+msgstr "fffSomeText"
 
 msgid "The context in which the agency uses this identifier"
-msgstr ""
+msgstr "fffThe context in which the agency uses this identifier"
 
 msgid "The data type to fill in this field."
 msgstr "fffThe data type to fill in this field."
 
-msgid "The health of any community is intimately related to the health of the environment that surrounds it. Resource Map helps to keep the air clean, the water pure, and sanitation effective by giving you instant, visual access to an array of environmental quality indicators. Field reports can be filed with any phone capable of text messaging, allowing your team the mobility it needs to test and report environmental conditions more frequently and easily."
-msgstr "fffsomeText"
+msgid ""
+"The health of any community is intimately related to the health of the environ"
+"ment that surrounds it. Resource Map helps to keep the air clean, the water pu"
+"re, and sanitation effective by giving you instant, visual access to an array "
+"of environmental quality indicators. Field reports can be filed with any phone"
+" capable of text messaging, allowing your team the mobility it needs to test a"
+"nd report environmental conditions more frequently and easily."
+msgstr "fffSomeText"
 
 msgid "The name of this field as it is presented."
 msgstr "fffThe name of this field as it is presented."
 
 msgid "The organization for which this identifier is meaningful"
-msgstr ""
+msgstr "fffThe organization for which this identifier is meaningful"
 
-msgid "The page you are trying to access doesn't exist or you don't have permission for accessing it."
-msgstr ""
+msgid ""
+"The page you are trying to access doesn't exist or you don't have permission f"
+"or accessing it."
+msgstr "fffSomeText"
 
 msgid "Then you will be able to define how to use each column."
 msgstr "fffThen you will be able to define how to use each column."
@@ -845,7 +916,7 @@ msgid "Use it for free in the cloud OR download the code, it’s open source!"
 msgstr "fffUse it for free in the cloud OR download the code, it’s open source!"
 
 msgid "Use the following expressions to fill your message with sites data"
-msgstr ""
+msgstr "fffUse the following expressions to fill your message with sites data"
 
 msgid "User"
 msgstr "fffUser"
@@ -880,32 +951,59 @@ msgstr "fffWe couldn't import your data from file %s."
 msgid "We finished importing all your data from file %s."
 msgstr "fffWe finished importing all your data from file %s."
 
-msgid "We recommend you to download the CSV, make changes to it and upload it here for doing a bulk update:"
-msgstr "fffsomeText"
+msgid ""
+"We recommend you to download the CSV, make changes to it and upload it here fo"
+"r doing a bulk update:"
+msgstr "fffSomeText"
 
 msgid "What can I use it for?"
 msgstr "fffWhat can I use it for?"
 
 msgid "When"
-msgstr ""
+msgstr "fffWhen"
 
-msgid "Whether you're helping economically  disadvantaged people find nutritious, fresh, and affordable produce,  managing food banks, or simply trying to chart the most popular edibles  in a given area, Resource Map makes it easy. And since Resource Map can  be updated using almost any cellular phone, your resource data is always  just as fresh as the food."
-msgstr "fffsomeText"
+msgid ""
+"Whether you're helping economically  disadvantaged people find nutritious, fre"
+"sh, and affordable produce,  managing food banks, or simply trying to chart th"
+"e most popular edibles  in a given area, Resource Map makes it easy. And since"
+" Resource Map can  be updated using almost any cellular phone, your resource d"
+"ata is always  just as fresh as the food."
+msgstr "fffSomeText"
 
-msgid "Whether you're helping economically disadvantaged people find nutritious, fresh, and affordable produce, managing food banks, or simply trying to chart the most popular edibles in a given area, Resource Map makes it easy. And since Resource Map can be updated using almost any cellular phone, your resource data is always just as fresh as the food."
-msgstr "fffsomeText"
+msgid ""
+"Whether you're helping economically disadvantaged people find nutritious, fres"
+"h, and affordable produce, managing food banks, or simply trying to chart the "
+"most popular edibles in a given area, Resource Map makes it easy. And since Re"
+"source Map can be updated using almost any cellular phone, your resource data "
+"is always just as fresh as the food."
+msgstr "fffSomeText"
 
 msgid "Who is using it?"
 msgstr "fffWho is using it?"
 
-msgid "With the support from the Global Fund, the Center for Malaria Parasitology and Entomology of Laos PDR (CMPE) uses Resource Map to report both the stock levels of life saving malaria drugs and the number of Malaria cases located at the village health centers up to the national level.  This allows the Ministry of Health to have a real time visual picture of what resources are available and what is needed to treat patients."
-msgstr "fffsomeText"
+msgid ""
+"With the support from the Global Fund, the Center for Malaria Parasitology and"
+" Entomology of Laos PDR (CMPE) uses Resource Map to report both the stock leve"
+"ls of life saving malaria drugs and the number of Malaria cases located at the"
+" village health centers up to the national level.  This allows the Ministry of"
+" Health to have a real time visual picture of what resources are available and"
+" what is needed to treat patients."
+msgstr "fffSomeText"
 
-msgid "With the support of the Clinton Health Access Initiative (CHAI), CNM uses Resource Map to support their malaria drug program with our tool to capture malaria drug updates from at risk health centers on a two week cycle. The goal of monitoring resources so closely is to improve the stock management of malaria treatment drugs. This tool helps the health centers to avoid the possibility of over or under stocking important drug supplies."
-msgstr "fffsomeText"
+msgid ""
+"With the support of the Clinton Health Access Initiative (CHAI), CNM uses Reso"
+"urce Map to support their malaria drug program with our tool to capture malari"
+"a drug updates from at risk health centers on a two week cycle. The goal of mo"
+"nitoring resources so closely is to improve the stock management of malaria tr"
+"eatment drugs. This tool helps the health centers to avoid the possibility of "
+"over or under stocking important drug supplies."
+msgstr "fffSomeText"
 
-msgid "You don't need to leave this window open while the data is imported, we'll take care of that for you. However, if you're still here when the importation ends, we'll let you know so you can start working on your new data right away."
-msgstr "fffsomeText"
+msgid ""
+"You don't need to leave this window open while the data is imported, we'll tak"
+"e care of that for you. However, if you're still here when the importation end"
+"s, we'll let you know so you can start working on your new data right away."
+msgstr "fffSomeText"
 
 msgid "You have no items yet"
 msgstr "fffYou have no items yet"
@@ -920,25 +1018,22 @@ msgid "Your team can record, track and analyze resources"
 msgstr "fffYour team can record, track and analyze resources"
 
 msgid "["
-msgstr ""
+msgstr "fff["
 
 msgid "]"
-msgstr ""
+msgstr "fff]"
 
-#, fuzzy
 msgid "add Layers"
-msgstr "fffLayers"
+msgstr "fffadd Layers"
 
-#, fuzzy
 msgid "alerts"
-msgstr "fffAlerts"
+msgstr "fffalerts"
 
 msgid "all"
 msgstr "fffall"
 
-#, fuzzy
 msgid "all sites"
-msgstr "fffsites"
+msgstr "fffall sites"
 
 msgid "and"
 msgstr "fffand"
@@ -971,11 +1066,10 @@ msgid "existing"
 msgstr "fffexisting"
 
 msgid "first before managing your thresholds."
-msgstr ""
+msgstr "ffffirst before managing your thresholds."
 
-#, fuzzy
 msgid "for"
-msgstr "fffor"
+msgstr "ffffor"
 
 msgid "for anyone to use to help increase their social impact"
 msgstr "ffffor anyone to use to help increase their social impact"
@@ -1026,7 +1120,7 @@ msgid "new"
 msgstr "fffnew"
 
 msgid "of"
-msgstr ""
+msgstr "fffof"
 
 msgid "or"
 msgstr "fffor"
@@ -1038,7 +1132,7 @@ msgid "processing the hierarchy file"
 msgstr "fffprocessing the hierarchy file"
 
 msgid "repeat"
-msgstr ""
+msgstr "fffrepeat"
 
 msgid "resource allocations without a complex and expensive GIS"
 msgstr "fffresource allocations without a complex and expensive GIS"
@@ -1053,7 +1147,7 @@ msgid "show more"
 msgstr "fffshow more"
 
 msgid "site's owner will receive this reminder"
-msgstr ""
+msgstr "fffsite's owner will receive this reminder"
 
 msgid "sites"
 msgstr "fffsites"
@@ -1086,7 +1180,7 @@ msgid "x"
 msgstr "fffx"
 
 msgid "→ ; in"
-msgstr ""
+msgstr "fff→ ; in"
 
 msgid "→;"
 msgstr "fff→;"

@@ -19,24 +19,24 @@ class Activity < ActiveRecord::Base
   def description
     case [item_type, action]
     when ['collection', 'created']
-      "Collection '#{data['name']}' was created"
+      _("Collection '%{name}' was created") % {name: "#{data['name']}"}
     when 'collection_imported'
-      "Import wizard: #{sites_were_imported_text}"
+      _("Import wizard: %{sites}") % {sites: "#{sites_were_imported_text}"}
     when ['collection', 'csv_imported']
-      "Import CSV: #{sites_were_imported_text}"
+      _("Import CSV: %{sites}") % {sites: "#{sites_were_imported_text}"}
     when ['layer', 'created']
       fields_str = data['fields'].map { |f| "#{f['name']} (#{f['code']})" }.join ', '
-      str = "Layer '#{data['name']}' was created with fields: #{fields_str}"
+      str = _("Layer %{layer} was created with fields: %{fields}") % {layer: "'#{data['name']}'", fields: "#{fields_str}"}
     when ['layer', 'changed']
       layer_changed_text
     when ['layer', 'deleted']
-      str = "Layer '#{data['name']}' was deleted"
+      str = _("Layer %{layer} was deleted") % {layer: "'#{data['name']}'" }
     when ['site', 'created']
-      "Site '#{data['name']}' was created"
+      _("Site %{site} was created") % {site: "'#{data['name']}'"}
     when ['site', 'changed']
       site_changed_text
     when ['site', 'deleted']
-      "Site '#{data['name']}' was deleted"
+      _("Site %{site} was deleted") % {site: "'#{data['name']}'"}
     end
   end
 
@@ -111,9 +111,9 @@ class Activity < ActiveRecord::Base
   def layer_changed_text
     only_name_changed, changes = layer_changes_text
     if only_name_changed
-      "Layer '#{data['name']}' was renamed to '#{data['changes']['name'][1]}'"
+      "Layer %{layer} was renamed to %{changes}" % {layer: "'#{data['name']}'", changes: "'#{data['changes']['name'][1]}'"}
     else
-      "Layer '#{data['name']}' changed: #{changes}"
+      "Layer %{layer} changed: %{changes}" % {layer: "'#{data['name']}'", changes: "#{changes}"}
     end
   end
 
@@ -122,13 +122,13 @@ class Activity < ActiveRecord::Base
     only_name_changed = false
 
     if (change = data['changes']['name'])
-      text_changes << "name changed from '#{change[0]}' to '#{change[1]}'"
+      text_changes << "name changed from %{first_change} to %{second_change}" % {first_change: "#{change[0]}", second_change: "#{change[1]}"}
       only_name_changed = true
     end
 
     if data['changes']['added']
       data['changes']['added'].each do |field|
-        text_changes << "#{field['kind']} field '#{field['name']}' (#{field['code']}) was added"
+        text_changes << "%{kind} field %{name} %{code} was added" % {kind: "#{field['kind']}", name: "'#{field['name']}'", code: "(#{field['code']})"}
       end
       only_name_changed = false
     end
