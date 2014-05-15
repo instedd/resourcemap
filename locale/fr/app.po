@@ -1,22 +1,22 @@
-# French translations for app package.
-# Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the app package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-msgid "i18n project's description"
+#, fuzzy
+msgid ""
 msgstr ""
-"fffProject-Id-Version: app 1.0.0\n"
+"Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-14 17:24-0300\n"
-"PO-Revision-Date: 2014-05-14 16:05-0300\n"
+"POT-Creation-Date: 2014-05-15 14:41-0300\n"
+"PO-Revision-Date: 2014-05-15 14:41-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: French\n"
-"Language: fr\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n>1;\n"
-"\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 msgid " \"'#{name}'\""
 msgstr "fff \"'#{name}'\""
@@ -897,6 +897,9 @@ msgstr "fffView and update resource allocations via the Web or SMS text message"
 msgid "View as"
 msgstr "fffView as"
 
+msgid "View your collections"
+msgstr "fffView your collections"
+
 msgid "Visualize and update"
 msgstr "fffVisualize and update"
 
@@ -1130,6 +1133,26 @@ msgstr "fff→ ; in"
 
 msgid "→;"
 msgstr "fff→;"
+
+# French translations for app package.
+# Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the app package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+#~ msgid "i18n project's description"
+#~ msgstr ""
+#~ "fffProject-Id-Version: app 1.0.0\n"
+#~ "Report-Msgid-Bugs-To: \n"
+#~ "POT-Creation-Date: 2014-05-14 17:24-0300\n"
+#~ "PO-Revision-Date: 2014-05-14 16:05-0300\n"
+#~ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+#~ "Language-Team: French\n"
+#~ "Language: fr\n"
+#~ "MIME-Version: 1.0\n"
+#~ "Content-Type: text/plain; charset=UTF-8\n"
+#~ "Content-Transfer-Encoding: 8bit\n"
+#~ "Plural-Forms: nplurals=2; plural=n>1;\n"
+#~ "\n"
 
 #~ msgid "%{kind} field %{name}  %{code} was deleted"
 #~ msgstr "fff%{kind} field %{name} %{code} was added"
