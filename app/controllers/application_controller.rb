@@ -73,12 +73,12 @@ class ApplicationController < ActionController::Base
 
   def show_collection_breadcrumb
     show_collections_breadcrumb
-    add_breadcrumb "Collections", collections_path
+    add_breadcrumb _("Collections"), collections_path
     add_breadcrumb collection.name, collections_path + "?collection_id=#{collection.id}"
   end
 
   def show_properties_breadcrumb
-    add_breadcrumb "Properties", collection_path(collection)
+    add_breadcrumb _("Properties"), collection_path(collection)
   end
 
   # Faster way to render json, using the Oj library.
