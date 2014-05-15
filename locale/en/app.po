@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-15 15:51-0300\n"
+"POT-Creation-Date: 2014-05-15 17:05-0300\n"
 "PO-Revision-Date: 2014-05-13 13:26-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English\n"
@@ -94,6 +94,9 @@ msgid "Add columns for new fields"
 msgstr ""
 
 msgid "Add form field"
+msgstr ""
+
+msgid "Add layer"
 msgstr ""
 
 msgid "Add member"
