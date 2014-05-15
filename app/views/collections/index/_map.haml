@@ -120,7 +120,7 @@
                 //ko
                 /ko if: writeable
                 - Field::kinds.each do |kind|
-                  /ko if: kind == '#{kind}'
+                  = "<!-- ko if: kind == '#{kind}' -->".html_safe
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: false }
                   //ko
                 //ko
@@ -213,7 +213,7 @@
                 //ko
                 /ko if: editing() || error()
                 - Field::kinds.each do |kind|
-                  /ko if: kind == '#{kind}'
+                  = "<!-- ko if: kind == '#{kind}' -->".html_safe
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: true }
                   //ko
                 //ko
@@ -233,7 +233,7 @@
                 //ko
                 /ko if: editing() || error()
                 - Field::kinds.each do |kind|
-                  /ko if: kind == '#{kind}'
+                  = "<!-- ko if: kind == '#{kind}' -->".html_safe
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: true }
                   //ko
                 //ko
