@@ -246,9 +246,9 @@
     .tablebottom
       -# if (can? :edit, site)
       - if current_user && !current_user.is_guest
-        = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
+        = link_to _('Edit Site'), 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
         /ko if: $root.currentCollection().canDeleteSites()
-        = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
+        = link_to _('Delete Site'), 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
         //ko
     //ko
   //ko
