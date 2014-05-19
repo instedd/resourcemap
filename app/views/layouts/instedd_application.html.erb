@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+<head>
+  <title><%= application_name.titleize %></title>
+  <% if Rails::version < '3.1' %>
+    <%= javascript_include_tag :defaults, "rails.validations" %>
+    <%= csrf_meta_tag %>
+    <%= stylesheet_link_tag "#{InsteddRails.url}/theme/stylesheets/theme.css" %>
+    <%= javascript_include_tag "#{InsteddRails.url}/theme/javascripts/theme.js" %>
+  <% else %>
+    <%= javascript_include_tag "jquery-bootstrapper" %>
+    <%= stylesheet_link_tag "#{InsteddRails.url}/theme/stylesheets/theme.css" %>
+    <%= javascript_include_tag "#{InsteddRails.url}/theme/javascripts/theme.js" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+  <% end %>
+  <% if Rails::version < '3.1' %>
+    <%= stylesheet_link_tag "/stylesheets/#{application_name.underscore}.css" %>
+  <% else %>
+    <%= stylesheet_link_tag    "application" %>
+  <% end %>
+  <%= yield(:head) %>
+  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+  <%= render :partial =>"shared/analytics" %>
+</head>
+<body class="<%=(@body_class || []).join(' ')%>">
+  <%= flash_message %>
+  <div id="wrapper">
+    <div id="toolbar">
+      <ul id="instedd-pulldown"></ul>
+        <div id="NavMenu">
+      <ul>
+        <%= yield(:navigation) %>
+      </ul>
+    </div>
+        <%= yield(:right_menu) %>
+    </div>
+
+  <div id="header">
+    <div class="left">
+    <a href="/"><%= image_tag "#{application_name.underscore}.png" %></a>
+    </div>
+    <% if @show_breadcrumb %>
+      <div class="BreadCrumb">
+        <%= breadcrumb %>
+      </div>
+    <% end %>
+    <div class="clear"></div>
+  </div>
+
+    <div id="container">
+
+      <%= yield(:content).presence or yield %>
+
+    </div>
+
+    <div id="footer-span">
+      <div id="footer">
+        <div id="footer-container">
+          <div>
+            <div class="left platform">
+              InSTEDD has created an evolving platform of free and open source technologies to support humanitarian causes. These tools can be used individually or as building blocks for larger solutions. <a href="http://instedd.org/technologies/">Click here</a> to learn more
+            </div>
+            <div class="right">
+              <a href="http://instedd.org/technologies/" class="more">Learn more</a>
+              <div id="instedd-footer" data-app-name="<%= application_name.underscore %>"></div>
+            </div>
+            <div class="clear"></div>
+          </div>
+          <div>
+            <div class="left">
+              <a href="http://instedd.org">&copy; 2011 InSTEDD</a>
+              <a href="<%= terms_and_conditions_path %>">Terms and conditions</a>
+              <a href="mailto:support@instedd.org?subject=[<%= application_name.titleize %>]">Contact us</a>
+            </div>
+            <div class="right">
+              <%= yield(:footer_links) %>
+              <span class="VersionNumber">Version <%= version_name %></span>
+            </div>
+            <div class="clear">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

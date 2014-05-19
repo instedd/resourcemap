@@ -6,6 +6,7 @@ gem 'devise'
 gem 'haml-rails', '~> 0.4'
 gem 'gettext', '~> 3.1.2'
 gem 'gettext_i18n_rails'
+gem 'gettext_i18n_rails_js'
 gem 'ruby_parser', :require => false, :group => :development
 gem 'haml-magic-translations'
 gem 'decent_exposure'

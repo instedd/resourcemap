@@ -29,3 +29,5 @@
 //= require jquery.Jcrop
 //= require lodash
 //= require_tree .
+//= require_tree ./locale
+//= require gettext/all
