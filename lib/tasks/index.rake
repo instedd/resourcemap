@@ -9,10 +9,11 @@ namespace :index do
     print "\rRecreating collection indexes"
 
     i = 0.0
-    collections.find_each do |collection|
+    collections.find_each do |collection|      
       i += 1
       percentage = (100 * (i / count)).round
-      print "\rRecreating collection #{i.to_i}/#{count}: %#{percentage}"
+      print "\r#{' ' * 80}"
+      print "\rRecreating collection(id: #{collection.id}, name: #{collection.name}) #{i.to_i}/#{count}: #{percentage}%"
       collection.recreate_index
     end
 
@@ -25,13 +26,13 @@ namespace :index do
     Snapshot.find_each do |snapshot|
       i += 1
       percentage = (100 * (i / snapshot_count)).round
-      print "\rRecreating snapshot #{i.to_i}/#{snapshot_count}: %#{percentage}"
+      print "\rRecreating snapshot #{i.to_i}/#{snapshot_count}: #{percentage}%"
       next if snapshot.collection.nil?
       snapshot.recreate_index
     end
 
     print "\r#{' ' * 80}"
-    print "\rDone!"
+    print "\rDone!"   
   end
 
   desc "Recreate ElasticSearch indices for all collections"
@@ -45,7 +46,7 @@ namespace :index do
 
     collection.snapshots.each_with_index do |snapshot, i|
       percentage = (100.0 * (i / snapshot_count)).round
-      print "\rRecreating snapshot #{i.to_i}/#{snapshot_count}: %#{percentage}"
+      print "\rRecreating snapshot #{i.to_i}/#{snapshot_count}: #{percentage}%"
       snapshot.recreate_index
     end
 
