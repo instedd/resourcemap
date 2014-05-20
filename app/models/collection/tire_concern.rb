@@ -37,7 +37,7 @@ module Collection::TireConcern
       site.collection = self
       site.to_elastic_search
     end
-    docs.each_slice(200) do |docs_slice|
+    docs.each_slice(1000) do |docs_slice|
       index.import docs_slice
     end
     index.refresh
