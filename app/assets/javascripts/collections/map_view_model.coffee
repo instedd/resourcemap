@@ -5,8 +5,11 @@ onCollections ->
       @showingMap = ko.observable(true)
       @mapSitesCount = ko.observable(0)
       @mapSitesCountText = ko.computed =>
-        sitesText = if @mapSitesCount() == 1 then "site" else "sites"
-        window.i18n.translate("Viewing %d sites in map").ifPlural(@mapSitesCount()+1,"Viendo %d sitios").fetch(@mapSitesCount()+1)
+        if @mapSitesCount() != 1
+          Jed.sprintf(__("Viewing %d sites in map"), @mapSitesCount())
+        else
+          __("Viewing 1 site in map")
+
       @sitesChangedListeners = []
 
       @reloadMapSitesAutomatically = true

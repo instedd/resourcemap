@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "fffProject-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-16 17:00-0300\n"
+"POT-Creation-Date: 2014-05-21 15:09-0300\n"
 "PO-Revision-Date: 2014-05-15 17:06-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French\n"
@@ -924,6 +924,12 @@ msgstr "fffView as"
 
 msgid "View your collections"
 msgstr "fffView your collections"
+
+msgid "Viewing %d sites in map"
+msgstr ""
+
+msgid "Viewing 1 site in map"
+msgstr ""
 
 msgid "Visualize and update"
 msgstr "fffVisualize and update"
