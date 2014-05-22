@@ -26,7 +26,7 @@ class CollectionsController < ApplicationController
     elsif params[:name].present?
       render_json Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
-      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
+      add_breadcrumb _("Collections"), 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html
         format.json { render_json collections_with_snapshot_by_user }

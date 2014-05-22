@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "fffProject-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-21 16:08-0300\n"
+"POT-Creation-Date: 2014-05-22 17:17-0300\n"
 "PO-Revision-Date: 2014-05-15 17:06-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French\n"
@@ -276,6 +276,9 @@ msgstr "fffDelete collection"
 msgid "Delete this collection's sites"
 msgstr "fffDelete this collection's sites"
 
+msgid "Description"
+msgstr "fffdescription"
+
 msgid "Do not send notifications"
 msgstr "fffDo not send notifications"
 
@@ -294,7 +297,6 @@ msgstr "fffEdit"
 msgid "Edit Account"
 msgstr "fffEdit Account"
 
-#, fuzzy
 msgid "Edit Site"
 msgstr "fffEdit Site"
 
@@ -724,6 +726,15 @@ msgstr "fffShow columns:"
 msgid "Show them"
 msgstr "fffShow them"
 
+msgid "Showing %d sites out of %d"
+msgstr ""
+
+msgid "Showing 1 site out of %d"
+msgstr ""
+
+msgid "Showing all %d sites"
+msgstr ""
+
 msgid "Showing first 10 records."
 msgstr "fffShowing first 10 records."
 
@@ -888,6 +899,9 @@ msgstr "fffUpload a CSV: ID, ParentID, ItemName"
 
 msgid "Upload it for bulk sites updates"
 msgstr "fffUpload it for bulk sites updates"
+
+msgid "Upload new logo"
+msgstr "fffUpload new logo"
 
 msgid "Upload your CSV file"
 msgstr "fffUpload your CSV file"

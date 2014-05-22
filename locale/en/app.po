@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-21 16:08-0300\n"
+"POT-Creation-Date: 2014-05-22 17:17-0300\n"
 "PO-Revision-Date: 2014-05-13 13:26-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English\n"
@@ -274,6 +274,9 @@ msgid "Delete collection"
 msgstr ""
 
 msgid "Delete this collection's sites"
+msgstr ""
+
+msgid "Description"
 msgstr ""
 
 msgid "Do not send notifications"
@@ -544,7 +547,7 @@ msgid "My Collections"
 msgstr ""
 
 msgid "Name"
-msgstr ""
+msgstr "eeeName"
 
 msgid "Name:"
 msgstr ""
@@ -723,6 +726,15 @@ msgstr ""
 msgid "Show them"
 msgstr ""
 
+msgid "Showing %d sites out of %d"
+msgstr ""
+
+msgid "Showing 1 site out of %d"
+msgstr ""
+
+msgid "Showing all %d sites"
+msgstr ""
+
 msgid "Showing first 10 records."
 msgstr ""
 
@@ -886,6 +898,9 @@ msgid "Upload a CSV: ID, ParentID, ItemName"
 msgstr ""
 
 msgid "Upload it for bulk sites updates"
+msgstr ""
+
+msgid "Upload new logo"
 msgstr ""
 
 msgid "Upload your CSV file"
@@ -1163,3 +1178,6 @@ msgstr ""
 
 msgid "→;"
 msgstr ""
+
+#~ msgid "Description"
+#~ msgstr "eeeDescription"
