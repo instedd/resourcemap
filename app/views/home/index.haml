@@ -1,6 +1,15 @@
 .homepage
   .right
     .illustration
+
+  %div
+    %span.lang-menu
+      %ul.language{:style => "height: #{20 * Locales.available.count + 15}px"}
+        - Locales.available.each do |key,name|
+          %li
+            %a{href: '/locale/update?requested_locale='+key.to_s}
+              = name
+
   %h1.home{:style => "margin-top: 0px;"} Make better decisions
   %p.sub{:style => "font-size: 26px;"} by knowing where your resources are in real time
 

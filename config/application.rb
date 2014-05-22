@@ -75,6 +75,23 @@ module ResourceMap
 
     config.version_name = File.read('VERSION').strip rescue "Development"
     config.revision = File.read('REVISION').strip rescue "Development"
+
+    # Languages
+    config.available_locales = {
+      :en => "English",
+      :fr => "French"
+    }
+
+    # Default language
+    config.default_locale = :en
+
+    # Gettext configuration
+    FastGettext.add_text_domain 'app', :path => 'locale', :type => :po, :ignore_fuzzy => true, :ignore_obsolete => true
+
+    FastGettext.default_available_locales = config.available_locales.keys.map(&:to_s)
+    FastGettext.default_text_domain = 'app'
+    FastGettext.default_locale = 'en'
+
   end
 
 end
@@ -82,6 +99,3 @@ end
 Haml::MagicTranslations.enable(:i18n)
 I18n.load_path += Dir["locale/en/*.{po}"]
 I18n.load_path += Dir["locale/fr/*.{po}"]
-FastGettext.add_text_domain 'app', :path => 'locale', :type => :po
-FastGettext.default_text_domain = 'app'
-FastGettext.default_available_locales = ['en','fr']

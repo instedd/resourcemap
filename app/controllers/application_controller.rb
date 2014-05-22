@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   expose(:reminder)
 
   before_filter :set_gettext_locale
+  before_filter :redirect_to_localized_url
 
   expose(:new_search_options) do
     if current_user_snapshot.at_present?
@@ -87,5 +88,13 @@ class ApplicationController < ActionController::Base
   def render_json(object, options = {})
     options = options.merge(text: object.to_json_oj, content_type: 'application/json')
     render options
+  end
+
+  def redirect_to_localized_url
+    redirect_to params if params[:locale].nil? && request.get?
+  end
+
+  def default_url_options(options={})
+    {:locale => I18n.locale.to_s}
   end
 end
