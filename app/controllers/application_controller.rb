@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_gettext_locale
   before_filter :redirect_to_localized_url
+  before_filter :show_language_selector
 
   expose(:new_search_options) do
     if current_user_snapshot.at_present?
@@ -45,6 +46,10 @@ class ApplicationController < ActionController::Base
 
   def guest_user
     @guest_user ||= User.new(is_guest: true)
+  end
+
+  def show_language_selector
+    @show_language_selector = true
   end
 
   def current_user
