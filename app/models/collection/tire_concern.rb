@@ -12,8 +12,15 @@ module Collection::TireConcern
       mappings: { site: site_mapping },
     }
     index_properties.merge!(Site::IndexUtils::DowncaseAnalyzer)
+
     success = index.create(index_properties)
-    raise "Can't create index for collection #{name} (ID: #{id})." unless success
+
+    if !success
+      error = "Can't create index for collection #{name} (ID: #{id})."
+      Rails.logger.error error
+      Rails.logger.error "ElasticSearch response was: #{index.response}." if index && index.response
+      raise error
+    end
 
     # This is because in the tests collections are created and the
     # fields association will almost always be empty, but it needs to
