@@ -97,4 +97,21 @@ class Membership < ActiveRecord::Base
     }
   end
 
+  def self.check_and_create(email, collection_id)
+    user = User.find_by_email email
+    if !user
+      [:missing_user]
+    elsif user.memberships.where(:collection_id => collection_id).exists?
+      [:membership_exists, user.memberships.where(:collection_id => collection_id), user]
+    else
+      membership = user.memberships.create! :collection_id => collection_id
+      [:added, membership, user]
+    end
+  end
+
+  def change_admin_flag(new_value)
+    self.admin = new_value
+    self.save!
+  end
+
 end
