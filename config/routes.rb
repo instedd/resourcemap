@@ -146,7 +146,7 @@ ResourceMap::Application.routes.draw do
         get 'sample_csv', as: :sample_csv
         get 'count', as: :count
         get 'geo', as: :geojson
-        get 'sites', to: 'sites#create'
+        post 'sites', to: 'sites#create'
         # get 'collections/:id/fields' => 'fields#index',as: :fields
         # get 'collections/:id/fields/mapping' => 'fields#mapping'
       end
