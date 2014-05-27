@@ -17,7 +17,10 @@ class Api::LayersController < ApiController
   end
 
   def update
-    layer.fix_layer_fields_for_update(params[:layer][:fields_attributes])
+    # FIX: For some reason using the exposed layer here results in duplicated fields being created
+    layer = collection.layers.find params[:id]
+    params[:layer][:fields_attributes] = layer.fix_layer_fields_for_update(params[:layer][:fields_attributes])
+
     layer.user = current_user
     layer.update_attributes! params[:layer]
     layer.reload
