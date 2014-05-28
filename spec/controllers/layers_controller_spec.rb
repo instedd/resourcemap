@@ -43,6 +43,16 @@ describe LayersController do
     histories.last.layer_id.should eq(layer2.id)
   end
 
+  it "should update a layer's fields" do
+    json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: "New name", ord: numeric.ord}}}
+
+    post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+
+    response.should be_success
+    layer.fields.count.should eq(1)
+    layer.fields.first.name.should eq("New name")
+  end
+
   describe 'analytic' do
     it 'should changed user.layer_count by 1' do
       expect {

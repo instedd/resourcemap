@@ -66,11 +66,15 @@ class ApplicationController < ActionController::Base
 
   def authenticate_collection_admin!
     head :unauthorized and return if current_user.is_guest
-    head :forbidden unless current_user.admins?(collection)
+    forbidden_response unless current_user.admins?(collection)
   end
 
   def authenticate_site_user!
-    head :forbidden unless current_user.belongs_to?(site.collection)
+    forbidden_response unless current_user.belongs_to?(site.collection)
+  end
+
+  def forbidden_response
+    head :forbidden
   end
 
   def show_collections_breadcrumb
@@ -97,6 +101,10 @@ class ApplicationController < ActionController::Base
 
   def redirect_to_localized_url
     redirect_to params if params[:locale].nil? && request.get?
+  end
+
+  def ignore_public_attribute
+    params[:layer].delete(:public) if params[:layer] && params[:layer][:public]
   end
 
   def default_url_options(options={})

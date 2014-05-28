@@ -1,4 +1,4 @@
-class Api::ActivitiesController < ApplicationController
+class Api::ActivitiesController < ApiController
   PerPage = 50
 
   def index
