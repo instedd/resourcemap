@@ -127,14 +127,24 @@ ResourceMap::Application.routes.draw do
 
     scope '/plugin' do
       Plugin.all.each do |plugin|
-        scope plugin.name do
-          plugin.hooks[:routes].each { |plugin_routes_block| instance_eval &plugin_routes_block }
+        unless plugin.name == 'fred_api'
+          scope plugin.name do
+            plugin.hooks[:routes].each { |plugin_routes_block| instance_eval &plugin_routes_block }
+          end
         end
       end
     end
 
     match '/locale/update' => 'locale#update',  :as => 'update_locale'
     root :to => 'home#index'
+  end
+
+  scope '/plugin' do
+    Plugin.find_by_names('fred_api').each do |plugin|
+      scope plugin.name do
+        plugin.hooks[:routes].each { |plugin_routes_block| instance_eval &plugin_routes_block }
+      end
+    end
   end
 
   namespace :api do
