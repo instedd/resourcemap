@@ -10,7 +10,7 @@ gem 'gettext_i18n_rails_js'
 gem 'ruby_parser', :require => false, :group => :development
 gem 'haml-magic-translations'
 gem 'decent_exposure'
-gem "instedd-rails", :path => "/Users/lmata/Documents/projects/platform-common-rails"
+gem "instedd-rails", '~> 0.0.21'
 gem "breadcrumbs_on_rails"
 gem "tire"
 gem "valium"

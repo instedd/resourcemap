@@ -22,14 +22,6 @@ GIT
   specs:
     ruby-prof (0.13.0)
 
-PATH
-  remote: /Users/lmata/Documents/projects/platform-common-rails
-  specs:
-    instedd-rails (0.0.21)
-      breadcrumbs_on_rails (>= 2.2.0)
-      haml-rails
-      rails (>= 3.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -168,6 +160,10 @@ GEM
     httpclient (2.3.4.1)
     i18n (0.6.9)
     ice_cube (0.8.0)
+    instedd-rails (0.0.21)
+      breadcrumbs_on_rails (>= 2.2.0)
+      haml-rails
+      rails (>= 3.0)
     jasminerice (0.0.9)
       coffee-rails
       haml
@@ -401,7 +397,7 @@ DEPENDENCIES
   haml-magic-translations
   haml-rails (~> 0.4)
   ice_cube
-  instedd-rails!
+  instedd-rails (~> 0.0.21)
   jasminerice
   jquery-rails (~> 2.0.2)
   knockoutjs-rails
