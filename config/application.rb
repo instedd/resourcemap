@@ -79,7 +79,7 @@ module ResourceMap
     # Languages
     config.available_locales = {
       :en => "English",
-      :fr => "French"
+      :fr => "French",
     }
 
     # Default language
