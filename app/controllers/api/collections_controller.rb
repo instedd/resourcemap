@@ -93,7 +93,7 @@ class Api::CollectionsController < ApiController
   end
 
   def perform_search(*options)
-    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size, :location_missing]
+    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size, :location_missing, :locale]
 
     search = new_search
 

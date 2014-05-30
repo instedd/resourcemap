@@ -137,7 +137,7 @@ class Activity < ActiveRecord::Base
       data['changes']['changed'].each do |field|
         ['name', 'code', 'kind'].each do |key|
           if field[key].is_a? Array
-            text_changes << _("%{kind} field %{name} %code %key changed to %field_key") % {kind: "#{old_value field['kind']}", name: "#{old_value field['name']}", code: "(#{old_value field['code']})", key: "#{key}", field_key: "'#{field[key][1]}'"}
+            text_changes << _("%{kind} field '%{name}' %{code} %{key} changed to %{field_key}") % {kind: "#{old_value field['kind']}", name: "#{old_value field['name']}", code: "(#{old_value field['code']})", key: "#{key}", field_key: "'#{field[key][1]}'"}
           end
         end
 

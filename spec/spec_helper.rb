@@ -115,6 +115,16 @@ RSpec.configure do |config|
     Channel.any_instance.stub(:handle_nuntium_channel_response).and_return(true)
   end
 
+  module ActionController::TestCase::Behavior
+    alias resource_map_get get
+
+    def get(action, parameters = nil, session = nil, flash = nil)
+      parameters ? parameters : parameters = {}
+      parameters[:locale] = :en
+      resource_map_get(action, parameters, session, flash)
+    end
+  end
+
   # Turn on all plugins by default
   module Settings
     CONFIG_SETTINGS = YAML.load_file(File.expand_path('../../config/settings.yml', __FILE__))
