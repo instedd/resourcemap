@@ -2,6 +2,8 @@ class Api::CollectionsController < ApiController
   include Api::JsonHelper
   include Api::GeoJsonHelper
 
+  authorize_resource :collection, :decent_exposure => true, only: [:destroy]
+
   before_filter :authenticate_collection_user!, :except => [:create, :show, :index]
 
   expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
