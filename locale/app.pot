@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-22 17:17-0300\n"
-"PO-Revision-Date: 2014-05-22 17:17-0300\n"
+"POT-Creation-Date: 2014-06-03 14:05-0300\n"
+"PO-Revision-Date: 2014-06-03 14:05-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -33,9 +33,6 @@ msgstr ""
 msgid "%s."
 msgstr ""
 
-msgid "%{kind} field %{name} %code %key changed to %field_key"
-msgstr ""
-
 msgid "%{kind} field %{name} %{code} options changed from %{old_options} to %{new_options}"
 msgstr ""
 
@@ -43,6 +40,9 @@ msgid "%{kind} field %{name} %{code} was added"
 msgstr ""
 
 msgid "%{kind} field %{name} %{code} was deleted"
+msgstr ""
+
+msgid "%{kind} field '%{name}' %{code} %{key} changed to %{field_key}"
 msgstr ""
 
 msgid "(85512345678)"
