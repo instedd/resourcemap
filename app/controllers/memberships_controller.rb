@@ -25,9 +25,7 @@ class MembershipsController < ApplicationController
   end
 
   def invitable
-    users = User.
-      where('email LIKE ?', "#{params[:term]}%").where("id not in (?)", collection.memberships.value_of(:user_id)).
-      order('email')
+    users = User.invitable_to_collection(params[:term], collection.memberships.value_of(:user_id))
     render_json users.pluck(:email)
   end
 

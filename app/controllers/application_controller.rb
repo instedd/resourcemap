@@ -58,11 +58,15 @@ class ApplicationController < ActionController::Base
 
   def authenticate_collection_admin!
     head :unauthorized and return if current_user.is_guest
-    head :forbidden unless current_user.admins?(collection)
+    forbidden_response unless current_user.admins?(collection)
   end
 
   def authenticate_site_user!
-    head :forbidden unless current_user.belongs_to?(site.collection)
+    forbidden_response unless current_user.belongs_to?(site.collection)
+  end
+
+  def forbidden_response
+    head :forbidden
   end
 
   def show_collections_breadcrumb
@@ -86,4 +90,9 @@ class ApplicationController < ActionController::Base
     options = options.merge(text: object.to_json_oj, content_type: 'application/json')
     render options
   end
+
+  def ignore_public_attribute
+    params[:layer].delete(:public) if params[:layer] && params[:layer][:public]
+  end
+
 end

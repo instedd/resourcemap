@@ -124,16 +124,41 @@ ResourceMap::Application.routes.draw do
   match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
 
   namespace :api do
-    get 'collections' => 'collections#index',as: :collections
-    post 'collections' => 'collections#create', as: :create_collection
-    get 'collections/:id' => 'collections#show', as: :collection
-    get 'collections/:id/sample_csv' => 'collections#sample_csv',as: :sample_csv
-    get 'collections/:collection_id/histogram/:field_id' => 'collections#histogram_by_field',as: :histogram_by_field
-    get 'collections/:id/count' => 'collections#count',as: :count
-    get 'collections/:id/geo' => 'collections#geo_json',as: :geojson
-    delete 'collections/:id' => 'collections#destroy'
-    get 'collections/:id/fields' => 'fields#index',as: :fields
-    get 'sites/:id' => 'sites#show', as: :site
+    resources :collections, except: [:update] do
+      resources :memberships, only: [:index, :create, :destroy] do
+        member do
+          post :set_admin
+          post :unset_admin
+        end
+        collection do
+          get 'invitable'
+        end
+      end
+
+      resources :layers, except: [:show]
+      resources :fields, only: [:index] do
+        collection do
+          get 'mapping'
+        end
+      end
+
+      member do
+        get 'sample_csv', as: :sample_csv
+        get 'count', as: :count
+        get 'geo', as: :geojson
+        post 'sites', to: 'sites#create'
+        # get 'collections/:id/fields' => 'fields#index',as: :fields
+        # get 'collections/:id/fields/mapping' => 'fields#mapping'
+      end
+    end
+
+    resources :sites, only: [:show, :destroy, :update] do
+      member do
+        post :update_property
+        post :partial_update
+      end
+    end
+    get 'histogram/:field_id', to: 'collections#histogram_by_field', as: :histogram_by_field
     get 'collections/:collection_id/sites/:id/histories' => 'sites#histories', as: :histories
     get 'activity' => 'activities#index', as: :activity
     resources :tokens, :only => [:index, :destroy]

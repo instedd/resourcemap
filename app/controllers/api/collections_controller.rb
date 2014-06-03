@@ -1,11 +1,8 @@
-class Api::CollectionsController < ApplicationController
+class Api::CollectionsController < ApiController
   include Api::JsonHelper
   include Api::GeoJsonHelper
 
-  skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_api_user!, :except => [:show]
-  before_filter :authenticate_collection_user!, :except => [:create]
-  around_filter :rescue_with_check_api_docs
+  before_filter :authenticate_collection_user!, :except => [:create, :show, :index]
 
   expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
 
@@ -157,15 +154,6 @@ class Api::CollectionsController < ApplicationController
   def collection_csv(collection, results)
     sites_csv = collection.to_csv(results, current_user)
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
-  end
-
-  def rescue_with_check_api_docs
-    yield
-  rescue => ex
-    Rails.logger.info ex.message
-    Rails.logger.info ex.backtrace
-
-    render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/REST_API", status: 400
   end
 
   def find_fields(params)

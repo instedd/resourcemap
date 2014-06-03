@@ -14,7 +14,7 @@ class Collection < ActiveRecord::Base
   has_many :memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
-  has_many :layers, order: 'ord', dependent: :destroy
+  has_many :layers, order: 'layers.ord', dependent: :destroy
   has_many :fields, order: 'ord'
   has_many :thresholds, dependent: :destroy
   has_many :reminders, dependent: :destroy
@@ -220,6 +220,18 @@ class Collection < ActiveRecord::Base
     self.fields.each_with_object({}) do |field, hash|
       value = field.default_value_for_create(self)
       hash[field.es_code] = value if value
+    end
+  end
+
+  def layers_to_json(at_present, user)
+    if at_present
+      layers.includes(:fields).select{|l| user.can?(:read, l)}.as_json(include: :fields)
+    else
+      current_user_snapshot = UserSnapshot.for(user, self)
+      layer_histories.at_date(current_user_snapshot.snapshot.date)
+        .includes(:field_histories)
+        .select{|l| user.can?(:read, l)}
+        .as_json(include: :field_histories)
     end
   end
 end
