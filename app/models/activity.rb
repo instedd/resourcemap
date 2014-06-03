@@ -8,7 +8,8 @@ class Activity < ActiveRecord::Base
     'name_permission' => %w(changed),
     'location_permission' => %w(changed),
     'anonymous_name_location_permission' => %w(changed),
-    'anonymous_layer_permission' => %w(changed)
+    'anonymous_layer_permission' => %w(changed),
+    'admin_permission' => %w(changed),
   }
   Kinds = Activity::ItemTypesAndActions.map { |item_type, actions| actions.map { |action| "#{item_type},#{action}" } }.flatten.freeze
 
@@ -68,6 +69,8 @@ class Activity < ActiveRecord::Base
       anonymous_name_location_changed
     when['anonymous_layer_permission', 'changed']
       "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in layer '#{data['name']}' for anonymous user"
+    when['admin_permission','changed']
+      admin_permission_changed data
     end
   end
 
@@ -182,6 +185,14 @@ class Activity < ActiveRecord::Base
     previous_permission = data['changes'][0]
     new_permission = data['changes'][1]
     "#{built_in_layer.capitalize} permission changed from #{previous_permission} to #{new_permission} for anonymous user"
+  end
+
+  def admin_permission_changed(data)
+    if (data['value'])
+      "Administrator permissions were given to %{user}" % {user: data['user'] }
+    else
+      "Administrator permissions were denied to %{user}" % {user: data['user'] }
+    end
   end
 
   def layer_changes_text

@@ -88,10 +88,14 @@ class MembershipsController < ApplicationController
   private
 
   def change_admin_flag(new_value)
-    membership = collection.memberships.find_by_user_id params[:id]
+    user_id = params[:id]
+    membership = collection.memberships.find_by_user_id user_id
+    user = collection.users.find user_id
     membership.admin = new_value
     membership.save!
 
+    Activity.create! item_type: 'admin_permission', action: 'changed', collection_id: collection.id, user_id: current_user.id,
+    'data' => {'value' => new_value, 'user' => user.email}
     render_json :ok
   end
 end
