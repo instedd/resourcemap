@@ -1,18 +1,20 @@
 class FredApiController < ApplicationController
   before_filter :authenticate_api_user!
-  before_filter :authenticate_collection_admin!
+  # before_filter :authenticate_collection_admin!
 
   before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :update_facility]
-  before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility, :update_facility]
+  # before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility, :update_facility]
 
   rescue_from Exception, :with => :default_rescue
   rescue_from RuntimeError, :with => :rescue_runtime_error
   rescue_from ActionController::RoutingError, :with => :rescue_record_not_found
   rescue_from ActiveRecord::RecordNotFound, :with => :rescue_record_not_found
   rescue_from ActiveRecord::RecordInvalid, :with => :rescue_record_invalid
+  rescue_from CanCan::AccessDenied, :with => :rescue_unauthorized
 
   expose(:site)
   expose(:collection) { Collection.find params[:collection_id] }
+
 
   def verify_site_belongs_to_collection!
     if !collection.sites.include? site
@@ -21,6 +23,7 @@ class FredApiController < ApplicationController
   end
 
   def show_facility
+    authorize! :read, collection
     render_json find_facility_and_apply_fred_format(site.id)
   end
 
@@ -67,6 +70,7 @@ class FredApiController < ApplicationController
   end
 
   def facilities
+    authorize! :read, collection
     search = collection.new_search current_user_id: current_user.id
 
     search.use_codes_instead_of_es_codes
@@ -274,5 +278,9 @@ class FredApiController < ApplicationController
 
   def rescue_record_not_found(ex)
     render_json({ code: "404 Not Found", message: "Resource not found" }, :status => 404, :layout => false)
+  end
+
+  def rescue_unauthorized(ex)
+    render_json({code: "403 Forbidden", message: "Forbidden"}, :status => 403, :layout => false)
   end
 end

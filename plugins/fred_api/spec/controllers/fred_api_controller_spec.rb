@@ -42,6 +42,40 @@ describe FredApiController do
 
     end
 
+    it 'should get facilities if user is member of the collection' do
+      user2 = User.make
+      m = collection.memberships.create! user_id: user2.id, admin: false
+      sign_out user
+      sign_in user2
+      get :facilities, format: 'json', collection_id: collection.id
+      response.should be_success
+    end
+
+    it 'should not get facilities if user is not member of the collection' do
+      user2 = User.make
+      sign_out user
+      sign_in user2
+      get :facilities, format: 'json', collection_id: collection.id
+      response.should_not be_success
+    end
+
+    it 'should get facility if user is member of the collection' do
+      user2 = User.make
+      m = collection.memberships.create! user_id: user2.id, admin: false
+      sign_out user
+      sign_in user2
+      get :show_facility, id: site_with_properties.id, format: 'json', collection_id: collection.id
+      response.should be_success
+    end
+
+    it 'should not get facility if user is not member of the collection' do
+      user2 = User.make
+      sign_out user
+      sign_in user2
+      get :show_facility, id: site_with_properties.id, format: 'json', collection_id: collection.id
+      response.should_not be_success
+    end
+
     it 'should get extended properties' do
       get :show_facility, id: site_with_properties.id, format: 'json', collection_id: collection.id
 
@@ -307,6 +341,16 @@ describe FredApiController do
       json["message"].should eq("Resource not found")
     end
 
+    it "should not delete facility if user is member but is not admin of the collection" do
+      site = collection.sites.make name: 'Site'
+      user2 = User.make
+      m = collection.memberships.create! user_id: user2.id, admin: false
+      sign_out user
+      sign_in user2
+      delete :delete_facility, id: site.id, collection_id: collection.id
+      response.status.should eq(403)
+    end
+
     let(:collection2) { user.create_collection(Collection.make) }
 
     it "should render 404 when a site of other collection is passed as parameter" do
@@ -324,12 +368,6 @@ describe FredApiController do
     it "should return 200 in a valid request" do
       get :show_facility, id: site.id, format: 'json', collection_id: collection.id
       response.should be_success
-    end
-
-    it "should return 401 if the user is not signed_in" do
-      sign_out user
-      get :show_facility, id: site.id, format: 'json', collection_id: collection.id
-      response.status.should eq(401)
     end
 
     it "should return 401 if the user is not signed_in" do
@@ -373,13 +411,36 @@ describe FredApiController do
     end
   end
 
-  describe "should update facility" do
+  describe "update facility" do
     let!(:site) { collection.sites.make :name => "Kakamega HC", :properties => {
       text.es_code => "Mrs. Liz",
       numeric.es_code => 55,
       select_many.es_code => [1, 2],
       date.es_code => "2012-10-24T00:00:00Z",
     }}
+
+    it "should not update if user hasn't got update permission" do
+      user2 = User.make
+      m = collection.memberships.create! user_id: user2.id, admin: false
+      sign_out user
+      sign_in user2
+      request.env["RAW_POST_DATA"] = { :name => "Kakamega HC 2"}.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
+      response.status.should eq(403)
+    end
+
+    it 'should update if user has got update permission' do
+      user2 = User.make
+      m = collection.memberships.create! user_id: user2.id, admin: false
+      m.name_permission.set_access('update')
+      sign_out user
+      sign_in user2
+      request.env["RAW_POST_DATA"] = { :name => "Kakamega HC 2"}.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
+      response.status.should eq(200)
+      updated_site = Site.find site.id
+      updated_site.name.should eq("Kakamega HC 2")
+    end
 
     it "should return 404 if the facility does not exist" do
       put :update_facility, collection_id: collection.id, id: "124566", :name => "Kakamega HC 2"
