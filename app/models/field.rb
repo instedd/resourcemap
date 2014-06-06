@@ -132,7 +132,7 @@ class Field < ActiveRecord::Base
   private
 
   def sanitize_hierarchy_items(items)
-    items.map! &:to_hash
+      items.map! &:to_hash
     items.each do |item|
       sanitize_hierarchy_items item['sub'] if item['sub']
     end
