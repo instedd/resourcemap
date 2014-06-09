@@ -159,7 +159,10 @@ ResourceMap::Application.routes.draw do
         end
       end
 
-      resources :layers, except: [:show]
+      resources :layers, except: [:show] do
+        resources :fields, only: [:create]
+      end
+
       resources :fields, only: [:index] do
         collection do
           get 'mapping'
