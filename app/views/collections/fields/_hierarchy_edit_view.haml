@@ -1,8 +1,8 @@
 - if single_editing_mode
   .hierarchy-container
-    <!-- ko template: {name: 'save-field-hierarchy-items-template', foreach: fieldHierarchyItems } -->
-    <!-- /ko -->
+    /ko template: {name: 'save-field-hierarchy-items-template', foreach: fieldHierarchyItems }
+    //ko
 - else
   .hierarchy-container
-    <!-- ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems} -->
-    <!-- /ko -->
+    /ko template: {name: 'field-hierarchy-items-template', with: fieldHierarchyItems}
+    //ko

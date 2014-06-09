@@ -5,8 +5,10 @@ onCollections ->
       @showingMap = ko.observable(true)
       @mapSitesCount = ko.observable(0)
       @mapSitesCountText = ko.computed =>
-        sitesText = if @mapSitesCount() == 1 then "site" else "sites"
-        "Viewing #{@mapSitesCount()} #{sitesText} in map"
+        if @mapSitesCount() != 1
+          Jed.sprintf(__("Viewing %d sites in map"), @mapSitesCount())
+        else
+          __("Viewing 1 site in map")
 
       @sitesChangedListeners = []
 

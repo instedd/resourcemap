@@ -386,10 +386,11 @@ describe Api::CollectionsController do
 
     it "doesnt allow a non-admin member to destroy a collection" do
       user2 = User.make
-      collection.memberships.create! :user_id => user2.id, admin: false 
-      
+      collection.memberships.create! :user_id => user2.id, admin: false
+      sign_in user2
+
       delete :destroy, id: collection.id
-      
+
       response.code.should eq("403")
       Collection.count.should eq(1)
     end

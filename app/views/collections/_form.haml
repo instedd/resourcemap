@@ -20,12 +20,12 @@
       });
 
     .field.w60
-      = f.label :name
+      = f.label :name, _("Name")
       = f.text_field :name, :readonly => !creation && (cannot? :update, collection)
       - if f.object.errors[:name].present?
         %label.error= "Name #{f.object.errors[:name].join(', ')}"
     .field.w60
-      = f.label :description
+      = f.label :description, _("Description")
       = f.text_area :description, rows: 3, :readonly =>  !creation && (cannot? :update, collection)
 
     .field.w60{class: collection.logo.blank? ? 'hidden-until-loaded' : nil}
@@ -35,7 +35,7 @@
       %button#logo-edit.farrow{type: 'button', onclick: "window.location = '#{collection_edit_logo_path(collection) rescue ''}'"} Adjust
 
     .field.w60
-      = f.label :logo, "Upload new logo"
+      = f.label :logo, _("Upload new logo")
       = f.file_field :logo, id: 'fileupload'
 
     .field.w60
@@ -46,5 +46,5 @@
     %br{clear: :all}
 
     - if (creation || can?(:update, collection))
-      = f.button 'Save', :class => 'white'
-      = link_to 'Cancel', collections_path, :class=> 'grey'
+      = f.button _('Save'), :class => 'white'
+      = link_to _('Cancel'), collections_path, :class=> 'grey'

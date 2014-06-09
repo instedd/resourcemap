@@ -88,9 +88,9 @@
 
   - Field::plugin_kinds.each do |name, kind|
     - if kind[:property_editor]
-      <!-- ko if: kind() == '#{name}' -->
+      = "<!-- ko if: kind() == '#{name}' -->".html_safe
       = render kind[:property_editor]
-      <!-- /ko -->
+      //ko
 
   = render 'layers/advanced_metadata_editor'
   %br/
