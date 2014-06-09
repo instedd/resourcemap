@@ -28,6 +28,7 @@ class FredApiController < ApplicationController
   end
 
   def delete_facility
+    authorize! :delete, site
     if !collection.sites.include? site
       render_json(code: "404 Not Found", message: "Resource not found")
     else
@@ -175,6 +176,7 @@ class FredApiController < ApplicationController
       if field.nil?
         raise "Invalid Parameters: Cannot find Field with code equal to '#{code}' in Collection's Layers."
       end
+      authorize! :update_site_property, fields[code]
       properties_by_es_code["#{field.es_code}"] = field.decode_fred value
     end
 

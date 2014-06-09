@@ -31,6 +31,10 @@ class ApiController < ApplicationController
     render_json({message: api_error_message(message), error_code: 3}, status: 403)
   end
 
+  def render_error_response_409(message = "Conflict")
+    render_json({message: api_error_message(message), error_code: 4}, status: 409)
+  end
+
   def forbidden_response
     render_error_response_403
   end
