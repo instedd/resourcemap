@@ -141,4 +141,33 @@ class User < ActiveRecord::Base
     end
     results
   end
+
+  def ability
+    @ability ||= Ability.new(self)
+  end
+  delegate :can?, :cannot?, :authorize!, :to => :ability
+
+  def self.invitable_to_collection(search_term, user_id)
+    User.
+      where('email LIKE ?', "#{search_term}%").
+      where("id not in (?)", user_id).
+      order('email')
+  end
+
+  def create_layer_for(collection, params)
+    layer = collection.layers.new params
+    layer.user = self
+    authorize! :create, layer, message: "Not authorized to create layer"
+    layer.save!
+    self.layer_count += 1
+    update_successful_outcome_status
+    self.save!
+    layer
+  end
+
+  def increase_site_count_and_status
+    self.site_count += 1
+    update_successful_outcome_status
+    self.save!
+  end
 end
