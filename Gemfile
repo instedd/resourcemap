@@ -3,9 +3,14 @@ source 'https://rubygems.org'
 gem 'rails', '~> 3.2.0'
 gem 'mysql2'
 gem 'devise'
-gem 'haml-rails'
+gem 'haml-rails', '~> 0.4'
+gem 'gettext', '~> 3.1.2'
+gem 'gettext_i18n_rails'
+gem 'gettext_i18n_rails_js'
+gem 'ruby_parser', :require => false, :group => :development
+gem 'haml-magic-translations'
 gem 'decent_exposure'
-gem "instedd-rails", '0.0.17'
+gem "instedd-rails", '~> 0.0.21'
 gem "breadcrumbs_on_rails"
 gem "tire"
 gem "valium"
@@ -69,5 +74,6 @@ group :assets do
 
   gem 'uglifier', '>= 1.0.3'
   gem 'lodash-rails'
+  gem "instedd-rails", '~> 0.0.21'
 end
 

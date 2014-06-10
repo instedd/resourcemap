@@ -2,6 +2,8 @@ class Api::CollectionsController < ApiController
   include Api::JsonHelper
   include Api::GeoJsonHelper
 
+  authorize_resource :collection, :decent_exposure => true, only: [:destroy]
+
   before_filter :authenticate_collection_user!, :except => [:create, :show, :index]
 
   expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
@@ -93,7 +95,7 @@ class Api::CollectionsController < ApiController
   end
 
   def perform_search(*options)
-    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size, :location_missing]
+    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size, :location_missing, :locale]
 
     search = new_search
 

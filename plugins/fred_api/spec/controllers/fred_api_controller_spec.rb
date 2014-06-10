@@ -51,7 +51,7 @@ describe FredApiController do
       json["coordinates"][1].should eq(site.lat)
       json['uuid'].should eq(site.uuid)
       json["active"].should eq(true)
-      json["href"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      json["href"].should start_with("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
 
     end
 
@@ -651,12 +651,12 @@ describe FredApiController do
       response.status.should eq(201)
       site = Site.find_by_name 'Kakamega HC'
       site.should be
-      response.location.should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      response.location.should start_with("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
       json = JSON.parse response.body
       json["name"].should eq(site.name)
       json["uuid"].should eq("#{site.uuid}")
       json["active"].should eq(true)
-      json["href"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      json["href"].should start_with("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
     end
 
     it "should return 400 if id, url, createdAt or updatedAt are present in the query params" do
@@ -878,13 +878,13 @@ describe FredApiController do
       site.should be
       site.valid?.should be(true)
 
-      response.location.should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      response.location.should start_with("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
       json = JSON.parse response.body
       json["properties"]['moh-id'].should eq("100000-9")
       json["name"].should eq(site.name)
       json["uuid"].should eq("#{site.uuid}")
       json["active"].should eq(true)
-      json["href"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      json["href"].should start_with("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
     end
 
     it 'should create facility with with the next valid luhn identifier if there is a site with luhn value' do

@@ -1,0 +1,1180 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the app package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: app 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-09 15:53-0300\n"
+"PO-Revision-Date: 2014-06-09 15:53-0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+msgid " \"'#{name}'\""
+msgstr ""
+
+msgid "\""
+msgstr ""
+
+msgid "%s"
+msgstr ""
+
+msgid "%s,"
+msgstr ""
+
+msgid "%s."
+msgstr ""
+
+msgid "%{kind} field %{name} %{code} options changed from %{old_options} to %{new_options}"
+msgstr ""
+
+msgid "%{kind} field %{name} %{code} was added"
+msgstr ""
+
+msgid "%{kind} field %{name} %{code} was deleted"
+msgstr ""
+
+msgid "%{kind} field '%{name}' %{code} %{key} changed to %{field_key}"
+msgstr ""
+
+msgid "(85512345678)"
+msgstr ""
+
+msgid "(no value)"
+msgstr ""
+
+msgid "(nothing)"
+msgstr ""
+
+msgid ","
+msgstr ""
+
+msgid ",change icon to:"
+msgstr ""
+
+msgid "85512345678"
+msgstr ""
+
+msgid "API access"
+msgstr ""
+
+msgid "Access the API in"
+msgstr ""
+
+msgid "Accurately tracking and allocating resources is critical to getting the  most from every asset at your disposal. Resource Map can help you maximize your resource allocation and usage."
+msgstr ""
+
+msgid "Accurately tracking and allocating resources is critical to getting the most from every asset at your disposal. Here are a few ways that Resource Map can help you maximize your resource allocation and usage:"
+msgstr ""
+
+msgid "Activity"
+msgstr ""
+
+msgid "Add Alert"
+msgstr ""
+
+msgid "Add Gateway"
+msgstr ""
+
+msgid "Add Reminder"
+msgstr ""
+
+msgid "Add another condition"
+msgstr ""
+
+msgid "Add columns for new fields"
+msgstr ""
+
+msgid "Add form field"
+msgstr ""
+
+msgid "Add layer"
+msgstr ""
+
+msgid "Add member"
+msgstr ""
+
+msgid "Add more..."
+msgstr ""
+
+msgid "Add rows for new sites"
+msgstr ""
+
+msgid "Add..."
+msgstr ""
+
+msgid "Adjust"
+msgstr ""
+
+msgid "Admin"
+msgstr ""
+
+msgid "Advanced"
+msgstr ""
+
+msgid "Agency"
+msgstr ""
+
+msgid "Alert"
+msgstr ""
+
+msgid "Alerts"
+msgstr ""
+
+msgid "All of following conditions"
+msgstr ""
+
+msgid "All sites"
+msgstr ""
+
+msgid "Allow decimal numbers"
+msgstr ""
+
+msgid "Android Phone SMS Gateway -Advanced Setup"
+msgstr ""
+
+msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
+msgstr ""
+
+msgid "Any of the following conditions"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Apply this alert to"
+msgstr ""
+
+msgid "Are you sure you want to delete this collection's sites?"
+msgstr ""
+
+msgid "Are you sure you want to delete this collection? All sites, layers, fields, memberships and activities will also be deleted."
+msgstr ""
+
+msgid "Attributes"
+msgstr ""
+
+msgid "CSD API Settings"
+msgstr ""
+
+msgid "CSV"
+msgstr ""
+
+msgid "Can't save"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Center for Malaria Parasitology and Entomology"
+msgstr ""
+
+msgid "Change basic information about this collection"
+msgstr ""
+
+msgid "Change site display on map"
+msgstr ""
+
+msgid "Check the"
+msgstr ""
+
+msgid "Click here for instructions"
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "Collaborate"
+msgstr ""
+
+msgid "Collaborative:"
+msgstr ""
+
+msgid "Collapse all"
+msgstr ""
+
+msgid "Collection"
+msgstr ""
+
+msgid "Collection '%{name}' was created"
+msgstr ""
+
+msgid "Collection CSV imported"
+msgstr ""
+
+msgid "Collection created"
+msgstr ""
+
+msgid "Collection imported"
+msgstr ""
+
+msgid "Collections"
+msgstr ""
+
+msgid "Column Settings"
+msgstr ""
+
+msgid "Conditions"
+msgstr ""
+
+msgid "Confirmed At"
+msgstr ""
+
+msgid "Contact the administrator if you think you should."
+msgstr ""
+
+msgid "Context"
+msgstr ""
+
+msgid "Create Collection"
+msgstr ""
+
+msgid "Create Site"
+msgstr ""
+
+msgid "Create account"
+msgstr ""
+
+msgid "Create new collection"
+msgstr ""
+
+msgid "Curate"
+msgstr ""
+
+msgid "Curate Data"
+msgstr ""
+
+msgid "DD/MM/YYYY (e.g. \"31/12/2013\")"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Date Format"
+msgstr ""
+
+msgid "Define and track custom data types and variables"
+msgstr ""
+
+msgid "Define basic information about this collection"
+msgstr ""
+
+msgid "Delete Site"
+msgstr ""
+
+msgid "Delete collection"
+msgstr ""
+
+msgid "Delete this collection's sites"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Do not send notifications"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+msgid "Download a CSV with all the sites in this collection"
+msgstr ""
+
+msgid "Download a template CSV file"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Edit Account"
+msgstr ""
+
+msgid "Edit Site"
+msgstr ""
+
+msgid "Edit or create a hierarchy for this field."
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Endpoint URL :"
+msgstr ""
+
+msgid "Events"
+msgstr ""
+
+msgid "Exception"
+msgstr ""
+
+msgid "Export this result in"
+msgstr ""
+
+msgid "Export your Resource Map database for further analysis in other applications"
+msgstr ""
+
+msgid "Features"
+msgstr ""
+
+msgid "Field semantics, usually meaningful to external systems that depend on Resource Map"
+msgstr ""
+
+msgid "Fields"
+msgstr ""
+
+msgid "Find out how →"
+msgstr ""
+
+msgid "Fix the errors to start importing"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "Format that will be used to display and update date values for this field."
+msgstr ""
+
+msgid "Free"
+msgstr ""
+
+msgid "Free:"
+msgstr ""
+
+msgid "Gain insight into the location & distribution of food supplies"
+msgstr ""
+
+msgid "Gain insight into the location & distribution of medical supplies and personel"
+msgstr ""
+
+msgid "Gain insight into the location & distribution of your resources"
+msgstr ""
+
+msgid "Gateway"
+msgstr ""
+
+msgid "Gateways"
+msgstr ""
+
+msgid "Get updates"
+msgstr ""
+
+msgid "Getting started with Resource Map is simple. Just enter resource allocation data manually or upload an existing spreadsheet containing the data. Once your data is online, it's easy to keep tabs on resources visually, on a real-time map, using any computer or smartphone. Even better, field teams can receive alerts, update resource deployment, and query resource status using any phone that can send and receive text messages, in addition to using a computer or smartphone. If you can get a cell phone signal, you can view and manage resources with Resource Map."
+msgstr ""
+
+msgid "Go back to present"
+msgstr ""
+
+msgid "Group by"
+msgstr ""
+
+msgid "Hide Configuration"
+msgstr ""
+
+msgid "Hierarchically structured elements"
+msgstr ""
+
+msgid "Hierarchy"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "How does it work?"
+msgstr ""
+
+msgid "ID With Prefix:"
+msgstr ""
+
+msgid "Icon"
+msgstr ""
+
+msgid "Id:"
+msgstr ""
+
+msgid "Identify"
+msgstr ""
+
+msgid "If you change an option code the sites' properties with this value will be lost."
+msgstr ""
+
+msgid "If you notice issues with some characters (such as accents) try exporting the CSV with UTF-8 encoding."
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Import CSV: %{sites}"
+msgstr ""
+
+msgid "Import existing resource allocation data from spreadsheets"
+msgstr ""
+
+msgid "Import failed :-("
+msgstr ""
+
+msgid "Import finished!"
+msgstr ""
+
+msgid "Import in progress."
+msgstr ""
+
+msgid "Import layers from collection:"
+msgstr ""
+
+msgid "Import wizard"
+msgstr ""
+
+msgid "Import wizard: %{sites}"
+msgstr ""
+
+msgid "Importing data"
+msgstr ""
+
+msgid "Importing, please wait. This might take several minutes."
+msgstr ""
+
+msgid "In a limited number of countries we have a gateway provided by a local phone company that can be used to send and recieve system messages. Please select the list below to"
+msgstr ""
+
+msgid "In an emergency medical situation, when lives may hang in the balance, the last thing you want to do is waste time finding supplies, personnel, and mobile or permanent treatment facilities. With Resource Map, you can quickly locate and manage critical resources on a real-time map using a computer or smartphone. On an emergency scene, when you might not have access to computers or smartphones, you and your team can view and update resource allocations with any phone capable of text messaging."
+msgstr ""
+
+msgid "Insightful:"
+msgstr ""
+
+msgid "JSON"
+msgstr ""
+
+msgid "Key"
+msgstr ""
+
+msgid "Last update"
+msgstr ""
+
+msgid "Lat"
+msgstr ""
+
+msgid "Layer %{layer} changed: %{changes}"
+msgstr ""
+
+msgid "Layer %{layer} was created with fields: %{fields}"
+msgstr ""
+
+msgid "Layer %{layer} was deleted"
+msgstr ""
+
+msgid "Layer %{layer} was renamed to %{changes}"
+msgstr ""
+
+msgid "Layer changed"
+msgstr ""
+
+msgid "Layer created"
+msgstr ""
+
+msgid "Layer deleted"
+msgstr ""
+
+msgid "Layers"
+msgstr ""
+
+msgid "Load more"
+msgstr ""
+
+msgid "Loading..."
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Location missing"
+msgstr ""
+
+msgid "Location:"
+msgstr ""
+
+msgid "Long"
+msgstr ""
+
+msgid "MM/DD/YYYY (e.g. \"12/31/2013\")"
+msgstr ""
+
+msgid "Maintain"
+msgstr ""
+
+msgid "Make better decisions"
+msgstr ""
+
+msgid "Manage layers and fields of this collection's sites"
+msgstr ""
+
+msgid "Manage who can see this collection and who can read/write its layers"
+msgstr ""
+
+msgid "Managing Disease Prevention Supplies"
+msgstr ""
+
+msgid "Map Ready:"
+msgstr ""
+
+msgid "Medicine is at its best when it helps people avoid illness in the first place. Resource Map aids prevention efforts by giving teams new ways to manage key supply chain items, such as vaccines, vitamins, and other disease prevention tools. And by uploading statistics on various measures of health, you can even use Resource Map to monitor the effectiveness of your interventions. After all, a healthy community is one of your most important resources."
+msgstr ""
+
+msgid "Member → Site → Layer"
+msgstr ""
+
+msgid "Members"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Monitoring Food Prices and Supply Levels"
+msgstr ""
+
+msgid "Move to layer..."
+msgstr ""
+
+msgid "My Collections"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Name:"
+msgstr ""
+
+msgid "National Gateway(Only Some Country Supported)"
+msgstr ""
+
+msgid "New Site"
+msgstr ""
+
+msgid "New item"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Note: your last import to this collection failed, and was based on a file named %s, %s ago."
+msgstr ""
+
+msgid "Note: your last import to this collection was based on a file named %s, %s ago."
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "Notify these people"
+msgstr ""
+
+msgid "Now specify how to map each column to a field."
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Open Source"
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Original filename"
+msgstr ""
+
+msgid "Overview"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Password :"
+msgstr ""
+
+msgid "Permissions per layer"
+msgstr ""
+
+msgid "Please"
+msgstr ""
+
+msgid "Please contact InSTEDD for support."
+msgstr ""
+
+msgid "Please fill all the required information to configure this collection to be accessible via CSD API."
+msgstr ""
+
+msgid "Please select the SMS gateways to be used for this collection. When using more than one gateway the system will use one of the other gateways if the primary fails."
+msgstr ""
+
+msgid "Please select what you want to update with this input:"
+msgstr ""
+
+msgid "Possible values for this field."
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Properties"
+msgstr ""
+
+msgid "Quota"
+msgstr ""
+
+msgid "Quotas"
+msgstr ""
+
+msgid "RSS"
+msgstr ""
+
+msgid "Read"
+msgstr ""
+
+msgid "Receive"
+msgstr ""
+
+msgid "Receive instant Web or text alerts when resources are low"
+msgstr ""
+
+msgid "Refine further"
+msgstr ""
+
+msgid "Refine results"
+msgstr ""
+
+msgid "Reminders"
+msgstr ""
+
+msgid "Remove columns for fields you are not interested in updating"
+msgstr ""
+
+msgid "Remove rows for sites you are not interested in updating"
+msgstr ""
+
+msgid "Report a bug"
+msgstr ""
+
+msgid "Request resource status updates using text messages"
+msgstr ""
+
+msgid "Resolve these conflicts in order to complete the upload"
+msgstr ""
+
+msgid "ResoureMap Default Gateway"
+msgstr ""
+
+msgid "Rwanda Ministry of Health"
+msgstr ""
+
+msgid "SMS Enabled:"
+msgstr ""
+
+msgid "SMS Gateway"
+msgstr ""
+
+msgid "SMS Gateways"
+msgstr ""
+
+msgid "SMS Settings"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Save layer"
+msgstr ""
+
+msgid "Saving layer, please wait..."
+msgstr ""
+
+msgid "Saving reminder, please wait..."
+msgstr ""
+
+msgid "See everything on the map for a birds-eye view"
+msgstr ""
+
+msgid "Select logo from uploaded image"
+msgstr ""
+
+msgid "Send Now!"
+msgstr ""
+
+msgid "Send emails to:"
+msgstr ""
+
+msgid "Send text messages to:"
+msgstr ""
+
+msgid "Set SMS quota for individual collection"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Show columns:"
+msgstr ""
+
+msgid "Show them"
+msgstr ""
+
+msgid "Showing %d sites out of %d"
+msgstr ""
+
+msgid "Showing 1 site out of %d"
+msgstr ""
+
+msgid "Showing all %d sites"
+msgstr ""
+
+msgid "Showing first 10 records."
+msgstr ""
+
+msgid "Sign up"
+msgstr ""
+
+msgid "Singed In"
+msgstr ""
+
+msgid "Singed Up"
+msgstr ""
+
+msgid "Site"
+msgstr ""
+
+msgid "Site %{site} was created"
+msgstr ""
+
+msgid "Site %{site} was deleted"
+msgstr ""
+
+msgid "Site Name"
+msgstr ""
+
+msgid "Site changed"
+msgstr ""
+
+msgid "Site created"
+msgstr ""
+
+msgid "Site deleted"
+msgstr ""
+
+msgid "Sites"
+msgstr ""
+
+msgid "Snapshots"
+msgstr ""
+
+msgid "Some sites"
+msgstr ""
+
+msgid "Sorry, something failed during the import. Please contact InSTEDD for support."
+msgstr ""
+
+msgid "South America"
+msgstr ""
+
+msgid "Specify how to map each column to a field"
+msgstr ""
+
+msgid "Start importing"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Successful Outcome"
+msgstr ""
+
+msgid "Take new snapshot"
+msgstr ""
+
+msgid "Test Your Gateway"
+msgstr ""
+
+msgid "Testing Environmental Health"
+msgstr ""
+
+msgid "The National Center for Parasitology, Entomology and Malaria Control (CNM)"
+msgstr ""
+
+msgid "The Rwanda Ministry of Health uses Resource Map as its Facility Registry service. The Facility Registry provides the master list of hospitals, clinics and health services and is a building block of Rwanda's national Health Information System, which integrates Resource Map data into clinical and public health workflows and tools across the country."
+msgstr ""
+
+msgid "The abbreviation used to report via SMS."
+msgstr ""
+
+msgid "The android phone sms gateway allow you to use any adroid device as a local gateway for sending and receiving system SMS message"
+msgstr ""
+
+msgid "The context in which the agency uses this identifier"
+msgstr ""
+
+msgid "The data type to fill in this field."
+msgstr ""
+
+msgid "The health of any community is intimately related to the health of the environment that surrounds it. Resource Map helps to keep the air clean, the water pure, and sanitation effective by giving you instant, visual access to an array of environmental quality indicators. Field reports can be filed with any phone capable of text messaging, allowing your team the mobility it needs to test and report environmental conditions more frequently and easily."
+msgstr ""
+
+msgid "The name of this field as it is presented."
+msgstr ""
+
+msgid "The organization for which this identifier is meaningful"
+msgstr ""
+
+msgid "The page you are trying to access doesn't exist or you don't have permission for accessing it."
+msgstr ""
+
+msgid "Then you will be able to define how to use each column."
+msgstr ""
+
+msgid "There are no snapshots for this collection."
+msgstr ""
+
+msgid "There are sites with no location set"
+msgstr ""
+
+msgid "There are validation errors that prevent the site from being saved."
+msgstr ""
+
+msgid "There was"
+msgstr ""
+
+msgid "This may take a while depending on the size of your file."
+msgstr ""
+
+msgid "This will allow you to browse data in the future as it is looking right now."
+msgstr ""
+
+msgid "This wizard will guide you through importing a CSV file"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "To make changes, please"
+msgstr ""
+
+msgid "Track Food Prices and Supply Levels in Real Time"
+msgstr ""
+
+msgid "Track Medical Supplies and Personnel in Real Time"
+msgstr ""
+
+msgid "Tracking Medical Supplies and Personnel"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Unhappy?"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Updated within"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Upload a CSV"
+msgstr ""
+
+msgid "Upload a CSV file to update multiple sites"
+msgstr ""
+
+msgid "Upload a CSV: ID, ParentID, ItemName"
+msgstr ""
+
+msgid "Upload it for bulk sites updates"
+msgstr ""
+
+msgid "Upload new logo"
+msgstr ""
+
+msgid "Upload your CSV file"
+msgstr ""
+
+msgid "Uploading, please wait..."
+msgstr ""
+
+msgid "Use SMS to query, update or receive alerts from the system"
+msgstr ""
+
+msgid "Use it for free in the cloud OR download the code, it’s open source!"
+msgstr ""
+
+msgid "Use the following expressions to fill your message with sites data"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "User Name :"
+msgstr ""
+
+msgid "View Configuration"
+msgstr ""
+
+msgid "View aggregated data on a live resource map"
+msgstr ""
+
+msgid "View and update resource allocations via the Web or SMS text message"
+msgstr ""
+
+msgid "View as"
+msgstr ""
+
+msgid "View your collections"
+msgstr ""
+
+msgid "Viewing %d sites in map"
+msgstr ""
+
+msgid "Viewing 1 site in map"
+msgstr ""
+
+msgid "Visualize and update"
+msgstr ""
+
+msgid "Visualize live and historical data on a map or using a graph"
+msgstr ""
+
+msgid "We are generating a preview for the sites you are importing."
+msgstr ""
+
+msgid "We couldn't import your data from file %s."
+msgstr ""
+
+msgid "We finished importing all your data from file %s."
+msgstr ""
+
+msgid "We recommend you to download the CSV, make changes to it and upload it here for doing a bulk update:"
+msgstr ""
+
+msgid "What can I use it for?"
+msgstr ""
+
+msgid "When"
+msgstr ""
+
+msgid "Whether you're helping economically  disadvantaged people find nutritious, fresh, and affordable produce,  managing food banks, or simply trying to chart the most popular edibles  in a given area, Resource Map makes it easy. And since Resource Map can  be updated using almost any cellular phone, your resource data is always  just as fresh as the food."
+msgstr ""
+
+msgid "Whether you're helping economically disadvantaged people find nutritious, fresh, and affordable produce, managing food banks, or simply trying to chart the most popular edibles in a given area, Resource Map makes it easy. And since Resource Map can be updated using almost any cellular phone, your resource data is always just as fresh as the food."
+msgstr ""
+
+msgid "Who is using it?"
+msgstr ""
+
+msgid "With the support from the Global Fund, the Center for Malaria Parasitology and Entomology of Laos PDR (CMPE) uses Resource Map to report both the stock levels of life saving malaria drugs and the number of Malaria cases located at the village health centers up to the national level.  This allows the Ministry of Health to have a real time visual picture of what resources are available and what is needed to treat patients."
+msgstr ""
+
+msgid "With the support of the Clinton Health Access Initiative (CHAI), CNM uses Resource Map to support their malaria drug program with our tool to capture malaria drug updates from at risk health centers on a two week cycle. The goal of monitoring resources so closely is to improve the stock management of malaria treatment drugs. This tool helps the health centers to avoid the possibility of over or under stocking important drug supplies."
+msgstr ""
+
+msgid "You don't need to leave this window open while the data is imported, we'll take care of that for you. However, if you're still here when the importation ends, we'll let you know so you can start working on your new data right away."
+msgstr ""
+
+msgid "You have no items yet"
+msgstr ""
+
+msgid "Your team can record, track and analyze food prices and supplies"
+msgstr ""
+
+msgid "Your team can record, track and analyze medical supplies and resources"
+msgstr ""
+
+msgid "Your team can record, track and analyze resources"
+msgstr ""
+
+msgid "["
+msgstr ""
+
+msgid "]"
+msgstr ""
+
+msgid "add Layers"
+msgstr ""
+
+msgid "alerts"
+msgstr ""
+
+msgid "all"
+msgstr ""
+
+msgid "all sites"
+msgstr ""
+
+msgid "and"
+msgstr ""
+
+msgid "as they happen, using a live map or text message request"
+msgstr ""
+
+msgid "by knowing where your resources are in real time"
+msgstr ""
+
+msgid "check all"
+msgstr ""
+
+msgid "code for developers to use to improve its design and functionality"
+msgstr ""
+
+msgid "complete control over the visibility of resource allocation data"
+msgstr ""
+
+msgid "distribution patterns and anomalies with visual mapping and trend analysis"
+msgstr ""
+
+msgid "easily on resource allocation decisions"
+msgstr ""
+
+msgid "equals"
+msgstr ""
+
+msgid "existing"
+msgstr ""
+
+msgid "first before managing your thresholds."
+msgstr ""
+
+msgid "for"
+msgstr ""
+
+msgid "for anyone to use to help increase their social impact"
+msgstr ""
+
+msgid "has no value"
+msgstr ""
+
+msgid "important alerts instantly and address them proactively"
+msgstr ""
+
+msgid "invisible"
+msgstr ""
+
+msgid "is"
+msgstr ""
+
+msgid "is 'no'"
+msgstr ""
+
+msgid "is 'yes'"
+msgstr ""
+
+msgid "is between"
+msgstr ""
+
+msgid "is greater than"
+msgstr ""
+
+msgid "is greater than or equal to"
+msgstr ""
+
+msgid "is less than"
+msgstr ""
+
+msgid "is less than or equal to"
+msgstr ""
+
+msgid "is not"
+msgstr ""
+
+msgid "is:"
+msgstr ""
+
+msgid "leave blank if you don't want to change it"
+msgstr ""
+
+msgid "name changed from %{first_change} to %{second_change}"
+msgstr ""
+
+msgid "new"
+msgstr ""
+
+msgid "no"
+msgstr ""
+
+msgid "of"
+msgstr ""
+
+msgid "or"
+msgstr ""
+
+msgid "please select collection to set message quota"
+msgstr ""
+
+msgid "processing the hierarchy file"
+msgstr ""
+
+msgid "repeat"
+msgstr ""
+
+msgid "resource allocations without a complex and expensive GIS"
+msgstr ""
+
+msgid "resource data from any text messaging-capable phone"
+msgstr ""
+
+msgid "set message quota to the selected collection"
+msgstr ""
+
+msgid "show more"
+msgstr ""
+
+msgid "site's owner will receive this reminder"
+msgstr ""
+
+msgid "sites"
+msgstr ""
+
+msgid "starts with"
+msgstr ""
+
+msgid "the last day"
+msgstr ""
+
+msgid "the last hour"
+msgstr ""
+
+msgid "the last month"
+msgstr ""
+
+msgid "the last week"
+msgstr ""
+
+msgid "true"
+msgstr ""
+
+msgid "uncheck all"
+msgstr ""
+
+msgid "we need your current password to confirm your changes"
+msgstr ""
+
+msgid "with errors"
+msgstr ""
+
+msgid "x"
+msgstr ""
+
+msgid "yes"
+msgstr ""
+
+msgid "→ ; in"
+msgstr ""
+
+msgid "→;"
+msgstr ""

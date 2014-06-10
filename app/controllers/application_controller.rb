@@ -11,6 +11,10 @@ class ApplicationController < ActionController::Base
   expose(:reminders) { collection.reminders }
   expose(:reminder)
 
+  before_filter :set_gettext_locale
+  before_filter :redirect_to_localized_url
+  before_filter :show_language_selector
+
   expose(:new_search_options) do
     if current_user_snapshot.at_present?
       {current_user: current_user}
@@ -44,6 +48,10 @@ class ApplicationController < ActionController::Base
     @guest_user ||= User.new(is_guest: true)
   end
 
+  def show_language_selector
+    @show_language_selector = true
+  end
+
   def current_user
     super || guest_user
   end
@@ -75,12 +83,12 @@ class ApplicationController < ActionController::Base
 
   def show_collection_breadcrumb
     show_collections_breadcrumb
-    add_breadcrumb "Collections", collections_path
+    add_breadcrumb _("Collections"), collections_path
     add_breadcrumb collection.name, collections_path + "?collection_id=#{collection.id}"
   end
 
   def show_properties_breadcrumb
-    add_breadcrumb "Properties", collection_path(collection)
+    add_breadcrumb _("Properties"), collection_path(collection)
   end
 
   # Faster way to render json, using the Oj library.
@@ -91,8 +99,15 @@ class ApplicationController < ActionController::Base
     render options
   end
 
+  def redirect_to_localized_url
+    redirect_to params if params[:locale].nil? && request.get?
+  end
+
   def ignore_public_attribute
     params[:layer].delete(:public) if params[:layer] && params[:layer][:public]
   end
 
+  def default_url_options(options={})
+    {:locale => I18n.locale.to_s}
+  end
 end

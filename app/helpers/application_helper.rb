@@ -29,4 +29,5 @@ module ApplicationHelper
   def field_edit_view(kind)
     Field::plugin_kinds.has_key?(kind) ? Field::plugin_kinds[kind][:edit_view] : "collections/fields/#{kind}_edit_view"
   end
+
 end

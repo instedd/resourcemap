@@ -18,7 +18,7 @@
               .i18g-snapshot
             .clear
             //ko
-            %button.enterRow.farrow{ko(click: '$root.enterCollection'), type: :button}            
+            %button.enterRow.farrow{ko(click: '$root.enterCollection'), type: :button}
         //ko
     %br{:clear => "all"}/
 
@@ -120,9 +120,9 @@
                 //ko
                 /ko if: writeable
                 - Field::kinds.each do |kind|
-                  <!-- ko if: kind == '#{kind}' -->
+                  = "<!-- ko if: kind == '#{kind}' -->".html_safe
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: false }
-                  <!-- /ko -->
+                  //ko
                 //ko
               //ko
               //ko
@@ -213,9 +213,9 @@
                 //ko
                 /ko if: editing() || error()
                 - Field::kinds.each do |kind|
-                  <!-- ko if: kind == '#{kind}' -->
+                  = "<!-- ko if: kind == '#{kind}' -->".html_safe
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: true }
-                  <!-- /ko -->
+                  //ko
                 //ko
               //ko
               /ko if: !writeable
@@ -233,9 +233,9 @@
                 //ko
                 /ko if: editing() || error()
                 - Field::kinds.each do |kind|
-                  <!-- ko if: kind == '#{kind}' -->
+                  = "<!-- ko if: kind == '#{kind}' -->".html_safe
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: true }
-                  <!-- /ko -->
+                  //ko
                 //ko
               //ko
               //ko
@@ -246,9 +246,9 @@
     .tablebottom
       -# if (can? :edit, site)
       - if current_user && !current_user.is_guest
-        = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
+        = link_to _('Edit Site'), 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
         /ko if: $root.currentCollection().canDeleteSites()
-        = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
+        = link_to _('Delete Site'), 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
         //ko
     //ko
   //ko

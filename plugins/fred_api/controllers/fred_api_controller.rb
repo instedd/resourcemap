@@ -1,4 +1,7 @@
 class FredApiController < ApplicationController
+  skip_before_filter :set_gettext_locale
+  skip_before_filter :redirect_to_localized_url
+
   before_filter :authenticate_api_user!
   # before_filter :authenticate_collection_admin!
 
@@ -90,7 +93,7 @@ class FredApiController < ApplicationController
     end
 
     #Perform queries
-    except_params = [:action, :controller, :format, :id, :collection_id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince, "identifiers.id", "identifiers.agency", "identifiers.context", :uuid]
+    except_params = [:action, :controller, :format, :id, :collection_id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince, "identifiers.id", "identifiers.agency", "identifiers.context", :uuid, :locale]
 
     # Query by Core Properties
     search.name(params[:name]) if params[:name]
