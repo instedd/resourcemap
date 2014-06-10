@@ -194,5 +194,4 @@ ResourceMap::Application.routes.draw do
   match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#create_facility', :via => :post
   match 'collections/:collection_id/fred_api/v1/facilities/:id(.:format)' => 'fred_api#update_facility', :via => :put
 
-
 end

@@ -182,8 +182,17 @@ class FredApiController < ApplicationController
 
     properties_with_identifiers = properties_by_es_code
 
-    lat = facility_param["coordinates"][1] if facility_param["coordinates"]
-    lng = facility_param["coordinates"][0] if facility_param["coordinates"]
+    membership = current_user.memberships.find { |um| um.collection_id == collection.id }
+
+    if facility_param["coordinates"]
+      authorize! :update_location, membership
+      lat = facility_param["coordinates"][1]
+      lng = facility_param["coordinates"][0]
+    end
+
+    if facility_param["name"]
+      authorize! :update_name, membership
+    end
 
     facility_param.delete "coordinates"
     facility_param.delete "identifiers"

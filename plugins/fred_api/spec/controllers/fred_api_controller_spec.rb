@@ -27,6 +27,19 @@ describe FredApiController do
       date.es_code => "2012-10-24T00:00:00Z",
     }}
 
+    let!(:user2) { User.make}
+
+    let!(:layer2) {collection.layers.make}
+    let!(:text2) {layer2.text_fields.make :code => "someText"}
+
+    let!(:site3) {collection.sites.make :properties => {
+        text.es_code => "Mrs. Liz",
+        numeric.es_code => 55,
+        select_many.es_code => [1, 2],
+        date.es_code => "2012-10-24T00:00:00Z",
+        text2.es_code => "someText",
+      }, :name => "Site3"}
+
     it 'should get default fields' do
       get :show_facility, id: site.id, format: 'json', collection_id: collection.id
       response.should be_ok
@@ -43,7 +56,6 @@ describe FredApiController do
     end
 
     it 'should get facilities if user is member of the collection' do
-      user2 = User.make
       m = collection.memberships.create! user_id: user2.id, admin: false
       sign_out user
       sign_in user2
@@ -52,7 +64,6 @@ describe FredApiController do
     end
 
     it 'should not get facilities if user is not member of the collection' do
-      user2 = User.make
       sign_out user
       sign_in user2
       get :facilities, format: 'json', collection_id: collection.id
@@ -60,7 +71,6 @@ describe FredApiController do
     end
 
     it 'should get facility if user is member of the collection' do
-      user2 = User.make
       m = collection.memberships.create! user_id: user2.id, admin: false
       sign_out user
       sign_in user2
@@ -69,11 +79,25 @@ describe FredApiController do
     end
 
     it 'should not get facility if user is not member of the collection' do
-      user2 = User.make
       sign_out user
       sign_in user2
       get :show_facility, id: site_with_properties.id, format: 'json', collection_id: collection.id
       response.should_not be_success
+    end
+
+    it 'should not bypass read permissions when user cannot access all layers' do
+      m = collection.memberships.create! user_id: user2.id, admin: false
+      m.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
+      sign_out user
+      sign_in user2
+      get :show_facility, id: site3.id, format: 'json', collection_id: collection.id
+      json = JSON.parse response.body
+      json["properties"].length.should eq(4)
+      json["properties"]['manager'].should eq("Mrs. Liz")
+      json["properties"]['numBeds'].should eq(55)
+      json["properties"]['services'].should eq(['XR', 'OBG'])
+      json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+      json["properties"]['someText'].should eq(nil)
     end
 
     it 'should get extended properties' do
@@ -322,6 +346,7 @@ describe FredApiController do
   end
 
   describe "delete facility" do
+    let! (:user2) {User.make}
     it "should render json's code field 200 when deleting a facility" do
       site = collection.sites.make name: 'Site C'
       delete :delete_facility, id: site.id, collection_id: collection.id
@@ -349,6 +374,21 @@ describe FredApiController do
       sign_in user2
       delete :delete_facility, id: site.id, collection_id: collection.id
       response.status.should eq(403)
+    end
+
+    it "should delete facility if user is member but is not admin of the collection" do
+      user2 = User.make
+      m = collection.memberships.create! user_id: user2.id, admin: true
+      site = collection.sites.make name: 'Site C'
+      sign_out user
+      sign_in user2
+      delete :delete_facility, id: site.id, collection_id: collection.id
+      json = JSON.parse response.body
+      json["code"].should eq(200)
+      json["id"].should eq(site.id.to_s)
+      json["message"].should eq("Resource deleted")
+      sites = Site.find_by_name 'Site C'
+      sites.should be(nil)
     end
 
     let(:collection2) { user.create_collection(Collection.make) }
@@ -386,7 +426,8 @@ describe FredApiController do
 
     it "should return 403 if user is do not have permission to access the collection" do
       collection2 = Collection.make
-      get :show_facility, id: site.id, format: 'json', collection_id: collection2.id
+      site2 = collection2.sites.make name: "Site 2"
+      get :show_facility, id: site2.id, format: 'json', collection_id: collection2.id
       response.status.should eq(403)
     end
 
@@ -419,8 +460,9 @@ describe FredApiController do
       date.es_code => "2012-10-24T00:00:00Z",
     }}
 
+    let!(:user2) {User.make}
+
     it "should not update if user hasn't got update permission" do
-      user2 = User.make
       m = collection.memberships.create! user_id: user2.id, admin: false
       sign_out user
       sign_in user2
@@ -429,8 +471,7 @@ describe FredApiController do
       response.status.should eq(403)
     end
 
-    it 'should update if user has got update permission' do
-      user2 = User.make
+    it 'should update name if user has update permission' do
       m = collection.memberships.create! user_id: user2.id, admin: false
       m.name_permission.set_access('update')
       sign_out user
@@ -440,6 +481,63 @@ describe FredApiController do
       response.status.should eq(200)
       updated_site = Site.find site.id
       updated_site.name.should eq("Kakamega HC 2")
+    end
+
+    it 'should update coordinates if user has update permission' do
+      m = collection.memberships.create! user_id: user2.id, admin: false
+      m.location_permission.set_access('update')
+      sign_out user
+      sign_in user2
+      request.env["RAW_POST_DATA"] = {coordinates: [76.9,34.2]}.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
+      response.status.should eq(200)
+      json = JSON.parse response.body
+      json["coordinates"][0].should eq(76.9)
+      json["coordinates"][1].should eq(34.2)
+      updated_site = Site.find site.id
+      updated_site.lat.to_f.should eq(34.2)
+      updated_site.lng.to_f.should eq(76.9)
+    end
+
+    it 'should update properties if has update permission for layer' do
+      m = collection.memberships.create! user_id: user2.id, admin: false
+      m.set_layer_access :verb => :write, :access => true, :layer_id => layer.id
+      json_data = {
+      :manager => "Mrs. Liz 2",
+      :numBeds => 552,
+      :services => ["OBG"],
+      :inagurationDay => "2013-10-24T00:00:00Z"
+      }
+
+      sign_out user
+      sign_in user2
+      request.env["RAW_POST_DATA"] = {properties: json_data}.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
+
+      response.status.should eq(200)
+      json = JSON.parse response.body
+      json["properties"].length.should eq(4)
+      json["properties"]['manager'].should eq("Mrs. Liz 2")
+      json["properties"]['numBeds'].should eq(552)
+      json["properties"]['services'].should eq(['OBG'])
+      json["properties"]['inagurationDay'].should eq("2013-10-24T00:00:00Z")
+    end
+
+    it 'should not update properties if has update permission for layer' do
+      m = collection.memberships.create! user_id: user2.id, admin: false
+      json_data = {
+      :manager => "Mrs. Liz 2",
+      :numBeds => 552,
+      :services => ["OBG"],
+      :inagurationDay => "2013-10-24T00:00:00Z"
+      }
+
+      sign_out user
+      sign_in user2
+      request.env["RAW_POST_DATA"] = {properties: json_data}.to_json
+      put :update_facility, collection_id: collection.id, id: site.id
+
+      response.status.should eq(403)
     end
 
     it "should return 404 if the facility does not exist" do
