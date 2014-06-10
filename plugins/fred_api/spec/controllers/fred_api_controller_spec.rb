@@ -732,6 +732,32 @@ describe FredApiController do
       json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
     end
 
+    let!(:user2) {User.make}
+
+    it "should create a facility if user has proper permissions" do
+      m = collection.memberships.create! user_id: user2.id, admin: false
+      m.name_permission.set_access('update')
+      m.location_permission.set_access('update')
+      m.set_layer_access :verb => :write, :access => true, :layer_id => layer.id
+      sign_out user
+      sign_in user2
+      request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', coordinates: [76.9,34.2], :properties => {
+        "manager" => "Mrs. Liz",
+        "numBeds" => 55,
+        "services" => ['XR', 'OBG'],
+        "inagurationDay" => "2012-10-24T00:00:00Z"
+      } }.to_json
+      post :create_facility, collection_id: collection.id
+
+      response.status.should eq(201)
+      json = JSON.parse response.body
+      json["properties"].length.should eq(4)
+      json["properties"]['manager'].should eq("Mrs. Liz")
+      json["properties"]['numBeds'].should eq(55)
+      json["coordinates"][0].should eq(76.9)
+      json["coordinates"][1].should eq(34.2)
+    end
+
     it "should return descriptive error if an invalid property code is supplied" do
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :properties => {
         "invalid" => "Mrs. Liz",
