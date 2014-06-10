@@ -74,5 +74,6 @@ group :assets do
 
   gem 'uglifier', '>= 1.0.3'
   gem 'lodash-rails'
+  gem "instedd-rails", '~> 0.0.21'
 end
 
