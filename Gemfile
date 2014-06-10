@@ -10,7 +10,7 @@ gem 'gettext_i18n_rails_js'
 gem 'ruby_parser', :require => false, :group => :development
 gem 'haml-magic-translations'
 gem 'decent_exposure'
-gem "instedd-rails", '~> 0.0.21'
+gem "instedd-rails", '~> 0.0.22'
 gem "breadcrumbs_on_rails"
 gem "tire"
 gem "valium"
@@ -74,6 +74,5 @@ group :assets do
 
   gem 'uglifier', '>= 1.0.3'
   gem 'lodash-rails'
-  gem "instedd-rails", '~> 0.0.21'
 end
 
