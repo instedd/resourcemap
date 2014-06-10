@@ -1,5 +1,8 @@
 class ApiController < ApplicationController
 
+  skip_before_filter :set_gettext_locale
+  skip_before_filter :redirect_to_localized_url
+
   skip_before_filter :verify_authenticity_token
   before_filter :authenticate_api_user!
   around_filter :rescue_with_check_api_docs
@@ -29,6 +32,10 @@ class ApiController < ApplicationController
 
   def render_error_response_403(message = "Forbidden")
     render_json({message: api_error_message(message), error_code: 3}, status: 403)
+  end
+
+  def render_error_response_409(message = "Conflict")
+    render_json({message: api_error_message(message), error_code: 4}, status: 409)
   end
 
   def forbidden_response

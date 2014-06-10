@@ -1,6 +1,6 @@
 -# Sites template
 %script{type: "text/html", id: "table-sites-template"}
-  <!-- ko foreach: sites -->
+  /ko foreach: sites
   %tr
     %td.siteCell
       %a{ko(style: {marginLeft: "'' + (($parent.level + 1) * 20) + 'px'", width: "'' + (240 - ($parent.level + 1) * 20) + 'px'"}), style:'float:left; margin-top:0px; margin-bottom:0px;padding:0px;padding-top:10px; width:240px; height:30px'}
@@ -10,10 +10,10 @@
       %span{ko(html: :highlightedLat)}
     %td.padded
       %span{ko(html: :highlightedLng)}
-    <!-- ko foreach: $root.currentCollection().fieldsByLayers() -->
+    /ko foreach: $root.currentCollection().fieldsByLayers()
     %td.padded
       %span{ko(attr: "{ title: $parent.highlightedPropertyValue($data) }", html: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
-    <!-- /ko -->
+    //ko
     %td.timeago.padded{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
     %td.padded
-  <!-- /ko -->
+  //ko

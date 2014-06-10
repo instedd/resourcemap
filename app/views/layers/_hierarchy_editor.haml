@@ -6,10 +6,10 @@
     .name{ko(click: :edit)}
       %span.arrow{ko(click: :toggleExpand, clickBubble: false)}
       %a.n-label
-        #{ko_text :name}
+        = ko_text(:name)
         %span.number
           Id:
-          #{ko_text :id}
+          = ko_text(:id)
 
       %a.icon.pdelete.right{ko(click: :deleteItem, clickBubble: false)}
       %a.icon.paddchild.right{ko(click: :openAddItem, clickBubble: false)}
@@ -33,7 +33,7 @@
       %input.ux-text.f-id{ko(value: :newItemIdUI, valueUpdate: 'afterkeydown', css: { error: :newItemIdError }), onclick: "this.select();", :placeholder => "Id", :type => "text", :tabindex => "2"}/
       %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete', :tabindex => "4"}
       %a.icon.faccept.right{ko(click: :addItem), title: 'Accept', :tabindex => "3"}
-    / /ko
+    //ko
     %ul.h-editor
       /ko if: expanded
       /ko template: {name: 'hierarchy-editor-items-template', foreach: hierarchyItems}
@@ -49,20 +49,20 @@
     .filter-header
       / ko if: (hierarchyItems().length > 0 || addingItem())
       %a#collapse-all{ko(click: :collapseAll)} Collapse all
-      / /ko
+      //ko
 
     / ko if: (hierarchyItems().length == 0 && !addingItem())
     .empty_hierarchy_message
       #empty_hierarchy
       .grey You have no items yet
-    / /ko
+    //ko
 
     / ko if: (hierarchyItems().length > 0 || addingItem())
     %hr
 
     %ul.h-editor
       /ko template: {name: 'hierarchy-editor-items-template', foreach: hierarchyItems}
-      / /ko
+      //ko
 
     / ko if: addingItem()
     .fields{ko(topPopover: :newItemErrorMessage)}
@@ -70,9 +70,9 @@
       %input.ux-text.f-id{ko(value: :newItemIdUI, valueUpdate: :afterkeydown, css: { error: :newItemIdError }), onclick: "this.select();", :placeholder => "Id", :type => "text", :tabindex => "2"}/
       %a.icon.fdelete.right{ko(click: :closeAddingItem), title: 'Delete', :tabindex => "4"}
       %a.icon.faccept.right{ko(click: :addItem), title: 'Accept', :tabindex => "3"}
-    / /ko
+    //ko
 
-    / /ko
+    //ko
 
 
     %button.cadd{ko(click: :openAddItem)} New item

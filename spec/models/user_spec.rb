@@ -44,6 +44,17 @@ describe User do
     it "doesn't admin a collection if doesn't belong" do
       User.make.admins?(collection).should be_false
     end
+
+    it "creates a layer" do    
+      data = { 
+        name: "A layer",
+        ord: 1,
+        fields_attributes: [{name: "A field", code: "afield", kind: "text", ord: 1}]
+      }
+      
+      l = user.create_layer_for(collection, data)
+      l.should be_an_instance_of Layer
+    end
   end
 
   context "activities" do

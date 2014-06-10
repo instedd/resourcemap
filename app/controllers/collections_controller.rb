@@ -26,7 +26,7 @@ class CollectionsController < ApplicationController
     elsif params[:name].present?
       render_json Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
-      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
+      add_breadcrumb _("Collections"), 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html
         format.json { render_json collections_with_snapshot_by_user }
@@ -106,19 +106,19 @@ class CollectionsController < ApplicationController
   end
 
   def members
-    add_breadcrumb "Members", collection_members_path(collection)
+    add_breadcrumb _("Members"), collection_members_path(collection)
   end
 
   def reminders
-    add_breadcrumb "Reminders", collection_reminders_path(collection)
+    add_breadcrumb _("Reminders"), collection_reminders_path(collection)
   end
 
   def settings
-    add_breadcrumb "Settings", collection_settings_path(collection)
+    add_breadcrumb _("Settings"), collection_settings_path(collection)
   end
 
   def quotas
-    add_breadcrumb "Quotas", collection_settings_path(collection)
+    add_breadcrumb _("Quotas"), collection_settings_path(collection)
   end
 
   def destroy

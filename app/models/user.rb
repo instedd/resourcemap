@@ -162,6 +162,7 @@ class User < ActiveRecord::Base
     self.layer_count += 1
     update_successful_outcome_status
     self.save!
+    layer
   end
 
   def increase_site_count_and_status
