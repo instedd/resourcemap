@@ -62,13 +62,15 @@ class Activity < ActiveRecord::Base
         "Permission was deleted in layer '#{data['name']}'" unless (data['read'])
       end
     when ['name_permission', 'changed']
-      "Name permission changed from #{data['changes'][0]} to #{data['changes'][1]} for #{data['user']}"
+      "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in name layer
+      for #{data['user']}"
     when['location_permission', 'changed']
-      "Location permission changed from #{data['changes'][0]} to #{data['changes'][1]} for #{data['user']}"
+      "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in location layer
+      for #{data['user']}"
     when['anonymous_name_location_permission', 'changed']
       anonymous_name_location_changed
     when['anonymous_layer_permission', 'changed']
-      "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in layer '#{data['name']}' for anonymous user"
+      "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in layer '#{data['name']}' for anonymous users"
     when['admin_permission','changed']
       admin_permission_changed data
     end
@@ -153,45 +155,46 @@ class Activity < ActiveRecord::Base
 
   def new_layer_membership_permission
     if (data['read'] && data['write'])
-      permission = 'Write'
+      permission = 'update'
     elsif (data['read'] && !data['write'])
-      permission = 'Read'
+      permission = 'read'
     else
-      permission = 'None'
+      permission = 'none'
     end
-    "#{permission} permission created in layer '#{data['name']}' for #{data['user']}"
+    "Permission changed from none to #{permission} in layer '#{data['name']}' for #{data['user']}"
   end
 
   def layer_membership_permission_changed
       write_changes = data['write']
       if (!write_changes[0] && write_changes[1])
-        "Permission changed from read to write in layer '#{data['name']}' for #{data['user']}"
+        "Permission changed from read to update in layer '#{data['name']}' for #{data['user']}"
       elsif (write_changes[0] && !write_changes[1])
-        "Permission changed from write to read in layer '#{data['name']}' for #{data['user']}"
+        "Permission changed from update to read in layer '#{data['name']}' for #{data['user']}"
       end
   end
 
   def layer_membership_permission_deleted
     if (data['write'])
-      previous_permission = "Write"
+      previous_permission = "update"
     else
-      previous_permission = "Read"
+      previous_permission = "read"
     end
-    "#{previous_permission} permission was deleted in layer '#{data['name']}' for #{data['user']}"
+    "Permission changed from #{previous_permission} to none in layer '#{data['name']}' for #{data['user']}"
   end
 
   def anonymous_name_location_changed
     built_in_layer = data['built_in_layer']
     previous_permission = data['changes'][0]
     new_permission = data['changes'][1]
-    "#{built_in_layer.capitalize} permission changed from #{previous_permission} to #{new_permission} for anonymous user"
+    "Permission changed from #{previous_permission} to #{new_permission} in
+    #{built_in_layer} layer for anonymous users"
   end
 
   def admin_permission_changed(data)
     if (data['value'])
-      "Administrator permissions were given to %{user}" % {user: data['user'] }
+      "%{user} became an administrator" % {user: data['user'] }
     else
-      "Administrator permissions were denied to %{user}" % {user: data['user'] }
+      "%{user} removed from administrators group" % {user: data['user'] }
     end
   end
 
