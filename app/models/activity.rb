@@ -45,32 +45,29 @@ class Activity < ActiveRecord::Base
     when ['site', 'deleted']
       _("Site %{site} was deleted") % {site: "'#{data['name']}'"}
     when ['membership', 'created']
-      "Member #{data['user']} was added"
+      _("Member %{user} was added") % {user: "#{data['user']}"}
     when ['membership', 'deleted']
-      "Member #{data['user']} was removed"
+      _("Member %{user} was removed") % {user: "#{data['user']}"}
     when ['layer_membership', 'created']
       new_layer_membership_permission
     when ['layer_membership', 'changed']
-      #It must be 'write' changes to be a valid layer_membership change.
-      return unless (data['write'].count == 2)
       layer_membership_permission_changed
     when ['layer_membership', 'deleted']
-      #Case added to generate test. In general, data['read'] has a value.
       if data['read']
         layer_membership_permission_deleted
       else
-        "Permission was deleted in layer '#{data['name']}'" unless (data['read'])
+        _("Permission was deleted in layer %{layer}") % {layer: "#{data['name']}"}
       end
     when ['name_permission', 'changed']
-      "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in name layer
-      for #{data['user']}"
+      _("Permission changed from %{previous_permission} to %{new_permission} in name layer
+      for %{user}") % {previous_permission: "#{data['changes'][0]}", new_permission: "#{data['changes'][1]}", user: "#{data['user']}"}
     when['location_permission', 'changed']
-      "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in location layer
-      for #{data['user']}"
+      _("Permission changed from %{previous_permission} to %{new_permission} in location layer
+      for #{data['user']}") % {previous_permission: "#{data['changes'][0]}", new_permission: "#{data['changes'][1]}", user: "#{data['user']}" }
     when['anonymous_name_location_permission', 'changed']
       anonymous_name_location_changed
     when['anonymous_layer_permission', 'changed']
-      "Permission changed from #{data['changes'][0]} to #{data['changes'][1]} in layer '#{data['name']}' for anonymous users"
+      _("Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for anonymous users") % {previous_permission: "#{data['changes'][0]}", new_permission: "#{data['changes'][1]}", layer: "'#{data['name']}'"}
     when['admin_permission','changed']
       admin_permission_changed data
     end
@@ -161,15 +158,16 @@ class Activity < ActiveRecord::Base
     else
       permission = 'none'
     end
-    "Permission changed from none to #{permission} in layer '#{data['name']}' for #{data['user']}"
+    _("Permission changed from none to %{permission} in layer %{layer} for %{user}") %
+    {permission: "#{permission}", layer: "'#{data['name']}'", user: "#{data['user']}"}
   end
 
   def layer_membership_permission_changed
       write_changes = data['write']
       if (!write_changes[0] && write_changes[1])
-        "Permission changed from read to update in layer '#{data['name']}' for #{data['user']}"
+        _("Permission changed from read to update in layer %{layer} for %{user}") % {layer: "'#{data['name']}'", user: "#{data['user']}"}
       elsif (write_changes[0] && !write_changes[1])
-        "Permission changed from update to read in layer '#{data['name']}' for #{data['user']}"
+        _("Permission changed from update to read in layer %{layer} for %{user}") % {layer:"'#{data['name']}'", user: "#{data['user']}"}
       end
   end
 
@@ -179,15 +177,15 @@ class Activity < ActiveRecord::Base
     else
       previous_permission = "read"
     end
-    "Permission changed from #{previous_permission} to none in layer '#{data['name']}' for #{data['user']}"
+    _("LALA Permission changed from %{previous_permission} to none in layer %{layer} for %{user}") % {previous_permission: "#{previous_permission}", layer: "'#{data['name']}'", user: "#{data['user']}"}
   end
 
   def anonymous_name_location_changed
     built_in_layer = data['built_in_layer']
     previous_permission = data['changes'][0]
     new_permission = data['changes'][1]
-    "Permission changed from #{previous_permission} to #{new_permission} in
-    #{built_in_layer} layer for anonymous users"
+    _("Permission changed from %{previous_permission} to %{new_permission} in
+    %{layer} layer for anonymous users") % {previous_permission: "#{previous_permission}", new_permission: "#{new_permission}", layer: "#{built_in_layer}"}
   end
 
   def admin_permission_changed(data)
