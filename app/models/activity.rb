@@ -191,9 +191,9 @@ class Activity < ActiveRecord::Base
 
   def admin_permission_changed(data)
     if (data['value'])
-      "%{user} became an administrator" % {user: data['user'] }
+      _("%{user} became an administrator") % {user: data['user'] }
     else
-      "%{user} removed from administrators group" % {user: data['user'] }
+      _("%{user} removed from administrators group") % {user: data['user'] }
     end
   end
 
