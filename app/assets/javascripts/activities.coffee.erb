@@ -19,6 +19,12 @@
 
     expand: => @expanded(true)
 
+  class ActivityGroup
+    constructor: () ->
+    @create_from: (activity_kinds) ->
+
+
+
   class ActivitiesViewModel
     constructor: (activities) ->
       @activities = ko.observableArray []
@@ -26,13 +32,17 @@
       @loading = ko.observable false
       @pushActivities activities
       @selectedCollectionIds = ko.observableArray $.map($('.collection_id'), (x) -> x.value)
-      @selectedKinds = ko.observableArray []
+
+      @selectedActivityGroups = ko.observableArray[]
+
+      @kinds = <%= Activity::Kinds.to_json %>
+
+      @allActivityGroups = ActivityGroup.create_many_from(@kinds)
 
       @collectionsCount = $('.collection_id').length
-      @kindsCount = <%= Activity::Kinds.length %>
 
       @selectedCollectionIds.subscribe => @refreshActivities()
-      @selectedKinds.subscribe => @refreshActivities()
+      @selectedActivityGroups.subscribe => @refreshActivities()
 
       #The elements in these arrays must keep the same order as their appearances in the index.
       @changedPermissions = ['name_permission,changed','location_permission,changed','layer_membership,created','layer_membership,deleted','layer_membership,changed']
@@ -63,15 +73,16 @@
       else if @selectedCollectionIds().length < @collectionsCount
         q.collection_ids = @selectedCollectionIds()
 
-      if @selectedKinds().length == 0
+      if @selectedActivityGroups().length == 0
         q.kinds = [0]
-      else if @selectedKinds().length < @kindsCount
-        q.kinds = @selectedKinds()
-        new_kinds = []
-        for item in q.kinds
-          do (item) =>
-            new_kinds = new_kinds.concat(item.split(';'))
-        q.kinds = new_kinds
+      else if @selectedActivityGroups().length < @kinds.length
+        q.kinds = @selectedActivityGroups().map((g) -> g.kinds).flatten
+
+        #new_kinds = []
+        #for item in q.kinds
+        #  do (item) =>
+        #    new_kinds = new_kinds.concat(item.split(';'))
+        #q.kinds = new_kinds
 
       q
 
@@ -87,22 +98,25 @@
       @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
 
     kindsFromActivities: =>
-      kinds = <%= Activity::Kinds.to_json %>
-      kinds_copy = kinds.slice(0)
+      ks = @kinds.slice(0)
+      kinds_copy = ks.slice(0)
 
       for kind in kinds_copy
-        i = kinds.indexOf(kind)
+        i = ks.indexOf(kind)
         if (@changedPermissions.indexOf(kind) > -1 || @anonymousChangedPermissions.indexOf(kind) > -1)
-          kinds.splice(i,1)
-      kinds.push(@changedPermissionsToString(@changedPermissions))
-      kinds.push(@changedPermissionsToString(@anonymousChangedPermissions))
-      kinds
+          ks.splice(i,1)
+      ks.push(@changedPermissionsToString(@changedPermissions))
+      ks.push(@changedPermissionsToString(@anonymousChangedPermissions))
+      ks
+
+    allActivityGroupsSelected: => @selectedActivityGroups().length == @allActivityGroups().length
+    noActivityGroupSelected: => @selectedActivityGroups().length == 0
 
     checkAllKinds: =>
-      @selectedKinds(@kindsFromActivities()) if @selectedKinds().length != @kindsCount
+      @selectedActivityGroups(@allActivityGroups()) unless @allActivityGroupsSelected()
 
     uncheckAllKinds: =>
-      @selectedKinds([]) if @selectedKinds().length != 0
+      @selectedActivityGroups([]) unless @noActivityGroupSelected()
 
     viewAsRSS: =>
       q = @setQueryParams({})
