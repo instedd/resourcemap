@@ -26,41 +26,16 @@
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
             %legend Events
             %div{style: 'height:150px'}
-              %table{style:'width:500px'}
-                %tr
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'collection,created', type: 'checkbox', checked: 'checked'} Collection created
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'site,created', type: 'checkbox', checked: 'checked'} Site created
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'layer,created', type: 'checkbox', checked: 'checked'} Layer created
-                %tr
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'collection,imported', type: 'checkbox', checked: 'checked'} Collection imported
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'site,changed', type: 'checkbox', checked: 'checked'} Site changed
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'layer,changed', type: 'checkbox', checked: 'checked'} Layer changed
-                %tr.spaceUnder
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'collection,csv_imported', type: 'checkbox', checked: 'checked'} Collection CSV imported
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'site,deleted', type: 'checkbox', checked: 'checked'} Site deleted
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'layer,deleted', type: 'checkbox', checked: 'checked'} Layer deleted
-                %tr
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'admin_permission,changed', type: 'checkbox', checked: 'checked'} Admin permissions changed
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'membership,deleted', type: 'checkbox', checked: 'checked'} Member removed
-                %tr
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'name_permission,changed;location_permission,changed;layer_membership,created;layer_membership,deleted;layer_membership,changed', type: 'checkbox', checked: 'checked'} Member permissions changed
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'membership,created', type: 'checkbox', checked: 'checked'} Member added
-                %tr
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'anonymous_name_location_permission,changed;anonymous_layer_permission,changed', type: 'checkbox', checked: 'checked'} Anonymous permissions changed
+              %table{style:'width:650px'}
+                %tbody
+                  /ko foreach: rows
+                  %tr
+                    /ko foreach: $data
+                    %td
+                      %input{ko(checked: 'selected'), type: 'checkbox'}
+                      %span{ko(text: 'description')}
+                    //ko
+                  //ko
 
       %tr
         %td

@@ -20,10 +20,33 @@
     expand: => @expanded(true)
 
   class ActivityGroup
-    constructor: () ->
-    @create_from: (activity_kinds) ->
+    constructor: (kinds, description) ->
+      @kinds = kinds
+      @description = description
+      @selected = ko.observable true
 
+    @member_permissions_kinds = ['name_permission,changed','location_permission,changed','layer_membership,created','layer_membership,deleted','layer_membership,changed']
 
+    @anonymous_permissions_kinds = ['anonymous_name_location_permission,changed','anonymous_layer_permission,changed']
+
+    @all_activity_groups =
+      [
+        new ActivityGroup(['collection,created'], __("Collection created")),
+        new ActivityGroup(['site,created'], __("Site created")),
+        new ActivityGroup(['layer,created'], __("Layer created")),
+        new ActivityGroup(['collection,imported'], __("Collection imported")),
+        new ActivityGroup(['site,changed'], __("Site changed")),
+        new ActivityGroup(['layer,changed'], __("Layer changed")),
+        new ActivityGroup(['collection,csv_imported'], __("Collection CSV imported")),
+        new ActivityGroup(['site,deleted'], __("Site deleted")),
+        new ActivityGroup(['layer,deleted'], __("Layer deleted")),
+        new ActivityGroup(['admin_permission,changed'], __("Admin permissions changed")),
+        new ActivityGroup(['membership,deleted'], __("Member removed")),
+        new ActivityGroup(['site,deleted'], __("Site deleted")),
+        new ActivityGroup(@member_permissions_kinds, __("Member permissions changed")),
+        new ActivityGroup(['membership,created'], __("Member added")),
+        new ActivityGroup(@anonymous_permissions_kinds, __("Anonymous permissions changed"))
+      ]
 
   class ActivitiesViewModel
     constructor: (activities) ->
@@ -33,20 +56,26 @@
       @pushActivities activities
       @selectedCollectionIds = ko.observableArray $.map($('.collection_id'), (x) -> x.value)
 
-      @selectedActivityGroups = ko.observableArray[]
-
       @kinds = <%= Activity::Kinds.to_json %>
 
-      @allActivityGroups = ActivityGroup.create_many_from(@kinds)
+      @activityGroups = ActivityGroup.all_activity_groups
+
+      @row1 = @activityGroups[0..2]
+      @row2 = @activityGroups[3..5]
+      @row3 = @activityGroups[6..8]
+      @row4 = @activityGroups[9..11]
+      @row5 = @activityGroups[12..14]
+
+      @rows = [@row1, @row2, @row3, @row4, @row5]
+
+      @selectedActivityGroups = ko.computed () => _.filter(@activityGroups, (g) -> g.selected())
+
 
       @collectionsCount = $('.collection_id').length
 
       @selectedCollectionIds.subscribe => @refreshActivities()
-      @selectedActivityGroups.subscribe => @refreshActivities()
 
-      #The elements in these arrays must keep the same order as their appearances in the index.
-      @changedPermissions = ['name_permission,changed','location_permission,changed','layer_membership,created','layer_membership,deleted','layer_membership,changed']
-      @anonymousChangedPermissions = ['anonymous_name_location_permission,changed','anonymous_layer_permission,changed']
+      @selectionObserver = @selectedActivityGroups.subscribe(=> @refreshActivities())
 
     pushActivities: (activities) =>
       if activities.length == 25
@@ -76,13 +105,7 @@
       if @selectedActivityGroups().length == 0
         q.kinds = [0]
       else if @selectedActivityGroups().length < @kinds.length
-        q.kinds = @selectedActivityGroups().map((g) -> g.kinds).flatten
-
-        #new_kinds = []
-        #for item in q.kinds
-        #  do (item) =>
-        #    new_kinds = new_kinds.concat(item.split(';'))
-        #q.kinds = new_kinds
+        q.kinds = _.flatten(@selectedActivityGroups().map((g) => g.kinds))
 
       q
 
@@ -97,26 +120,19 @@
     uncheckAllCollectionIds: =>
       @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
 
-    kindsFromActivities: =>
-      ks = @kinds.slice(0)
-      kinds_copy = ks.slice(0)
+    allActivityGroupsSelected: =>  @selectedActivityGroups().length == @activityGroups.length
 
-      for kind in kinds_copy
-        i = ks.indexOf(kind)
-        if (@changedPermissions.indexOf(kind) > -1 || @anonymousChangedPermissions.indexOf(kind) > -1)
-          ks.splice(i,1)
-      ks.push(@changedPermissionsToString(@changedPermissions))
-      ks.push(@changedPermissionsToString(@anonymousChangedPermissions))
-      ks
-
-    allActivityGroupsSelected: => @selectedActivityGroups().length == @allActivityGroups().length
     noActivityGroupSelected: => @selectedActivityGroups().length == 0
 
-    checkAllKinds: =>
-      @selectedActivityGroups(@allActivityGroups()) unless @allActivityGroupsSelected()
+    setAllKinds: (checked, condition) =>
+      @selectionObserver.dispose()
+      (g.selected(checked) for g in @activityGroups) unless condition
+      @refreshActivities()
+      @selectionObserver = @selectedActivityGroups.subscribe(=> @refreshActivities())
 
-    uncheckAllKinds: =>
-      @selectedActivityGroups([]) unless @noActivityGroupSelected()
+    checkAllKinds: => @setAllKinds true, @allActivityGroupsSelected()
+
+    uncheckAllKinds: => @setAllKinds false, @noActivityGroupSelected()
 
     viewAsRSS: =>
       q = @setQueryParams({})
@@ -128,16 +144,10 @@
 
     refreshTimeago: => $('.timeago').timeago()
 
-    changedPermissionsToString: (permissions) =>
-      changedPermissionsToString = ""
-      for permission in permissions
-        changedPermissionsToString = changedPermissionsToString.concat(permission).concat(';')
-      changedPermissionsToString.substring(0, changedPermissionsToString.length - 1)
-
   $.get "/activity.json", {}, (activities) =>
     window.model = new ActivitiesViewModel(activities)
     ko.applyBindings window.model
-    window.model.checkAllKinds( )
+    window.model.checkAllKinds()
 
     $('.hidden-until-loaded').show()
     window.model.refreshTimeago()
