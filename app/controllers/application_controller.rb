@@ -56,6 +56,10 @@ class ApplicationController < ActionController::Base
     super || guest_user
   end
 
+  def current_ability
+    @current_ability || current_user.ability(request.format)
+  end
+
   def after_sign_in_path_for(resource)
     stored_location_for(resource) || collections_path
   end
