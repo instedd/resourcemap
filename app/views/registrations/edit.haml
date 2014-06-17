@@ -17,14 +17,14 @@
         = f.password_field :password_confirmation
     .field.w30
       = f.label :phone_number
-      %p 85512345678
+      %p (for example: 85512345678)
       = f.telephone_field :phone_number, :type => 'text'
     .actions
       %button.white{type: "submit"} Update
   - if Guisso.enabled?
     %hr/
     %p
-      = link_to "Change my password", guisso_settings_path, "target" => "_blank"
+      = link_to "Change my password", guisso_settings_path(resource_name), "target" => "_blank"
   - else
     %hr/
     %p
