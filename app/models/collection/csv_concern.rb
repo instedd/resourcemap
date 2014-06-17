@@ -88,21 +88,17 @@ module Collection::CsvConcern
   end
 
   def decode_hierarchy_csv(csv)
-
-    # First read all items into a hash
+    # First read all items into an array
     # And validate it's content
     items = validate_format(csv)
 
+    # Index items by id so we find them faster
+    items_by_id = items.index_by { |item| item[:id] }
 
     # Add to parents
-    items.each do |order, item|
+    items.each do |item|
       if item[:parent].present? && !item[:error].present?
-        parent_candidates = items.select{|key, hash| hash[:id] == item[:parent]}
-
-        if parent_candidates.any?
-          parent = parent_candidates.first[1]
-        end
-
+        parent = items_by_id[item[:parent]]
         if parent
           parent[:sub] ||= []
           parent[:sub] << item
@@ -110,9 +106,8 @@ module Collection::CsvConcern
       end
     end
 
-
     # Remove those that have parents, and at the same time delete their parent key
-    items = items.reject do |order, item|
+    items = items.reject do |item|
       if item[:parent] && !item[:error].present?
         item.delete :parent
         true
@@ -121,7 +116,7 @@ module Collection::CsvConcern
       end
     end
 
-    items.values
+    items
   end
 
   def generate_error_description_list(hierarchy_csv)
@@ -141,50 +136,55 @@ module Collection::CsvConcern
   end
 
   def validate_format(csv)
-    i = 0
-    items = {}
-    csv.each do |row|
-      item = {}
-      if row[0] == 'ID'
+    first = csv.first
+    if first && first[0] == 'ID'
+      csv = csv[1 .. -1]
+    end
+
+    # First map all rows to items
+    items = csv.each_with_index.map do |row, index|
+      order = index + 1
+
+      unless row.length == 3 || row.length == 4
+        item = {}
+        item[:order] = order
+        item[:error] = "Wrong format."
+        item[:error_description] = "Invalid column number"
+        next item
+      end
+
+      id, parent, name, type = row.map { |e| e && e.strip }
+
+      item = {order: order, id: id, name: name}
+      item[:parent] = parent if parent.present?
+      item[:type] = type if type.present?
+      item
+    end
+
+    # Get all ids so we can find parents quickly
+    all_ids = items.map { |item| item[:id] }.to_set
+
+    # These are the ids that we saw so far
+    current_ids = Set.new
+
+    # Now process errors
+    items.select { |item| !item[:error] }.each do |item|
+      id = item[:id]
+      if current_ids.include? id
+        item[:error] = "Invalid id."
+        item[:error_description] = "Hierarchy id should be unique"
         next
-      else
-        i = i+1
-        item[:order] = i
+      end
+      current_ids.add id
 
-        if !(row.length == 3 || row.length == 4)
-          item[:error] = "Wrong format."
-          item[:error_description] = "Invalid column number"
-        else
-
-          name = row[2].strip
-
-          #Check unique id
-          id = row[0].strip
-          if items.any?{|item| item.second[:id] == id}
-            item[:error] = "Invalid id."
-            item[:error_description] = "Hierarchy id should be unique"
-            error = true
-          end
-
-          #Check parent id exists
-          parent_id = row[1]
-          if(parent_id.present? && !csv.any?{|csv_row| csv_row[0].strip == parent_id.strip})
-            item[:error] = "Invalid parent value."
-            item[:error_description] = "ParentID should match one of the Hierarchy ids"
-            error = true
-          end
-
-          if !error
-            item[:id] = id
-            item[:parent] = row[1].strip if row[1].present?
-            item[:name] = name
-            item[:type] = row[3].strip if row[3].present?
-          end
-        end
-
-        items[item[:order]] = item
+      parent = item[:parent]
+      if parent && !all_ids.include?(parent)
+        item[:error] = "Invalid parent value."
+        item[:error_description] = "ParentID should match one of the Hierarchy ids"
+        next
       end
     end
+
     items
   end
 

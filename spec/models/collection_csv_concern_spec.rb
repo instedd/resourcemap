@@ -200,7 +200,7 @@ describe Collection::CsvConcern do
       json.should eq([
         {order: 1, id: '1', name: 'Dispensary', },
         {order: 2, id: '2', name: 'Health Centre'},
-        {order: 3, error: 'Invalid parent value.', error_description: 'ParentID should match one of the Hierarchy ids'},
+        {order: 3, id: '101', name: 'Lab Dispensary', parent: '10', error: 'Invalid parent value.', error_description: 'ParentID should match one of the Hierarchy ids'},
       ])
     end
 
@@ -247,8 +247,8 @@ describe Collection::CsvConcern do
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
       json.should eq([
         {order: 1, id: '1', name: 'Location 1'},
-        {order: 2, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'},
-        {order: 3, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'}
+        {order: 2, id: '1', name: 'Location 1', error: 'Invalid id.', error_description: 'Hierarchy id should be unique'},
+        {order: 3, id: '1', name: 'Location 1', error: 'Invalid id.', error_description: 'Hierarchy id should be unique'}
       ])
     end
 
@@ -299,5 +299,4 @@ describe Collection::CsvConcern do
 
     res.should == "Error: Wrong format. Invalid column number in line 1.<br/>Error: Wrong format. Invalid column number in line 2."
   end
-
 end
