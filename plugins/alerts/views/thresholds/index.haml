@@ -12,8 +12,8 @@
       .toptitle
         .ord-buttons
           %input{ ko(value: :ord) }
-          %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
-          %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
+          %button.up{ ko(click: '$root.moveThresholdUp'), title: _('Move up') }
+          %button.down{ ko(click: '$root.moveThresholdDown'), title: _('Move down') }
         %span
 
           %span{ ko(text: :propertyName) }

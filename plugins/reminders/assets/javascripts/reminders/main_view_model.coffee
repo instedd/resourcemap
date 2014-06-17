@@ -38,7 +38,7 @@ onReminders ->
       @currentReminder(null)
       
     deleteReminder: (reminder) =>
-      if window.confirm 'Are you sure to delete reminder'
+      if window.confirm(__('Are you sure to delete reminder'))
         @deletedReminder = reminder
         $.post "/plugin/reminders/collections/#{@collectionId()}/reminders/#{reminder.id}.json", _method: 'delete', @deleteReminderCallback
 

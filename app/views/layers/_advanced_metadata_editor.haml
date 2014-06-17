@@ -15,7 +15,7 @@
     %button.clist-remove{ko(click: '$root.removeAttribute'), title: 'Remove attribute'}
   //ko
   %li{ko(with: '$root.newAttribute()')}
-    %input.arrowinput{ko(value: :key, hasfocus: :hasFocus, valueUpdate: :afterkeydown, event: {keypress: '$root.newAttributeKeyPress', blur: '$root.addAttribute'}), placeholder: "Key", style: 'position:relative;top:2px'}
-    %input.ux-text{ko(value: :value, valueUpdate: :afterkeydown, event: {keypress: '$root.newAttributeKeyPress', blur: '$root.addAttribute'}), placeholder: "Value", style: 'width: 150px !important'}
+    %input.arrowinput{ko(value: :key, hasfocus: :hasFocus, valueUpdate: :afterkeydown, event: {keypress: '$root.newAttributeKeyPress', blur: '$root.addAttribute'}), placeholder: _("Key"), style: 'position:relative;top:2px'}
+    %input.ux-text{ko(value: :value, valueUpdate: :afterkeydown, event: {keypress: '$root.newAttributeKeyPress', blur: '$root.addAttribute'}), placeholder: _("Value"), style: 'width: 150px !important'}
     %button.clist-add{ko(click: '$root.addAttribute', enable: '$root.attributeValid'), title: 'Add attribute'}
 //ko
