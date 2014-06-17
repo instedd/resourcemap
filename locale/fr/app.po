@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-17 12:32-0300\n"
+"POT-Creation-Date: 2014-06-17 15:28-0300\n"
 "PO-Revision-Date: 2014-05-30 19:39+0200\n"
 "Last-Translator:  <hcamara@uw.edu>\n"
 "Language-Team: French\n"
@@ -26,9 +26,6 @@ msgstr ""
 
 msgid "\""
 msgstr "\""
-
-msgid "\"Permission changed from %{previous_permission} to %{new_permission} in location layer for #{data['user']}\""
-msgstr ""
 
 msgid "%s"
 msgstr "%s"
@@ -51,14 +48,11 @@ msgstr "champ %{kind} %{name} %{code} a été supprimé"
 msgid "%{kind} field '%{name}' %{code} %{key} changed to %{field_key}"
 msgstr ""
 
-msgid "%{user} became an administrator"
-msgstr ""
-
-msgid "%{user} removed from administrators group"
-msgstr ""
-
 msgid "(85512345678)"
 msgstr "(855512345678)"
+
+msgid "(for example: 85512345678)"
+msgstr ""
 
 msgid "(no value)"
 msgstr "(aucune valeur)"
@@ -72,9 +66,6 @@ msgstr " "
 
 msgid ",change icon to:"
 msgstr "changer l'icône en :"
-
-msgid "85512345678"
-msgstr "85512345678"
 
 msgid "API access"
 msgstr "accès à l'API"
@@ -144,9 +135,6 @@ msgstr "Ajuster"
 msgid "Admin"
 msgstr "Administration"
 
-msgid "Admin permissions changed"
-msgstr ""
-
 msgid "Advanced"
 msgstr "Avancé"
 
@@ -180,9 +168,6 @@ msgstr "Passerelle SMS téléphone Android - Configuration avancée"
 
 msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
 msgstr "Passerelle SMS téléphone Android - Configuration de base (recommandée)"
-
-msgid "Anonymous permissions changed"
-msgstr ""
 
 msgid "Anonymous users"
 msgstr ""
@@ -340,9 +325,13 @@ msgstr ""
 #, fuzzy
 #, fuzzy
 #, fuzzy
-msgid "Collection created"
+#, fuzzy
+msgid "Collection|Icon"
 msgstr "Collecte"
 
+#, fuzzy
+#, fuzzy
+#, fuzzy
 #, fuzzy
 msgid "Collection|Icon"
 msgstr "Collecte"
@@ -360,6 +349,7 @@ msgid "Collection|Logo"
 msgstr "Collecte"
 
 #, fuzzy
+#, fuzzy
 msgid "Collection|Max lat"
 msgstr "Collecte"
 
@@ -369,8 +359,7 @@ msgstr "Collecte"
 
 #, fuzzy
 #, fuzzy
-#, fuzzy
-msgid "Collection imported"
+msgid "Collection|Max lat"
 msgstr "Collecte"
 
 #, fuzzy
@@ -384,7 +373,8 @@ msgstr "Collecte"
 #, fuzzy
 #, fuzzy
 #, fuzzy
-msgid "Collection imported"
+#, fuzzy
+msgid "Collection|Icon"
 msgstr "Collecte"
 
 msgid "Column Settings"
@@ -763,6 +753,8 @@ msgstr "Couches"
 #, fuzzy
 #, fuzzy
 #, fuzzy
+#, fuzzy
+#, fuzzy
 msgid "Site '%s' successfully created"
 msgstr "Site %{site} a été créé"
 
@@ -778,6 +770,8 @@ msgstr "Couche %{layer} a été supprimée"
 msgid "Layer %{layer} was renamed to %{changes}"
 msgstr "Couche %{layer} a été renommée %{changes}"
 
+#, fuzzy
+#, fuzzy
 #, fuzzy
 #, fuzzy
 #, fuzzy
@@ -891,23 +885,6 @@ msgstr "La carte est prête :"
 
 msgid "Medicine is at its best when it helps people avoid illness in the first place. Resource Map aids prevention efforts by giving teams new ways to manage key supply chain items, such as vaccines, vitamins, and other disease prevention tools. And by uploading statistics on various measures of health, you can even use Resource Map to monitor the effectiveness of your interventions. After all, a healthy community is one of your most important resources."
 msgstr "La meilleure situation est lorsque la médecine aide les populations à éviter les maladies. La Carte des ressources facilite les efforts de prévention en donnant aux équipes de nouvelles façons de gérer les éléments clés de la chaîne d'approvisionnement tels que les vaccins, les vitamines et les'autres outils de prévention des maladies. En téléchargeant en amont les statistiques sur diverses mesures de santé, vous pouvez même utiliser la Carte des ressources pour surveiller l'efficacité de vos interventions. Après tout, une communauté en bonne santé est une de vos ressources les plus importantes."
-
-#, fuzzy
-msgid "Member %{user} was added"
-msgstr "Couche %{layer} a été supprimée"
-
-#, fuzzy
-msgid "Member %{user} was removed"
-msgstr "Couche %{layer} a été supprimée"
-
-msgid "Member added"
-msgstr ""
-
-msgid "Member permissions changed"
-msgstr ""
-
-msgid "Member removed"
-msgstr ""
 
 msgid "Member → Site → Layer"
 msgstr "Membre → Site → Couche"
@@ -1047,30 +1024,6 @@ msgstr "Mot de passe"
 msgid "Password :"
 msgstr "Mot de passe :"
 
-msgid "Permission changed from %{previous_permission} to %{new_permission} in %{layer} layer for anonymous users"
-msgstr ""
-
-msgid "Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for anonymous users"
-msgstr ""
-
-msgid "Permission changed from %{previous_permission} to %{new_permission} in name layer for %{user}"
-msgstr ""
-
-msgid "Permission changed from %{previous_permission} to none in layer %{layer} for %{user}"
-msgstr ""
-
-msgid "Permission changed from none to %{permission} in layer %{layer} for %{user}"
-msgstr ""
-
-msgid "Permission changed from read to update in layer %{layer} for %{user}"
-msgstr ""
-
-msgid "Permission changed from update to read in layer %{layer} for %{user}"
-msgstr ""
-
-msgid "Permission was deleted in layer %{layer}"
-msgstr ""
-
 msgid "Permissions per layer"
 msgstr "Droits d'accès par couche"
 
@@ -1079,10 +1032,6 @@ msgstr "S'il vous plaît"
 
 msgid "Please contact InSTEDD for support."
 msgstr "Veuillez contacter InSTEDD à des fins d'appui."
-
-#, fuzzy
-msgid "Please enter a name for your collection."
-msgstr "Il n'y pas de cliché pour cette collecte."
 
 # CSD=?
 msgid "Please fill all the required information to configure this collection to be accessible via CSD API."
@@ -1289,6 +1238,8 @@ msgstr "Site %{site} a été créé"
 msgid "Site %{site} was deleted"
 msgstr "Site %{site} a été supprimé"
 
+#, fuzzy
+#, fuzzy
 #, fuzzy
 #, fuzzy
 #, fuzzy
@@ -1615,7 +1566,8 @@ msgstr ""
 #, fuzzy
 #, fuzzy
 #, fuzzy
-msgid "Collection created"
+#, fuzzy
+msgid "Collection|Icon"
 msgstr "Collecte"
 
 msgid "User|Confirmation sent at"
@@ -1802,6 +1754,9 @@ msgstr "au fur et à mesure qu'ils se produisent, en utilisant une carte en dire
 msgid "by knowing where your resources are in real time"
 msgstr "en sachant où vos ressources se trouvent en temps réel"
 
+msgid "can't be blank"
+msgstr ""
+
 msgid "check all"
 msgstr "vérifier tout"
 
@@ -1966,6 +1921,21 @@ msgstr "→ ; dans"
 
 msgid "→;"
 msgstr "→ ;"
+
+#~ msgid "85512345678"
+#~ msgstr "85512345678"
+
+#, fuzzy
+#~ msgid "Member %{user} was added"
+#~ msgstr "Couche %{layer} a été supprimée"
+
+#, fuzzy
+#~ msgid "Member %{user} was removed"
+#~ msgstr "Couche %{layer} a été supprimée"
+
+#, fuzzy
+#~ msgid "Please enter a name for your collection."
+#~ msgstr "Il n'y pas de cliché pour cette collecte."
 
 #~ msgid " \"'#{name}'\""
 #~ msgstr "\"'#{name}'\""
