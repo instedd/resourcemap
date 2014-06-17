@@ -20,6 +20,8 @@ class @MembershipsViewModel
 
 
   destroyMembership: (membership) =>
-    if confirm("Are you sure you want to remove #{membership.userDisplayName()} from the collection?")
+    confirmation = Jed.sprintf(__("Are you sure you want to remove %s from the collection?"), membership.userDisplayName())
+
+    if confirm(confirmation)
       $.post "/collections/#{collectionId}/memberships/#{membership.userId()}.json", {_method: 'delete'}, =>
         @memberships.remove membership

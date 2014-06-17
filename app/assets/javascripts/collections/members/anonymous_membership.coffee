@@ -5,7 +5,7 @@ class @AnonymousMembership extends Membership
     super
     _self = @
     @showAdminCheckbox = false
-    @userDisplayName = "Anonymous users"
+    @userDisplayName = __("Anonymous users")
     @isAnonymous = true
     @set_layer_access_path = ko.computed => "/collections/#{@collectionId()}/memberships/set_layer_access_anonymous_user.json"
     @set_access_path = ko.computed => "/collections/#{@collectionId()}/memberships/set_access_anonymous_user.json"

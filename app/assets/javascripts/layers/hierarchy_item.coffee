@@ -69,13 +69,13 @@ onLayers ->
       @nameError(true)
       if !@name()
         @nameError(true)
-        @errorMessage("Item name is required.")
+        @errorMessage(__("Item name is required."))
       if !@id()
         @idError(true)
-        @errorMessage(@errorMessage() + " Item id is required.")
+        @errorMessage(@errorMessage() + __(" Item id is required."))
       if window.model.currentHierarchyUnderEdition().findById(@id()).length > 1
         @idError(true)
-        @errorMessage(@errorMessage() + " Item id already exists.")
+        @errorMessage(@errorMessage() + __(" Item id already exists."))
 
     calculateErrorMessageForNewItem: =>
       @newItemErrorMessage("")
@@ -83,13 +83,13 @@ onLayers ->
       @newItemNameError(false)
       if !@newItemName()
         @newItemNameError(true)
-        @newItemErrorMessage("Item name is required.")
+        @newItemErrorMessage(__("Item name is required."))
       if !@newItemIdUI()
         @newItemIdError(true)
-        @newItemErrorMessage(@newItemErrorMessage() + " Item id is required.")
+        @newItemErrorMessage(@newItemErrorMessage() + __(" Item id is required."))
       if window.model.currentHierarchyUnderEdition().findById(@newItemIdUI()).length > 1
         @newItemIdError(true)
-        @newItemErrorMessage(@newItemErrorMessage() + " Item id already exists.")
+        @newItemErrorMessage(@newItemErrorMessage() + __(" Item id already exists."))
 
     saveChanges: =>
       @calculateErrorMessage()
@@ -135,7 +135,7 @@ onLayers ->
       @addingItem(false)
 
     deleteItem: =>
-      confirmation = confirm("Do you want to delete this item and its children?")
+      confirmation = confirm(__("Do you want to delete this item and its children?"))
       @parent.hierarchyItems.remove(this) if confirmation
 
     collapseAll: =>

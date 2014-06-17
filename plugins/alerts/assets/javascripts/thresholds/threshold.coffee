@@ -27,14 +27,14 @@ onThresholds -
         if $.trim(@propertyName()).length > 0
           return null
         else
-          return "Alert property's name is missing"
+          return __("Alert property's name is missing")
       @notificationMessageError = ko.computed =>
         return null if @isNotify() == "false"
         return null if(!@isNotify())
         if $.trim(@messageNotification()).length > 0
           return null
         else
-          return "Notification's message is missing"
+          return __("Notification's message is missing")
       @error = ko.computed =>
         return "Can't save: " + @propertyNameError() if @propertyNameError()
         return "the threshold must have at least one condition" if @conditions().length is 0
