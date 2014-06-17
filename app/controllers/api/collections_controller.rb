@@ -5,6 +5,7 @@ class Api::CollectionsController < ApiController
   authorize_resource :collection, :decent_exposure => true, only: [:destroy]
 
   before_filter :authenticate_collection_user!, :except => [:create, :show, :index]
+  skip_before_filter :authenticate_api_user!, :only => [:show]
 
   expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
 

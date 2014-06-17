@@ -4,7 +4,7 @@ class ApiController < ApplicationController
   skip_before_filter :redirect_to_localized_url
 
   skip_before_filter :verify_authenticity_token
-  #before_filter :authenticate_api_user!
+  before_filter :authenticate_api_user!
   around_filter :rescue_with_check_api_docs
 
   def rescue_with_check_api_docs

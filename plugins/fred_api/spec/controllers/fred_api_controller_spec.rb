@@ -18,6 +18,13 @@ describe FredApiController do
 
   describe "GET facility" do
 
+    let!(:public_collection) { user.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read')) }
+    let!(:public_layer) {public_collection.layers.make(anonymous_user_permission: 'read')}
+    let!(:public_field) {public_layer.text_fields.make :code => 'public_field'}
+    let!(:public_site) { public_collection.sites.make :properties => {
+      public_field.es_code => "public"
+    }}
+
     let!(:site) { collection.sites.make }
 
     let!(:site_with_properties) { collection.sites.make :properties => {
@@ -52,6 +59,20 @@ describe FredApiController do
       json['uuid'].should eq(site.uuid)
       json["active"].should eq(true)
       json["href"].should start_with("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+
+    end
+
+    it 'anonymous should get facility if collection is public' do
+      sign_out user
+      get :show_facility, id: public_site.id, format: 'json', collection_id: public_collection.id
+      json = JSON.parse response.body
+      json["name"].should eq(public_site.name)
+      json["coordinates"][0].should eq(public_site.lng)
+      json["coordinates"][0].should eq(public_site.lat)
+      json["properties"]["public_field"].should eq("public")
+    end
+
+    it 'anonymous should get all facilities if collection is public' do
 
     end
 
@@ -410,10 +431,10 @@ describe FredApiController do
       response.should be_success
     end
 
-    it "should return 401 if the user is not signed_in" do
+    it "should return 403 if anonymous user attempts to get a site of a non public collection" do
       sign_out user
       get :show_facility, id: site.id, format: 'json', collection_id: collection.id
-      response.status.should eq(401)
+      response.status.should eq(403)
     end
 
     it "should return 403 if user is do not have permission to access the site" do
