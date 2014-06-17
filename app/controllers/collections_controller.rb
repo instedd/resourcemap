@@ -37,13 +37,15 @@ class CollectionsController < ApplicationController
   def import_layers_from
     the_other_collection = Collection.find params[:other_id]
 
-    redirect_to collection_layers_path(collection), notice: "Imported layers from #{the_other_collection.name}" unless current_user.admins? the_other_collection
+    notice_text = _("Imported layers from %{collection_name}") % { collection_name: the_other_collection.name }
+
+    redirect_to collection_layers_path(collection), notice: notice_text unless current_user.admins? the_other_collection
 
     #TODO: refactor :)
     json_layers = the_other_collection.layers.includes(:fields).all.as_json(include: :fields).to_json
 
     collection.import_schema json_layers, current_user
-    redirect_to collection_layers_path(collection), notice: "Imported layers from #{the_other_collection.name}"
+    redirect_to collection_layers_path(collection), notice: notice_text
   end
 
   def current_user_membership
@@ -53,7 +55,7 @@ class CollectionsController < ApplicationController
   end
 
   def render_breadcrumbs
-    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
+    add_breadcrumb _("Collections"), 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
     if params.has_key? :collection_id
       add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
@@ -64,8 +66,8 @@ class CollectionsController < ApplicationController
   end
 
   def new
-    add_breadcrumb "Collections", collections_path
-    add_breadcrumb "Create new collection", nil
+    add_breadcrumb _("Collections"), collections_path
+    add_breadcrumb _("Create new collection"), nil
   end
 
   def create
@@ -76,7 +78,7 @@ class CollectionsController < ApplicationController
       current_user.update_successful_outcome_status
       current_user.save!
       respond_to do |format|
-        format.html { redirect_to collection_path(collection), notice: "Collection #{collection.name} created" }
+        format.html { redirect_to collection_path(collection), notice: _("Collection %{collection_name} created") % {collection_name: collection.name} }
         format.json { render_json collection }
       end
     else
@@ -90,7 +92,7 @@ class CollectionsController < ApplicationController
       render_json({url: collection.logo_url(:grayscale)})
     elsif collection.update_attributes params[:collection]
       collection.recreate_index
-      redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
+      redirect_to collection_settings_path(collection), notice: _("Collection %{collection_name} updated") % { collection_name: collection.name }
     else
       render :settings
     end
@@ -98,7 +100,7 @@ class CollectionsController < ApplicationController
 
   def show
     @snapshot = Snapshot.new
-    add_breadcrumb "Properties", '#'
+    add_breadcrumb _("Properties"), '#'
     respond_to do |format|
       format.html
       format.json { render_json collection }
@@ -124,10 +126,10 @@ class CollectionsController < ApplicationController
   def destroy
     if params[:only_sites]
       collection.delete_sites_and_activities
-      redirect_to collection_path(collection), notice: "Collection #{collection.name}'s sites deleted"
+      redirect_to collection_path(collection), notice: _("Collection %{collection_name}'s sites deleted") % {collection_name: collection.name}
     else
       collection.destroy
-      redirect_to collections_path, notice: "Collection #{collection.name} deleted"
+      redirect_to collections_path, notice: _("Collection %{collection_name} deleted") % {collection_name: collection.name}
     end
   end
 
@@ -143,9 +145,9 @@ class CollectionsController < ApplicationController
   def create_snapshot
     @snapshot = Snapshot.create(date: Time.now, name: params[:snapshot][:name], collection: collection)
     if @snapshot.valid?
-      redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} created"
+      redirect_to collection_path(collection), notice: _("Snapshot %{name} created") % {name: params[:name] }
     else
-      flash[:error] = "Snapshot could not be created: #{@snapshot.errors.to_a.join ", "}"
+      flash[:error] = _("Snapshot could not be created: %{errors}") % {errors: @snapshot.errors.to_a.join(", ")}
       redirect_to collection_path(collection)
     end
   end
@@ -156,7 +158,7 @@ class CollectionsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        flash[:notice] = "Snapshot #{loaded_snapshot.name} unloaded" if loaded_snapshot
+        flash[:notice] = _("Snapshot %{snapshot_name} unloaded") % {snapshot_name: loaded_snapshot.name} if loaded_snapshot
         redirect_to  collection_path(collection) }
       format.json { render_json :ok }
     end
@@ -164,7 +166,7 @@ class CollectionsController < ApplicationController
 
   def load_snapshot
     if current_user_snapshot.go_to!(params[:name])
-      redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} loaded"
+      redirect_to collection_path(collection), notice: _("Snapshot %{name} loaded") % {name: params[:name]}
     end
   end
 
