@@ -68,12 +68,28 @@ describe FredApiController do
       json = JSON.parse response.body
       json["name"].should eq(public_site.name)
       json["coordinates"][0].should eq(public_site.lng)
-      json["coordinates"][0].should eq(public_site.lat)
+      json["coordinates"][1].should eq(public_site.lat)
       json["properties"]["public_field"].should eq("public")
     end
 
     it 'anonymous should get all facilities if collection is public' do
+      sign_out user
+      get :facilities, format: 'json', collection_id: public_collection.id
+      response.should be_success
+      json = (JSON.parse response.body)["facilities"]
+      json.length.should eq(1)
+    end
 
+    it 'anonymous should not get facility if collection is not public' do
+      sign_out user
+      get :show_facility, id: site.id, format: 'json', collection_id: collection.id
+      response.status.should eq(403)
+    end
+
+    it 'anonymous should not get all facilities if collection is not public' do
+      sign_out user
+      get :facilities, format: 'json', collection_id: collection.id
+      response.status.should eq(403)
     end
 
     it 'should get facilities if user is member of the collection' do

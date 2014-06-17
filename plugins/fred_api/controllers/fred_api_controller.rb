@@ -72,7 +72,7 @@ class FredApiController < ApplicationController
 
   def facilities
     authorize! :read, collection
-    search = collection.new_search current_user_id: current_user.id
+    search = collection.new_search current_user: current_user
 
     search.use_codes_instead_of_es_codes
 
@@ -149,7 +149,7 @@ class FredApiController < ApplicationController
   end
 
   def find_facility_and_apply_fred_format(id)
-    search = collection.new_search current_user_id: current_user.id
+    search = collection.new_search current_user: current_user
     search.id(id)
     results = search.fred_api_results
 
