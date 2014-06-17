@@ -170,7 +170,7 @@ class Site < ActiveRecord::Base
     properties.each do |es_code, value|
       field = fields[es_code]
       if field
-        standardized_properties[es_code] = field.standadrize(value)
+        standardized_properties[es_code] = field.standardize(value)
       end
     end
     self.properties = standardized_properties

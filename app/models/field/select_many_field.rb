@@ -34,7 +34,7 @@ class Field::SelectManyField < Field
     end
   end
 
-  def standadrize(value)
+  def standardize(value)
     if value.kind_of?(Array)
       option_list = value
     else
