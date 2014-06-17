@@ -10,9 +10,9 @@ onLayers ->
       else
         @fields = ko.observableArray([])
       @hasFocus = ko.observable(false)
-      @nameError = ko.computed => if @hasName() then null else "the layer's Name is missing"
+      @nameError = ko.computed => if @hasName() then null else __("the layer's Name is missing")
       @fieldsError = ko.computed =>
-        return "the layer must have at least one field" if @fields().length == 0
+        return __("the layer must have at least one field") if @fields().length == 0
 
         codes = []
         names = []
@@ -20,9 +20,10 @@ onLayers ->
         # Check that the name and code are not duplicated
         for field in @fields()
           field_error = field.error()
+
           return field_error if field_error
-          return "duplicated field name '#{field.name()}'" if names.indexOf(field.name()) >= 0
-          return "duplicated field code '#{field.code()}'" if codes.indexOf(field.code()) >= 0
+          return Jed.sprintf(__("duplicated field name '%s'"), field.name()) if names.indexOf(field.name()) >= 0
+          return Jed.sprintf(__("duplicated field code '%s'"), field.code()) if codes.indexOf(field.code()) >= 0
           names.push field.name()
           codes.push field.code()
 
@@ -30,8 +31,8 @@ onLayers ->
         if window.model
           for layer in window.model.layers() when layer != @
             for field in layer.fields()
-              return "a field with name '#{field.name()}' already exists in the layer named #{layer.name()}" if names.indexOf(field.name()) >= 0
-              return "a field with code '#{field.code()}' already exists in the layer named #{layer.name()}"  if codes.indexOf(field.code()) >= 0
+              return Jed.sprintf(__("a field with name '%s' already exists in the layer named %s"), field.name(), layer.name()) if names.indexOf(field.name()) >= 0
+              return Jed.sprintf(__("a field with code '%s' already exists in the layer named %s"), field.code(), layer.name()) if codes.indexOf(field.code()) >= 0
 
         null
       @error = ko.computed => @nameError() || @fieldsError()
