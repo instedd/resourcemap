@@ -218,4 +218,9 @@ describe CollectionsController do
       info["no_location"].should be_true
     end
   end
+
+  it "should ignore local param in search" do
+    get :search, collection_id: collection.id
+    response.should be_ok
+  end
 end

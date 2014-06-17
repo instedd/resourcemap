@@ -46,7 +46,7 @@ describe Api::CollectionsController do
 
     describe "GET JSON collection" do
       before(:each) do
-        get :show, id: collection.id, format: 'json'
+        get :show, id: collection.id, format: 'json', locale: 'en'
       end
 
       it { response.should be_success }
