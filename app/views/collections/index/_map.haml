@@ -62,7 +62,9 @@
     /ko if: !currentSnapshot
     -# if can? :create, Site
     - if current_user && !current_user.is_guest
+      /ko if: anyUpdatePermissions
       %button.flocation{ko(click: '$root.createSite')} Create Site
+      //ko
     //ko
 
   //ko

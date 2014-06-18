@@ -29,7 +29,6 @@ onCollections ->
       @namePermission = collection.namePermission
       @locationPermission = collection.locationPermission
 
-
     createSite: (site) => new Site(@collection, site)
 
     # These two methods are needed to be forwarded when editing sites inside a search
