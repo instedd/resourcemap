@@ -18,7 +18,6 @@ onCollections ->
       $.get "/collections/#{@id}/current_user_membership.json", {}, (membership) =>
         @namePermission = membership.name
         @locationPermission = membership.location
-        debugger
         nameOrLocation = @namePermission == "update" || @locationPermission == "update"
         @anyUpdatePermissions = nameOrLocation || $.grep(membership.layers, (l) ->
           l.write).length > 0

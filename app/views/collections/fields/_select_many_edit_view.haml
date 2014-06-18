@@ -4,7 +4,6 @@
       %span{ko(text: '$parent.labelFor($data)')}
       %a x
   .superblyTagfieldClearer.select-many
-  %button{ko(click: :save, clickBubble: false), style: 'float:right; margin-bottom: 5px;'} Done
   #select-many-search{style:'width:250px'}
     /ko if: options.length >= 5
     %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
@@ -12,6 +11,7 @@
     %ul.taglist{ko(foreach: :remainingOptions), style: 'width:100%;margin-top:2px'}
       %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
         %a{ko(text: :label, click: '$parent.selectOption')}
+  %button{ko(click: :save, clickBubble: false), style: 'float:right; margin:0;'} Hide
   .clear
 
 - else
