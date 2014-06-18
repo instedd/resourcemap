@@ -70,15 +70,15 @@ class @Membership extends Expandable
       not _.any _self.layers(), (l) => permitted l
 
     summarize = (permitted) ->
-      return 'All' if all permitted
-      return 'Some' if some permitted
+      return __('All') if all permitted
+      return __('Some') if some permitted
       return '' if none permitted
 
     nonePermission = (l) => not @admin() and not l.read() and not l.write()
     readPermission = (l) => not @admin() and l.read() and not l.write()
     writePermission = (l) => @admin() or l.write()
 
-    @adminUI = ko.computed => if @admin() then "<b>Yes</b>" else "No"
+    @adminUI = ko.computed => if @admin() then "<b>#{__("Yes")}</b>" else __("No")
     @isCurrentUser = ko.computed => window.userId == @userId()
 
     @admin.subscribe (newValue) =>
@@ -149,11 +149,12 @@ class @Membership extends Expandable
 
     @site_permissions_title = ko.computed =>
       if @sitesWithCustomPermissions().length == 0
-        "Custom permissions for sites"
+        __("Custom permissions for sites")
       else if @sitesWithCustomPermissions().length == 1
-        "Custom permissions for 1 site"
+        __("Custom permissions for 1 site")
       else
-        "Custom permissions for #{@sitesWithCustomPermissions().length} sites"
+        Jed.sprintf(_("Custom permissions for %d sites"), @sitesWithCustomPermissions().length)
+        
 
     @customPermissionsAutocompleteId = ko.computed => "autocomplete_#{@userId()}"
 

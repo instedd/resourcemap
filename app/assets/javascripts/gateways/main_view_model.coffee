@@ -47,7 +47,7 @@ onGateways ->
       @currentGateway gateway 
 
     deleteGateway: (gateway) =>
-      if window.confirm 'Are you sure to delete this gateway?'
+      if window.confirm(__('Are you sure to delete this gateway?'))
         @deletedGateway = gateway 
         $.post "gateways/#{gateway.id}.json", { _method: 'delete' }, @deleteGatewayCallback 
 

@@ -8,7 +8,7 @@ class Collection < ActiveRecord::Base
   mount_uploader :logo, LogoUploader
   attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
 
-  validates_presence_of :name
+  validates_presence_of :name, :message => N_("can't be blank")
   validates_presence_of :icon
 
   has_many :memberships, dependent: :destroy

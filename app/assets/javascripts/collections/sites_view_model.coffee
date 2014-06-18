@@ -169,7 +169,8 @@ onCollections ->
       undefined
 
     @deleteSite: ->
-      if confirm("Are you sure you want to delete #{@editingSite().name()}?")
+      confirmation = Jed.sprintf(__("Are you sure you want to delete %s?"), @editingSite().name())
+      if confirm(confirmation)
         @unselectSite()
         @currentCollection().removeSite(@editingSite())
         $.post "/sites/#{@editingSite().id()}", {collection_id: @currentCollection().id, _method: 'delete'}, =>

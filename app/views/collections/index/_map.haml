@@ -89,9 +89,9 @@
             %td
               %div
                 %span{ko(text: 'collection.nameFieldError', validationPopover: 'collection.nameFieldError'), style: 'display: none;'}
-                = label_tag :name, "Name:"
+                = label_tag :name, _("Name:")
                 /ko if: nameWriteable
-                = text_field_tag :name, '', placeholder: 'Enter new site name',  'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}, css: {error: 'collection.nameFieldError'}), :autofocus => true
+                = text_field_tag :name, '', placeholder: _('Enter new site name'),  'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true, event: {blur: :tryGeolocateName}, css: {error: 'collection.nameFieldError'}), :autofocus => true
                 //ko
                 /ko if: !nameWriteable
                 %span.value{ko(text: :name)}

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-09 15:53-0300\n"
-"PO-Revision-Date: 2014-06-09 15:53-0300\n"
+"POT-Creation-Date: 2014-06-17 15:28-0300\n"
+"PO-Revision-Date: 2014-06-17 15:28-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,7 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-msgid " \"'#{name}'\""
+msgid " Item id already exists."
+msgstr ""
+
+msgid " Item id is required."
 msgstr ""
 
 msgid "\""
@@ -48,6 +51,9 @@ msgstr ""
 msgid "(85512345678)"
 msgstr ""
 
+msgid "(for example: 85512345678)"
+msgstr ""
+
 msgid "(no value)"
 msgstr ""
 
@@ -60,13 +66,13 @@ msgstr ""
 msgid ",change icon to:"
 msgstr ""
 
-msgid "85512345678"
-msgstr ""
-
 msgid "API access"
 msgstr ""
 
 msgid "Access the API in"
+msgstr ""
+
+msgid "Account updated successfully"
 msgstr ""
 
 msgid "Accurately tracking and allocating resources is critical to getting the  most from every asset at your disposal. Resource Map can help you maximize your resource allocation and usage."
@@ -76,6 +82,15 @@ msgid "Accurately tracking and allocating resources is critical to getting the m
 msgstr ""
 
 msgid "Activity"
+msgstr ""
+
+msgid "Activity|Action"
+msgstr ""
+
+msgid "Activity|Data"
+msgstr ""
+
+msgid "Activity|Item type"
 msgstr ""
 
 msgid "Add Alert"
@@ -126,7 +141,13 @@ msgstr ""
 msgid "Alert"
 msgstr ""
 
+msgid "Alert property's name is missing"
+msgstr ""
+
 msgid "Alerts"
+msgstr ""
+
+msgid "All"
 msgstr ""
 
 msgid "All of following conditions"
@@ -144,6 +165,9 @@ msgstr ""
 msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
 msgstr ""
 
+msgid "Anonymous users"
+msgstr ""
+
 msgid "Any of the following conditions"
 msgstr ""
 
@@ -153,10 +177,28 @@ msgstr ""
 msgid "Apply this alert to"
 msgstr ""
 
+msgid "Are you sure to delete reminder"
+msgstr ""
+
+msgid "Are you sure to delete this gateway?"
+msgstr ""
+
+msgid "Are you sure you want to delete %s?"
+msgstr ""
+
+msgid "Are you sure you want to delete layer %s"
+msgstr ""
+
 msgid "Are you sure you want to delete this collection's sites?"
 msgstr ""
 
 msgid "Are you sure you want to delete this collection? All sites, layers, fields, memberships and activities will also be deleted."
+msgstr ""
+
+msgid "Are you sure you want to remove %s from the collection?"
+msgstr ""
+
+msgid "Are you sure you want to remove this member from the collection?"
 msgstr ""
 
 msgid "Attributes"
@@ -183,6 +225,30 @@ msgstr ""
 msgid "Change site display on map"
 msgstr ""
 
+msgid "Channel"
+msgstr ""
+
+msgid "Channel|Advanced setup"
+msgstr ""
+
+msgid "Channel|Basic setup"
+msgstr ""
+
+msgid "Channel|Is enable"
+msgstr ""
+
+msgid "Channel|Name"
+msgstr ""
+
+msgid "Channel|National setup"
+msgstr ""
+
+msgid "Channel|Nuntium channel name"
+msgstr ""
+
+msgid "Channel|Password"
+msgstr ""
+
 msgid "Check the"
 msgstr ""
 
@@ -204,6 +270,18 @@ msgstr ""
 msgid "Collection"
 msgstr ""
 
+msgid "Collection %{collection_name} created"
+msgstr ""
+
+msgid "Collection %{collection_name} deleted"
+msgstr ""
+
+msgid "Collection %{collection_name} updated"
+msgstr ""
+
+msgid "Collection %{collection_name}'s sites deleted"
+msgstr ""
+
 msgid "Collection '%{name}' was created"
 msgstr ""
 
@@ -219,10 +297,52 @@ msgstr ""
 msgid "Collections"
 msgstr ""
 
+msgid "Collection|Anonymous location permission"
+msgstr ""
+
+msgid "Collection|Anonymous name permission"
+msgstr ""
+
+msgid "Collection|Description"
+msgstr ""
+
+msgid "Collection|Icon"
+msgstr ""
+
+msgid "Collection|Lat"
+msgstr ""
+
+msgid "Collection|Lng"
+msgstr ""
+
+msgid "Collection|Logo"
+msgstr ""
+
+msgid "Collection|Max lat"
+msgstr ""
+
+msgid "Collection|Max lng"
+msgstr ""
+
+msgid "Collection|Min lat"
+msgstr ""
+
+msgid "Collection|Min lng"
+msgstr ""
+
+msgid "Collection|Name"
+msgstr ""
+
+msgid "Collection|Quota"
+msgstr ""
+
 msgid "Column Settings"
 msgstr ""
 
 msgid "Conditions"
+msgstr ""
+
+msgid "Confirm"
 msgstr ""
 
 msgid "Confirmed At"
@@ -250,6 +370,12 @@ msgid "Curate"
 msgstr ""
 
 msgid "Curate Data"
+msgstr ""
+
+msgid "Custom permissions for 1 site"
+msgstr ""
+
+msgid "Custom permissions for sites"
 msgstr ""
 
 msgid "DD/MM/YYYY (e.g. \"31/12/2013\")"
@@ -282,6 +408,9 @@ msgstr ""
 msgid "Do not send notifications"
 msgstr ""
 
+msgid "Do you want to delete this item and its children?"
+msgstr ""
+
 msgid "Done"
 msgstr ""
 
@@ -309,6 +438,9 @@ msgstr ""
 msgid "Endpoint URL :"
 msgstr ""
 
+msgid "Enter new site name"
+msgstr ""
+
 msgid "Events"
 msgstr ""
 
@@ -324,10 +456,61 @@ msgstr ""
 msgid "Features"
 msgstr ""
 
+msgid "Field"
+msgstr ""
+
+msgid "Field history"
+msgstr ""
+
 msgid "Field semantics, usually meaningful to external systems that depend on Resource Map"
 msgstr ""
 
+msgid "FieldHistory|Code"
+msgstr ""
+
+msgid "FieldHistory|Config"
+msgstr ""
+
+msgid "FieldHistory|Kind"
+msgstr ""
+
+msgid "FieldHistory|Metadata"
+msgstr ""
+
+msgid "FieldHistory|Name"
+msgstr ""
+
+msgid "FieldHistory|Ord"
+msgstr ""
+
+msgid "FieldHistory|Valid since"
+msgstr ""
+
+msgid "FieldHistory|Valid to"
+msgstr ""
+
+msgid "FieldHistory|Version"
+msgstr ""
+
 msgid "Fields"
+msgstr ""
+
+msgid "Field|Code"
+msgstr ""
+
+msgid "Field|Config"
+msgstr ""
+
+msgid "Field|Kind"
+msgstr ""
+
+msgid "Field|Metadata"
+msgstr ""
+
+msgid "Field|Name"
+msgstr ""
+
+msgid "Field|Ord"
 msgstr ""
 
 msgid "Find out how →"
@@ -384,6 +567,12 @@ msgstr ""
 msgid "Hierarchy"
 msgstr ""
 
+msgid "Hierarchy Editor"
+msgstr ""
+
+msgid "Hierarchy Editor for %s field"
+msgstr ""
+
 msgid "Home"
 msgstr ""
 
@@ -400,6 +589,15 @@ msgid "Id:"
 msgstr ""
 
 msgid "Identify"
+msgstr ""
+
+msgid "Identity"
+msgstr ""
+
+msgid "Identity|Provider"
+msgstr ""
+
+msgid "Identity|Token"
 msgstr ""
 
 msgid "If you change an option code the sites' properties with this value will be lost."
@@ -426,6 +624,9 @@ msgstr ""
 msgid "Import in progress."
 msgstr ""
 
+msgid "Import job"
+msgstr ""
+
 msgid "Import layers from collection:"
 msgstr ""
 
@@ -433,6 +634,21 @@ msgid "Import wizard"
 msgstr ""
 
 msgid "Import wizard: %{sites}"
+msgstr ""
+
+msgid "ImportJob|Exception"
+msgstr ""
+
+msgid "ImportJob|Finished at"
+msgstr ""
+
+msgid "ImportJob|Original filename"
+msgstr ""
+
+msgid "ImportJob|Status"
+msgstr ""
+
+msgid "Imported layers from %{collection_name}"
 msgstr ""
 
 msgid "Importing data"
@@ -450,6 +666,15 @@ msgstr ""
 msgid "Insightful:"
 msgstr ""
 
+msgid "Invalid credentials"
+msgstr ""
+
+msgid "Invalid parameters. Parameters should include 'user' and 'password'."
+msgstr ""
+
+msgid "Item name is required."
+msgstr ""
+
 msgid "JSON"
 msgstr ""
 
@@ -460,6 +685,12 @@ msgid "Last update"
 msgstr ""
 
 msgid "Lat"
+msgstr ""
+
+msgid "Layer"
+msgstr ""
+
+msgid "Layer %s successfully deleted"
 msgstr ""
 
 msgid "Layer %{layer} changed: %{changes}"
@@ -474,6 +705,9 @@ msgstr ""
 msgid "Layer %{layer} was renamed to %{changes}"
 msgstr ""
 
+msgid "Layer '%s' successfully saved"
+msgstr ""
+
 msgid "Layer changed"
 msgstr ""
 
@@ -483,7 +717,49 @@ msgstr ""
 msgid "Layer deleted"
 msgstr ""
 
+msgid "Layer history"
+msgstr ""
+
+msgid "Layer membership"
+msgstr ""
+
+msgid "LayerHistory|Anonymous user permission"
+msgstr ""
+
+msgid "LayerHistory|Name"
+msgstr ""
+
+msgid "LayerHistory|Ord"
+msgstr ""
+
+msgid "LayerHistory|Public"
+msgstr ""
+
+msgid "LayerHistory|Valid since"
+msgstr ""
+
+msgid "LayerHistory|Valid to"
+msgstr ""
+
+msgid "LayerHistory|Version"
+msgstr ""
+
+msgid "LayerMembership|Read"
+msgstr ""
+
+msgid "LayerMembership|Write"
+msgstr ""
+
 msgid "Layers"
+msgstr ""
+
+msgid "Layer|Anonymous user permission"
+msgstr ""
+
+msgid "Layer|Name"
+msgstr ""
+
+msgid "Layer|Ord"
 msgstr ""
 
 msgid "Load more"
@@ -498,7 +774,13 @@ msgstr ""
 msgid "Location missing"
 msgstr ""
 
+msgid "Location permission"
+msgstr ""
+
 msgid "Location:"
+msgstr ""
+
+msgid "LocationPermission|Action"
 msgstr ""
 
 msgid "Long"
@@ -534,13 +816,58 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
+msgid "Membership"
+msgstr ""
+
+msgid "Membership|Admin"
+msgstr ""
+
 msgid "Message"
+msgstr ""
+
+msgid "Message|Application"
+msgstr ""
+
+msgid "Message|Body"
+msgstr ""
+
+msgid "Message|Carrier"
+msgstr ""
+
+msgid "Message|Channel"
+msgstr ""
+
+msgid "Message|Country"
+msgstr ""
+
+msgid "Message|From"
+msgstr ""
+
+msgid "Message|Guid"
+msgstr ""
+
+msgid "Message|Is send"
+msgstr ""
+
+msgid "Message|Reply"
+msgstr ""
+
+msgid "Message|Subject"
+msgstr ""
+
+msgid "Message|To"
 msgstr ""
 
 msgid "Monitoring Food Prices and Supply Levels"
 msgstr ""
 
+msgid "Move down"
+msgstr ""
+
 msgid "Move to layer..."
+msgstr ""
+
+msgid "Move up"
 msgstr ""
 
 msgid "My Collections"
@@ -549,7 +876,13 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+msgid "Name permission"
+msgstr ""
+
 msgid "Name:"
+msgstr ""
+
+msgid "NamePermission|Action"
 msgstr ""
 
 msgid "National Gateway(Only Some Country Supported)"
@@ -561,6 +894,12 @@ msgstr ""
 msgid "New item"
 msgstr ""
 
+msgid "No"
+msgstr ""
+
+msgid "No users found"
+msgstr ""
+
 msgid "None"
 msgstr ""
 
@@ -568,6 +907,9 @@ msgid "Note: your last import to this collection failed, and was based on a file
 msgstr ""
 
 msgid "Note: your last import to this collection was based on a file named %s, %s ago."
+msgstr ""
+
+msgid "Notification's message is missing"
 msgstr ""
 
 msgid "Notifications"
@@ -621,6 +963,12 @@ msgstr ""
 msgid "Possible values for this field."
 msgstr ""
 
+msgid "Prefix"
+msgstr ""
+
+msgid "Prefix|Version"
+msgstr ""
+
 msgid "Preview"
 msgstr ""
 
@@ -651,13 +999,52 @@ msgstr ""
 msgid "Refine results"
 msgstr ""
 
+msgid "Reminder"
+msgstr ""
+
 msgid "Reminders"
+msgstr ""
+
+msgid "Reminder|Is all site"
+msgstr ""
+
+msgid "Reminder|Name"
+msgstr ""
+
+msgid "Reminder|Next run"
+msgstr ""
+
+msgid "Reminder|Reminder message"
+msgstr ""
+
+msgid "Reminder|Schedule"
+msgstr ""
+
+msgid "Reminder|Sites"
+msgstr ""
+
+msgid "Reminder|Status"
 msgstr ""
 
 msgid "Remove columns for fields you are not interested in updating"
 msgstr ""
 
 msgid "Remove rows for sites you are not interested in updating"
+msgstr ""
+
+msgid "Remove this member"
+msgstr ""
+
+msgid "Repeat"
+msgstr ""
+
+msgid "Repeat|Name"
+msgstr ""
+
+msgid "Repeat|Order"
+msgstr ""
+
+msgid "Repeat|Rule"
 msgstr ""
 
 msgid "Report a bug"
@@ -697,6 +1084,9 @@ msgid "Saving layer, please wait..."
 msgstr ""
 
 msgid "Saving reminder, please wait..."
+msgstr ""
+
+msgid "Search by email..."
 msgstr ""
 
 msgid "See everything on the map for a birds-eye view"
@@ -756,6 +1146,9 @@ msgstr ""
 msgid "Site %{site} was deleted"
 msgstr ""
 
+msgid "Site '%s' successfully created"
+msgstr ""
+
 msgid "Site Name"
 msgstr ""
 
@@ -768,10 +1161,100 @@ msgstr ""
 msgid "Site deleted"
 msgstr ""
 
+msgid "Site history"
+msgstr ""
+
+msgid "SiteHistory|Id with prefix"
+msgstr ""
+
+msgid "SiteHistory|Lat"
+msgstr ""
+
+msgid "SiteHistory|Lng"
+msgstr ""
+
+msgid "SiteHistory|Location mode"
+msgstr ""
+
+msgid "SiteHistory|Name"
+msgstr ""
+
+msgid "SiteHistory|Properties"
+msgstr ""
+
+msgid "SiteHistory|Uuid"
+msgstr ""
+
+msgid "SiteHistory|Valid since"
+msgstr ""
+
+msgid "SiteHistory|Valid to"
+msgstr ""
+
+msgid "SiteHistory|Version"
+msgstr ""
+
 msgid "Sites"
 msgstr ""
 
+msgid "Sites permission"
+msgstr ""
+
+msgid "SitesPermission|All sites"
+msgstr ""
+
+msgid "SitesPermission|Some sites"
+msgstr ""
+
+msgid "Site|Id with prefix"
+msgstr ""
+
+msgid "Site|Lat"
+msgstr ""
+
+msgid "Site|Lng"
+msgstr ""
+
+msgid "Site|Location mode"
+msgstr ""
+
+msgid "Site|Name"
+msgstr ""
+
+msgid "Site|Properties"
+msgstr ""
+
+msgid "Site|Uuid"
+msgstr ""
+
+msgid "Site|Version"
+msgstr ""
+
+msgid "Snapshot"
+msgstr ""
+
+msgid "Snapshot %{name} created"
+msgstr ""
+
+msgid "Snapshot %{name} loaded"
+msgstr ""
+
+msgid "Snapshot %{snapshot_name} unloaded"
+msgstr ""
+
+msgid "Snapshot could not be created: %{errors}"
+msgstr ""
+
 msgid "Snapshots"
+msgstr ""
+
+msgid "Snapshot|Date"
+msgstr ""
+
+msgid "Snapshot|Name"
+msgstr ""
+
+msgid "Some"
 msgstr ""
 
 msgid "Some sites"
@@ -858,6 +1341,42 @@ msgstr ""
 msgid "This wizard will guide you through importing a CSV file"
 msgstr ""
 
+msgid "Threshold"
+msgstr ""
+
+msgid "Threshold|Color"
+msgstr ""
+
+msgid "Threshold|Conditions"
+msgstr ""
+
+msgid "Threshold|Email notification"
+msgstr ""
+
+msgid "Threshold|Is all condition"
+msgstr ""
+
+msgid "Threshold|Is all site"
+msgstr ""
+
+msgid "Threshold|Is notify"
+msgstr ""
+
+msgid "Threshold|Message notification"
+msgstr ""
+
+msgid "Threshold|Name"
+msgstr ""
+
+msgid "Threshold|Ord"
+msgstr ""
+
+msgid "Threshold|Phone notification"
+msgstr ""
+
+msgid "Threshold|Sites"
+msgstr ""
+
 msgid "Time"
 msgstr ""
 
@@ -924,6 +1443,78 @@ msgstr ""
 msgid "User Name :"
 msgstr ""
 
+msgid "User|Authentication token"
+msgstr ""
+
+msgid "User|Collection count"
+msgstr ""
+
+msgid "User|Confirmation sent at"
+msgstr ""
+
+msgid "User|Confirmation token"
+msgstr ""
+
+msgid "User|Confirmed at"
+msgstr ""
+
+msgid "User|Current sign in at"
+msgstr ""
+
+msgid "User|Current sign in ip"
+msgstr ""
+
+msgid "User|Email"
+msgstr ""
+
+msgid "User|Encrypted password"
+msgstr ""
+
+msgid "User|Gateway count"
+msgstr ""
+
+msgid "User|Is super user"
+msgstr ""
+
+msgid "User|Last sign in at"
+msgstr ""
+
+msgid "User|Last sign in ip"
+msgstr ""
+
+msgid "User|Layer count"
+msgstr ""
+
+msgid "User|Phone number"
+msgstr ""
+
+msgid "User|Remember created at"
+msgstr ""
+
+msgid "User|Reset password sent at"
+msgstr ""
+
+msgid "User|Reset password token"
+msgstr ""
+
+msgid "User|Sign in count"
+msgstr ""
+
+msgid "User|Site count"
+msgstr ""
+
+msgid "User|Success outcome"
+msgstr ""
+
+msgid "User|Unconfirmed email"
+msgstr ""
+
+msgid "Valid credentials"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
 msgid "View Configuration"
 msgstr ""
 
@@ -984,6 +1575,9 @@ msgstr ""
 msgid "With the support of the Clinton Health Access Initiative (CHAI), CNM uses Resource Map to support their malaria drug program with our tool to capture malaria drug updates from at risk health centers on a two week cycle. The goal of monitoring resources so closely is to improve the stock management of malaria treatment drugs. This tool helps the health centers to avoid the possibility of over or under stocking important drug supplies."
 msgstr ""
 
+msgid "Yes"
+msgstr ""
+
 msgid "You don't need to leave this window open while the data is imported, we'll take care of that for you. However, if you're still here when the importation ends, we'll let you know so you can start working on your new data right away."
 msgstr ""
 
@@ -1003,6 +1597,12 @@ msgid "["
 msgstr ""
 
 msgid "]"
+msgstr ""
+
+msgid "a field with code '%s' already exists in the layer named %s"
+msgstr ""
+
+msgid "a field with name '%s' already exists in the layer named %s"
 msgstr ""
 
 msgid "add Layers"
@@ -1026,6 +1626,9 @@ msgstr ""
 msgid "by knowing where your resources are in real time"
 msgstr ""
 
+msgid "can't be blank"
+msgstr ""
+
 msgid "check all"
 msgstr ""
 
@@ -1036,6 +1639,12 @@ msgid "complete control over the visibility of resource allocation data"
 msgstr ""
 
 msgid "distribution patterns and anomalies with visual mapping and trend analysis"
+msgstr ""
+
+msgid "duplicated field code '%s'"
+msgstr ""
+
+msgid "duplicated field name '%s'"
 msgstr ""
 
 msgid "easily on resource allocation decisions"
@@ -1153,6 +1762,12 @@ msgid "the last month"
 msgstr ""
 
 msgid "the last week"
+msgstr ""
+
+msgid "the layer must have at least one field"
+msgstr ""
+
+msgid "the layer's Name is missing"
 msgstr ""
 
 msgid "true"
