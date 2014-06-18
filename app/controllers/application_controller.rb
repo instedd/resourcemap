@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
          render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
         end
       }
-      format.json { render_json({ message: "Access Denied"}, status: 404) }
+      format.json { render_json({ message: "Access Denied"}, status: 403) }
     end
   end
 
