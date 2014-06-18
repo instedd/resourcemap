@@ -10,10 +10,10 @@
     .name{ko(click: :toggleExpand)}
       %span.arrow
       %a.n-label
-        #{ko_text :name}
+        = ko_text(:name)
         %span.number
           Id:
-          #{ko_text :id}
+          = ko_text(:id)
     /ko if: expanded
     %ul.h-editor
       /ko template: {name: 'hierarchy-items-template', foreach: hierarchyItems}
@@ -147,7 +147,7 @@
       -# New layer link
       .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none;'}
         %span{style:'padding-top:6px;'}
-          = 'Add layer'
+          = _('Add layer')
         %button.cadd.right{type: :button, style: 'margin-top:3px;margin-right:0px;', title: 'Add new layer'}
         %br{clear: :all}
         %br/

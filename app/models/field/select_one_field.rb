@@ -30,7 +30,7 @@ class Field::SelectOneField < Field
     return option ? option['label'] : value
   end
 
-  def standadrize(value)
+  def standardize(value)
     value.to_i
   end
 

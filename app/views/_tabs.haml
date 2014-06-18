@@ -3,12 +3,12 @@
   %p{style: 'font-size:12px'}= collection.description
 
 %ul.tabs.top
-  = tab "Overview", collection_path(collection)
+  = tab _("Overview"), collection_path(collection)
   - if can? :members, collection
-    = tab "Members", collection_members_path(collection)
-  = tab "Layers", collection_layers_path(collection)
-  = tab "Import wizard", collection_import_wizard_path(collection)
-  = tab "Settings", collection_settings_path(collection)
+    = tab _("Members"), collection_members_path(collection)
+  = tab _("Layers"), collection_layers_path(collection)
+  = tab _("Import wizard"), collection_import_wizard_path(collection)
+  = tab _("Settings"), collection_settings_path(collection)
   = render_hook collection, :collection_tab, :collection => collection
   - if Settings.is_on? :channels
-    = tab "Quotas", collection_quotas_path(collection)
+    = tab _("Quotas"), collection_quotas_path(collection)

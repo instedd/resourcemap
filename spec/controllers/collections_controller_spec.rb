@@ -41,6 +41,18 @@ describe CollectionsController do
     json["name"].should eq(collection.name)
   end
 
+  # Issue #661
+  it "should not get public collection's settings page being a guest user" do
+    collection.anonymous_name_permission = 'read'
+    collection.anonymous_location_permission = 'read'
+    collection.save
+
+    sign_out user
+
+    get :show, format: 'html', id: collection.id
+    response.should redirect_to '/users/sign_in'
+  end
+
   # Issue #629
   it "should not get public collections in the index if the user is logged in" do
     # load collection
@@ -205,5 +217,10 @@ describe CollectionsController do
       info["total"].should eq(3)
       info["no_location"].should be_true
     end
+  end
+
+  it "should ignore local param in search" do
+    get :search, collection_id: collection.id
+    response.should be_ok
   end
 end

@@ -1,4 +1,4 @@
-<!-- ko if: !currentCollection() && !editingSite() -->
+/ko if: !currentCollection() && !editingSite()
 -# Collections
 .tableheader.expanded
   %div.title My Collections
@@ -15,21 +15,21 @@
         %th{style: 'width:100%'} Last update
         %th
     %tbody
-      <!-- ko foreach: collections -->
+      /ko foreach: collections
       %tr
         %td.collectionCell
           %span.collectionName{ko(text: :name)}
           %button.enterRow.farrow{ko(click: '$root.enterCollection'), type: :button}
         %td.l.timeago{ko(attr: {title: :updatedAt}, text: :updatedAtTimeago)}
-      <!-- /ko -->
+      //ko
 .tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
   %button.cadd{type: "button"}
   %span.createCollection Create Collection
-<!-- /ko -->
+//ko
 
 -# Collection sites
-<!-- ko if: !editingSite() -->
-<!-- ko with: currentCollection -->
+/ko if: !editingSite()
+/ko with: currentCollection
 .tableheader.expanded
   %div.title
     %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
@@ -50,56 +50,56 @@
     %col{width: '100'}
     -# The headers are duplicated, so if you change the way you iterate over them
     -# you should also check this other part: 317c6348-873a-4aeb-98e5-56172b45aedc.
-    <!-- ko foreach: $root.currentCollection().fieldsByLayers() -->
+    /ko foreach: $root.currentCollection().fieldsByLayers()
     %col{ko(attr: { width: 'suggestedWidth()' })}
-    <!-- /ko -->
+    //ko
     %col{width: '150'}
     %thead
       %tr
         %th{ko(click: '$root.sortByName'), style: 'cursor:pointer;overflow:hidden'}
           %span{style: 'display:inline'} Site
-          <!-- ko if: $root.sort() == 'name' -->
+          /ko if: $root.sort() == 'name'
           -# Note: the cssFloat property is used to make it work on Firefox. See the note on:
           -# https://developer.mozilla.org/en-US/docs/CSS/float
           %button{ko(style: {background: "'transparent url(#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png) no-repeat scroll center'", height: "'11px'", cssFloat: "'right'", float: "'right'", borderStyle: "'none'", paddingLeft: "'17px'"})}
-          <!-- /ko -->
+          //ko
         %th
           %span{style: 'display:inline'} Lat
         %th
           %span{style: 'display:inline'} Long
         -# the headers are duplicated, so if you change the way you iterate over them
         -# you should also check this other part: 317c6348-873a-4aeb-98e5-56172b45aedc.
-        <!-- ko foreach: $root.currentCollection().fieldsByLayers() -->
+        /ko foreach: $root.currentCollection().fieldsByLayers()
         %th{ko(click: '$root.sortBy', style: {maxWidth: 'suggestedWidth()', minWidth: 'suggestedWidth()'}), style: 'overflow:hidden;cursor:pointer'}
           %span{ko(text: :name), style: 'display:inline'}
-          <!-- ko if: $root.sort() == esCode -->
+          /ko if: $root.sort() == esCode
           %button{ko(style: {background: "'transparent url(#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png) no-repeat scroll center'", height: "'11px'", cssFloat: "'right'", float: "'right'", borderStyle: "'none'"})}
-          <!-- /ko -->
-        <!-- /ko -->
+          //ko
+        //ko
         %th{ko(click: '$root.sortByDate'), style: 'width:100%;min-width:100px;cursor:pointer'}
           %span{style: 'display:inline'} Last update
-          <!-- ko if: $root.sort() == 'updated_at' -->
+          /ko if: $root.sort() == 'updated_at'
           %button{ko(style: {background: "'transparent url(#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png) no-repeat scroll center'", height: "'11px'", cssFloat: "'right'", float: "'right'", borderStyle: "'none'"})}
-          <!-- /ko -->
+          //ko
         %th
     %tbody
-      <!-- ko if: !isSearch() && $root.groupBy().esCode != '' -->
-      <!--   ko template: {name: 'table-hierarchy-items-template', with: $data} -->
-      <!--   /ko -->
-      <!-- /ko -->
-      <!-- ko template: {name: 'table-sites-template', with: $data} -->
-      <!-- /ko -->
-  <!-- ko if: hasMoreSites() && !loadingSites()-->
+      /ko if: !isSearch() && $root.groupBy().esCode != ''
+      /ko template: {name: 'table-hierarchy-items-template', with: $data}
+      //ko
+      //ko
+      /ko template: {name: 'table-sites-template', with: $data}
+      //ko
+  /ko if: hasMoreSites() && !loadingSites()-->
   %span.loadmore{ko(click: :loadMoreSites), style: 'cursor:pointer;'}
     = ko_link_to "Load more sites...", :loadMoreSites
-  <!-- /ko -->
-  <!-- ko if: hasMoreSites() && loadingSites()-->
+  //ko
+  /ko if: hasMoreSites() && loadingSites()
   %span.loadmore Loading...
-  <!-- /ko -->
+  //ko
 .tablebottom
-  <!-- ko if: !currentSnapshot-->
+  /ko if: !currentSnapshot
   - if can? :create, Site
     %button.flocation{ko(click: '$root.createSite')} Create Site
-  <!-- /ko -->
-<!-- /ko -->
-<!-- /ko -->
+  //ko
+//ko
+//ko

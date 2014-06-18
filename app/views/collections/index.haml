@@ -3,22 +3,22 @@
   :javascript
     var currentUserIsGuest = #{!!current_user.is_guest};
 
-<!-- ko if: !fullscreen() -->
+/ko if: !fullscreen()
 = render 'collections/index/custom_logo_template'
 %h1
   Collections
   %p#snapshot_loaded_message{style: 'display:none'}
-    <!-- ko if: currentSnapshot() -->
-    <!-- ko with: currentCollection -->
+    /ko if: currentSnapshot()
+    /ko with: currentCollection
     %span.i18g-snapshot
     %span{ko(text: :viewingCurrentSnapshotMessage )}
     %a{ko(click: :unloadCurrentSnapshot)}
       Go back to present
-    <!-- /ko -->
-    <!-- /ko -->
-  <!-- ko template: {name: 'custom-logo-template'} -->
-  <!-- /ko -->
-<!-- /ko -->
+    //ko
+    //ko
+  /ko template: {name: 'custom-logo-template'}
+  //ko
+//ko
 
 = render 'collections/index/refine_hierarchy_items_template'
 = render 'collections/index/field_hierarchy_items_template'
@@ -29,20 +29,20 @@
 = render 'collections/index/table_hierarchy_items_template'
 
 #refine-container{style: 'display:none'}
-  <!-- ko if: currentCollection() -->
+  /ko if: currentCollection()
   = render 'collections/index/refine'
-  <!-- /ko -->
+  //ko
 
 
 #collections-dummy{style: 'height:600px'}
 #collections-main.box.slightly-padded{style: 'display:none'}
 
-  <!-- ko if: showingMap() -->
+  /ko if: showingMap()
   = render 'collections/index/map'
-  <!-- /ko -->
+  //ko
 
-  <!-- ko if: !showingMap() -->
+  /ko if: !showingMap()
   = render 'collections/index/table'
-  <!-- /ko -->
+  //ko
 
   .clear

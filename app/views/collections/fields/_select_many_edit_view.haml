@@ -6,9 +6,9 @@
   .superblyTagfieldClearer.select-many
   %button{ko(click: :save, clickBubble: false), style: 'float:right; margin-bottom: 5px;'} Done
   #select-many-search{style:'width:250px'}
-    <!-- ko if: options.length >= 5 -->
+    /ko if: options.length >= 5
     %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
-    <!-- /ko -->
+    //ko
     %ul.taglist{ko(foreach: :remainingOptions), style: 'width:100%;margin-top:2px'}
       %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
         %a{ko(text: :label, click: '$parent.selectOption')}
@@ -19,21 +19,21 @@
     %li.superblyTagItem{ko(click: '$parent.removeOption')}
       %span{ko(text: '$parent.labelFor($data)')}
       %a x
-  <!-- ko if: !expanded() -->
-  <!-- ko if: !value() || value().length == 0 -->
+  /ko if: !expanded()
+  /ko if: !value() || value().length == 0
   %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer', id: "Add more"} Add...
-  <!-- /ko -->
-  <!-- ko if: value() && value().length > 0 -->
+  //ko
+  /ko if: value() && value().length > 0
   %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer', id: "Add more"} Add more...
-  <!-- /ko -->
-  <!-- /ko -->
+  //ko
+  //ko
   .superblyTagfieldClearer
-    <!-- ko if: expanded() -->
+    /ko if: expanded()
     #select-many-search{style:'width:250px'}
-      <!-- ko if: options.length >= 5 -->
+      /ko if: options.length >= 5
       %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
-      <!-- /ko -->
+      //ko
       %ul.taglist.box{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px;width:100%'}
         %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
           %a{ko(text: :label, click: '$parent.selectOption')}
-    <!-- /ko -->
+    //ko

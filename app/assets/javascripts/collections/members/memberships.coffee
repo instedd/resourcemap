@@ -21,12 +21,12 @@
         $.ajax "/collections/#{collectionId}/memberships/invitable.json?#{$.param term}",
           success: (data) ->
             if data.length == 0
-              callback(['No users found'])
+              callback([__('No users found')])
               $('a', $member_email.autocomplete('widget')).attr('style', 'color: red')
             else
               callback(data)
       select: (event, ui) ->
-        if(ui.item.label == 'No users found')
+        if(ui.item.label == __('No users found'))
           event.preventDefault()
         else
           createMembership(ui.item.label)

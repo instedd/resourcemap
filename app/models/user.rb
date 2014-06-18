@@ -142,8 +142,8 @@ class User < ActiveRecord::Base
     results
   end
 
-  def ability
-    @ability ||= Ability.new(self)
+  def ability(format = nil)
+    @ability ||= Ability.new(self, format)
   end
   delegate :can?, :cannot?, :authorize!, :to => :ability
 

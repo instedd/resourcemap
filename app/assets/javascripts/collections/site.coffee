@@ -137,7 +137,10 @@ onCollections ->
             @propagateUpdatedAt(data.updated_at)
             @id(data.id)
             @idWithPrefix(data.id_with_prefix)
-            $.status.showNotice "Site '#{@name()}' successfully created", 2000
+
+            notice = Jed.sprintf(__("Site '%s' successfully created"), @name())
+
+            $.status.showNotice notice, 2000
             callback(data) if callback && typeof(callback) == 'function' )
           global: false
         }).fail(@showFieldErrors)

@@ -272,7 +272,7 @@ onCollections ->
     # In the table view, use a fixed size width for each property column,
     # which depends on the length of the name.
     suggestedWidth: =>
-      "#{Math.max(100, 20 + @name.length * 8)}px"
+      "#{Math.max(100, 30 + @name.length * 8)}px"
 
     isPluginKind: => -1 isnt PLUGIN_FIELDS.indexOf @kind
 

@@ -379,4 +379,12 @@ describe Field do
       end
     end
   end
+
+  it "standardizes yes_no field" do
+    field = Field::YesNoField.new
+    field.standardize("true").should be_true
+    field.standardize("false").should be_false
+    field.standardize(true).should be_true
+    field.standardize(false).should be_false
+  end
 end
