@@ -35,7 +35,7 @@ describe Snapshot do
     search.perform.results.map { |x| x['_source']['id'] }.sort.should eq([@site1.id, @site2.id])
 
     # Also check mapping
-    snapshot.index.mapping['site']['properties']['properties']['properties'].should eq({@field.es_code => {'type' => 'long'}})
+    snapshot.index.mapping['mappings']['site']['properties']['properties']['properties'].should eq({@field.es_code => {'type' => 'long'}})
   end
 
   it "should destroy index on destroy" do

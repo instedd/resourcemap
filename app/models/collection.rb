@@ -1,7 +1,7 @@
 class Collection < ActiveRecord::Base
   include Collection::CsvConcern
   include Collection::GeomConcern
-  include Collection::TireConcern
+  include Collection::ElasticsearchConcern
   include Collection::PluginsConcern
   include Collection::ImportLayersSchemaConcern
 
@@ -34,7 +34,7 @@ class Collection < ActiveRecord::Base
   end
 
   def max_value_of_property(es_code)
-    search = new_tire_search
+    search = new_elasticsearch_search
     search.sort { by es_code, 'desc' }
     search.size 2000
     results = search.perform.results

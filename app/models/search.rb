@@ -6,7 +6,7 @@ class Search
 
   def initialize(collection, options)
     @collection = collection
-    @search = collection.new_tire_search(options)
+    @search = collection.new_elasticsearch_search(options)
     @snapshot_id = options[:snapshot_id]
     if options[:current_user]
       @current_user = options[:current_user]
@@ -93,7 +93,22 @@ class Search
     Rails.logger.debug @search.to_curl if Rails.logger.level <= Logger::DEBUG
 
     search = @search.perform
-    {sites: search.results, total_count: search.json['hits']['total']}
+    search_results = search.results
+
+    # In elasticsearch < 1.0 fields didn't return an array.
+    # Now it does, so we convert it back to a single element.
+    if @has_select_fields
+      search_results.results.each do |result|
+        fields = result["fields"]
+        if fields
+          fields.each do |key, value|
+            fields[key] = value.first if value.is_a?(Array)
+          end
+        end
+      end
+    end
+
+    {sites: search_results, total_count: search.json['hits']['total']}
   end
 
   def results

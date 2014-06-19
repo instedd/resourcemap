@@ -274,8 +274,8 @@ class CollectionsController < ApplicationController
   def sites_info
     options = new_search_options
 
-    total = collection.new_tire_count(options).value
-    no_location = collection.new_tire_count(options) do
+    total = collection.new_elasticsearch_count(options).value
+    no_location = collection.new_elasticsearch_count(options) do
       filtered do
         query { all }
         filter :not, exists: {field: :location}

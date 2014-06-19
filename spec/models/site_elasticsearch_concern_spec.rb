@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::TireConcern do
+describe Site::ElasticsearchConcern do
   let(:collection) { Collection.make }
   let(:layer) { collection.layers.make }
   let(:beds_field) { layer.numeric_fields.make :code => 'beds' }
@@ -46,7 +46,7 @@ describe Site::TireConcern do
     collection.save
     site = collection.sites.make properties: { beds_field.es_code => 9 }
 
-    search = collection.new_tire_search
+    search = collection.new_elasticsearch_search
     search.filter :term, alert: true
     result = search.perform.results
     result.length.should eq(1)

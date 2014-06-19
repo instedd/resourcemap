@@ -11,7 +11,7 @@ class Field::IdentifierFields::FormatImplementation
     search.select_fields(["id",property_code])
     search.unlimited
     search.apply_queries
-    existing = search.results.results.map{ |item| item["fields"]}.index_by{|e| e[property_code]}
+    existing = search.results.results.map { |item| item["fields"] }.index_by{|e| e[property_code]}
 
     if @cache_for_read
       @existing_values_in_cache = existing

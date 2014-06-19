@@ -273,6 +273,7 @@ module SearchBase
   end
 
   def select_fields(fields_array)
+    @has_select_fields = true
     @search.fields(fields_array)
     self
   end

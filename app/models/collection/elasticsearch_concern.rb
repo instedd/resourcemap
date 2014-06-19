@@ -1,4 +1,4 @@
-module Collection::TireConcern
+module Collection::ElasticsearchConcern
   extend ActiveSupport::Concern
 
   included do
@@ -70,12 +70,12 @@ module Collection::TireConcern
     MapSearch.new id
   end
 
-  def new_tire_search(options = {})
-    self.class.new_tire_search(id, options)
+  def new_elasticsearch_search(options = {})
+    self.class.new_elasticsearch_search(id, options)
   end
 
-  def new_tire_count(options = {}, &block)
-    self.class.new_tire_count(id, options, &block)
+  def new_elasticsearch_count(options = {}, &block)
+    self.class.new_elasticsearch_count(id, options, &block)
   end
 
   module ClassMethods
@@ -100,7 +100,7 @@ module Collection::TireConcern
       ::Tire::Index.new index_name(id)
     end
 
-    def new_tire_search(*ids, options)
+    def new_elasticsearch_search(*ids, options)
       # If we want the indices for many collections for a given user, it's faster
       # to get all snapshots ids first instead of fetching them one by one for each collection.
       # This optimization does that.
@@ -119,7 +119,7 @@ module Collection::TireConcern
       Tire::Search::Search.new index_names, type: :site
     end
 
-    def new_tire_count(*ids, options, &block)
+    def new_elasticsearch_count(*ids, options, &block)
       index_names = ids.map { |id| index_name(id, options) }
       Tire::Search::Count.new index_names, type: :site, &block
     end

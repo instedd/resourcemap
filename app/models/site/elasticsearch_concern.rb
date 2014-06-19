@@ -1,4 +1,4 @@
-module Site::TireConcern
+module Site::ElasticsearchConcern
   extend ActiveSupport::Concern
 
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
