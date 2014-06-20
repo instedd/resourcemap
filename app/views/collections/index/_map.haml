@@ -38,7 +38,9 @@
       %span{ko(text: :name, attr: {title: :name})}
       - #if can? :show, collection
       - if !current_user.is_guest
+        /ko if: anyUpdatePermissions
         %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button'}
+        //ko
 
   .tablescroll.cheight.sites
     %table.GralTable.CleanTable
