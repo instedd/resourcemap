@@ -274,24 +274,22 @@ class CollectionsController < ApplicationController
   def sites_info
     options = new_search_options
 
-    client = Elasticsearch::Client.new
-    total = client.count index: collection.index_name
-    no_location = client.count index: collection.index_name, body: {
-      query: {
-        filtered: {
-          filter: {
-            not: {
-              filter: {
-                exists: {field: :location}
+    total = collection.elasticsearch_count
+    no_location = collection.elasticsearch_count do
+      {
+        query: {
+          filtered: {
+            filter: {
+              not: {
+                filter: {
+                  exists: {field: :location}
+                }
               }
             }
           }
         }
       }
-    }
-
-    total = total["count"]
-    no_location = no_location["count"]
+    end
 
     info = {}
     info[:total] = total

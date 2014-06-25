@@ -66,16 +66,22 @@ module Collection::ElasticsearchConcern
     Search.new(self, options)
   end
 
+  def elasticsearch_count
+    client = Elasticsearch::Client.new
+    if block_given?
+      value = client.count index: index_name, body: yield
+    else
+      value = client.count index: index_name
+    end
+    value["count"]
+  end
+
   def new_map_search
     MapSearch.new id
   end
 
   def new_elasticsearch_search(options = {})
     self.class.new_elasticsearch_search(id, options)
-  end
-
-  def new_elasticsearch_count(options = {}, &block)
-    self.class.new_elasticsearch_count(id, options, &block)
   end
 
   module ClassMethods
@@ -117,11 +123,6 @@ module Collection::ElasticsearchConcern
         index_name(id, options)
       end
       Tire::Search::Search.new index_names, type: :site
-    end
-
-    def new_elasticsearch_count(*ids, options, &block)
-      index_names = ids.map { |id| index_name(id, options) }
-      Tire::Search::Count.new index_names, type: :site, &block
     end
   end
 end
