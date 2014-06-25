@@ -14,7 +14,7 @@ set :scm, :mercurial
 set :user, 'ubuntu'
 set :group, 'ubuntu'
 set :deploy_via, :remote_cache
-set :branch, ENV['REVISION'] || 'master'
+set :branch, ENV['REVISION'] || 'default'
 
 default_run_options[:pty] = true
 default_environment['TERM'] = ENV['TERM']
