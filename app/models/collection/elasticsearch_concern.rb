@@ -13,7 +13,7 @@ module Collection::ElasticsearchConcern
     }
     index_properties.merge!(Site::IndexUtils::DowncaseAnalyzer)
 
-    result = elasticsearch_client.indices.create index: index_name, body: index_properties
+    result = Elasticsearch::Client.new.indices.create index: index_name, body: index_properties
 
     unless result["acknowledged"]
       error = "Can't create index for collection #{name} (ID: #{id})."
@@ -33,29 +33,34 @@ module Collection::ElasticsearchConcern
   end
 
   def update_mapping
-    index.update_mapping site: site_mapping
-    index.refresh
+    client = Elasticsearch::Client.new
+    client.indices.put_mapping index: index_name, type: 'site', body: {site: site_mapping}
+    client.indices.refresh index: index_name
   end
 
   def recreate_index
     destroy_index
     create_index
+
+    client = Elasticsearch::Client.new
+
     docs = sites.map do |site|
       site.collection = self
       site.to_elastic_search
     end
     docs.each_slice(1000) do |docs_slice|
-      index.import docs_slice
+      ops = []
+      docs_slice.each do |doc|
+        ops.push index: { _index: index_name, _type: 'site', _id: doc[:id]}
+        ops.push doc
+      end
+      client.bulk body: ops
     end
-    index.refresh
+    client.indices.refresh index: index_name
   end
 
   def destroy_index
-    elasticsearch_client.indices.delete index: index_name
-  end
-
-  def elasticsearch_client
-    self.class.elasticsearch_client
+    Elasticsearch::Client.new.indices.delete index: index_name
   end
 
   def index
@@ -90,10 +95,6 @@ module Collection::ElasticsearchConcern
 
   module ClassMethods
     INDEX_NAME_PREFIX = Rails.env == 'test' ? "collection_test" : "collection"
-
-    def elasticsearch_client
-      @@elasticsearch_client ||= Elasticsearch::Client.new
-    end
 
     def index_name(id, options = {})
       if options[:snapshot_id]

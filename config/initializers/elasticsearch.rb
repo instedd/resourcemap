@@ -36,20 +36,6 @@ end
 
 module Tire
   class Index
-    def update_mapping(mapping)
-      mapping.each do |type, value|
-        url, body = "#{Tire::Configuration.url}/#{@name}/#{type}/_mapping", MultiJson.encode(type => value)
-        begin
-          @response = Tire::Configuration.client.put url, body
-          raise RuntimeError, "#{@response.code} > #{@response.body}" if @response.failure?
-        ensure
-          curl = %Q|curl -X PUT "#{url}" -d '#{body}'|
-          logged('MAPPING', curl)
-        end
-      end
-      true
-    end
-
     # Fix: suppor the 'refresh' option in store.
     # We could use this branch: https://github.com/ahey/retire/commit/b8b100f2b3eef9a49d0dc22ee40594bdf1adb777
     # But this way is more independent and robust.
