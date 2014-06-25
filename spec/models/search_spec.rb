@@ -360,7 +360,7 @@ describe Search do
     end
 
     it "searches by numeric radius" do
-      assert_results collection.new_search.radius(12.5, 22.5, 600000), site1, site2
+      assert_results collection.new_search.radius(12.5, 22.5, 600_000), site1, site2
     end
 
     it "searches by numeric radius on single site" do

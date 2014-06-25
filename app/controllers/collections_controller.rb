@@ -267,20 +267,31 @@ class CollectionsController < ApplicationController
     else
       start_date = date.prev_year
     end
-    ms = collection.messages.where("is_send = true and created_at between ? and ?", start_date, Time.now)
+    ection.messages.where("is_send = true and created_at between ? and ?", start_date, Time.now)
     render_json({status: 200, remain_quota: collection.quota, sended_message: ms.length})
   end
 
   def sites_info
     options = new_search_options
 
-    total = collection.new_elasticsearch_count(options).value
-    no_location = collection.new_elasticsearch_count(options) do
-      filtered do
-        query { all }
-        filter :not, exists: {field: :location}
-      end
-    end.value
+    client = Elasticsearch::Client.new
+    total = client.count index: collection.index_name
+    no_location = client.count index: collection.index_name, body: {
+      query: {
+        filtered: {
+          filter: {
+            not: {
+              filter: {
+                exists: {field: :location}
+              }
+            }
+          }
+        }
+      }
+    }
+
+    total = total["count"]
+    no_location = no_location["count"]
 
     info = {}
     info[:total] = total

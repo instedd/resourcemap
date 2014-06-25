@@ -226,7 +226,7 @@ module SearchBase
   end
 
   def radius(lat, lng, meters)
-    meters = meters.to_f / 1000 unless meters.is_a?(String) && (meters.end_with?('km') || meters.end_with?('mi'))
+    meters = meters.to_f unless meters.is_a?(String) && (meters.end_with?('km') || meters.end_with?('mi'))
     @search.filter :geo_distance,
       distance: meters,
       location: { lat: lat, lon: lng }
