@@ -4,19 +4,19 @@ module Site::IndexUtils
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
   DowncaseAnalyzer = {
     settings: {
-        index: {
-          analysis: {
-            analyzer: {
-              downcase: {
-                tokenizer: :keyword,
-                filter: :lowercase,
-                type: :custom,
-              }
+      index: {
+        analysis: {
+          analyzer: {
+            downcase: {
+              tokenizer: :keyword,
+              filter: :lowercase,
+              type: :custom,
             }
           }
         }
       }
     }
+  }
 
   class DefaultStrategy
     def self.store(document, index, options = {})

@@ -13,12 +13,12 @@ module Collection::ElasticsearchConcern
     }
     index_properties.merge!(Site::IndexUtils::DowncaseAnalyzer)
 
-    success = index.create(index_properties)
+    result = elasticsearch_client.indices.create index: index_name, body: index_properties
 
-    if !success
+    unless result["acknowledged"]
       error = "Can't create index for collection #{name} (ID: #{id})."
       Rails.logger.error error
-      Rails.logger.error "ElasticSearch response was: #{index.response}." if index && index.response
+      Rails.logger.error "ElasticSearch response was: #{result}."
       raise error
     end
 
@@ -51,7 +51,11 @@ module Collection::ElasticsearchConcern
   end
 
   def destroy_index
-    index.delete
+    elasticsearch_client.indices.delete index: index_name
+  end
+
+  def elasticsearch_client
+    self.class.elasticsearch_client
   end
 
   def index
@@ -86,6 +90,10 @@ module Collection::ElasticsearchConcern
 
   module ClassMethods
     INDEX_NAME_PREFIX = Rails.env == 'test' ? "collection_test" : "collection"
+
+    def elasticsearch_client
+      @@elasticsearch_client ||= Elasticsearch::Client.new
+    end
 
     def index_name(id, options = {})
       if options[:snapshot_id]
