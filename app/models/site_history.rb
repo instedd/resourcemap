@@ -5,8 +5,8 @@ class SiteHistory < ActiveRecord::Base
 
   serialize :properties, Hash
 
-  def store_in(index)
-    Site::IndexUtils.store self, site_id, index
+  def store_in(index_name)
+    Site::IndexUtils.store self, site_id, index_name
   end
 
   def to_elastic_search

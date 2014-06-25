@@ -72,12 +72,3 @@ module Tire
     end
   end
 end
-
-module Tire
-  def self.delete_indices_that_match(regex)
-    indexes = JSON.parse Tire::Configuration.client.get("#{Tire::Configuration.url}/_status").body
-    indexes['indices'].each do |name, index|
-      Tire::Index.new(name).delete if name =~ regex
-    end
-  end
-end

@@ -10,9 +10,9 @@ describe Site::ElasticsearchConcern do
   it "stores in index after create" do
     site = collection.sites.make :properties => {beds_field.es_code => 10, tables_field.es_code => 20}
 
-    search = Tire::Search::Search.new site.index_name
-    results = search.perform.results
-    results.length.should eq(1)
+    client = Elasticsearch::Client.new
+    results = client.search index: site.index_name
+    results = results["hits"]["hits"]
     results[0]["_id"].to_i.should eq(site.id)
     results[0]["_source"]["name"].should eq(site.name)
     results[0]["_source"]["lat_analyzed"].should eq(site.lat.to_s)
@@ -29,16 +29,18 @@ describe Site::ElasticsearchConcern do
     site = collection.sites.make
     site.destroy
 
-    search = Tire::Search::Search.new site.index_name
-    search.perform.results.length.should eq(0)
+    client = Elasticsearch::Client.new
+    results = client.search index: site.index_name
+    results["hits"]["hits"].length.should eq(0)
   end
 
   it "stores sites without lat and lng in index" do
     group = collection.sites.make :lat => nil, :lng => nil
     site = collection.sites.make
 
-    search = Tire::Search::Search.new collection.index_name
-    search.perform.results.length.should eq(2)
+    client = Elasticsearch::Client.new
+    results = client.search index: site.index_name
+    results["hits"]["hits"].length.should eq(2)
   end
 
   it "should stores alert in index" do
@@ -51,5 +53,4 @@ describe Site::ElasticsearchConcern do
     result = search.perform.results
     result.length.should eq(1)
   end
-
- end
+end

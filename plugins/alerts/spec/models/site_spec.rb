@@ -15,8 +15,9 @@ describe Site do
   it "set alert in the index properties" do
     site = collection.sites.make :properties => {beds_field.es_code => 100 }
 
-    search = Tire::Search::Search.new site.index_name
-    results = search.perform.results
+    client = Elasticsearch::Client.new
+    results = client.search index: site.index_name
+    results = results["hits"]["hits"]
     results.length.should eq(1)
     results[0]["_source"]["alert"].should eq(true)
     results[0]["_source"]["color"].should eq('red')

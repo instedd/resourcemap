@@ -12,7 +12,7 @@ module Site::ElasticsearchConcern
 
   def store_in_index(options = {})
     run_callbacks :index do
-      Site::IndexUtils.store self, id, index, options
+      Site::IndexUtils.store self, id, index_name, options
     end
   end
 

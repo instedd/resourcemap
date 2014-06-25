@@ -19,29 +19,34 @@ module Site::IndexUtils
   }
 
   class DefaultStrategy
-    def self.store(document, index, options = {})
-      result = index.store document, refresh: true
+    def self.store(document, index_name, options = {})
+      client = Elasticsearch::Client.new
+      result = client.index index: index_name, type: 'site', id: document[:id], body: document
       if result['error']
         raise "Can't store site in index: #{result['error']}"
       end
 
-      index.refresh unless options[:refresh] == false
+      unless options[:refresh] == false
+        client.indices.refresh index: index_name
+      end
     end
   end
 
   class BulkStrategy
-    def initialize(index)
-      @index = index
+    def initialize
       @documents = []
+      @client = Elasticsearch::Client.new
     end
 
-    def store(document, index, options = {})
-      @documents << document
-      flush if @documents.length >= 1000
+    def store(document, index_name, options = {})
+      @documents.push index: { _index: index_name, _type: 'site', _id: document[:id]}
+      @documents.push document
+
+      flush if @documents.length >= 2000
     end
 
     def flush
-      @index.import @documents
+      @client.bulk body: @documents
       @documents.clear
     end
   end
@@ -54,17 +59,17 @@ module Site::IndexUtils
     Thread.current[:index_utils_strategy] = strategy
   end
 
-  def self.bulk(index)
-    self.strategy = BulkStrategy.new(index)
+  def self.bulk
+    self.strategy = BulkStrategy.new
     yield
   ensure
     self.strategy.flush
     self.strategy = nil
   end
 
-  def store(site, site_id, index, options = {})
+  def store(site, site_id, index_name, options = {})
     document = to_elastic_search(site, site_id)
-    Site::IndexUtils.strategy.store(document, index, options)
+    Site::IndexUtils.strategy.store(document, index_name, options)
   end
 
   def to_elastic_search(site, site_id)
