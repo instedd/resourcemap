@@ -48,9 +48,10 @@ describe Site::ElasticsearchConcern do
     collection.save
     site = collection.sites.make properties: { beds_field.es_code => 9 }
 
-    search = collection.new_elasticsearch_search
-    search.filter :term, alert: true
-    result = search.perform.results
-    result.length.should eq(1)
+    client = Elasticsearch::Client.new
+    results = client.search index: collection.index_name, type: 'site', body: {
+      filter: {term: {alert: true}}
+    }
+    results["hits"]["hits"].length.should eq(1)
   end
 end

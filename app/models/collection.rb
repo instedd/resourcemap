@@ -34,11 +34,12 @@ class Collection < ActiveRecord::Base
   end
 
   def max_value_of_property(es_code)
-    search = new_elasticsearch_search
-    search.sort { by es_code, 'desc' }
-    search.size 2000
-    results = search.perform.results
-    results.first['_source']['properties'][es_code] rescue 0
+    client = Elasticsearch::Client.new
+    results = client.search index: index_name, type: 'site', body: {
+      sort: {es_code => 'desc'},
+      size: 2000,
+    }
+    results["hits"]["hits"].first['_source']['properties'][es_code] rescue 0
   end
 
   def membership_for(user)

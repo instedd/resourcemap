@@ -19,7 +19,7 @@ module Collection::PluginsConcern
   end
 
   def selected_plugins
-    Settings.selected_plugins 
+    Settings.selected_plugins
     #plugins.keys
   end
 

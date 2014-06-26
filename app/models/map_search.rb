@@ -56,16 +56,18 @@ class MapSearch
       adjust_bounds_to_world_limits
     end
 
-    @search.filter :exists, field: :location
-    @search.filter :geo_bounding_box, location: {
-      top_left: {
-        lat: @bounds[:n],
-        lon: @bounds[:w]
-      },
-      bottom_right: {
-        lat: @bounds[:s],
-        lon: @bounds[:e]
-      },
+    add_filter exists: {field: location}
+    add_filter geo_bounding_box: {
+      location: {
+        top_left: {
+          lat: @bounds[:n],
+          lon: @bounds[:w]
+        },
+        bottom_right: {
+          lat: @bounds[:s],
+          lon: @bounds[:e]
+        },
+      }
     }
   end
 

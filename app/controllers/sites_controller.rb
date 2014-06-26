@@ -108,8 +108,6 @@ class SitesController < ApplicationController
       search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
     end
     search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :locale)
-
-    search.apply_queries
     render_json search.results
   end
 

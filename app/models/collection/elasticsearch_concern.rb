@@ -63,10 +63,6 @@ module Collection::ElasticsearchConcern
     Elasticsearch::Client.new.indices.delete index: index_name
   end
 
-  def index
-    @index ||= self.class.index(id)
-  end
-
   def index_name(options = {})
     self.class.index_name id, options
   end
@@ -89,8 +85,8 @@ module Collection::ElasticsearchConcern
     MapSearch.new id
   end
 
-  def new_elasticsearch_search(options = {})
-    self.class.new_elasticsearch_search(id, options)
+  def index_names_with_options(options = {})
+    self.class.index_names_with_options(id, options)
   end
 
   module ClassMethods
@@ -111,11 +107,7 @@ module Collection::ElasticsearchConcern
       "#{INDEX_NAME_PREFIX}_#{id}"
     end
 
-    def index(id)
-      ::Tire::Index.new index_name(id)
-    end
-
-    def new_elasticsearch_search(*ids, options)
+    def index_names_with_options(*ids, options)
       # If we want the indices for many collections for a given user, it's faster
       # to get all snapshots ids first instead of fetching them one by one for each collection.
       # This optimization does that.
@@ -131,7 +123,7 @@ module Collection::ElasticsearchConcern
 
         index_name(id, options)
       end
-      Tire::Search::Search.new index_names, type: :site
+      index_names.join ","
     end
   end
 end

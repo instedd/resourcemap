@@ -1,19 +1,58 @@
 class Search
   include SearchBase
 
+  class Results
+    include Enumerable
+
+    attr_reader :sites
+    attr_reader :page
+    attr_reader :previous_page
+    attr_reader :next_page
+    attr_reader :total_pages
+    attr_reader :total_count
+
+    def initialize(options)
+      @sites = options[:sites]
+      @page = options[:page]
+      @previous_page = options[:previous_page]
+      @next_page = options[:next_page]
+      @total_pages = options[:total_pages]
+      @total_count = options[:total_count]
+    end
+
+    def total
+      total_count
+    end
+
+    def each(&block)
+      @sites.each(&block)
+    end
+
+    def [](index)
+      @sites[index]
+    end
+
+    def empty?
+      @sites.empty?
+    end
+
+    def length
+      @sites.length
+    end
+  end
+
   attr_accessor :page_size
   attr_accessor :collection
 
   def initialize(collection, options)
     @collection = collection
-    @search = collection.new_elasticsearch_search(options)
+    @index_names = collection.index_names_with_options(options)
     @snapshot_id = options[:snapshot_id]
     if options[:current_user]
       @current_user = options[:current_user]
     else
       @current_user = User.find options[:current_user_id] if options[:current_user_id]
     end
-    @sort_list = {}
     @from = 0
     @page_size = 50
   end
@@ -23,7 +62,7 @@ class Search
   end
 
   def page(page)
-    @search.from((page - 1) * self.page_size)
+    @page = page
     self
   end
 
@@ -52,9 +91,11 @@ class Search
         sort = decode(es_code)
       end
     end
-    @sort = true
-    ascendant = ascendent ? 'asc' : 'desc'
-    @sort_list[sort] = ascendant
+    ascendent = ascendent ? 'asc' : 'desc'
+
+    @sorts ||= []
+    @sorts.push sort => ascendent
+
     self
   end
 
@@ -70,36 +111,46 @@ class Search
     self
   end
 
-  # Returns the results from ElasticSearch without modifications. Keys are ids
-  # and so are values (when applicable).
-  def results_with_count
-    apply_queries
-    sort_list = @sort_list
-    if @sort
-      @search.sort { by sort_list }
+  def results
+    body = get_body
+
+    if @sorts
+      body[:sort] = @sorts
     else
-      @search.sort { by 'name.downcase' }
+      body[:sort] = 'name.downcase'
+    end
+
+    if @select_fields
+      body[:fields] = @select_fields
+    end
+
+    if @page
+      body[:from] = (@page - 1) * page_size
     end
 
     if @offset && @limit
-      @search.from @offset
-      @search.size @limit
+      body[:from] = @offset
+      body[:size] = @limit
     elsif @unlimited
-      @search.size 1_000_000
+      body[:size] = 1_000_000
     else
-      @search.size self.page_size
+      body[:size] = page_size
     end
 
-    Rails.logger.debug @search.to_curl if Rails.logger.level <= Logger::DEBUG
+    # Rails.logger.debug @search.to_curl if Rails.logger.level <= Logger::DEBUG
 
-    search = @search.perform
-    search_results = search.results
+    client = Elasticsearch::Client.new
+    results = client.search index: @index_names, type: 'site', body: body
 
-    # In elasticsearch < 1.0 fields didn't return an array.
-    # Now it does, so we convert it back to a single element.
-    if @has_select_fields
-      search_results.results.each do |result|
-        fields = result["fields"]
+    hits = results["hits"]
+    sites = hits["hits"]
+    total_count = hits["total"]
+
+    # When selecting fields, the results are returned in an array.
+    # We only keep the first element of that array.
+    if @select_fields
+      sites.each do |site|
+        fields = site["fields"]
         if fields
           fields.each do |key, value|
             fields[key] = value.first if value.is_a?(Array)
@@ -108,11 +159,16 @@ class Search
       end
     end
 
-    {sites: search_results, total_count: search.json['hits']['total']}
-  end
-
-  def results
-    results_with_count[:sites]
+    results = {sites: sites, total_count: total_count}
+    if @page
+      results[:page] = @page
+      results[:previous_page] = @page - 1 if @page > 1
+      results[:total_pages] = (total_count.to_f / page_size).ceil
+      if @page < results[:total_pages]
+        results[:next_page] = @page + 1
+      end
+    end
+    Results.new(results)
   end
 
   # Returns the results from ElasticSearch but with codes as keys and codes as
@@ -123,9 +179,8 @@ class Search
 
     fields_by_es_code = visible_fields.index_by &:es_code
 
-    items = results()
-
-    items.each do |item|
+    results = results()
+    results.each do |item|
       properties = item['_source']['properties']
       item['_source']['identifiers'] = []
       item['_source']['properties'] = {}
@@ -137,8 +192,7 @@ class Search
         end
       end
     end
-
-    items
+    results
   end
 
   # Returns the results from ElasticSearch but with the location field
@@ -146,9 +200,8 @@ class Search
   def ui_results
     fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
 
-    items = results_with_count()
-
-    items[:sites].each do |item|
+    results = results()
+    results.each do |item|
       if item['_source']['location']
         item['_source']['lat'] = item['_source']['location']['lat']
         item['_source']['lng'] = item['_source']['location']['lon']
@@ -160,13 +213,17 @@ class Search
         fields_by_es_code[es_code]
       }
     end
-
-    items
+    results
   end
 
   def histogram_results(field_es_code)
+    body = get_body
+
+    client = Elasticsearch::Client.new
+    results = client.search index: @index_names, type: 'site', body: body
+
     histogram = {}
-    @search.results.facets["field_#{field_es_code}_ratings"]["terms"].each do |item|
+    results["facets"]["field_#{field_es_code}_ratings"]["terms"].each do |item|
       histogram[item["term"]] = item["count"] unless item["count"] == 0
     end
     histogram
