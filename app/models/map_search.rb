@@ -100,6 +100,10 @@ class MapSearch
     body = get_body
     body[:size] = 100_000
 
+    if Rails.logger.level <= Logger::DEBUG
+      Rails.logger.debug to_curl(client, body)
+    end
+
     uri = URI(url)
     reader, writer = IO.pipe
     producer = Thread.new(writer) do |io|

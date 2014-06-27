@@ -57,10 +57,6 @@ class Search
     @page_size = 50
   end
 
-  def to_curl
-    @search.to_curl
-  end
-
   def page(page)
     @page = page
     self
@@ -111,8 +107,8 @@ class Search
     self
   end
 
-  def results
-    body = get_body
+  def get_body
+    body = super
 
     if @sorts
       body[:sort] = @sorts
@@ -137,9 +133,18 @@ class Search
       body[:size] = page_size
     end
 
-    # Rails.logger.debug @search.to_curl if Rails.logger.level <= Logger::DEBUG
+    body
+  end
+
+  def results
+    body = get_body
 
     client = Elasticsearch::Client.new
+
+    if Rails.logger.level <= Logger::DEBUG
+      Rails.logger.debug to_curl(client, body)
+    end
+
     results = client.search index: @index_names, type: 'site', body: body
 
     hits = results["hits"]

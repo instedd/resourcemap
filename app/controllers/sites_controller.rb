@@ -15,7 +15,7 @@ class SitesController < ApplicationController
     search.limit params[:limit]
 
     results = search.ui_results
-    render_json({ sites: results[:sites].map { |x| x['_source'] }, total_count: results[:total_count] })
+    render_json({ sites: results.map { |x| x['_source'] }, total_count: results.total_count })
   end
 
   def show
@@ -23,7 +23,7 @@ class SitesController < ApplicationController
 
     search.id params[:id]
     # If site does not exists, return empty object
-    result = search.ui_results[:sites].first['_source'] rescue {}
+    result = search.ui_results.first['_source'] rescue {}
     render_json result
   end
 

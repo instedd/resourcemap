@@ -362,4 +362,14 @@ module SearchBase
   def fields
     @_fields_ ||= collection.fields.all
   end
+
+  def to_curl(client, body)
+    info = client.transport.hosts.first
+    protocol, host, port = info[:protocol], info[:host], info[:port]
+
+    url = "#{protocol}://#{host}:#{port}/#{@index_names}/site/_search"
+
+    body = body.to_json.gsub("'",'\u0027')
+    "curl -X GET '#{url}?pretty' -d '#{body}'"
+  end
 end
