@@ -12,7 +12,6 @@ gem 'haml-magic-translations'
 gem 'decent_exposure'
 gem "instedd-rails", '~> 0.0.22'
 gem "breadcrumbs_on_rails"
-gem "tire"
 gem "elasticsearch"
 gem "elasticsearch-ruby"
 gem "valium"
