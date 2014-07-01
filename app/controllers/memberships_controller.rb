@@ -38,6 +38,8 @@ class MembershipsController < ApplicationController
   def destroy
     if @membership.user_id != current_user.id
       @membership.destroy
+    else
+      opt_out_of_the_collection
     end
     redirect_to collection_members_path(collection)
   end
@@ -73,6 +75,10 @@ class MembershipsController < ApplicationController
   def unset_admin
     @membership.change_admin_flag false
     render_json :ok
+  end
+
+  def opt_out_of_the_collection
+    @membership.destroy
   end
 
   private

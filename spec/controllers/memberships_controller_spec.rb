@@ -78,4 +78,12 @@ describe MembershipsController do
       membership.admin.should be_false
     end
   end
+
+  # describe "opt out" do
+  #   it "user should opt out of the collection when they are non admin members " do
+  #     sign_in user_2
+  #     post :opt_out_of_collection, collection_id: collection.id, id: user_2.id
+  #     response.status.should eq(200)
+  #   end
+  # end
 end
