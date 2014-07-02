@@ -13,20 +13,16 @@ class Api::CollectionsController < ApiController
   end
 
   def create
-    begin
-      coll_params = params[:collection]
-      coll_params[:icon] ||= 'default'
+    coll_params = params[:collection]
+    coll_params[:icon] ||= 'default'
 
-      new_collection = Collection.new params[:collection]
+    new_collection = Collection.new params[:collection]
 
-      current_user.create_collection new_collection
-      current_user.collection_count += 1
-      current_user.update_successful_outcome_status
-      current_user.save!
-      render_json new_collection
-    rescue => ex
-      raise ex
-    end
+    current_user.create_collection new_collection
+    current_user.collection_count += 1
+    current_user.update_successful_outcome_status
+    current_user.save!
+    render_json new_collection
   end
 
   def show

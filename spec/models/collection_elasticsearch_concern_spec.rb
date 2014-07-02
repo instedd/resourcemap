@@ -1,15 +1,18 @@
 require 'spec_helper'
 
-describe Collection::TireConcern do
+describe Collection::ElasticsearchConcern do
   let(:collection) { Collection.make }
 
   it "creates index on create" do
-    Tire::Index.new(collection.index_name).exists?.should be_true
+    client = Elasticsearch::Client.new
+    client.indices.exists(index: collection.index_name).should be_true
   end
 
   it "destroys index on destroy" do
     collection.destroy
-    Tire::Index.new(collection.index_name).exists?.should be_false
+
+    client = Elasticsearch::Client.new
+    client.indices.exists(index: collection.index_name).should be_false
   end
 
   it "create proper index name" do
@@ -34,8 +37,5 @@ describe Collection::TireConcern do
     UserSnapshot.make :user => user, :snapshot => snapshot
     index_name_for_user_with_snapshot = Collection.index_name(collection.id, user: user)
     index_name_for_user_with_snapshot.should eq("collection_test_#{collection.id}_#{snapshot.id}")
-
   end
-
-
 end
