@@ -114,6 +114,8 @@ class Collection < ActiveRecord::Base
 
     json_layers = []
 
+    visible_layers = visible_layers.uniq
+
     visible_layers.each do |layer|
       json_layer = {}
       json_layer[:id] = layer.id

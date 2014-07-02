@@ -92,7 +92,7 @@ onCollections ->
         if field.kind == 'hierarchy' && @id()
           hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode], newValue: field.value()})
 
-        if field.value()
+        if field.value() || field.kind == 'yes_no'
           value = field.value()
           @properties()[field.esCode] = value
         else

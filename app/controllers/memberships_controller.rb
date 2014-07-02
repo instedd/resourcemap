@@ -38,10 +38,10 @@ class MembershipsController < ApplicationController
   def destroy
     if @membership.user_id != current_user.id
       @membership.destroy
+      redirect_to collection_members_path(collection)
     else
       opt_out_of_the_collection
     end
-    redirect_to collection_members_path(collection)
   end
 
   def set_access
@@ -77,8 +77,18 @@ class MembershipsController < ApplicationController
     render_json :ok
   end
 
+  def one_admin_only
+    admins = Collection.find(params[:collection_id]).memberships.select { |m| m.admin}
+    admins.count == 1
+  end
+
   def opt_out_of_the_collection
-    @membership.destroy
+    if @membership.admin && one_admin_only
+      redirect_to collection_members_path(collection)
+    else
+      # @membership.destroy
+      redirect_to collection_path(collection)
+    end
   end
 
   private

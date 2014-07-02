@@ -157,9 +157,10 @@ class CollectionsController < ApplicationController
     current_user_snapshot.go_back_to_present!
 
     respond_to do |format|
-      format.html {
+      format.html do
         flash[:notice] = _("Snapshot %{snapshot_name} unloaded") % {snapshot_name: loaded_snapshot.name} if loaded_snapshot
-        redirect_to  collection_path(collection) }
+        redirect_to(params[:next_url] || collection_path(collection))
+      end
       format.json { render_json :ok }
     end
   end

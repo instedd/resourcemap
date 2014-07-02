@@ -16,6 +16,9 @@
             window.model.memberships.push new_member
             $member_email.val('')
 
+    optOutOfCollection = (email = $member_email.val()) ->
+      $.post "/collections/#{collectionId}/memberships/#{userId}.json", {_method: 'delete'}
+
     $member_email.autocomplete
       source: (term, callback) ->
         $.ajax "/collections/#{collectionId}/memberships/invitable.json?#{$.param term}",
@@ -35,3 +38,5 @@
     $('#add_member').click -> createMembership()
 
     $('.hidden-until-loaded').show()
+
+    $('#opt_out').click -> optOutOfCollection()
