@@ -36,7 +36,7 @@ class Snapshot < ActiveRecord::Base
   end
 
   def recreate_index
-    destroy_index
+    destroy_index rescue nil
     create_index
   end
 

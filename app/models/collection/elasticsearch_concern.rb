@@ -39,7 +39,7 @@ module Collection::ElasticsearchConcern
   end
 
   def recreate_index
-    destroy_index
+    destroy_index rescue nil
     create_index
 
     client = Elasticsearch::Client.new
