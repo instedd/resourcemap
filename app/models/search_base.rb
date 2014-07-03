@@ -1,10 +1,3 @@
-# Include this module to get search methods that will modify
-# a @search instance that must be a Tire::Search object.
-#
-# The class that includes this module must provide a collection
-# method that returns the collection being searched.
-#
-# Before executing the search you must invoke apply_queries.
 module SearchBase
   def use_codes_instead_of_es_codes
     @use_codes_instead_of_es_codes = true
@@ -13,40 +6,40 @@ module SearchBase
 
   def id(id)
     if id.is_a?(Array)
-      @search.filter :terms, id: id
+      add_filter terms: {id: id}
     else
-      @search.filter :term, id: id
+      add_filter term: {id: id}
     end
     self
   end
 
   def name_start_with(name)
-    @search.filter :prefix, name: name.downcase
+    add_filter prefix: {name: name.downcase}
   end
 
   def name(name)
-    @search.filter :term, "name.downcase" => name.downcase
+    add_filter term: {"name.downcase" => name.downcase}
   end
 
   def uuid(uuid)
-    @search.filter :term, uuid: uuid
+    add_filter term: {uuid: uuid}
   end
 
   def eq(field, value)
     if value.blank?
-      @search.filter :missing, {field: field.es_code}
+      add_filter missing: {field: field.es_code}
       return self
     end
 
     query_params = query_params(field, value)
-    @search.filter query_params.keys.first, query_params.values.first
+    add_filter query_params
 
     self
   end
 
   def not_eq(field, value)
     query_params = query_params(field, value)
-    @search.filter :not, query_params
+    add_filter not: query_params
     self
   end
 
@@ -66,7 +59,7 @@ module SearchBase
 
     # elsif field.select_kind?
     #   {term: {query_key => validated_value}}
-    #   # @search.filter :term, query_key => validated_value
+    #   add_filter term: {query_key => validated_value}
     # else
     # end
 
@@ -81,13 +74,13 @@ module SearchBase
 
   def under(field, value)
     if value.blank?
-      @search.filter :missing, {field: field.es_code}
+      add_filter missing: {field: field.es_code}
       return self
     end
 
     value = field.descendants_of_in_hierarchy value
     query_key = field.es_code
-    @search.filter :terms, query_key => value
+    add_filter terms: {query_key => value}
     self
   end
 
@@ -102,7 +95,7 @@ module SearchBase
     class_eval %Q(
       def #{op}(field, value)
         validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
-        @search.filter :range, field.es_code => {#{op}: validated_value}
+        add_filter range: {field.es_code => {#{op}: validated_value}}
         self
       end
     )
@@ -150,25 +143,29 @@ module SearchBase
   # https://github.com/elasticsearch/elasticsearch/issues/1776
   # The number I put here is the max integer in Java
   def histogram_search(field_es_code, filters=nil)
+    facets_hash = {
+      terms: {
+        field: field_es_code,
+        size: 2147483647,
+        all_terms: true,
+      }
+    }
+
     if filters.present?
       query_params = query_params(filters.keys.first, filters.values.first)
       query_hash = {facet_filter: {and: [query_params]} }
-      # facet_filter: {and: [not: {term: {"90" => true}}]}
-      @search.facet "field_#{field_es_code}_ratings", query_hash do
-        terms field_es_code, :size => 2147483647, :all_terms => true
-      end
-    else
-      @search.facet "field_#{field_es_code}_ratings" do
-        terms field_es_code, :size => 2147483647, :all_terms => true
-      end
+      facets_hash.merge!(query_hash)
     end
+
+    add_facet "field_#{field_es_code}_ratings", facets_hash
+
     self
   end
 
 
   def before(time)
     time = parse_time(time)
-    @search.filter :range, updated_at: {lte: Site.format_date(time)}
+    add_filter range: {updated_at: {lte: Site.format_date(time)}}
     self
   end
 
@@ -183,7 +180,7 @@ module SearchBase
   end
 
   def updated_since_query(time)
-    @search.filter :range, updated_at: {gte: Site.format_date(time)}
+    add_filter range: {updated_at: {gte: Site.format_date(time)}}
     self
   end
 
@@ -192,8 +189,8 @@ module SearchBase
     time = Time.iso8601(iso_string)
     time_upper_bound = time + 1.second
     time_lower_bound = time - 1.second
-    @search.filter :range, field_name.to_sym => {gte: Site.format_date(time_lower_bound)}
-    @search.filter :range, field_name.to_sym => {lte: Site.format_date(time_upper_bound)}
+    add_filter range: {field_name.to_sym => {gte: Site.format_date(time_lower_bound)}}
+    add_filter range: {field_name.to_sym => {lte: Site.format_date(time_upper_bound)}}
     self
   end
 
@@ -206,44 +203,47 @@ module SearchBase
   end
 
   def full_text_search(text)
-    query = ElasticSearch::QueryHelper.full_text_search(text, @search, collection, fields)
+    query = ElasticSearch::QueryHelper.full_text_search(text, self, collection, fields)
     add_query query if query
     self
   end
 
   def box(west, south, east, north)
-    @search.filter :geo_bounding_box, location: {
-      top_left: {
-        lat: north,
-        lon: west
-      },
-      bottom_right: {
-        lat: south,
-        lon: east
-      },
+    add_filter geo_bounding_box: {
+      location: {
+        top_left: {
+          lat: north,
+          lon: west
+        },
+        bottom_right: {
+          lat: south,
+          lon: east
+        },
+      }
     }
     self
   end
 
   def radius(lat, lng, meters)
-    meters = meters.to_f / 1000 unless meters.is_a?(String) && (meters.end_with?('km') || meters.end_with?('mi'))
-    @search.filter :geo_distance,
+    meters = meters.to_f unless meters.is_a?(String) && (meters.end_with?('km') || meters.end_with?('mi'))
+    add_filter geo_distance: {
       distance: meters,
       location: { lat: lat, lon: lng }
+    }
     self
   end
 
   def field_exists(field_code)
-    @search.filter :exists, field: field_code
+    add_filter exists: {field: field_code}
   end
 
   def require_location
-    @search.filter :exists, field: :location
+    add_filter exists: {field: :location}
     self
   end
 
   def location_missing
-    @search.filter :not, {exists: {field: :location}}
+    add_filter not: {exists: {field: :location}}
     self
   end
 
@@ -252,46 +252,65 @@ module SearchBase
     if value.present?
       eq field, value
     else
-      @search.filter :not, {exists: {field: es_code}}
+      add_filter not: {exists: {field: es_code}}
     end
   end
 
-  def apply_queries
-    @search.query { |q|
-      query = @queries.join " AND " if @queries
-      case
-      when @queries && @prefixes
-        q.boolean do |bool|
-          bool.must { |q| q.string query }
-          apply_prefixes bool
-        end
-      when @queries && !@prefixes then q.string query
-      when !@queries && @prefixes then apply_prefixes q
-      else q.all
+  def get_body
+    body = {}
+
+    if @filters
+      if @filters.length == 1
+        body[:filter] = @filters.first
+      else
+        body[:filter] = {and: @filters}
       end
-    }
+    end
+
+    if @facets
+      body[:facets] = @facets
+    end
+
+    all_queries = []
+
+    if @prefixes
+      prefixes = @prefixes.map { |prefix| {prefix: {prefix[:key] => prefix[:value]}} }
+      all_queries.concat prefixes
+    end
+
+    if @queries
+      query = @queries.join " AND "
+      all_queries.push query_string: {query: query}
+    end
+
+    case all_queries.length
+    when 0
+      # Nothing to do
+    when 1
+      body[:query] = all_queries.first
+    else
+      body[:query] = {bool: {must: all_queries}}
+    end
+
+    body
   end
 
   def select_fields(fields_array)
-    @search.fields(fields_array)
+    @select_fields = fields_array
     self
   end
 
-  private
-
-  def apply_prefixes to
-    if to.is_a? Tire::Search::BooleanQuery
-      @prefixes.each do |prefix|
-        to.must { |q| q.prefix prefix[:key], prefix[:value] }
-      end
-    else
-      if @prefixes.length == 1
-        to.prefix @prefixes.first[:key], @prefixes.first[:value]
-      else
-        to.boolean { |bool| apply_prefixes bool }
-      end
-    end
+  def add_filter(filter)
+    @filters ||= []
+    @filters.push filter
   end
+
+  def add_facet(name, value)
+    @facets ||= {}
+    @facets[name] = value
+  end
+
+  private
 
   def decode(code)
     return code unless @use_codes_instead_of_es_codes
@@ -342,5 +361,15 @@ module SearchBase
 
   def fields
     @_fields_ ||= collection.fields.all
+  end
+
+  def to_curl(client, body)
+    info = client.transport.hosts.first
+    protocol, host, port = info[:protocol], info[:host], info[:port]
+
+    url = "#{protocol}://#{host}:#{port}/#{@index_names}/site/_search"
+
+    body = body.to_json.gsub("'",'\u0027')
+    "curl -X GET '#{url}?pretty' -d '#{body}'"
   end
 end

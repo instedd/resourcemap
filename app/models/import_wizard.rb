@@ -172,7 +172,7 @@ class ImportWizard
       if import_job.status == 'pending'
         mark_job_as_in_progress(user, collection)
 
-        Site::IndexUtils.bulk(collection.index) do
+        Site::IndexUtils.bulk do
           Site::ActivityConcern.bulk do
             HistoryConcern.bulk do
               execute_with_entities(user, collection, columns_spec)

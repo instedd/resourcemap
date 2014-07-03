@@ -216,9 +216,9 @@ describe CsdApiController do
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
-      
-      # Hash.from_xml doesn't take into account attributes. 
-      # Have to change this to use Nokogiri. 
+
+      # Hash.from_xml doesn't take into account attributes.
+      # Have to change this to use Nokogiri.
       # Not a big deal if have strong unit tests.
       response_hash = Hash.from_xml(response.body)
 

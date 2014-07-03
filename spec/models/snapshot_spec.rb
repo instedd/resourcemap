@@ -30,12 +30,13 @@ describe Snapshot do
     snapshot = collection.snapshots.create! date: date, name: 'last_year'
 
     index_name = Collection.index_name collection.id, snapshot_id: snapshot.id
-    search = Tire::Search::Search.new index_name
-
-    search.perform.results.map { |x| x['_source']['id'] }.sort.should eq([@site1.id, @site2.id])
+    results = Elasticsearch::Client.new.search index: index_name
+    results = results["hits"]["hits"]
+    results.map { |x| x['_source']['id'] }.sort.should eq([@site1.id, @site2.id])
 
     # Also check mapping
-    snapshot.index.mapping['site']['properties']['properties']['properties'].should eq({@field.es_code => {'type' => 'long'}})
+    mapping = Elasticsearch::Client.new.indices.get_mapping index: snapshot.index_name, type: 'site'
+    mapping[snapshot.index_name]['mappings']['site']['properties']['properties']['properties'].should eq({@field.es_code => {'type' => 'long'}})
   end
 
   it "should destroy index on destroy" do
@@ -45,7 +46,7 @@ describe Snapshot do
     snapshot.destroy
 
     index_name = Collection.index_name collection.id, snapshot_id: snapshot.id
-    Tire::Index.new(index_name).exists?.should be_false
+    Elasticsearch::Client.new.indices.exists(index: index_name).should be_false
   end
 
   it "collection should have histories" do
