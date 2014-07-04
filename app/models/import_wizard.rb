@@ -262,7 +262,7 @@ class ImportWizard
 
             sites.each do |site|
               # If the site already has a value for the luhn field we don't want to generate a new one
-              if !site.properties_was[luhn_field.es_code].blank?
+              if site.properties_was && site.properties_was[luhn_field.es_code].present?
                 site.properties[luhn_field.es_code] = site.properties_was[luhn_field.es_code]
               elsif site.properties[luhn_field.es_code].blank?
                 site.properties[luhn_field.es_code] = next_luhn_value

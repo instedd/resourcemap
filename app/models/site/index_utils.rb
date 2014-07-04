@@ -80,8 +80,8 @@ module Site::IndexUtils
       uuid: site.uuid,
       type: :site,
       properties: site.properties,
-      created_at: site.created_at.strftime(DateFormat),
-      updated_at: site.updated_at.strftime(DateFormat),
+      created_at: site.created_at.utc.strftime(DateFormat),
+      updated_at: site.updated_at.utc.strftime(DateFormat),
       icon: site.collection.icon,
       # If the migration to add the version in Sites is not runned, then calling site.version will cause some previous migration to fail
       version: (site.version rescue nil)

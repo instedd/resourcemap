@@ -10,13 +10,16 @@ class Site < ActiveRecord::Base
   belongs_to :collection
   validates_presence_of :name
 
-  serialize :properties, Hash
+  serialize :properties, JSON
   validate :valid_properties
   after_validation :standardize_properties
 
   before_create :set_version
   before_update :set_version
 
+  def properties
+    self["properties"] ||= {}
+  end
 
   attr_accessor :from_import_wizard
 
