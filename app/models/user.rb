@@ -170,4 +170,16 @@ class User < ActiveRecord::Base
     update_successful_outcome_status
     self.save!
   end
+
+  def opt_out_from(collection_id)
+    membership = self.memberships.where("collection_id = ?",collection_id).first
+    if membership.admin
+      collection = Collection.find(collection_id)
+      if not collection.one_admin_only
+        membership.destroy
+      end
+    else
+      membership.destroy
+    end
+  end
 end

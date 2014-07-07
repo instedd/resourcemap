@@ -294,4 +294,10 @@ class CollectionsController < ApplicationController
   def edit_logo
 
   end
+
+  def opt_out
+    current_user.opt_out_from params[:id]
+    render_json collections_path
+  end
+
 end

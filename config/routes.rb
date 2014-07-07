@@ -27,10 +27,13 @@ ResourceMap::Application.routes.draw do
 
     resources :collections do
       post :register_gateways
-      get  :message_quota
+      get :message_quota
       get :sites_by_term
 
       get :current_user_membership
+      member do
+        get :opt_out
+      end
 
       resources :sites do
         member do

@@ -117,3 +117,7 @@ onCollections ->
 
 
     @createCollection: -> window.location = "/collections/new"
+
+    @optOut: ->
+      $.get "/collections/#{@currentCollection().id}/opt_out", (data) ->
+        window.location = data

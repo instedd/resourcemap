@@ -63,6 +63,7 @@
     -# if can? :create, Site
     - if current_user && !current_user.is_guest
       %button.flocation{ko(click: '$root.createSite')} Create Site
+      %button.flocation{ko(click: '$root.optOut')} Leave Collection
     //ko
 
   //ko

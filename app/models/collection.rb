@@ -236,4 +236,9 @@ class Collection < ActiveRecord::Base
         .as_json(include: :field_histories)
     end
   end
+
+  def one_admin_only
+    self.memberships.where('admin' => true).count == 1
+  end
+
 end
