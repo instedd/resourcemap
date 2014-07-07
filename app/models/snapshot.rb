@@ -8,40 +8,40 @@ class Snapshot < ActiveRecord::Base
   after_create :create_index
 
   def create_index
-    index = index()
-
     index_properties = { mappings: { site: site_mapping } }
     index_properties.merge!(Site::IndexUtils::DowncaseAnalyzer)
-    index.create(index_properties)
+
+    client = Elasticsearch::Client.new
+    client.indices.create index: index_name, body: index_properties
 
     docs = collection.site_histories.at_date(date).map do |history|
       history.collection = collection
       history.to_elastic_search
     end
     docs.each_slice(200) do |docs_slice|
-      index.import docs_slice
+      ops = []
+      docs_slice.each do |doc|
+        ops.push index: { _index: index_name, _type: 'site', _id: doc[:id]}
+        ops.push doc
+      end
+      client.bulk body: ops
     end
-
-    index.refresh
+    client.indices.refresh
   end
 
   after_destroy :destroy_index
 
   def destroy_index
-    index.delete
+    Elasticsearch::Client.new.indices.delete index: index_name
   end
 
   def recreate_index
-    destroy_index
+    destroy_index rescue nil
     create_index
   end
 
   def index_name
     collection.index_name snapshot_id: id
-  end
-
-  def index
-    Tire::Index.new index_name
   end
 
   def fields

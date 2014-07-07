@@ -101,7 +101,9 @@ RSpec.configure do |config|
 
   # Delete all test indexes after every 10 tests
   config.after(:each) do
-    Tire::Index.new("collection_test_*").delete if (($test_count += 1) % 10 == 0)
+    if (($test_count += 1) % 10 == 0)
+      Elasticsearch::Client.new.indices.delete index: "collection_test_*"
+    end
   end
 
 # Mock nuntium access and gateways management
