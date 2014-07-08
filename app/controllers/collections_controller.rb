@@ -29,7 +29,7 @@ class CollectionsController < ApplicationController
       add_breadcrumb _("Collections"), 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html do
-          if current_user.is_guest && cannot?(:show, Collection)
+          if Guisso.enabled? && current_user.is_guest && cannot?(:show, Collection)
             redirect_to_guisso
           end
         end
