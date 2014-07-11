@@ -23,6 +23,7 @@ onCollections ->
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @logoUrl = data?.logo_url
       @canCreateSite = data?.can_create_site
+      @canLeaveCollection = data?.can_leave_collection
       @loadCurrentSnapshotMessage()
       @loadAllSites()
       @layers = ko.observableArray()
