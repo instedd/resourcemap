@@ -190,6 +190,7 @@ class CollectionsController < ApplicationController
       attrs = collection.attributes
       attrs["logo_url"] = collection.logo_url(:grayscale)
       attrs["snapshot_name"] = snapshot_names[collection.id]
+      attrs["can_create_site"] = can? :create, collection.sites.build
       collections_with_snapshot.push attrs
     end
     collections_with_snapshot

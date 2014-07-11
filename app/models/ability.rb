@@ -19,6 +19,7 @@ class Ability
     can [:search, :index], Site, :collection => {:anonymous_name_permission => "read"}
     can [:search, :index], Site, :collection => {:memberships => { :user_id => user.id }}
     can :delete, Site, :collection => {:memberships => { :user_id => user.id , :admin => true } }
+    can :create, Site, :collection => {:memberships => { :user_id => user.id , :admin => true } }
 
     if !user.is_guest
       can [:new, :create], Collection
