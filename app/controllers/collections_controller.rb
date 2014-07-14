@@ -99,9 +99,9 @@ class CollectionsController < ApplicationController
   end
 
   def show
+    collection.current_user = current_user
     @snapshot = Snapshot.new
     add_breadcrumb _("Properties"), '#'
-    collection["can_leave_collection"] = can? :opt_out, collection
     respond_to do |format|
       format.html
       format.json { render_json collection }
@@ -191,8 +191,8 @@ class CollectionsController < ApplicationController
       attrs = collection.attributes
       attrs["logo_url"] = collection.logo_url(:grayscale)
       attrs["snapshot_name"] = snapshot_names[collection.id]
-      attrs["can_create_site"] = can? :create, collection.sites.build
-      attrs["can_leave_collection"] = can? :opt_out, collection
+      attrs[:can_create_site] = current_user.can_create_site collection
+      attrs[:can_leave_collection] = current_user.can_leave_collection collection
       collections_with_snapshot.push attrs
     end
     collections_with_snapshot

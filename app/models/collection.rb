@@ -7,6 +7,7 @@ class Collection < ActiveRecord::Base
 
   mount_uploader :logo, LogoUploader
   attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
+  attr_accessor :current_user
 
   validates_presence_of :name, :message => N_("can't be blank")
   validates_presence_of :icon
@@ -141,6 +142,15 @@ class Collection < ActiveRecord::Base
     json_layers.sort! { |x, y| x[:ord] <=> y[:ord] }
 
     json_layers
+  end
+
+  def as_json
+    json = super
+    if current_user
+      json[:can_leave_collection] = current_user.can_leave_collection self
+      json[:can_create_site] = current_user.can_create_site self
+    end
+    json
   end
 
   # Returns the next ord value for a layer that is going to be created

@@ -182,4 +182,13 @@ class User < ActiveRecord::Base
       membership.destroy
     end
   end
+
+  def can_leave_collection(collection)
+    can? :opt_out, collection
+  end
+
+  def can_create_site(collection)
+    can? :create, collection.sites.build
+  end
+
 end

@@ -27,7 +27,6 @@ class SerializeSitePropertiesAsJson < ActiveRecord::Migration
           # converted = connection.quote(converted)
           execute("update #{table_name} set properties = #{converted} where id = #{id}")
         rescue Exception => ex
-          binding.pry
           raise ex
         end
       end
