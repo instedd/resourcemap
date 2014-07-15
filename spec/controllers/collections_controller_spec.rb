@@ -241,6 +241,27 @@ describe CollectionsController do
       membership2 = collection.memberships.create! user_id: user2.id, admin: false
       collection.memberships.count.should eq(2)
       get :opt_out, id: collection.id
+      response.status.should eq(403)
+      collection.memberships.count.should eq(2)
+      collection.memberships.includes(user.memberships.first)
+      collection.memberships.includes(membership2)
+    end
+
+    it "user can leave collection if is not admin (common member)" do
+      membership2 = collection.memberships.create! user_id: user2.id, admin: false
+      collection.memberships.count.should eq(2)
+      sign_out user
+      sign_in user2
+      get :opt_out, id: collection.id
+      collection.memberships.count.should eq(1)
+      collection.memberships.first.should eq(user.memberships.first)
+    end
+
+    let!(:guest_user) { GuestUser.new }
+    let!(:user_ability) {Ability.new guest_user}
+
+    it "guest user can't leave collection" do
+      (user_ability.can? :opt_out, collection).should eq(false)
     end
   end
 end

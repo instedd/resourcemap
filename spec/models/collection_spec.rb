@@ -183,4 +183,17 @@ describe Collection do
       dict['D'].should eq(field_d.es_code)
     end
   end
+
+  describe 'one_admin_only' do
+    it 'returns true when there is only one administrator' do
+      collection.one_admin_only.should eq(true)
+    end
+
+    let(:user2) {User.make}
+    it 'returns false when there is more than one admin' do
+      membership2 = collection.memberships.create! user_id: user2.id, admin: true
+      collection.one_admin_only.should eq(false)
+    end
+  end
+
 end
