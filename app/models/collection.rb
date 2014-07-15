@@ -144,7 +144,7 @@ class Collection < ActiveRecord::Base
     json_layers
   end
 
-  def as_json
+  def as_json(options={})
     json = super
     if current_user
       json[:can_leave_collection] = current_user.can_leave_collection self

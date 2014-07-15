@@ -223,4 +223,24 @@ describe CollectionsController do
     get :search, collection_id: collection.id
     response.should be_ok
   end
+
+  describe "opt out" do
+    let(:user2) {User.make}
+    it "user can leave collection if there is more than one admin" do
+      membership2 = collection.memberships.create! user_id: user2.id, admin: true
+      sign_out user
+      sign_in user2
+      collection.memberships.count.should eq(2)
+      get :opt_out, id: collection.id
+      collection.memberships.count.should eq(1)
+      collection.memberships.first.should eq(user.memberships.first)
+      user2.collections.count.should eq(0)
+    end
+
+    it "user cannot leave collection if is the only admin" do
+      membership2 = collection.memberships.create! user_id: user2.id, admin: false
+      collection.memberships.count.should eq(2)
+      get :opt_out, id: collection.id
+    end
+  end
 end

@@ -11,8 +11,22 @@ class Ability
     can :manage, Snapshot, :collection => {:memberships => { :user_id => user.id , :admin => true } }
 
     # User can read collection if she is a collection member or if the collection is public
-    can [:read, :sites_by_term, :search, :sites_info, :current_user_membership, :opt_out], Collection, :memberships => { :user_id => user.id }
+    can [:read, :sites_by_term, :search, :sites_info, :current_user_membership], Collection, :memberships => { :user_id => user.id }
     can [:read, :sites_by_term, :search, :sites_info, :current_user_membership, :export], Collection, :anonymous_name_permission => "read"
+
+    can :opt_out, Collection do |collection|
+      membership = user_memberships(user).find{ |um| um.collection_id == collection.id }
+      if membership
+        if membership.admin && collection.one_admin_only
+          false
+        else
+          true
+        end
+      else
+        false
+      end
+    end
+
     # Permission to read collection was allowing guest to see settings page
     cannot :show, Collection if user.is_guest && format && format.html?
 

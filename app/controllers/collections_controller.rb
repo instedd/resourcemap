@@ -298,12 +298,11 @@ class CollectionsController < ApplicationController
   end
 
   def edit_logo
-
   end
 
   def opt_out
     current_user.opt_out_from params[:id]
-    render_json collections_path
+    redirect_to collections_path, notice: _("You have left '%{collection_name}' collection") % {collection_name: collection.name}
   end
 
 end
