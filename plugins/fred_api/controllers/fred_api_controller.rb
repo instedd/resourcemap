@@ -284,6 +284,7 @@ class FredApiController < ApplicationController
 
   def default_rescue(ex)
     puts ex.message
+    ex.backtrace.each { |bt| puts bt }
     render_json({code: "500 Internal Server Error",  message: "#{ex.message}"}, status: 500, :layout => false)
   end
 

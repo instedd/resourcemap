@@ -157,9 +157,10 @@ class CollectionsController < ApplicationController
     current_user_snapshot.go_back_to_present!
 
     respond_to do |format|
-      format.html {
+      format.html do
         flash[:notice] = _("Snapshot %{snapshot_name} unloaded") % {snapshot_name: loaded_snapshot.name} if loaded_snapshot
-        redirect_to  collection_path(collection) }
+        redirect_to(params[:next_url] || collection_path(collection))
+      end
       format.json { render_json :ok }
     end
   end
@@ -199,10 +200,7 @@ class CollectionsController < ApplicationController
 
     search.full_text_search params[:term] if params[:term]
     search.select_fields(['id', 'name'])
-    search.apply_queries
-
-    results = search.results.map{ |item| item["fields"]}
-
+    results = search.results.map { |item| item["fields"] }
     results.each do |item|
       item[:value] = item["name"]
     end
@@ -221,11 +219,8 @@ class CollectionsController < ApplicationController
     search.hierarchy params[:hierarchy_code], params[:hierarchy_value] if params[:hierarchy_code]
     search.location_missing if params[:location_missing].present?
     search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing, :locale)
-
-    search.apply_queries
-
-    search_result = search.results_with_count
-    sites = search_result[:sites].map do |result|
+    results = search.results
+    sites = results.map do |result|
       source = result['_source']
 
       obj = {}
@@ -245,7 +240,7 @@ class CollectionsController < ApplicationController
 
       obj
     end
-    render_json({ sites: sites, total_count: search_result[:total_count] })
+    render_json({ sites: sites, total_count: results.total_count })
   end
 
   def recreate_index
@@ -267,20 +262,29 @@ class CollectionsController < ApplicationController
     else
       start_date = date.prev_year
     end
-    ms = collection.messages.where("is_send = true and created_at between ? and ?", start_date, Time.now)
+    ection.messages.where("is_send = true and created_at between ? and ?", start_date, Time.now)
     render_json({status: 200, remain_quota: collection.quota, sended_message: ms.length})
   end
 
   def sites_info
     options = new_search_options
 
-    total = collection.new_tire_count(options).value
-    no_location = collection.new_tire_count(options) do
-      filtered do
-        query { all }
-        filter :not, exists: {field: :location}
-      end
-    end.value
+    total = collection.elasticsearch_count
+    no_location = collection.elasticsearch_count do
+      {
+        query: {
+          filtered: {
+            filter: {
+              not: {
+                filter: {
+                  exists: {field: :location}
+                }
+              }
+            }
+          }
+        }
+      }
+    end
 
     info = {}
     info[:total] = total

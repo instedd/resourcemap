@@ -15,7 +15,7 @@ class SitesController < ApplicationController
     search.limit params[:limit]
 
     results = search.ui_results
-    render_json({ sites: results[:sites].map { |x| x['_source'] }, total_count: results[:total_count] })
+    render_json({ sites: results.map { |x| x['_source'] }, total_count: results.total_count })
   end
 
   def show
@@ -23,7 +23,7 @@ class SitesController < ApplicationController
 
     search.id params[:id]
     # If site does not exists, return empty object
-    result = search.ui_results[:sites].first['_source'] rescue {}
+    result = search.ui_results.first['_source'] rescue {}
     render_json result
   end
 
@@ -108,8 +108,6 @@ class SitesController < ApplicationController
       search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
     end
     search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :locale)
-
-    search.apply_queries
     render_json search.results
   end
 

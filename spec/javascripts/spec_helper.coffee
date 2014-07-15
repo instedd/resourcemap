@@ -39,3 +39,6 @@ class window.google.maps.LatLngBounds
 class window.google.maps.Marker
   setIcon: -> 'setIcon'
   setShadow: -> 'setShadow'
+
+
+window.__ = (x) -> x
