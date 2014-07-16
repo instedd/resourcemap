@@ -51,15 +51,12 @@ msgstr "champ %{kind} %{name} %{code} a été supprimé"
 msgid "%{kind} field '%{name}' %{code} %{key} changed to %{field_key}"
 msgstr ""
 
-<<<<<<< local
 msgid "%{user} became an administrator"
 msgstr ""
 
 msgid "%{user} removed from administrators group"
 msgstr ""
 
-=======
->>>>>>> other
 msgid "(85512345678)"
 msgstr "(855512345678)"
 
@@ -184,12 +181,9 @@ msgstr "Passerelle SMS téléphone Android - Configuration avancée"
 msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
 msgstr "Passerelle SMS téléphone Android - Configuration de base (recommandée)"
 
-<<<<<<< local
 msgid "Anonymous permissions changed"
 msgstr ""
 
-=======
->>>>>>> other
 msgid "Anonymous users"
 msgstr ""
 
@@ -343,78 +337,37 @@ msgstr ""
 msgid "Collection|Anonymous name permission"
 msgstr ""
 
-#, fuzzy
-#, fuzzy
-#, fuzzy
-<<<<<<< local
 msgid "Collection created"
-=======
-#, fuzzy
-msgid "Collection|Icon"
->>>>>>> other
-msgstr "Collecte"
+msgstr ""
 
-#, fuzzy
-<<<<<<< local
-=======
-#, fuzzy
-#, fuzzy
-#, fuzzy
->>>>>>> other
 msgid "Collection|Icon"
 msgstr "Collecte"
 
-#, fuzzy
 msgid "Collection|Lat"
 msgstr "Collecte"
 
-#, fuzzy
 msgid "Collection|Lng"
 msgstr "Collecte"
 
-#, fuzzy
 msgid "Collection|Logo"
 msgstr "Collecte"
 
-#, fuzzy
-<<<<<<< local
-=======
-#, fuzzy
->>>>>>> other
 msgid "Collection|Max lat"
 msgstr "Collecte"
 
-#, fuzzy
 msgid "Collection|Max lng"
 msgstr "Collecte"
 
-#, fuzzy
-#, fuzzy
-<<<<<<< local
-#, fuzzy
 msgid "Collection imported"
-=======
+msgstr ""
+
 msgid "Collection|Max lat"
->>>>>>> other
 msgstr "Collecte"
 
-#, fuzzy
 msgid "Collection|Min lng"
 msgstr "Collecte"
 
-#, fuzzy
 msgid "Collection|Name"
-msgstr "Collecte"
-
-#, fuzzy
-#, fuzzy
-#, fuzzy
-<<<<<<< local
-msgid "Collection imported"
-=======
-#, fuzzy
-msgid "Collection|Icon"
->>>>>>> other
 msgstr "Collecte"
 
 msgid "Column Settings"
@@ -423,7 +376,6 @@ msgstr "Paramètres des colonnes"
 msgid "Conditions"
 msgstr "Conditions"
 
-#, fuzzy
 msgid "Confirm"
 msgstr "Confirmé à"
 
@@ -788,16 +740,6 @@ msgstr "Latitude"
 msgid "Layer"
 msgstr "Couches"
 
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-<<<<<<< local
-=======
-#, fuzzy
-#, fuzzy
->>>>>>> other
 msgid "Site '%s' successfully created"
 msgstr "Site %{site} a été créé"
 
@@ -813,16 +755,6 @@ msgstr "Couche %{layer} a été supprimée"
 msgid "Layer %{layer} was renamed to %{changes}"
 msgstr "Couche %{layer} a été renommée %{changes}"
 
-<<<<<<< local
-=======
-#, fuzzy
-#, fuzzy
->>>>>>> other
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
 msgid "Site '%s' successfully created"
 msgstr "Site %{site} a été créé"
 
@@ -931,7 +863,6 @@ msgstr "La carte est prête :"
 
 msgid "Medicine is at its best when it helps people avoid illness in the first place. Resource Map aids prevention efforts by giving teams new ways to manage key supply chain items, such as vaccines, vitamins, and other disease prevention tools. And by uploading statistics on various measures of health, you can even use Resource Map to monitor the effectiveness of your interventions. After all, a healthy community is one of your most important resources."
 msgstr "La meilleure situation est lorsque la médecine aide les populations à éviter les maladies. La Carte des ressources facilite les efforts de prévention en donnant aux équipes de nouvelles façons de gérer les éléments clés de la chaîne d'approvisionnement tels que les vaccins, les vitamines et les'autres outils de prévention des maladies. En téléchargeant en amont les statistiques sur diverses mesures de santé, vous pouvez même utiliser la Carte des ressources pour surveiller l'efficacité de vos interventions. Après tout, une communauté en bonne santé est une de vos ressources les plus importantes."
-<<<<<<< local
 
 #, fuzzy
 msgid "Member %{user} was added"
@@ -949,8 +880,6 @@ msgstr ""
 
 msgid "Member removed"
 msgstr ""
-=======
->>>>>>> other
 
 msgid "Member → Site → Layer"
 msgstr "Membre → Site → Couche"
@@ -1332,16 +1261,6 @@ msgstr "Site %{site} a été créé"
 msgid "Site %{site} was deleted"
 msgstr "Site %{site} a été supprimé"
 
-<<<<<<< local
-=======
-#, fuzzy
-#, fuzzy
->>>>>>> other
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
 msgid "Site '%s' successfully created"
 msgstr "Site %{site} a été créé"
 
@@ -1660,24 +1579,12 @@ msgstr "Nom de l'utilisateur :"
 msgid "User|Authentication token"
 msgstr ""
 
-#, fuzzy
-#, fuzzy
-#, fuzzy
-<<<<<<< local
-msgid "Collection created"
-=======
-#, fuzzy
-msgid "Collection|Icon"
->>>>>>> other
-msgstr "Collecte"
-
 msgid "User|Confirmation sent at"
 msgstr ""
 
 msgid "User|Confirmation token"
 msgstr ""
 
-#, fuzzy
 msgid "User|Confirmed at"
 msgstr "Confirmé à"
 
@@ -2023,8 +1930,6 @@ msgstr "→ ; dans"
 msgid "→;"
 msgstr "→ ;"
 
-<<<<<<< local
-=======
 #~ msgid "85512345678"
 #~ msgstr "85512345678"
 
@@ -2040,24 +1945,3 @@ msgstr "→ ;"
 #~ msgid "Please enter a name for your collection."
 #~ msgstr "Il n'y pas de cliché pour cette collecte."
 
->>>>>>> other
-#~ msgid " \"'#{name}'\""
-#~ msgstr "\"'#{name}'\""
-#~ msgid "Collection CSV imported"
-#~ msgstr "Collecte de CSV importée"
-#~ msgid "Collection created"
-#~ msgstr "Collecte créée"
-#~ msgid "Collection imported"
-#~ msgstr "Collecte importée"
-#~ msgid "Layer changed"
-#~ msgstr "Couche modifiée"
-#~ msgid "Layer created"
-#~ msgstr "Couche créée"
-#~ msgid "Layer deleted"
-#~ msgstr "Couche supprimée"
-#~ msgid "Site changed"
-#~ msgstr "Site modifié"
-#~ msgid "Site created"
-#~ msgstr "Site créé"
-#~ msgid "Site deleted"
-#~ msgstr "Site supprimé"

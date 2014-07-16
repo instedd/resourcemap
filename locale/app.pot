@@ -177,12 +177,9 @@ msgstr ""
 msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
 msgstr ""
 
-<<<<<<< local
 msgid "Anonymous permissions changed"
 msgstr ""
 
-=======
->>>>>>> other
 msgid "Anonymous users"
 msgstr ""
 
