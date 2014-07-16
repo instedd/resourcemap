@@ -1,14 +1,14 @@
 class Collection < ActiveRecord::Base
   include Collection::CsvConcern
   include Collection::GeomConcern
-  include Collection::TireConcern
+  include Collection::ElasticsearchConcern
   include Collection::PluginsConcern
   include Collection::ImportLayersSchemaConcern
 
   mount_uploader :logo, LogoUploader
   attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
 
-  validates_presence_of :name, :message => N_("Please enter a name for your collection.")
+  validates_presence_of :name, :message => N_("can't be blank")
   validates_presence_of :icon
 
   has_many :memberships, dependent: :destroy
@@ -34,11 +34,12 @@ class Collection < ActiveRecord::Base
   end
 
   def max_value_of_property(es_code)
-    search = new_tire_search
-    search.sort { by es_code, 'desc' }
-    search.size 2000
-    results = search.perform.results
-    results.first['_source']['properties'][es_code] rescue 0
+    client = Elasticsearch::Client.new
+    results = client.search index: index_name, type: 'site', body: {
+      sort: {es_code => 'desc'},
+      size: 2000,
+    }
+    results["hits"]["hits"].first['_source']['properties'][es_code] rescue 0
   end
 
   def membership_for(user)
@@ -113,6 +114,8 @@ class Collection < ActiveRecord::Base
     end
 
     json_layers = []
+
+    visible_layers = visible_layers.uniq
 
     visible_layers.each do |layer|
       json_layer = {}

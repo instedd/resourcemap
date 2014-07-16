@@ -68,7 +68,7 @@ class Field::IdentifierFields::LuhnField < Field::IdentifierFields::FormatImplem
     search.offset(0)
     search.limit(1)
 
-    site_with_last_luhn_value = search.results.results
+    site_with_last_luhn_value = search.results
 
     if !site_with_last_luhn_value.empty?
       site_with_last_luhn_value.first["_source"]["properties"][@field.es_code]

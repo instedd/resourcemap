@@ -2,7 +2,7 @@ class Ability
 
   include CanCan::Ability
 
-  def initialize(user)
+  def initialize(user, format = nil)
 
     ### Collection ###
 
@@ -13,6 +13,8 @@ class Ability
     # User can read collection if she is a collection member or if the collection is public
     can [:read, :sites_by_term, :search, :sites_info, :current_user_membership], Collection, :memberships => { :user_id => user.id }
     can [:read, :sites_by_term, :search, :sites_info, :current_user_membership, :export], Collection, :anonymous_name_permission => "read"
+    # Permission to read collection was allowing guest to see settings page
+    cannot :show, Collection if user.is_guest && format && format.html?
 
     can [:search, :index], Site, :collection => {:anonymous_name_permission => "read"}
     can [:search, :index], Site, :collection => {:memberships => { :user_id => user.id }}

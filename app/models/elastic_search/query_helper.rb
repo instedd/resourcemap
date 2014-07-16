@@ -17,7 +17,7 @@ module ElasticSearch::QueryHelper
     # Addionally, range queries (as "greater than") are apprended to the given tire_search.
     #
     # Can return nil if no condition was generated except comparison of field values.
-    def full_text_search(text, tire_search, collection, fields = nil)
+    def full_text_search(text, search_base, collection, fields = nil)
       search_hash = SearchParser.new text
 
       conditions = []
@@ -54,15 +54,15 @@ module ElasticSearch::QueryHelper
 
         case op
         when '='
-          tire_search.filter :term, key => value
+          search_base.add_filter term: {key => value}
         when '<'
-          tire_search.filter :range, key => {lt: value}
+          search_base.add_filter range: {key => {lt: value}}
         when '<='
-          tire_search.filter :range, key => {lte: value}
+          search_base.add_filter range: {key => {lte: value}}
         when '>'
-          tire_search.filter :range, key => {gt: value}
+          search_base.add_filter range: {key => {gt: value}}
         when '>='
-          tire_search.filter :range, key => {gte: value}
+          search_base.add_filter range: {key => {gte: value}}
         end
       end
 

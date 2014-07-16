@@ -5,22 +5,29 @@ describe SiteHistory do
 
   it "should create ES index" do
     index_name = Collection.index_name 32, snapshot: "last_year"
-    index = Tire::Index.new index_name
-    index.create
 
-    site_history = SiteHistory.make
+    client = Elasticsearch::Client.new
+    client.indices.create index: index_name
 
-    site_history.store_in index
+    begin
+      site_history = SiteHistory.make
 
-    index.exists?.should be_true
+      site_history.store_in index_name
 
-    search = Tire::Search::Search.new index_name
-    search.perform.results.length.should eq(1)
-    search.perform.results.first["_source"]["name"].should eq(site_history.name)
-    search.perform.results.first["_source"]["id"].should eq(site_history.site_id)
-    search.perform.results.first["_source"]["properties"].should eq(site_history.properties)
-    search.perform.results.first["_source"]["location"]["lat"].should eq(site_history.lat)
-    search.perform.results.first["_source"]["location"]["lon"].should eq(site_history.lng)
+      client.indices.exists(index: index_name).should be_true
+
+      results = client.search index: index_name
+      results = results["hits"]["hits"]
+
+      results.length.should eq(1)
+      results.first["_source"]["name"].should eq(site_history.name)
+      results.first["_source"]["id"].should eq(site_history.site_id)
+      results.first["_source"]["properties"].should eq(site_history.properties)
+      results.first["_source"]["location"]["lat"].should eq(site_history.lat)
+      results.first["_source"]["location"]["lon"].should eq(site_history.lng)
+    ensure
+      client.indices.delete index: index_name
+    end
   end
 
   it "should update version number when the site changes" do

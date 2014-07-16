@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-17 12:32-0300\n"
+"POT-Creation-Date: 2014-06-17 15:28-0300\n"
 "PO-Revision-Date: 2014-06-03 14:06-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English\n"
@@ -60,6 +60,9 @@ msgstr ""
 msgid "(85512345678)"
 msgstr ""
 
+msgid "(for example: 85512345678)"
+msgstr ""
+
 msgid "(no value)"
 msgstr ""
 
@@ -70,9 +73,6 @@ msgid ","
 msgstr ""
 
 msgid ",change icon to:"
-msgstr ""
-
-msgid "85512345678"
 msgstr ""
 
 msgid "API access"
@@ -177,9 +177,12 @@ msgstr ""
 msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
 msgstr ""
 
+<<<<<<< local
 msgid "Anonymous permissions changed"
 msgstr ""
 
+=======
+>>>>>>> other
 msgid "Anonymous users"
 msgstr ""
 
@@ -1681,6 +1684,9 @@ msgid "as they happen, using a live map or text message request"
 msgstr ""
 
 msgid "by knowing where your resources are in real time"
+msgstr ""
+
+msgid "can't be blank"
 msgstr ""
 
 msgid "check all"

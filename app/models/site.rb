@@ -4,19 +4,22 @@ class Site < ActiveRecord::Base
   include Site::CleanupConcern
   include Site::GeomConcern
   include Site::PrefixConcern
-  include Site::TireConcern
+  include Site::ElasticsearchConcern
   include HistoryConcern
 
   belongs_to :collection
   validates_presence_of :name
 
-  serialize :properties, Hash
+  serialize :properties, JSON
   validate :valid_properties
   after_validation :standardize_properties
 
   before_create :set_version
   before_update :set_version
 
+  def properties
+    self["properties"] ||= {}
+  end
 
   attr_accessor :from_import_wizard
 
@@ -170,7 +173,7 @@ class Site < ActiveRecord::Base
     properties.each do |es_code, value|
       field = fields[es_code]
       if field
-        standardized_properties[es_code] = field.standadrize(value)
+        standardized_properties[es_code] = field.standardize(value)
       end
     end
     self.properties = standardized_properties

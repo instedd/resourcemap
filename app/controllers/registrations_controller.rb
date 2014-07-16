@@ -22,8 +22,8 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def update
-    if params[:user][:current_password].blank? && params[:user][:password].empty? && params[:user][:password_confirmation].empty?
-      current_user.update_attributes(params.slice(:phone_number))
+    if params[:user][:current_password].blank? && params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+      current_user.update_attributes(params[:user].slice(:phone_number))
       redirect_to collections_path, notice: _("Account updated successfully")
     else
       super

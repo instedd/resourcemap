@@ -24,4 +24,7 @@ class Field::YesNoField < Field
     end
   end
 
+  def standardize(value)
+    value == true || value == "true"
+  end
 end
