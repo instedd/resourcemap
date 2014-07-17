@@ -174,7 +174,8 @@ class User < ActiveRecord::Base
   def opt_out_from(collection_id)
     membership = self.memberships.where("collection_id = ?",collection_id).first
     collection = membership.collection
-    membership.destroy unless (membership.admin && collection.one_admin_only)
+    authorize! :opt_out, collection
+    membership.destroy
   end
 
   def can_leave_collection(collection)

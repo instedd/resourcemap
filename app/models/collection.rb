@@ -7,7 +7,6 @@ class Collection < ActiveRecord::Base
 
   mount_uploader :logo, LogoUploader
   attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
-  attr_accessor :current_user
 
   validates_presence_of :name, :message => N_("can't be blank")
   validates_presence_of :icon
@@ -28,6 +27,35 @@ class Collection < ActiveRecord::Base
   has_many :layer_histories, dependent: :destroy
   has_many :field_histories, dependent: :destroy
   has_many :messages, dependent: :destroy
+
+  # This scope returns all collections a user can opt out of.
+  # A user can opt out of collection if:
+  # 1- She's a member, but not an admin; or
+  # 2- She's isn't the only current admin.
+  # We wrote it directly in SQL because we couldn't figure out a way to write it by means of
+  # a CanCan ability hash or code block that wouldn't result in N+1 issues.
+  scope :leavable_by, ->(user) {
+    joins(:memberships).where('`memberships`.`id` in
+      (
+        SELECT `memberships`.`id` FROM `memberships` INNER JOIN `collections` ON `collections`.`id` = `memberships`.`collection_id` WHERE `memberships`.`user_id` = ? AND `memberships`.`admin` = false
+      ) OR
+    `memberships`.`id` in
+    (
+      SELECT `memberships`.`id` FROM `memberships` INNER JOIN `collections` ON `collections`.`id` = `memberships`.`collection_id` WHERE `memberships`.`admin` = true AND `memberships`.`user_id` = ? AND
+      (
+        `collections`.`id` in
+        (
+          SELECT `collections`.`id` FROM `collections` inner join `memberships` ON `collections`.`id` = `memberships`.`collection_id` WHERE `memberships`.`admin` = true and EXISTS
+          (
+            SELECT `memberships`.`id` FROM `memberships` INNER JOIN `collections` ON `collections`.`id` = `memberships`.`collection_id` WHERE `memberships`.`user_id` = ?
+          )
+          GROUP BY `collections`.`id`
+          HAVING COUNT(*) > 1
+        )
+      )
+    )', user.id, user.id, user.id)
+  }
+
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
   after_update do
@@ -144,15 +172,6 @@ class Collection < ActiveRecord::Base
     json_layers
   end
 
-  def as_json(options={})
-    json = super
-    if current_user
-      json[:can_leave_collection] = current_user.can_leave_collection self
-      json[:can_create_site] = current_user.can_create_site self
-    end
-    json
-  end
-
   # Returns the next ord value for a layer that is going to be created
   def next_layer_ord
     layer = layers.select('max(ord) as o').first
@@ -247,9 +266,4 @@ class Collection < ActiveRecord::Base
         .as_json(include: :field_histories)
     end
   end
-
-  def one_admin_only
-    self.memberships.where('admin' => true).count == 1
-  end
-
 end

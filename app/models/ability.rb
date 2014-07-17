@@ -14,19 +14,6 @@ class Ability
     can [:read, :sites_by_term, :search, :sites_info, :current_user_membership], Collection, :memberships => { :user_id => user.id }
     can [:read, :sites_by_term, :search, :sites_info, :current_user_membership, :export], Collection, :anonymous_name_permission => "read"
 
-    can :opt_out, Collection do |collection|
-      membership = user_memberships(user).find{ |um| um.collection_id == collection.id }
-      if membership
-        if membership.admin && collection.one_admin_only
-          false
-        else
-          true
-        end
-      else
-        false
-      end
-    end
-
     # Permission to read collection was allowing guest to see settings page
     cannot :show, Collection if user.is_guest && format && format.html?
 
@@ -105,6 +92,11 @@ class Ability
     can :update_location, Membership do |user_membership|
       user_membership.can_update?("location")
     end
+
+    can :opt_out, Collection, Collection.leavable_by(user) do |collection|
+      Collection.leavable_by(user).any? {|c| c.id == collection.id}
+    end
+
   end
 
   def user_memberships(user)

@@ -7,7 +7,7 @@ class CollectionsController < ApplicationController
   # and (becuase of collections is loaded using a JOIN)
   # then the "collection" is going to have a readonly=true value
   # https://github.com/rails/rails/pull/10769 && https://github.com/ryanb/cancan/issues/357
-  expose(:accessible_collections) { Collection.accessible_by(current_ability)}
+  expose(:accessible_collections) { Collection.accessible_by(current_ability).includes(:memberships)}
 
   expose(:collections_with_snapshot) { select_each_snapshot(accessible_collections.uniq) }
 
@@ -18,7 +18,7 @@ class CollectionsController < ApplicationController
   def index
     # Keep only the collections of which the user is membership
     # since the public ones are accessible also, but should not be listed in the collection's view
-    user_memberships = current_user.memberships.map{|c| c.collection_id.to_s}
+    user_memberships = current_user.memberships.includes(:collection).map{|c| c.collection_id.to_s}
     collections_with_snapshot_by_user = collections_with_snapshot.select{|col| user_memberships.include?(col["id"].to_s)}
 
     if params[:collection_id].blank? && current_user.is_guest
@@ -99,7 +99,6 @@ class CollectionsController < ApplicationController
   end
 
   def show
-    collection.current_user = current_user
     @snapshot = Snapshot.new
     add_breadcrumb _("Properties"), '#'
     respond_to do |format|
@@ -187,15 +186,24 @@ class CollectionsController < ApplicationController
       snapshot_names = {}
     end
 
+    # Collections the user can opt out from
+    leavable_collections = Collection.accessible_by(current_ability, :opt_out).pluck(:id)
+
     collections.each do |collection|
       attrs = collection.attributes
       attrs["logo_url"] = collection.logo_url(:grayscale)
       attrs["snapshot_name"] = snapshot_names[collection.id]
-      attrs[:can_create_site] = current_user.can_create_site collection
-      attrs[:can_leave_collection] = current_user.can_leave_collection collection
+
+      add_permission_attributes collection, attrs, leavable_collections
+
       collections_with_snapshot.push attrs
     end
     collections_with_snapshot
+  end
+
+  def add_permission_attributes(collection, attrs, leavable_collections)
+    attrs[:can_create_site] = current_user.can_create_site collection
+    attrs[:can_leave_collection] = leavable_collections.include?(collection.id)
   end
 
   def sites_by_term
@@ -302,7 +310,7 @@ class CollectionsController < ApplicationController
 
   def opt_out
     current_user.opt_out_from params[:id]
-    redirect_to collections_path, notice: _("You have left '%{collection_name}' collection") % {collection_name: collection.name}
+    redirect_to collections_path, notice: _("You left collection '%{collection_name}'") % {collection_name: collection.name}
   end
 
 end
