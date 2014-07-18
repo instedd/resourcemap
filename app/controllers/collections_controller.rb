@@ -186,25 +186,19 @@ class CollectionsController < ApplicationController
       snapshot_names = {}
     end
 
-    # Collections the user can opt out from
-    leavable_collections = Collection.accessible_by(current_ability, :opt_out).pluck(:id)
-
     collections.each do |collection|
       attrs = collection.attributes
       attrs["logo_url"] = collection.logo_url(:grayscale)
       attrs["snapshot_name"] = snapshot_names[collection.id]
 
-      add_permission_attributes collection, attrs, leavable_collections
+      attrs[:can_create_site] = current_user.can_create_site collection
+      attrs[:can_leave_collection] = current_user.can_leave_collection collection
 
       collections_with_snapshot.push attrs
     end
     collections_with_snapshot
   end
 
-  def add_permission_attributes(collection, attrs, leavable_collections)
-    attrs[:can_create_site] = current_user.can_create_site collection
-    attrs[:can_leave_collection] = leavable_collections.include?(collection.id)
-  end
 
   def sites_by_term
     search = new_search
