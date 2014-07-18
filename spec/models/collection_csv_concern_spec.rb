@@ -61,10 +61,7 @@ describe Collection::CsvConcern do
       membership.activity_user = user
       membership.admin = false
       membership.set_layer_access :verb => :read, :access => true, :layer_id => layer_visible.id
-      membership.set_layer_access :verb => :write, :access => false, :layer_id => layer_visible.id
       membership.set_layer_access :verb => :read, :access => false, :layer_id => layer_invisible.id
-      membership.set_layer_access :verb => :write, :access => false, :layer_id => layer_invisible.id
-      membership.set_layer_access :verb => :read, :access => true, :layer_id => layer_writable.id
       membership.set_layer_access :verb => :write, :access => true, :layer_id => layer_writable.id
       membership.save!
 

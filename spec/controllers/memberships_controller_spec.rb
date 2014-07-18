@@ -76,13 +76,13 @@ describe MembershipsController do
       Activity.count.should eq(1)
       activity = Activity.first
       activity.item_type.should eq('layer_membership')
-      activity.action.should eq('created')
+      activity.action.should eq('changed')
       activity.user_id.should eq(user.id)
       activity.collection_id.should eq(collection.id)
       activity.data['user'].should eq(user2.email)
-      activity.data['read'].should eq(true)
-      activity.data['write'].should eq(false)
       activity.data['name'].should eq(layer.name)
+      activity.data['previous_permission'].should eq('none')
+      activity.data['new_permission'].should eq('read')
     end
 
     it "should create activity when layer_membership is deleted" do
@@ -94,11 +94,13 @@ describe MembershipsController do
       Activity.count.should eq(1)
       activity = Activity.first
       activity.item_type.should eq('layer_membership')
-      activity.action.should eq('deleted')
+      activity.action.should eq('changed')
       activity.user_id.should eq(user.id)
       activity.collection_id.should eq(collection.id)
       activity.data['user'].should eq(user2.email)
       activity.data['name'].should eq(layer.name)
+      activity.data['previous_permission'].should eq('read')
+      activity.data['new_permission'].should eq('none')
     end
 
     it "should create activity when layer_membership changed" do
@@ -115,6 +117,8 @@ describe MembershipsController do
       activity.collection_id.should eq(collection.id)
       activity.data['user'].should eq(user2.email)
       activity.data['name'].should eq(layer.name)
+      activity.data['previous_permission'].should eq('read')
+      activity.data['new_permission'].should eq('update')
     end
 
     it "should create activity when name permission changed" do

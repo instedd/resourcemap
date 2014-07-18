@@ -77,8 +77,6 @@ class Membership < ActiveRecord::Base
       lm.write = write unless write.nil?
 
       if lm.read || lm.write
-        #Changes passed as parameter
-        create_activity_if_permission_changed lm, lm.changes()
         lm.save!
       else
         lm.destroy
@@ -89,17 +87,6 @@ class Membership < ActiveRecord::Base
       new_lm.save!
     end
   end
-
-  def create_activity_if_permission_changed(lm, changes)
-    return unless changes['write']
-
-    data = changes
-    data['name'] = lm.layer.name
-    data['user'] = lm.membership.user.email
-
-    Activity.create! item_type: 'layer_membership', action: 'changed', collection_id: lm.layer.collection_id, user_id: activity_user.id, layer_id: lm.layer.id, user_id: activity_user.id, 'data' => data
-  end
-
 
   def as_json(options = {})
     {

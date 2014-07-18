@@ -4,7 +4,7 @@ class Activity < ActiveRecord::Base
     'layer' => %w(created changed deleted),
     'site' => %w(created changed deleted),
     'membership' => %w(created deleted),
-    'layer_membership' => %w(created changed deleted),
+    'layer_membership' => %w(changed),
     'name_permission' => %w(changed),
     'location_permission' => %w(changed),
     'anonymous_name_location_permission' => %w(changed),
@@ -48,16 +48,8 @@ class Activity < ActiveRecord::Base
       _("Member %{user} was added") % {user: "#{data['user']}"}
     when ['membership', 'deleted']
       _("Member %{user} was removed") % {user: "#{data['user']}"}
-    when ['layer_membership', 'created']
-      new_layer_membership_permission
     when ['layer_membership', 'changed']
       layer_membership_permission_changed
-    when ['layer_membership', 'deleted']
-      if data['read']
-        layer_membership_permission_deleted
-      else
-        _("Permission was deleted in layer %{layer}") % {layer: "#{data['name']}"}
-      end
     when ['name_permission', 'changed']
       _("Permission changed from %{previous_permission} to %{new_permission} in name layer for %{user}") %
       {previous_permission: "#{data['changes'][0]}", new_permission: "#{data['changes'][1]}", user: "#{data['user']}"}
@@ -151,34 +143,8 @@ class Activity < ActiveRecord::Base
     end
   end
 
-  def new_layer_membership_permission
-    if (data['read'] && data['write'])
-      permission = 'update'
-    elsif (data['read'] && !data['write'])
-      permission = 'read'
-    else
-      permission = 'none'
-    end
-    _("Permission changed from none to %{permission} in layer %{layer} for %{user}") %
-    {permission: "#{permission}", layer: "'#{data['name']}'", user: "#{data['user']}"}
-  end
-
   def layer_membership_permission_changed
-      write_changes = data['write']
-      if (!write_changes[0] && write_changes[1])
-        _("Permission changed from read to update in layer %{layer} for %{user}") % {layer: "'#{data['name']}'", user: "#{data['user']}"}
-      elsif (write_changes[0] && !write_changes[1])
-        _("Permission changed from update to read in layer %{layer} for %{user}") % {layer:"'#{data['name']}'", user: "#{data['user']}"}
-      end
-  end
-
-  def layer_membership_permission_deleted
-    if (data['write'])
-      previous_permission = "update"
-    else
-      previous_permission = "read"
-    end
-    _("Permission changed from %{previous_permission} to none in layer %{layer} for %{user}") % {previous_permission: "#{previous_permission}", layer: "'#{data['name']}'", user: "#{data['user']}"}
+    _("Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for %{user}") % {previous_permission: "#{data['previous_permission']}", new_permission: "#{data['new_permission']}", layer: "'#{data['name']}'", user: "#{data['user']}"}
   end
 
   def anonymous_name_location_changed
