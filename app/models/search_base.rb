@@ -21,6 +21,10 @@ module SearchBase
     add_filter term: {"name.downcase" => name.downcase}
   end
 
+  def name_search(name)
+    add_query match_phrase: {name: name.downcase}
+  end
+
   def uuid(uuid)
     add_filter term: {uuid: uuid}
   end
@@ -204,7 +208,7 @@ module SearchBase
 
   def full_text_search(text)
     query = ElasticSearch::QueryHelper.full_text_search(text, self, collection, fields)
-    add_query query if query
+    add_query query_string: {query: query} if query
     self
   end
 
@@ -279,8 +283,7 @@ module SearchBase
     end
 
     if @queries
-      query = @queries.join " AND "
-      all_queries.push query_string: {query: query}
+      all_queries.concat @queries
     end
 
     case all_queries.length

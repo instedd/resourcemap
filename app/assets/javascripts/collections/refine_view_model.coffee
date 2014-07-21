@@ -76,6 +76,11 @@ onCollections ->
         @filters.push(new FilterByLocationMissing())
       @hideRefinePopup()
 
+    @filterByName: ->
+      if(!@filteringByProperty(FilterByName))
+        @filters.push(new FilterByName(null, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()))
+      @hideRefinePopup()
+
     @anyDateParamenterAbsent: ->
       ($.trim(@expandedRefinePropertyDateTo()).length == 0 || $.trim(@expandedRefinePropertyDateFrom()).length == 0)
 

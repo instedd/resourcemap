@@ -50,6 +50,17 @@ onCollections ->
 
     description: => "with location missing"
 
+  class @FilterByName extends FilterMaybeEmpty
+    constructor: (field, operator, value) ->
+      @operator = operator
+      @value = value
+
+    setQueryParamsNonEmpty: (options, api = false) =>
+      options.name = "#{@value}"
+
+    descriptionNonEmpty: =>
+      "where Name starts with \"#{@value}\""
+
   class @FilterBySiteProperty extends FilterMaybeEmpty
     constructor: (field, operator, name, id) ->
       @field = field
