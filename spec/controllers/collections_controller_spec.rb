@@ -223,4 +223,30 @@ describe CollectionsController do
     get :search, collection_id: collection.id
     response.should be_ok
   end
+
+  it "gets a site with location when the lat is 0, and the lng is 0 in search" do
+    collection.sites.make lat: 0, lng: 0
+
+    get :search, collection_id: collection.id
+
+    result = JSON.parse response.body
+    site = result["sites"]
+
+    site.first.should include("lat")
+    site.first.should include("lng")
+    site.first["lat"].should eq(0)
+    site.first["lng"].should eq(0)
+  end
+
+  it "gets a site without a location when the lat is nil, and the lng is nil in search" do
+    collection.sites.make lat: nil, lng: nil
+
+    get :search, collection_id: collection.id
+
+    result = JSON.parse response.body
+    site = result["sites"]
+
+    site.first.should_not include("lat")
+    site.first.should_not include("lng")
+  end
 end
