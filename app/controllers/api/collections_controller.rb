@@ -74,7 +74,9 @@ class Api::CollectionsController < ApiController
 
   def geo_json
     @results = perform_search :page, :sort, :require_location
-    render_json collection_geo_json(collection, @results)
+    respond_to do |format|
+      format.json { render_json collection_geo_json(collection, @results) }
+    end
   end
 
   def destroy
