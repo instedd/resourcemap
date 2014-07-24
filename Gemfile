@@ -5,7 +5,6 @@ gem 'mysql2'
 gem 'devise'
 gem 'haml-rails', '~> 0.4'
 gem 'gettext', '~> 3.1.2'
-gem 'gettext_i18n_rails'
 gem 'gettext_i18n_rails_js'
 gem 'ruby_parser', :require => false, :group => :development
 gem 'haml-magic-translations'
@@ -63,6 +62,7 @@ group :test, :development do
 end
 
 group :development do
+  gem 'pry-stack_explorer'
   gem 'dist', :git => 'https://github.com/manastech/dist.git'
   gem 'ruby-prof', :git => 'https://github.com/ruby-prof/ruby-prof.git'
 end
