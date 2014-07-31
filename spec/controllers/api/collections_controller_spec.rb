@@ -8,6 +8,22 @@ describe Api::CollectionsController do
   let(:collection) { user.create_collection(Collection.make) }
   let(:layer) { collection.layers.make }
 
+  describe "List" do
+    before(:each) { sign_in user; collection }
+
+    it "returns collections the user is a member of" do      
+      get :index,  format: 'json'
+
+      response.should be_success
+
+      json = JSON.parse(response.body).map &:with_indifferent_access
+
+      json.length.should eq(1)
+      c = json.first
+      c[:id].should eq(collection.id)
+    end
+  end
+
   describe "Create" do
     it "should allow user to create a new collection" do
       sign_in user

@@ -9,7 +9,7 @@ class Api::CollectionsController < ApiController
   expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
 
   def index
-    render_json current_user.collections.all
+    render json: current_user.collections.includes(:sites).all, each_serializer: Api::CollectionSerializer
   end
 
   def create
