@@ -67,39 +67,33 @@ module Site::ActivityConcern
 
     # If either lat or lng change we want to singal a change in both, as in "location changed" and
     # we can show what the location was before and was it now without consulting the site's properties
-    site_changes['lat'] = [lat, lat] if !site_changes['lat'] && site_changes['lng']
-    site_changes['lng'] = [lng, lng] if site_changes['lat'] && !site_changes['lng']
 
-    unless location_changed(site_changes)
+    lat_changed = site_changes['lat'] && (changes['lat'][0].nil? || changes['lat'][1].nil? || (changes['lat'][0] - changes['lat'][1]).abs >= 1e-04)
+    lng_changed = site_changes['lng'] && (changes['lng'][0].nil? || changes['lng'][1].nil? || (changes['lng'][0] - changes['lng'][1]).abs >= 1e-04)
+
+    if(lat_changed && !site_changes['lng'])
+      site_changes['lng'] = [lng, lng]
+    end
+
+    if(lng_changed && !site_changes['lat'])
+      site_changes['lat'] = [lat, lat]
+    end
+
+    if !lat_changed && !lng_changed
       site_changes.delete 'lat'
       site_changes.delete 'lng'
     end
 
     # This is the case of properties => [{}, {}]
-    if site_changes['properties']
-      2.times { |i| site_changes['properties'][i].reject! { |k, v| v.nil? } }
-      if site_changes['properties'][0] == site_changes['properties'][1]
-        site_changes.delete 'properties'
-      end
-    end
+    # if site_changes['properties']
+    #   2.times { |i| site_changes['properties'][i].reject! { |k, v| v.nil? } }
+    #   if site_changes['properties'][0] == site_changes['properties'][1]
+    #     site_changes.delete 'properties'
+    #   end
+    # end
 
     if site_changes.present?
       Site::ActivityConcern.strategy.create_activity 'site', 'changed', collection.id, id, user.id, {'name' => @name_was || name, 'changes' => site_changes}
-    end
-  end
-
-  def location_changed(changes)
-    # This code assumes that 'lat' is a property of 'changes' iff 'lng' is,
-    # and that if one is set to/from nil, the other is too.
-    if changes['lat']
-      if changes['lat'][0] && changes['lat'][1]
-        return (changes['lat'][0] - changes['lat'][1]).abs >= 1e-04 ||
-               (changes['lng'][0] - changes['lng'][1]).abs >= 1e-04
-      else
-        return changes['lat'][0] != changes['lat'][1]
-      end
-    else
-      return false
     end
   end
 
