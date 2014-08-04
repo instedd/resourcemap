@@ -27,8 +27,6 @@ class Activity < ActiveRecord::Base
     case [item_type, action]
     when ['collection', 'created']
       _("Collection '%{name}' was created") % {name: "#{data['name']}"}
-    when 'collection_imported'
-      _("Import wizard: %{sites}") % {sites: "#{sites_were_imported_text}"}
     when ['collection', 'csv_imported']
       _("Import CSV: %{sites}") % {sites: "#{sites_were_imported_text}"}
     when ['layer', 'created']
