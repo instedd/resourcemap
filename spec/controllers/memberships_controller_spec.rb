@@ -103,6 +103,24 @@ describe MembershipsController do
       activity.data['new_permission'].should eq('none')
     end
 
+    it "shouldn't create activity when layer_membership is not changed" do
+      layer
+      membership
+      post :set_layer_access, collection_id: collection.id, verb: 'read', access: 'true', id: user2.id, layer_id: layer.id
+      Activity.delete_all
+      post :set_layer_access, collection_id: collection.id, verb: 'read', access: 'true', id: user2.id, layer_id: layer.id
+      Activity.count.should eq(0)
+    end
+
+    it "shouldn't create activity when layer_membership is not changed 2" do
+      layer
+      membership
+      post :set_layer_access, collection_id: collection.id, verb: 'write', access: 'true', id: user2.id, layer_id: layer.id
+      Activity.delete_all
+      post :set_layer_access, collection_id: collection.id, verb: 'write', access: 'true', id: user2.id, layer_id: layer.id
+      Activity.count.should eq(0)
+    end
+
     it "should create activity when layer_membership changed" do
       layer
       membership
@@ -134,6 +152,14 @@ describe MembershipsController do
       activity.data['user'].should eq(user2.email)
     end
 
+    it "shouldn't create activity when name permission unchanged" do
+      membership
+      post :set_access, object: 'name', new_action: 'update', collection_id: collection.id, id: user2.id
+      Activity.delete_all
+      post :set_access, object: 'name', new_action: 'update', collection_id: collection.id, id: user2.id
+      Activity.count.should eq(0)
+    end
+
     it "should create activity when location permission changed" do
       membership
       Activity.delete_all
@@ -145,6 +171,14 @@ describe MembershipsController do
       activity.user_id.should eq(user.id)
       activity.collection_id.should eq(collection.id)
       activity.data['user'].should eq(user2.email)
+    end
+
+    it "shouldn't create activity when location permission unchanged" do
+      membership
+      post :set_access, object: 'location', new_action: 'update', collection_id: collection.id, id: user2.id
+      Activity.delete_all
+      post :set_access, object: 'location', new_action: 'update', collection_id: collection.id, id: user2.id
+      Activity.count.should eq(0)
     end
 
     it "should create activity when name permission changed for anonymous user" do

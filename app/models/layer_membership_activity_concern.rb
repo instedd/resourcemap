@@ -31,16 +31,18 @@ module LayerMembershipActivityConcern
   end
 
   def create_activity_if_permission_changed
-    if changes['write'][0]
-      previous_permission = 'update'
-      new_permission = 'read'
-    else
-      previous_permission = 'read'
-      new_permission = 'update'
-    end
-    if activity_user
-      Activity.create! item_type: 'layer_membership', action: 'changed', collection_id: layer.collection_id, user_id: activity_user.id, layer_id: layer.id, user_id: activity_user.id, 'data' => {'previous_permission' => previous_permission, 'new_permission' => new_permission, 'name' => layer.name, 'user' =>
-        membership.user.email}
+    unless changes.empty?
+      if changes['write'] && changes['write'][0]
+        previous_permission = 'update'
+        new_permission = 'read'
+      else
+        previous_permission = 'read'
+        new_permission = 'update'
+      end
+      if activity_user
+        Activity.create! item_type: 'layer_membership', action: 'changed', collection_id: layer.collection_id, user_id: activity_user.id, layer_id: layer.id, user_id: activity_user.id, 'data' => {'previous_permission' => previous_permission, 'new_permission' => new_permission, 'name' => layer.name, 'user' =>
+          membership.user.email}
+      end
     end
   end
 

@@ -18,7 +18,7 @@ class NamePermission < ActiveRecord::Base
   end
 
   def create_activity_if_permission_changed(changes)
-    if activity_user
+    if activity_user && !changes.empty?
       data = {}
       data['changes'] = changes['action']
       data['user'] = membership.user.email
