@@ -47,9 +47,17 @@ class MembershipsController < ApplicationController
   end
 
   def set_access
+    generic_set_access {|membership| membership.set_access params}
+  end
+
+  def set_layer_access
+    generic_set_access {|membership| membership.set_layer_access params}
+  end
+
+  def generic_set_access
     membership = collection.memberships.find_by_user_id params[:id]
     membership.activity_user = current_user
-    membership.set_access params
+    yield membership
     render_json :ok
   end
 
@@ -57,14 +65,6 @@ class MembershipsController < ApplicationController
     anonymous_membership = Membership::Anonymous.new collection, current_user
     anonymous_membership.activity_user = current_user
     anonymous_membership.set_access params[:object], params[:new_action]
-    render_json :ok
-  end
-
-  #TODO: move set_layer_access to the more generic set_access
-  def set_layer_access
-    membership = collection.memberships.find_by_user_id params[:id]
-    membership.activity_user = current_user
-    membership.set_layer_access params
     render_json :ok
   end
 
