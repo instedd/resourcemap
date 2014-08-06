@@ -30,7 +30,7 @@ describe Api::CollectionSerializer do
     sites = [collection.sites.make, collection.sites.make]
 
     expect_fields_rendered_by serializer do
-      { :site_count => 2 }
+      { :count => 2 }
     end
   end
 end
