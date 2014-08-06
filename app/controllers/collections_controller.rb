@@ -28,7 +28,11 @@ class CollectionsController < ApplicationController
     else
       add_breadcrumb _("Collections"), 'javascript:window.model.goToRoot()'
       respond_to do |format|
-        format.html
+        format.html do
+          if Guisso.enabled? && current_user.is_guest && cannot?(:show, Collection)
+            redirect_to_guisso
+          end
+        end
         format.json { render_json collections_with_snapshot_by_user }
       end
     end

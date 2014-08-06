@@ -1,6 +1,6 @@
 GIT
   remote: https://bitbucket.org/instedd/alto_guisso.git
-  revision: 43aa976c3bcef4eadf187614b29238ea46d47151
+  revision: 284dd49f64ae0501f7deb31546ea0c4c66512dfc
   branch: master
   specs:
     alto_guisso (0.0.1)
@@ -38,9 +38,11 @@ GEM
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
       sprockets (~> 2.2.1)
+    active_model_serializers (0.8.1)
+      activemodel (>= 3.0)
+      builder (~> 3.0.0)
     activemodel (3.2.19)
       activesupport (= 3.2.19)
-      builder (~> 3.0.0)
     activerecord (3.2.19)
       activemodel (= 3.2.19)
       activesupport (= 3.2.19)
@@ -387,6 +389,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_model_serializers
   activerecord-import
   alto_guisso!
   brakeman
