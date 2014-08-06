@@ -32,7 +32,8 @@ module LayerMembershipActivityConcern
 
   def create_activity_if_permission_changed
     unless changes.empty?
-      if changes['write'] && changes['write'][0]
+      previous_permission_write = changes['write'][0]
+      if previous_permission_write
         previous_permission = 'update'
         new_permission = 'read'
       else
