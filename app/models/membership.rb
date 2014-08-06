@@ -1,6 +1,5 @@
 class Membership < ActiveRecord::Base
   include Membership::ActivityConcern
-  include Membership::LayerAccessConcern
   include Membership::SitesPermissionConcern
   include Membership::DefaultPermissionConcern
 
