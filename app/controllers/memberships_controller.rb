@@ -1,6 +1,7 @@
 class MembershipsController < ApplicationController
   before_filter :authenticate_api_user!
   before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin, :index]
+  before_filter :load_membership, only: [:destroy, :set_access, :set_layer_access, :set_admin, :unset_admin]
 
   def collections_i_admin
     render_json current_user.collections_i_admin(params)
@@ -38,10 +39,9 @@ class MembershipsController < ApplicationController
   end
 
   def destroy
-    membership = collection.memberships.find_by_user_id params[:id]
-    if membership.user_id != current_user.id
-      membership.activity_user = current_user
-      membership.destroy
+    if @membership.user_id != current_user.id
+      @membership.activity_user = current_user
+      @membership.destroy
     end
     redirect_to collection_members_path(collection)
   end
@@ -55,9 +55,8 @@ class MembershipsController < ApplicationController
   end
 
   def generic_set_access
-    membership = collection.memberships.find_by_user_id params[:id]
-    membership.activity_user = current_user
-    yield membership
+    @membership.activity_user = current_user
+    yield @membership
     render_json :ok
   end
 
@@ -85,15 +84,13 @@ class MembershipsController < ApplicationController
 
   private
 
-  def change_admin_flag(new_value)
-    user_id = params[:id]
-    membership = collection.memberships.find_by_user_id user_id
-    user = collection.users.find user_id
-    membership.admin = new_value
-    membership.save!
+  def load_membership
+    @membership = collection.memberships.find_by_user_id params[:id]
+  end
 
-    Activity.create! item_type: 'admin_permission', action: 'changed', collection_id: collection.id, user_id: current_user.id,
-    'data' => {'value' => new_value, 'user' => user.email}
+  def change_admin_flag(new_value)
+    @membership.activity_user = collection.users.find params[:id]
+    @membership.change_admin_flag new_value
     render_json :ok
   end
 end

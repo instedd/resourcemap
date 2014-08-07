@@ -29,4 +29,10 @@ module Membership::ActivityConcern
     end
   end
 
+  def create_activity_when_admin_permission_changes
+    if activity_user
+      Activity.create! item_type: 'admin_permission', action: 'changed', collection_id: collection.id, user_id: activity_user.id, 'data' => {'value' => admin, 'user' => user.email}
+    end
+  end
+
 end

@@ -117,6 +117,7 @@ class Membership < ActiveRecord::Base
   def change_admin_flag(new_value)
     self.admin = new_value
     self.save!
+    create_activity_when_admin_permission_changes
   end
 
 end
