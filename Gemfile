@@ -34,6 +34,7 @@ gem 'carrierwave'
 gem 'mini_magick'
 gem 'activerecord-import'
 gem 'active_model_serializers'
+gem 'includes-count'
 
 group :test do
   gem 'shoulda-matchers'

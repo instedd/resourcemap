@@ -43,6 +43,7 @@ GEM
       builder (~> 3.0.0)
     activemodel (3.2.19)
       activesupport (= 3.2.19)
+      builder (~> 3.0.0)
     activerecord (3.2.19)
       activemodel (= 3.2.19)
       activesupport (= 3.2.19)
@@ -175,8 +176,10 @@ GEM
     highline (1.6.19)
     hike (1.2.3)
     httpclient (2.3.4.1)
-    i18n (0.6.9)
+    i18n (0.6.11)
     ice_cube (0.8.0)
+    includes-count (0.2)
+      activerecord
     instedd-rails (0.0.22)
       breadcrumbs_on_rails (>= 2.2.0)
       haml-rails
@@ -414,6 +417,7 @@ DEPENDENCIES
   haml-magic-translations
   haml-rails (~> 0.4)
   ice_cube
+  includes-count
   instedd-rails (~> 0.0.22)
   jasminerice
   jquery-rails (~> 2.0.2)
