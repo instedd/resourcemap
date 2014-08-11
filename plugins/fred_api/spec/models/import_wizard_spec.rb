@@ -152,8 +152,8 @@ describe ImportWizard do
     it "show validation error if the luhn value is repeated in the CSV" do
       csv_string = CSV.generate do |csv|
         csv << ['Name', 'Luhn']
-        csv << ['Bar', '100000-8']
-        csv << ['Baz', '100000-8']
+        csv << ['Bar', '100000-9']
+        csv << ['Baz', '100000-9']
       end
 
       specs = [
@@ -166,10 +166,12 @@ describe ImportWizard do
       sites = (ImportWizard.validate_sites_with_columns user, collection, specs)
 
       sites_errors = sites[:errors]
+
       data_errors = sites_errors[:data_errors]
+
       data_errors.length.should eq(1)
 
-      data_errors[0][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: the value is repeated in row 1 and 2.")
+      data_errors[0][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: the value is repeated in rows 1 and 2.")
       data_errors[0][:column].should eq(1)
       data_errors[0][:rows].should eq([0, 1])
     end
@@ -344,7 +346,7 @@ describe ImportWizard do
       data_errors = sites_errors[:data_errors]
       data_errors.length.should eq(1)
 
-      data_errors[0][:description].should eq("Some of the values in field 'Normal' (2nd column) are not valid for the type identifier: the value is repeated in row 1 and 2.")
+      data_errors[0][:description].should eq("Some of the values in field 'Normal' (2nd column) are not valid for the type identifier: the value is repeated in rows 1 and 2.")
       data_errors[0][:column].should eq(1)
       data_errors[0][:rows].should eq([0, 1])
     end
