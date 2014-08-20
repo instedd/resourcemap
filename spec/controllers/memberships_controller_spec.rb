@@ -191,6 +191,8 @@ describe MembershipsController do
       activity.action.should eq('changed')
       activity.user_id.should eq(user.id)
       activity.collection_id.should eq(collection.id)
+      activity.data["built_in_layer"].should eq("name")
+      activity.data["changes"].should eq(["none", "read"])
     end
 
     it "should create activity when location permission changed for anonymous user" do
@@ -203,6 +205,8 @@ describe MembershipsController do
       activity.action.should eq('changed')
       activity.user_id.should eq(user.id)
       activity.collection_id.should eq(collection.id)
+      activity.data["built_in_layer"].should eq("location")
+      activity.data["changes"].should eq(["none", "read"])
     end
 
     it "should create activity when layer membership changed for anonymous user" do
@@ -217,6 +221,7 @@ describe MembershipsController do
       activity.user_id.should eq(user.id)
       activity.collection_id.should eq(collection.id)
       activity.data['name'].should eq(layer.name)
+      activity.data["changes"].should eq(["none", "read"])
     end
 
   end

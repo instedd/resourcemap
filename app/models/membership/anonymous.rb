@@ -85,8 +85,7 @@ class Membership::Anonymous
     data = {}
     data['name'] = layer.name
     data['changes'] = changes['anonymous_user_permission']
-    Activity.create! item_type: 'anonymous_layer_permission', action: 'changed',
-      collection_id: @collection.id, user_id: @activity_user.id, data: data
+    Activity.create! item_type: 'anonymous_layer_permission', action: 'changed',collection_id: @collection.id, user_id: @activity_user.id, data: data
   end
 
 end
