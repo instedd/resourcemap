@@ -1,6 +1,13 @@
 module Layer::ActivityConcern
   extend ActiveSupport::Concern
 
+  included do
+    after_create :create_created_activity, :unless => :mute_activities
+    before_update :record_status_before_update, :unless => :mute_activities
+    after_update :create_updated_activity, :unless => :mute_activities
+    after_destroy :create_deleted_activity, :unless => :mute_activities, :if => :user
+  end
+
   def create_created_activity
     fields_data = fields.map do |field|
       hash = {'id' => field.id, 'kind' => field.kind, 'code' => field.code, 'name' => field.name}
@@ -40,7 +47,6 @@ module Layer::ActivityConcern
             hash[key] = [old_field[key], new_field[key]]
           end
         end
-
         changed.push hash if really_changed
       else
         added.push field_hash(new_field)

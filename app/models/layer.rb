@@ -1,7 +1,7 @@
 class Layer < ActiveRecord::Base
   include Activity::AwareConcern
-  include Layer::ActivityConcern
   include HistoryConcern
+
 
   belongs_to :collection
   has_many :fields, order: 'ord', dependent: :destroy
@@ -12,12 +12,8 @@ class Layer < ActiveRecord::Base
 
   validates_presence_of :ord
 
-  # I'd move this code to a concern, but it works differntly (the fields don't
-  # have an id). Must probably be a bug in Active Record.
-  after_create :create_created_activity, :unless => :mute_activities
-  before_update :record_status_before_update, :unless => :mute_activities
-  after_update :create_updated_activity, :unless => :mute_activities
-  after_destroy :create_deleted_activity, :unless => :mute_activities, :if => :user
+  # This include needs to be after the has_many :fields declaration
+  include Layer::ActivityConcern
 
   def history_concern_foreign_key
     self.class.name.foreign_key
