@@ -16,7 +16,7 @@
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
             %legend Collections
-            %div{style: 'height:80px;overflow:auto'}
+            %div{style: 'height:150px;overflow:auto'}
               %table
                 - collections.sort_by(&:name).each do |collection|
                   %tr
@@ -25,29 +25,18 @@
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
             %legend Events
-            %div{style: 'height:80px;overflow:auto'}
-              %table
-                %tr
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'collection,created', type: 'checkbox', checked: 'checked'} Collection created
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'site,created', type: 'checkbox', checked: 'checked'} Site created
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'layer,created', type: 'checkbox', checked: 'checked'} Layer created
-                %tr
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'collection,imported', type: 'checkbox', checked: 'checked'} Collection imported
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'site,changed', type: 'checkbox', checked: 'checked'} Site changed
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'layer,changed', type: 'checkbox', checked: 'checked'} Layer changed
-                %tr
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'collection,csv_imported', type: 'checkbox', checked: 'checked'} Collection CSV imported
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'site,deleted', type: 'checkbox', checked: 'checked'} Site deleted
-                  %td
-                    %input{ko(checked: 'selectedKinds'), value: 'layer,deleted', type: 'checkbox', checked: 'checked'} Layer deleted
+            %div{style: 'height:150px'}
+              %table{style:'width:650px'}
+                %tbody
+                  /ko foreach: rows
+                  %tr
+                    /ko foreach: $data
+                    %td
+                      %input{ko(checked: 'selected'), type: 'checkbox'}
+                      %span{ko(text: 'description')}
+                    //ko
+                  //ko
+
       %tr
         %td
           %span{ko(click: 'checkAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'} check all

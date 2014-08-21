@@ -10,11 +10,13 @@ describe ImportWizardsController do
   before(:each) {sign_in user}
   let(:user2) { User.make }
   let(:membership) { collection.memberships.create! :user_id => user2.id }
+  let(:layer) { collection.layers.make }
 
   it "should not allow to create a new field to a non-admin user" do
     sign_out user
-    membership.set_layer_access :verb => :read, :access => true
-    membership.set_layer_access :verb => :write, :access => true
+    membership.activity_user = user2
+    membership.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
+    membership.set_layer_access :verb => :write, :access => true, :layer_id => layer.id
     sign_in user2
 
     uploaded_file = Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/csv_test.csv'), "text/csv")

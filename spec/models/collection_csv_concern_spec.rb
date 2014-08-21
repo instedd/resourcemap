@@ -58,12 +58,10 @@ describe Collection::CsvConcern do
       date_writable = layer_writable.date_fields.make :code => 'date_writable'
 
       membership = collection.memberships.make :user => user2
+      membership.activity_user = user
       membership.admin = false
       membership.set_layer_access :verb => :read, :access => true, :layer_id => layer_visible.id
-      membership.set_layer_access :verb => :write, :access => false, :layer_id => layer_visible.id
       membership.set_layer_access :verb => :read, :access => false, :layer_id => layer_invisible.id
-      membership.set_layer_access :verb => :write, :access => false, :layer_id => layer_invisible.id
-      membership.set_layer_access :verb => :read, :access => true, :layer_id => layer_writable.id
       membership.set_layer_access :verb => :write, :access => true, :layer_id => layer_writable.id
       membership.save!
 
