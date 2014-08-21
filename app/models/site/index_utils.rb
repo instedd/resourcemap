@@ -87,7 +87,7 @@ module Site::IndexUtils
       version: (site.version rescue nil)
     }
 
-    if site.lat? && site.lng?
+    if site.lat && site.lng
       hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f}
       hash[:lat_analyzed] = site.lat.to_s
       hash[:lng_analyzed] = site.lng.to_s

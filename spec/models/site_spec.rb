@@ -43,8 +43,7 @@ describe Site do
       @hash = { "collection_id" => layer.collection.id,
         "name" => "site1", "lat" =>  "11.1", "lng" => "12.1",
         "existing_fields" => {"field_#{room.id}" => {"field_id" => room.id, "value" => "10"},
-          "field_#{desk.id}" => {"field_id" => desk.id, "value" => "test"}}}
-      @hash.merge!("current_user" => user)
+          "field_#{desk.id}" => {"field_id" => desk.id, "value" => "test"}}, "current_user" => user}
       @site_count = Site.count
     end
 
@@ -83,5 +82,4 @@ describe Site do
 
     site.version.should eq(2)
   end
-
 end

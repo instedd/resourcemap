@@ -27,7 +27,7 @@ class ApiController < ApplicationController
   end
 
   def render_error_response_422(message = "Unprocessable Entity")
-    render_json({message: api_error_message(message), error_code: 2}, status: 422)
+    render_json({message: api_error_message(message), error_code: 2, error_object: message}, status: 422)
   end
 
   def render_error_response_403(message = "Forbidden")

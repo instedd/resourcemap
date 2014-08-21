@@ -9,7 +9,7 @@ class Api::CollectionsController < ApiController
   expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
 
   def index
-    render_json current_user.collections.all
+    render json: current_user.collections.includes_count(:sites).all, each_serializer: Api::CollectionSerializer
   end
 
   def create
@@ -74,7 +74,9 @@ class Api::CollectionsController < ApiController
 
   def geo_json
     @results = perform_search :page, :sort, :require_location
-    render_json collection_geo_json(collection, @results)
+    respond_to do |format|
+      format.json { render_json collection_geo_json(collection, @results) }
+    end
   end
 
   def destroy

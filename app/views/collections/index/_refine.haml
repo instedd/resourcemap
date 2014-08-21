@@ -50,6 +50,21 @@
         %a.white.button{ko(click: '$root.filterByLocationMissing')} OK
       //ko
     //ko
+    #refine-row{ko(click: 'function (data, event) { $root.toggleRefineProperty("name") }')}
+      %img.arrow{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == \"name\" ? 'Down' : 'Right') + '.png'"})}
+      %span Name
+    /ko if: $root.expandedRefineProperty() == 'name'
+    .filter-content
+      %select{ko(value: '$root.expandedRefinePropertyOperator')}
+        %option{value: '='} starts with
+        %option{value: 'empty'} has no value
+
+      /ko if: $root.expandedRefinePropertyOperator() != 'empty'
+      %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
+      //ko
+
+      %a.button.white{ko(click: '$root.filterByName')} OK
+    //ko
     /ko foreach: currentCollection().refineFields()
     #refine-row{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.esCode) }')}
       %img.arrow{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == esCode ? 'Down' : 'Right') + '.png'"})}

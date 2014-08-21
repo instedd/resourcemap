@@ -5,7 +5,6 @@ gem 'mysql2'
 gem 'devise'
 gem 'haml-rails', '~> 0.4'
 gem 'gettext', '~> 3.1.2'
-gem 'gettext_i18n_rails'
 gem 'gettext_i18n_rails_js'
 gem 'ruby_parser', :require => false, :group => :development
 gem 'haml-magic-translations'
@@ -34,6 +33,8 @@ gem 'nokogiri'
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'activerecord-import'
+gem 'active_model_serializers'
+gem 'includes-count'
 
 group :test do
   gem 'shoulda-matchers'
@@ -63,6 +64,7 @@ group :test, :development do
 end
 
 group :development do
+  gem 'pry-stack_explorer'
   gem 'dist', :git => 'https://github.com/manastech/dist.git'
   gem 'ruby-prof', :git => 'https://github.com/ruby-prof/ruby-prof.git'
 end
