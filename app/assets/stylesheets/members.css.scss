@@ -93,6 +93,7 @@ hr.underlineExpandedMember {
   text-align: center;
   color: #555555;
   font-size: 12px;
+  position:relative;
 }
 
 .permissionColumn input[type="radio"] {
@@ -269,4 +270,13 @@ hr.underlineExpandedMember {
 .memberHeaderColumn.collapsed, .permissionColumn.collapsed, .permissionColumn.admin.collapsed, .lastColumn.collapsed {
   background-color: white;
   border-bottom: 1px #EEEEEE solid;
+}
+
+#disabled-name-warning-message {
+  color: red;
+  left: 56px;
+  position: absolute;
+  top: 7px;
+  width: 340px;
+  z-index: 200;
 }

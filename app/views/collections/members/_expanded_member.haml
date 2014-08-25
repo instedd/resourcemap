@@ -44,6 +44,7 @@
 
     .permissionColumn
       %input{ko(disable: "admin()", checked: "readNameChecked"), :value => "true", :type => 'radio'}
+      #disabled-name-warning-message{ko(visible: 'nameLocationDisabled() && isAnonymous')} Name and location can be private only if every other layer is
 
     .permissionColumn
       %input{ko(disable: "admin()", checked: "updateNameChecked", visible: "updateCheckboxVisible()"), :value => "true", :type => 'radio'}
