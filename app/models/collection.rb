@@ -11,22 +11,22 @@ class Collection < ActiveRecord::Base
   validates_presence_of :name, :message => N_("can't be blank")
   validates_presence_of :icon
 
-  has_many :memberships, dependent: :destroy
+  has_many :memberships, dependent: :delete_all
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
-  has_many :layers, order: 'layers.ord', dependent: :destroy
-  has_many :fields, order: 'ord'
-  has_many :thresholds, dependent: :destroy
-  has_many :reminders, dependent: :destroy
-  has_many :share_channels, dependent: :destroy
+  has_many :layers, order: 'layers.ord', dependent: :delete_all
+  has_many :fields, order: 'ord', dependent: :delete_all
+  has_many :thresholds, dependent: :delete_all
+  has_many :reminders, dependent: :delete_all
+  has_many :share_channels, dependent: :delete_all
   has_many :channels, :through => :share_channels
-  has_many :activities, dependent: :destroy
+  has_many :activities, dependent: :delete_all
   has_many :snapshots, dependent: :destroy
-  has_many :user_snapshots, :through => :snapshots
-  has_many :site_histories, dependent: :destroy
-  has_many :layer_histories, dependent: :destroy
-  has_many :field_histories, dependent: :destroy
-  has_many :messages, dependent: :destroy
+  has_many :user_snapshots, :through => :snapshots, dependent: :delete_all
+  has_many :site_histories, dependent: :delete_all
+  has_many :layer_histories, dependent: :delete_all
+  has_many :field_histories, dependent: :delete_all
+  has_many :messages, dependent: :delete_all
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
   after_update do
