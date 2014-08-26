@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-22 19:05-0300\n"
+"POT-Creation-Date: 2014-08-25 21:10-0300\n"
 "PO-Revision-Date: 2014-06-03 14:06-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English\n"
@@ -648,9 +648,6 @@ msgstr ""
 msgid "Import wizard"
 msgstr ""
 
-msgid "Import wizard: %{sites}"
-msgstr ""
-
 msgid "ImportJob|Exception"
 msgstr ""
 
@@ -906,6 +903,9 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+msgid "Name and location can be private only if every other layer is"
+msgstr ""
+
 msgid "Name permission"
 msgstr ""
 
@@ -975,25 +975,13 @@ msgstr ""
 msgid "Permission changed from %{previous_permission} to %{new_permission} in %{layer} layer for anonymous users"
 msgstr ""
 
+msgid "Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for %{user}"
+msgstr ""
+
 msgid "Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for anonymous users"
 msgstr ""
 
 msgid "Permission changed from %{previous_permission} to %{new_permission} in name layer for %{user}"
-msgstr ""
-
-msgid "Permission changed from %{previous_permission} to none in layer %{layer} for %{user}"
-msgstr ""
-
-msgid "Permission changed from none to %{permission} in layer %{layer} for %{user}"
-msgstr ""
-
-msgid "Permission changed from read to update in layer %{layer} for %{user}"
-msgstr ""
-
-msgid "Permission changed from update to read in layer %{layer} for %{user}"
-msgstr ""
-
-msgid "Permission was deleted in layer %{layer}"
 msgstr ""
 
 msgid "Permissions per layer"
@@ -1003,9 +991,6 @@ msgid "Please"
 msgstr ""
 
 msgid "Please contact InSTEDD for support."
-msgstr ""
-
-msgid "Please enter a name for your collection."
 msgstr ""
 
 msgid "Please fill all the required information to configure this collection to be accessible via CSD API."
