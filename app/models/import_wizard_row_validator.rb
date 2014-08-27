@@ -1,5 +1,3 @@
-require 'ruby-prof'
-
 class ImportWizardRowValidator
   def initialize(sites_errors, identifier_field, csv_columns, columns_spec, user, collection, collection_fields, csv_column_used_as_id, additional_data_file_path)
     @sites_errors = sites_errors
@@ -14,8 +12,6 @@ class ImportWizardRowValidator
   end
 
   def validate_row
-    #RubyProf.start
-
     @fields_by_id = @collection_fields.inject({}) {|dict, f| dict[f.id.to_s] = f; dict}
     @collection_sites_ids = @collection.sites.pluck(:id).map{|e| e.to_s}
 
@@ -32,17 +28,11 @@ class ImportWizardRowValidator
       end
     end
 
-    #prof_result = RubyProf.stop
-
-    #File.open "#{::Rails.root}/tmp/prof_#{Time.now}", 'w' do |file|
-    #  RubyProf::GraphHtmlPrinter.new(prof_result).print(file)
-    #end
-
     @sites_errors
   end
 
   def validate_column(column_spec, csv_column, column_number, id_mapping)
-    if column_spec[:use_as].to_sym == :existing_field      
+    if column_spec[:use_as].to_sym == :existing_field
       field = @fields_by_id[column_spec[:field_id].to_s]
     else
       field = new_field_for_column_spec(column_spec)
@@ -73,7 +63,7 @@ class ImportWizardRowValidator
           end
           existing_site_id = site_id if (site_id && !site_id.blank? && @collection_sites_ids.include?(site_id.to_s))
         end
-        
+
         if field.kind == 'identifier'
           if !csv_field_value.blank?
             values_to_indices[csv_field_value] << row_index
@@ -112,7 +102,7 @@ class ImportWizardRowValidator
       repetitions = values_to_indices[v]
       explanation = "the value is repeated in rows #{repetitions.map{|i|i+1}.to_sentence}"
 
-      repetitions.each_with_index do |v, row_index| 
+      repetitions.each_with_index do |v, row_index|
         description = error_description_for_type field, column_spec, explanation
         validated_csv_column << {description: description, row: row_index}
       end
