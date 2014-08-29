@@ -35,6 +35,7 @@ gem 'mini_magick'
 gem 'activerecord-import'
 gem 'active_model_serializers'
 gem 'includes-count'
+gem 'poirot_rails', git: "https://bitbucket.org/instedd/poirot_rails.git", branch: 'master'
 
 group :test do
   gem 'shoulda-matchers'

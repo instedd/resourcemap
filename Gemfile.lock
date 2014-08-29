@@ -11,6 +11,18 @@ GIT
       ruby-openid
 
 GIT
+  remote: https://bitbucket.org/instedd/poirot_rails.git
+  revision: ef7468969ef572a3b14361b966408ae5f02d7d40
+  branch: master
+  specs:
+    poirot_rails (0.0.1)
+      bertrpc
+      guid
+      json
+      rails (>= 3.2)
+      zmq
+
+GIT
   remote: https://github.com/manastech/dist.git
   revision: a6601efa287c8e5ff1a536916890906ea3dd47ea
   specs:
@@ -60,6 +72,9 @@ GEM
     arel (3.0.3)
     attr_required (1.0.0)
     bcrypt-ruby (3.0.1)
+    bert (1.1.6)
+    bertrpc (1.3.1)
+      bert (>= 1.1.0, < 2.0.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     brakeman (2.1.1)
@@ -163,6 +178,7 @@ GEM
       guard (>= 1.1.0)
       multi_json
       thor
+    guid (0.1.1)
     haml (4.0.5)
       tilt
     haml-magic-translations (4.1.0)
@@ -387,6 +403,7 @@ GEM
     will_paginate (3.0.3)
     xpath (2.0.0)
       nokogiri (~> 1.3)
+    zmq (2.1.4)
 
 PLATFORMS
   ruby
@@ -432,6 +449,7 @@ DEPENDENCIES
   oj
   omniauth
   omniauth-openid
+  poirot_rails!
   pry
   pry-debugger
   pry-stack_explorer

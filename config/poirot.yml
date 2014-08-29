@@ -1,0 +1,18 @@
+common: &default_settings
+  source: resourcemap
+  debug: false
+
+development:
+  <<: *default_settings
+  enabled: true
+  mute:
+    - /assets/
+  server: localhost:2120
+
+test:
+  <<: *default_settings
+  enabled: false
+
+production:
+  <<: *default_settings
+  enabled: false
