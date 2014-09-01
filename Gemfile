@@ -60,8 +60,7 @@ group :test, :development do
   gem 'rvm-capistrano', '1.2.2'
   gem 'jasminerice'
   gem 'guard-jasmine'
-  gem 'pry'
-  gem 'pry-debugger'
+  gem 'pry-byebug'
 end
 
 group :development do
