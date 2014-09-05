@@ -174,8 +174,7 @@ ResourceMap::Application.routes.draw do
         get 'count', as: :count
         get 'geo', as: :geojson, to: "collections#geo_json"
         post 'sites', to: 'sites#create'
-        # get 'collections/:id/fields' => 'fields#index',as: :fields
-        # get 'collections/:id/fields/mapping' => 'fields#mapping'
+        post 'update_sites', to: 'collections#bulk_update'
       end
     end
 

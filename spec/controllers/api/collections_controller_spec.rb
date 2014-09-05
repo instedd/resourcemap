@@ -11,7 +11,7 @@ describe Api::CollectionsController do
   describe "List" do
     before(:each) { sign_in user; collection }
 
-    it "returns collections the user is a member of" do      
+    it "returns collections the user is a member of" do
       get :index,  format: 'json'
 
       response.should be_success
@@ -290,6 +290,34 @@ describe Api::CollectionsController do
         response.should be_success
         histogram = JSON.parse response.body
         histogram['foo'].should eq(2)
+      end
+    end
+
+    describe 'bulk update' do
+      it "updates sites" do
+        post :bulk_update, id: collection.id, updates: { properties: { numeric.code => 3 } }
+        Site.all.each do |site|
+          site.properties[numeric.es_code].should eq(3)
+        end
+      end
+
+      it "should update name, latitude and longitude" do
+        post :bulk_update, id: collection.id, updates: { name: 'New name', lat: 35.2, lng: -25 }
+        Site.all.each do |site|
+          site.name.should eq('New name')
+          site.lat.should eq(35.2)
+          site.lng.should eq(-25)
+        end
+      end
+
+      it "should only update according to filters" do
+        post :bulk_update, id: collection.id, site_id: site.id, updates: { name: 'New name' }
+        site.reload.name.should eq('New name')
+        site2.reload.name.should_not eq('New name')
+
+        post :bulk_update, id: collection.id, text.code => 'foo', updates: { name: 'New name' }
+        site.reload.name.should eq('New name')
+        site2.reload.name.should_not eq('New name')
       end
     end
   end
