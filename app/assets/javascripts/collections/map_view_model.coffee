@@ -153,7 +153,7 @@ onCollections ->
         e: ne.lng()
         w: sw.lng()
         z: zoom
-        collection_ids: collection_ids
+        collection_ids: collection_ids.join()
       query.selected_hierarchy_id = this.selectedHierarchy().id if @selectedHierarchy()
       query.hierarchy_code = window.model.groupBy().esCode if @selectedHierarchy() && window.model.groupBy().esCode
 

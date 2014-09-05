@@ -96,7 +96,14 @@ class SitesController < ApplicationController
   def search
     zoom = params[:z].to_i
 
-    search = MapSearch.new params[:collection_ids], user: current_user
+    if params[:collection_ids].is_a? String
+      collection_ids_array = params[:collection_ids].split ","
+    elsif params[:collection_ids].is_a? Array
+      p "en el array"
+      collection_ids_array = params[:collection_ids]
+    end
+
+    search = MapSearch.new collection_ids_array, user: current_user
 
     search.zoom = zoom
     search.bounds = params if zoom >= 2
