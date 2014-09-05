@@ -1,4 +1,4 @@
-module Collection::TireConcern
+module Collection::ElasticsearchConcern
   extend ActiveSupport::Concern
 
   included do
@@ -13,12 +13,12 @@ module Collection::TireConcern
     }
     index_properties.merge!(Site::IndexUtils::DowncaseAnalyzer)
 
-    success = index.create(index_properties)
+    result = Elasticsearch::Client.new.indices.create index: index_name, body: index_properties
 
-    if !success
+    unless result["acknowledged"]
       error = "Can't create index for collection #{name} (ID: #{id})."
       Rails.logger.error error
-      Rails.logger.error "ElasticSearch response was: #{index.response}." if index && index.response
+      Rails.logger.error "ElasticSearch response was: #{result}."
       raise error
     end
 
@@ -33,29 +33,34 @@ module Collection::TireConcern
   end
 
   def update_mapping
-    index.update_mapping site: site_mapping
-    index.refresh
+    client = Elasticsearch::Client.new
+    client.indices.put_mapping index: index_name, type: 'site', body: {site: site_mapping}
+    client.indices.refresh index: index_name
   end
 
   def recreate_index
-    destroy_index
+    destroy_index rescue nil
     create_index
+
+    client = Elasticsearch::Client.new
+
     docs = sites.map do |site|
       site.collection = self
       site.to_elastic_search
     end
     docs.each_slice(1000) do |docs_slice|
-      index.import docs_slice
+      ops = []
+      docs_slice.each do |doc|
+        ops.push index: { _index: index_name, _type: 'site', _id: doc[:id]}
+        ops.push doc
+      end
+      client.bulk body: ops
     end
-    index.refresh
+    client.indices.refresh index: index_name
   end
 
   def destroy_index
-    index.delete
-  end
-
-  def index
-    @index ||= self.class.index(id)
+    Elasticsearch::Client.new.indices.delete index: index_name
   end
 
   def index_name(options = {})
@@ -66,16 +71,22 @@ module Collection::TireConcern
     Search.new(self, options)
   end
 
+  def elasticsearch_count
+    client = Elasticsearch::Client.new
+    if block_given?
+      value = client.count index: index_name, body: yield
+    else
+      value = client.count index: index_name
+    end
+    value["count"]
+  end
+
   def new_map_search
     MapSearch.new id
   end
 
-  def new_tire_search(options = {})
-    self.class.new_tire_search(id, options)
-  end
-
-  def new_tire_count(options = {}, &block)
-    self.class.new_tire_count(id, options, &block)
+  def index_names_with_options(options = {})
+    self.class.index_names_with_options(id, options)
   end
 
   module ClassMethods
@@ -96,11 +107,7 @@ module Collection::TireConcern
       "#{INDEX_NAME_PREFIX}_#{id}"
     end
 
-    def index(id)
-      ::Tire::Index.new index_name(id)
-    end
-
-    def new_tire_search(*ids, options)
+    def index_names_with_options(*ids, options)
       # If we want the indices for many collections for a given user, it's faster
       # to get all snapshots ids first instead of fetching them one by one for each collection.
       # This optimization does that.
@@ -116,12 +123,7 @@ module Collection::TireConcern
 
         index_name(id, options)
       end
-      Tire::Search::Search.new index_names, type: :site
-    end
-
-    def new_tire_count(*ids, options, &block)
-      index_names = ids.map { |id| index_name(id, options) }
-      Tire::Search::Count.new index_names, type: :site, &block
+      index_names.join ","
     end
   end
 end

@@ -14,7 +14,7 @@ namespace :layers do
 
   	abort_with "Invalid arguments" unless args.to_hash.keys.length == 5
 
-  	uri = URI.parse("http://#{args[:server]}/collections/#{args[:collection_id]}/layers.json") rescue (abort_with "Could not parse URL http://#{args[:server]}/collections/#{args[:collection_id]}/layers.json")
+  	uri = URI.parse("http://#{args[:server]}/en/collections/#{args[:collection_id]}/layers.json") rescue (abort_with "Could not parse URL http://#{args[:server]}/en/collections/#{args[:collection_id]}/layers.json")
 		req = Net::HTTP::Get.new(uri.request_uri)
 		req.basic_auth "#{args[:user]}", "#{args[:password]}"
 

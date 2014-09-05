@@ -3,10 +3,14 @@ class SiteHistory < ActiveRecord::Base
   belongs_to :collection
   belongs_to :user
 
-  serialize :properties, Hash
+  serialize :properties, JSON
 
-  def store_in(index)
-    Site::IndexUtils.store self, site_id, index
+  def properties
+    self["properties"] ||= {}
+  end
+
+  def store_in(index_name)
+    Site::IndexUtils.store self, site_id, index_name
   end
 
   def to_elastic_search

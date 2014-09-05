@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-17 15:28-0300\n"
+"POT-Creation-Date: 2014-08-25 21:10-0300\n"
 "PO-Revision-Date: 2014-06-03 14:06-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English\n"
@@ -25,6 +25,9 @@ msgid " Item id is required."
 msgstr ""
 
 msgid "\""
+msgstr ""
+
+msgid "\"Permission changed from %{previous_permission} to %{new_permission} in location layer for #{data['user']}\""
 msgstr ""
 
 msgid "%s"
@@ -46,6 +49,12 @@ msgid "%{kind} field %{name} %{code} was deleted"
 msgstr ""
 
 msgid "%{kind} field '%{name}' %{code} %{key} changed to %{field_key}"
+msgstr ""
+
+msgid "%{user} became an administrator"
+msgstr ""
+
+msgid "%{user} removed from administrators group"
 msgstr ""
 
 msgid "(85512345678)"
@@ -132,6 +141,9 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
+msgid "Admin permissions changed"
+msgstr ""
+
 msgid "Advanced"
 msgstr ""
 
@@ -163,6 +175,9 @@ msgid "Android Phone SMS Gateway -Advanced Setup"
 msgstr ""
 
 msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
+msgstr ""
+
+msgid "Anonymous permissions changed"
 msgstr ""
 
 msgid "Anonymous users"
@@ -633,9 +648,6 @@ msgstr ""
 msgid "Import wizard"
 msgstr ""
 
-msgid "Import wizard: %{sites}"
-msgstr ""
-
 msgid "ImportJob|Exception"
 msgstr ""
 
@@ -810,6 +822,21 @@ msgstr ""
 msgid "Medicine is at its best when it helps people avoid illness in the first place. Resource Map aids prevention efforts by giving teams new ways to manage key supply chain items, such as vaccines, vitamins, and other disease prevention tools. And by uploading statistics on various measures of health, you can even use Resource Map to monitor the effectiveness of your interventions. After all, a healthy community is one of your most important resources."
 msgstr ""
 
+msgid "Member %{user} was added"
+msgstr ""
+
+msgid "Member %{user} was removed"
+msgstr ""
+
+msgid "Member added"
+msgstr ""
+
+msgid "Member permissions changed"
+msgstr ""
+
+msgid "Member removed"
+msgstr ""
+
 msgid "Member → Site → Layer"
 msgstr ""
 
@@ -876,6 +903,9 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+msgid "Name and location can be private only if every other layer is"
+msgstr ""
+
 msgid "Name permission"
 msgstr ""
 
@@ -940,6 +970,18 @@ msgid "Password"
 msgstr ""
 
 msgid "Password :"
+msgstr ""
+
+msgid "Permission changed from %{previous_permission} to %{new_permission} in %{layer} layer for anonymous users"
+msgstr ""
+
+msgid "Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for %{user}"
+msgstr ""
+
+msgid "Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for anonymous users"
+msgstr ""
+
+msgid "Permission changed from %{previous_permission} to %{new_permission} in name layer for %{user}"
 msgstr ""
 
 msgid "Permissions per layer"

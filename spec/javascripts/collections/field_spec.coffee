@@ -49,7 +49,7 @@ describe 'Collection', ->
         expect(@field.expanded()).toBeTruthy()
 
       it 'gets suggested width when name length is more than 10', ->
-        expect(@field.suggestedWidth()).toEqual('132px')
+        expect(@field.suggestedWidth()).toEqual('142px')
 
       it 'gets suggested width when name length is less than 10', ->
         @field.name = 'Foo'

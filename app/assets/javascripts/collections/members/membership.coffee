@@ -154,7 +154,7 @@ class @Membership extends Expandable
         __("Custom permissions for 1 site")
       else
         Jed.sprintf(_("Custom permissions for %d sites"), @sitesWithCustomPermissions().length)
-        
+
 
     @customPermissionsAutocompleteId = ko.computed => "autocomplete_#{@userId()}"
 
@@ -196,7 +196,10 @@ class @Membership extends Expandable
         "#{base_uri}/theme/images/icons/misc/black/arrowRight.png"
 
   nameLocationDisabled: () =>
-    return !@isAnonymous
+    if @isAnonymous
+      @summaryRead() != ''
+    else
+      true
 
   updateCheckboxVisible: () =>
     return !@isAnonymous

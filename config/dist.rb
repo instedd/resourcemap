@@ -1,6 +1,6 @@
 set :application, 'resourcemap'
 
-set :version, '2.7'
+set :version, '2.12'
 
 set :maintainer, 'Carolina Hadad <chadad@manas.com.ar>'
 set :description, 'InSTEDD Resource Map'

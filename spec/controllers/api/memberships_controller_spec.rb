@@ -90,6 +90,9 @@ describe Api::MembershipsController do
 
     it "should set admin" do
       post :set_admin, collection_id: collection.id, id: non_admin_user.id
+
+      response.should be_ok
+
       membership = collection.memberships.find_by_user_id non_admin_user.id
       membership.admin.should be_true
     end

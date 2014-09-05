@@ -1,4 +1,4 @@
-module Site::TireConcern
+module Site::ElasticsearchConcern
   extend ActiveSupport::Concern
 
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
@@ -7,12 +7,12 @@ module Site::TireConcern
     after_save :store_in_index
     after_destroy :remove_from_index
     define_model_callbacks :index
-    delegate :index_name, :index, to: :collection
+    delegate :index_name, to: :collection
   end
 
   def store_in_index(options = {})
     run_callbacks :index do
-      Site::IndexUtils.store self, id, index, options
+      Site::IndexUtils.store self, id, index_name, options
     end
   end
 
@@ -27,8 +27,9 @@ module Site::TireConcern
   end
 
   def remove_from_index
-    index.remove id: id, type: :site
-    index.refresh
+    client = Elasticsearch::Client.new
+    client.delete index: index_name, id: id, type: 'site'
+    client.indices.refresh index: index_name
   end
 
   module ClassMethods

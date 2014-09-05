@@ -1,4 +1,4 @@
-module Field::TireConcern
+module Field::ElasticsearchConcern
   extend ActiveSupport::Concern
 
   def index_mapping

@@ -5,14 +5,14 @@ gem 'mysql2'
 gem 'devise'
 gem 'haml-rails', '~> 0.4'
 gem 'gettext', '~> 3.1.2'
-gem 'gettext_i18n_rails'
 gem 'gettext_i18n_rails_js'
 gem 'ruby_parser', :require => false, :group => :development
 gem 'haml-magic-translations'
 gem 'decent_exposure'
 gem "instedd-rails", '~> 0.0.22'
 gem "breadcrumbs_on_rails"
-gem "tire"
+gem "elasticsearch"
+gem "elasticsearch-ruby"
 gem "valium"
 gem "resque", :require => "resque/server"
 gem 'resque-scheduler', :require => 'resque_scheduler'
@@ -33,6 +33,9 @@ gem 'nokogiri'
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'activerecord-import'
+gem 'active_model_serializers'
+gem 'includes-count'
+gem 'poirot_rails', git: "https://bitbucket.org/instedd/poirot_rails.git", branch: 'master'
 
 group :test do
   gem 'shoulda-matchers'
@@ -62,6 +65,7 @@ group :test, :development do
 end
 
 group :development do
+  gem 'pry-stack_explorer'
   gem 'dist', :git => 'https://github.com/manastech/dist.git'
   gem 'ruby-prof', :git => 'https://github.com/ruby-prof/ruby-prof.git'
 end

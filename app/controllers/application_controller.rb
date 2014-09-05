@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
          render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
         end
       }
-      format.json { render_json({ message: "Access Denied"}, status: 403) }
+      format.json { render_json({ message: "Access Denied"}, status: :forbidden) }
     end
   end
 
@@ -113,5 +113,9 @@ class ApplicationController < ActionController::Base
 
   def default_url_options(options={})
     {:locale => I18n.locale.to_s}
+  end
+
+  def default_serializer_options
+    {root: false}
   end
 end

@@ -9,12 +9,11 @@ else
 end
 
 set :application, "resource_map"
-set :repository,  "https://bitbucket.org/instedd/resource_map"
-set :scm, :mercurial
+set :repository,  "https://github.com/instedd/resourcemap.git"
 set :user, 'ubuntu'
 set :group, 'ubuntu'
 set :deploy_via, :remote_cache
-set :branch, `hg branch`.strip
+set :branch, ENV['REVISION'] || 'master'
 
 default_run_options[:pty] = true
 default_environment['TERM'] = ENV['TERM']

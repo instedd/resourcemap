@@ -23,13 +23,13 @@ describe 'Collection', ->
         col_hierarchy = new CollectionHierarchy(@collection, field)
         @hierarchyItem = new HierarchyItem(col_hierarchy, field, { id: 1, label: 'group 1', sub: [{id: 2, label: 'group 2'}]})
 
-      it 'should include selected_hierarchy id in sites query', ->
+      it 'should include selected_hierarchy_id id in sites query', ->
         query_before = @model.generateQueryParams(@bounds, [1], 1)
 
-        expect(query_before.selected_hierarchy).toBe(undefined)
+        expect(query_before.selected_hierarchy_id).toBe(undefined)
 
         @model.selectHierarchy(@hierarchyItem)
         query = @model.generateQueryParams(@bounds, [1], 1)
 
-        expect(query.selected_hierarchies).toEqual [1, 2]
+        expect(query.selected_hierarchy_id).toEqual 1
 

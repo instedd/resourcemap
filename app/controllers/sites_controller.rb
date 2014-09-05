@@ -15,7 +15,7 @@ class SitesController < ApplicationController
     search.limit params[:limit]
 
     results = search.ui_results
-    render_json({ sites: results[:sites].map { |x| x['_source'] }, total_count: results[:total_count] })
+    render_json({ sites: results.map { |x| x['_source'] }, total_count: results.total_count })
   end
 
   def show
@@ -23,7 +23,7 @@ class SitesController < ApplicationController
 
     search.id params[:id]
     # If site does not exists, return empty object
-    result = search.ui_results[:sites].first['_source'] rescue {}
+    result = search.ui_results.first['_source'] rescue {}
     render_json result
   end
 
@@ -104,12 +104,11 @@ class SitesController < ApplicationController
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search] if params[:search].present?
     search.location_missing if params[:location_missing].present?
-    if params[:selected_hierarchies].present?
-      search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
+    search.name_search params[:name] if params[:name].present?
+    if params[:selected_hierarchy_id].present?
+      search.selected_hierarchy params[:hierarchy_code], Field.find(params[:hierarchy_code]).descendants_of_in_hierarchy(params[:selected_hierarchy_id])
     end
-    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :locale)
-
-    search.apply_queries
+    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchy_id, :locale, :name)
     render_json search.results
   end
 

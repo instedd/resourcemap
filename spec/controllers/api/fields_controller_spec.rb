@@ -35,46 +35,45 @@ describe Api::FieldsController do
   end
 
   let(:member_who_reads) do
-    r = User.make 
-    
+    r = User.make
+
     collection.memberships.create!({user_id: r.id})
-    
+
     m = collection.memberships.find_by_user_id(r.id)
     m.set_layer_access(layer_id: layer.id, verb: 'read', access: true)
-    m.set_layer_access(layer_id: layer.id, verb: 'write', access: false)
 
     r
   end
 
   shared_examples "user without permissions" do
-    it "should not be allowed" do 
+    it "should not be allowed" do
       sign_in user
 
       post :create, collection_id: collection.id, layer_id: layer.id, fields: fields
-      
+
       assert_response 403
     end
   end
 
-  context "create" do    
+  context "create" do
     describe "admin" do
       before(:each) { sign_in admin }
 
-      it "should be allowed" do      
+      it "should be allowed" do
         post :create, collection_id: collection.id, layer_id: layer.id, fields: fields
-        
+
         assert_response :success
 
         get :index, collection_id: collection.id
 
-        json = JSON.parse response.body      
+        json = JSON.parse response.body
         layer_json = get_layer json, layer.id
 
         fields.each do |f|
           layer_json["fields"]
             .map{|x| x["code"]}
             .include?(f["code"]).should be_true
-        end 
+        end
       end
 
       it "should return abort the transaction and return CONFLICT if any of the fields already existed" do
@@ -87,7 +86,7 @@ describe Api::FieldsController do
 
         get :index, collection_id: collection.id
 
-        json = JSON.parse response.body      
+        json = JSON.parse response.body
         layer_json = get_layer json, layer.id
         layer_json["fields"].length.should == 1
         layer_json["fields"][0]["code"].should == numeric.code

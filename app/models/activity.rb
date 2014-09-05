@@ -2,7 +2,14 @@ class Activity < ActiveRecord::Base
   ItemTypesAndActions = {
     'collection' => %w(created imported csv_imported),
     'layer' => %w(created changed deleted),
-    'site' => %w(created changed deleted)
+    'site' => %w(created changed deleted),
+    'membership' => %w(created deleted),
+    'layer_membership' => %w(changed),
+    'name_permission' => %w(changed),
+    'location_permission' => %w(changed),
+    'anonymous_name_location_permission' => %w(changed),
+    'anonymous_layer_permission' => %w(changed),
+    'admin_permission' => %w(changed),
   }
   Kinds = Activity::ItemTypesAndActions.map { |item_type, actions| actions.map { |action| "#{item_type},#{action}" } }.flatten.freeze
 
@@ -20,8 +27,6 @@ class Activity < ActiveRecord::Base
     case [item_type, action]
     when ['collection', 'created']
       _("Collection '%{name}' was created") % {name: "#{data['name']}"}
-    when 'collection_imported'
-      _("Import wizard: %{sites}") % {sites: "#{sites_were_imported_text}"}
     when ['collection', 'csv_imported']
       _("Import CSV: %{sites}") % {sites: "#{sites_were_imported_text}"}
     when ['layer', 'created']
@@ -37,6 +42,25 @@ class Activity < ActiveRecord::Base
       site_changed_text
     when ['site', 'deleted']
       _("Site %{site} was deleted") % {site: "'#{data['name']}'"}
+    when ['membership', 'created']
+      _("Member %{user} was added") % {user: "#{data['user']}"}
+    when ['membership', 'deleted']
+      _("Member %{user} was removed") % {user: "#{data['user']}"}
+    when ['layer_membership', 'changed']
+      layer_membership_permission_changed
+    when ['name_permission', 'changed']
+      _("Permission changed from %{previous_permission} to %{new_permission} in name layer for %{user}") %
+      {previous_permission: "#{data['changes'][0]}", new_permission: "#{data['changes'][1]}", user: "#{data['user']}"}
+    when['location_permission', 'changed']
+      _("Permission changed from %{previous_permission} to %{new_permission} in location layer for #{data['user']}") %
+       {previous_permission: "#{data['changes'][0]}", new_permission: "#{data['changes'][1]}", user: "#{data['user']}" }
+    when['anonymous_name_location_permission', 'changed']
+      anonymous_name_location_changed
+    when['anonymous_layer_permission', 'changed']
+      _("Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for anonymous users") %
+      {previous_permission: "#{data['changes'][0]}", new_permission: "#{data['changes'][1]}", layer: "'#{data['name']}'"}
+    when['admin_permission','changed']
+      admin_permission_changed data
     end
   end
 
@@ -114,6 +138,26 @@ class Activity < ActiveRecord::Base
       _("Layer %{layer} was renamed to %{changes}") % {layer: "'#{data['name']}'", changes: "'#{data['changes']['name'][1]}'"}
     else
       _("Layer %{layer} changed: %{changes}") % {layer: "'#{data['name']}'", changes: "#{changes}"}
+    end
+  end
+
+  def layer_membership_permission_changed
+    _("Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for %{user}") % {previous_permission: "#{data['previous_permission']}", new_permission: "#{data['new_permission']}", layer: "'#{data['name']}'", user: "#{data['user']}"}
+  end
+
+  def anonymous_name_location_changed
+    built_in_layer = data['built_in_layer']
+    previous_permission = data['changes'][0]
+    new_permission = data['changes'][1]
+    _("Permission changed from %{previous_permission} to %{new_permission} in %{layer} layer for anonymous users") %
+     {previous_permission: "#{previous_permission}", new_permission: "#{new_permission}", layer: "#{built_in_layer}"}
+  end
+
+  def admin_permission_changed(data)
+    if (data['value'])
+      _("%{user} became an administrator") % {user: data['user'] }
+    else
+      _("%{user} removed from administrators group") % {user: data['user'] }
     end
   end
 
@@ -197,4 +241,5 @@ class Activity < ActiveRecord::Base
       _('(nothing)')
     end
   end
+
 end

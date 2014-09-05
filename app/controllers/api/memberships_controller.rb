@@ -33,6 +33,7 @@ class Api::MembershipsController < ApiController
 
   def set_admin
     membership = collection.memberships.find_by_user_id params[:id]
+    membership.activity_user = current_user
     if membership.change_admin_flag true
       head :ok
     else

@@ -14,8 +14,11 @@ class MembershipsController < ApplicationController
   end
 
   def create
-    status, membership, user = Membership.check_and_create(params[:email], collection.id)
-    if status == :added
+    user = User.find_by_email params[:email]
+    if user && !user.memberships.where(:collection_id => collection.id).exists?
+      membership = collection.memberships.new user: user
+      membership.activity_user = current_user
+      membership.save!
       render_json({status: :added, user_id: user.id, user_display_name: user.display_name})
     else
       render_json({status: :not_added})
@@ -37,47 +40,57 @@ class MembershipsController < ApplicationController
 
   def destroy
     if @membership.user_id != current_user.id
+      @membership.activity_user = current_user
       @membership.destroy
     end
     redirect_to collection_members_path(collection)
   end
 
   def set_access
-    @membership.set_access params
+    generic_set_access {|membership| membership.set_access params}
+  end
+
+  def set_layer_access
+    generic_set_access {|membership| membership.set_layer_access params}
+  end
+
+  def generic_set_access
+    @membership.activity_user = current_user
+    yield @membership
     render_json :ok
   end
 
   def set_access_anonymous_user
     anonymous_membership = Membership::Anonymous.new collection, current_user
+    anonymous_membership.activity_user = current_user
     anonymous_membership.set_access params[:object], params[:new_action]
-    render_json :ok
-  end
-
-  #TODO: move set_layer_access to the more generic set_access
-  def set_layer_access
-    @membership.set_layer_access params
     render_json :ok
   end
 
   def set_layer_access_anonymous_user
     anonymous_membership = Membership::Anonymous.new collection, current_user
+    anonymous_membership.activity_user = current_user
     anonymous_membership.set_layer_access params[:layer_id], params[:verb], params[:access]
     render_json :ok
   end
 
   def set_admin
-    @membership.change_admin_flag true
-    render_json :ok
+    change_admin_flag true
   end
 
   def unset_admin
-    @membership.change_admin_flag false
-    render_json :ok
+    change_admin_flag false
   end
 
   private
 
   def load_membership
     @membership = collection.memberships.find_by_user_id params[:id]
+  end
+
+  def change_admin_flag(new_value)
+    @membership.activity_user = collection.users.find params[:id]
+    @membership.change_admin_flag new_value
+    render_json :ok
   end
 end

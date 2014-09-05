@@ -47,8 +47,8 @@ class ImportWizard
 
       csv[0].map! { |r| r.strip if r }
 
-      unless csv_columns.empty?
-        validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
+      unless csv_columns.empty?        
+        validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])        
       end
 
       # TODO: implement pagination
@@ -64,7 +64,6 @@ class ImportWizard
       sites_errors = {}
 
       # Columns validation
-
       proc_select_new_fields = Proc.new{columns_spec.select{|spec| spec[:use_as].to_s == 'new_field'}}
       sites_errors[:duplicated_code] = calculate_duplicated(proc_select_new_fields, 'code')
       sites_errors[:duplicated_label] = calculate_duplicated(proc_select_new_fields, 'label')
@@ -116,29 +115,16 @@ class ImportWizard
       sites_errors[:hierarchy_field_found] = []
 
       # Rows validation
-
-      mapping_for_identifier_pivot = if field then field.existing_values else nil end
-
-      csv_columns.each_with_index do |csv_column, csv_column_number|
-        column_spec = columns_spec[csv_column_number]
-
-        if column_spec[:use_as].to_s == 'new_field' && column_spec[:kind].to_s == 'hierarchy'
-          sites_errors[:hierarchy_field_found] = add_new_hierarchy_error(csv_column_number, sites_errors[:hierarchy_field_found])
-        elsif column_spec[:use_as].to_s == 'new_field' || column_spec[:use_as].to_s == 'existing_field'
-          errors_for_column = validate_column(user, collection, column_spec, collection_fields, csv_column, csv_column_number, csv_column_used_as_id, mapping_for_identifier_pivot)
-          sites_errors[:data_errors].concat(errors_for_column)
-        end
-      end
-      sites_errors
-    end
-
-    def add_new_hierarchy_error(csv_column_number, hierarchy_errors)
-      if hierarchy_errors.length >0 && hierarchy_errors[0][:new_hierarchy_columns].length >0
-        hierarchy_errors[0][:new_hierarchy_columns] << csv_column_number
-      else
-        hierarchy_errors = [{:new_hierarchy_columns => [csv_column_number]}]
-      end
-      hierarchy_errors
+      validator = ImportWizardRowValidator.new sites_errors, 
+                                                field, 
+                                                csv_columns, 
+                                                columns_spec, 
+                                                user, 
+                                                collection, 
+                                                collection_fields, 
+                                                csv_column_used_as_id,
+                                                aditional_data_file_for(user, collection)
+      validator.validate_row    
     end
 
     def get_sites(csv, user, collection, columns_spec, page)
@@ -172,7 +158,7 @@ class ImportWizard
       if import_job.status == 'pending'
         mark_job_as_in_progress(user, collection)
 
-        Site::IndexUtils.bulk(collection.index) do
+        Site::IndexUtils.bulk do
           Site::ActivityConcern.bulk do
             HistoryConcern.bulk do
               execute_with_entities(user, collection, columns_spec)
@@ -262,7 +248,7 @@ class ImportWizard
 
             sites.each do |site|
               # If the site already has a value for the luhn field we don't want to generate a new one
-              if !site.properties_was[luhn_field.es_code].blank?
+              if site.properties_was && site.properties_was[luhn_field.es_code].present?
                 site.properties[luhn_field.es_code] = site.properties_was[luhn_field.es_code]
               elsif site.properties[luhn_field.es_code].blank?
                 site.properties[luhn_field.es_code] = next_luhn_value
@@ -331,85 +317,6 @@ class ImportWizard
       [{rows: invalid_ids, column: identifier_column_index}] if invalid_ids.length >0
     end
 
-    def validate_column(user, collection, column_spec, fields, csv_column, column_number, csv_id_column, id_mapping)
-      if column_spec[:use_as].to_sym == :existing_field
-        field = fields.detect{|e| e.id.to_s == column_spec[:field_id].to_s}
-      else
-        field = new_field_for_column_spec(column_spec, collection)
-      end
-
-      collection_sites_ids = collection.sites.map{|e|e.id.to_s}
-      validated_csv_column = []
-
-      # We need to store the maximum value in each luhn field in the csv in order to not search it again during the import
-      max_luhn_value_in_csv = "0"
-
-      # For identifier fields we build a hash of values to list of indices so we
-      # can find out repretitions faster.
-      if field.kind == 'identifier'
-        values_to_indices = Hash.new { |h, k| h[k] = [] }
-        csv_column.each_with_index do |csv_field_value, field_number|
-          values_to_indices[csv_field_value] << field_number
-        end
-      end
-
-      csv_column.each_with_index do |csv_field_value, field_number|
-        begin
-          existing_site_id = nil
-          # load the site for the identifiers fields.
-          # we need the site in order to validate the uniqueness of the luhn id value
-          # The value should not be invlid if this same site has it
-          if csv_id_column && field.kind == 'identifier'
-            if id_mapping && id_mapping[csv_id_column[field_number]]
-              # An identifier value was selected as pivot
-              site_id = id_mapping[csv_id_column[field_number]]["id"]
-            else
-              site_id = csv_id_column[field_number]
-            end
-            existing_site_id = site_id if (site_id && !site_id.blank? && collection_sites_ids.include?(site_id.to_s))
-          end
-
-          # identifiers specific validation
-          if field.kind == 'identifier' && !csv_field_value.blank?
-            repetitions = values_to_indices[csv_field_value]
-            if repetitions.length > 1
-              raise "the value is repeated in row #{repetitions.map{|i|i+1}.to_sentence}"
-            end
-          end
-
-          value = validate_column_value(column_spec, csv_field_value, field, collection, existing_site_id)
-
-          # Store the max value for Luhn generation
-          if field.kind == 'identifier' && field.has_luhn_format?()
-            max_luhn_value_in_csv = if (value && (value > max_luhn_value_in_csv)) then value else max_luhn_value_in_csv end
-          end
-
-        rescue => ex
-          description = error_description_for_type(field, column_spec, ex)
-          validated_csv_column << {description: description, row: field_number}
-        end
-      end
-
-      luhn_data = JSON.load(File.read(aditional_data_file_for(user, collection)))
-      luhn_data[field.es_code] = max_luhn_value_in_csv if max_luhn_value_in_csv != "0"
-      File.open(aditional_data_file_for(user, collection), "wb") { |file| file << luhn_data.to_json }
-
-
-      validated_columns_grouped = validated_csv_column.group_by{|e| e[:description]}
-      validated_columns_grouped.map do |description, hash|
-        {description: description, column: column_number, rows: hash.map { |e| e[:row] }, type: field.value_type_description, example: field.value_hint }
-      end
-    end
-
-    def error_description_for_type(field, column_spec, ex)
-      if column_spec[:header].present?
-        column_desc = "field '#{column_spec[:header]}' (#{(column_spec[:index] + 1).ordinalize} column)"
-      else
-        column_desc = "the #{(column_spec[:index] + 1).ordinalize} column"
-      end
-      "Some of the values in #{column_desc} #{field.error_description_for_invalid_values(ex)}."
-    end
-
     def calculate_duplicated(selection_block, groping_field)
       spec_to_validate = selection_block.call()
       spec_by_field = spec_to_validate.group_by{ |s| s[groping_field]}
@@ -471,40 +378,6 @@ class ImportWizard
         end
       end
       existing_columns
-    end
-
-    def validate_column_value(column_spec, field_value, field, collection, site_id)
-      if field.new_record?
-        validate_format_value(column_spec, field_value, field, collection)
-      else
-        field.apply_format_and_validate(field_value, true, collection, site_id)
-      end
-    end
-
-    def validate_format_value(column_spec, field_value, field, collection)
-      # Bypass some field validations
-      case column_spec[:kind]
-      when 'hierarchy'
-        raise "Hierarchy fields can only be created via web in the Layers page"
-      when 'select_one', 'select_many'
-        # options will be created
-        return field_value
-      end
-
-      field.apply_format_and_validate(field_value, true, collection)
-    end
-
-    def new_field_for_column_spec(column_spec, collection)
-      column_spec[:validate_format_value_cached_field] ||= begin
-        column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
-        field = Field.new kind: column_spec[:kind].to_s, code: column_header, config: column_spec[:config]
-        field.cache_for_read
-
-        # We need the collection to validate site_fields
-        field.collection = collection
-
-        field
-      end
     end
 
     def read_csv_for(user, collection)

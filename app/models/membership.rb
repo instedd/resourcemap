@@ -1,6 +1,5 @@
 class Membership < ActiveRecord::Base
   include Membership::ActivityConcern
-  include Membership::LayerAccessConcern
   include Membership::SitesPermissionConcern
   include Membership::DefaultPermissionConcern
 
@@ -43,8 +42,10 @@ class Membership < ActiveRecord::Base
   def set_access(options = {})
     object = options[:object]
     if object == 'name'
+      name_permission.activity_user = activity_user
       name_permission.set_access(options[:new_action])
     elsif object == 'location'
+      location_permission.activity_user = activity_user
       location_permission.set_access(options[:new_action])
     else
       raise "Undefined element #{object} for membership."
@@ -68,7 +69,9 @@ class Membership < ActiveRecord::Base
     end
 
     lm = layer_memberships.where(:layer_id => options[:layer_id]).first
+
     if lm
+      lm.activity_user = activity_user
       lm.read = read unless read.nil?
       lm.write = write unless write.nil?
 
@@ -78,7 +81,9 @@ class Membership < ActiveRecord::Base
         lm.destroy
       end
     else
-      layer_memberships.create! :layer_id => options[:layer_id], :read => read, :write => write
+      new_lm = layer_memberships.new :layer_id => options[:layer_id], :read => read, :write => write
+      new_lm.activity_user = activity_user
+      new_lm.save!
     end
   end
 
@@ -112,6 +117,7 @@ class Membership < ActiveRecord::Base
   def change_admin_flag(new_value)
     self.admin = new_value
     self.save!
+    create_activity_when_admin_permission_changes
   end
 
 end

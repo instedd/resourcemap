@@ -316,12 +316,126 @@ describe Activity do
     end
 
     it "doesn't create one if lat/lng updated but not changed" do
-      site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
+      site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: 0, properties: {beds.es_code => 20}, user: user
 
       Activity.delete_all
 
       site.lat = "-1.9537"
-      site.lng = "30.103090000000066"
+      site.lng = 0
+      site.save!
+
+      Activity.count.should eq(0)
+    end
+
+    it "creates one after changing lat to nil" do
+      site = collection.sites.create! name: 'Foo', lat: 0, lng: "30.10309", properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lat = nil
+      site.save!
+
+      Activity.count.should eq(1)
+      activities = Activity.all
+      assert_activity 'site', 'changed',
+        'data' => {"name" => site.name, "changes" => {"lat" => [0, nil], "lng" => [30.10309, 30.10309]}}
+
+    end
+
+    it "creates one after changing lng to nil" do
+      site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lng = nil
+      site.save!
+
+      Activity.count.should eq(1)
+      activities = Activity.all
+      assert_activity 'site', 'changed',
+        'data' => {"name" => site.name, "changes" => {"lat" => [-1.9537, -1.9537], "lng" => [30.10309, nil]}}
+
+    end
+
+    it "creates one after changing lat and lng from nil to a value" do
+      site = collection.sites.create! name: 'Foo', properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lat = "44.123"
+      site.lng = "-33.2"
+      site.save!
+
+      Activity.count.should eq(1)
+      activities = Activity.all
+      assert_activity 'site', 'changed',
+        'data' => {"name" => site.name, "changes" => {"lat" => [nil, 44.123], "lng" => [nil, -33.2]}}
+
+    end
+
+    it "creates one after changing lat and lng to nil" do
+      site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lat = nil
+      site.lng = nil
+      site.save!
+
+      Activity.count.should eq(1)
+      activities = Activity.all
+      assert_activity 'site', 'changed',
+        'data' => {"name" => site.name, "changes" => {"lat" => [-1.9537, nil], "lng" => [30.10309, nil]}}
+
+    end
+
+    it "creates one after changing lat more than 1e-04" do
+      site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lat = site.lat + 1e-04
+      site.save!
+
+      Activity.count.should eq(1)
+      activities = Activity.all
+      assert_activity 'site', 'changed',
+        'data' => {"name" => site.name, "changes" => {"lat" => [-1.9537, site.lat], "lng" => [30.10309, 30.10309]}}
+
+    end
+
+    it "creates one after changing lng more than 1e-04" do
+      site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lng = site.lng + 1e-04
+      site.save!
+
+      Activity.count.should eq(1)
+      activities = Activity.all
+      assert_activity 'site', 'changed',
+        'data' => {"name" => site.name, "changes" => {"lat" => [-1.9537, -1.9537], "lng" => [30.10309, site.lng]}}
+
+    end
+
+    it "doesn't create one after changing lat less than 1e-04" do
+      site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lat = site.lat + 1e-05
+      site.save!
+
+      Activity.count.should eq(0)
+    end
+
+    it "doesn't create one after changing lng less than 1e-04" do
+      site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
+
+      Activity.delete_all
+
+      site.lng = site.lng + 1e-05
       site.save!
 
       Activity.count.should eq(0)
@@ -346,7 +460,6 @@ describe Activity do
   def assert_activity(item_type, action, options = {})
     activities = Activity.all
     activities.length.should eq(1)
-
     activities[0].item_type.should eq(item_type)
     activities[0].action.should eq(action)
     options.each do |key, value|
