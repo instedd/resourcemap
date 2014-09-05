@@ -159,7 +159,7 @@ ResourceMap::Application.routes.draw do
         end
       end
 
-      resources :layers, except: [:show] do
+      resources :layers, except: [:show, :new, :edit] do
         resources :fields, only: [:create]
       end
 
