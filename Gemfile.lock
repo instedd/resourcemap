@@ -11,7 +11,7 @@ GIT
       ruby-openid
 
 GIT
-  remote: https://bitbucket.org/instedd/poirot_rails.git
+  remote: https://github.com/instedd/poirot_rails.git
   revision: 22eb420bf2d170efef118ca57324221e6383fa1c
   branch: master
   specs:
