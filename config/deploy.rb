@@ -28,7 +28,7 @@ namespace :deploy do
   end
 
   task :symlink_configs, :roles => :app do
-    %W(database.yml settings.yml google_maps.key guisso.yml nuntium.yml newrelic.yml).each do |file|
+    %W(database.yml settings.yml google_maps.key guisso.yml nuntium.yml newrelic.yml poirot.yml).each do |file|
       run "test -e #{shared_path}/#{file} && ln -nfs #{shared_path}/#{file} #{release_path}/config/ || true"
     end
   end
