@@ -109,8 +109,6 @@ GEM
       json (>= 1.7)
     childprocess (0.3.3)
       ffi (~> 1.0.6)
-    ci_reporter (1.7.0)
-      builder (>= 2.1.2)
     coderay (1.0.9)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -418,7 +416,6 @@ DEPENDENCIES
   capistrano
   capybara
   carrierwave
-  ci_reporter
   coffee-rails (~> 3.2.1)
   database_cleaner
   decent_exposure

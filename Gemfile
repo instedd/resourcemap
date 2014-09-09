@@ -39,7 +39,6 @@ gem 'poirot_rails', git: "https://github.com/instedd/poirot_rails.git", branch: 
 
 group :test do
   gem 'shoulda-matchers'
-  gem 'ci_reporter'
   gem 'resque_spec'
   gem 'selenium-webdriver'
   gem 'capybara'
