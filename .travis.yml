@@ -9,5 +9,5 @@ before_script:
   - bundle exec rake db:setup
   - bundle exec rake db:test:prepare
 script:
-  - bundle exec rspec
+  - bundle exec rspec spec/
   - bundle exec guard-jasmine
