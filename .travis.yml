@@ -1,9 +1,12 @@
 language: ruby
+cache: bundler
 rvm:
   - 1.9.3-p484
 bundler_args: --without development
 services:
   - elasticsearch
 before_script:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y libzmq-dev
   - bundle exec rake db:setup
   - bundle exec rake db:test:prepare
