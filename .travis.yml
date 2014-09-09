@@ -11,3 +11,5 @@ before_script:
 script:
   - bundle exec rspec spec/
   - bundle exec guard-jasmine
+notifications:
+  hipchat: "fDYQeP7/X+9RZ8EWHSguckqSYJm2WwyLbXD+LQP/vuu+7Lrby41cllF7gqbMPDN9dsOo0gH+RbkHuTm+SCvN8xFcE4x/IDwcOBJgEVS+65YcFjQ/sY38fmzQRTaevjjZ44ghWknP70Wg9UJTet8j/mppvfDUHjexpC2/iCysqos="
