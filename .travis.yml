@@ -2,12 +2,9 @@ language: ruby
 cache: bundler
 rvm:
   - 1.9.3-p484
-bundler_args: --without development
+bundler_args: --without development poirot
 services:
   - elasticsearch
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y libzmq-dev
 before_script:
   - bundle exec rake db:setup
   - bundle exec rake db:test:prepare
