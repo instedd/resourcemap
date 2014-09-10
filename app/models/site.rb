@@ -121,12 +121,14 @@ class Site < ActiveRecord::Base
       self.name = site_params["name"]
     end
 
+    if site_params.has_key?("lng")
+      user.authorize! :update_location, user_membership, "Not authorized to update site location"
+      self.lng = site_params["lng"]
+    end
+
     if site_params.has_key?("lat")
       user.authorize! :update_location, user_membership, "Not authorized to update site location"
-      if site_params.has_key?("lng")
-        self.lat = site_params["lat"]
-        self.lng = site_params["lng"]
-      end
+      self.lat = site_params["lat"]
     end
 
     if site_params.has_key?("properties")
