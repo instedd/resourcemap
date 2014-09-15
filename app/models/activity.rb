@@ -114,7 +114,7 @@ class Activity < ActiveRecord::Base
         if new_value != old_value
           field = fields[key]
           code = field.try(:code)
-          text_changes << "'#{code}' changed from #{format_value field, old_value} to #{format_value field, new_value}"
+          text_changes << "'#{code}' changed from #{format_value field, old_value} to #{new_value.nil? ? '(nothing)' : format_value(field, new_value)}"
         end
       end
 
