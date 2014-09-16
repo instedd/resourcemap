@@ -153,9 +153,8 @@ onCollections ->
         e: ne.lng()
         w: sw.lng()
         z: zoom
-        collection_ids: collection_ids
-
-      query.selected_hierarchies = @selectedHierarchy().hierarchyIds() if @selectedHierarchy()
+        collection_ids: collection_ids.join()
+      query.selected_hierarchy_id = this.selectedHierarchy().id if @selectedHierarchy()
       query.hierarchy_code = window.model.groupBy().esCode if @selectedHierarchy() && window.model.groupBy().esCode
 
       query.exclude_id = @selectedSite().id() if @selectedSite()?.id()

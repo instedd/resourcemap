@@ -1,16 +1,18 @@
-require 'simplecov'
-require 'simplecov-rcov'
-class SimpleCov::Formatter::MergedFormatter
-  def format(result)
-     SimpleCov::Formatter::HTMLFormatter.new.format(result)
-     SimpleCov::Formatter::RcovFormatter.new.format(result)
+if ENV["COVERAGE"]
+  require 'simplecov'
+  require 'simplecov-rcov'
+  class SimpleCov::Formatter::MergedFormatter
+    def format(result)
+       SimpleCov::Formatter::HTMLFormatter.new.format(result)
+       SimpleCov::Formatter::RcovFormatter.new.format(result)
+    end
   end
-end
-SimpleCov.formatter = SimpleCov::Formatter::MergedFormatter
-SimpleCov.start do
-  add_filter "/spec/"
-  add_filter "/.bundle/"
-  add_filter "/lib/treetop/command.rb"
+  SimpleCov.formatter = SimpleCov::Formatter::MergedFormatter
+  SimpleCov.start do
+    add_filter "/spec/"
+    add_filter "/.bundle/"
+    add_filter "/lib/treetop/command.rb"
+  end
 end
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'

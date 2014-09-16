@@ -4,6 +4,7 @@ onCollections ->
   class @CollectionMembership
     @constructorCollectionMembership: ->
       @membershipInitialized = false
+      @anyUpdatePermissions = false
 
     @fetchMembership: (callback)->
       if @membershipInitialized
@@ -17,6 +18,9 @@ onCollections ->
       $.get "/collections/#{@id}/current_user_membership.json", {}, (membership) =>
         @namePermission = membership.name
         @locationPermission = membership.location
+        nameOrLocation = @namePermission == "update" || @locationPermission == "update"
+        @anyUpdatePermissions = nameOrLocation || $.grep(membership.layers, (l) ->
+          l.write).length > 0
 
       @membershipInitialized = true
       callback() if typeof(callback) is 'function'
