@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "snapshots" do 
  
   it "should not edit site using snapshot", js:true do
-    # p "This test fails because https://bitbucket.org/instedd/resource_map/issue/401/displayed-number-of-snapshots-sites-is"
+    # p "This test fails because https://github.com/instedd/resourcemap/issues/401"
     sleep 5
     user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
     collection = create_collection_for (user)
