@@ -183,4 +183,32 @@ describe Collection do
       dict['D'].should eq(field_d.es_code)
     end
   end
+
+  describe 'visibility by user for' do
+    # Layers are tested in layer_access_spec
+    context 'fields' do
+      before(:each) { layer }
+
+      it "should be visible for collection owner" do
+        collection.visible_fields_for(user, {}).should eq([field])
+      end
+
+      it "should not be visible for unrelated user" do
+        new_user = User.make
+        collection.visible_fields_for(new_user, {}).should be_empty
+      end
+
+      it "should not create duplicates with multiple users" do
+        new_user = User.make
+        membership = collection.memberships.create user: new_user
+        membership.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
+        collection.visible_fields_for(user, {}).should eq([field])
+      end
+
+      it "should not create duplicates when annonymous user has read permissions" do
+        collection.anonymous_name_permission.should be_true
+        collection.visible_fields_for(user, {}).should eq([field])
+      end
+    end
+  end
 end
