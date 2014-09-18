@@ -103,12 +103,12 @@ class Field::HierarchyField < Field
   end
 
   def hierarchy_max_height
-    config['hierarchy'].collect {|n| max_height(n) + 1 }.max
+    config['hierarchy'].map {|n| max_height(n) + 1 }.max
   end
 
   def max_height(node)
     if node["sub"] && node["sub"].count > 0
-      node["sub"].collect {|n| max_height(n) + 1 }.max
+      node["sub"].map {|n| max_height(n) + 1 }.max
     else
       0
     end
