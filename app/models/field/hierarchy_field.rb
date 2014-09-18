@@ -102,6 +102,18 @@ class Field::HierarchyField < Field
     options.map { |item| item[:id] }
   end
 
+  def hierarchy_max_height
+    config['hierarchy'].collect {|n| max_height(n) + 1 }.max
+  end
+
+  def max_height(node)
+    if node["sub"] && node["sub"].count > 0
+      node["sub"].collect {|n| max_height(n) + 1 }.max
+    else
+      0
+    end
+  end
+
   def cache_for_read
     @cache_for_read = true
   end

@@ -49,6 +49,20 @@ describe Field do
     field.descendants_of_in_hierarchy('root').should eq(['0', '1', '2'])
   end
 
+  it "should calculate max height of the hierarchy" do
+    config_hierarchy = [{ id: '0', name: 'root', sub: [{id: '1', name: 'child'}, {id: '2', name: 'child2'}]}]
+    field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
+    field.hierarchy_max_height.should eq(2)
+
+    config_hierarchy = [{ id: '0', name: 'root'}]
+    field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
+    field.hierarchy_max_height.should eq(1)
+
+    config_hierarchy = [{ id: '0', name: 'root', sub: [{id: '1', name: 'child', sub:[{id: '3', name: 'child3'}] }, {id: '2', name: 'child2'}]}]
+    field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
+    field.hierarchy_max_height.should eq(3)
+  end
+
   pending "descendants_of_in_hierarchy should return every results if option name is duplicated " do
     config_hierarchy = [{ id: '0', name: 'root', sub: [{id: '1', name: 'child'}]}, {id: '2', name: 'root'}]
     field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
