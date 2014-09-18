@@ -858,6 +858,18 @@ msgstr "Afficher les 10 premiers enregistrements."
 msgid "Sign up"
 msgstr "S'inscrire"
 
+#: from http://www.nvoad.org/wp-content/plugins/wp-job-manager/languages/wp-job-manager-fr_FR.po
+msgid "Sign out"
+msgstr "Quitter"
+
+#: from http://ceesto.fr/wp-content/plugins/support/languages/wpas-fr_FR.po
+msgid "Create account"
+msgstr "Créer un compte"
+
+#: from https://themes.trac.wordpress.org/changeset/13212/simplish/2.4.1/languages/fr_FR.po?old=15277&old_path=simplish%2F2.5%2Flanguages%2Ffr_FR.po
+msgid "Log in"
+msgstr "Connexion"
+
 # Shouldn't it read "Signed in"?
 msgid "Singed In"
 msgstr "Session ouverte"
@@ -2088,5 +2100,6 @@ msgstr "État"
 msgid "(for example: 85512345678)"
 msgstr "(par exemple : 85512345678)"
 
+#: taken from https://github.com/mutoh/gettext_activerecord/blob/8b837783db65f2480903954cf4f90b5ff64da8a7/po/fr/gettext_activerecord.po#L70
 msgid "can't be blank"
-msgstr ""
+msgstr "ne peut être vierge"
