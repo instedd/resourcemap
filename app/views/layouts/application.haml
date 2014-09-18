@@ -43,14 +43,14 @@
             %ul
               %li
                 %a{:href => "mailto:support@instedd.org?subject=[#{application_name.underscore}-bug]"} Report a bug
-              %li= link_to "Sign out", destroy_session_path(:user), method: :delete
+              %li= link_to _("Sign out"), destroy_session_path(:user), method: :delete
       %li
         = link_to '', edit_user_registration_path, class: 'fsettings'
     - else
       %li
-        = link_to "Create account", guisso_sign_up_path_for(:user), class: 'fedit'
+        = link_to _("Create account"), guisso_sign_up_path_for(:user), class: 'fedit'
       %li
-        = link_to "Log in", guisso_sign_in_path_for(:user), class: 'fuser'
+        = link_to _("Log in"), guisso_sign_in_path_for(:user), class: 'fuser'
 
 - content_for :footer_links do
   %a{:href => root_path} Home

@@ -20,10 +20,10 @@
       });
 
     .field.w60
-      = f.label :name, _("Name")
+      = f.label :name
       = f.text_field :name, :readonly => !creation && (cannot? :update, collection)
       - if f.object.errors[:name].present?
-        %label.error= "Name #{f.object.errors[:name].join(', ')}"
+        %label.error= "#{_("Collection|Name")} #{f.object.errors[:name].join(', ')}"
     .field.w60
       = f.label :description, _("Description")
       = f.text_area :description, rows: 3, :readonly =>  !creation && (cannot? :update, collection)
