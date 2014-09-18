@@ -1472,37 +1472,37 @@ msgid "Import job"
 msgstr "Importer la tâche"
 
 msgid "User|Remember created at"
-msgstr "User|Rappel créé à"
+msgstr "Rappel créé à"
 
 msgid "LayerHistory|Ord"
-msgstr "LayerHistory|Ordre de la couche"
+msgstr "Ordre de la couche"
 
 msgid "the layer must have at least one field"
 msgstr "la couche doit comporter au moins un champ"
 
 msgid "Layer|Name"
-msgstr "Layer|Nom"
+msgstr "Nom"
 
 msgid "Collection %{collection_name}'s sites deleted"
 msgstr "sites supprimés dans collecte %{collection_name}"
 
 msgid "Field|Kind"
-msgstr "Field|Type"
+msgstr "Type"
 
 msgid "Collection %{collection_name} deleted"
 msgstr "Collecte  %{collection_name} supprimée"
 
 msgid "User|Success outcome"
-msgstr "User|Succès"
+msgstr "Succès"
 
 msgid "FieldHistory|Name"
-msgstr "FieldHistory|Nom du champ"
+msgstr "Nom du champ"
 
 msgid "No users found"
 msgstr "Aucun utilisateur trouvé"
 
 msgid "SiteHistory|Location mode"
-msgstr "SiteHistory|Emplacement du site"
+msgstr "Emplacement du site"
 
 msgid "Custom permissions for 1 site"
 msgstr "Droits d'accès personnalisés pour 1 site"
@@ -1511,31 +1511,31 @@ msgid "Hierarchy Editor for %s field"
 msgstr "Éditeur de hiérarchie pour champ %s"
 
 msgid "Channel|Advanced setup"
-msgstr "Channel|Configuration avancée"
+msgstr "Configuration avancée"
 
 msgid "Layer '%s' successfully saved"
 msgstr "Couche  '%s' sauvegardée avec succès"
 
 msgid "Channel|Password"
-msgstr "Channel|Mot de passe"
+msgstr "Mot de passe"
 
 msgid "No"
 msgstr "Non"
 
 msgid "SiteHistory|Name"
-msgstr "SiteHistory|Nom du site"
+msgstr "Nom du site"
 
 msgid "Activity|Item type"
-msgstr "Activity|élément"
+msgstr "Élément"
 
 msgid "a field with code '%s' already exists in the layer named %s"
 msgstr "un champ avec le code '%s' existe déjà dans la couche nommée %s"
 
 msgid "ImportJob|Finished at"
-msgstr "ImportJob|terminée à"
+msgstr "Terminée à"
 
 msgid "User|Gateway count"
-msgstr "User|passerelles"
+msgstr "Passerelles"
 
 msgid "Snapshot %{snapshot_name} unloaded"
 msgstr "Instantané d'écran  %{snapshot_name} vidé"
@@ -1544,16 +1544,16 @@ msgid "Snapshot could not be created: %{errors}"
 msgstr "Instantané d'écran n'a pas pu être créé : %{errors}"
 
 msgid "Membership|Admin"
-msgstr "Membership|Administration"
+msgstr "Administration"
 
 msgid "Message|Subject"
-msgstr "Message|Objet"
+msgstr "Objet"
 
 msgid "Move down"
 msgstr "Déplacer vers le bas"
 
 msgid "Layer|Anonymous user permission"
-msgstr "Layer|Droit d'accès pour utilisateur anonyme"
+msgstr "Droit d'accès pour utilisateur anonyme"
 
 msgid "Value"
 msgstr "Valeur"
@@ -1565,16 +1565,16 @@ msgid "Are you sure you want to delete layer %s"
 msgstr "Etes-vous sûr de vouloir supprimer la couche %s"
 
 msgid "Site|Uuid"
-msgstr "Site|Uuid"
+msgstr "Uuid"
 
 msgid "User|Unconfirmed email"
-msgstr "User|courrier électronique non confirmé"
+msgstr "Courrier électronique non confirmé"
 
 msgid "Collection|Anonymous location permission"
-msgstr "Collection|Autorisation de emplacement anonyme"
+msgstr "Autorisation de emplacement anonyme"
 
 msgid "SiteHistory|Properties"
-msgstr "SiteHistory|Propriétés du site"
+msgstr "Propriétés du site"
 
 msgid "Layer"
 msgstr "Couche"
@@ -1589,31 +1589,31 @@ msgid "Collection %{collection_name} created"
 msgstr "Collecte  %{collection_name} créée"
 
 msgid "Message|Channel"
-msgstr "Message|Canal"
+msgstr "Canal"
 
 msgid "FieldHistory|Ord"
-msgstr "FieldHistory|Ordre du champ"
+msgstr "Ordre du champ"
 
 msgid "User|Current sign in ip"
-msgstr "User|Ouverture de session actuelle dans ip"
+msgstr "Ouverture de session actuelle dans ip"
 
 msgid "Message|From"
-msgstr "Message|De"
+msgstr "De"
 
 msgid "Notification's message is missing"
 msgstr "Le message de notification manque"
 
 msgid "Reminder|Name"
-msgstr "Reminder|Nom"
+msgstr "Nom"
 
 msgid "Channel|Is enable"
-msgstr "Channel|Activer"
+msgstr "Activer"
 
 msgid "Repeat"
 msgstr "Répéter"
 
 msgid "Reminder|Sites"
-msgstr "Reminder|Sites"
+msgstr "Sites"
 
 msgid "Custom permissions for sites"
 msgstr "Droits d'accès personnalisés pour les sites"
@@ -1622,193 +1622,193 @@ msgid "a field with name '%s' already exists in the layer named %s"
 msgstr "un champ avec le nom  '%s' existe déjà dans la couche nommée %s"
 
 msgid "Layer|Ord"
-msgstr "Layer|Ordre"
+msgstr "Ordre"
 
 msgid "User|Last sign in at"
-msgstr "User|Dernière ouverture de session à"
+msgstr "Dernière ouverture de session à"
 
 msgid "Field|Name"
-msgstr "Field|Nom"
+msgstr "Nom"
 
 msgid "Identity|Provider"
-msgstr "Identity|Prestataire"
+msgstr "Prestataire"
 
 msgid "User|Confirmation sent at"
-msgstr "User|Confirmation envoyée à"
+msgstr "Confirmation envoyée à"
 
 msgid "User|Authentication token"
-msgstr "User|Jeton d'authentification"
+msgstr "Jeton d'authentification"
 
 msgid "LayerHistory|Name"
-msgstr "LayerHistory|Nom de la couche"
+msgstr "Nom de la couche"
 
 msgid "LayerHistory|Anonymous user permission"
-msgstr "LayerHistory|Droit d'accès pour utilisateur anonyme"
+msgstr "Droit d'accès pour utilisateur anonyme"
 
 msgid "Message|Guid"
-msgstr "Message|IUG"
+msgstr "IUG"
 
 msgid "Channel"
 msgstr "Canal"
 
 msgid "Threshold|Is notify"
-msgstr "Threshold|Notifier"
+msgstr "Notifier"
 
 msgid "Message|Application"
-msgstr "Message|Application"
+msgstr "Application"
 
 msgid "Sites permission"
 msgstr "Droit d'accès aux sites"
 
 msgid "Collection|Lng"
-msgstr "Collection|Langue"
+msgstr "Langue"
 
 msgid "LayerHistory|Public"
-msgstr "LayerHistory|Public"
+msgstr "Public"
 
 msgid "Reminder|Is all site"
-msgstr "Reminder|dans tout le site"
+msgstr "Dans tout le site"
 
 msgid " Item id is required."
 msgstr "L'identité de l'élément est nécessaire"
 
 msgid "ImportJob|Original filename"
-msgstr "ImportJob|Nom de fichier d'origine"
+msgstr "Nom de fichier d'origine"
 
 msgid "Activity|Data"
-msgstr "Activity|Données"
+msgstr "Données"
 
 msgid "LayerMembership|Read"
-msgstr "LayerMembership|Lire"
+msgstr "Lire"
 
 msgid "User|Last sign in ip"
-msgstr "User|Dernière ouverture de session en"
+msgstr "Dernière ouverture de session en"
 
 msgid "FieldHistory|Config"
-msgstr "FieldHistory|Configuration du champ"
+msgstr "Configuration du champ"
 
 msgid "User|Layer count"
-msgstr "User|Couches"
+msgstr "Couches"
 
 msgid "FieldHistory|Version"
-msgstr "FieldHistory|Version du champ"
+msgstr "Version du champ"
 
 msgid "Site|Version"
-msgstr "Site|Version"
+msgstr "Version"
 
 msgid "FieldHistory|Metadata"
-msgstr "FieldHistory|Méta-données"
+msgstr "Méta-données"
 
 msgid "Snapshot %{name} created"
 msgstr "Instantané d'écran %{name} créé"
 
 msgid "SiteHistory|Valid since"
-msgstr "SiteHistory|Valide depuis"
+msgstr "Valide depuis"
 
 msgid "Channel|Nuntium channel name"
-msgstr "Channel|Nom du canal Nuntium"
+msgstr "Nom du canal Nuntium"
 
 msgid "Snapshot|Name"
-msgstr "Snapshot|Nom"
+msgstr "Nom"
 
 msgid "User|Collection count"
-msgstr "User|Nombre de collectes"
+msgstr "Nombre de collectes"
 
 msgid "Collection %{collection_name} updated"
 msgstr "Collecte %{collection_name} mise à jour"
 
 msgid "LocationPermission|Action"
-msgstr "LocationPermission|Action"
+msgstr "Action"
 
 msgid "Reminder|Reminder message"
-msgstr "Reminder|Message de rappel"
+msgstr "Message de rappel"
 
 msgid "SitesPermission|Some sites"
-msgstr "SitesPermission|Certains sites"
+msgstr "Certains sites"
 
 msgid "Message|Country"
-msgstr "Message|Pays"
+msgstr "Pays"
 
 msgid "SiteHistory|Lng"
-msgstr "SiteHistory|Lng"
+msgstr "Lng"
 
 msgid "Channel|Basic setup"
-msgstr "Channel|Configuration de base"
+msgstr "Configuration de base"
 
 msgid "Collection|Min lat"
-msgstr "Collection|Latitude minimum"
+msgstr "Latitude minimum"
 
 msgid "Valid credentials"
-msgstr "  Authentifiant valide"
+msgstr "Authentifiant valide"
 
 msgid "Hierarchy Editor"
 msgstr "Éditeur de hiérarchie"
 
 msgid "User|Reset password sent at"
-msgstr "User|Réinitialiser le mot de passe envoyé à"
+msgstr "Réinitialiser le mot de passe envoyé à"
 
 msgid "Enter new site name"
 msgstr "Entrer un nouveau nom de site"
 
 msgid "LayerHistory|Valid to"
-msgstr "LayerHistory|Valide jusqu'à"
+msgstr "Valide jusqu'à"
 
 msgid "Collection|Quota"
-msgstr "Collection|Quota"
+msgstr "Quota"
 
 msgid "Snapshot %{name} loaded"
 msgstr "Instantané d'écran %{name} chargé"
 
 msgid "User|Encrypted password"
-msgstr "User|Mot de passe codé"
+msgstr "Mot de passe codé"
 
 msgid "Threshold|Message notification"
-msgstr "Threshold|Notification d'un message"
+msgstr "Notification d'un message"
 
 msgid "Threshold|Name"
-msgstr "Threshold|Nom"
+msgstr "Nom"
 
 msgid "Yes"
 msgstr "Oui"
 
 msgid "User|Phone number"
-msgstr "User|Numéro de téléphone"
+msgstr "Numéro de téléphone"
 
 msgid "Threshold|Conditions"
-msgstr "Threshold|Conditions"
+msgstr "Conditions"
 
 msgid "Reminder|Status"
-msgstr "Reminder|État"
+msgstr "État"
 
 msgid "SiteHistory|Id with prefix"
-msgstr "SiteHistory|ld avec préfixe"
+msgstr "Id avec préfixe"
 
 msgid "Collection|Max lng"
-msgstr "Collection|Max Ing"
+msgstr "Max Lng"
 
 msgid "LayerHistory|Version"
-msgstr "LayerHistory|Version"
+msgstr "Version"
 
 msgid "Collection|Icon"
-msgstr "Collection|Icône"
+msgstr "Icône"
 
 msgid "Collection|Lat"
-msgstr "Collection|Latitude"
+msgstr "Latitude"
 
 msgid "Are you sure to delete reminder"
 msgstr ""
 
 msgid "FieldHistory|Valid since"
-msgstr "FieldHistory|Valide depuis"
+msgstr "Valide depuis"
 
 msgid "User|Reset password token"
-msgstr "User|Réinitialiser le jeton de mot de passe"
+msgstr "Réinitialiser le jeton de mot de passe"
 
 msgid "User|Sign in count"
-msgstr "User|Nombre d'ouvertures de session"
+msgstr "Nombre d'ouvertures de session"
 
 msgid "Prefix|Version"
-msgstr "Prefix|Version"
+msgstr "Version"
 
 msgid "Layer %s successfully deleted"
 msgstr "Couche %s supprimée avec succès"
@@ -1817,25 +1817,25 @@ msgid "Remove this member"
 msgstr "Supprimer ce membre"
 
 msgid "SiteHistory|Uuid"
-msgstr "SiteHistory|UUID"
+msgstr "UUID"
 
 msgid "Are you sure you want to remove this member from the collection?"
 msgstr "Etes-vous sûr que vous souhaitez supprimer ce membre de la collecte ?"
 
 msgid "Message|Body"
-msgstr "Message|Corps"
+msgstr "Corps"
 
 msgid "Reminder"
 msgstr "Rappel"
 
 msgid "Threshold|Color"
-msgstr "Threshold|Couleur"
+msgstr "Couleur"
 
 msgid "Layer membership"
 msgstr "Membres de la couche"
 
 msgid "User|Email"
-msgstr "User|Courrier électronique"
+msgstr "Courrier électronique"
 
 msgid "Account updated successfully"
 msgstr "Compte mis à jour avec succès"
@@ -1844,13 +1844,13 @@ msgid "Location permission"
 msgstr "Droit d'accès à l'emplacement"
 
 msgid "User|Confirmed at"
-msgstr "User|Confirmé à"
+msgstr "Confirmé à"
 
 msgid "Are you sure you want to delete %s?"
 msgstr "Etes-vous sûr que vous souhaitez supprimer %s ?"
 
 msgid "Collection|Description"
-msgstr "Collection|Description"
+msgstr "Description"
 
 msgid "Invalid parameters. Parameters should include 'user' and 'password'."
 msgstr ""
@@ -1861,13 +1861,13 @@ msgid "Membership"
 msgstr "Membre"
 
 msgid "Reminder|Next run"
-msgstr "Reminder|Prochaine exécution"
+msgstr "Prochaine exécution"
 
 msgid "Collection|Anonymous name permission"
-msgstr "Collection|Droit d'accès anonyme"
+msgstr "Droit d'accès anonyme"
 
 msgid "FieldHistory|Code"
-msgstr "FieldHistory|Code"
+msgstr "Code"
 
 msgid "Are you sure you want to remove %s from the collection?"
 msgstr "Etes-vous sûr que vous souhaitez supprimer %s de la collecte ?"
@@ -1879,10 +1879,10 @@ msgid "Are you sure to delete this gateway?"
 msgstr "Etes-vous sûr que vous souhaitez supprimer cette passerelle ?"
 
 msgid "Threshold|Is all site"
-msgstr "Threshold|dans tout le site"
+msgstr "Dans tout le site"
 
 msgid "Channel|National setup"
-msgstr "Channel|Configuration nationale"
+msgstr "Configuration nationale"
 
 msgid "Layer history"
 msgstr "Historique de la couche"
@@ -1894,31 +1894,31 @@ msgid "Site '%s' successfully created"
 msgstr "Site '%s' créé avec succès"
 
 msgid "FieldHistory|Valid to"
-msgstr "FieldHistory|Valide jusqu'à"
+msgstr "Valide jusqu'à"
 
 msgid "Repeat|Name"
-msgstr "Repeat|Nom"
+msgstr "Nom"
 
 msgid "Message|Carrier"
-msgstr "Message|Porteur"
+msgstr "Porteur"
 
 msgid "Snapshot"
 msgstr "Instantané d'écran"
 
 msgid "Field|Config"
-msgstr "Field|Configuration"
+msgstr "Configuration"
 
 msgid "Field|Metadata"
-msgstr "Field|Métadonnées"
+msgstr "Métadonnées"
 
 msgid "Site|Id with prefix"
-msgstr "Site|ld avec préfixe"
+msgstr "Id avec préfixe"
 
 msgid "Site|Location mode"
-msgstr "Site|Mode d'emplacement"
+msgstr "Mode d'emplacement"
 
 msgid "SiteHistory|Version"
-msgstr "SiteHistory|Version"
+msgstr "Version"
 
 msgid "the layer's Name is missing"
 msgstr "Le nom de la couche manque"
@@ -1933,91 +1933,91 @@ msgid "Prefix"
 msgstr "Préfixe"
 
 msgid "User|Is super user"
-msgstr "User|Super utilisateur"
+msgstr "Super utilisateur"
 
 msgid "Message|To"
-msgstr "Message|A l'intention de"
+msgstr "A l'intention de"
 
 msgid "User|Confirmation token"
-msgstr "User|Jeton de confirmation"
+msgstr "Jeton de confirmation"
 
 msgid "Collection|Max lat"
-msgstr "Collection|Latitude maximum"
+msgstr "Latitude maximum"
 
 msgid "Site|Lng"
-msgstr "Site|Langue"
+msgstr "Langue"
 
 msgid "Collection|Logo"
-msgstr "Collection|Logo"
+msgstr "Logo"
 
 msgid "Collection|Min lng"
-msgstr "Collection|Min Ing"
+msgstr "Min Lng"
 
 msgid "Snapshot|Date"
-msgstr "Snapshot|Date"
+msgstr "Date"
 
 msgid "Site|Properties"
-msgstr "Site|Propriétés"
+msgstr "Propriétés"
 
 msgid "Confirm"
 msgstr "Confirmer"
 
 msgid "Site|Lat"
-msgstr "Site|Latitude"
+msgstr "Latitude"
 
 msgid "Field"
 msgstr "Champ"
 
 msgid "NamePermission|Action"
-msgstr "NamePermission|Action"
+msgstr "Action"
 
 msgid "Invalid credentials"
 msgstr "Authentifiant invalide"
 
 msgid "User|Current sign in at"
-msgstr "User|Ouverture de session actuelle à"
+msgstr "Ouverture de session actuelle à"
 
 msgid "FieldHistory|Kind"
-msgstr "FieldHistory|Type"
+msgstr "Type"
 
 msgid "Site|Name"
-msgstr "Site|Nom"
+msgstr "Nom"
 
 msgid "Collection|Name"
-msgstr "Collection|Nom"
+msgstr "Nom"
 
 msgid "Search by email..."
 msgstr "Rechercher par courrier électronique..."
 
 msgid "SitesPermission|All sites"
-msgstr "SitesPermission|Tous les sites"
+msgstr "Tous les sites"
 
 msgid "Name permission"
 msgstr "Droit d'accès par nom"
 
 msgid "ImportJob|Exception"
-msgstr "ImportJob|Exception"
+msgstr "Exception"
 
 msgid "LayerMembership|Write"
-msgstr "LayerMembership|Écrire"
+msgstr "Écrire"
 
 msgid "Threshold|Email notification"
-msgstr "Threshold|Notification par courrier électronique"
+msgstr "Notification par courrier électronique"
 
 msgid "SiteHistory|Valid to"
-msgstr "SiteHistory|Valide jusqu'à"
+msgstr "Valide jusqu'à"
 
 msgid "Identity|Token"
-msgstr "Identity|Jeton"
+msgstr "Jeton"
 
 msgid "Threshold|Ord"
-msgstr "Threshold|Ordre"
+msgstr "Ordre"
 
 msgid "duplicated field name '%s'"
 msgstr ""
 
 msgid "LayerHistory|Valid since"
-msgstr "LayerHistory|Valide depuis"
+msgstr "Valide depuis"
 
 msgid "Anonymous users"
 msgstr "Utilisateurs anonymes"
@@ -2026,22 +2026,22 @@ msgid "Threshold"
 msgstr "Seuil"
 
 msgid "Message|Reply"
-msgstr "Message|Répondre"
+msgstr "Répondre"
 
 msgid "Field|Code"
-msgstr "Field|Code"
+msgstr "Code"
 
 msgid "Threshold|Sites"
-msgstr "Threshold|Sites"
+msgstr "Sites"
 
 msgid "Channel|Name"
-msgstr "Channel|Nom"
+msgstr "Nom"
 
 msgid "Site history"
 msgstr "Historique du site"
 
 msgid "Threshold|Phone notification"
-msgstr "Threshold|Notification par téléphone"
+msgstr "Notification par téléphone"
 
 msgid "Field history"
 msgstr "Historique du champ"
@@ -2050,16 +2050,16 @@ msgid "All"
 msgstr "Tous"
 
 msgid "Activity|Action"
-msgstr "Activity|Action"
+msgstr "Action"
 
 msgid "Reminder|Schedule"
-msgstr "Reminder|Calendrier"
+msgstr "Calendrier"
 
 msgid "Repeat|Rule"
-msgstr "Repeat|Règle"
+msgstr "Règle"
 
 msgid "SiteHistory|Lat"
-msgstr "SiteHistory|Latitude"
+msgstr "Latitude"
 
 msgid "Some"
 msgstr "Certains"
@@ -2068,22 +2068,22 @@ msgid " Item id already exists."
 msgstr "l'identité de l'élément existe déjà"
 
 msgid "Field|Ord"
-msgstr "Field|Ordre"
+msgstr "Ordre"
 
 msgid "Repeat|Order"
-msgstr "Repeat|Ordre"
+msgstr "Ordre"
 
 msgid "Threshold|Is all condition"
-msgstr "Threshold|toutes les conditions"
+msgstr "Toutes les conditions"
 
 msgid "Message|Is send"
-msgstr "Message| envoyer "
+msgstr "Envoyer"
 
 msgid "User|Site count"
-msgstr "User|Nombre de sites"
+msgstr "Nombre de sites"
 
 msgid "ImportJob|Status"
-msgstr "ImportJob|État"
+msgstr "État"
 
 msgid "(for example: 85512345678)"
 msgstr "(par exemple : 85512345678)"
