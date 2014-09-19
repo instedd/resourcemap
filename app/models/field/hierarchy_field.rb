@@ -91,14 +91,13 @@ class Field::HierarchyField < Field
     end
   end
 
-  def ascendants_of_in_hierarchy(node_id_or_name)
-    return [] if node_id_or_name.nil?
+  def ascendants_of_in_hierarchy(node_id)
+    return [] if node_id.nil?
     begin
-      valid_value?(node_id_or_name)
-      node_ids = [node_id_or_name]
+      valid_value?(node_id)
+      node_ids = [node_id]
     rescue
-      node_ids = find_hierarchy_id_by_name(node_id_or_name)
-      raise invalid_field_message(node_id_or_name) if node_ids.blank?
+      raise invalid_field_message(node_id)
     end
 
     options = []
