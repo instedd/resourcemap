@@ -534,7 +534,7 @@ msgid "Insightful:"
 msgstr "Perspicace :"
 
 msgid "JSON"
-msgstr "Notation des objets du langage JAVA"
+msgstr "JSON"
 
 msgid "Key"
 msgstr "Touche"
@@ -2103,3 +2103,18 @@ msgstr "(par exemple : 85512345678)"
 #: taken from https://github.com/mutoh/gettext_activerecord/blob/8b837783db65f2480903954cf4f90b5ff64da8a7/po/fr/gettext_activerecord.po#L70
 msgid "can't be blank"
 msgstr "ne peut être vierge"
+
+#: taken from http://www.killeroo.com/test/wp-content/plugins/woocommerce/i18n/languages/woocommerce-admin-fr_FR.po
+msgid "Download sample CSV"
+msgstr "Télécharger un CSV modèle"
+
+#: taken from http://webcache.googleusercontent.com/search?q=cache:HtdbvqLDM60J:hopeinchicago.org/wp-content/plugins/speakup-email-petitions/languages/dk_speakup-fr_FR.po+&cd=1&hl=en&ct=clnk&gl=ar
+msgid "Download as CSV"
+msgstr "Télécharger comme CSV"
+
+#: taken from http://pc-remont.pp.ua/files/temp/easyreservations/languages/easyReservations-fr_FR.po
+msgid "Admin permissions changed"
+msgstr "Admin permissions modifiées"
+
+msgid "Enter Snapshot name"
+msgstr "Entrez le nom du cliché"

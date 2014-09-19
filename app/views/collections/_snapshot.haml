@@ -5,7 +5,7 @@
 
   = form_for(@snapshot, :url => collection_create_snapshot_path(collection)) do |f|
     %span.snapshot_name_field.w30
-      = f.text_field :name, :placeholder => "Enter Snapshot name"
+      = f.text_field :name, :placeholder => _("Enter Snapshot name")
       - if f.object.errors[:name].present?
         %br/
         %label.error= "Name #{f.object.errors[:name].join(', ')}"

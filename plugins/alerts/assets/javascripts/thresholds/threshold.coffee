@@ -36,11 +36,11 @@ onThresholds -
         else
           return __("Notification's message is missing")
       @error = ko.computed =>
-        return "Can't save: " + @propertyNameError() if @propertyNameError()
+        return __("Can't save") + ": " + @propertyNameError() if @propertyNameError()
         return "the threshold must have at least one condition" if @conditions().length is 0
         for condition, i in @conditions()
           return "condition ##{i+1} #{condition.error()}" unless condition.valid()
-        return "Can't save: " + @notificationMessageError() if @notificationMessageError()
+        return __("Can't save") + ": " + @notificationMessageError() if @notificationMessageError()
 
       @valid = ko.computed => not @error()?
 
