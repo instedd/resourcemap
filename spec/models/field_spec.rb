@@ -106,6 +106,26 @@ describe Field do
 
   end
 
+  it "should return ascendants by type if cache_for_read is enabled" do
+    config_hierarchy = [
+      { id: '0', name: 'root', type: 'region', sub: [
+        {id: '1', name: 'child', type: 'district', sub: [
+          {id: '2', name: 'grand-child 2', type: 'ward'},
+          {id: '4', name: 'grand-brother', type: 'ward'}
+        ]}
+      ]},
+      {id: '3', name: "other", type: 'region'}
+    ]
+
+    field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
+    field.cache_for_read
+    res = [{:id=>"2", :name=>"grand-child 2", :type=>"ward"}, {:id=>"1", :name=>"child", :type=>"district"}, {:id=>"0", :name=>"root", :type=>"region"}]
+    field.ascendants_with_type('2', "district").should eq({:id=>"1", :name=>"child", :type=>"district"})
+    field.ascendants_with_type('grand-child 2', "district").should eq({:id=>"1", :name=>"child", :type=>"district"})
+
+    field.ascendants_with_type('grand-child 2', "not_found").should eq(nil)
+  end
+
   describe "sample value" do
     it "for text are strings" do
       field = Field::TextField.make

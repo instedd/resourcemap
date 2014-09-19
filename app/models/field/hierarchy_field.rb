@@ -210,7 +210,7 @@ class Field::HierarchyField < Field
 
   def find_hierarchy_option_by_id(value)
     if @cache_for_read
-      @options_by_id ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:id].to_s] = opt[:name] }
+      @options_by_id ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:id].to_s] = opt }
       return @options_by_id[value.to_s]
     end
 
