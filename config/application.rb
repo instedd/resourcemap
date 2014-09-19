@@ -8,12 +8,7 @@ require 'openid/extensions/sreg'
 require 'openid/extensions/pape'
 require 'openid/store/filesystem'
 
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  Bundler.require(*Rails.groups(:assets => %w(development test)))
-  # If you want your assets lazily compiled in production, use this line
-  # Bundler.require(:default, :assets, Rails.env)
-end
+Bundler.require(:default, Rails.env)
 
 module ResourceMap
   class Application < Rails::Application
@@ -25,6 +20,7 @@ module ResourceMap
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += Dir["#{config.root}/plugins/"]
     config.autoload_paths += Dir["#{config.root}/plugins/*/{helpers,controllers,models,workers}"]
+    config.active_record.whitelist_attributes = false
 
     # Load all Field classes to make associations like "text_fields" and "numeric_fields" work
     config.to_prepare do

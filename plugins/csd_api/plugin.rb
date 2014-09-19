@@ -16,9 +16,9 @@ class CsdApi::Plugin < Plugin
     with: Site::AlertConcerns
 
   routes {
-    match 'collections/:collection_id/csd_api/get_directory_modifications' => 'csd_api#get_directory_modifications', :via => :post, as: :get_directory_modifications
-    match 'collections/:collection_id/csd_api/get_service_modifications' => 'csd_api#get_service_modifications', :via => :post, as: :get_service_modifications
-    match 'collections/:collection_id/csd_api/get_organization_modifications' => 'csd_api#get_organization_modifications', :via => :post, as: :get_service_modifications
-    match 'collections/:collection_id/csd_api' => 'csd_api#index', :via => :get, :as => :csd_api_settings
+    post 'collections/:collection_id/csd_api/get_directory_modifications' => 'csd_api#get_directory_modifications', as: :get_directory_modifications
+    post 'collections/:collection_id/csd_api/get_service_modifications' => 'csd_api#get_service_modifications', as: :get_service_modifications
+    # match 'collections/:collection_id/csd_api/get_organization_modifications' => 'csd_api#get_organization_modifications', :via => :post, as: :get_service_modifications
+    get 'collections/:collection_id/csd_api' => 'csd_api#index', :as => :csd_api_settings
   }
 end

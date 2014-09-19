@@ -14,15 +14,15 @@ class Collection < ActiveRecord::Base
   has_many :memberships, dependent: :delete_all
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
-  has_many :layers, order: 'layers.ord', dependent: :delete_all
-  has_many :fields, order: 'ord', dependent: :delete_all
+  has_many :layers, -> { order('layers.ord')}, dependent: :delete_all
+  has_many :fields, -> { order('ord')}, dependent: :delete_all
   has_many :thresholds, dependent: :delete_all
   has_many :reminders, dependent: :delete_all
   has_many :share_channels, dependent: :delete_all
   has_many :channels, :through => :share_channels
   has_many :activities, dependent: :delete_all
   has_many :snapshots, dependent: :destroy
-  has_many :user_snapshots, :through => :snapshots, dependent: :delete_all
+  has_many :user_snapshots, dependent: :delete_all
   has_many :site_histories, dependent: :delete_all
   has_many :layer_histories, dependent: :delete_all
   has_many :field_histories, dependent: :delete_all
@@ -67,7 +67,7 @@ class Collection < ActiveRecord::Base
     target_fields = fields.includes(:layer)
 
     if membership.admin?
-      target_fields = target_fields.all
+      target_fields = target_fields
     else
       lms = LayerMembership.where(membership_id: membership.id).all.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
@@ -87,10 +87,10 @@ class Collection < ActiveRecord::Base
       date = Snapshot.where(id: options[:snapshot_id]).first.date
       visible_layers = layer_histories.accessible_by(current_ability).at_date(date).includes(:layer).map(&:layer)
     else
-      visible_layers = layers.accessible_by(current_ability).all
+      visible_layers = layers.accessible_by(current_ability)
     end
 
-    fields_by_layer_id = Field.where(layer_id: visible_layers.map(&:id)).all.group_by(&:layer_id)
+    fields_by_layer_id = Field.where(layer_id: visible_layers.map(&:id)).load.group_by(&:layer_id)
 
     visible_layers.map do |layer|
       fields = fields_by_layer_id[layer.id]
@@ -208,7 +208,7 @@ class Collection < ActiveRecord::Base
   end
 
   def register_gateways_under_user_owner(owner_user)
-    self.channels = owner_user.channels.find_all_by_is_enable true
+    self.channels = owner_user.channels.where(is_enable: true)
   end
 
   # Returns a dictionary of :code => :es_code of all the fields in the collection

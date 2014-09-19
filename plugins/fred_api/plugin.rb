@@ -22,10 +22,10 @@ class FredApi::Plugin < Plugin
 
 
   routes {
-    match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#show_facility', :via => :get, as: :show_facility
-    match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#facilities', :via => :get, as: :facilities
-    match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#delete_facility', :via => :delete, as: :delete_facility
-    match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#create_facility', :via => :post, as: :create_facility
-    match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#update_facility', :via => :put, as: :update_facility
+    get 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#show_facility', as: :show_facility
+    get 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#facilities', as: :facilities
+    delete 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#delete_facility', as: :delete_facility
+    post 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#create_facility', as: :create_facility
+    put 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#update_facility', as: :update_facility
   }
 end

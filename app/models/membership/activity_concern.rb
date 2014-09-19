@@ -11,7 +11,7 @@ module Membership::ActivityConcern
   end
 
   def create_activity_if_first_user
-    memberships = collection.memberships.all
+    memberships = collection.memberships
     if memberships.length == 1
       Activity.create! item_type: 'collection', action: 'created', collection_id: collection.id, user_id: memberships[0].user_id, 'data' => {'name' => collection.name}
     end

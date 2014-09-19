@@ -26,7 +26,7 @@ class MembershipsController < ApplicationController
   end
 
   def invitable
-    users = User.invitable_to_collection(params[:term], collection.memberships.value_of(:user_id))
+    users = User.invitable_to_collection(params[:term], collection.memberships.pluck(:user_id))
     render_json users.pluck(:email)
   end
 

@@ -93,6 +93,6 @@ class Ability
   end
 
   def user_memberships(user)
-    @user_memberships ||= user.memberships.includes(:layer_memberships).all
+    @user_memberships ||= user.memberships.includes(:layer_memberships)
   end
 end

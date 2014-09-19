@@ -2,7 +2,7 @@ class Api::SitesController < ApiController
   include Api::JsonHelper
 
   before_filter :authenticate_api_user!
-  before_filter :authenticate_site_user!, except: [:create]
+  before_filter :authenticate_site_user!, except: [:create, :update]
 
   expose(:site)
   expose(:collection) { site.collection if site.present? }
@@ -36,7 +36,7 @@ class Api::SitesController < ApiController
 
 
   def histories
-    histories = site.histories.includes(:user).select('site_histories.*, users.email')
+    histories = site.histories.includes(:user).select('site_histories.*, users.email').references(:user)
     histories = if version = params[:version]
       histories.where(version: version)
     else

@@ -10,7 +10,7 @@ class AndroidController < ApplicationController
 
   def collections_json
     collection_array=[]
-    collections.all.each do |collection|
+    collections.each do |collection|
       collection_hash = collection.attributes
       collection_hash["form"] = render_xform(collection)
       collection_array.push collection_hash

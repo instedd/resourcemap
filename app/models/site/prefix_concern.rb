@@ -10,7 +10,7 @@ module Site::PrefixConcern
   end
 
   def generate_id_with_prefix
-    site = Site.where('id_with_prefix is not null').find_last_by_collection_id(self.collection_id)
+    site = Site.where('id_with_prefix is not null').where(collection_id: self.collection_id).last
     if site.nil?
       id_with_prefix = [Prefix.next.version,1]
     else

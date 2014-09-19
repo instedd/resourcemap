@@ -1,6 +1,13 @@
 ResourceMap::Application.routes.draw do
+  # We need to define devise_for just omniauth_callbacks:uth_callbacks otherwise it does not work with scoped locales
+  # see https://github.com/plataformatec/devise/issues/2813
+  devise_for :users, skip: [:session, :password, :registration, :confirmation], controllers: { omniauth_callbacks: 'omniauth_callbacks' }
+
   scope "(:locale)", :locale => /#{Locales.available.keys.join('|')}/ do
-    devise_for :users, controllers: {registrations: "registrations", omniauth_callbacks: "omniauth_callbacks"}
+    # We define here a route inside the locale thats just saves the current locale in the session
+    get 'omniauth/:provider' => 'omniauth#localized', as: :localized_omniauth
+
+    devise_for :users, skip: :omniauth_callbacks, controllers: {registrations: "registrations"}
     guisso_for :user
 
     devise_scope :user do
@@ -123,7 +130,7 @@ ResourceMap::Application.routes.draw do
       post 'try'
     end
 
-    match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
+    match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/"), :via => [:get, :post]
 
     scope '/plugin' do
       Plugin.all.each do |plugin|
@@ -135,7 +142,7 @@ ResourceMap::Application.routes.draw do
       end
     end
 
-    match '/locale/update' => 'locale#update',  :as => 'update_locale'
+    match '/locale/update' => 'locale#update',  :as => 'update_locale', :via => [:get, :post]
     root :to => 'home#index'
   end
 

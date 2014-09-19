@@ -3,6 +3,8 @@ class Membership < ActiveRecord::Base
   include Membership::SitesPermissionConcern
   include Membership::DefaultPermissionConcern
 
+  attr_accessible :collection_id, :admin, :user_id, :collection, :user
+
   belongs_to :user
   belongs_to :collection
   has_many :layer_memberships, dependent: :destroy

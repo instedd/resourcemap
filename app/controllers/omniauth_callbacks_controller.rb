@@ -2,6 +2,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   skip_before_filter :check_guisso_cookie
 
   def instedd
+    load_locale
     generic do |auth|
       {email: auth.info['email']
       }
@@ -9,6 +10,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def generic
+    load_locale
     auth = env['omniauth.auth']
 
     if identity = Identity.find_by_provider_and_token(auth['provider'], auth['uid'])
@@ -30,5 +32,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     next_url = env['omniauth.origin'] || root_path
     next_url = root_path if next_url == new_user_session_url
     redirect_to next_url
+  end
+
+  private
+  def load_locale
+    I18n.locale = session[:omniauth_login_locale] || I18n.default_locale
   end
 end

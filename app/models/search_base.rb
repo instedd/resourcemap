@@ -363,7 +363,7 @@ module SearchBase
   end
 
   def fields
-    @_fields_ ||= collection.fields.all
+    @_fields_ ||= collection.fields
   end
 
   def to_curl(client, body)

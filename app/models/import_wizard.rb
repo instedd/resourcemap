@@ -47,8 +47,8 @@ class ImportWizard
 
       csv[0].map! { |r| r.strip if r }
 
-      unless csv_columns.empty?        
-        validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])        
+      unless csv_columns.empty?
+        validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
       end
 
       # TODO: implement pagination
@@ -72,7 +72,7 @@ class ImportWizard
 
       sites_errors[:reserved_code] = calculate_reserved_code(proc_select_new_fields)
 
-      collection_fields = collection.fields.all(:include => :layer)
+      collection_fields = collection.fields(:include => :layer)
       collection_fields.each(&:cache_for_read)
 
       sites_errors[:existing_code] = calculate_existing(columns_spec, collection_fields, 'code')
@@ -115,16 +115,16 @@ class ImportWizard
       sites_errors[:hierarchy_field_found] = []
 
       # Rows validation
-      validator = ImportWizardRowValidator.new sites_errors, 
-                                                field, 
-                                                csv_columns, 
-                                                columns_spec, 
-                                                user, 
-                                                collection, 
-                                                collection_fields, 
+      validator = ImportWizardRowValidator.new sites_errors,
+                                                field,
+                                                csv_columns,
+                                                columns_spec,
+                                                user,
+                                                collection,
+                                                collection_fields,
                                                 csv_column_used_as_id,
                                                 aditional_data_file_for(user, collection)
-      validator.validate_row    
+      validator.validate_row
     end
 
     def get_sites(csv, user, collection, columns_spec, page)

@@ -19,7 +19,7 @@ module Layer::ActivityConcern
 
   def record_status_before_update
     @name_was = name_was
-    @before_update_fields = fields.all
+    @before_update_fields = fields
     @before_update_changes = changes.dup
   end
 
@@ -29,7 +29,7 @@ module Layer::ActivityConcern
 
     layer_changes = changes.except('updated_at').to_hash
 
-    after_update_fields = fields.all
+    after_update_fields = fields
 
     added = []
     changed = []

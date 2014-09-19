@@ -39,17 +39,17 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(2)
     layers[1].name.should eq('Import wizard')
 
-    fields = layers[1].fields.all
+    fields = layers[1].fields
     fields.length.should eq(1)
     fields[0].name.should eq('The beds')
     fields[0].code.should eq('beds')
     fields[0].kind.should eq('numeric')
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -78,18 +78,18 @@ describe ImportWizard do
     ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(2)
     layers[1].name.should eq('Import wizard')
 
-    fields = layers[1].fields.all
+    fields = layers[1].fields
     fields.length.should eq(1)
     fields[0].name.should eq('The beds')
     fields[0].code.should eq('beds')
     fields[0].kind.should eq('numeric')
     fields[0].allow_decimals?.should be_true
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -148,17 +148,17 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(2)
     layers[1].name.should eq('Import wizard')
 
-    fields = layers[1].fields.all
+    fields = layers[1].fields
     fields.length.should eq(1)
     fields[0].name.should eq('The beds')
     fields[0].code.should eq('beds')
     fields[0].kind.should eq('numeric')
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     site1.reload
@@ -188,17 +188,17 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(2)
     layers[1].name.should eq('Import wizard')
 
-    fields = layers[1].fields.all
+    fields = layers[1].fields
     fields.length.should eq(1)
     fields[0].name.should eq('The beds')
     fields[0].code.should eq('beds')
     fields[0].kind.should eq('numeric')
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(1)
 
     sites[0].name.should eq('Foo')
@@ -225,17 +225,17 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(2)
     layers[1].name.should eq('Import wizard')
 
-    fields = layers[1].fields.all
+    fields = layers[1].fields
     fields.length.should eq(2)
     fields[0].name.should eq('The beds')
     fields[0].code.should eq('beds')
     fields[0].kind.should eq('numeric')
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(3)
 
     sites[0].name.should eq('Foo')
@@ -272,18 +272,18 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(2)
     layers[1].name.should eq('Import wizard')
 
-    fields = layers[1].fields.all
+    fields = layers[1].fields
     fields.length.should eq(1)
     fields[0].name.should eq('The visibility')
     fields[0].code.should eq('visibility')
     fields[0].kind.should eq('select_one')
     fields[0].config.should eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => 'public', 'label' => 'public'}, {'id' => 2, 'code' => 'private', 'label' => 'private'}])
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(3)
 
     sites[0].properties.should eq({fields[0].es_code => 1})
@@ -309,18 +309,18 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(2)
     layers[1].name.should eq('Import wizard')
 
-    fields = layers[1].fields.all
+    fields = layers[1].fields
     fields.length.should eq(1)
     fields[0].name.should eq('The visibility')
     fields[0].code.should eq('visibility')
     fields[0].kind.should eq('select_one')
     fields[0].config.should eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => '1', 'label' => 'public'}, {'id' => 2, 'code' => '0', 'label' => 'private'}])
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(3)
 
     sites[0].properties.should eq({fields[0].es_code => 1})
@@ -344,9 +344,9 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.all.should eq([layer])
+    collection.layers.should eq([layer])
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -372,9 +372,9 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.all.should eq([layer])
+    collection.layers.should eq([layer])
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -400,9 +400,9 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.all.should eq([layer])
+    collection.layers.should eq([layer])
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -428,9 +428,9 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.all.should eq([layer])
+    collection.layers.should eq([layer])
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -455,8 +455,8 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.all.should eq([layer])
-    sites = collection.sites.all
+    collection.layers.should eq([layer])
+    sites = collection.sites
 
     sites[0].name.should eq('Foo')
     sites[0].properties.should eq({hierarchy.es_code => "100"})
@@ -480,8 +480,8 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.all.should eq([layer])
-    sites = collection.sites.all
+    collection.layers.should eq([layer])
+    sites = collection.sites
 
     sites[0].name.should eq('Foo')
     sites[0].properties.should eq({hierarchy.es_code => "100"})
@@ -506,9 +506,9 @@ describe ImportWizard do
      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
      ImportWizard.execute user, collection, specs
 
-     collection.layers.all.should eq([layer])
+     collection.layers.should eq([layer])
 
-     sites = collection.sites.all
+     sites = collection.sites
      sites.length.should eq(2)
 
      sites[0].name.should eq('Foo')
@@ -536,9 +536,9 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.all.should eq([layer])
+    collection.layers.should eq([layer])
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     sites[0].name.should eq('Site1')
@@ -585,14 +585,14 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(1)
     layers[0].name.should eq(layer.name)
 
-    fields = layers[0].fields.all
+    fields = layers[0].fields
     fields.length.should eq(9)
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     site1.reload
@@ -650,14 +650,14 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(1)
     layers[0].name.should eq(layer.name)
 
-    fields = layers[0].fields.all
+    fields = layers[0].fields
     fields.length.should eq(9)
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     site1.reload
@@ -706,14 +706,14 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(1)
     layers[0].name.should eq(layer.name)
 
-    fields = layers[0].fields.all
+    fields = layers[0].fields
     fields.length.should eq(9)
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     site1.reload
@@ -768,15 +768,15 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(2)
 
     new_layer = layers.detect{|l| l.name == "Import wizard"}
 
-    fields = new_layer.fields.all
+    fields = new_layer.fields
     fields.length.should eq(10)
 
-    sites = collection.sites.all
+    sites = collection.sites
     sites.length.should eq(2)
 
     site1.reload
@@ -1450,7 +1450,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
 
       ImportWizard.execute user, collection, specs
-      sites = collection.sites.all
+      sites = collection.sites
       sites.length.should eq(1)
 
       sites[0].name.should eq('Foo old')
@@ -1476,7 +1476,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
 
       ImportWizard.execute user, collection, specs
-      sites = collection.sites.all
+      sites = collection.sites
       sites.length.should eq(1)
 
       sites[0].name.should eq('Foo')
@@ -1499,7 +1499,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
 
       ImportWizard.execute user, collection, specs
-      sites = collection.sites.all
+      sites = collection.sites
       sites.length.should eq(2)
 
       sites[0].name.should eq('Foo')
@@ -1526,7 +1526,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
 
       ImportWizard.execute user, collection, specs
-      sites = collection.sites.all
+      sites = collection.sites
       sites.length.should eq(1)
 
       sites[0].name.should eq('Foo new')
@@ -1553,7 +1553,7 @@ describe ImportWizard do
 
       ImportWizard.validate_sites_with_columns user, collection, specs
       ImportWizard.execute user, collection, specs
-      sites = collection.sites.all
+      sites = collection.sites
       sites.length.should eq(3)
 
       sites[0].name.should eq('Foo')
@@ -1583,7 +1583,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
 
       ImportWizard.execute user, collection, specs
-      sites = collection.sites.all
+      sites = collection.sites
       sites.length.should eq(2)
 
       sites[0].name.should eq('Foo')
@@ -1624,9 +1624,9 @@ describe ImportWizard do
       ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, specs
 
-      collection.layers.all.should eq([layer])
+      collection.layers.should eq([layer])
 
-      sites = collection.sites.all
+      sites = collection.sites
       sites.length.should eq(7)
 
       sites[0].name.should eq('Foo')
@@ -1767,7 +1767,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, column_specs
 
-      sites = collection.sites.all
+      sites = collection.sites
       sites.length.should eq(1)
 
       sites[0].name.should eq('Changed Name')
@@ -1792,7 +1792,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, column_specs
 
-      sites = collection.sites.all
+      sites = collection.sites
       sites.length.should eq(1)
 
       sites[0].name.should eq('Changed Name')
@@ -1817,7 +1817,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, column_specs
 
-      sites = collection.sites.all
+      sites = collection.sites
       sites.length.should eq(2)
 
       sites[1].name.should eq('New')

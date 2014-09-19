@@ -11,7 +11,7 @@ describe Api::CollectionsController do
   describe "List" do
     before(:each) { sign_in user; collection }
 
-    it "returns collections the user is a member of" do      
+    it "returns collections the user is a member of" do
       get :index,  format: 'json'
 
       response.should be_success
@@ -397,6 +397,20 @@ describe Api::CollectionsController do
       sign_in user
       delete :destroy, id: collection.id
       response.should be_ok
+      Collection.count.should eq(0)
+    end
+
+    it "destroys a collection and its User Snapshots" do
+      collection.snapshots.create! date: Time.now, name: 'last_hour'
+      UserSnapshot.for(user, collection).save
+
+      UserSnapshot.count.should eq(1)
+
+      sign_in user
+      delete :destroy, id: collection.id
+
+      response.should be_ok
+      UserSnapshot.count.should eq(0)
       Collection.count.should eq(0)
     end
 
