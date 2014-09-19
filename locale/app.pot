@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-25 21:10-0300\n"
-"PO-Revision-Date: 2014-08-25 21:10-0300\n"
+"POT-Creation-Date: 2014-09-19 16:49-0300\n"
+"PO-Revision-Date: 2014-09-19 16:49-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -435,6 +435,12 @@ msgstr ""
 msgid "Download a template CSV file"
 msgstr ""
 
+msgid "Download as CSV"
+msgstr ""
+
+msgid "Download sample CSV"
+msgstr ""
+
 msgid "Edit"
 msgstr ""
 
@@ -451,6 +457,9 @@ msgid "Email"
 msgstr ""
 
 msgid "Endpoint URL :"
+msgstr ""
+
+msgid "Enter Snapshot name"
 msgstr ""
 
 msgid "Enter new site name"
@@ -571,6 +580,9 @@ msgid "Go back to present"
 msgstr ""
 
 msgid "Group by"
+msgstr ""
+
+msgid "Hide"
 msgstr ""
 
 msgid "Hide Configuration"
@@ -793,6 +805,9 @@ msgid "Location:"
 msgstr ""
 
 msgid "LocationPermission|Action"
+msgstr ""
+
+msgid "Log in"
 msgstr ""
 
 msgid "Long"
@@ -1168,6 +1183,9 @@ msgid "Showing all %d sites"
 msgstr ""
 
 msgid "Showing first 10 records."
+msgstr ""
+
+msgid "Sign out"
 msgstr ""
 
 msgid "Sign up"
@@ -1648,9 +1666,6 @@ msgid "a field with name '%s' already exists in the layer named %s"
 msgstr ""
 
 msgid "add Layers"
-msgstr ""
-
-msgid "alerts"
 msgstr ""
 
 msgid "all"
