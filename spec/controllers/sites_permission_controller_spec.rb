@@ -24,7 +24,7 @@ describe SitesPermissionController do
       response.body.should include "\"read\":#{read_sites_permission.to_json}"
     end
 
-    pending "should response include write sites permission" do
+    skip "should response include write sites permission" do
       response.body.should include "\"write\":#{write_sites_permission.to_json}"
     end
   end

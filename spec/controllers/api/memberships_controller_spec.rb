@@ -94,16 +94,16 @@ describe Api::MembershipsController do
       response.should be_ok
 
       membership = collection.memberships.find_by_user_id non_admin_user.id
-      membership.admin.should be_true
+      membership.admin.should be_truthy
     end
 
     it "should unset admin" do
       membership = collection.memberships.find_by_user_id non_admin_user.id
       membership.change_admin_flag(true)
-      membership.admin.should be_true
+      membership.admin.should be_truthy
       post :unset_admin, collection_id: collection.id, id: non_admin_user.id
       membership = collection.memberships.find_by_user_id non_admin_user.id
-      membership.admin.should be_false
+      membership.admin.should be_falsey
     end
   end
 end

@@ -519,7 +519,7 @@ describe FredApiController do
     end
 
     # Resourcemap does not consider sites with the same name as duplicated
-    pending "should return 409 for facilities with duplicated names" do
+    skip "should return 409 for facilities with duplicated names" do
       site = collection.sites.create :name => "Duplicated name"
       request.env["RAW_POST_DATA"] = { name: "Duplicated name" }.to_json
       post :create_facility, collection_id: collection.id

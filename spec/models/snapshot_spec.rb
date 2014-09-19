@@ -46,7 +46,7 @@ describe Snapshot do
     snapshot.destroy
 
     index_name = Collection.index_name collection.id, snapshot_id: snapshot.id
-    Elasticsearch::Client.new.indices.exists(index: index_name).should be_false
+    Elasticsearch::Client.new.indices.exists(index: index_name).should be_falsey
   end
 
   it "collection should have histories" do

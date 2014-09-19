@@ -51,14 +51,14 @@ describe Membership do
   describe "default fields permission" do
     it "should be able to read and update name if user has write permission for name" do
       membership.set_access(object: 'name', new_action: 'update')
-      membership.can_read?("name").should be_true
-      membership.can_update?("name").should be_true
+      membership.can_read?("name").should be_truthy
+      membership.can_update?("name").should be_truthy
     end
 
     it "should be able to read and update location if user has write permission for location" do
       membership.set_access(object: 'location', new_action: 'update')
-      membership.can_read?("location").should be_true
-      membership.can_update?("location").should be_true
+      membership.can_read?("location").should be_truthy
+      membership.can_update?("location").should be_truthy
     end
 
     it "should not be able to set an invalid action_value for name or location" do
@@ -147,8 +147,8 @@ describe Membership do
         lms.length.should eq(1)
         lms[0].membership_id.should eq(membership2.id)
         lms[0].layer_id.should eq(layer.id)
-        lms[0].read.should be_true
-        lms[0].write.should be_false
+        lms[0].read.should be_truthy
+        lms[0].write.should be_falsey
       end
     end
 
@@ -163,8 +163,8 @@ describe Membership do
         lms.length.should eq(1)
         lms[0].layer_id.should eq(layer.id)
         lms[0].membership_id.should eq(membership2.id)
-        lms[0].read.should be_true
-        lms[0].write.should be_false
+        lms[0].read.should be_truthy
+        lms[0].write.should be_falsey
       end
 
       it "revokes read access" do
@@ -172,7 +172,7 @@ describe Membership do
 
         membership2.set_layer_access :verb => :read, :access => false, :layer_id => layer.id
 
-        LayerMembership.exists?.should be_false
+        LayerMembership.exists?.should be_falsey
       end
     end
   end
@@ -186,8 +186,8 @@ describe Membership do
 
       membership2.destroy
 
-      collection2.memberships.exists?.should be_false
-      layer.layer_memberships.exists?.should be_false
+      collection2.memberships.exists?.should be_falsey
+      layer.layer_memberships.exists?.should be_falsey
     end
   end
 end

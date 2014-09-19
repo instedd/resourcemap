@@ -76,7 +76,7 @@ module ElasticSearch::QueryHelper
     # Returns a hash of matching field codes and the ids. For example:
     # {:field_es_code => :option_id}
     def search_value_ids(text, collection, fields_to_search = nil)
-      fields_to_search ||= collection.fields.all
+      fields_to_search ||= collection.fields
       fields_to_search = fields_to_search.select &:select_kind?
 
       codes = {}

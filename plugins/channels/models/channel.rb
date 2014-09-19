@@ -5,10 +5,10 @@ class Channel < ActiveRecord::Base
   validates :name, :presence => true, :length => {:minimum => 4, :maximum => 30}, :uniqueness => {:scope => :user_id}
   validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :advanced_setup
   validates :ticket_code, :presence => {:on => :create}, :if => :basic_setup
-    
+
   after_create  :register_nuntium_channel
-  after_update  :update_nuntium_channel 
-  after_destroy :delete_nuntium_channel 
+  after_update  :update_nuntium_channel
+  after_destroy :delete_nuntium_channel
   attr_accessor  :ticket_code
   attr_accessor  :phone_number
 
@@ -21,29 +21,29 @@ class Channel < ActiveRecord::Base
     self.password = SecureRandom.base64(6) if self.password.blank?
 
     config = {
-      :name => self.nuntium_channel_name, 
+      :name => self.nuntium_channel_name,
       :kind => 'qst_server',
       :protocol => 'sms',
       :direction => 'bidirectional',
       :enabled => true,
       :restrictions => '',
       :priority => 50,
-      :configuration => { 
+      :configuration => {
         :password => self.password,
         :friendly_name => self.name
       }
     }
-  
+
     config.merge!({
-      :ticket_code => self.ticket_code, 
+      :ticket_code => self.ticket_code,
       :ticket_message => "This phone will be used for updates and queries on all collections.",
     }) unless basic_setup
     handle_nuntium_channel_response Nuntium.new_from_config.create_channel(config)
     # Use plain sql query to skip update callback execution
-    Channel.update_all({:password => self.password, :nuntium_channel_name => self.nuntium_channel_name}, {:id => self.id})
-   
+    Channel.where({:id => self.id}).update_all({:password => self.password, :nuntium_channel_name => self.nuntium_channel_name})
+
   end
-  
+
   def handle_nuntium_channel_response(response)
     raise get_error_from_nuntium_response(response) if not response['name'] == self.nuntium_channel_name
     response
@@ -66,7 +66,7 @@ class Channel < ActiveRecord::Base
       :name => self.nuntium_channel_name,
       :enabled => true,
       :restrictions => '',
-      :configuration => { 
+      :configuration => {
         :friendly_name => self.name,
         :password => self.password
       })
@@ -80,7 +80,7 @@ class Channel < ActiveRecord::Base
   def nuntium_info
     @nuntium_info ||= handle_nuntium_channel_response Nuntium.new_from_config.channel(self.nuntium_channel_name)
   end
-  
+
   def self.nuntium_info_methods
     [:client_last_activity_at, :queued_messages_count, :client_connected, :phone_number, :gateway_url]
   end
@@ -99,15 +99,15 @@ class Channel < ActiveRecord::Base
 
   def phone_number
     nuntium_info['address'] rescue nil
-  end  
-  
+  end
+
   def gateway_url
-    config = Nuntium.config 
+    config = Nuntium.config
     config['url'] + '/' + config['account'] + '/qst'
   end
-  
+
   def self.default_nuntium_name
     # smart or camgsm(mobitel)
-    'smart' 
+    'smart'
   end
 end

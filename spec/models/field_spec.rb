@@ -49,7 +49,7 @@ describe Field do
     field.descendants_of_in_hierarchy('root').should eq(['0', '1', '2'])
   end
 
-  pending "descendants_of_in_hierarchy should return every results if option name is duplicated " do
+  skip "descendants_of_in_hierarchy should return every results if option name is duplicated " do
     config_hierarchy = [{ id: '0', name: 'root', sub: [{id: '1', name: 'child'}]}, {id: '2', name: 'root'}]
     field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
     field.descendants_of_in_hierarchy('root').should eq(['0', '1', '2'])
@@ -169,7 +169,7 @@ describe Field do
         field.strongly_type('2').should eq 2
       end
 
-      pending "should not convert value when option does not exist" do
+      skip "should not convert value when option does not exist" do
         field.strongly_type('3').should eq 0
       end
     end
@@ -256,31 +256,31 @@ describe Field do
 
     it "validations for each field" do
 
-      numeric.valid_value?(1).should be_true
-      numeric.valid_value?("1").should be_true
+      numeric.valid_value?(1).should be_truthy
+      numeric.valid_value?("1").should be_truthy
 
-      numeric_with_decimals.valid_value?(1.5).should be_true
-      numeric_with_decimals.valid_value?("1.5").should be_true
+      numeric_with_decimals.valid_value?(1.5).should be_truthy
+      numeric_with_decimals.valid_value?("1.5").should be_truthy
 
-      yes_no.valid_value?(true).should be_true
-      yes_no.valid_value?(false).should be_true
+      yes_no.valid_value?(true).should be_truthy
+      yes_no.valid_value?(false).should be_truthy
 
-      date.valid_value?("2012-11-27T00:00:00Z").should be_true
+      date.valid_value?("2012-11-27T00:00:00Z").should be_truthy
 
-      hierarchy.valid_value?("101").should be_true
+      hierarchy.valid_value?("101").should be_truthy
 
-      select_many.valid_value?([1,2]).should be_true
-      select_many.valid_value?(["1","2"]).should be_true
+      select_many.valid_value?([1,2]).should be_truthy
+      select_many.valid_value?(["1","2"]).should be_truthy
 
-      select_one.valid_value?(1).should be_true
-      select_one.valid_value?("1").should be_true
+      select_one.valid_value?(1).should be_truthy
+      select_one.valid_value?("1").should be_truthy
 
-      site_field.valid_value?(1234).should be_true
-      site_field.valid_value?("1234").should be_true
+      site_field.valid_value?(1234).should be_truthy
+      site_field.valid_value?("1234").should be_truthy
 
-      director.valid_value?(user.email).should be_true
+      director.valid_value?(user.email).should be_truthy
 
-      email_field.valid_value?("myemail@resourcemap.com").should be_true
+      email_field.valid_value?("myemail@resourcemap.com").should be_truthy
     end
 
     it "decode from ImportWizard format" do
@@ -317,14 +317,14 @@ describe Field do
       end
 
       it "should validate format for yes_no field" do
-        yes_no.apply_format_and_validate(true, false, collection).should be_true
-        yes_no.apply_format_and_validate(1, false, collection).should be_true
-        yes_no.apply_format_and_validate("true", false, collection).should be_true
-        yes_no.apply_format_and_validate("yes", false, collection).should be_true
-        yes_no.apply_format_and_validate("1", false, collection).should be_true
-        yes_no.apply_format_and_validate(0, false, collection).should be_false
-        yes_no.apply_format_and_validate("0", false, collection).should be_false
-        yes_no.apply_format_and_validate("false", false, collection).should be_false
+        yes_no.apply_format_and_validate(true, false, collection).should be_truthy
+        yes_no.apply_format_and_validate(1, false, collection).should be_truthy
+        yes_no.apply_format_and_validate("true", false, collection).should be_truthy
+        yes_no.apply_format_and_validate("yes", false, collection).should be_truthy
+        yes_no.apply_format_and_validate("1", false, collection).should be_truthy
+        yes_no.apply_format_and_validate(0, false, collection).should be_falsey
+        yes_no.apply_format_and_validate("0", false, collection).should be_falsey
+        yes_no.apply_format_and_validate("false", false, collection).should be_falsey
       end
 
       it "should not allow decimals" do
@@ -382,9 +382,9 @@ describe Field do
 
   it "standardizes yes_no field" do
     field = Field::YesNoField.new
-    field.standardize("true").should be_true
-    field.standardize("false").should be_false
-    field.standardize(true).should be_true
-    field.standardize(false).should be_false
+    field.standardize("true").should be_truthy
+    field.standardize("false").should be_falsey
+    field.standardize(true).should be_truthy
+    field.standardize(false).should be_falsey
   end
 end

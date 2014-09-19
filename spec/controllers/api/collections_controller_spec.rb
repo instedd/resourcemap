@@ -90,7 +90,7 @@ describe Api::CollectionsController do
         json["sites"][1]["properties"].length.should eq(9)
 
         json["sites"][1]["properties"][text.code].should eq(site.properties[text.es_code])
-        json["sites"][1]["properties"][yes_no.code].should be_true
+        json["sites"][1]["properties"][yes_no.code].should be_truthy
         json["sites"][1]["properties"][numeric.code].should eq(site.properties[numeric.es_code])
         json["sites"][1]["properties"][select_one.code].should eq('one')
         json["sites"][1]["properties"][select_many.code].should eq(['one', 'two'])

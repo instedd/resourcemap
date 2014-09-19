@@ -22,7 +22,7 @@ describe "layer access" do
       fields = layers[0][:fields]
       fields.length.should eq(1)
       fields[0][:id].should eq(field1.es_code)
-      fields[0][:writeable].should be_false
+      fields[0][:writeable].should be_falsey
     end
 
     it "returns all fields if admin" do
@@ -37,12 +37,12 @@ describe "layer access" do
       fields = layers[0][:fields]
       fields.length.should eq(1)
       fields[0][:id].should eq(field1.es_code)
-      fields[0][:writeable].should be_true
+      fields[0][:writeable].should be_truthy
 
       fields = layers[1][:fields]
       fields.length.should eq(1)
       fields[0][:id].should eq(field2.es_code)
-      fields[0][:writeable].should be_true
+      fields[0][:writeable].should be_truthy
     end
   end
 
@@ -54,16 +54,16 @@ describe "layer access" do
     let!(:l2) { collection2.layers.make}
 
     it "can read if layer has read permission for anonymous" do
-      (user_ability.can? :read, l1).should be_true
+      (user_ability.can? :read, l1).should be_truthy
     end
 
     it "can't read if collection hasn't got read permission for anonymous" do
-      (user_ability.can? :read, l2).should be_false
+      (user_ability.can? :read, l2).should be_falsey
     end
 
     it "is not able to update layers" do
-      (user_ability.can? :update, l1, collection2).should be_false
-      (user_ability.can? :update, l2, collection2).should be_false
+      (user_ability.can? :update, l1, collection2).should be_falsey
+      (user_ability.can? :update, l2, collection2).should be_falsey
     end
   end
 
@@ -97,21 +97,21 @@ describe "layer access" do
     it "can't write if property doesn't exist" do
       user_ability = Ability.new user
 
-      (user_ability.can? :update_site_property, nil, site).should be_false
+      (user_ability.can? :update_site_property, nil, site).should be_falsey
     end
 
     it "can't write if only read access" do
       membership.set_layer_access :verb => :read, :access => true, :layer_id => layer1.id
       user_ability = Ability.new user
 
-      (user_ability.can? :update_site_property, field1, site).should be_false
+      (user_ability.can? :update_site_property, field1, site).should be_falsey
     end
 
     it "can write if write access" do
       membership.set_layer_access :verb => :write, :access => true, :layer_id => layer1.id
       user_ability = Ability.new user
 
-      (user_ability.can? :update_site_property, field1, site).should be_true
+      (user_ability.can? :update_site_property, field1, site).should be_truthy
     end
 
     it "can write if admin" do
@@ -119,7 +119,7 @@ describe "layer access" do
       membership.save!
       user_ability = Ability.new user
 
-      (user_ability.can? :update_site_property, field1, site).should be_true
+      (user_ability.can? :update_site_property, field1, site).should be_truthy
     end
   end
 

@@ -313,7 +313,7 @@ describe SitesController do
 
       it "should reset on create" do
         new_site = Site.find_by_name "new site"
-        new_site.properties[auto_reset_field.es_code.to_s].should be_false
+        new_site.properties[auto_reset_field.es_code.to_s].should be_falsey
       end
     end
 
@@ -332,7 +332,7 @@ describe SitesController do
 
       it "should reset field" do
         new_site = Site.find_by_name "new site name"
-        new_site.properties[auto_reset_field.es_code.to_s].should be_false
+        new_site.properties[auto_reset_field.es_code.to_s].should be_falsey
       end
     end
 
@@ -351,7 +351,7 @@ describe SitesController do
 
       it "should not reset field" do
         new_site = Site.find_by_name site.name
-        new_site.properties[auto_reset_field.es_code.to_s].should be_true
+        new_site.properties[auto_reset_field.es_code.to_s].should be_truthy
       end
     end
 
@@ -369,7 +369,7 @@ describe SitesController do
 
       it "should reset field" do
         new_site = Site.find_by_name "new site name"
-        new_site.properties[auto_reset_field.es_code.to_s].should be_false
+        new_site.properties[auto_reset_field.es_code.to_s].should be_falsey
       end
     end
 

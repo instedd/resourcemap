@@ -43,7 +43,7 @@ describe ExecVisitor, "Process query command" do
   end
 
   it "should user can view collection" do
-    @visitor.can_view?(@properties[0], @node.sender, @collection).should be_true
+    @visitor.can_view?(@properties[0], @node.sender, @collection).should be_truthy
   end
 
   it "should query resources with condition options" do
@@ -154,12 +154,12 @@ describe ExecVisitor, "Process update command" do
   end
 
   it "should user can update resource" do
-    @visitor.can_update?(@node.property_list, @node.sender, @site).should be_true
+    @visitor.can_update?(@node.property_list, @node.sender, @site).should be_truthy
   end
 
   it "should validate sender can not update resource" do
     sender = User.make(:phone_number => "111")
-    @visitor.can_update?(@node.property_list, sender, @site).should be_false
+    @visitor.can_update?(@node.property_list, sender, @site).should be_falsey
   end
 
   it "should raise exception when do not have permission" do

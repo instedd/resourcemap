@@ -77,15 +77,15 @@ describe CsdApiController do
       body = response_hash["Envelope"]["Body"]["getModificationsResponse"]["CSD"]
       body.should include({"xmlns"=>"urn:ihe:iti:csd:2013", "xmlns:xsi"=>"http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation"=>"urn:ihe:iti:csd:2013 CSD.xsd"})
 
-      body.has_key?("organizationDirectory").should be_true
-      body.has_key?("serviceDirectory").should be_true
-      body.has_key?("facilityDirectory").should be_true
-      body.has_key?("providerDirectory").should be_true
+      body.has_key?("organizationDirectory").should be_truthy
+      body.has_key?("serviceDirectory").should be_truthy
+      body.has_key?("facilityDirectory").should be_truthy
+      body.has_key?("providerDirectory").should be_truthy
 
     end
 
     # Request Validation is currenty commented in the code because it takes too long
-    pending  "should respond whit an error on invalid datetime element" do
+    skip "should respond whit an error on invalid datetime element" do
       request.env["RAW_POST_DATA"] =  generate_request("hello", "hello")
 
       post :get_directory_modifications, collection_id: collection.id
@@ -109,7 +109,7 @@ describe CsdApiController do
     end
 
     # Request Validation is currenty commented in the code because it takes too long
-    pending  "should respond whit an error on invalid soap message" do
+    skip "should respond whit an error on invalid soap message" do
       request.env["RAW_POST_DATA"] =  %Q{"hello"}
 
       post :get_directory_modifications, collection_id: collection.id

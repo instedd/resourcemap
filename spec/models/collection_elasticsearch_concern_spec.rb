@@ -5,14 +5,14 @@ describe Collection::ElasticsearchConcern do
 
   it "creates index on create" do
     client = Elasticsearch::Client.new
-    client.indices.exists(index: collection.index_name).should be_true
+    client.indices.exists(index: collection.index_name).should be_truthy
   end
 
   it "destroys index on destroy" do
     collection.destroy
 
     client = Elasticsearch::Client.new
-    client.indices.exists(index: collection.index_name).should be_false
+    client.indices.exists(index: collection.index_name).should be_falsey
   end
 
   it "create proper index name" do

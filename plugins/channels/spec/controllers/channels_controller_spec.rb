@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ChannelsController do
-  pending do
+  skip do
     include Devise::TestHelpers
     let(:user) { User.make }
     let(:collection) { user.create_collection(Collection.make_unsaved) }

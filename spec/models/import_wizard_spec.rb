@@ -87,7 +87,7 @@ describe ImportWizard do
     fields[0].name.should eq('The beds')
     fields[0].code.should eq('beds')
     fields[0].kind.should eq('numeric')
-    fields[0].allow_decimals?.should be_true
+    fields[0].allow_decimals?.should be_truthy
 
     sites = collection.sites
     sites.length.should eq(2)
@@ -782,7 +782,7 @@ describe ImportWizard do
     site1.reload
     site1.name.should eq('Foo new')
     site1.properties.length.should eq(10)
-    site1.properties[yes_no.es_code].should be_false
+    site1.properties[yes_no.es_code].should be_falsey
 
     site2.reload
     site2.name.should eq('Bar old')

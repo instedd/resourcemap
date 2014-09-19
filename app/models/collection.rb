@@ -69,7 +69,7 @@ class Collection < ActiveRecord::Base
     if membership.admin?
       target_fields = target_fields
     else
-      lms = LayerMembership.where(membership_id: membership.id).all.inject({}) do |hash, lm|
+      lms = LayerMembership.where(membership_id: membership.id).inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
         hash
       end

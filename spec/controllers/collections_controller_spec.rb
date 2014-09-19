@@ -164,7 +164,7 @@ describe CollectionsController do
     before(:each) { sign_out :user }
 
     # Broken as of RM 2.10.1. It's somehow related to Guisso.
-    pending 'should get index as guest' do
+    skip 'should get index as guest' do
       get :index, collection_id: public_collection.id
       response.should be_success
     end
@@ -204,7 +204,7 @@ describe CollectionsController do
 
       info = JSON.parse response.body
       info["total"].should eq(2)
-      info["no_location"].should be_false
+      info["no_location"].should be_falsey
     end
 
     it "gets when some have no location" do
@@ -216,7 +216,7 @@ describe CollectionsController do
 
       info = JSON.parse response.body
       info["total"].should eq(3)
-      info["no_location"].should be_true
+      info["no_location"].should be_truthy
     end
   end
 

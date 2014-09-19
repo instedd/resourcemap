@@ -51,10 +51,6 @@ class LayersController < ApplicationController
   end
 
   def set_order
-    # cancan layer is 'readonly' :S
-    # https://github.com/ryanb/cancan/issues/357
-    layer = collection.layers.find(params[:id],  :readonly => false)
-
     layer.user = current_user
     layer.update_attributes! ord: params[:ord]
     render_json layer

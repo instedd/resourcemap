@@ -13,7 +13,7 @@ describe Collection::CsvConcern do
     ).strip
 
     collection.reload
-    roots = collection.sites.all
+    roots = collection.sites
     roots.length.should eq(2)
 
     roots[0].name.should eq('Site 1')

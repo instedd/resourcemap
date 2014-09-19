@@ -25,23 +25,23 @@ describe Collection do
   describe "thresholds test" do
     let(:site) { collection.sites.make properties: {field.es_code => 9}}
     it "should return false when there is no threshold" do
-      collection.thresholds_test(site).should be_false
+      collection.thresholds_test(site).should be_falsey
     end
 
     it "should return false when no threshold is hit" do
       collection.thresholds.make is_all_site: true, conditions: [ field: 1, op: :gt, value: 10 ]
-      collection.thresholds_test(site).should be_false
+      collection.thresholds_test(site).should be_falsey
     end
 
     it "should return true when threshold 1 is hit" do
       collection.thresholds.make is_all_site: false, sites: [{"id" => site.id}], conditions: [ field: field.es_code, op: :lt, value: 10 ]
-      collection.thresholds_test(site).should be_true
+      collection.thresholds_test(site).should be_truthy
     end
 
     it "should return true when threshold 2 is hit" do
       collection.thresholds.make sites: [{"id" => site.id}], conditions: [ field: field.es_code, op: :gt, value: 10 ]
       collection.thresholds.make sites: [{"id" => site.id}], conditions: [ field: field.es_code, op: :eq, value: 9 ]
-      collection.thresholds_test(site).should be_true
+      collection.thresholds_test(site).should be_truthy
     end
 
     describe "multiple thresholds test" do
@@ -50,7 +50,7 @@ describe Collection do
       it "should evaluate second threshold" do
         collection.thresholds.make is_all_site: false, conditions: [ {field: field.es_code, op: :gt, value: 10} ], sites: [{ "id" => site.id }]
         collection.thresholds.make is_all_site: false, conditions: [ {field: field.es_code, op: :gt, value: 20} ], sites: [{ "id" => site_2.id }]
-        collection.thresholds_test(site_2).should be_true
+        collection.thresholds_test(site_2).should be_truthy
       end
     end
   end
@@ -138,7 +138,7 @@ describe Collection do
 
   describe "plugins" do
     # will fixe as soon as possible
-    pending do
+    skip do
       it "should set plugins by names" do
         collection.selected_plugins = ['plugin_1', 'plugin_2']
         collection.plugins.should eq({'plugin_1' => {}, 'plugin_2' => {}})

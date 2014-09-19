@@ -22,11 +22,11 @@ describe Api::FieldsController do
     ]
   end
 
-  let(:member_who_writes) do 
-    r = User.make 
-    
+  let(:member_who_writes) do
+    r = User.make
+
     collection.memberships.create!({user_id: r.id})
-    
+
     collection.memberships
       .find_by_user_id(r.id)
       .set_layer_access(layer_id: layer.id, verb: 'write', access: true)
@@ -72,7 +72,7 @@ describe Api::FieldsController do
         fields.each do |f|
           layer_json["fields"]
             .map{|x| x["code"]}
-            .include?(f["code"]).should be_true
+            .include?(f["code"]).should be_truthy
         end
       end
 

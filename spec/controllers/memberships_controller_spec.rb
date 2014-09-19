@@ -257,15 +257,15 @@ describe MembershipsController do
       membership
       post :set_admin, collection_id: collection.id, id: user_2.id
       membership = collection.memberships.find_by_user_id user_2.id
-      membership.admin.should be_true
+      membership.admin.should be_truthy
     end
 
     it "should unset admin" do
       membership.change_admin_flag(true)
-      membership.admin.should be_true
+      membership.admin.should be_truthy
       post :unset_admin, collection_id: collection.id, id: user_2.id
       membership = collection.memberships.find_by_user_id user_2.id
-      membership.admin.should be_false
+      membership.admin.should be_falsey
     end
   end
 end

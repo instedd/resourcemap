@@ -6,7 +6,7 @@ describe SendMailer do
   let(:mail) { SendMailer.notify_email([users[0].email, users[1].email], message, "email from resourcemap") }
   it "has email in queue" do
     mail.deliver
-    ActionMailer::Base.deliveries.empty?.should_not be_true
+    ActionMailer::Base.deliveries.empty?.should_not be_truthy
   end
   it "send to correct email" do
     mail.deliver

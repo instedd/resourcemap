@@ -118,7 +118,7 @@ describe MapSearch do
       assert_result search, site2
     end
 
-    pending "searches by name property" do
+    skip "searches by name property" do
       search.full_text_search('name:"Buenos Aires"')
       assert_result search, site2
     end

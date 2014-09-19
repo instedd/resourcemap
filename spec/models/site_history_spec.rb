@@ -14,7 +14,7 @@ describe SiteHistory do
 
       site_history.store_in index_name
 
-      client.indices.exists(index: index_name).should be_true
+      client.indices.exists(index: index_name).should be_truthy
 
       results = client.search index: index_name
       results = results["hits"]["hits"]
