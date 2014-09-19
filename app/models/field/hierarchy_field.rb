@@ -41,7 +41,7 @@ class Field::HierarchyField < Field
     ancestors = ascendants_of_in_hierarchy(value) rescue []
 
     # Add all values
-    ancestors.each do |ancestor|
+    ancestors.reverse.each do |ancestor|
       rows << ancestor[:id]
     end
 
