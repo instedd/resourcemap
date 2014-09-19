@@ -54,8 +54,8 @@ describe Collection::CsvConcern do
 
     csv.first.should eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
     csv[1][4].should eq('100')
-    csv[1][5].should eq('60')
-    csv[1][6].should eq('100')
+    csv[1][5].should eq('Dad')
+    csv[1][6].should eq('Son')
   end
 
   it "should add empty columns for the values that are not leafs" do
@@ -67,7 +67,7 @@ describe Collection::CsvConcern do
 
     csv.first.should eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
     csv[1][4].should eq('60')
-    csv[1][5].should eq('60')
+    csv[1][5].should eq('Dad')
     csv[1][6].should eq('')
   end
 

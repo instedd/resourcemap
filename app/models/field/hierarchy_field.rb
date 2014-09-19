@@ -42,7 +42,7 @@ class Field::HierarchyField < Field
 
     # Add all values
     ancestors.reverse.each do |ancestor|
-      rows << ancestor[:id]
+      rows << ancestor[:name]
     end
 
     # Add empty values for the missing elements (if the value is not a leaf)
