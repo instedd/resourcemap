@@ -20,6 +20,38 @@ class Field::HierarchyField < Field
     value if find_hierarchy_option_by_id(value)
   end
 
+  def csv_headers
+    headers = []
+    headers << code
+
+    # Add one column for each level of the hierarchy
+    1.upto(hierarchy_max_height) do |i|
+      headers << "#{code}-#{i}"
+    end
+    headers
+  end
+
+  def csv_values(value)
+    rows = []
+    # Add the field's value
+    rows << value
+
+    # This rescue is because the hiearchy could possibly have invalid values and
+    # ascendants_of_in_hierarchy raise an "invalid value" exception if the stored value is not valid
+    ancestors = ascendants_of_in_hierarchy(value) rescue []
+
+    # Add all values
+    ancestors.each do |ancestor|
+      rows << ancestor[:id]
+    end
+
+    # Add empty values for the missing elements (if the value is not a leaf)
+    (hierarchy_max_height - ancestors.count).times do
+      rows << ""
+    end
+    rows
+  end
+
   def human_value(value)
     find_hierarchy_value(value)
   end
