@@ -99,7 +99,7 @@
           %button.white{ ko(click: '$root.saveGateway', enable: :valid) } Save
           %a.tgrey{ ko(click: '$root.cancelGateway'), href: 'javascript:void(0)' } Cancel
           /ko if: !valid()
-          %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
+          %span{ ko(text: "__('Can\\'t save') + ': ' + error()"), style: 'color:red;margin-left:20px' } Can't save
           //ko
 
     %br
