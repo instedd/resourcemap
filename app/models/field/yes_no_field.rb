@@ -16,6 +16,10 @@ class Field::YesNoField < Field
     false
   end
 
+  def csv_values(value)
+    [Field.yes?(value) ? 'yes' : 'no']
+  end
+
   def default_value_for_update
     if config && Field.yes?(config['auto_reset'])
       false

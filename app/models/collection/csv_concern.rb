@@ -11,20 +11,13 @@ module Collection::CsvConcern
 
   def to_csv(elastic_search_api_results, user, snapshot_id = nil)
     fields = self.visible_fields_for(user, {snapshot_id: snapshot_id})
+    fields.each(&:cache_for_read)
 
     CSV.generate do |csv|
       header = ['resmap-id', 'name', 'lat', 'long']
       fields.each do |field|
-        if field.hierarchy?
-          header << field.code
-
-          # Added one column for each level of the hierarchy
-          1.upto(field.hierarchy_max_height) do |i|
-            header << "#{field.code}-#{i}"
-          end
-
-        else
-          header << field.code
+        field.csv_headers.each do |column_header|
+          header << column_header
         end
       end
       header << 'last updated'
@@ -35,27 +28,8 @@ module Collection::CsvConcern
 
         row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
         fields.each do |field|
-          if field.kind == 'yes_no'
-            row << (Field.yes?(source['properties'][field.code]) ? 'yes' : 'no')
-          elsif field.hierarchy?
-
-            # Add the field's value
-            row << source['properties'][field.code]
-
-            ancestors = field.ascendants_of_in_hierarchy(source['properties'][field.code])
-
-            # Add all values
-            ancestors.each do |ancestor|
-              row << ancestor[:id]
-            end
-
-            # Add empty values for the missing elements (if the value is not a leaf)
-            (field.hierarchy_max_height - ancestors.count).times do
-              row << ""
-            end
-
-          else
-            row << Array(source['properties'][field.code]).join(", ")
+          field.csv_values(source['properties'][field.code]).each do | value |
+            row << value
           end
         end
         row << Site.iso_string_to_rfc822(source['updated_at'])
