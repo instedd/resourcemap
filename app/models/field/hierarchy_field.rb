@@ -92,6 +92,7 @@ class Field::HierarchyField < Field
   end
 
   def ascendants_of_in_hierarchy(node_id_or_name)
+    return [] if node_id_or_name.nil?
     begin
       valid_value?(node_id_or_name)
       node_ids = [node_id_or_name]
@@ -102,10 +103,15 @@ class Field::HierarchyField < Field
 
     options = []
     node_ids.each do |node_id|
-      while (!node_id.blank?)
-        option = find_hierarchy_option_by_id(node_id)
-        options << { id: option[:id], name: option[:name], type: option[:type]}
-        node_id = option[:parent_id]
+      @ascendants_cache ||= {}
+      options += @ascendants_cache[node_id] ||= begin
+        ascendants = []
+        while (!node_id.blank?)
+          option = find_hierarchy_option_by_id(node_id)
+          ascendants << { id: option[:id], name: option[:name], type: option[:type]}
+          node_id = option[:parent_id]
+        end
+        ascendants
       end
     end
 
@@ -135,7 +141,11 @@ class Field::HierarchyField < Field
   end
 
   def hierarchy_max_height
-    config['hierarchy'].map {|n| max_height(n) + 1 }.max
+    if @cache_for_read
+      @max_height ||= config['hierarchy'].map {|n| max_height(n) + 1 }.max
+    else
+      config['hierarchy'].map {|n| max_height(n) + 1 }.max
+    end
   end
 
   def max_height(node)
