@@ -49,7 +49,7 @@ describe ImportWizard do
     fields[0].code.should eq('beds')
     fields[0].kind.should eq('numeric')
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -89,7 +89,7 @@ describe ImportWizard do
     fields[0].kind.should eq('numeric')
     fields[0].allow_decimals?.should be_truthy
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -158,7 +158,7 @@ describe ImportWizard do
     fields[0].code.should eq('beds')
     fields[0].kind.should eq('numeric')
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     site1.reload
@@ -198,7 +198,7 @@ describe ImportWizard do
     fields[0].code.should eq('beds')
     fields[0].kind.should eq('numeric')
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(1)
 
     sites[0].name.should eq('Foo')
@@ -235,7 +235,7 @@ describe ImportWizard do
     fields[0].code.should eq('beds')
     fields[0].kind.should eq('numeric')
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(3)
 
     sites[0].name.should eq('Foo')
@@ -283,7 +283,7 @@ describe ImportWizard do
     fields[0].kind.should eq('select_one')
     fields[0].config.should eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => 'public', 'label' => 'public'}, {'id' => 2, 'code' => 'private', 'label' => 'private'}])
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(3)
 
     sites[0].properties.should eq({fields[0].es_code => 1})
@@ -320,7 +320,7 @@ describe ImportWizard do
     fields[0].kind.should eq('select_one')
     fields[0].config.should eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => '1', 'label' => 'public'}, {'id' => 2, 'code' => '0', 'label' => 'private'}])
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(3)
 
     sites[0].properties.should eq({fields[0].es_code => 1})
@@ -346,7 +346,7 @@ describe ImportWizard do
 
     collection.layers.should eq([layer])
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -374,7 +374,7 @@ describe ImportWizard do
 
     collection.layers.should eq([layer])
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -402,7 +402,7 @@ describe ImportWizard do
 
     collection.layers.should eq([layer])
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -430,7 +430,7 @@ describe ImportWizard do
 
     collection.layers.should eq([layer])
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     sites[0].name.should eq('Foo')
@@ -456,7 +456,7 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     collection.layers.should eq([layer])
-    sites = collection.sites
+    sites = collection.sites.reload
 
     sites[0].name.should eq('Foo')
     sites[0].properties.should eq({hierarchy.es_code => "100"})
@@ -481,7 +481,7 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     collection.layers.should eq([layer])
-    sites = collection.sites
+    sites = collection.sites.reload
 
     sites[0].name.should eq('Foo')
     sites[0].properties.should eq({hierarchy.es_code => "100"})
@@ -508,7 +508,7 @@ describe ImportWizard do
 
      collection.layers.should eq([layer])
 
-     sites = collection.sites
+     sites = collection.sites.reload
      sites.length.should eq(2)
 
      sites[0].name.should eq('Foo')
@@ -538,7 +538,7 @@ describe ImportWizard do
 
     collection.layers.should eq([layer])
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     sites[0].name.should eq('Site1')
@@ -592,7 +592,7 @@ describe ImportWizard do
     fields = layers[0].fields
     fields.length.should eq(9)
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     site1.reload
@@ -657,7 +657,7 @@ describe ImportWizard do
     fields = layers[0].fields
     fields.length.should eq(9)
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     site1.reload
@@ -713,7 +713,7 @@ describe ImportWizard do
     fields = layers[0].fields
     fields.length.should eq(9)
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     site1.reload
@@ -776,7 +776,7 @@ describe ImportWizard do
     fields = new_layer.fields
     fields.length.should eq(10)
 
-    sites = collection.sites
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     site1.reload
@@ -1450,7 +1450,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
 
       ImportWizard.execute user, collection, specs
-      sites = collection.sites
+      sites = collection.sites.reload
       sites.length.should eq(1)
 
       sites[0].name.should eq('Foo old')
@@ -1476,7 +1476,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
 
       ImportWizard.execute user, collection, specs
-      sites = collection.sites
+      sites = collection.sites.reload
       sites.length.should eq(1)
 
       sites[0].name.should eq('Foo')
@@ -1499,7 +1499,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
 
       ImportWizard.execute user, collection, specs
-      sites = collection.sites
+      sites = collection.sites.reload
       sites.length.should eq(2)
 
       sites[0].name.should eq('Foo')
@@ -1526,7 +1526,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
 
       ImportWizard.execute user, collection, specs
-      sites = collection.sites
+      sites = collection.sites.reload
       sites.length.should eq(1)
 
       sites[0].name.should eq('Foo new')
@@ -1553,7 +1553,7 @@ describe ImportWizard do
 
       ImportWizard.validate_sites_with_columns user, collection, specs
       ImportWizard.execute user, collection, specs
-      sites = collection.sites
+      sites = collection.sites.reload
       sites.length.should eq(3)
 
       sites[0].name.should eq('Foo')
@@ -1583,7 +1583,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
 
       ImportWizard.execute user, collection, specs
-      sites = collection.sites
+      sites = collection.sites.reload
       sites.length.should eq(2)
 
       sites[0].name.should eq('Foo')
@@ -1626,7 +1626,7 @@ describe ImportWizard do
 
       collection.layers.should eq([layer])
 
-      sites = collection.sites
+      sites = collection.sites.reload
       sites.length.should eq(7)
 
       sites[0].name.should eq('Foo')
@@ -1767,7 +1767,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, column_specs
 
-      sites = collection.sites
+      sites = collection.sites.reload
       sites.length.should eq(1)
 
       sites[0].name.should eq('Changed Name')
@@ -1792,7 +1792,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, column_specs
 
-      sites = collection.sites
+      sites = collection.sites.reload
       sites.length.should eq(1)
 
       sites[0].name.should eq('Changed Name')
@@ -1817,7 +1817,7 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, column_specs
 
-      sites = collection.sites
+      sites = collection.sites.reload
       sites.length.should eq(2)
 
       sites[1].name.should eq('New')
