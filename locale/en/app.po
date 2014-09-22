@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-19 16:49-0300\n"
+"POT-Creation-Date: 2014-09-19 16:51-0300\n"
 "PO-Revision-Date: 2014-06-03 14:06-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English\n"
@@ -51,10 +51,19 @@ msgstr ""
 msgid "%{kind} field '%{name}' %{code} %{key} changed to %{field_key}"
 msgstr ""
 
+msgid "%{sites} were imported"
+msgstr ""
+
 msgid "%{user} became an administrator"
 msgstr ""
 
 msgid "%{user} removed from administrators group"
+msgstr ""
+
+msgid "'%{code}' changed from %{old_value} to %{new_value}"
+msgstr ""
+
+msgid "'%{code}' changed from (nothing) to %{new_value}"
 msgstr ""
 
 msgid "(85512345678)"
@@ -1209,6 +1218,12 @@ msgstr ""
 msgid "Site '%s' successfully created"
 msgstr ""
 
+msgid "Site '%{old_name}' was renamed to '%{new_name}'"
+msgstr ""
+
+msgid "Site '%{site_name}' changed: %{changes}"
+msgstr ""
+
 msgid "Site Name"
 msgstr ""
 
@@ -1764,7 +1779,13 @@ msgstr ""
 msgid "leave blank if you don't want to change it"
 msgstr ""
 
+msgid "location changed from %{old_location} to %{new_location}"
+msgstr ""
+
 msgid "name changed from %{first_change} to %{second_change}"
+msgstr ""
+
+msgid "name changed from '%{old_name}' to '%{new_name}'"
 msgstr ""
 
 msgid "new"

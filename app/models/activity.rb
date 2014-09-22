@@ -78,16 +78,16 @@ class Activity < ActiveRecord::Base
   private
 
   def sites_were_imported_text
-    sites_created_text = "#{data['sites']} site#{data['sites'] == 1 ? '' : 's'}"
-    "#{sites_created_text} were imported"
+    sites_created_text = "#{data['sites']} #{data['sites'] == 1 ? _("site") : _("sites")}"
+    _("%{sites} were imported") % {sites: sites_created_text}
   end
 
   def site_changed_text
     only_name_changed, changes = site_changes_text
     if only_name_changed
-      "Site '#{data['name']}' was renamed to '#{data['changes']['name'][1]}'"
+      _("Site '%{old_name}' was renamed to '%{new_name}'") % {old_name: data['name'], new_name: data['changes']['name'][1]}
     else
-      "Site '#{data['name']}' changed: #{changes}"
+      _("Site '%{site_name}' changed: %{changes}") % {site_name: data['name'], changes: changes}
     end
   end
 
@@ -98,12 +98,12 @@ class Activity < ActiveRecord::Base
     only_name_changed = false
 
     if (change = data['changes']['name'])
-      text_changes << "name changed from '#{change[0]}' to '#{change[1]}'"
+      text_changes << _("name changed from '%{old_name}' to '%{new_name}'") % {old_name: change[0], new_name: change[1]}
       only_name_changed = true
     end
 
     if (lat_change = data['changes']['lat']) && (lng_change = data['changes']['lng'])
-      text_changes << "location changed from #{format_location data['changes'], :from} to #{format_location data['changes'], :to}"
+      text_changes << _("location changed from %{old_location} to %{new_location}") % {old_location: format_location(data['changes'], :from), new_location: format_location(data['changes'], :to)}
       only_name_changed = false
     end
 
@@ -114,7 +114,7 @@ class Activity < ActiveRecord::Base
         if new_value != old_value
           field = fields[key]
           code = field.try(:code)
-          text_changes << "'#{code}' changed from #{format_value field, old_value} to #{new_value.nil? ? '(nothing)' : format_value(field, new_value)}"
+          text_changes << _("'%{code}' changed from %{old_value} to %{new_value}") % {code: code, old_value: format_value(field, old_value), new_value: new_value.nil? ? '(nothing)' : format_value(field, new_value)}
         end
       end
 
@@ -122,7 +122,7 @@ class Activity < ActiveRecord::Base
         if !properties[0].has_key? key
           field = fields[key]
           code = field.try(:code)
-          text_changes << "'#{code}' changed from (nothing) to #{new_value.nil? ? '(nothing)' : format_value(field, new_value)}"
+          text_changes << _("'%{code}' changed from (nothing) to %{new_value}") % {code: code, new_value: new_value.nil? ? '(nothing)' : format_value(field, new_value)}
         end
       end
 
