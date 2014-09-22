@@ -57,7 +57,7 @@ class Collection < ActiveRecord::Base
   end
 
   def snapshot_for(user)
-    user_snapshots.where(user_id: user.id).first.try(:snapshot)
+    snapshots.where(user_snapshots: {user_id: user}).includes(:user_snapshots).first
   end
 
   def writable_fields_for(user)
