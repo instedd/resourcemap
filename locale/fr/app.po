@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-19 16:49-0300\n"
+"POT-Creation-Date: 2014-09-19 16:51-0300\n"
 "PO-Revision-Date: 2014-08-28 15:14+0200\n"
 "Last-Translator: Clara <cpuyade@manas.com.ar>\n"
 "Language-Team: French\n"
@@ -51,10 +51,19 @@ msgstr "champ %{kind} %{name} %{code} a été supprimé"
 msgid "%{kind} field '%{name}' %{code} %{key} changed to %{field_key}"
 msgstr "champ %{kind} field '%{name}' %{code} %{key} modifié en %{field_key}"
 
+msgid "%{sites} were imported"
+msgstr ""
+
 msgid "%{user} became an administrator"
 msgstr ""
 
 msgid "%{user} removed from administrators group"
+msgstr ""
+
+msgid "'%{code}' changed from %{old_value} to %{new_value}"
+msgstr "%{code} modifié de %{old_value} à %{new_value}"
+
+msgid "'%{code}' changed from (nothing) to %{new_value}"
 msgstr ""
 
 msgid "(85512345678)"
@@ -178,9 +187,8 @@ msgstr "Passerelle SMS téléphone Android - Configuration avancée"
 msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
 msgstr "Passerelle SMS téléphone Android - Configuration de base (recommandée)"
 
-#, fuzzy
 msgid "Anonymous permissions changed"
-msgstr "Admin permissions modifiées"
+msgstr "Anonymes permissions modifiées"
 
 msgid "Anonymous users"
 msgstr "Utilisateurs anonymes"
@@ -850,20 +858,17 @@ msgstr "La carte est prête :"
 msgid "Medicine is at its best when it helps people avoid illness in the first place. Resource Map aids prevention efforts by giving teams new ways to manage key supply chain items, such as vaccines, vitamins, and other disease prevention tools. And by uploading statistics on various measures of health, you can even use Resource Map to monitor the effectiveness of your interventions. After all, a healthy community is one of your most important resources."
 msgstr "La meilleure situation est lorsque la médecine aide les populations à éviter les maladies. La Carte des ressources facilite les efforts de prévention en donnant aux équipes de nouvelles façons de gérer les éléments clés de la chaîne d'approvisionnement tels que les vaccins, les vitamines et les'autres outils de prévention des maladies. En téléchargeant en amont les statistiques sur diverses mesures de santé, vous pouvez même utiliser la Carte des ressources pour surveiller l'efficacité de vos interventions. Après tout, une communauté en bonne santé est une de vos ressources les plus importantes."
 
-#, fuzzy
 msgid "Member %{user} was added"
-msgstr "Couche %{layer} a été supprimée"
+msgstr "Membre %{user} a été ajouté"
 
-#, fuzzy
 msgid "Member %{user} was removed"
-msgstr "Couche %{layer} a été supprimée"
+msgstr "Membre %{user} a été supprimée"
 
 msgid "Member added"
 msgstr ""
 
-#, fuzzy
 msgid "Member permissions changed"
-msgstr "Admin permissions modifiées"
+msgstr "Membre permissions modifiées"
 
 msgid "Member removed"
 msgstr ""
@@ -1228,6 +1233,12 @@ msgstr "Site %{site} a été supprimé"
 
 msgid "Site '%s' successfully created"
 msgstr "Site '%s' créé avec succès"
+
+msgid "Site '%{old_name}' was renamed to '%{new_name}'"
+msgstr "Site %{old_name} a été renommée %{new_name}"
+
+msgid "Site '%{site_name}' changed: %{changes}"
+msgstr "Site %{site_name} modifiée: %{changes}"
 
 msgid "Site Name"
 msgstr "Nom du site"
@@ -1793,8 +1804,14 @@ msgstr "est :"
 msgid "leave blank if you don't want to change it"
 msgstr "laisser en blanc si vous ne souhaitez pas le modifier"
 
+msgid "location changed from %{old_location} to %{new_location}"
+msgstr ""
+
 msgid "name changed from %{first_change} to %{second_change}"
 msgstr "nom modifié de %{first_change} à %{second_change}"
+
+msgid "name changed from '%{old_name}' to '%{new_name}'"
+msgstr "nom modifié de %{old_name} à %{new_name}"
 
 msgid "new"
 msgstr "nouveau"
