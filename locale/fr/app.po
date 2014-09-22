@@ -865,13 +865,13 @@ msgid "Member %{user} was removed"
 msgstr "Membre %{user} a été supprimée"
 
 msgid "Member added"
-msgstr ""
+msgstr "Membre ajouté"
 
 msgid "Member permissions changed"
 msgstr "Membre permissions modifiées"
 
 msgid "Member removed"
-msgstr ""
+msgstr "Membre supprimée"
 
 msgid "Member → Site → Layer"
 msgstr "Membre → Site → Couche"
