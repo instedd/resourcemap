@@ -19,7 +19,7 @@
         %td.w30
           .snapshot_info{:class => if current_user_snapshot.at_present? then "active rounded" end}
             = radio_button_tag(:name, "", current_user_snapshot.at_present?, :onclick => "this.form.submit();")
-            = label :name, "Present time"
+            = label :name, _("Present time")
         %td
 
     - collection.snapshots.each do |snapshot|
