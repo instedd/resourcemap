@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-19 16:51-0300\n"
-"PO-Revision-Date: 2014-09-19 16:51-0300\n"
+"POT-Creation-Date: 2014-09-22 19:02-0300\n"
+"PO-Revision-Date: 2014-09-22 19:02-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -798,6 +798,9 @@ msgstr ""
 msgid "Load more"
 msgstr ""
 
+msgid "Load more sites..."
+msgstr ""
+
 msgid "Loading..."
 msgstr ""
 
@@ -1035,6 +1038,9 @@ msgstr ""
 msgid "Prefix|Version"
 msgstr ""
 
+msgid "Present time"
+msgstr ""
+
 msgid "Preview"
 msgstr ""
 
@@ -1153,6 +1159,9 @@ msgid "Saving reminder, please wait..."
 msgstr ""
 
 msgid "Search by email..."
+msgstr ""
+
+msgid "Search or drag the pin"
 msgstr ""
 
 msgid "See everything on the map for a birds-eye view"

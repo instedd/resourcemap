@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-19 16:51-0300\n"
+"POT-Creation-Date: 2014-09-22 19:02-0300\n"
 "PO-Revision-Date: 2014-08-28 15:14+0200\n"
 "Last-Translator: Clara <cpuyade@manas.com.ar>\n"
 "Language-Team: French\n"
@@ -809,6 +809,9 @@ msgstr "Ordre"
 msgid "Load more"
 msgstr "Charger davantage"
 
+msgid "Load more sites..."
+msgstr ""
+
 msgid "Loading..."
 msgstr "En train de charger..."
 
@@ -1048,6 +1051,9 @@ msgstr "Préfixe"
 msgid "Prefix|Version"
 msgstr "Version"
 
+msgid "Present time"
+msgstr ""
+
 msgid "Preview"
 msgstr "Aperçu"
 
@@ -1168,6 +1174,9 @@ msgstr "En train de sauvegarder le rappel, veuillez patienter..."
 
 msgid "Search by email..."
 msgstr "Rechercher par courrier électronique..."
+
+msgid "Search or drag the pin"
+msgstr ""
 
 msgid "See everything on the map for a birds-eye view"
 msgstr "Vue d'ensemble de la situation"
@@ -1899,6 +1908,5 @@ msgstr "→ ;"
 
 #~ msgid "Import wizard: %{sites}"
 #~ msgstr "Guide intelligent de l'importation :%{sites}"
-
 #~ msgid "alerts"
 #~ msgstr "Avertissements"
