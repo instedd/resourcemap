@@ -134,6 +134,8 @@ class Site < ActiveRecord::Base
     if site_params.has_key?("properties")
       fields = collection.fields.index_by(&:es_code)
 
+      properties_will_change!
+
       site_params["properties"].each_pair do |es_code, value|
 
         #Next if there is no changes in the property
