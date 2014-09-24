@@ -69,16 +69,16 @@ describe Collection do
   end
 
   describe "History" do
-    it "shold have user_snapshots througt snapshots" do
-      snp_1 = collection.snapshots.create! date: Time.now, name: 'snp1'
-      snp_2 = collection.snapshots.create! date: Time.now, name: 'snp2'
+    it "destroys the User Snapshots when destroying a collection" do
+      collection.snapshots.create! date: Time.now, name: 'snp1'
+      UserSnapshot.for(user, collection).save
 
-      snp_1.user_snapshots.create! user: User.make
-      snp_2.user_snapshots.create! user: User.make
+      UserSnapshot.count.should eq(1)
 
-      collection.user_snapshots.count.should eq(2)
-      collection.user_snapshots.first.snapshot.name.should eq('snp1')
-      collection.user_snapshots.last.snapshot.name.should eq('snp2')
+      collection.destroy
+
+      UserSnapshot.count.should eq(0)
+      Collection.count.should eq(0)
     end
 
     it "should obtain snapshot for user if user_snapshot exists" do

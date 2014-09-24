@@ -66,7 +66,7 @@ describe Message do
   describe "visit command" do
     it "should accept ExecVisitor" do
       message = Message.create :guid => '999', :from => 'sms://123', :body => "foo"
-      command = mock('Command')
+      command = double('Command')
       command.should_receive(:sender=)
       command.should_receive(:accept)
       # Execute

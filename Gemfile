@@ -41,6 +41,7 @@ gem 'poirot_rails', git: "https://bitbucket.org/instedd/poirot_rails.git", branc
 gem 'treetop', '1.4.15'
 
 gem 'rspec-collection_matchers'
+gem 'rspec-its'
 
 gem 'protected_attributes'
 gem 'rails-observers'
