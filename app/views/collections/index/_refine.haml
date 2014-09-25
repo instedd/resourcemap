@@ -57,7 +57,6 @@
     .filter-content
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
         %option{value: '='} starts with
-        %option{value: 'empty'} has no value
 
       /ko if: $root.expandedRefinePropertyOperator() != 'empty'
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
