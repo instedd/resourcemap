@@ -22,7 +22,7 @@ module SearchBase
   end
 
   def name_search(name)
-    add_query match_phrase: {name: name.downcase}
+    add_query prefix: {name: name.downcase}
   end
 
   def uuid(uuid)
