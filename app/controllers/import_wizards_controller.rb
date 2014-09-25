@@ -3,6 +3,8 @@ class ImportWizardsController < ApplicationController
   before_filter :show_properties_breadcrumb
   before_filter :authenticate_collection_admin!, only: :logs
 
+  authorize_resource :collection, decent_exposure: true
+
   expose(:import_job) { ImportJob.last_for current_user, collection }
   expose(:failed_import_jobs) { ImportJob.where(collection_id: collection.id).where(status: 'failed').order('id desc').page(params[:page]).per_page(10) }
 
