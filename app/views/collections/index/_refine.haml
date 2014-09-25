@@ -58,7 +58,7 @@
       %span starts with
 
       /ko if: $root.expandedRefinePropertyOperator() != 'empty'
-      %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
+      %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefineNameValueKeyPress'}, hasfocus: true)}
       //ko
 
       %a.button.white{ko(click: '$root.filterByName')} OK

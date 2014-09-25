@@ -153,3 +153,8 @@ onCollections ->
       switch event.keyCode
         when 13 then @filterByProperty()
         else true
+
+    @expandedRefineNameValueKeyPress: (model, event) ->
+      switch event.keyCode
+        when 13 then @filterByName()
+        else true
