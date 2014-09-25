@@ -114,7 +114,7 @@ class ApplicationController < ActionController::Base
   def default_url_options(options={})
     {:locale => I18n.locale.to_s}
   end
-  
+
   def default_serializer_options
     {root: false}
   end

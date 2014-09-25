@@ -2,9 +2,9 @@ class Api::SitesController < ApiController
   include Api::JsonHelper
 
   before_filter :authenticate_api_user!
-  before_filter :authenticate_site_user!, except: [:create, :update]
+  before_filter :authenticate_site_user!, except: [:create]
 
-  expose(:site)
+  expose(:site) { Site.find(params[:id]) }
   expose(:collection) { site.collection if site.present? }
 
   def create
