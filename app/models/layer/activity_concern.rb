@@ -17,10 +17,19 @@ module Layer::ActivityConcern
     Activity.create! item_type: 'layer', action: 'created', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name, 'fields' => fields_data}
   end
 
+  def record_status(record)
+    if record.new_record?
+      [:added, nil]
+    elsif record.marked_for_destruction?
+      [:deleted, nil]
+    elsif record.changes.any?
+      [:changed, record.changes]
+    end
+  end
+
   def record_status_before_update
     @name_was = name_was
-    @before_update_fields = fields
-    @before_update_changes = changes.dup
+    @all_fields_with_status = fields.map {|f| [f, record_status(f)] }
   end
 
   def create_updated_activity
@@ -29,38 +38,19 @@ module Layer::ActivityConcern
 
     layer_changes = changes.except('updated_at').to_hash
 
-    after_update_fields = fields
-
-    added = []
-    changed = []
-    deleted = []
-
-    after_update_fields.each do |new_field|
-      old_field = @before_update_fields.find { |f| f.id == new_field.id }
-      if old_field
-        hash = field_hash(new_field)
-        really_changed = false
-
-        ['name', 'code', 'kind', 'config'].each do |key|
-          if old_field[key] != new_field[key]
-            really_changed = true
-            hash[key] = [old_field[key], new_field[key]]
-          end
-        end
-        changed.push hash if really_changed
-      else
-        added.push field_hash(new_field)
+    layer_field_changes = Hash.new { |h,k| h[k] = [] }
+    @all_fields_with_status.each do |field, (status, changes)|
+      case status
+      when :added
+        layer_field_changes['added'] << field_hash(field)
+      when :deleted
+        layer_field_changes['deleted'] << field_hash(field)
+      when :changed
+        layer_field_changes['changed'] << field_hash(field).merge(changes)
       end
     end
 
-    @before_update_fields.each do |old_field|
-      new_field = after_update_fields.find { |f| f.id == old_field.id }
-      deleted.push field_hash(old_field) unless new_field
-    end
-
-    layer_changes['added'] = added if added.present?
-    layer_changes['changed'] = changed if changed.present?
-    layer_changes['deleted'] = deleted if deleted.present?
+    layer_changes.merge!(layer_field_changes)
 
     Activity.create! item_type: 'layer', action: 'changed', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => @name_was || name, 'changes' => layer_changes}
   end
