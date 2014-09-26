@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Collection::CsvConcern do
+describe Collection::CsvConcern, :type => :model do
   let(:user) { User.make }
   let(:collection) { user.create_collection Collection.make }
   let(:layer) { collection.layers.make }
@@ -14,15 +14,15 @@ describe Collection::CsvConcern do
 
     collection.reload
     roots = collection.sites
-    roots.length.should eq(2)
+    expect(roots.length).to eq(2)
 
-    roots[0].name.should eq('Site 1')
-    roots[0].lat.to_f.should eq(10.0)
-    roots[0].lng.to_f.should eq(20.0)
+    expect(roots[0].name).to eq('Site 1')
+    expect(roots[0].lat.to_f).to eq(10.0)
+    expect(roots[0].lng.to_f).to eq(20.0)
 
-    roots[1].name.should eq('Site 2')
-    roots[1].lat.to_f.should eq(30.0)
-    roots[1].lng.to_f.should eq(40.0)
+    expect(roots[1].name).to eq('Site 2')
+    expect(roots[1].lat.to_f).to eq(30.0)
+    expect(roots[1].lng.to_f).to eq(40.0)
   end
 
   it "should print date as MM/DD/YYYY" do
@@ -31,7 +31,7 @@ describe Collection::CsvConcern do
 
     csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
 
-    csv[1][4].should eq('10/19/1985')
+    expect(csv[1][4]).to eq('10/19/1985')
   end
 
   it "should download hiearchy value as Id" do
@@ -41,7 +41,7 @@ describe Collection::CsvConcern do
     site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
 
     csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
-    csv[1][4].should eq('100')
+    expect(csv[1][4]).to eq('100')
   end
 
 
@@ -52,10 +52,10 @@ describe Collection::CsvConcern do
     site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
     csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
 
-    csv.first.should eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
-    csv[1][4].should eq('100')
-    csv[1][5].should eq('Dad')
-    csv[1][6].should eq('Son')
+    expect(csv.first).to eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
+    expect(csv[1][4]).to eq('100')
+    expect(csv[1][5]).to eq('Dad')
+    expect(csv[1][6]).to eq('Son')
   end
 
   it "should add empty columns for the values that are not leafs" do
@@ -65,10 +65,10 @@ describe Collection::CsvConcern do
     site = collection.sites.make :properties => {hierarchy_field.es_code => '60'}
     csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
 
-    csv.first.should eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
-    csv[1][4].should eq('60')
-    csv[1][5].should eq('Dad')
-    csv[1][6].should eq('')
+    expect(csv.first).to eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
+    expect(csv[1][4]).to eq('60')
+    expect(csv[1][5]).to eq('Dad')
+    expect(csv[1][6]).to eq('')
   end
 
   describe "generate sample csv" do
@@ -94,10 +94,10 @@ describe Collection::CsvConcern do
 
       csv = CSV.parse(collection.sample_csv user2)
 
-      csv[0].should include('date_writable')
-      csv[0].should_not include('date_visible')
-      csv[0].should_not include('date_invisible')
-      csv[1].length.should be(4)
+      expect(csv[0]).to include('date_writable')
+      expect(csv[0]).not_to include('date_visible')
+      expect(csv[0]).not_to include('date_invisible')
+      expect(csv[1].length).to be(4)
     end
   end
 
@@ -120,7 +120,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Dispensary', sub: [{order: 3, id: '101', name: 'Lab Dispensary'}, {order: 4, id: '102', name: 'Clinical Dispensary'}]},
         {order: 2, id: '2', name: 'Health Centre', sub: [{order: 5, id: '201', name: 'Health Centre Type 1'}, {order: 6, id: '202', name: 'Health Centre Type 2'}]},
       ])
@@ -138,7 +138,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Location 1', sub: [{order: 4, id: '4', name: 'Location 1.1'}, {order: 5, id: '5', name: 'Location 1.2'}, {order: 6, id: '6', name: 'Location 1.3'}]},
         {order: 2, id: '2', name: 'Location 2'},
         {order: 3, id: '3', name: 'Location 3'}
@@ -156,7 +156,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Location 1', sub: [{order: 4, id: '4', name: 'Location 1.1'}, {order: 5, id: '5', name: 'Location 1.2'}, {order: 6, id: '6', name: 'Location 1.3'}]},
         {order: 2, id: '2', name: 'Location 2'},
         {order: 3, id: '3', name: 'Location 3'}
@@ -174,7 +174,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Location 1', sub: [{order: 4, id: '4', name: 'Location 1.1'}, {order: 5, id: '5', name: 'Location 1.2'}, {order: 6, id: '6', name: 'Location 1.3'}]},
         {order: 2, id: '2', name: 'Location 2'},
         {order: 3, error: 'Wrong format.', error_description: 'Invalid column number'}
@@ -192,7 +192,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Location 1', sub: [{order: 4, id: '4', name: 'Location 1.1'}, {order: 5, id: '5', name: 'Location 1.2'}]},
         {order: 2, id: '2', name: 'Location 2'},
         {order: 3, id: '3', name: 'Location 3'},
@@ -207,7 +207,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Location 1'},
         {order: 2, id: '2', name: 'Location 2'}
       ])
@@ -222,7 +222,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Dispensary', },
         {order: 2, id: '2', name: 'Health Centre'},
         {order: 3, error: 'Invalid parent value.', error_description: 'ParentID should match one of the Hierarchy ids'},
@@ -239,7 +239,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Location 1'},
         {order: 2, error: 'Wrong format.', error_description: 'Invalid column number'},
         {order: 3, error: 'Wrong format.', error_description: 'Invalid column number'},
@@ -255,7 +255,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Location 1'},
         {order: 2, id: '2', name: 'Location 1'},
       ])
@@ -270,7 +270,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Location 1'},
         {order: 2, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'},
         {order: 3, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'}
@@ -286,7 +286,7 @@ describe Collection::CsvConcern do
       end
 
       json = collection.decode_hierarchy_csv_file "hierarchy_csv_file.csv"
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Location 1', type: "district", sub: [
           {order: 2, id: '2', name: 'Location 1.2', type: "region", sub: [
             {order: 3, id: '3', name: 'Location 1.2.3', type: "ward"}
@@ -303,7 +303,7 @@ describe Collection::CsvConcern do
 
     res = collection.generate_error_description_list(hierarchy_csv)
 
-    res.should == "Error: Wrong format. Invalid column number in line 1."
+    expect(res).to eq("Error: Wrong format. Invalid column number in line 1.")
   end
 
   it "should generate error description form invalid hierarchy list" do
@@ -311,7 +311,7 @@ describe Collection::CsvConcern do
 
     res = collection.generate_error_description_list(hierarchy_csv)
 
-    res.should == "Error: Illegal quoting in line 3."
+    expect(res).to eq("Error: Illegal quoting in line 3.")
   end
 
   it "should generate error description html form invalid hierarchy list with >1 errors" do
@@ -322,7 +322,7 @@ describe Collection::CsvConcern do
 
     res = collection.generate_error_description_list(hierarchy_csv)
 
-    res.should == "Error: Wrong format. Invalid column number in line 1.<br/>Error: Wrong format. Invalid column number in line 2."
+    expect(res).to eq("Error: Wrong format. Invalid column number in line 1.<br/>Error: Wrong format. Invalid column number in line 2.")
   end
 
 end

@@ -1,8 +1,8 @@
 ActiveModel::Serializer.root = false
 
 def expect_rendered_value(json, field, serializer, expected_value)
-  json.should have_key(field), "expected serializer to render attribute #{field}"
-  json[field].should eq(expected_value), "expected serializer to render #{expected_value} for field #{field}, got #{json[field]}"
+  expect(json).to have_key(field), "expected serializer to render attribute #{field}"
+  expect(json[field]).to eq(expected_value), "expected serializer to render #{expected_value} for field #{field}, got #{json[field]}"
 end
 
 def expect_fields_rendered_by(serializer)

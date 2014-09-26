@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "log_out" do 
+describe "log_out", :type => :request do 
  
   it "should log out", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -10,6 +10,6 @@ describe "log_out" do
     click_link('Sign Out')
     sleep 3
     page.save_screenshot 'Log_out.png'
-    page.should have_content 'Signed out successfully'
+    expect(page).to have_content 'Signed out successfully'
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "snapshots" do 
+describe "snapshots", :type => :request do 
  
   it "should not edit layer with snapshot", js:true do
     sleep 5
@@ -19,9 +19,9 @@ describe "snapshots" do
     sleep 2
     click_link "Layers"
     sleep 2 
-    page.should_not have_content "Edit"
+    expect(page).not_to have_content "Edit"
     sleep 2
-    page.should have_content "You are currently viewing this collection's data as it was on snapshot Felurian. To make changes, please"
+    expect(page).to have_content "You are currently viewing this collection's data as it was on snapshot Felurian. To make changes, please"
     page.save_screenshot 'Edit_layer_snapshot.png'
   end  
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SitesPermissionController do
+describe SitesPermissionController, :type => :controller do
   include Devise::TestHelpers
 
   let(:user) { User.make }
@@ -10,7 +10,7 @@ describe SitesPermissionController do
   describe 'POST create' do
     it 'should response ok' do
       post :create, "sites_permission" => {"user_id" => user.id}, "collection_id" => collection.id
-      response.body.should == "\"ok\""
+      expect(response.body).to eq("\"ok\"")
     end
   end
 
@@ -21,11 +21,11 @@ describe SitesPermissionController do
 
     before(:each) { get :index, "collection_id" => collection.id }
     it "should response include read sites permission" do
-      response.body.should include "\"read\":#{read_sites_permission.to_json}"
+      expect(response.body).to include "\"read\":#{read_sites_permission.to_json}"
     end
 
     skip "should response include write sites permission" do
-      response.body.should include "\"write\":#{write_sites_permission.to_json}"
+      expect(response.body).to include "\"write\":#{write_sites_permission.to_json}"
     end
   end
 end

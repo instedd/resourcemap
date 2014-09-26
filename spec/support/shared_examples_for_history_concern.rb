@@ -2,58 +2,58 @@ shared_examples "it includes History::Concern" do
 
   it "should store history on creation" do
     model = history_concern_class.make_unsaved
-    model.histories.count.should == 0
+    expect(model.histories.count).to eq(0)
     model.save!
-    model.histories.count.should == 1
+    expect(model.histories.count).to eq(1)
   end
 
   it "should store history on update" do
     model = history_concern_class.make
-    model.histories.count.should == 1
+    expect(model.histories.count).to eq(1)
     model.name = "New name"
     model.save!
-    model.name.should == "New name"
-    model.histories.count.should == 2
-    model.histories.last.name.should == "New name"
+    expect(model.name).to eq("New name")
+    expect(model.histories.count).to eq(2)
+    expect(model.histories.last.name).to eq("New name")
   end
 
   it "should set valid_to in history on update" do
     model = history_concern_class.make
     model.name = "New name"
     model.save!
-    model.histories.count.should == 2
-    model.histories.first.valid_to.to_i.should eq(model.updated_at.to_i)
-    model.histories.last.valid_to.should be_nil
+    expect(model.histories.count).to eq(2)
+    expect(model.histories.first.valid_to.to_i).to eq(model.updated_at.to_i)
+    expect(model.histories.last.valid_to).to be_nil
   end
 
   it "should set valid_to in history before delete" do
     model = history_concern_class.make
-    model.histories.count.should == 1
-    model.histories.last.valid_to.should be_nil
+    expect(model.histories.count).to eq(1)
+    expect(model.histories.last.valid_to).to be_nil
 
     stub_time '2020-01-01 10:00:00 -0500'
 
     model.destroy
     histories = model.histories
-    history_concern_class.where(id: model.id).count.should == 0
-    histories.count.should == 1
-    histories.last.valid_to.should eq(Time.now)
+    expect(history_concern_class.where(id: model.id).count).to eq(0)
+    expect(histories.count).to eq(1)
+    expect(histories.last.valid_to).to eq(Time.now)
   end
 
   it "shouldn't get current history when destroyed" do
     model = history_concern_class.make
     model.destroy
     model_history = model.current_history
-    model_history.should be_nil
+    expect(model_history).to be_nil
   end
 
   it "should get current history for new model" do
     model = history_concern_class.make
     model_history = model.current_history
-    model_history.should be
+    expect(model_history).to be
     assert_model_equals_history model, model_history
-    model_history.valid_to.should be_nil
-    model_history.valid_since.to_i.should eq(model.created_at.to_i)
+    expect(model_history.valid_to).to be_nil
+    expect(model_history.valid_since.to_i).to eq(model.created_at.to_i)
   end
 
   it "should get current history for updated model" do
@@ -65,10 +65,10 @@ shared_examples "it includes History::Concern" do
     model.save!
 
     model_history = model.current_history
-    model_history.should be
-    model_history.valid_to.should be_nil
+    expect(model_history).to be
+    expect(model_history.valid_to).to be_nil
     assert_model_equals_history model, model_history
-    model_history.valid_since.to_i.should eq(model.updated_at.to_i)
+    expect(model_history.valid_since.to_i).to eq(model.updated_at.to_i)
   end
 
   it "should not get new elements in history for date" do
@@ -87,13 +87,13 @@ shared_examples "it includes History::Concern" do
     date = '2011-01-01 10:00:00 -0500'.to_time
 
     histories = collection.send(history_concern_histories.downcase).at_date(date)
-    histories.count.should eq(2)
+    expect(histories.count).to eq(2)
   end
 
   def assert_model_equals_history(model, history)
     model.attributes.keys.each do |key|
-      model[key].should eq(history[key]) unless ['id', 'created_at', 'updated_at'].include? key
+      expect(model[key]).to eq(history[key]) unless ['id', 'created_at', 'updated_at'].include? key
     end
-    history[history_concern_foreign_key].should eq(model.id)
+    expect(history[history_concern_foreign_key]).to eq(model.id)
   end
 end

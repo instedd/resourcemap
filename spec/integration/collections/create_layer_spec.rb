@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "create_layer" do 
+describe "create_layer", :type => :request do 
  
   it "should create layer", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -18,9 +18,9 @@ describe "create_layer" do
    	fill_in 'field_name', :with => 'Test name'
    	fill_in 'code', :with => 'Codigo'
    	click_button 'Save layer'
-   	page.should have_content "Saving layer, please wait..."
+   	expect(page).to have_content "Saving layer, please wait..."
    	sleep 2
-   	page.should have_content "Layer 'Test' successfully created"
+   	expect(page).to have_content "Layer 'Test' successfully created"
    	page.save_screenshot "Create layer.png"
   end
 end

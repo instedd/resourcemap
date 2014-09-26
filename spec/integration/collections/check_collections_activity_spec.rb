@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "check_collections_activity" do 
+describe "check_collections_activity", :type => :request do 
  
   it "should check collections activity", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -12,10 +12,10 @@ describe "check_collections_activity" do
     click_link ('Activity')
     sleep 3
     page.save_screenshot 'TabActivity'
-    page.should have_content ('Activity')
+    expect(page).to have_content ('Activity')
     find(:xpath, "//div[@class='tabsline']/table/tbody/tr[2]/td[1]/span[2]").click
     sleep 5
-    page.should have_no_content ('mina@gutkowski.com')        
+    expect(page).to have_no_content ('mina@gutkowski.com')        
     sleep 5
     find(:xpath, "//div[@class='tabsline']/table/tbody/tr[2]/td[1]/span[1]").click
     sleep 10

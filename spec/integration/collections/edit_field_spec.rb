@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "edit_field" do 
+describe "edit_field", :type => :request do 
  
   it "should edit field", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -21,6 +21,6 @@ describe "edit_field" do
     click_button 'Save layer'
     sleep 5
     page.save_screenshot 'Edit_field.png'
-    page.should have_content "Layer 'Central Hospital Layer 1' successfully saved"
+    expect(page).to have_content "Layer 'Central Hospital Layer 1' successfully saved"
   end
 end

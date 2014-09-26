@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GatewaysController do
+describe GatewaysController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
@@ -10,7 +10,7 @@ describe GatewaysController do
   before(:each) {sign_in user}
   it "should turn on gateway" do
     post :status, id: gateway.id, status: true, format: 'json'
-    Channel.find(gateway).is_enable.should == true
+    expect(Channel.find(gateway).is_enable).to eq(true)
   end
 
   describe 'analytic' do

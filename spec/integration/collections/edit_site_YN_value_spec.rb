@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "sites" do 
+describe "sites", :type => :request do 
  
   it "should edit site yes/no value", js:true do   
     
@@ -18,8 +18,8 @@ describe "sites" do
     click_link 'Edit Site'
     page.uncheck('yes-no-input-y/n')
     click_button 'Done'
-    page.should_not have_content ('yes')
-    page.should have_content ('no')
+    expect(page).not_to have_content ('yes')
+    expect(page).to have_content ('no')
     page.save_screenshot "Edit_site_yes_no_value.png"
   end
 

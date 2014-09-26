@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "back_to_colletion_button" do 
+describe "back_to_colletion_button", :type => :request do 
  
   it "should go back to collection", js:true do
     user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -13,7 +13,7 @@ describe "back_to_colletion_button" do
     sleep 5
     find('.pback').click
     sleep 2
-    page.should have_content ("Central Hospital")
-    page.should have_content ("My Collections")
+    expect(page).to have_content ("Central Hospital")
+    expect(page).to have_content ("My Collections")
   end
 end

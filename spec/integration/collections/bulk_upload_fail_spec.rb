@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "bulk_upload_fail" do 
+describe "bulk_upload_fail", :type => :request do 
  
   it "should NOT upload a bulk for a collection", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -15,7 +15,7 @@ describe "bulk_upload_fail" do
   	sleep 2
   	page.has_content? ('#upload')
   	page.attach_file 'upload', 'sanitized_rwanda_schema.json'
-    page.should have_content ('Invalid file format. Only CSV files are allowed.')
+    expect(page).to have_content ('Invalid file format. Only CSV files are allowed.')
     sleep 2
     page.save_screenshot ("Upload bulk fail.png")
   end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Activity do
+describe Activity, :type => :model do
   let!(:user) { User.make }
   let!(:collection) { user.create_collection Collection.make_unsaved }
 
@@ -329,7 +329,7 @@ describe Activity do
       site.properties_will_change!
       site.save!
 
-      Activity.count.should eq(0)
+      expect(Activity.count).to eq(0)
     end
 
     it "doesn't create one if lat/lng updated but not changed" do
@@ -341,7 +341,7 @@ describe Activity do
       site.lng = 0
       site.save!
 
-      Activity.count.should eq(0)
+      expect(Activity.count).to eq(0)
     end
 
     it "creates one after changing lat to nil" do
@@ -352,7 +352,7 @@ describe Activity do
       site.lat = nil
       site.save!
 
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activities = Activity.all
       assert_activity 'site', 'changed',
         'data' => {"name" => site.name, "changes" => {"lat" => [0, nil], "lng" => [30.10309, 30.10309]}}
@@ -367,7 +367,7 @@ describe Activity do
       site.lng = nil
       site.save!
 
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activities = Activity.all
       assert_activity 'site', 'changed',
         'data' => {"name" => site.name, "changes" => {"lat" => [-1.9537, -1.9537], "lng" => [30.10309, nil]}}
@@ -383,7 +383,7 @@ describe Activity do
       site.lng = "-33.2"
       site.save!
 
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activities = Activity.all
       assert_activity 'site', 'changed',
         'data' => {"name" => site.name, "changes" => {"lat" => [nil, 44.123], "lng" => [nil, -33.2]}}
@@ -399,7 +399,7 @@ describe Activity do
       site.lng = nil
       site.save!
 
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activities = Activity.all
       assert_activity 'site', 'changed',
         'data' => {"name" => site.name, "changes" => {"lat" => [-1.9537, nil], "lng" => [30.10309, nil]}}
@@ -414,7 +414,7 @@ describe Activity do
       site.lat = site.lat + 1e-04
       site.save!
 
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activities = Activity.all
       assert_activity 'site', 'changed',
         'data' => {"name" => site.name, "changes" => {"lat" => [-1.9537, site.lat], "lng" => [30.10309, 30.10309]}}
@@ -429,7 +429,7 @@ describe Activity do
       site.lng = site.lng + 1e-04
       site.save!
 
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activities = Activity.all
       assert_activity 'site', 'changed',
         'data' => {"name" => site.name, "changes" => {"lat" => [-1.9537, -1.9537], "lng" => [30.10309, site.lng]}}
@@ -444,7 +444,7 @@ describe Activity do
       site.lat = site.lat + 1e-05
       site.save!
 
-      Activity.count.should eq(0)
+      expect(Activity.count).to eq(0)
     end
 
     it "doesn't create one after changing lng less than 1e-04" do
@@ -455,7 +455,7 @@ describe Activity do
       site.lng = site.lng + 1e-05
       site.save!
 
-      Activity.count.should eq(0)
+      expect(Activity.count).to eq(0)
     end
   end
 
@@ -476,11 +476,11 @@ describe Activity do
 
   def assert_activity(item_type, action, options = {})
     activities = Activity.all
-    activities.length.should eq(1)
-    activities[0].item_type.should eq(item_type)
-    activities[0].action.should eq(action)
+    expect(activities.length).to eq(1)
+    expect(activities[0].item_type).to eq(item_type)
+    expect(activities[0].action).to eq(action)
     options.each do |key, value|
-      activities[0].send(key).should eq(value)
+      expect(activities[0].send(key)).to eq(value)
     end
   end
 end

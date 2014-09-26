@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CollectionsController do
+describe CollectionsController, :type => :controller do
   include Devise::TestHelpers
   render_views
   let(:user) { User.make }
@@ -25,7 +25,7 @@ describe CollectionsController do
 
     get :index, format: 'json'
     collections =  JSON.parse response.body
-    collections.count.should eq(1)
+    expect(collections.count).to eq(1)
   end
 
   it "should get public collection being a guest user" do
@@ -36,9 +36,9 @@ describe CollectionsController do
     sign_out user
 
     get :show, format: 'json', id: collection.id
-    response.should be_success
+    expect(response).to be_success
     json = JSON.parse response.body
-    json["name"].should eq(collection.name)
+    expect(json["name"]).to eq(collection.name)
   end
 
   # Issue #661
@@ -50,7 +50,7 @@ describe CollectionsController do
     sign_out user
 
     get :show, format: 'html', id: collection.id
-    response.should redirect_to '/users/sign_in'
+    expect(response).to redirect_to '/users/sign_in'
   end
 
   # Issue #629
@@ -64,17 +64,17 @@ describe CollectionsController do
 
     get :index, format: 'json'
     collections =  JSON.parse response.body
-    collections.count.should eq(1)
+    expect(collections.count).to eq(1)
   end
 
   it "admin should be able to update all collection's fields" do
     put :update, id: collection.id, collection: {"name"=>"new name", "description"=>"new description", "icon"=>"default"}
-    response.should be_redirect
+    expect(response).to be_redirect
 
     updated_collection = Collection.find_by_name "new name"
-    updated_collection.should be
-    updated_collection.description.should eq("new description")
-    updated_collection.icon.should eq("default")
+    expect(updated_collection).to be
+    expect(updated_collection.description).to eq("new description")
+    expect(updated_collection.icon).to eq("default")
   end
 
   describe "get ES resutls" do
@@ -92,23 +92,23 @@ describe CollectionsController do
       get :sites_by_term, collection_id: collection.id, format: 'json'
 
       json = JSON.parse response.body
-      json.length.should eq(2)
-      json[0]["id"].should eq(@site2.id)
-      json[0]["name"].should eq(@site2.name)
-      json[0]["value"].should eq(@site2.name)
-      json[1]["id"].should eq(@site1.id)
-      json[1]["name"].should eq(@site1.name)
-      json[1]["value"].should eq(@site1.name)
+      expect(json.length).to eq(2)
+      expect(json[0]["id"]).to eq(@site2.id)
+      expect(json[0]["name"]).to eq(@site2.name)
+      expect(json[0]["value"]).to eq(@site2.name)
+      expect(json[1]["id"]).to eq(@site1.id)
+      expect(json[1]["name"]).to eq(@site1.name)
+      expect(json[1]["value"]).to eq(@site1.name)
     end
 
     it "should filter by name in a collection" do
       get :sites_by_term, collection_id: collection.id, format: 'json', term: "o"
 
       json = JSON.parse response.body
-      json.length.should eq(1)
-      json[0]["id"].should eq(@site2.id)
-      json[0]["name"].should eq(@site2.name)
-      json[0]["value"].should eq(@site2.name)
+      expect(json.length).to eq(1)
+      expect(json[0]["id"]).to eq(@site2.id)
+      expect(json[0]["name"]).to eq(@site2.name)
+      expect(json[0]["value"]).to eq(@site2.name)
     end
   end
 
@@ -126,25 +126,25 @@ describe CollectionsController do
     it 'should return forbidden in delete if user tries to delete a collection of which he is not member'  do
       sign_in not_member
       delete :destroy, id: collection.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
       delete :destroy, id: public_collection.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
     end
 
     it 'should return forbidden on delete if user is not collection admin' do
       sign_in member
       delete :destroy, id: collection.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
       delete :destroy, id: public_collection.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
     end
 
     it 'should return forbidden on create_snapshot if user is not collection admin' do
       sign_in member
       post :create_snapshot, collection_id: public_collection.id, snapshot: {name: 'my snapshot'}
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
       post :create_snapshot, collection_id: collection.id, snapshot: {name: 'my snapshot'}
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
     end
   end
 
@@ -166,32 +166,32 @@ describe CollectionsController do
     # Broken as of RM 2.10.1. It's somehow related to Guisso.
     skip 'should get index as guest' do
       get :index, collection_id: public_collection.id
-      response.should be_success
+      expect(response).to be_success
     end
 
     it 'should not get index if collection_id is not passed' do
       get :index
-      response.should_not be_success
+      expect(response).not_to be_success
     end
 
     it "should get current_user_membership for public collection" do
       get :current_user_membership, collection_id: public_collection.id, format: 'json'
-      response.should be_success
+      expect(response).to be_success
       dummy_membership = JSON.parse response.body
-      dummy_membership["admin"].should eq(false)
-      dummy_membership["name"].should eq("read")
-      dummy_membership["location"].should eq("read")
+      expect(dummy_membership["admin"]).to eq(false)
+      expect(dummy_membership["name"]).to eq("read")
+      expect(dummy_membership["location"]).to eq("read")
     end
   end
 
   describe "Permissions" do
     it "should get current_user_membership" do
       get :current_user_membership, collection_id: collection.id, format: 'json'
-      response.should be_success
+      expect(response).to be_success
       membership = JSON.parse response.body
-      membership["admin"].should eq(true)
-      membership["name"].should eq("update")
-      membership["location"].should eq("update")
+      expect(membership["admin"]).to eq(true)
+      expect(membership["name"]).to eq("update")
+      expect(membership["location"]).to eq("update")
     end
   end
 
@@ -203,8 +203,8 @@ describe CollectionsController do
       get :sites_info, collection_id: collection.id
 
       info = JSON.parse response.body
-      info["total"].should eq(2)
-      info["no_location"].should be_falsey
+      expect(info["total"]).to eq(2)
+      expect(info["no_location"]).to be_falsey
     end
 
     it "gets when some have no location" do
@@ -215,14 +215,14 @@ describe CollectionsController do
       get :sites_info, collection_id: collection.id
 
       info = JSON.parse response.body
-      info["total"].should eq(3)
-      info["no_location"].should be_truthy
+      expect(info["total"]).to eq(3)
+      expect(info["no_location"]).to be_truthy
     end
   end
 
   it "should ignore local param in search" do
     get :search, collection_id: collection.id
-    response.should be_ok
+    expect(response).to be_ok
   end
 
   it "gets a site with location when the lat is 0, and the lng is 0 in search" do
@@ -233,10 +233,10 @@ describe CollectionsController do
     result = JSON.parse response.body
     site = result["sites"]
 
-    site.first.should include("lat")
-    site.first.should include("lng")
-    site.first["lat"].should eq(0)
-    site.first["lng"].should eq(0)
+    expect(site.first).to include("lat")
+    expect(site.first).to include("lng")
+    expect(site.first["lat"]).to eq(0)
+    expect(site.first["lng"]).to eq(0)
   end
 
   it "gets a site without a location when the lat is nil, and the lng is nil in search" do
@@ -247,7 +247,7 @@ describe CollectionsController do
     result = JSON.parse response.body
     site = result["sites"]
 
-    site.first.should_not include("lat")
-    site.first.should_not include("lng")
+    expect(site.first).not_to include("lat")
+    expect(site.first).not_to include("lng")
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "edit_layer" do 
+describe "edit_layer", :type => :request do 
  
   it "should edit layer", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -17,6 +17,6 @@ describe "edit_layer" do
     fill_in 'Name', :with => 'Test Layer'
     click_button 'Save layer'
     page.save_screenshot 'Edit_layer.png'
-    page.should have_content "Layer 'Test Layer' successfully saved"
+    expect(page).to have_content "Layer 'Test Layer' successfully saved"
   end  
 end

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "members" do 
+describe "members", :type => :request do 
  
 it "should add member", js:true do
     admin = User.make(:email => 'admin@admin.com')
@@ -15,7 +15,7 @@ it "should add member", js:true do
     fill_in "member_email", :with => "member@member.com"
     page.find(:xpath, '//div[@id="autocomplete_container"]/ul/li/a').click
     sleep 3
-    page.should have_content 'member@member.com'
+    expect(page).to have_content 'member@member.com'
     page.save_screenshot 'Add member.png'
   end
 end

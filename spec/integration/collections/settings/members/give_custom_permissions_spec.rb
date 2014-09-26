@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "members" do 
+describe "members", :type => :request do 
  
 it "should manage custom permissions", js:true do
     admin = User.make(:email => 'admin@admin.com')
@@ -21,7 +21,7 @@ it "should manage custom permissions", js:true do
     choose('ko_unique_5')
     visit current_path
     page.find(:xpath, '//div[@class="memberHeaderRow"]/div[@class="memberHeaderColumn collapsed"]/span').click
-    page.should have_content 'Clinica-2'
+    expect(page).to have_content 'Clinica-2'
     page.save_screenshot 'Custom permissions'
     sleep 3
    end

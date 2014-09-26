@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "collections" do 
+describe "collections", :type => :request do 
  
   it "should edit site Select One values", js:true do   
     
@@ -20,8 +20,8 @@ describe "collections" do
     select('first option', :from => 'select-one-input-selone')
     click_button 'Done'
     sleep 3 
-    page.should_not have_content 'second option'
-    page.should have_content 'first option'
+    expect(page).not_to have_content 'second option'
+    expect(page).to have_content 'first option'
     page.save_screenshot "Edit_site_selone_value.png"
   end
 end

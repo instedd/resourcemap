@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "collections" do 
+describe "collections", :type => :request do 
  
   it "should edit site User values", js:true do   
     
@@ -21,9 +21,9 @@ describe "collections" do
     sleep 2
     click_button 'Done'
     sleep 3 
-    page.should_not have_content 'member@member.com'
+    expect(page).not_to have_content 'member@member.com'
     sleep 2
-    page.should have_content 'user@manas.com.ar'
+    expect(page).to have_content 'user@manas.com.ar'
     sleep 2
     page.save_screenshot "Edit_site_user_value.png"
   end

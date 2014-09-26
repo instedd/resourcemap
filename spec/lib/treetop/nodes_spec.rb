@@ -13,7 +13,7 @@ describe QueryCommandNode, "when parse valid query command" do
   end
 
   it "should collection_id equal to 1" do
-    @node.collection_id.value.should == 1
+    expect(@node.collection_id.value).to eq(1)
   end
 
   it "should condition name equal to 'beds'" do
@@ -45,7 +45,7 @@ describe UpdateCommandNode, "when parse valid update command" do
   end
 
   it "should resource_id equal to AA382" do
-    @node.resource_id.text_value.should == 'AA382'
+    expect(@node.resource_id.text_value).to eq('AA382')
   end
 
   it "should property_list have one property" do
@@ -73,7 +73,7 @@ describe UpdateCommandNode, "when parse valid update command with more propertie
   end
 
   it "should resource_id equal to AA382" do
-    @node.resource_id.text_value.should == 'AA382'
+    expect(@node.resource_id.text_value).to eq('AA382')
   end
 
   it "should the first property name equal to 'beds' and value equal to 5" do

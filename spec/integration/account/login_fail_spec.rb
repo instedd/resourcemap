@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "login_fail" do 
+describe "login_fail", :type => :request do 
 
   it "should fail to login", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -12,7 +12,7 @@ describe "login_fail" do
     end 
     sleep 2
     page.save_screenshot 'login_fail.png'
-    page.should have_content("Invalid email or password.")
+    expect(page).to have_content("Invalid email or password.")
   end
 
 end

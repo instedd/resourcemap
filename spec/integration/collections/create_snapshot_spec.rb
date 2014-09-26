@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "create_snapshot" do 
+describe "create_snapshot", :type => :request do 
  
   it "should take a snapshot", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -13,7 +13,7 @@ describe "create_snapshot" do
   	click_button 'Take new snapshot'
   	sleep 2 
   	page.save_screenshot 'New snapshot.png'
-  	page.should have_content 'Snapshot 1'
-  	page.should have_content 'Snapshot created'
+  	expect(page).to have_content 'Snapshot 1'
+  	expect(page).to have_content 'Snapshot created'
   end
 end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 require "cancan/matchers"
 
-describe Ability do
+describe Ability, :type => :model do
   let!(:admin) { User.make }
   # The guest user should not be saved, since it will be a dummy user with the is_guest flag in true
   let!(:guest) { User.make_unsaved is_guest: true}
@@ -19,51 +19,51 @@ describe Ability do
 
   describe "Collection Abilities" do
     it "Destroy collection" do
-      admin_ability.should be_able_to(:destroy, collection)
-      member_ability.should_not be_able_to(:destroy, collection)
-      user_ability.should_not be_able_to(:destroy, collection)
-      guest_ability.should_not be_able_to(:destroy, collection)
+      expect(admin_ability).to be_able_to(:destroy, collection)
+      expect(member_ability).not_to be_able_to(:destroy, collection)
+      expect(user_ability).not_to be_able_to(:destroy, collection)
+      expect(guest_ability).not_to be_able_to(:destroy, collection)
     end
 
     it "Create snapshot" do
-      admin_ability.should be_able_to(:create_snapshot, collection)
-      member_ability.should_not be_able_to(:create_snapshot, collection)
-      user_ability.should_not be_able_to(:create_snapshot, collection)
-      guest_ability.should_not be_able_to(:create_snapshot, collection)
+      expect(admin_ability).to be_able_to(:create_snapshot, collection)
+      expect(member_ability).not_to be_able_to(:create_snapshot, collection)
+      expect(user_ability).not_to be_able_to(:create_snapshot, collection)
+      expect(guest_ability).not_to be_able_to(:create_snapshot, collection)
     end
 
     it "Update collection" do
-      admin_ability.should be_able_to(:update, collection)
-      member_ability.should_not be_able_to(:upate, collection)
-      user_ability.should_not be_able_to(:update, collection)
-      guest_ability.should_not be_able_to(:update, collection)
+      expect(admin_ability).to be_able_to(:update, collection)
+      expect(member_ability).not_to be_able_to(:upate, collection)
+      expect(user_ability).not_to be_able_to(:update, collection)
+      expect(guest_ability).not_to be_able_to(:update, collection)
     end
 
     it "Create collection" do
-      guest_ability.should_not be_able_to(:create, Collection)
-      user_ability.should be_able_to(:create, Collection)
+      expect(guest_ability).not_to be_able_to(:create, Collection)
+      expect(user_ability).to be_able_to(:create, Collection)
     end
 
     it "Public Collection Abilities" do
       public_collection = admin.create_collection Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read')
 
-      user_ability.should be_able_to(:read, public_collection)
-      user_ability.should_not be_able_to(:update, public_collection)
+      expect(user_ability).to be_able_to(:read, public_collection)
+      expect(user_ability).not_to be_able_to(:update, public_collection)
     end
 
     it "Manage snapshots" do
 
-      admin_ability.should be_able_to(:create, (Snapshot.make collection: collection))
-      member_ability.should_not be_able_to(:create, (Snapshot.make collection: collection))
-      user_ability.should_not be_able_to(:create, (Snapshot.make collection: collection))
-      guest_ability.should_not be_able_to(:create, (Snapshot.make collection: collection))
+      expect(admin_ability).to be_able_to(:create, (Snapshot.make collection: collection))
+      expect(member_ability).not_to be_able_to(:create, (Snapshot.make collection: collection))
+      expect(user_ability).not_to be_able_to(:create, (Snapshot.make collection: collection))
+      expect(guest_ability).not_to be_able_to(:create, (Snapshot.make collection: collection))
     end
 
     it "Members" do
-      admin_ability.should be_able_to(:members, collection)
-      member_ability.should_not be_able_to(:members, collection)
-      user_ability.should_not be_able_to(:members, collection)
-      guest_ability.should_not be_able_to(:members, collection)
+      expect(admin_ability).to be_able_to(:members, collection)
+      expect(member_ability).not_to be_able_to(:members, collection)
+      expect(user_ability).not_to be_able_to(:members, collection)
+      expect(guest_ability).not_to be_able_to(:members, collection)
     end
   end
 
@@ -71,60 +71,60 @@ describe Ability do
     let!(:new_layer) { Layer.new collection: collection, user: admin }
 
     it "Create layer" do
-      admin_ability.should be_able_to(:create, new_layer)
-      member_ability.should_not be_able_to(:create, new_layer)
-      user_ability.should_not be_able_to(:create, new_layer)
-      guest_ability.should_not be_able_to(:create, new_layer)
+      expect(admin_ability).to be_able_to(:create, new_layer)
+      expect(member_ability).not_to be_able_to(:create, new_layer)
+      expect(user_ability).not_to be_able_to(:create, new_layer)
+      expect(guest_ability).not_to be_able_to(:create, new_layer)
     end
 
     it "Update layer" do
-      admin_ability.should be_able_to(:update, layer)
-      member_ability.should_not be_able_to(:update, layer)
-      user_ability.should_not be_able_to(:update, layer)
-      guest_ability.should_not be_able_to(:update, layer)
+      expect(admin_ability).to be_able_to(:update, layer)
+      expect(member_ability).not_to be_able_to(:update, layer)
+      expect(user_ability).not_to be_able_to(:update, layer)
+      expect(guest_ability).not_to be_able_to(:update, layer)
     end
 
     it "Destroy layer" do
-      admin_ability.should be_able_to(:destroy, layer)
-      member_ability.should_not be_able_to(:destroy, layer)
-      user_ability.should_not be_able_to(:destroy, layer)
-      guest_ability.should_not be_able_to(:destroy, layer)
+      expect(admin_ability).to be_able_to(:destroy, layer)
+      expect(member_ability).not_to be_able_to(:destroy, layer)
+      expect(user_ability).not_to be_able_to(:destroy, layer)
+      expect(guest_ability).not_to be_able_to(:destroy, layer)
     end
 
     it "Set layer order" do
-      admin_ability.should be_able_to(:set_order, layer)
-      member_ability.should_not be_able_to(:set_order, layer)
-      user_ability.should_not be_able_to(:set_order, layer)
-      guest_ability.should_not be_able_to(:set_order, layer)
+      expect(admin_ability).to be_able_to(:set_order, layer)
+      expect(member_ability).not_to be_able_to(:set_order, layer)
+      expect(user_ability).not_to be_able_to(:set_order, layer)
+      expect(guest_ability).not_to be_able_to(:set_order, layer)
     end
 
     it "Delete site only for admins" do
       site = collection.sites.make name: "Site A"
 
-      admin_ability.should be_able_to(:delete, site)
-      member_ability.should_not be_able_to(:delete, site)
-      user_ability.should_not be_able_to(:delete, site)
-      guest_ability.should_not be_able_to(:delete, site)
+      expect(admin_ability).to be_able_to(:delete, site)
+      expect(member_ability).not_to be_able_to(:delete, site)
+      expect(user_ability).not_to be_able_to(:delete, site)
+      expect(guest_ability).not_to be_able_to(:delete, site)
     end
 
     describe "Read layer with read permission" do
       let!(:layer_member_read) { LayerMembership.make layer: layer, membership: membership, read: true }
       let!(:member_ability_with_read_permission) { Ability.new member }
 
-      it { admin_ability.should be_able_to(:read, layer) }
-      it { member_ability_with_read_permission.should be_able_to(:read, layer) }
-      it { user_ability.should_not be_able_to(:read, layer) }
-      it { guest_ability.should_not be_able_to(:read, layer) }
+      it { expect(admin_ability).to be_able_to(:read, layer) }
+      it { expect(member_ability_with_read_permission).to be_able_to(:read, layer) }
+      it { expect(user_ability).not_to be_able_to(:read, layer) }
+      it { expect(guest_ability).not_to be_able_to(:read, layer) }
     end
 
     describe "Should not read layer without read permission" do
       let!(:layer_member_none) { LayerMembership.make layer: layer, membership: membership, read: false }
       let!(:member_ability_without_read_permission) { Ability.new member }
 
-      it { admin_ability.should be_able_to(:read, layer) }
-      it { member_ability_without_read_permission.should_not be_able_to(:read, layer) }
-      it { user_ability.should_not be_able_to(:read, layer) }
-      it { guest_ability.should_not be_able_to(:read, layer) }
+      it { expect(admin_ability).to be_able_to(:read, layer) }
+      it { expect(member_ability_without_read_permission).not_to be_able_to(:read, layer) }
+      it { expect(user_ability).not_to be_able_to(:read, layer) }
+      it { expect(guest_ability).not_to be_able_to(:read, layer) }
     end
 
     describe "Should not read layer without read permission if other layer in other collection is visible" do
@@ -137,19 +137,19 @@ describe Ability do
 
       let!(:membership_two_different_permissions) { Ability.new member }
 
-      it { admin_ability.should be_able_to(:read, layer) }
-      it { membership_two_different_permissions.should_not be_able_to(:read, layer) }
-      it { user_ability.should_not be_able_to(:read, layer) }
-      it { guest_ability.should_not be_able_to(:read, layer) }
+      it { expect(admin_ability).to be_able_to(:read, layer) }
+      it { expect(membership_two_different_permissions).not_to be_able_to(:read, layer) }
+      it { expect(user_ability).not_to be_able_to(:read, layer) }
+      it { expect(guest_ability).not_to be_able_to(:read, layer) }
     end
 
     describe "Should read layers if it has anonymous_user read permission" do
       let!(:public_collection) { admin.create_collection Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read') }
       let!(:layer_in_public_collection) { Layer.make collection: public_collection, user: admin, anonymous_user_permission: 'read' }
 
-      it { admin_ability.should be_able_to(:read, layer_in_public_collection) }
-      it { user_ability.should be_able_to(:read, layer_in_public_collection) }
-      it { guest_ability.should be_able_to(:read, layer_in_public_collection) }
+      it { expect(admin_ability).to be_able_to(:read, layer_in_public_collection) }
+      it { expect(user_ability).to be_able_to(:read, layer_in_public_collection) }
+      it { expect(guest_ability).to be_able_to(:read, layer_in_public_collection) }
     end
 
     # Issue #574
@@ -161,7 +161,7 @@ describe Ability do
 
       let!(:layer_in_public_collection) { Layer.make collection: public_collection, user: admin, anonymous_user_permission: 'read' }
 
-      it { public_collection.layers.accessible_by(guest_ability).count.should eq(1) }
+      it { expect(public_collection.layers.accessible_by(guest_ability).count).to eq(1) }
     end
 
   end
@@ -173,32 +173,32 @@ describe Ability do
       let!(:site) { collection.sites.make }
 
       describe "admin" do
-        it { admin_ability.should be_able_to(:update_site_property, field, site) }
-        it { admin_ability.should be_able_to(:read_site_property, field, site) }
+        it { expect(admin_ability).to be_able_to(:update_site_property, field, site) }
+        it { expect(admin_ability).to be_able_to(:read_site_property, field, site) }
       end
 
       describe "member with none permission" do
         let!(:layer_member_none) { LayerMembership.make layer: layer, membership: membership, read: false }
         let!(:member_ability_without_read_permission) { Ability.new member }
 
-        it { member_ability_without_read_permission.should_not be_able_to(:update_site_property, field, site) }
-        it { member_ability_without_read_permission.should_not be_able_to(:read_site_property, field, site) }
+        it { expect(member_ability_without_read_permission).not_to be_able_to(:update_site_property, field, site) }
+        it { expect(member_ability_without_read_permission).not_to be_able_to(:read_site_property, field, site) }
       end
 
       describe "member with read permission" do
         let!(:layer_member_none) { LayerMembership.make layer: layer, membership: membership, read: true }
         let!(:member_ability_with_read_permission) { Ability.new member }
 
-        it { member_ability_with_read_permission.should_not be_able_to(:update_site_property, field, site) }
-        it { member_ability_with_read_permission.should be_able_to(:read_site_property, field, site) }
+        it { expect(member_ability_with_read_permission).not_to be_able_to(:update_site_property, field, site) }
+        it { expect(member_ability_with_read_permission).to be_able_to(:read_site_property, field, site) }
       end
 
       describe "member with write permission" do
         let!(:layer_member_none) { LayerMembership.make layer: layer, membership: membership, write: true }
         let!(:member_ability_with_write_permission) { Ability.new member }
 
-        it { member_ability_with_write_permission.should be_able_to(:update_site_property, field, site) }
-        it { member_ability_with_write_permission.should be_able_to(:read_site_property, field, site) }
+        it { expect(member_ability_with_write_permission).to be_able_to(:update_site_property, field, site) }
+        it { expect(member_ability_with_write_permission).to be_able_to(:read_site_property, field, site) }
       end
     end
 
@@ -208,7 +208,7 @@ describe Ability do
       let!(:field_in_public_collection) { Field::TextField.make collection: public_collection, layer: layer_in_public_collection }
       let!(:site_in_public_collection) { public_collection.sites.make }
 
-      it { guest_ability.should_not be_able_to(:update_site_property, field_in_public_collection, site_in_public_collection) }
+      it { expect(guest_ability).not_to be_able_to(:update_site_property, field_in_public_collection, site_in_public_collection) }
     end
   end
 end

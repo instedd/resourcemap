@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NuntiumController do
+describe NuntiumController, :type => :controller do
   describe "POST 'receive'" do
     before(:each) do
       @collection = Collection.make(:name => 'Healt Center')
@@ -16,7 +16,7 @@ describe NuntiumController do
     end
 
     it "should save message" do
-      Message.should_receive(:create!).with(:guid => "123", :from => "sms://85512345678", :body => "dyrm u AA1 AB=2").and_return(@message)
+      expect(Message).to receive(:create!).with(:guid => "123", :from => "sms://85512345678", :body => "dyrm u AA1 AB=2").and_return(@message)
       post :receive, @params
     end
 
@@ -27,38 +27,38 @@ describe NuntiumController do
 
       it "should response error" do
         post :receive
-        response.response_code.should eq(400)
+        expect(response.response_code).to eq(400)
       end
 
       it "should check for guid" do
         post_receive_without :guid
-        response.body.should match /Validation failed: Guid can't be blank/
+        expect(response.body).to match /Validation failed: Guid can't be blank/
       end
 
       it "should check for from" do
         post_receive_without :from
-        response.body.should match /Validation failed: From can't be blank/
+        expect(response.body).to match /Validation failed: From can't be blank/
       end
 
       it "should check for body" do
         post_receive_without :body
-        response.body.should match /Validation failed: Body can't be blank/
+        expect(response.body).to match /Validation failed: Body can't be blank/
       end
     end
     describe "message processing" do
       before(:each) do
         @message = Message.create @params
-        controller.should_receive(:save_message).and_return(@message)
+        expect(controller).to receive(:save_message).and_return(@message)
       end
 
       it "should process message" do
         post :receive, @params
-        response.response_code.should == 200
+        expect(response.response_code).to eq(200)
       end
 
       it "should response plain text" do
         post :receive, @params
-        response.content_type.should == "text/plain"
+        expect(response.content_type).to eq("text/plain")
       end
     end
   end
@@ -66,13 +66,13 @@ describe NuntiumController do
   describe "authenticate" do
     it "should authenticate via http basic authentication" do
       post :authenticate
-      response.response_code.should == 401
+      expect(response.response_code).to eq(401)
     end
 
     it "should response unauthorized for bad user" do
       request.env["HTTP_AUTHORIZATION"] = ActionController::HttpAuthentication::Basic.encode_credentials("foo", "secret")
       post :authenticate
-      response.response_code.should == 401
+      expect(response.response_code).to eq(401)
     end
   end
 end

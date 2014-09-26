@@ -1,7 +1,7 @@
 #encoding=utf-8
 require 'spec_helper'
 
-describe Search do
+describe Search, :type => :model do
   let!(:user) { User.make }
   let!(:collection) { user.create_collection(Collection.make) }
   let!(:layer) { collection.layers.make }
@@ -68,7 +68,7 @@ describe Search do
     it "searches by equality of two properties but doesn't find" do
       search = collection.new_search
       search.where beds.es_code => 10, tables.es_code => 1
-      search.results.length.should eq(0)
+      expect(search.results.length).to eq(0)
     end
 
     it "searches by starts with" do
@@ -137,7 +137,7 @@ describe Search do
         a_site = collection.sites.make :name => "Census", :properties => {population_source.es_code => "National"}
         search = collection.new_search
         search.where population_source.es_code => "National Census"
-        search.results.length.should eq(0)
+        expect(search.results.length).to eq(0)
       end
     end
 
@@ -214,7 +214,7 @@ describe Search do
     context "unknow field" do
       it "raises on unknown field" do
         search = collection.new_search
-        lambda { search.where '0' => 10 }.should raise_error(RuntimeError, "Unknown field: 0")
+        expect { search.where '0' => 10 }.to raise_error(RuntimeError, "Unknown field: 0")
       end
     end
   end
@@ -230,7 +230,7 @@ describe Search do
 
   context "pagination" do
     it "paginates by 50 results by default" do
-      Search.new(collection, {}).page_size.should eq(50)
+      expect(Search.new(collection, {}).page_size).to eq(50)
     end
 
     context "with another page size" do
@@ -387,19 +387,19 @@ describe Search do
 
     it "gets results" do
       result = collection.new_search.results[0]
-      result['_source']['properties'][text.es_code].should eq('foo')
-      result['_source']['properties'][numeric.es_code].should eq(1)
-      result['_source']['properties'][select_one.es_code].should eq(1)
-      result['_source']['properties'][select_many.es_code].should eq([1, 2])
+      expect(result['_source']['properties'][text.es_code]).to eq('foo')
+      expect(result['_source']['properties'][numeric.es_code]).to eq(1)
+      expect(result['_source']['properties'][select_one.es_code]).to eq(1)
+      expect(result['_source']['properties'][select_many.es_code]).to eq([1, 2])
     end
 
     it "gets api results" do
       search = collection.new_search current_user_id: user.id
       result = search.api_results[0]
-      result['_source']['properties'][text.code].should eq('foo')
-      result['_source']['properties'][numeric.code].should eq(1)
-      result['_source']['properties'][select_one.code].should eq('one')
-      result['_source']['properties'][select_many.code].should eq(['one', 'two'])
+      expect(result['_source']['properties'][text.code]).to eq('foo')
+      expect(result['_source']['properties'][numeric.code]).to eq(1)
+      expect(result['_source']['properties'][select_one.code]).to eq('one')
+      expect(result['_source']['properties'][select_many.code]).to eq(['one', 'two'])
     end
 
 
@@ -412,24 +412,24 @@ describe Search do
 
       search = collection.new_search current_user_id: user.id
       result = search.api_results[0]
-      result['_source']['properties'][text.code].should eq('foo2')
-      result['_source']['properties'][numeric.code].should eq(2)
-      result['_source']['properties'][select_one.code].should eq('two')
-      result['_source']['properties'][select_many.code].should eq(['two'])
+      expect(result['_source']['properties'][text.code]).to eq('foo2')
+      expect(result['_source']['properties'][numeric.code]).to eq(2)
+      expect(result['_source']['properties'][select_one.code]).to eq('two')
+      expect(result['_source']['properties'][select_many.code]).to eq(['two'])
 
       search = collection.new_search current_user_id: user.id, snapshot_id: snapshot.id
       result = search.api_results[0]
-      result['_source']['properties'][text.code].should eq('foo')
-      result['_source']['properties'][numeric.code].should eq(1)
-      result['_source']['properties'][select_one.code].should eq('one')
-      result['_source']['properties'][select_many.code].should eq(['one', 'two'])
+      expect(result['_source']['properties'][text.code]).to eq('foo')
+      expect(result['_source']['properties'][numeric.code]).to eq(1)
+      expect(result['_source']['properties'][select_one.code]).to eq('one')
+      expect(result['_source']['properties'][select_many.code]).to eq(['one', 'two'])
     end
 
     it "gets ui results" do
       search = collection.new_search current_user_id: user.id
       result = search.ui_results[0]
-      result['_source']['lat'].should eq(1)
-      result['_source']['lng'].should eq(2)
+      expect(result['_source']['lat']).to eq(1)
+      expect(result['_source']['lng']).to eq(2)
     end
 
     it "gets ui form snapshot" do
@@ -442,24 +442,24 @@ describe Search do
       search = collection.new_search current_user_id: user.id
       result = search.ui_results[0]
 
-      result['_source']['properties'][text.es_code].should eq('foo2')
-      result['_source']['properties'][numeric.es_code].should eq(2)
-      result['_source']['properties'][select_one.es_code].should eq(2)
-      result['_source']['properties'][select_many.es_code].should eq([2])
+      expect(result['_source']['properties'][text.es_code]).to eq('foo2')
+      expect(result['_source']['properties'][numeric.es_code]).to eq(2)
+      expect(result['_source']['properties'][select_one.es_code]).to eq(2)
+      expect(result['_source']['properties'][select_many.es_code]).to eq([2])
 
       search = collection.new_search current_user_id: user.id, snapshot_id: snapshot.id
       result = search.ui_results[0]
-      result['_source']['properties'][text.es_code].should eq('foo')
-      result['_source']['properties'][numeric.es_code].should eq(1)
-      result['_source']['properties'][select_one.es_code].should eq(1)
-      result['_source']['properties'][select_many.es_code].should eq([1, 2])
+      expect(result['_source']['properties'][text.es_code]).to eq('foo')
+      expect(result['_source']['properties'][numeric.es_code]).to eq(1)
+      expect(result['_source']['properties'][select_one.es_code]).to eq(1)
+      expect(result['_source']['properties'][select_many.es_code]).to eq([1, 2])
     end
 
     it "do not get deleted fields" do
       numeric.delete
       search = collection.new_search current_user_id: user.id
       result = search.ui_results[0]
-      result['_source']['properties'][numeric.es_code].should be_nil
+      expect(result['_source']['properties'][numeric.es_code]).to be_nil
     end
 
   end
@@ -474,39 +474,39 @@ describe Search do
 
     it "sorts on name asc by default" do
       result = search.results
-      result.map { |x| x['_id'].to_i } .should eq([site1.id, site2.id])
+      expect(result.map { |x| x['_id'].to_i }) .to eq([site1.id, site2.id])
     end
 
     it "sorts by field asc" do
       result = search.sort(numeric.code).results
-      result.map { |x| x['_id'].to_i } .should eq([site2.id, site1.id])
+      expect(result.map { |x| x['_id'].to_i }) .to eq([site2.id, site1.id])
     end
 
     it "sorts by field desc" do
       result = search.sort(numeric.code, false).results
-      result.map { |x| x['_id'].to_i } .should eq([site1.id, site2.id])
+      expect(result.map { |x| x['_id'].to_i }) .to eq([site1.id, site2.id])
     end
 
     it "sorts by name asc" do
       result = search.sort('name').results
-      result.map { |x| x['_id'].to_i } .should eq([site1.id, site2.id])
+      expect(result.map { |x| x['_id'].to_i }) .to eq([site1.id, site2.id])
     end
 
     it "sorts by name desc" do
       result = search.sort('name', false).results
-      result.map { |x| x['_id'].to_i } .should eq([site2.id, site1.id])
+      expect(result.map { |x| x['_id'].to_i }) .to eq([site2.id, site1.id])
     end
 
     it "sorts by multiple fields" do
       site3 = collection.sites.make :name => 'Esther Goris', :properties => {numeric.es_code => 2}
       result = search.sort_multiple({'name' => true, numeric.code => false}).results
-      result.map { |x| x['_id'].to_i } .should eq([site1.id, site3.id, site2.id])
+      expect(result.map { |x| x['_id'].to_i }) .to eq([site1.id, site3.id, site2.id])
     end
 
     it "sorts by name case-insensitive" do
       site3 = collection.sites.make :name => 'esther agoris', :properties => {numeric.es_code => 2}
       result = search.sort('name').results
-      result.map { |x| x['_id'].to_i } .should eq([site1.id, site3.id, site2.id])
+      expect(result.map { |x| x['_id'].to_i }) .to eq([site1.id, site3.id, site2.id])
     end
   end
 
@@ -516,7 +516,7 @@ describe Search do
 
     it "should filter sites without location" do
       result = collection.new_search.location_missing.results
-      result.map { |x| x['_id'].to_i } .should eq([site1.id])
+      expect(result.map { |x| x['_id'].to_i }) .to eq([site1.id])
     end
 
   end
@@ -532,14 +532,14 @@ describe Search do
       search = collection.new_search
       parameter = "12/12/2012,1/1/2013"
       date = creation.send(:parse_date_from, parameter)
-      date.should eq("12/12/2012")
+      expect(date).to eq("12/12/2012")
     end
 
     it "should parse date to" do
       search = collection.new_search
       parameter = "12/12/2012,1/1/2013"
       date = creation.send(:parse_date_to, parameter)
-      date.should eq("1/1/2013")
+      expect(date).to eq("1/1/2013")
     end
 
     it "should search by range" do
@@ -737,6 +737,6 @@ describe Search do
   end
 
   def assert_results(search, *sites)
-    search.results.map{|r| r['_id'].to_i}.should =~ sites.map(&:id)
+    expect(search.results.map{|r| r['_id'].to_i}).to match_array(sites.map(&:id))
   end
 end

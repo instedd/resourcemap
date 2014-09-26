@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Xform do
+describe Xform, :type => :model do
 
   let(:template) { }
 end

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "read_Rss" do 
+describe "read_Rss", :type => :request do 
  
   it "should read rss file", js:true do
     admin = User.make(:email => 'admin@admin.com')
@@ -16,8 +16,8 @@ describe "read_Rss" do
     sleep 3
     new_window=page.driver.browser.window_handles.last 
     page.within_window new_window do
-        page.title.should eq collection.name
-        page.current_url.should include("/api/collections/#{collection.id}.rss")
+        expect(page.title).to eq collection.name
+        expect(page.current_url).to include("/api/collections/#{collection.id}.rss")
         page.save_screenshot 'Rss.png'
     end
   end

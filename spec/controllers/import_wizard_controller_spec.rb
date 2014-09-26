@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImportWizardsController do
+describe ImportWizardsController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
@@ -29,7 +29,7 @@ describe ImportWizardsController do
       '3' => {name: 'Beds', usage: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
     }
     post :execute, collection_id: collection.id, columns: specs
-    response.response_code.should == 401
+    expect(response.response_code).to eq(401)
   end
 
   it "should get job status of an enqued job" do
@@ -44,13 +44,13 @@ describe ImportWizardsController do
 
     get :job_status, collection_id: collection.id
     json_response = JSON.parse response.body
-    json_response["status"].should eq("pending")
+    expect(json_response["status"]).to eq("pending")
   end
 
   it "should not fail when quering job status of a non enqued job" do
     get :job_status, collection_id: collection.id
-    response.status.should eq(404)
+    expect(response.status).to eq(404)
     json_response = JSON.parse response.body
-    json_response["status"].should eq("not_found")
+    expect(json_response["status"]).to eq("not_found")
   end
 end

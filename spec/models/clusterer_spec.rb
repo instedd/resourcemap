@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Clusterer do
+describe Clusterer, :type => :model do
   let(:clusterer) { Clusterer.new 1 }
   let(:collection) { Collection.make }
   it "leaves single site alone" do
     clusterer.add id: 1, name: 'foo',lat: 30, lng: 40, collection_id: 12
     clusters = clusterer.clusters
-    clusters[:sites].should eq([{id: 1, name: 'foo', lat: 30, lng: 40, collection_id: 12, highlighted: false}])
-    clusters[:clusters].should be_nil
+    expect(clusters[:sites]).to eq([{id: 1, name: 'foo', lat: 30, lng: 40, collection_id: 12, highlighted: false}])
+    expect(clusters[:clusters]).to be_nil
   end
 
   it "puts two sites in a cluster" do
@@ -15,8 +15,8 @@ describe Clusterer do
     clusterer.add :id => 2, :lat => 21, :lng => 31
 
     clusters = clusterer.clusters
-    clusters[:sites].should be_nil
-    clusters[:clusters].should eq([{:alert => false, :status => true, :icon => "", :color => "", :id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 0, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false}])
+    expect(clusters[:sites]).to be_nil
+    expect(clusters[:clusters]).to eq([{:alert => false, :status => true, :icon => "", :color => "", :id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 0, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false}])
   end
 
   it "puts four sites in two different clusters" do
@@ -26,8 +26,8 @@ describe Clusterer do
     clusterer.add :id => 4, :lat => 66, :lng => 121
 
     clusters = clusterer.clusters
-    clusters[:sites].should be_nil
-    clusters[:clusters].should eq([
+    expect(clusters[:sites]).to be_nil
+    expect(clusters[:clusters]).to eq([
       {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 0, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false, :alert => false, :status => true, :icon => "", :color => "" },
       {:id => "1:3:4", :lat => 65.5, :lng => 120.5, :count => 2, :alert_count => 0, :min_lat => 65, :max_lat => 66, :min_lng => 120, :max_lng => 121, :highlighted=>false, :alert => false, :status => true, :icon => "", :color => "" }
     ])
@@ -40,8 +40,8 @@ describe Clusterer do
     clusterer.add :id => 4, :lat => 66, :lng => 121
 
     clusters = clusterer.clusters
-    clusters[:sites].should be_nil
-    clusters[:clusters].should eq([
+    expect(clusters[:sites]).to be_nil
+    expect(clusters[:clusters]).to eq([
       {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 1, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false, :alert => true, :status => false, :icon => "default", :color => ""},
       {:id => "1:3:4", :lat => 65.5, :lng => 120.5, :count => 2, :alert_count => 1, :min_lat => 65, :max_lat => 66, :min_lng => 120, :max_lng => 121, :highlighted=>false, :alert => true, :status => false, :icon => "default", :color => ""}
     ])
@@ -53,8 +53,8 @@ describe Clusterer do
      clusterer.add :id => 2, :lat => 21, :lng => 31, :property => ["1"]
 
      clusters = clusterer.clusters
-     clusters[:sites].should be_nil
-     clusters[:clusters].should eq([
+     expect(clusters[:sites]).to be_nil
+     expect(clusters[:clusters]).to eq([
        {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 0, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted => true, :alert => false, :status => true, :icon => "", :color => "" }
      ])
    end
@@ -65,8 +65,8 @@ describe Clusterer do
       clusterer.add :id => 2, :lat => 21, :lng => 31, :property => ["1"]
 
       clusters = clusterer.clusters
-      clusters[:sites].should be_nil
-      clusters[:clusters].should eq([
+      expect(clusters[:sites]).to be_nil
+      expect(clusters[:clusters]).to eq([
         {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 0, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted => false, :alert => false, :status => true, :icon => "", :color => "" }
       ])
     end
@@ -79,8 +79,8 @@ describe Clusterer do
 
       clusters = clusterer.clusters
 
-      clusters[:sites].should eq([{:id => 3, :lat => 34, :lng => 0, :highlighted => true}])
-      clusters[:clusters].should eq([
+      expect(clusters[:sites]).to eq([{:id => 3, :lat => 34, :lng => 0, :highlighted => true}])
+      expect(clusters[:clusters]).to eq([
         {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 0, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted => true, :alert => false, :status => true, :icon => "", :color => "" }
       ])
     end
@@ -93,8 +93,8 @@ describe Clusterer do
 
       clusters = clusterer.clusters
 
-      clusters[:sites].should eq([{:id => 3, :lat => 34, :lng => 0, :highlighted => true}])
-      clusters[:clusters].should eq([
+      expect(clusters[:sites]).to eq([{:id => 3, :lat => 34, :lng => 0, :highlighted => true}])
+      expect(clusters[:clusters]).to eq([
         {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 0, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted => true, :alert => false, :status => true, :icon => "", :color => "" }
       ])
     end
@@ -107,14 +107,14 @@ describe Clusterer do
       clusterer.add :id => 4, :lat => 20, :lng => 30
 
       clusters = clusterer.clusters
-      clusters[:sites].should eq(
+      expect(clusters[:sites]).to eq(
         [{:id=>1, :lat=>20, :lng=>30, :ghost_radius => 2*Math::PI/4 * 0 },
         {:id=>2, :lat=>20, :lng=>30, :ghost_radius => 2*Math::PI/4 * 1 },
         {:id=>3, :lat=>20, :lng=>30, :ghost_radius => 2*Math::PI/4 * 2 },
         {:id=>4, :lat=>20, :lng=>30, :ghost_radius => 2*Math::PI/4 * 3 }
         ])
-      clusters[:clusters].should be_nil
-      clusters[:original_ghost].should eq([{:lat => 20, :lng => 30}])
+      expect(clusters[:clusters]).to be_nil
+      expect(clusters[:original_ghost]).to eq([{:lat => 20, :lng => 30}])
 
     end
   
@@ -123,8 +123,8 @@ describe Clusterer do
       clusterer.add :id => 2, :lat => 21, :lng => 31, :collection_id => 1
 
       clusters = clusterer.clusters
-      clusters[:sites].should be_nil
-      clusters[:clusters].should eq([
+      expect(clusters[:sites]).to be_nil
+      expect(clusters[:clusters]).to eq([
         {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 1, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false, :alert => true, :status => false, :icon => "default", :color => ""}
       ])
     end
@@ -134,8 +134,8 @@ describe Clusterer do
       clusterer.add :id => 2, :lat => 21, :lng => 31, :collection_id => collection.id , :icon => 'cycling'
 
       clusters = clusterer.clusters
-      clusters[:sites].should be_nil
-      clusters[:clusters].should eq([
+      expect(clusters[:sites]).to be_nil
+      expect(clusters[:clusters]).to eq([
         {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 1, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false, :alert => true, :status => true, :icon => "cycling", :color => nil}
       ])
     end

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "delete_layer" do 
+describe "delete_layer", :type => :request do 
  
   it "should delete layer", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -19,6 +19,6 @@ describe "delete_layer" do
     page.driver.browser.switch_to.alert.accept
     sleep 2     
     page.save_screenshot 'Delete_layer.png'
-    page.should have_content "Layer 'Central Hospital Layer 1' successfully deleted"
+    expect(page).to have_content "Layer 'Central Hospital Layer 1' successfully deleted"
   end  
 end

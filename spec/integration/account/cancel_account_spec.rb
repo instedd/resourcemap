@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "cancel_account" do 
+describe "cancel_account", :type => :request do 
  
 it " should cancel account", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -15,6 +15,6 @@ it " should cancel account", js:true do
     page.driver.browser.switch_to.alert.accept 
     sleep 2
     page.save_screenshot 'Cancel_account.png'
-    page.should have_content 'Bye! Your account was successfully cancelled. We hope to see you again soon.'
+    expect(page).to have_content 'Bye! Your account was successfully cancelled. We hope to see you again soon.'
   end
 end

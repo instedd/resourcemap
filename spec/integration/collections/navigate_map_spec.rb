@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "navigate_map" do 
+describe "navigate_map", :type => :request do 
  
   it "should navigate map", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')

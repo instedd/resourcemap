@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "delete_site" do 
+describe "delete_site", :type => :request do 
  
   it "should delete site", js:true do
     user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -17,7 +17,7 @@ describe "delete_site" do
     page.driver.browser.switch_to.alert.accept 
     sleep 3
     page.save_screenshot "Delete_site.png"
-    page.should have_no_content ("Health Center")
+    expect(page).to have_no_content ("Health Center")
   end
 end
 

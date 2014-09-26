@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "add_custom_permissions" do 
+describe "add_custom_permissions", :type => :request do 
  
   it "should add custom permissions", js:true do
     admin = User.make(:email => 'admin@admin.com')
@@ -21,8 +21,8 @@ describe "add_custom_permissions" do
     page.find(:xpath, '//html/body/ul/li[1]/a').click
     page.find(:xpath, '//div[@class="frame"]/button[@class="clist-add"]').click
     sleep 3
-    page.should have_content 'Custom permissions for 1 site'
-    page.should have_content 'Clinica-2'
+    expect(page).to have_content 'Custom permissions for 1 site'
+    expect(page).to have_content 'Clinica-2'
     page.save_screenshot 'Add permissions.png'
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "create_snapshot_fail" do 
+describe "create_snapshot_fail", :type => :request do 
  
   it "should not take a snapshot", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -13,7 +13,7 @@ describe "create_snapshot_fail" do
     click_button 'Take new snapshot'
     sleep 2
   	page.save_screenshot 'Create_snapshot_fail.png'
-    page.should have_content "Name can't be blank"
-  	page.should have_content 'Snapshot could not be created'
+    expect(page).to have_content "Name can't be blank"
+  	expect(page).to have_content 'Snapshot could not be created'
   end
 end

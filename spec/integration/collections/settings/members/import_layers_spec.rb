@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "import_layer" do 
+describe "import_layer", :type => :request do 
  
   it "should create layer", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -20,9 +20,9 @@ describe "import_layer" do
    	sleep 1
     click_button 'Import'
     sleep 1
-    page.should have_content 'Imported layers from Central Hospital'
+    expect(page).to have_content 'Imported layers from Central Hospital'
     sleep 1
-   	page.should have_content "Central Hospital Layer 1 Field"
+   	expect(page).to have_content "Central Hospital Layer 1 Field"
    	page.save_screenshot "Import_layers.png"
   end
 end

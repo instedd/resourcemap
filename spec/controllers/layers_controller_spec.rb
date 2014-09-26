@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LayersController do
+describe LayersController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
@@ -18,29 +18,29 @@ describe LayersController do
 
       post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
 
-      response.should be_success
+      expect(response).to be_success
     end
   end
 
   it "should update field.layer_id" do
-    layer.fields.count.should eq(1)
+    expect(layer.fields.count).to eq(1)
     json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
 
     post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
 
-    layer.fields.count.should eq(0)
-    layer2.fields.count.should eq(1)
-    layer2.fields.first.name.should eq(numeric.name)
+    expect(layer.fields.count).to eq(0)
+    expect(layer2.fields.count).to eq(1)
+    expect(layer2.fields.first.name).to eq(numeric.name)
 
     histories = FieldHistory.where :field_id => numeric.id
 
-    histories.count.should eq(2)
+    expect(histories.count).to eq(2)
 
-    histories.first.layer_id.should eq(layer.id)
-    histories.first.valid_to.should_not be_nil
+    expect(histories.first.layer_id).to eq(layer.id)
+    expect(histories.first.valid_to).not_to be_nil
 
-    histories.last.valid_to.should be_nil
-    histories.last.layer_id.should eq(layer2.id)
+    expect(histories.last.valid_to).to be_nil
+    expect(histories.last.layer_id).to eq(layer2.id)
   end
 
   it "should update a layer's fields" do
@@ -48,9 +48,9 @@ describe LayersController do
 
     post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
 
-    response.should be_success
-    layer.fields.count.should eq(1)
-    layer.fields.first.name.should eq("New name")
+    expect(response).to be_success
+    expect(layer.fields.count).to eq(1)
+    expect(layer.fields.first.name).to eq("New name")
   end
 
   describe 'analytic' do
@@ -66,9 +66,9 @@ describe LayersController do
 
   it "shoud set order" do
     post :set_order, {ord: 2, collection_id: collection.id, id: layer.id}
-    response.should be_success
+    expect(response).to be_success
     layer.reload
-    layer.ord.should eq(2)
+    expect(layer.ord).to eq(2)
   end
 
   describe 'permissions' do
@@ -82,14 +82,14 @@ describe LayersController do
       get :index, collection_id: collection.id, format: 'json'
 
       json = JSON.parse response.body
-      json.length.should eq(0)
+      expect(json.length).to eq(0)
     end
 
     it 'should let admins see all layers' do
       get :index, collection_id: collection.id, format: 'json'
 
       json = JSON.parse response.body
-      json.length.should eq(2)
+      expect(json.length).to eq(2)
     end
 
     it 'should let a member see a layer when there is an explicit layer membership with read=true' do
@@ -99,8 +99,8 @@ describe LayersController do
       get :index, collection_id: collection.id, format: 'json'
       json = JSON.parse response.body
 
-      json.length.should eq(1)
-      json[0]['id'].should eq(layer.id)
+      expect(json.length).to eq(1)
+      expect(json[0]['id']).to eq(layer.id)
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "create_site" do 
+describe "create_site", :type => :request do 
  
   it "should create a site", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -14,6 +14,6 @@ describe "create_site" do
   	click_button 'Done'
   	sleep 5
   	page.save_screenshot 'Create site.png'
-  	page.should have_content "Site 'New site' successfully created"
+  	expect(page).to have_content "Site 'New site' successfully created"
   end
 end

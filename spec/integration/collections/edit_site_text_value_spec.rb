@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "collections" do 
+describe "collections", :type => :request do 
  
   it "should edit site Text values", js:true do   
     
@@ -20,8 +20,8 @@ describe "collections" do
     fill_in 'value', :with => 'Prueba'
     click_button 'Done'
     sleep 3 
-    page.should_not have_content 'one text'
-    page.should have_content 'Prueba'
+    expect(page).not_to have_content 'one text'
+    expect(page).to have_content 'Prueba'
     page.save_screenshot "Edit_site_Text_value.png"
   end
 end

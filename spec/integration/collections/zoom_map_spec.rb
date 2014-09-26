@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "zoom in and out" do 
+describe "zoom in and out", :type => :request do 
  
   it "should zoom in and out", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "collections" do 
+describe "collections", :type => :request do 
  
   it "should edit site Text values", js:true do   
     
@@ -20,7 +20,7 @@ describe "collections" do
     fill_in 'valueUI', :with => '12/7/2013'
     click_button 'Done'
     sleep 3 
-    page.should have_content '12/7/2013'
+    expect(page).to have_content '12/7/2013'
     page.save_screenshot "Edit_site_Date_value.png"
   end
 end

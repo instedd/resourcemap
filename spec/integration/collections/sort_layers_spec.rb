@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "layers" do 
+describe "layers", :type => :request do 
  
   it "should sort layer", js:true do
     user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -17,7 +17,7 @@ describe "layers" do
     click_link "Layers"
     click_button "Move layer down"
     page.find(:xpath, '//div[@id="layers-main"]/div[1]/button').click
-    page.should have_content layers[0]
+    expect(page).to have_content layers[0]
     page.save_screenshot 'Sort_layer.png'
   end
 

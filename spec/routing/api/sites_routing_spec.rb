@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe "routes for Sites Api" do
+describe "routes for Sites Api", :type => :routing do
   it "should route to show site" do
-    get("/api/sites/1.rss").
-      should route_to(
+    expect(get("/api/sites/1.rss")).
+      to route_to(
         controller: 'api/sites', 
         action: 'show', 
         id: '1',

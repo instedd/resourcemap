@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "bulk_upload" do 
+describe "bulk_upload", :type => :request do 
  
   it "should upload a bulk for a collection", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -30,7 +30,7 @@ describe "bulk_upload" do
 
     click_button "Start importing"
     sleep 3
-    page.should have_content "Importing"
+    expect(page).to have_content "Importing"
 
     # click_link ('Collections')
     # sleep 30

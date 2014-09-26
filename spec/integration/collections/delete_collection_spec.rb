@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "delete_collection" do 
+describe "delete_collection", :type => :request do 
  
   it "should delete a collection", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -12,6 +12,6 @@ describe "delete_collection" do
   	click_link "Delete collection"
   	click_link "Confirm"
   	page.save_screenshot "Delete Collection.png"
-  	page.should have_content "Collection Central Hospital deleted"
+  	expect(page).to have_content "Collection Central Hospital deleted"
   end
 end

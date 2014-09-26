@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Membership::Anonymous do
+describe Membership::Anonymous, :type => :model do
   let(:user) { User.make }
   let(:collection) { user.create_collection(Collection.make_unsaved) }
   let(:anonymous) { Membership::Anonymous.new collection, user }
@@ -15,7 +15,7 @@ describe Membership::Anonymous do
   ['name', 'location'].each do |builtin_field|
     describe "##{builtin_field}_default_permission" do
       subject { anonymous.send("#{builtin_field}_permission") }
-      it { should eq('none') }
+      it { is_expected.to eq('none') }
     end
   end
 
@@ -29,12 +29,12 @@ describe Membership::Anonymous do
 
     it "should be false" do
       layers_matching = subject.select{|l| l[:layer_id] == layer.id}
-      layers_matching.length.should eq(1)
+      expect(layers_matching.length).to eq(1)
 
       layer_json = layers_matching[0]
 
-      layer_json[:read].should eq(false)
-      layer_json[:write].should eq(false)
+      expect(layer_json[:read]).to eq(false)
+      expect(layer_json[:write]).to eq(false)
     end
   end
 
@@ -49,11 +49,11 @@ describe Membership::Anonymous do
 
       it "should have #{level}able permissions" do
         layers_matching = subject.select{|l| l[:layer_id] == layer.id}
-        layers_matching.length.should eq(1)
+        expect(layers_matching.length).to eq(1)
 
         layer_json = layers_matching[0]
-        layer_json[:read].should eq(level == "read")
-        layer_json[:write].should eq(level == "false")
+        expect(layer_json[:read]).to eq(level == "read")
+        expect(layer_json[:write]).to eq(level == "false")
       end
     end
   end
@@ -66,9 +66,9 @@ describe Membership::Anonymous do
         anonymous.activity_user = user
         anonymous.set_layer_access(layer.id, "read", access)
         if (access == "true")
-          anonymous.layer_access(layer.id).should eq("read")
+          expect(anonymous.layer_access(layer.id)).to eq("read")
         else
-          anonymous.layer_access(layer.id).should eq("none")
+          expect(anonymous.layer_access(layer.id)).to eq("none")
         end
       end
     end
@@ -81,7 +81,7 @@ describe Membership::Anonymous do
           it '' do
             anonymous.activity_user = user
             anonymous.set_access(object,level)
-            anonymous.send("#{object}_permission").should eq(level)
+            expect(anonymous.send("#{object}_permission")).to eq(level)
           end
         end
       end

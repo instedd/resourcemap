@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "create_collection" do 
+describe "create_collection", :type => :request do 
  
   it "should not create a collection", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -11,6 +11,6 @@ describe "create_collection" do
   	click_button "Save"
   	sleep 1
   	page.save_screenshot "Create Collection_fail.png"
-  	page.should have_content("Name can't be blank")
+  	expect(page).to have_content("Name can't be blank")
   end
 end

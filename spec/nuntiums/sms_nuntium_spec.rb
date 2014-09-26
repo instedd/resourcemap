@@ -4,8 +4,8 @@ describe SmsNuntium do
   let(:collection) { Collection.make }
   it 'should send sms to correct user' do
     nuntium = double("Nuntium")
-    Nuntium.should_receive(:new_from_config).and_return(nuntium)
-    nuntium.should_receive(:send_ao).with([{:from =>"resourcemap", :to => "sms://855123456789", :body => "alert", :suggested_channel => "testing" }])
+    expect(Nuntium).to receive(:new_from_config).and_return(nuntium)
+    expect(nuntium).to receive(:send_ao).with([{:from =>"resourcemap", :to => "sms://855123456789", :body => "alert", :suggested_channel => "testing" }])
     SmsNuntium.notify_sms [users.phone_number], "alert", "testing", collection.id
   end
 end

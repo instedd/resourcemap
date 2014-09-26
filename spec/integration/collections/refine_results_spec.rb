@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "refine_results" do 
+describe "refine_results", :type => :request do 
  
   it "refine results", js:true do
     
@@ -14,7 +14,7 @@ describe "refine_results" do
     page.find(:xpath, '//div[@class="refine-popup box"]/div[@id="div"][2]/span').click
     page.find(:xpath, '//div[@class="refine-popup box"]/div[@id="div"][2]/div[@id="div"]/a[@class="white button"]').click
     sleep 2
-    page.should have_content 'Show sites with location missing'
+    expect(page).to have_content 'Show sites with location missing'
     sleep 2
     page.save_screenshot('Refine results.png')
   end

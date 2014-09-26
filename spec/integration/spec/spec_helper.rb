@@ -9,7 +9,7 @@ def acceptance_test(options ={},  &block)
   name = caller[0]
   name = /.*(\/|\\)(.*)\.rb/.
   match(name)[2].gsub('_', ' ')
-  describe name do
+  describe name, :type => :request do
     include AccountHelper
     include CollectionsHelper
     include SeleniumHelper

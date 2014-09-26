@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SitesPermission do
-  it { should belong_to :membership }
+describe SitesPermission, :type => :model do
+  it { is_expected.to belong_to :membership }
 
   describe "convert to json" do
     its(:to_json) { should_not include "\"id\":" }

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe ElasticSearch::SitesAdapter do
+describe ElasticSearch::SitesAdapter, :type => :model do
   it "adapts one site" do
     listener = double('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => []
+    expect(listener).to receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => []
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
@@ -31,7 +31,7 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts one site without conflicting on properties" do
     listener = double('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => []
+    expect(listener).to receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => []
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
@@ -59,8 +59,8 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts two sites" do
     listener = double('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => []
-    listener.should_receive(:add).with :id => 181985, :lat => -47.55442222700955, :lng => 137.5797882218185, :collection_id => 63, :property => []
+    expect(listener).to receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => []
+    expect(listener).to receive(:add).with :id => 181985, :lat => -47.55442222700955, :lng => 137.5797882218185, :collection_id => 63, :property => []
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.parse %(
@@ -93,7 +93,7 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts one site with numeric property on demand" do
     listener = double('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75"]
+    expect(listener).to receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75"]
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.return_property 'vaccines'
@@ -122,7 +122,7 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts one site with numeric property on demand works ok with array in other property" do
     listener = double('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75"]
+    expect(listener).to receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75"]
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.return_property 'vaccines'
@@ -151,7 +151,7 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts one site with numeric property on demand works ok if the property we are looking for is inside sequence" do
     listener = double('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75"]
+    expect(listener).to receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75"]
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.return_property 'vaccines'
@@ -180,7 +180,7 @@ describe ElasticSearch::SitesAdapter do
 
   it "adapts one site with numeric property on demand works ok if the property we are looking has multi values" do
     listener = double('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75", "76"]
+    expect(listener).to receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75", "76"]
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.return_property 'vaccines'
@@ -210,8 +210,8 @@ describe ElasticSearch::SitesAdapter do
 
   it "should not repeat when parsing more than one site" do
     listener = double('listener')
-    listener.should_receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75", "76"]
-    listener.should_receive(:add).with :id => 181985, :lat => -35.55442222700955, :lng => 124.5797882218185, :collection_id => 63, :property => ["75"]
+    expect(listener).to receive(:add).with :id => 181984, :lat => -37.55442222700955, :lng => 136.5797882218185, :collection_id => 63, :property => ["75", "76"]
+    expect(listener).to receive(:add).with :id => 181985, :lat => -35.55442222700955, :lng => 124.5797882218185, :collection_id => 63, :property => ["75"]
 
     adapter = ElasticSearch::SitesAdapter.new listener
     adapter.return_property 'vaccines'
@@ -250,14 +250,14 @@ describe ElasticSearch::SitesAdapter do
   context ElasticSearch::SitesAdapter::SkipIdListener do
     it "skips id" do
       listener = double('listener')
-      listener.should_not_receive(:add)
+      expect(listener).not_to receive(:add)
       skip = ElasticSearch::SitesAdapter::SkipIdListener.new listener, 1
       skip.add :id => 1
     end
 
     it "doesn't skip id" do
       listener = double('listener')
-      listener.should_receive(:add).with :id => 2
+      expect(listener).to receive(:add).with :id => 2
       skip = ElasticSearch::SitesAdapter::SkipIdListener.new listener, 1
       skip.add :id => 2
     end

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "snapshots" do 
+describe "snapshots", :type => :request do 
  
   it "should not edit site using snapshot", js:true do
     # p "This test fails because https://github.com/instedd/resourcemap/issues/401"
@@ -16,7 +16,7 @@ describe "snapshots" do
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr/td/div[2]/button').click
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     sleep 3
-    page.should_not have_content "Edit"
+    expect(page).not_to have_content "Edit"
     sleep 2
     page.has_content? "You are currently viewing this collection's data as it was on snapshot mina. Go back to present "
     # page.should have_content "You are currently viewing this collection's data as it was on snapshot mina. Go back to present"

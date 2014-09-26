@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "collections" do 
+describe "collections", :type => :request do 
  
   it "should edit site Numeric values", js:true do   
     
@@ -20,8 +20,8 @@ describe "collections" do
     fill_in 'numeric-input-numeric', :with => '1234567890'
     click_button 'Done'
     sleep 3 
-    page.should_not have_content '876'
-    page.should have_content '1234567890'
+    expect(page).not_to have_content '876'
+    expect(page).to have_content '1234567890'
     page.save_screenshot "Edit_site_Numeric_value.png"
   end
 end

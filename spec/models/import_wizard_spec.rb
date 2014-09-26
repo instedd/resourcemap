@@ -1,7 +1,7 @@
 # encoding: UTF-8
 require 'spec_helper'
 
-describe ImportWizard do
+describe ImportWizard, :type => :model do
   let!(:user) { User.make }
 
   let!(:collection) { user.create_collection Collection.make_unsaved }
@@ -40,23 +40,23 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(2)
-    layers[1].name.should eq('Import wizard')
+    expect(layers.length).to eq(2)
+    expect(layers[1].name).to eq('Import wizard')
 
     fields = layers[1].fields
-    fields.length.should eq(1)
-    fields[0].name.should eq('The beds')
-    fields[0].code.should eq('beds')
-    fields[0].kind.should eq('numeric')
+    expect(fields.length).to eq(1)
+    expect(fields[0].name).to eq('The beds')
+    expect(fields[0].code).to eq('beds')
+    expect(fields[0].kind).to eq('numeric')
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({fields[0].es_code => 10})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({fields[0].es_code => 10})
 
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({fields[0].es_code => 20})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({fields[0].es_code => 20})
   end
 
   it "imports with a new numeric field that allows decimal numbers" do
@@ -79,24 +79,24 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(2)
-    layers[1].name.should eq('Import wizard')
+    expect(layers.length).to eq(2)
+    expect(layers[1].name).to eq('Import wizard')
 
     fields = layers[1].fields
-    fields.length.should eq(1)
-    fields[0].name.should eq('The beds')
-    fields[0].code.should eq('beds')
-    fields[0].kind.should eq('numeric')
-    fields[0].allow_decimals?.should be_truthy
+    expect(fields.length).to eq(1)
+    expect(fields[0].name).to eq('The beds')
+    expect(fields[0].code).to eq('beds')
+    expect(fields[0].kind).to eq('numeric')
+    expect(fields[0].allow_decimals?).to be_truthy
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({fields[0].es_code => 10.151})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({fields[0].es_code => 10.151})
 
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({fields[0].es_code => 20.223})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({fields[0].es_code => 20.223})
   end
 
 
@@ -118,12 +118,12 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     collection.reload
-    collection.min_lat.to_f.should eq(30.0)
-    collection.max_lat.to_f.should eq(45.0)
-    collection.min_lng.to_f.should eq(20.0)
-    collection.max_lng.to_f.should eq(40.0)
-    collection.lat.to_f.should eq(37.5)
-    collection.lng.to_f.should eq(30.0)
+    expect(collection.min_lat.to_f).to eq(30.0)
+    expect(collection.max_lat.to_f).to eq(45.0)
+    expect(collection.min_lng.to_f).to eq(20.0)
+    expect(collection.max_lng.to_f).to eq(40.0)
+    expect(collection.lat.to_f).to eq(37.5)
+    expect(collection.lng.to_f).to eq(30.0)
   end
 
   it "imports with name, lat, lon and one new numeric property and existing ID" do
@@ -149,25 +149,25 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(2)
-    layers[1].name.should eq('Import wizard')
+    expect(layers.length).to eq(2)
+    expect(layers[1].name).to eq('Import wizard')
 
     fields = layers[1].fields
-    fields.length.should eq(1)
-    fields[0].name.should eq('The beds')
-    fields[0].code.should eq('beds')
-    fields[0].kind.should eq('numeric')
+    expect(fields.length).to eq(1)
+    expect(fields[0].name).to eq('The beds')
+    expect(fields[0].code).to eq('beds')
+    expect(fields[0].kind).to eq('numeric')
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
     site1.reload
-    site1.name.should eq('Foo')
-    site1.properties.should eq({fields[0].es_code => 10, text.es_code => 'coco'})
+    expect(site1.name).to eq('Foo')
+    expect(site1.properties).to eq({fields[0].es_code => 10, text.es_code => 'coco'})
 
     site2.reload
-    site2.name.should eq('Bar')
-    site2.properties.should eq({fields[0].es_code => 20, text.es_code => 'lala'})
+    expect(site2.name).to eq('Bar')
+    expect(site2.properties).to eq({fields[0].es_code => 20, text.es_code => 'lala'})
   end
 
   it "imports with name, lat, lon and one new numeric property and existing ID empty" do
@@ -189,20 +189,20 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(2)
-    layers[1].name.should eq('Import wizard')
+    expect(layers.length).to eq(2)
+    expect(layers[1].name).to eq('Import wizard')
 
     fields = layers[1].fields
-    fields.length.should eq(1)
-    fields[0].name.should eq('The beds')
-    fields[0].code.should eq('beds')
-    fields[0].kind.should eq('numeric')
+    expect(fields.length).to eq(1)
+    expect(fields[0].name).to eq('The beds')
+    expect(fields[0].code).to eq('beds')
+    expect(fields[0].kind).to eq('numeric')
 
     sites = collection.sites.reload
-    sites.length.should eq(1)
+    expect(sites.length).to eq(1)
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({fields[0].es_code => 10})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({fields[0].es_code => 10})
   end
 
   it "New sites are created when importing and using rows with no value(nil) or blank space in resmap-id column" do
@@ -226,24 +226,24 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(2)
-    layers[1].name.should eq('Import wizard')
+    expect(layers.length).to eq(2)
+    expect(layers[1].name).to eq('Import wizard')
 
     fields = layers[1].fields
-    fields.length.should eq(2)
-    fields[0].name.should eq('The beds')
-    fields[0].code.should eq('beds')
-    fields[0].kind.should eq('numeric')
+    expect(fields.length).to eq(2)
+    expect(fields[0].name).to eq('The beds')
+    expect(fields[0].code).to eq('beds')
+    expect(fields[0].kind).to eq('numeric')
 
     sites = collection.sites.reload
-    sites.length.should eq(3)
+    expect(sites.length).to eq(3)
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({fields[0].es_code => 1,fields[1].es_code => 1})
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({fields[0].es_code => 10,fields[1].es_code => 10})
-    sites[2].name.should eq('Fin de semana')
-    sites[2].properties.should eq({fields[0].es_code => 20,fields[1].es_code => 20})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({fields[0].es_code => 1,fields[1].es_code => 1})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({fields[0].es_code => 10,fields[1].es_code => 10})
+    expect(sites[2].name).to eq('Fin de semana')
+    expect(sites[2].properties).to eq({fields[0].es_code => 20,fields[1].es_code => 20})
   end
 
   it "imports by downloading and uploading an empty collection with numeric field" do
@@ -252,7 +252,7 @@ describe ImportWizard do
     ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
     processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
-    processed_sites[:errors][:data_errors].count.should eq(0)
+    expect(processed_sites[:errors][:data_errors].count).to eq(0)
   end
 
   it "imports with new select one mapped to both code and label" do
@@ -273,22 +273,22 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(2)
-    layers[1].name.should eq('Import wizard')
+    expect(layers.length).to eq(2)
+    expect(layers[1].name).to eq('Import wizard')
 
     fields = layers[1].fields
-    fields.length.should eq(1)
-    fields[0].name.should eq('The visibility')
-    fields[0].code.should eq('visibility')
-    fields[0].kind.should eq('select_one')
-    fields[0].config.should eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => 'public', 'label' => 'public'}, {'id' => 2, 'code' => 'private', 'label' => 'private'}])
+    expect(fields.length).to eq(1)
+    expect(fields[0].name).to eq('The visibility')
+    expect(fields[0].code).to eq('visibility')
+    expect(fields[0].kind).to eq('select_one')
+    expect(fields[0].config).to eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => 'public', 'label' => 'public'}, {'id' => 2, 'code' => 'private', 'label' => 'private'}])
 
     sites = collection.sites.reload
-    sites.length.should eq(3)
+    expect(sites.length).to eq(3)
 
-    sites[0].properties.should eq({fields[0].es_code => 1})
-    sites[1].properties.should eq({fields[0].es_code => 2})
-    sites[2].properties.should eq({fields[0].es_code => 2})
+    expect(sites[0].properties).to eq({fields[0].es_code => 1})
+    expect(sites[1].properties).to eq({fields[0].es_code => 2})
+    expect(sites[2].properties).to eq({fields[0].es_code => 2})
   end
 
   it "imports with two new select ones mapped to code and label" do
@@ -310,22 +310,22 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(2)
-    layers[1].name.should eq('Import wizard')
+    expect(layers.length).to eq(2)
+    expect(layers[1].name).to eq('Import wizard')
 
     fields = layers[1].fields
-    fields.length.should eq(1)
-    fields[0].name.should eq('The visibility')
-    fields[0].code.should eq('visibility')
-    fields[0].kind.should eq('select_one')
-    fields[0].config.should eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => '1', 'label' => 'public'}, {'id' => 2, 'code' => '0', 'label' => 'private'}])
+    expect(fields.length).to eq(1)
+    expect(fields[0].name).to eq('The visibility')
+    expect(fields[0].code).to eq('visibility')
+    expect(fields[0].kind).to eq('select_one')
+    expect(fields[0].config).to eq('next_id' => 3, 'options' => [{'id' => 1, 'code' => '1', 'label' => 'public'}, {'id' => 2, 'code' => '0', 'label' => 'private'}])
 
     sites = collection.sites.reload
-    sites.length.should eq(3)
+    expect(sites.length).to eq(3)
 
-    sites[0].properties.should eq({fields[0].es_code => 1})
-    sites[1].properties.should eq({fields[0].es_code => 2})
-    sites[2].properties.should eq({fields[0].es_code => 2})
+    expect(sites[0].properties).to eq({fields[0].es_code => 1})
+    expect(sites[1].properties).to eq({fields[0].es_code => 2})
+    expect(sites[2].properties).to eq({fields[0].es_code => 2})
   end
 
   it "imports with name and existing text property" do
@@ -344,16 +344,16 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.should eq([layer])
+    expect(collection.layers).to eq([layer])
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({text.es_code => 'hi'})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({text.es_code => 'hi'})
 
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({text.es_code => 'bye'})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({text.es_code => 'bye'})
   end
 
   it "imports with name and existing numeric property" do
@@ -372,16 +372,16 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.should eq([layer])
+    expect(collection.layers).to eq([layer])
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({numeric.es_code => 10})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({numeric.es_code => 10})
 
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({numeric.es_code => 20})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({numeric.es_code => 20})
   end
 
   it "imports with name and existing select_one property" do
@@ -400,16 +400,16 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.should eq([layer])
+    expect(collection.layers).to eq([layer])
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({select_one.es_code => 1})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({select_one.es_code => 1})
 
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({select_one.es_code => 2})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({select_one.es_code => 2})
   end
 
   it "imports with name and existing select_many property" do
@@ -428,16 +428,16 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.should eq([layer])
+    expect(collection.layers).to eq([layer])
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({select_many.es_code => [1]})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({select_many.es_code => [1]})
 
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({select_many.es_code => [1, 2]})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({select_many.es_code => [1, 2]})
   end
 
   it "should also update hierarchy fields in bulk update using name" do
@@ -455,14 +455,14 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.should eq([layer])
+    expect(collection.layers).to eq([layer])
     sites = collection.sites.reload
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({hierarchy.es_code => "100"})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({hierarchy.es_code => "100"})
 
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({hierarchy.es_code => "101"})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({hierarchy.es_code => "101"})
   end
 
   it "should update hierarchy fields in bulk update using id" do
@@ -480,14 +480,14 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.should eq([layer])
+    expect(collection.layers).to eq([layer])
     sites = collection.sites.reload
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({hierarchy.es_code => "100"})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({hierarchy.es_code => "100"})
 
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({hierarchy.es_code => "101"})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({hierarchy.es_code => "101"})
   end
 
   it "imports with name and existing date property" do
@@ -506,16 +506,16 @@ describe ImportWizard do
      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
      ImportWizard.execute user, collection, specs
 
-     collection.layers.should eq([layer])
+     expect(collection.layers).to eq([layer])
 
      sites = collection.sites.reload
-     sites.length.should eq(2)
+     expect(sites.length).to eq(2)
 
-     sites[0].name.should eq('Foo')
-     sites[0].properties.should eq({date.es_code => "2012-12-24T00:00:00Z"})
+     expect(sites[0].name).to eq('Foo')
+     expect(sites[0].properties).to eq({date.es_code => "2012-12-24T00:00:00Z"})
 
-     sites[1].name.should eq('Bar')
-     sites[1].properties.should eq({date.es_code => "2033-10-23T00:00:00Z"})
+     expect(sites[1].name).to eq('Bar')
+     expect(sites[1].properties).to eq({date.es_code => "2033-10-23T00:00:00Z"})
   end
 
   it "imports with name and existing site property" do
@@ -536,15 +536,15 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.should eq([layer])
+    expect(collection.layers).to eq([layer])
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
-    sites[0].name.should eq('Site1')
+    expect(sites[0].name).to eq('Site1')
 
-    sites[1].name.should eq('Foo')
-    sites[1].properties.should eq({site.es_code => "123"})
+    expect(sites[1].name).to eq('Foo')
+    expect(sites[1].properties).to eq({site.es_code => "123"})
   end
 
   it "should update all property values" do
@@ -586,18 +586,18 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(1)
-    layers[0].name.should eq(layer.name)
+    expect(layers.length).to eq(1)
+    expect(layers[0].name).to eq(layer.name)
 
     fields = layers[0].fields
-    fields.length.should eq(9)
+    expect(fields.length).to eq(9)
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
     site1.reload
-    site1.name.should eq('Foo new')
-    site1.properties.should eq({
+    expect(site1.name).to eq('Foo new')
+    expect(site1.properties).to eq({
       text.es_code => 'new val',
       numeric.es_code => 11,
       yes_no.es_code => false,
@@ -610,8 +610,8 @@ describe ImportWizard do
     })
 
     site2.reload
-    site2.name.should eq('Bar old')
-    site2.properties.should eq({text.es_code => 'lala'})
+    expect(site2.name).to eq('Bar old')
+    expect(site2.properties).to eq({text.es_code => 'lala'})
   end
 
   it "should delete all property values with empty strings" do
@@ -651,22 +651,22 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(1)
-    layers[0].name.should eq(layer.name)
+    expect(layers.length).to eq(1)
+    expect(layers[0].name).to eq(layer.name)
 
     fields = layers[0].fields
-    fields.length.should eq(9)
+    expect(fields.length).to eq(9)
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
     site1.reload
-    site1.name.should eq('Foo old')
-    site1.properties.should eq({})
+    expect(site1.name).to eq('Foo old')
+    expect(site1.properties).to eq({})
 
     site2.reload
-    site2.name.should eq('Bar old')
-    site2.properties.should eq({text.es_code => 'lala'})
+    expect(site2.name).to eq('Bar old')
+    expect(site2.properties).to eq({text.es_code => 'lala'})
   end
 
 
@@ -707,22 +707,22 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(1)
-    layers[0].name.should eq(layer.name)
+    expect(layers.length).to eq(1)
+    expect(layers[0].name).to eq(layer.name)
 
     fields = layers[0].fields
-    fields.length.should eq(9)
+    expect(fields.length).to eq(9)
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
     site1.reload
-    site1.name.should eq('Foo old')
-    site1.properties.should eq({})
+    expect(site1.name).to eq('Foo old')
+    expect(site1.properties).to eq({})
 
     site2.reload
-    site2.name.should eq('Bar old')
-    site2.properties.should eq({text.es_code => 'lala'})
+    expect(site2.name).to eq('Bar old')
+    expect(site2.properties).to eq({text.es_code => 'lala'})
   end
 
   it "should not create a new hierarchy field in import wizard" do
@@ -769,24 +769,24 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(2)
+    expect(layers.length).to eq(2)
 
     new_layer = layers.detect{|l| l.name == "Import wizard"}
 
     fields = new_layer.fields
-    fields.length.should eq(10)
+    expect(fields.length).to eq(10)
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
     site1.reload
-    site1.name.should eq('Foo new')
-    site1.properties.length.should eq(10)
-    site1.properties[yes_no.es_code].should be_falsey
+    expect(site1.name).to eq('Foo new')
+    expect(site1.properties.length).to eq(10)
+    expect(site1.properties[yes_no.es_code]).to be_falsey
 
     site2.reload
-    site2.name.should eq('Bar old')
-    site2.properties.should eq({})
+    expect(site2.name).to eq('Bar old')
+    expect(site2.properties).to eq({})
   end
 
   it "should guess column spec for existing fields" do
@@ -800,21 +800,21 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
 
-    column_spec.length.should eq(13)
+    expect(column_spec.length).to eq(13)
 
-    column_spec.should include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
-    column_spec.should include({:header=>"Name", :kind=>:name, :use_as=>:name})
-    column_spec.should include({:header=>"Lat", :kind=>:location, :use_as=>:lat})
-    column_spec.should include({:header=>"Lon", :kind=>:location, :use_as=>:lng})
-    column_spec.should include({:header=>"text", :kind=>:text, :code=>"text", :label=>"Text", :use_as=>:existing_field, :field_id=>text.id, :layer_id=>layer.id})
-    column_spec.should include({:header=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :use_as=>:existing_field, :field_id=>numeric.id, :layer_id=>layer.id})
-    column_spec.should include({:header=>"select_one", :kind=>:select_one, :code=>"select_one", :label=>"Select One", :use_as=>:existing_field, :field_id=>select_one.id, :layer_id=>layer.id})
-    column_spec.should include({:header=>"select_many", :kind=>:select_many, :code=>"select_many", :label=>"Select Many", :use_as=>:existing_field, :field_id=>select_many.id, :layer_id=>layer.id})
-    column_spec.should include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :field_id=>hierarchy.id, :layer_id=>layer.id})
-    column_spec.should include({:header=>"site", :kind=>:site, :code=>"site", :label=>"Site", :use_as=>:existing_field, :field_id=>site.id, :layer_id=>layer.id})
-    column_spec.should include({:header=>"date", :kind=>:date, :code=>"date", :label=>"Date", :use_as=>:existing_field, :field_id=>date.id, :layer_id=>layer.id})
-    column_spec.should include({:header=>"user", :kind=>:user, :code=>"user", :label=>"User", :use_as=>:existing_field, :field_id=>director.id, :layer_id=>layer.id})
-    column_spec.should include({:header=>"email", :kind=>:email, :code=>"email", :label=>"Email", :use_as=>:existing_field, :field_id=>email_field.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
+    expect(column_spec).to include({:header=>"Name", :kind=>:name, :use_as=>:name})
+    expect(column_spec).to include({:header=>"Lat", :kind=>:location, :use_as=>:lat})
+    expect(column_spec).to include({:header=>"Lon", :kind=>:location, :use_as=>:lng})
+    expect(column_spec).to include({:header=>"text", :kind=>:text, :code=>"text", :label=>"Text", :use_as=>:existing_field, :field_id=>text.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"Numeric", :use_as=>:existing_field, :field_id=>numeric.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"select_one", :kind=>:select_one, :code=>"select_one", :label=>"Select One", :use_as=>:existing_field, :field_id=>select_one.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"select_many", :kind=>:select_many, :code=>"select_many", :label=>"Select Many", :use_as=>:existing_field, :field_id=>select_many.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :field_id=>hierarchy.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"site", :kind=>:site, :code=>"site", :label=>"Site", :use_as=>:existing_field, :field_id=>site.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"date", :kind=>:date, :code=>"date", :label=>"Date", :use_as=>:existing_field, :field_id=>date.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"user", :kind=>:user, :code=>"user", :label=>"User", :use_as=>:existing_field, :field_id=>director.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"email", :kind=>:email, :code=>"email", :label=>"Email", :use_as=>:existing_field, :field_id=>email_field.id, :layer_id=>layer.id})
 
     ImportWizard.delete_files(user, collection)
   end
@@ -829,7 +829,7 @@ describe ImportWizard do
     column_spec = ImportWizard.guess_columns_spec user, collection
     processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
     sites_preview = processed_sites[:sites]
-    sites_preview.length.should eq(0)
+    expect(sites_preview.length).to eq(0)
   end
 
   it "should not fail when there is no data in the csv (2)" do
@@ -838,7 +838,7 @@ describe ImportWizard do
     column_spec = ImportWizard.guess_columns_spec user, collection
     processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
     sites_preview = processed_sites[:sites]
-    sites_preview.length.should eq(0)
+    expect(sites_preview.length).to eq(0)
   end
 
   it "should get sites & errors for invalid existing fields" do
@@ -857,59 +857,59 @@ describe ImportWizard do
     processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
     sites_preview = processed_sites[:sites]
 
-    sites_preview.length.should eq(3)
+    expect(sites_preview.length).to eq(3)
     first_line = sites_preview.first
-    first_line.should == [{:value=>"new val"}, {value: '11'}, {:value=>"two"}, {:value=>"one"}, {:value=>"60"},
-      {:value=>"1235"}, {:value=>"12/26/1988"}, {:value=>"user2@email.com"}, {:value=>"email@mail.com"}]
+    expect(first_line).to eq([{:value=>"new val"}, {value: '11'}, {:value=>"two"}, {:value=>"one"}, {:value=>"60"},
+      {:value=>"1235"}, {:value=>"12/26/1988"}, {:value=>"user2@email.com"}, {:value=>"email@mail.com"}])
 
     #Lines 2 and 3 are equals
     second_line = sites_preview.last
-    second_line.should  == [{:value=>"new val"}, {:value=>"invalid11"}, {:value=>"inval"}, {:value=>"60, inv"}, {:value=>"inval"},
-      {:value=>"999"}, {:value=>"12/26"}, {:value=>"non-existing@email.com"}, {:value=>"email@ma@il.com"}]
+    expect(second_line).to  eq([{:value=>"new val"}, {:value=>"invalid11"}, {:value=>"inval"}, {:value=>"60, inv"}, {:value=>"inval"},
+      {:value=>"999"}, {:value=>"12/26"}, {:value=>"non-existing@email.com"}, {:value=>"email@ma@il.com"}])
 
     sites_errors = processed_sites[:errors]
 
     data_errors = sites_errors[:data_errors]
-    data_errors.length.should eq(8)
+    expect(data_errors.length).to eq(8)
 
-    data_errors[0][:description].should eq("Some of the values in field 'numeric' (2nd column) are not valid for the type numeric.")
-    data_errors[0][:type].should eq('numeric values')
-    data_errors[0][:column].should eq(1)
-    data_errors[0][:rows].should eq([1, 2])
+    expect(data_errors[0][:description]).to eq("Some of the values in field 'numeric' (2nd column) are not valid for the type numeric.")
+    expect(data_errors[0][:type]).to eq('numeric values')
+    expect(data_errors[0][:column]).to eq(1)
+    expect(data_errors[0][:rows]).to eq([1, 2])
 
-    data_errors[1][:description].should eq("Some of the values in field 'select_one' (3rd column) don't match any existing option.")
-    data_errors[1][:column].should eq(2)
-    data_errors[1][:type].should eq('option values')
-    data_errors[1][:rows].should eq([1, 2])
+    expect(data_errors[1][:description]).to eq("Some of the values in field 'select_one' (3rd column) don't match any existing option.")
+    expect(data_errors[1][:column]).to eq(2)
+    expect(data_errors[1][:type]).to eq('option values')
+    expect(data_errors[1][:rows]).to eq([1, 2])
 
-    data_errors[2][:description].should eq("Some of the values in field 'select_many' (4th column) don't match any existing option.")
-    data_errors[2][:column].should eq(3)
-    data_errors[2][:type].should eq('option values')
-    data_errors[2][:rows].should eq([1, 2])
+    expect(data_errors[2][:description]).to eq("Some of the values in field 'select_many' (4th column) don't match any existing option.")
+    expect(data_errors[2][:column]).to eq(3)
+    expect(data_errors[2][:type]).to eq('option values')
+    expect(data_errors[2][:rows]).to eq([1, 2])
 
-    data_errors[3][:description].should eq("Some of the values in field 'hierarchy' (5th column) don't exist in the corresponding hierarchy.")
-    data_errors[3][:column].should eq(4)
-    data_errors[3][:type].should eq('values that can be found in the defined hierarchy')
-    data_errors[3][:rows].should eq([1, 2])
+    expect(data_errors[3][:description]).to eq("Some of the values in field 'hierarchy' (5th column) don't exist in the corresponding hierarchy.")
+    expect(data_errors[3][:column]).to eq(4)
+    expect(data_errors[3][:type]).to eq('values that can be found in the defined hierarchy')
+    expect(data_errors[3][:rows]).to eq([1, 2])
 
-    data_errors[4][:description].should eq("Some of the values in field 'site' (6th column) don't match any existing site id in this collection.")
-    data_errors[4][:column].should eq(5)
-    data_errors[4][:rows].should eq([1, 2])
+    expect(data_errors[4][:description]).to eq("Some of the values in field 'site' (6th column) don't match any existing site id in this collection.")
+    expect(data_errors[4][:column]).to eq(5)
+    expect(data_errors[4][:rows]).to eq([1, 2])
 
-    data_errors[5][:description].should eq("Some of the values in field 'date' (7th column) are not valid for the type date.")
-    data_errors[5][:column].should eq(6)
-    data_errors[5][:type].should eq('dates')
-    data_errors[5][:rows].should eq([1, 2])
+    expect(data_errors[5][:description]).to eq("Some of the values in field 'date' (7th column) are not valid for the type date.")
+    expect(data_errors[5][:column]).to eq(6)
+    expect(data_errors[5][:type]).to eq('dates')
+    expect(data_errors[5][:rows]).to eq([1, 2])
 
-    data_errors[6][:description].should eq("Some of the values in field 'user' (8th column) don't match any email address of a member of this collection.")
-    data_errors[6][:column].should eq(7)
-    data_errors[6][:type].should eq('email addresses')
-    data_errors[6][:rows].should eq([1, 2])
+    expect(data_errors[6][:description]).to eq("Some of the values in field 'user' (8th column) don't match any email address of a member of this collection.")
+    expect(data_errors[6][:column]).to eq(7)
+    expect(data_errors[6][:type]).to eq('email addresses')
+    expect(data_errors[6][:rows]).to eq([1, 2])
 
-    data_errors[7][:description].should eq("Some of the values in field 'email' (9th column) are not valid for the type email.")
-    data_errors[7][:column].should eq(8)
-    data_errors[7][:type].should eq('email addresses')
-    data_errors[7][:rows].should eq([1, 2])
+    expect(data_errors[7][:description]).to eq("Some of the values in field 'email' (9th column) are not valid for the type email.")
+    expect(data_errors[7][:column]).to eq(8)
+    expect(data_errors[7][:type]).to eq('email addresses')
+    expect(data_errors[7][:rows]).to eq([1, 2])
 
     ImportWizard.delete_files(user, collection)
   end
@@ -929,10 +929,10 @@ describe ImportWizard do
 
     data_errors = sites_errors[:data_errors]
 
-    data_errors[0][:example].should eq("Values must be integers.")
-    data_errors[1][:example].should eq("Example of valid date: 01/25/2013.")
-    data_errors[2][:example].should eq("Example of valid email: myemail@resourcemap.com.")
-    data_errors[3][:example].should eq("Some valid values for this hierarchy are: 60, 100, 101.")
+    expect(data_errors[0][:example]).to eq("Values must be integers.")
+    expect(data_errors[1][:example]).to eq("Example of valid date: 01/25/2013.")
+    expect(data_errors[2][:example]).to eq("Example of valid email: myemail@resourcemap.com.")
+    expect(data_errors[3][:example]).to eq("Some valid values for this hierarchy are: 60, 100, 101.")
   end
 
   it "should get sites & errors for invalid existing fields if field_id is string" do
@@ -949,7 +949,7 @@ describe ImportWizard do
      errors = (ImportWizard.validate_sites_with_columns user, collection, specs)[:errors]
 
      data_errors = errors[:data_errors]
-     data_errors.length.should eq(1)
+     expect(data_errors.length).to eq(1)
 
   end
 
@@ -981,45 +981,45 @@ describe ImportWizard do
     sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
     sites_preview = sites[:sites]
 
-    sites_preview.length.should eq(3)
+    expect(sites_preview.length).to eq(3)
     first_line = sites_preview.first
-    first_line.should == [{:value=>"new val"}, {value: '11'}, {:value=>"two"}, {:value=>"one"}, {:value=>"Dad"},
-      {:value=>"1235"}, {:value=>"12/26/1988"}, {:value=>"user2@email.com"}, {:value=>"email@mail.com"}]
+    expect(first_line).to eq([{:value=>"new val"}, {value: '11'}, {:value=>"two"}, {:value=>"one"}, {:value=>"Dad"},
+      {:value=>"1235"}, {:value=>"12/26/1988"}, {:value=>"user2@email.com"}, {:value=>"email@mail.com"}])
 
     second_line = sites_preview[1]
-    second_line.should  == [{:value=>"new val"}, {:value=>"invalid11"}, {:value=>"inval"}, {:value=>"Dad, inv"}, {:value=>"inval"},
-      {:value=>"999"}, {:value=>"12/26"}, {:value=>"non-existing@email.com"}, {:value=>"email@ma@il.com"}]
+    expect(second_line).to  eq([{:value=>"new val"}, {:value=>"invalid11"}, {:value=>"inval"}, {:value=>"Dad, inv"}, {:value=>"inval"},
+      {:value=>"999"}, {:value=>"12/26"}, {:value=>"non-existing@email.com"}, {:value=>"email@ma@il.com"}])
 
     sites_errors = sites[:errors]
 
-    sites_errors[:hierarchy_field_found].should eq([{:new_hierarchy_columns=>[4]}])
-    sites_errors[:duplicated_code].should eq({})
-    sites_errors[:duplicated_label].should eq({})
-    sites_errors[:existing_code].should eq({})
-    sites_errors[:existing_label].should eq({})
+    expect(sites_errors[:hierarchy_field_found]).to eq([{:new_hierarchy_columns=>[4]}])
+    expect(sites_errors[:duplicated_code]).to eq({})
+    expect(sites_errors[:duplicated_label]).to eq({})
+    expect(sites_errors[:existing_code]).to eq({})
+    expect(sites_errors[:existing_label]).to eq({})
 
     data_errors = sites_errors[:data_errors]
-    data_errors.length.should eq(5)
+    expect(data_errors.length).to eq(5)
 
-    data_errors[0][:description].should eq("Some of the values in field 'Numeric' (2nd column) are not valid for the type numeric.")
-    data_errors[0][:column].should eq(1)
-    data_errors[0][:rows].should eq([1, 2])
+    expect(data_errors[0][:description]).to eq("Some of the values in field 'Numeric' (2nd column) are not valid for the type numeric.")
+    expect(data_errors[0][:column]).to eq(1)
+    expect(data_errors[0][:rows]).to eq([1, 2])
 
-    data_errors[1][:description].should eq("Some of the values in field 'Site' (6th column) don't match any existing site id in this collection.")
-    data_errors[1][:column].should eq(5)
-    data_errors[1][:rows].should eq([1])
+    expect(data_errors[1][:description]).to eq("Some of the values in field 'Site' (6th column) don't match any existing site id in this collection.")
+    expect(data_errors[1][:column]).to eq(5)
+    expect(data_errors[1][:rows]).to eq([1])
 
-    data_errors[2][:description].should eq("Some of the values in field 'Date' (7th column) are not valid for the type date.")
-    data_errors[2][:column].should eq(6)
-    data_errors[2][:rows].should eq([1, 2])
+    expect(data_errors[2][:description]).to eq("Some of the values in field 'Date' (7th column) are not valid for the type date.")
+    expect(data_errors[2][:column]).to eq(6)
+    expect(data_errors[2][:rows]).to eq([1, 2])
 
-    data_errors[3][:description].should eq("Some of the values in field 'User' (8th column) don't match any email address of a member of this collection.")
-    data_errors[3][:column].should eq(7)
-    data_errors[3][:rows].should eq([1])
+    expect(data_errors[3][:description]).to eq("Some of the values in field 'User' (8th column) don't match any email address of a member of this collection.")
+    expect(data_errors[3][:column]).to eq(7)
+    expect(data_errors[3][:rows]).to eq([1])
 
-    data_errors[4][:description].should eq("Some of the values in field 'Email' (9th column) are not valid for the type email.")
-    data_errors[4][:column].should eq(8)
-    data_errors[4][:rows].should eq([1, 2])
+    expect(data_errors[4][:description]).to eq("Some of the values in field 'Email' (9th column) are not valid for the type email.")
+    expect(data_errors[4][:column]).to eq(8)
+    expect(data_errors[4][:rows]).to eq([1, 2])
 
     ImportWizard.delete_files(user, collection)
   end
@@ -1068,7 +1068,7 @@ describe ImportWizard do
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
 
       sites_errors = sites_preview[:errors]
-      sites_errors[:duplicated_usage].should eq("#{usage}" => [0,1])
+      expect(sites_errors[:duplicated_usage]).to eq("#{usage}" => [0,1])
 
       ImportWizard.delete_files(user, collection)
     end
@@ -1089,7 +1089,7 @@ describe ImportWizard do
 
      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
      sites_errors = sites_preview[:errors]
-     sites_errors[:duplicated_usage].should eq(text.id => [0,1])
+     expect(sites_errors[:duplicated_usage]).to eq(text.id => [0,1])
 
      ImportWizard.delete_files(user, collection)
   end
@@ -1111,7 +1111,7 @@ describe ImportWizard do
      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
 
      sites_errors = sites_preview[:errors]
-     sites_errors[:duplicated_usage].should eq({})
+     expect(sites_errors[:duplicated_usage]).to eq({})
 
     ImportWizard.delete_files(user, collection)
 
@@ -1135,7 +1135,7 @@ describe ImportWizard do
 
       sites_errors = sites_preview[:errors]
       key = "duplicated_#{value}".to_sym
-      sites_errors[key].should eq("repeated" => [0,1])
+      expect(sites_errors[key]).to eq("repeated" => [0,1])
       ImportWizard.delete_files(user, collection)
 
     end
@@ -1165,7 +1165,7 @@ describe ImportWizard do
 
       sites_errors = sites_preview[:errors]
       key = "existing_#{value}".to_sym
-      sites_errors[key].should eq("repeated" => [0,1])
+      expect(sites_errors[key]).to eq("repeated" => [0,1])
       ImportWizard.delete_files(user, collection)
 
     end
@@ -1185,10 +1185,10 @@ describe ImportWizard do
     validated_sites = (ImportWizard.validate_sites_with_columns user, collection, columns_spec)
 
     sites_preview = validated_sites[:sites]
-    sites_preview.should  == [[{:value=>"11"}], [{:value=>"invalid11"}]]
+    expect(sites_preview).to  eq([[{:value=>"11"}], [{:value=>"invalid11"}]])
     sites_errors = validated_sites[:errors]
 
-    sites_errors[:data_errors].should == []
+    expect(sites_errors[:data_errors]).to eq([])
 
     ImportWizard.delete_files(user, collection)
   end
@@ -1208,7 +1208,7 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
-    sites_errors[:data_errors].should == []
+    expect(sites_errors[:data_errors]).to eq([])
 
     ImportWizard.delete_files(user, collection)
   end
@@ -1223,15 +1223,15 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
 
-    column_spec.length.should eq(3)
-    column_spec[1][:header].should eq("")
-    column_spec[1][:code].should eq("")
-    column_spec[1][:label].should eq("")
-    column_spec[1][:use_as].should eq(:new_field)
-    column_spec[2][:header].should eq("")
-    column_spec[2][:code].should eq("")
-    column_spec[2][:label].should eq("")
-    column_spec[2][:use_as].should eq(:new_field)
+    expect(column_spec.length).to eq(3)
+    expect(column_spec[1][:header]).to eq("")
+    expect(column_spec[1][:code]).to eq("")
+    expect(column_spec[1][:label]).to eq("")
+    expect(column_spec[1][:use_as]).to eq(:new_field)
+    expect(column_spec[2][:header]).to eq("")
+    expect(column_spec[2][:code]).to eq("")
+    expect(column_spec[2][:label]).to eq("")
+    expect(column_spec[2][:use_as]).to eq(:new_field)
 
     ImportWizard.delete_files(user, collection)
   end
@@ -1245,15 +1245,15 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
 
-    column_spec.length.should eq(3)
-    column_spec[1][:header].should eq("")
-    column_spec[1][:code].should eq("")
-    column_spec[1][:label].should eq("")
-    column_spec[1][:use_as].should eq(:new_field)
-    column_spec[2][:header].should eq("")
-    column_spec[2][:code].should eq("")
-    column_spec[2][:label].should eq("")
-    column_spec[2][:use_as].should eq(:new_field)
+    expect(column_spec.length).to eq(3)
+    expect(column_spec[1][:header]).to eq("")
+    expect(column_spec[1][:code]).to eq("")
+    expect(column_spec[1][:label]).to eq("")
+    expect(column_spec[1][:use_as]).to eq(:new_field)
+    expect(column_spec[2][:header]).to eq("")
+    expect(column_spec[2][:code]).to eq("")
+    expect(column_spec[2][:label]).to eq("")
+    expect(column_spec[2][:use_as]).to eq(:new_field)
 
     ImportWizard.delete_files(user, collection)
   end
@@ -1272,8 +1272,8 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
-    sites_errors[:missing_label].should eq(:columns => [1,2])
-    sites_errors[:missing_code].should eq(:columns => [1,2])
+    expect(sites_errors[:missing_label]).to eq(:columns => [1,2])
+    expect(sites_errors[:missing_code]).to eq(:columns => [1,2])
 
     ImportWizard.delete_files(user, collection)
   end
@@ -1289,7 +1289,7 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
-    sites_errors[:missing_name].should_not be_blank
+    expect(sites_errors[:missing_name]).not_to be_blank
 
     ImportWizard.delete_files(user, collection)
 
@@ -1299,7 +1299,7 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
-    sites_errors[:missing_name].should be_blank
+    expect(sites_errors[:missing_name]).to be_blank
 
     ImportWizard.delete_files(user, collection)
 
@@ -1317,7 +1317,7 @@ describe ImportWizard do
       ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
       sites_errors = sites_preview[:errors]
-      sites_errors[:reserved_code].should eq({"#{reserved_code}"=>[0]})
+      expect(sites_errors[:reserved_code]).to eq({"#{reserved_code}"=>[0]})
       ImportWizard.delete_files(user, collection)
 
     end
@@ -1335,10 +1335,10 @@ describe ImportWizard do
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
 
-    sites_errors[:non_existent_site_id].length.should eq(1)
+    expect(sites_errors[:non_existent_site_id].length).to eq(1)
     resmap_id_error = sites_errors[:non_existent_site_id][0]
-    resmap_id_error[:rows].should eq([1])
-    resmap_id_error[:column].should eq(0)
+    expect(resmap_id_error[:rows]).to eq([1])
+    expect(resmap_id_error[:column]).to eq(0)
     ImportWizard.delete_files(user, collection)
 
   end
@@ -1358,7 +1358,7 @@ describe ImportWizard do
     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
     sites_errors = sites_preview[:errors]
 
-    sites_errors[:non_existent_site_id].should be(nil)
+    expect(sites_errors[:non_existent_site_id]).to be(nil)
     ImportWizard.delete_files(user, collection)
 
   end
@@ -1451,11 +1451,11 @@ describe ImportWizard do
 
       ImportWizard.execute user, collection, specs
       sites = collection.sites.reload
-      sites.length.should eq(1)
+      expect(sites.length).to eq(1)
 
-      sites[0].name.should eq('Foo old')
-      sites[0].properties[text.es_code].should eq('coco2')
-      sites[0].properties[select_one.es_code].should eq(1)
+      expect(sites[0].name).to eq('Foo old')
+      expect(sites[0].properties[text.es_code]).to eq('coco2')
+      expect(sites[0].properties[select_one.es_code]).to eq(1)
     end
   end
 
@@ -1477,10 +1477,10 @@ describe ImportWizard do
 
       ImportWizard.execute user, collection, specs
       sites = collection.sites.reload
-      sites.length.should eq(1)
+      expect(sites.length).to eq(1)
 
-      sites[0].name.should eq('Foo')
-      sites[0].properties[luhn_id.es_code].should eq('100000-9')
+      expect(sites[0].name).to eq('Foo')
+      expect(sites[0].properties[luhn_id.es_code]).to eq('100000-9')
     end
 
     it "should create a site with an especific luhn value and one with a default value" do
@@ -1500,13 +1500,13 @@ describe ImportWizard do
 
       ImportWizard.execute user, collection, specs
       sites = collection.sites.reload
-      sites.length.should eq(2)
+      expect(sites.length).to eq(2)
 
-      sites[0].name.should eq('Foo')
-      sites[0].properties[luhn_id.es_code].should eq('100002-5')
+      expect(sites[0].name).to eq('Foo')
+      expect(sites[0].properties[luhn_id.es_code]).to eq('100002-5')
 
-      sites[1].name.should eq('Foo 2')
-      sites[1].properties[luhn_id.es_code].should eq('100000-9')
+      expect(sites[1].name).to eq('Foo 2')
+      expect(sites[1].properties[luhn_id.es_code]).to eq('100000-9')
     end
 
     it "should not override existing luhn value when updating a site" do
@@ -1527,10 +1527,10 @@ describe ImportWizard do
 
       ImportWizard.execute user, collection, specs
       sites = collection.sites.reload
-      sites.length.should eq(1)
+      expect(sites.length).to eq(1)
 
-      sites[0].name.should eq('Foo new')
-      sites[0].properties[luhn_id.es_code].should eq('100001-7')
+      expect(sites[0].name).to eq('Foo new')
+      expect(sites[0].properties[luhn_id.es_code]).to eq('100001-7')
     end
 
     it "should choose the higher luhn between the one alredy stored in the collection and the one in the csv for the default value for new sites" do
@@ -1554,16 +1554,16 @@ describe ImportWizard do
       ImportWizard.validate_sites_with_columns user, collection, specs
       ImportWizard.execute user, collection, specs
       sites = collection.sites.reload
-      sites.length.should eq(3)
+      expect(sites.length).to eq(3)
 
-      sites[0].name.should eq('Foo')
-      sites[0].properties[luhn_id.es_code].should eq('100001-7')
+      expect(sites[0].name).to eq('Foo')
+      expect(sites[0].properties[luhn_id.es_code]).to eq('100001-7')
 
-      sites[1].name.should eq('Foo new 1')
-      sites[1].properties[luhn_id.es_code].should eq('100003-3')
+      expect(sites[1].name).to eq('Foo new 1')
+      expect(sites[1].properties[luhn_id.es_code]).to eq('100003-3')
 
-      sites[2].name.should eq('Foo new 2')
-      sites[2].properties[luhn_id.es_code].should eq('100002-5')
+      expect(sites[2].name).to eq('Foo new 2')
+      expect(sites[2].properties[luhn_id.es_code]).to eq('100002-5')
     end
 
 
@@ -1584,13 +1584,13 @@ describe ImportWizard do
 
       ImportWizard.execute user, collection, specs
       sites = collection.sites.reload
-      sites.length.should eq(2)
+      expect(sites.length).to eq(2)
 
-      sites[0].name.should eq('Foo')
-      sites[0].properties[luhn_id.es_code].should eq('100001-7')
+      expect(sites[0].name).to eq('Foo')
+      expect(sites[0].properties[luhn_id.es_code]).to eq('100001-7')
 
-      sites[1].name.should eq('Foo 2')
-      sites[1].properties[luhn_id.es_code].should eq('100002-5')
+      expect(sites[1].name).to eq('Foo 2')
+      expect(sites[1].properties[luhn_id.es_code]).to eq('100002-5')
     end
   end
 
@@ -1624,31 +1624,31 @@ describe ImportWizard do
       ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, specs
 
-      collection.layers.should eq([layer])
+      expect(collection.layers).to eq([layer])
 
       sites = collection.sites.reload
-      sites.length.should eq(7)
+      expect(sites.length).to eq(7)
 
-      sites[0].name.should eq('Foo')
-      sites[0].properties.should eq({auto_reset.es_code => false})
+      expect(sites[0].name).to eq('Foo')
+      expect(sites[0].properties).to eq({auto_reset.es_code => false})
 
-      sites[1].name.should eq('Bar')
-      sites[1].properties.should eq({auto_reset.es_code => false})
+      expect(sites[1].name).to eq('Bar')
+      expect(sites[1].properties).to eq({auto_reset.es_code => false})
 
-      sites[2].name.should eq('Old')
-      sites[2].properties.should eq({auto_reset.es_code => true})
+      expect(sites[2].name).to eq('Old')
+      expect(sites[2].properties).to eq({auto_reset.es_code => true})
 
-      sites[3].name.should eq('Lorem')
-      sites[3].properties.should eq({auto_reset.es_code => false})
+      expect(sites[3].name).to eq('Lorem')
+      expect(sites[3].properties).to eq({auto_reset.es_code => false})
 
-      sites[4].name.should eq('Ipsum2')
-      sites[4].properties.should eq({auto_reset.es_code => false})
+      expect(sites[4].name).to eq('Ipsum2')
+      expect(sites[4].properties).to eq({auto_reset.es_code => false})
 
-      sites[5].name.should eq('Baz')
-      sites[5].properties.should eq({auto_reset.es_code => false})
+      expect(sites[5].name).to eq('Baz')
+      expect(sites[5].properties).to eq({auto_reset.es_code => false})
 
-      sites[6].name.should eq('Foobar')
-      sites[6].properties.should eq({auto_reset.es_code => false})
+      expect(sites[6].name).to eq('Foobar')
+      expect(sites[6].properties).to eq({auto_reset.es_code => false})
     end
   end
 
@@ -1673,7 +1673,7 @@ describe ImportWizard do
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
 
       sites_errors = sites_preview[:errors]
-      sites_errors[:duplicated_usage].should eq("id" => [0,1])
+      expect(sites_errors[:duplicated_usage]).to eq("id" => [0,1])
 
       ImportWizard.delete_files(user, collection)
     end
@@ -1697,7 +1697,7 @@ describe ImportWizard do
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
       sites_errors = sites_preview[:errors]
 
-      sites_errors[:invalid_site_identifier].should eq([{:rows=>[1], :column=>0}])
+      expect(sites_errors[:invalid_site_identifier]).to eq([{:rows=>[1], :column=>0}])
     end
 
     it "should not show validation error in other luhn fields the pivot is an identifier" do
@@ -1719,9 +1719,9 @@ describe ImportWizard do
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
       sites_errors = sites_preview[:errors]
       data_errors = sites_errors[:data_errors]
-      data_errors.length.should eq(0)
+      expect(data_errors.length).to eq(0)
 
-      sites_errors[:invalid_site_identifier].should be_nil
+      expect(sites_errors[:invalid_site_identifier]).to be_nil
     end
 
     it "should show validation error in other if a value already exists for an exisiting luhn value" do
@@ -1744,9 +1744,9 @@ describe ImportWizard do
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
       sites_errors = sites_preview[:errors]
       data_errors = sites_errors[:data_errors]
-      data_errors.length.should eq(1)
+      expect(data_errors.length).to eq(1)
 
-      sites_errors[:invalid_site_identifier].should be_nil
+      expect(sites_errors[:invalid_site_identifier]).to be_nil
     end
 
     it "should import using an identifier field as pivot" do
@@ -1768,10 +1768,10 @@ describe ImportWizard do
       ImportWizard.execute user, collection, column_specs
 
       sites = collection.sites.reload
-      sites.length.should eq(1)
+      expect(sites.length).to eq(1)
 
-      sites[0].name.should eq('Changed Name')
-      sites[0].properties.should eq({moh_id.es_code => '123', other_id.es_code => '457'})
+      expect(sites[0].name).to eq('Changed Name')
+      expect(sites[0].properties).to eq({moh_id.es_code => '123', other_id.es_code => '457'})
     end
 
     it "should import using an identifier field without changing the value for an another identifier field" do
@@ -1793,10 +1793,10 @@ describe ImportWizard do
       ImportWizard.execute user, collection, column_specs
 
       sites = collection.sites.reload
-      sites.length.should eq(1)
+      expect(sites.length).to eq(1)
 
-      sites[0].name.should eq('Changed Name')
-      sites[0].properties.should eq({moh_id.es_code => '123', other_id.es_code => '456'})
+      expect(sites[0].name).to eq('Changed Name')
+      expect(sites[0].properties).to eq({moh_id.es_code => '123', other_id.es_code => '456'})
     end
 
     it "should create new site if the value for the identifier Pivot column does not exist" do
@@ -1818,10 +1818,10 @@ describe ImportWizard do
       ImportWizard.execute user, collection, column_specs
 
       sites = collection.sites.reload
-      sites.length.should eq(2)
+      expect(sites.length).to eq(2)
 
-      sites[1].name.should eq('New')
-      sites[1].properties.should eq({moh_id.es_code => '1', other_id.es_code => '2'})
+      expect(sites[1].name).to eq('New')
+      expect(sites[1].properties).to eq({moh_id.es_code => '1', other_id.es_code => '2'})
     end
 
     describe "guess" do
@@ -1836,11 +1836,11 @@ describe ImportWizard do
 
         ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
         column_spec = ImportWizard.guess_columns_spec user, collection
-        column_spec.should include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
-        column_spec.should include({:header=>"name", :kind=>:name, :use_as=>:name})
+        expect(column_spec).to include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
+        expect(column_spec).to include({:header=>"name", :kind=>:name, :use_as=>:name})
         #TODO: label should be "Other Id" or "Moh Id" and not only "Other" or "Moh"
-        column_spec.should include({:header=>"other-id", :use_as=>:existing_field, :code=>"other-id", :label=>"Other", :kind=> :identifier, :field_id => other_id.id, :layer_id=>layer.id})
-        column_spec.should include({:header=>"moh-id", :use_as=>:existing_field, :code=>"moh-id", :label=>"Moh", :kind=> :identifier, :field_id => moh_id.id, :layer_id=>layer.id})
+        expect(column_spec).to include({:header=>"other-id", :use_as=>:existing_field, :code=>"other-id", :label=>"Other", :kind=> :identifier, :field_id => other_id.id, :layer_id=>layer.id})
+        expect(column_spec).to include({:header=>"moh-id", :use_as=>:existing_field, :code=>"moh-id", :label=>"Moh", :kind=> :identifier, :field_id => moh_id.id, :layer_id=>layer.id})
 
         ImportWizard.delete_files(user, collection)
       end
@@ -1855,9 +1855,9 @@ describe ImportWizard do
 
         ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
         column_spec = ImportWizard.guess_columns_spec user, collection
-        column_spec.should include({:header=>"name", :kind=>:name, :use_as=>:name})
-        column_spec.should include({:header=>"moh-id", :use_as=>:id, :id_matching_column=>moh_id.id})
-        column_spec.should include({:header=>"other-id", :use_as=>:existing_field, :code=>"other-id", :label=>"Other", :kind=> :identifier, :field_id => other_id.id, :layer_id=>layer.id})
+        expect(column_spec).to include({:header=>"name", :kind=>:name, :use_as=>:name})
+        expect(column_spec).to include({:header=>"moh-id", :use_as=>:id, :id_matching_column=>moh_id.id})
+        expect(column_spec).to include({:header=>"other-id", :use_as=>:existing_field, :code=>"other-id", :label=>"Other", :kind=> :identifier, :field_id => other_id.id, :layer_id=>layer.id})
 
         ImportWizard.delete_files(user, collection)
       end
@@ -1882,9 +1882,9 @@ describe ImportWizard do
       sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_specs)
       sites_errors = sites_preview[:errors]
       data_errors = sites_errors[:data_errors]
-      data_errors.length.should eq(1)
+      expect(data_errors.length).to eq(1)
 
-      data_errors.first[:description].should eq "Some of the values in field 'other-id' (3rd column) are not valid for the type identifier: The value already exists in the collection."
+      expect(data_errors.first[:description]).to eq "Some of the values in field 'other-id' (3rd column) are not valid for the type identifier: The value already exists in the collection."
     end
   end
 end

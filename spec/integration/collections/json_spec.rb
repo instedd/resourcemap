@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "read_json" do 
+describe "read_json", :type => :request do 
  
   it "should read json", js:true do
     admin = User.make(:email => 'admin@admin.com')
@@ -18,7 +18,7 @@ describe "read_json" do
     sleep 2
     page.within_window new_window do
         # page.title.should eq collection.name 
-        page.current_url.should include("/api/collections/#{collection.id}.json")
+        expect(page.current_url).to include("/api/collections/#{collection.id}.json")
         page.save_screenshot 'Json.png'
     end
   end

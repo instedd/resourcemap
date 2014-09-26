@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "change_password" do 
+describe "change_password", :type => :request do 
  
 it " should change password", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -20,6 +20,6 @@ it " should change password", js:true do
     sleep 1
     page.save_screenshot 'Change_password.png'
     p "Bug 511"
-    page.should have_content 'Account updated successfully'
+    expect(page).to have_content 'Account updated successfully'
   end
 end

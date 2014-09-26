@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "search" do 
+describe "search", :type => :request do 
  
   it "should search", js:true do
     user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -20,7 +20,7 @@ describe "search" do
     sleep 3
     page.has_content? 'Aida Rohan'
     sleep 3
-    page.should have_no_content 'Alek Ortiz'
+    expect(page).to have_no_content 'Alek Ortiz'
     sleep 2
   end
 end

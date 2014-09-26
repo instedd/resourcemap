@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "change_password_fail" do 
+describe "change_password_fail", :type => :request do 
  
 it " should not change password", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -18,6 +18,6 @@ it " should not change password", js:true do
     click_button 'Update'
     sleep 1
     page.save_screenshot 'Change_password_fail.png'
-    page.should have_content "Password doesn't match confirmation"
+    expect(page).to have_content "Password doesn't match confirmation"
   end
 end

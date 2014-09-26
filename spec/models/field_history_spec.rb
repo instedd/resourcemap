@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FieldHistory do
+describe FieldHistory, :type => :model do
   it "reindexes collection after destroy field" do
     Timecop.freeze(Time.now) do
       collection = Collection.make

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "members" do 
+describe "members", :type => :request do 
  
 it "should give admin rights", js:true do
     admin = User.make(:email => 'admin@admin.com')
@@ -11,7 +11,7 @@ it "should give admin rights", js:true do
     visit collections_path
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[1]/button[2]').click
-    page.should_not have_content "Members"
+    expect(page).not_to have_content "Members"
     find_by_id('User').click
     click_link('Sign Out')
     sleep 3
@@ -30,6 +30,6 @@ it "should give admin rights", js:true do
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[1]/button[2]').click
     sleep 2
     page.save_screenshot 'Members.png'
-    page.should have_content "Members"
+    expect(page).to have_content "Members"
   end
 end

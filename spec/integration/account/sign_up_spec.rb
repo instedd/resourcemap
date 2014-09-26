@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "sign_up" do 
+describe "sign_up", :type => :request do 
  
   it "should sign up", js:true do
  	visit "/"

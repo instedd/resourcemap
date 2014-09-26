@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe QuotasController do
+describe QuotasController, :type => :controller do
   include Devise::TestHelpers
   render_views
 

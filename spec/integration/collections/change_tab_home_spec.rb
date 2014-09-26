@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "change_tab_home" do 
+describe "change_tab_home", :type => :request do 
  
   it "should change to home tab", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -10,6 +10,6 @@ describe "change_tab_home" do
     sleep 3
     page.save_screenshot 'TabHome'
     sleep 3
-    page.should have_content ('Make better decisions')
+    expect(page).to have_content ('Make better decisions')
   end
 end

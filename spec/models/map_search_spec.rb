@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MapSearch do
+describe MapSearch, :type => :model do
   let(:collection) { Collection.make }
 
   it "searches based on no collection" do
@@ -8,7 +8,7 @@ describe MapSearch do
 
     search = MapSearch.new []
     search.zoom = 1
-    search.results.should eq({})
+    expect(search.results).to eq({})
   end
 
   it "searches based on collection id found" do
@@ -17,13 +17,13 @@ describe MapSearch do
     search = MapSearch.new site.collection_id
     search.zoom = 1
 
-    search.results[:sites].length.should be(1)
+    expect(search.results[:sites].length).to be(1)
     expected_hash = {collection_id: site.collection_id, id: site.id,
     lat: site.lat.to_f, lng: site.lng.to_f,
     name: site.name, id_with_prefix:"AA1",
     lat_analyzed: site.lat.to_s, lng_analyzed: site.lng.to_s,
     uuid: site.uuid, highlighted: false, icon: 'default', alert: 'false', version: '1'}
-    search.results[:sites][0].should == expected_hash
+    expect(search.results[:sites][0]).to eq(expected_hash)
   end
 
   it "searches with excluded id" do
@@ -32,7 +32,7 @@ describe MapSearch do
     search = MapSearch.new site.collection_id
     search.zoom = 1
     search.exclude_id site.id
-    search.results[:sites].should be_nil
+    expect(search.results[:sites]).to be_nil
   end
 
   it "searches based on collection id not found" do
@@ -41,7 +41,7 @@ describe MapSearch do
 
     search = MapSearch.new other_collection.id
     search.zoom = 1
-    search.results[:sites].should be_nil
+    expect(search.results[:sites]).to be_nil
   end
 
   it "searches based on many collection ids found" do
@@ -50,7 +50,7 @@ describe MapSearch do
 
     search = MapSearch.new [site1.collection_id, site2.collection_id]
     search.zoom = 1
-    search.results[:sites].length.should eq(2)
+    expect(search.results[:sites].length).to eq(2)
   end
 
   it "searches based on collection id and bounds found" do
@@ -59,7 +59,7 @@ describe MapSearch do
     search = MapSearch.new site.collection_id
     search.zoom = 10
     search.bounds = {:s => 9, :n => 11, :w => 19, :e => 21}
-    search.results[:sites].length.should eq(1)
+    expect(search.results[:sites].length).to eq(1)
   end
 
   it "searches based on collection id and bounds not found" do
@@ -68,7 +68,7 @@ describe MapSearch do
     search = MapSearch.new site.collection_id
     search.zoom = 10
     search.bounds = {:s => 11, :n => 12, :w => 21, :e => 22}
-    search.results[:sites].should be_nil
+    expect(search.results[:sites]).to be_nil
   end
 
   it "searches but doesn't return sites without location" do
@@ -77,7 +77,7 @@ describe MapSearch do
     search = MapSearch.new site.collection_id
     search.zoom = 1
     search.bounds = {:s => 11, :n => 12, :w => 21, :e => 22}
-    search.results[:sites].should be_nil
+    expect(search.results[:sites]).to be_nil
   end
 
   context "full text search" do
@@ -135,8 +135,8 @@ describe MapSearch do
 
     def assert_result(search, site)
       results = search.results
-      results[:sites].length.should eq(1)
-      results[:sites][0][:id].should eq(site.id)
+      expect(results[:sites].length).to eq(1)
+      expect(results[:sites][0][:id]).to eq(site.id)
     end
   end
 end

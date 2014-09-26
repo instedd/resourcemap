@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "collections" do 
+describe "collections", :type => :request do 
  
   it "should edit site phone values", js:true do   
     
@@ -20,9 +20,9 @@ describe "collections" do
     find("input[placeholder='85512345678']").set "1157804274"
     click_button 'Done'
     sleep 3 
-    page.should_not have_content '1558769876'
+    expect(page).not_to have_content '1558769876'
     sleep 2
-    page.should have_content '1157804274'
+    expect(page).to have_content '1157804274'
     sleep 2
     page.save_screenshot "Edit_site_Phone_value.png"
   end

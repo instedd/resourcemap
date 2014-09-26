@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SiteHistory do
-  it { should belong_to :site }
+describe SiteHistory, :type => :model do
+  it { is_expected.to belong_to :site }
 
   it "should create ES index" do
     index_name = Collection.index_name 32, snapshot: "last_year"
@@ -14,17 +14,17 @@ describe SiteHistory do
 
       site_history.store_in index_name
 
-      client.indices.exists(index: index_name).should be_truthy
+      expect(client.indices.exists(index: index_name)).to be_truthy
 
       results = client.search index: index_name
       results = results["hits"]["hits"]
 
-      results.length.should eq(1)
-      results.first["_source"]["name"].should eq(site_history.name)
-      results.first["_source"]["id"].should eq(site_history.site_id)
-      results.first["_source"]["properties"].should eq(site_history.properties)
-      results.first["_source"]["location"]["lat"].should eq(site_history.lat)
-      results.first["_source"]["location"]["lon"].should eq(site_history.lng)
+      expect(results.length).to eq(1)
+      expect(results.first["_source"]["name"]).to eq(site_history.name)
+      expect(results.first["_source"]["id"]).to eq(site_history.site_id)
+      expect(results.first["_source"]["properties"]).to eq(site_history.properties)
+      expect(results.first["_source"]["location"]["lat"]).to eq(site_history.lat)
+      expect(results.first["_source"]["location"]["lon"]).to eq(site_history.lng)
     ensure
       client.indices.delete index: index_name
     end
@@ -32,26 +32,26 @@ describe SiteHistory do
 
   it "should update version number when the site changes" do
     site = Site.make
-    site.histories.count.should eq(1)
-    site.current_history.version.should eq(1)
+    expect(site.histories.count).to eq(1)
+    expect(site.current_history.version).to eq(1)
 
     site.name = "Other"
     site.save!
 
-    site.histories.count.should eq(2)
-    site.current_history.version.should eq(2)
+    expect(site.histories.count).to eq(2)
+    expect(site.current_history.version).to eq(2)
   end
 
   it "should add which user edited on site changing" do
     user = User.make
     site = Site.make user: user
-    site.histories.count.should eq(1)
+    expect(site.histories.count).to eq(1)
 
     site.name = "Other"
     site.save!
 
-    site.histories.count.should eq(2)
-    site.current_history.user_id.should eq(user.id)
+    expect(site.histories.count).to eq(2)
+    expect(site.current_history.user_id).to eq(user.id)
   end
 
 end

@@ -9,7 +9,7 @@ describe CSV do
         csv << ["é", "ñ", "ç", "ø"]
       end
 
-      CSV.read(tmp_file).should eq([["é", "ñ", "ç", "ø"]])
+      expect(CSV.read(tmp_file)).to eq([["é", "ñ", "ç", "ø"]])
     end
   end
 
@@ -19,7 +19,7 @@ describe CSV do
         csv << ["é", "ñ", "ç", "ø"]
       end
 
-      CSV.read(tmp_file).should eq([["é", "ñ", "ç", "ø"]])
+      expect(CSV.read(tmp_file)).to eq([["é", "ñ", "ç", "ø"]])
     end
   end
 end

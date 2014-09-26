@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "sites" do 
+describe "sites", :type => :request do 
  
   it "should edit site Site value", js:true do   
 
@@ -17,14 +17,14 @@ describe "sites" do
     visit collections_path
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[3]/td/button').click
-    page.should have_content 'First Site'
-    page.should_not have_content 'Second Site'
+    expect(page).to have_content 'First Site'
+    expect(page).not_to have_content 'Second Site'
     click_link 'Edit Site'
     sleep 3
     fill_in 'site-input-site', :with => "Second Site\n" 
     sleep 3
-    page.should_not have_content 'First Site'
-    page.should have_content 'Second Site'
+    expect(page).not_to have_content 'First Site'
+    expect(page).to have_content 'Second Site'
     page.save_screenshot "Edit_site_Site_value.png"
 
   end

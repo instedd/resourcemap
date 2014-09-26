@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "clear_search" do 
+describe "clear_search", :type => :request do 
  
   it "should clear search", js:true do
     user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -16,10 +16,10 @@ describe "clear_search" do
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     fill_in 'search', :with => "Aida Rohan\n"
     sleep 10
-    page.should have_content 'Aida Rohan'
+    expect(page).to have_content 'Aida Rohan'
     sleep 2
     click_link 'clear search'
     page.save_screenshot 'Clear_search.png'
-    page.should have_content 'Alek Ortiz'
+    expect(page).to have_content 'Alek Ortiz'
   end
 end

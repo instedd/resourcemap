@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "login" do 
+describe "login", :type => :request do 
 
   it "should login", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -11,7 +11,7 @@ describe "login" do
       click_button('Log In')
     end 
     page.save_screenshot 'login.png'
-    page.should have_content("Signed in successfully")
+    expect(page).to have_content("Signed in successfully")
   end
 
 end

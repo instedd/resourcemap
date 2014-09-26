@@ -4,7 +4,7 @@ def get_layer(json, id)
   json.select{|l| l["id"] == id}.first
 end
 
-describe Api::FieldsController do
+describe Api::FieldsController, :type => :controller do
   include Devise::TestHelpers
 
   let(:admin) { User.make }
@@ -70,9 +70,9 @@ describe Api::FieldsController do
         layer_json = get_layer json, layer.id
 
         fields.each do |f|
-          layer_json["fields"]
+          expect(layer_json["fields"]
             .map{|x| x["code"]}
-            .include?(f["code"]).should be_truthy
+            .include?(f["code"])).to be_truthy
         end
       end
 
@@ -88,10 +88,10 @@ describe Api::FieldsController do
 
         json = JSON.parse response.body
         layer_json = get_layer json, layer.id
-        layer_json["fields"].length.should == 1
-        layer_json["fields"][0]["code"].should == numeric.code
-        layer_json["fields"][0]["name"].should == numeric.name
-        layer_json["fields"][0]["kind"].should == numeric.kind
+        expect(layer_json["fields"].length).to eq(1)
+        expect(layer_json["fields"][0]["code"]).to eq(numeric.code)
+        expect(layer_json["fields"][0]["name"]).to eq(numeric.name)
+        expect(layer_json["fields"][0]["kind"]).to eq(numeric.kind)
       end
     end
 

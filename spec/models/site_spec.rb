@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Site do
+describe Site, :type => :model do
   let(:user) { User.make }
-  it { should belong_to :collection }
+  it { is_expected.to belong_to :collection }
 
   def history_concern_class
     described_class
@@ -27,7 +27,7 @@ describe Site do
   let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '2012-09-22T00:00:00Z' } }
 
   it "return as a hash of field_name and its value" do
-    site.human_properties.should eq({'room' => 50, 'desk' => 'bla bla', 'creation' => '09/22/2012' })
+    expect(site.human_properties).to eq({'room' => 50, 'desk' => 'bla bla', 'creation' => '09/22/2012' })
   end
 
   it "should save yes_no property with value 'false' "  do
@@ -35,7 +35,7 @@ describe Site do
     site.properties[yes_no_field.es_code] = false
     site.save!
     site.reload
-    site.properties[yes_no_field.es_code].should eq(false)
+    expect(site.properties[yes_no_field.es_code]).to eq(false)
   end
 
   describe "create or update from hash" do
@@ -49,18 +49,18 @@ describe Site do
 
     it "should create a new site when site id is missing or nil" do
       site1 = Site.create_or_update_from_hash!(@hash)
-      site1.should_not be_nil
+      expect(site1).not_to be_nil
     end
 
     it "should update an existing site" do
       @hash["site_id"] = site.id
       site1 = Site.create_or_update_from_hash!(@hash)
-      site1.name.should eq(@hash["name"])
+      expect(site1.name).to eq(@hash["name"])
     end
   end
 
   it "should get id and name" do
-    Site.get_id_and_name([site.id]).should eq([{'id' => site.id, 'name' => site.name}])
+    expect(Site.get_id_and_name([site.id])).to eq([{'id' => site.id, 'name' => site.name}])
   end
 
   it "should save without problems after field is deleted" do
@@ -73,13 +73,13 @@ describe Site do
   end
 
   it "should have version" do
-    site.version.should eq(1)
+    expect(site.version).to eq(1)
   end
 
   it "should increase version if something changes in the site" do
     site.name = "other name"
     site.save!
 
-    site.version.should eq(2)
+    expect(site.version).to eq(2)
   end
 end

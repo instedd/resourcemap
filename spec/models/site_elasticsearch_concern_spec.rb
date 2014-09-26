@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::ElasticsearchConcern do
+describe Site::ElasticsearchConcern, :type => :model do
   let(:collection) { Collection.make }
   let(:layer) { collection.layers.make }
   let(:beds_field) { layer.numeric_fields.make :code => 'beds' }
@@ -13,16 +13,16 @@ describe Site::ElasticsearchConcern do
     client = Elasticsearch::Client.new
     results = client.search index: site.index_name
     results = results["hits"]["hits"]
-    results[0]["_id"].to_i.should eq(site.id)
-    results[0]["_source"]["name"].should eq(site.name)
-    results[0]["_source"]["lat_analyzed"].should eq(site.lat.to_s)
-    results[0]["_source"]["lng_analyzed"].should eq(site.lng.to_s)
-    results[0]["_source"]["location"]["lat"].should be_within(1e-06).of(site.lat.to_f)
-    results[0]["_source"]["location"]["lon"].should be_within(1e-06).of(site.lng.to_f)
-    results[0]["_source"]["properties"][beds_field.es_code].to_i.should eq(site.properties[beds_field.es_code])
-    results[0]["_source"]["properties"][tables_field.es_code].to_i.should eq(site.properties[tables_field.es_code])
-    Site.parse_time(results[0]["_source"]["created_at"]).to_i.should eq(site.created_at.to_i)
-    Site.parse_time(results[0]["_source"]["updated_at"]).to_i.should eq(site.updated_at.to_i)
+    expect(results[0]["_id"].to_i).to eq(site.id)
+    expect(results[0]["_source"]["name"]).to eq(site.name)
+    expect(results[0]["_source"]["lat_analyzed"]).to eq(site.lat.to_s)
+    expect(results[0]["_source"]["lng_analyzed"]).to eq(site.lng.to_s)
+    expect(results[0]["_source"]["location"]["lat"]).to be_within(1e-06).of(site.lat.to_f)
+    expect(results[0]["_source"]["location"]["lon"]).to be_within(1e-06).of(site.lng.to_f)
+    expect(results[0]["_source"]["properties"][beds_field.es_code].to_i).to eq(site.properties[beds_field.es_code])
+    expect(results[0]["_source"]["properties"][tables_field.es_code].to_i).to eq(site.properties[tables_field.es_code])
+    expect(Site.parse_time(results[0]["_source"]["created_at"]).to_i).to eq(site.created_at.to_i)
+    expect(Site.parse_time(results[0]["_source"]["updated_at"]).to_i).to eq(site.updated_at.to_i)
   end
 
   it "removes from index after destroy" do
@@ -31,7 +31,7 @@ describe Site::ElasticsearchConcern do
 
     client = Elasticsearch::Client.new
     results = client.search index: site.index_name
-    results["hits"]["hits"].length.should eq(0)
+    expect(results["hits"]["hits"].length).to eq(0)
   end
 
   it "stores sites without lat and lng in index" do
@@ -40,7 +40,7 @@ describe Site::ElasticsearchConcern do
 
     client = Elasticsearch::Client.new
     results = client.search index: site.index_name
-    results["hits"]["hits"].length.should eq(2)
+    expect(results["hits"]["hits"].length).to eq(2)
   end
 
   it "should stores alert in index" do
@@ -52,6 +52,6 @@ describe Site::ElasticsearchConcern do
     results = client.search index: collection.index_name, type: 'site', body: {
       filter: {term: {alert: true}}
     }
-    results["hits"]["hits"].length.should eq(1)
+    expect(results["hits"]["hits"].length).to eq(1)
   end
 end

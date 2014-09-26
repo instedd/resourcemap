@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "reset_password" do 
+describe "reset_password", :type => :request do 
 
  it "should reset password", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -15,6 +15,6 @@ describe "reset_password" do
   	click_button "Send me reset password instructions"
   	sleep 2
   	page.save_screenshot 'reset_password.png'
-  	page.should have_content 'You will receive an email with instructions about how to reset your password in a few minutes.'
+  	expect(page).to have_content 'You will receive an email with instructions about how to reset your password in a few minutes.'
   end
 end

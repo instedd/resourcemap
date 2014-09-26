@@ -40,8 +40,8 @@ gem 'poirot_rails', git: "https://github.com/instedd/poirot_rails.git", branch: 
 
 gem 'treetop', '1.4.15'
 
-gem 'rspec-collection_matchers'
-gem 'rspec-its'
+# gem 'rspec-collection_matchers'
+# gem 'rspec-its'
 
 gem 'protected_attributes'
 gem 'rails-observers'

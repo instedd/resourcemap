@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "navigate_breadcrumb" do 
+describe "navigate_breadcrumb", :type => :request do 
  
 it "should change to collection via breadcrumb", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -15,7 +15,7 @@ it "should change to collection via breadcrumb", js:true do
     page.find(:xpath, '//div[@class="BreadCrumb"]/ul/li[1]/a').click
     sleep 2
   	page.save_screenshot "Navigate breadcrumb.png"
-  	page.should have_content "My Collections"
-    page.should have_content "Create Collection"
+  	expect(page).to have_content "My Collections"
+    expect(page).to have_content "Create Collection"
   end
 end

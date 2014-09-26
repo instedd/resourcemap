@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-describe Prefix do
+describe Prefix, :type => :model do
   it "should get first next prefix" do
-    Prefix.next.version.should == "AA"
+    expect(Prefix.next.version).to eq("AA")
   end
 
   it "should get next prefix" do
     Prefix.create :version => 'AX'
-    Prefix.next.version.should == 'AY'
+    expect(Prefix.next.version).to eq('AY')
   end
 
   it "should save prefix after get next prefix" do
-    lambda {
+    expect {
       Prefix.next
-    }.should change { Prefix.count }.by(1)
+    }.to change { Prefix.count }.by(1)
   end
 end

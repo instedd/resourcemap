@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe HashParser do
+describe HashParser, :type => :model do
   before(:each) do
     @xml = StringIO.new("<site><lat>12.1</lat><lng>11.1</lng></site>")
     @incorrect_xml = StringIO.new("<site><lat>12.1</lat><lng>11.1</lng>")
@@ -16,6 +16,6 @@ describe HashParser do
 
   it "should convert xml to hash object" do
     result = HashParser.from_xml_file @xml
-    result.should be_a_kind_of(Hash)
+    expect(result).to be_a_kind_of(Hash)
   end
 end

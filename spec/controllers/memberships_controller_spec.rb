@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MembershipsController do
+describe MembershipsController, :type => :controller do
   include Devise::TestHelpers
 
   let(:user) { User.make email: 'foo@test.com' }
@@ -17,13 +17,13 @@ describe MembershipsController do
       get :index, collection_id: collection.id
       user_membership = collection.memberships.where(user_id:user.id).first
       json = JSON.parse response.body
-      json["members"][0].should eq(user_membership.as_json.with_indifferent_access)
+      expect(json["members"][0]).to eq(user_membership.as_json.with_indifferent_access)
     end
 
     it "should not return memberships for non admin user" do
       sign_in user_2
       get :index, collection_id: collection.id
-      response.body.should be_blank
+      expect(response.body).to be_blank
     end
 
 
@@ -32,7 +32,7 @@ describe MembershipsController do
       sign_in user
       get :index, collection_id: collection.id
       json = JSON.parse response.body
-      json["anonymous"].should eq(anonymous.as_json.with_indifferent_access)
+      expect(json["anonymous"]).to eq(anonymous.as_json.with_indifferent_access)
     end
   end
 
@@ -46,26 +46,26 @@ describe MembershipsController do
       collection
       Activity.delete_all
       post :create, collection_id: collection.id, email: user2.email
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activity = Activity.first
-      activity.item_type.should eq('membership')
-      activity.action.should eq('created')
-      activity.user_id.should eq(user.id)
-      activity.collection_id.should eq(collection.id)
-      activity.data['user'].should eq(user2.email)
+      expect(activity.item_type).to eq('membership')
+      expect(activity.action).to eq('created')
+      expect(activity.user_id).to eq(user.id)
+      expect(activity.collection_id).to eq(collection.id)
+      expect(activity.data['user']).to eq(user2.email)
     end
 
     it "should create activity when a membership is deleted" do
       membership
       Activity.delete_all
       post :destroy, collection_id: collection.id, id: user2.id
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activity = Activity.first
-      activity.item_type.should eq('membership')
-      activity.action.should eq('deleted')
-      activity.user_id.should eq(user.id)
-      activity.collection_id.should eq(collection.id)
-      activity.data['user'].should eq(user2.email)
+      expect(activity.item_type).to eq('membership')
+      expect(activity.action).to eq('deleted')
+      expect(activity.user_id).to eq(user.id)
+      expect(activity.collection_id).to eq(collection.id)
+      expect(activity.data['user']).to eq(user2.email)
     end
 
     it "should create activity when layer_membership is created" do
@@ -73,16 +73,16 @@ describe MembershipsController do
       membership
       Activity.delete_all
       post :set_layer_access, collection_id: collection.id, verb: 'read', access: 'true', id: user2.id, layer_id: layer.id
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activity = Activity.first
-      activity.item_type.should eq('layer_membership')
-      activity.action.should eq('changed')
-      activity.user_id.should eq(user.id)
-      activity.collection_id.should eq(collection.id)
-      activity.data['user'].should eq(user2.email)
-      activity.data['name'].should eq(layer.name)
-      activity.data['previous_permission'].should eq('none')
-      activity.data['new_permission'].should eq('read')
+      expect(activity.item_type).to eq('layer_membership')
+      expect(activity.action).to eq('changed')
+      expect(activity.user_id).to eq(user.id)
+      expect(activity.collection_id).to eq(collection.id)
+      expect(activity.data['user']).to eq(user2.email)
+      expect(activity.data['name']).to eq(layer.name)
+      expect(activity.data['previous_permission']).to eq('none')
+      expect(activity.data['new_permission']).to eq('read')
     end
 
     it "should create activity when layer_membership is deleted" do
@@ -91,16 +91,16 @@ describe MembershipsController do
       post :set_layer_access, collection_id: collection.id, verb: 'read', access: 'true', id: user2.id, layer_id: layer.id
       Activity.delete_all
       post :set_layer_access, collection_id: collection.id, verb: 'read', access: 'false', id: user2.id, layer_id: layer.id
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activity = Activity.first
-      activity.item_type.should eq('layer_membership')
-      activity.action.should eq('changed')
-      activity.user_id.should eq(user.id)
-      activity.collection_id.should eq(collection.id)
-      activity.data['user'].should eq(user2.email)
-      activity.data['name'].should eq(layer.name)
-      activity.data['previous_permission'].should eq('read')
-      activity.data['new_permission'].should eq('none')
+      expect(activity.item_type).to eq('layer_membership')
+      expect(activity.action).to eq('changed')
+      expect(activity.user_id).to eq(user.id)
+      expect(activity.collection_id).to eq(collection.id)
+      expect(activity.data['user']).to eq(user2.email)
+      expect(activity.data['name']).to eq(layer.name)
+      expect(activity.data['previous_permission']).to eq('read')
+      expect(activity.data['new_permission']).to eq('none')
     end
 
     it "shouldn't create activity when layer_membership is not changed" do
@@ -109,7 +109,7 @@ describe MembershipsController do
       post :set_layer_access, collection_id: collection.id, verb: 'read', access: 'true', id: user2.id, layer_id: layer.id
       Activity.delete_all
       post :set_layer_access, collection_id: collection.id, verb: 'read', access: 'true', id: user2.id, layer_id: layer.id
-      Activity.count.should eq(0)
+      expect(Activity.count).to eq(0)
     end
 
     it "shouldn't create activity when layer_membership is not changed 2" do
@@ -118,7 +118,7 @@ describe MembershipsController do
       post :set_layer_access, collection_id: collection.id, verb: 'write', access: 'true', id: user2.id, layer_id: layer.id
       Activity.delete_all
       post :set_layer_access, collection_id: collection.id, verb: 'write', access: 'true', id: user2.id, layer_id: layer.id
-      Activity.count.should eq(0)
+      expect(Activity.count).to eq(0)
     end
 
     it "should create activity when layer_membership changed" do
@@ -127,29 +127,29 @@ describe MembershipsController do
       post :set_layer_access, collection_id: collection.id, verb: 'read', access: 'true', id: user2.id, layer_id: layer.id
       Activity.delete_all
       post :set_layer_access, collection_id: collection.id, verb: 'write', access: 'true', id: user2.id, layer_id: layer.id
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activity = Activity.first
-      activity.item_type.should eq('layer_membership')
-      activity.action.should eq('changed')
-      activity.user_id.should eq(user.id)
-      activity.collection_id.should eq(collection.id)
-      activity.data['user'].should eq(user2.email)
-      activity.data['name'].should eq(layer.name)
-      activity.data['previous_permission'].should eq('read')
-      activity.data['new_permission'].should eq('update')
+      expect(activity.item_type).to eq('layer_membership')
+      expect(activity.action).to eq('changed')
+      expect(activity.user_id).to eq(user.id)
+      expect(activity.collection_id).to eq(collection.id)
+      expect(activity.data['user']).to eq(user2.email)
+      expect(activity.data['name']).to eq(layer.name)
+      expect(activity.data['previous_permission']).to eq('read')
+      expect(activity.data['new_permission']).to eq('update')
     end
 
     it "should create activity when name permission changed" do
       membership
       Activity.delete_all
       post :set_access, object: 'name', new_action: 'update', collection_id: collection.id, id: user2.id
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activity = Activity.first
-      activity.item_type.should eq('name_permission')
-      activity.action.should eq('changed')
-      activity.user_id.should eq(user.id)
-      activity.collection_id.should eq(collection.id)
-      activity.data['user'].should eq(user2.email)
+      expect(activity.item_type).to eq('name_permission')
+      expect(activity.action).to eq('changed')
+      expect(activity.user_id).to eq(user.id)
+      expect(activity.collection_id).to eq(collection.id)
+      expect(activity.data['user']).to eq(user2.email)
     end
 
     it "shouldn't create activity when name permission unchanged" do
@@ -157,20 +157,20 @@ describe MembershipsController do
       post :set_access, object: 'name', new_action: 'update', collection_id: collection.id, id: user2.id
       Activity.delete_all
       post :set_access, object: 'name', new_action: 'update', collection_id: collection.id, id: user2.id
-      Activity.count.should eq(0)
+      expect(Activity.count).to eq(0)
     end
 
     it "should create activity when location permission changed" do
       membership
       Activity.delete_all
       post :set_access, object: 'location', new_action: 'update', collection_id: collection.id, id: user2.id
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activity = Activity.first
-      activity.item_type.should eq('location_permission')
-      activity.action.should eq('changed')
-      activity.user_id.should eq(user.id)
-      activity.collection_id.should eq(collection.id)
-      activity.data['user'].should eq(user2.email)
+      expect(activity.item_type).to eq('location_permission')
+      expect(activity.action).to eq('changed')
+      expect(activity.user_id).to eq(user.id)
+      expect(activity.collection_id).to eq(collection.id)
+      expect(activity.data['user']).to eq(user2.email)
     end
 
     it "shouldn't create activity when location permission unchanged" do
@@ -178,35 +178,35 @@ describe MembershipsController do
       post :set_access, object: 'location', new_action: 'update', collection_id: collection.id, id: user2.id
       Activity.delete_all
       post :set_access, object: 'location', new_action: 'update', collection_id: collection.id, id: user2.id
-      Activity.count.should eq(0)
+      expect(Activity.count).to eq(0)
     end
 
     it "should create activity when name permission changed for anonymous user" do
       membership
       Activity.delete_all
       post :set_access_anonymous_user, object: 'name', new_action: 'read', collection_id: collection.id
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activity = Activity.first
-      activity.item_type.should eq('anonymous_name_location_permission')
-      activity.action.should eq('changed')
-      activity.user_id.should eq(user.id)
-      activity.collection_id.should eq(collection.id)
-      activity.data["built_in_layer"].should eq("name")
-      activity.data["changes"].should eq(["none", "read"])
+      expect(activity.item_type).to eq('anonymous_name_location_permission')
+      expect(activity.action).to eq('changed')
+      expect(activity.user_id).to eq(user.id)
+      expect(activity.collection_id).to eq(collection.id)
+      expect(activity.data["built_in_layer"]).to eq("name")
+      expect(activity.data["changes"]).to eq(["none", "read"])
     end
 
     it "should create activity when location permission changed for anonymous user" do
       membership
       Activity.delete_all
       post :set_access_anonymous_user, object: 'location', new_action: 'read', collection_id: collection.id
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activity = Activity.first
-      activity.item_type.should eq('anonymous_name_location_permission')
-      activity.action.should eq('changed')
-      activity.user_id.should eq(user.id)
-      activity.collection_id.should eq(collection.id)
-      activity.data["built_in_layer"].should eq("location")
-      activity.data["changes"].should eq(["none", "read"])
+      expect(activity.item_type).to eq('anonymous_name_location_permission')
+      expect(activity.action).to eq('changed')
+      expect(activity.user_id).to eq(user.id)
+      expect(activity.collection_id).to eq(collection.id)
+      expect(activity.data["built_in_layer"]).to eq("location")
+      expect(activity.data["changes"]).to eq(["none", "read"])
     end
 
     it "should create activity when layer membership changed for anonymous user" do
@@ -214,14 +214,14 @@ describe MembershipsController do
       membership
       Activity.delete_all
       post :set_layer_access_anonymous_user, layer_id: layer.id, verb: 'read', access: 'true', collection_id: collection.id
-      Activity.count.should eq(1)
+      expect(Activity.count).to eq(1)
       activity = Activity.first
-      activity.item_type.should eq('anonymous_layer_permission')
-      activity.action.should eq('changed')
-      activity.user_id.should eq(user.id)
-      activity.collection_id.should eq(collection.id)
-      activity.data['name'].should eq(layer.name)
-      activity.data["changes"].should eq(["none", "read"])
+      expect(activity.item_type).to eq('anonymous_layer_permission')
+      expect(activity.action).to eq('changed')
+      expect(activity.user_id).to eq(user.id)
+      expect(activity.collection_id).to eq(collection.id)
+      expect(activity.data['name']).to eq(layer.name)
+      expect(activity.data["changes"]).to eq(["none", "read"])
     end
 
   end
@@ -231,21 +231,21 @@ describe MembershipsController do
 
     it "should find users that have membership" do
       get :search, collection_id: collection.id, term: 'bar'
-      JSON.parse(response.body).count.should == 0
+      expect(JSON.parse(response.body).count).to eq(0)
     end
 
     it "should find user" do
       get :search, collection_id: collection.id, term: 'foo'
       json = JSON.parse response.body
 
-      json.size.should == 1
-      json[0].should == 'foo@test.com'
+      expect(json.size).to eq(1)
+      expect(json[0]).to eq('foo@test.com')
     end
 
     context "without term" do
       it "should return all users in the collection" do
         get :search, collection_id: collection.id
-        JSON.parse(response.body).count.should == 1
+        expect(JSON.parse(response.body).count).to eq(1)
       end
     end
   end
@@ -257,15 +257,15 @@ describe MembershipsController do
       membership
       post :set_admin, collection_id: collection.id, id: user_2.id
       membership = collection.memberships.find_by_user_id user_2.id
-      membership.admin.should be_truthy
+      expect(membership.admin).to be_truthy
     end
 
     it "should unset admin" do
       membership.change_admin_flag(true)
-      membership.admin.should be_truthy
+      expect(membership.admin).to be_truthy
       post :unset_admin, collection_id: collection.id, id: user_2.id
       membership = collection.memberships.find_by_user_id user_2.id
-      membership.admin.should be_falsey
+      expect(membership.admin).to be_falsey
     end
   end
 end

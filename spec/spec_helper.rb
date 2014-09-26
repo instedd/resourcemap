@@ -91,7 +91,7 @@ RSpec.configure do |config|
 
   def stub_time(time)
     time = Time.parse time
-    Time.stub(:now) { time }
+    allow(Time).to receive(:now) { time }
   end
 
   def with_tmp_file(filename)
@@ -112,12 +112,12 @@ RSpec.configure do |config|
 # Mock nuntium access and gateways management
   config.before(:each) do
     @nuntium = double("nuntium")
-    Nuntium.stub(:new_from_config).and_return(@nuntium)
-    @nuntium.stub(:create_channel)
-    @nuntium.stub(:update_channel)
-    @nuntium.stub(:delete_channel)
-    Channel.any_instance.stub(:gateway_url).and_return(true)
-    Channel.any_instance.stub(:handle_nuntium_channel_response).and_return(true)
+    allow(Nuntium).to receive(:new_from_config).and_return(@nuntium)
+    allow(@nuntium).to receive(:create_channel)
+    allow(@nuntium).to receive(:update_channel)
+    allow(@nuntium).to receive(:delete_channel)
+    allow_any_instance_of(Channel).to receive(:gateway_url).and_return(true)
+    allow_any_instance_of(Channel).to receive(:handle_nuntium_channel_response).and_return(true)
   end
 
   module ActionController::TestCase::Behavior

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SitesController do
+describe SitesController, :type => :controller do
   include Devise::TestHelpers
 
   let(:user) { User.make }
@@ -28,7 +28,7 @@ describe SitesController do
   it 'should validate format for numeric field' do
     post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number'
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid numeric value in field #{numeric.code}")
+    expect(json["error_message"]).to eq("Invalid numeric value in field #{numeric.code}")
     post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2'
     validate_site_property_value(site, numeric, 2)
   end
@@ -38,7 +38,7 @@ describe SitesController do
     validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
     post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "117"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid date value in field #{date.code}. The configured date format is mm/dd/yyyy.")
+    expect(json["error_message"]).to eq("Invalid date value in field #{date.code}. The configured date format is mm/dd/yyyy.")
   end
 
   it "should validate format for hierarchy field" do
@@ -46,7 +46,7 @@ describe SitesController do
     validate_site_property_value(site, hierarchy, "101")
     post :update_property, site_id: site.id, format: 'json', es_code: hierarchy.es_code, value: "Dad"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid hierarchy option 'Dad' in field '#{hierarchy.code}'")
+    expect(json["error_message"]).to eq("Invalid hierarchy option 'Dad' in field '#{hierarchy.code}'")
   end
 
   it "should validate format for select_one field" do
@@ -54,7 +54,7 @@ describe SitesController do
     validate_site_property_value(site, select_one, 1)
     post :update_property, site_id: site.id, format: 'json', es_code: select_one.es_code, value: "one"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid option in field #{select_one.code}")
+    expect(json["error_message"]).to eq("Invalid option in field #{select_one.code}")
   end
 
   it "should validate format for select_many field" do
@@ -66,10 +66,10 @@ describe SitesController do
     validate_site_property_value(site, select_many, [2, 1])
     post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "[two,]"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid option '[two' in field #{select_many.code}")
+    expect(json["error_message"]).to eq("Invalid option '[two' in field #{select_many.code}")
     post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "two,one"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid option 'two' in field #{select_many.code}")
+    expect(json["error_message"]).to eq("Invalid option 'two' in field #{select_many.code}")
   end
 
   it "should validate format for site field" do
@@ -77,7 +77,7 @@ describe SitesController do
     validate_site_property_value(site, site_field, "1234")
     post :update_property, site_id: site.id, format: 'json', es_code: site_field.es_code, value: 23
     json = JSON.parse response.body
-    json["error_message"].should eq("Non-existent site-id in field #{site_field.code}")
+    expect(json["error_message"]).to eq("Non-existent site-id in field #{site_field.code}")
   end
 
   it "should validate format for user field" do
@@ -85,7 +85,7 @@ describe SitesController do
     validate_site_property_value(site, director, user.email)
     post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com"
     json = JSON.parse response.body
-    json["error_message"].should eq("Non-existent user email address in field #{director.code}")
+    expect(json["error_message"]).to eq("Non-existent user email address in field #{director.code}")
   end
 
   it "should validate format for email field" do
@@ -93,14 +93,14 @@ describe SitesController do
     validate_site_property_value(site, email_field, "valid@email.com")
     post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "v3@@e.mail.c.om"
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid email address in field #{email_field.code}")
+    expect(json["error_message"]).to eq("Invalid email address in field #{email_field.code}")
   end
 
   it "should increase the site version when updating a single property" do
     site_version = site.version
     post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "valid@email.com"
     json = JSON.parse response.body
-    json["version"].should eq(site_version+1)
+    expect(json["version"]).to eq(site_version+1)
   end
 
   it 'should create a new site' do
@@ -116,7 +116,7 @@ describe SitesController do
       email_field.es_code => "myemail@mail.com" }}.to_json
     post :create, {:collection_id => collection.id, :site => site_params}
 
-    response.should be_success
+    expect(response).to be_success
     new_site = Site.find_by_name "new site"
 
 
@@ -143,16 +143,16 @@ describe SitesController do
       site_params = {:name => "new site"}.to_json
       post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
     end
 
     it 'should update only name' do
       site_params = {:name => "new site"}.to_json
       post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
-      response.should be_success
+      expect(response).to be_success
       modified_site = Site.find_by_name "new site"
-      modified_site.should be
+      expect(modified_site).to be
     end
 
     it 'should not be allowed to update name if user does not have permission' do
@@ -167,18 +167,18 @@ describe SitesController do
       site_params = {:name => "new site"}.to_json
       post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
-      response.status.should eq(403)
-      Site.find_by_name("new site").should be_nil
+      expect(response.status).to eq(403)
+      expect(Site.find_by_name("new site")).to be_nil
     end
 
     it 'should be able to delete location' do
       site_params = {:lat => nil, :lng => nil}.to_json
       post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
-      response.should be_success
+      expect(response).to be_success
       modified_site = Site.find_by_name site.name
-      modified_site.lat.should be(nil)
-      modified_site.lng.should be(nil)
+      expect(modified_site.lat).to be(nil)
+      expect(modified_site.lng).to be(nil)
     end
 
     it 'should not be allowed to update location if user does not have permission' do
@@ -195,10 +195,10 @@ describe SitesController do
       site_params = {:lat => nil, :lng => nil}.to_json
       post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
       site.reload
-      site.lat.should eq(previous_lat)
-      site.lng.should eq(previous_lng)
+      expect(site.lat).to eq(previous_lat)
+      expect(site.lng).to eq(previous_lng)
     end
 
     it 'should not delete existing properties when only the name is modified' do
@@ -209,8 +209,8 @@ describe SitesController do
       post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       modified_site = Site.find_by_name "new site"
-      modified_site.should be
-      modified_site.properties[text.es_code].should eq("existing value")
+      expect(modified_site).to be
+      expect(modified_site.properties[text.es_code]).to eq("existing value")
     end
 
     it 'should not delete existing properties when only the one of them is modified' do
@@ -223,8 +223,8 @@ describe SitesController do
       post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       modified_site = site.reload
-      modified_site.properties[text.es_code].should eq("new value")
-      modified_site.properties[numeric.es_code].should eq(12)
+      expect(modified_site.properties[text.es_code]).to eq("new value")
+      expect(modified_site.properties[numeric.es_code]).to eq(12)
     end
 
     it 'should not be allowed to update a property if user does not have permission' do
@@ -242,16 +242,16 @@ describe SitesController do
       site_params = {:properties => {text.es_code => "new value"}}.to_json
       post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
       site.reload
-      site.properties[text.es_code].should eq("existing value")
+      expect(site.properties[text.es_code]).to eq("existing value")
     end
 
     it 'should update a single property' do
       site_params = {:properties => { text.es_code => "new text" }}.to_json
       post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
-      response.should be_success
+      expect(response).to be_success
       new_site = Site.find_by_name site.name
       new_site.properties[text.es_code.to_s]
     end
@@ -261,14 +261,14 @@ describe SitesController do
       site_params = {:properties => { text.es_code => "new text" }}.to_json
       post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
       json = JSON.parse response.body
-      json["version"].should eq(site_version+1)
+      expect(json["version"]).to eq(site_version+1)
     end
   end
 
   it "can destroy site" do
     delete :destroy, id: site.id, collection_id: collection.id
 
-    Site.find_by_id(site.id).should be_nil
+    expect(Site.find_by_id(site.id)).to be_nil
   end
 
   it "cannot destroy site if the user is not admin" do
@@ -277,14 +277,14 @@ describe SitesController do
     sign_in member
 
     delete :destroy, id: site.id, collection_id: collection.id
-    response.should be_forbidden
+    expect(response).to be_forbidden
 
-    Site.find_by_id(site.id).should be
+    expect(Site.find_by_id(site.id)).to be
   end
 
   def validate_site_property_value(site, property, value)
     site.reload
-    site.properties["#{property.es_code}"].should eq(value)
+    expect(site.properties["#{property.es_code}"]).to eq(value)
   end
 
   describe 'analytic' do
@@ -308,12 +308,12 @@ describe SitesController do
       end
 
       it "should be success" do
-        @response.should be_success
+        expect(@response).to be_success
       end
 
       it "should reset on create" do
         new_site = Site.find_by_name "new site"
-        new_site.properties[auto_reset_field.es_code.to_s].should be_falsey
+        expect(new_site.properties[auto_reset_field.es_code.to_s]).to be_falsey
       end
     end
 
@@ -327,12 +327,12 @@ describe SitesController do
       end
 
       it "should be success" do
-        @response.should be_success
+        expect(@response).to be_success
       end
 
       it "should reset field" do
         new_site = Site.find_by_name "new site name"
-        new_site.properties[auto_reset_field.es_code.to_s].should be_falsey
+        expect(new_site.properties[auto_reset_field.es_code.to_s]).to be_falsey
       end
     end
 
@@ -346,12 +346,12 @@ describe SitesController do
       end
 
       it "should be success" do
-        @response.should be_success
+        expect(@response).to be_success
       end
 
       it "should not reset field" do
         new_site = Site.find_by_name site.name
-        new_site.properties[auto_reset_field.es_code.to_s].should be_truthy
+        expect(new_site.properties[auto_reset_field.es_code.to_s]).to be_truthy
       end
     end
 
@@ -364,12 +364,12 @@ describe SitesController do
       end
 
       it "should be success" do
-        @response.should be_success
+        expect(@response).to be_success
       end
 
       it "should reset field" do
         new_site = Site.find_by_name "new site name"
-        new_site.properties[auto_reset_field.es_code.to_s].should be_falsey
+        expect(new_site.properties[auto_reset_field.es_code.to_s]).to be_falsey
       end
     end
 

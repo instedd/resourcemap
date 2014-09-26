@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "filter_sites" do 
+describe "filter_sites", :type => :request do 
  
   it "should filter sites", js:true do
     user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -21,7 +21,7 @@ describe "filter_sites" do
     sleep 2
     find(:xpath, '//div[@class="refine-popup box"]/div[4]/a').click
     sleep 3
-    page.should have_content 'Show sites where Central Hospital Layer 1 Field starts with "fra" '
+    expect(page).to have_content 'Show sites where Central Hospital Layer 1 Field starts with "fra" '
     page.save_screenshot 'Filter_sites.png'
   end  
 end

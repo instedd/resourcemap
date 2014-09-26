@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AndroidController do
+describe AndroidController, :type => :controller do
   include Devise::TestHelpers
 
   let(:user) { User.make }
@@ -18,10 +18,10 @@ describe AndroidController do
       get :collections_json
     end
 
-    it { response.should be_success }
+    it { expect(response).to be_success }
 
     it "should response in JSON format" do
-      response.content_type.should eq 'application/json'
+      expect(response.content_type).to eq 'application/json'
     end
   end
 
@@ -52,7 +52,7 @@ describe AndroidController do
       xml_file = fixture_file_upload('/instant_file.xml', 'text/xml')
 
       post :submission, :xml_submission_file => xml_file
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should response Unauthorized if user is not an admin" do
@@ -61,8 +61,8 @@ describe AndroidController do
       xml_file = fixture_file_upload('/instant_file.xml', 'text/xml')
 
       post :submission, :xml_submission_file => xml_file
-      response.response_code.should eq(401)
-      response.should_not be_success
+      expect(response.response_code).to eq(401)
+      expect(response).not_to be_success
     end
   end
 
@@ -73,32 +73,32 @@ describe AndroidController do
       end
 
       it "should render Xform's title with collection's name" do
-        @result.should match(/<h:title>#{collection1.name}<\/h:title>/)
+        expect(@result).to match(/<h:title>#{collection1.name}<\/h:title>/)
       end
 
       it "should render collection id in the xform's model" do
-        @result.should match(/<collection-id type=\"integer\">#{collection1.id}<\/collection-id>/)
+        expect(@result).to match(/<collection-id type=\"integer\">#{collection1.id}<\/collection-id>/)
       end
 
       it "should render the model elements for existing fields in the xform's model" do
         text_field = /<field-#{text.id}><field-id>#{text.id}<\/field-id><value \/><\/field-#{text.id}>/
         numeric_field = /<field-#{numeric.id}><field-id>#{numeric.id}<\/field-id><value \/><\/field-#{numeric.id}>/
         fields = /#{text_field}#{numeric_field}/
-        @result.should match(fields)
+        expect(@result).to match(fields)
       end
 
       it "should render the binding elements for existing fields in the xform's model" do
         text_field = /<bind nodeset=\"\/site\/existing-fields\/field-#{text.id}\/value\" \/>/
         numeric_field = /<bind nodeset=\"\/site\/existing-fields\/field-#{numeric.id}\/value\" \/>/
         fields = /#{text_field}#{numeric_field}/
-        @result.should match(fields)
+        expect(@result).to match(fields)
       end
 
       it "should render the ui elements for existing fields in the xform's body" do
         text_field = /<input ref=\"\/site\/existing-fields\/field-#{text.id}\/value\"><label>#{text.name}<\/label><\/input>/
         numeric_field = /<input ref=\"\/site\/existing-fields\/field-#{numeric.id}\/value\"><label>#{numeric.name}<\/label><\/input>/
         fields = /#{text_field}#{numeric_field}/
-        @result.should match(fields)
+        expect(@result).to match(fields)
       end
     end
   end

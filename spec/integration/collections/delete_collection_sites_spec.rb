@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "delete_collection_sites" do 
+describe "delete_collection_sites", :type => :request do 
  
   it "should delete sites of a collection", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
@@ -14,6 +14,6 @@ describe "delete_collection_sites" do
     sleep 2
   	page.save_screenshot "Delete Collection Sites.png"
     sleep 6
-  	page.should have_content "Collection Central Hospital's sites deleted"
+  	expect(page).to have_content "Collection Central Hospital's sites deleted"
   end
 end

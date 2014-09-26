@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "collections" do 
+describe "collections", :type => :request do 
  
   it "should edit site Text values", js:true do   
     
@@ -20,8 +20,8 @@ describe "collections" do
     fill_in 'email-input-email', :with => 'manas@manas.com'
     click_button 'Done'
     sleep 3 
-    page.should_not have_content 'man@as.com'
-    page.should have_content 'manas@manas.com'
+    expect(page).not_to have_content 'man@as.com'
+    expect(page).to have_content 'manas@manas.com'
     page.save_screenshot "Edit_site_Email_value.png"
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper' 
 
-describe "sites" do 
+describe "sites", :type => :request do 
  
   it "should edit site Select many values", js:true do   
 
@@ -15,7 +15,7 @@ describe "sites" do
     visit collections_path
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
-    page.should_not have_content 'first'
+    expect(page).not_to have_content 'first'
     click_link 'Edit Site'
     sleep 5
     find_by_id('Add more').click
@@ -23,7 +23,7 @@ describe "sites" do
     sleep 5
     click_button 'Done'
     sleep 5
-    page.should have_content 'first'
+    expect(page).to have_content 'first'
     page.save_screenshot "Edit_site_selman_value.png"
     
   end
