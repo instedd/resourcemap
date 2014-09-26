@@ -8,8 +8,15 @@ describe Membership::Anonymous, :type => :model do
   describe '#as_json' do
     subject { anonymous.as_json }
 
-    its([:name]) { should eq('none') }
-    its([:location]) { should eq('none') }
+    describe '[:name]' do
+      subject { super()[:name] }
+      it { is_expected.to eq('none') }
+    end
+
+    describe '[:location]' do
+      subject { super()[:location] }
+      it { is_expected.to eq('none') }
+    end
   end
 
   ['name', 'location'].each do |builtin_field|

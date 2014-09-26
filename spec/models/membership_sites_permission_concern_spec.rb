@@ -27,7 +27,7 @@ describe Membership::SitesPermissionConcern, :type => :model do
       permission = membership.write_sites_permission
 
       expect(permission.all_sites).to eq false
-      expect(permission.some_sites).to have(1).items
+      expect(permission.some_sites.size).to eq(1)
       expect(permission.some_sites[0]).to eq({id: 1, name: 'Bayon clinic'})
     end
 
@@ -35,7 +35,7 @@ describe Membership::SitesPermissionConcern, :type => :model do
       membership.update_sites_permission({read: {some_sites: {"0" => {"id" => "2", "name" => "Calmette hospital"}}}})
       permission = membership.read_sites_permission
 
-      expect(permission.some_sites).to have(1).items
+      expect(permission.some_sites.size).to eq(1)
       expect(permission.some_sites[0]).to eq({"id" => "2", "name" => "Calmette hospital"})
     end
   end

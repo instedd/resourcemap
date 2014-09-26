@@ -8,7 +8,11 @@ describe Message, :type => :model do
     it { is_expected.to validate_presence_of(:guid) }
     it { is_expected.to validate_presence_of(:body) }
     it { is_expected.to validate_presence_of(:from) }
-    its(:save) { should be_falsey }
+
+    describe '#save' do
+      subject { super().save }
+      it { is_expected.to be_falsey }
+    end
   end
 
   describe "check message channel and sender" do

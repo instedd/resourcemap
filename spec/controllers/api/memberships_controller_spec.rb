@@ -25,7 +25,7 @@ describe Api::MembershipsController, :type => :controller do
       new_user = User.make
       get :invitable, collection_id: collection.id
       json = JSON.parse response.body
-      expect(json).to have(1).item
+      expect(json.size).to eq(1)
       expect(json[0]).to eq(new_user.email)
     end
 
