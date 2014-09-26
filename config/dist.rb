@@ -1,6 +1,6 @@
 set :application, 'resourcemap'
 
-set :version, '2.12'
+set :version, `git describe`.chomp
 
 set :maintainer, 'Carolina Hadad <chadad@manas.com.ar>'
 set :description, 'InSTEDD Resource Map'
