@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/bradphelan/jasminerice
+  revision: 091349c27343bfa728b8e5745675f9ddbb7d9699
+  specs:
+    jasminerice (0.1.0)
+      coffee-rails
+
+GIT
   remote: https://github.com/instedd/alto_guisso.git
   revision: 170ad8f8cdf0e46438db06668894bb986111182b
   branch: master
@@ -21,13 +28,6 @@ GIT
       json
       rails (>= 3.2)
       zmq
-
-GIT
-  remote: https://github.com/bradphelan/jasminerice
-  revision: 091349c27343bfa728b8e5745675f9ddbb7d9699
-  specs:
-    jasminerice (0.1.0)
-      coffee-rails
 
 GIT
   remote: https://github.com/manastech/dist.git
@@ -134,8 +134,6 @@ GEM
       timers (~> 4.0.0)
     childprocess (0.5.3)
       ffi (~> 1.0, >= 1.0.11)
-    ci_reporter (2.0.0)
-      builder (>= 2.1.2)
     coderay (1.1.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -461,7 +459,6 @@ DEPENDENCIES
   capistrano
   capybara
   carrierwave
-  ci_reporter
   coffee-rails (~> 4.0.1)
   database_cleaner
   decent_exposure
