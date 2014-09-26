@@ -9,7 +9,7 @@ describe Collection do
   let(:user) { User.make }
   let(:collection) { user.create_collection Collection.make_unsaved(anonymous_name_permission: 'read', anonymous_location_permission: 'read')}
   let(:collection2) { user.create_collection Collection.make_unsaved(anonymous_name_permission: 'none', anonymous_location_permission: 'none')}
-  let(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'foo', name: 'Foo', ord: 1}] }
+  let!(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'foo', name: 'Foo', ord: 1}] }
   let(:field) { layer.fields.first }
 
   context "max value" do
@@ -181,6 +181,32 @@ describe Collection do
       dict['B'].should eq(field_b.es_code)
       dict['C'].should eq(field_c.es_code)
       dict['D'].should eq(field_d.es_code)
+    end
+  end
+
+  describe 'visibility by user for' do
+    # Layers are tested in layer_access_spec
+    context 'fields' do
+
+      it "should be visible for collection owner" do
+        collection.visible_fields_for(user, {}).should eq([field])
+      end
+
+      it "should not be visible for unrelated user" do
+        new_user = User.make
+        collection.visible_fields_for(new_user, {}).should be_empty
+      end
+
+      # Test for https://github.com/instedd/resourcemap/issues/735
+      it "should not create duplicates with multiple users when anonymous permissions are given for a layer" do
+        layer.anonymous_user_permission = 'read'
+        layer.save!
+
+        new_user = User.make
+        membership = collection.memberships.create user: new_user
+        membership.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
+        collection.visible_fields_for(user, {}).should eq([field])
+      end
     end
   end
 end

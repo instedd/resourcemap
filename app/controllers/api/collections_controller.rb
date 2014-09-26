@@ -84,6 +84,27 @@ class Api::CollectionsController < ApiController
     head :ok
   end
 
+  def bulk_update
+    properties_to_update = params[:updates].deep_dup
+    properties_to_update.delete(:properties)
+    field_codes = collection.es_codes_by_field_code
+    if params[:updates][:properties]
+      properties_to_update[:properties] = {}
+      params[:updates][:properties].each do |code, value|
+        properties_to_update[:properties][field_codes[code]] = value
+      end
+    end
+    params.delete(:updates)
+    search = build_search :all
+    ids = search.results.map{|s| s["_id"].to_i}
+    collection.sites.where(id: ids).each do |s|
+      s.validate_and_process_parameters(properties_to_update, current_user)
+      s.user = current_user
+      s.save
+    end
+    head :ok
+  end
+
   private
 
   def perform_histogram_search(field, filters=nil)
@@ -93,6 +114,11 @@ class Api::CollectionsController < ApiController
   end
 
   def perform_search(*options)
+    search = build_search *options
+    search.api_results
+  end
+
+  def build_search(*options)
     except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size, :location_missing, :locale]
 
     search = new_search
@@ -137,7 +163,7 @@ class Api::CollectionsController < ApiController
     end
 
     search.where params.except(*except_params)
-    search.api_results
+    search
   end
 
   def valid_box_coordinates

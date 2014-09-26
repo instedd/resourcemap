@@ -9,6 +9,7 @@ onCollections ->
       @div = ko.observable('')
 
     @performSearchOrHierarchy: ->
+      @selectHierarchy(null)
       return false if !@currentCollection() || @ignorePerformSearchOrHierarchy
 
       rootCollection = @currentCollection().collection ? @currentCollection()

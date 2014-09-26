@@ -28,7 +28,7 @@ gem 'newrelic_rpm'
 gem 'cancancan', '~> 1.9'
 gem "omniauth"
 gem "omniauth-openid"
-gem 'alto_guisso', git: "https://bitbucket.org/instedd/alto_guisso.git", branch: 'master'
+gem 'alto_guisso', git: "https://github.com/instedd/alto_guisso.git", branch: 'master'
 gem 'oj'
 gem 'nokogiri'
 gem 'carrierwave'
@@ -36,7 +36,7 @@ gem 'mini_magick'
 gem 'activerecord-import'
 gem 'active_model_serializers'
 gem 'includes-count'
-gem 'poirot_rails', git: "https://bitbucket.org/instedd/poirot_rails.git", branch: 'master'
+gem 'poirot_rails', git: "https://github.com/instedd/poirot_rails.git", branch: 'master' unless ENV['CI']
 
 gem 'treetop', '1.4.15'
 
@@ -51,7 +51,6 @@ gem 'activerecord-deprecated_finders'
 
 group :test do
   gem 'shoulda-matchers'
-  gem 'ci_reporter'
   gem 'resque_spec'
   gem 'selenium-webdriver'
   gem 'capybara'

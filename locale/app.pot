@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-25 21:10-0300\n"
-"PO-Revision-Date: 2014-08-25 21:10-0300\n"
+"POT-Creation-Date: 2014-09-22 19:02-0300\n"
+"PO-Revision-Date: 2014-09-22 19:02-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -51,10 +51,19 @@ msgstr ""
 msgid "%{kind} field '%{name}' %{code} %{key} changed to %{field_key}"
 msgstr ""
 
+msgid "%{sites} were imported"
+msgstr ""
+
 msgid "%{user} became an administrator"
 msgstr ""
 
 msgid "%{user} removed from administrators group"
+msgstr ""
+
+msgid "'%{code}' changed from %{old_value} to %{new_value}"
+msgstr ""
+
+msgid "'%{code}' changed from (nothing) to %{new_value}"
 msgstr ""
 
 msgid "(85512345678)"
@@ -435,6 +444,12 @@ msgstr ""
 msgid "Download a template CSV file"
 msgstr ""
 
+msgid "Download as CSV"
+msgstr ""
+
+msgid "Download sample CSV"
+msgstr ""
+
 msgid "Edit"
 msgstr ""
 
@@ -451,6 +466,9 @@ msgid "Email"
 msgstr ""
 
 msgid "Endpoint URL :"
+msgstr ""
+
+msgid "Enter Snapshot name"
 msgstr ""
 
 msgid "Enter new site name"
@@ -571,6 +589,9 @@ msgid "Go back to present"
 msgstr ""
 
 msgid "Group by"
+msgstr ""
+
+msgid "Hide"
 msgstr ""
 
 msgid "Hide Configuration"
@@ -777,6 +798,9 @@ msgstr ""
 msgid "Load more"
 msgstr ""
 
+msgid "Load more sites..."
+msgstr ""
+
 msgid "Loading..."
 msgstr ""
 
@@ -793,6 +817,9 @@ msgid "Location:"
 msgstr ""
 
 msgid "LocationPermission|Action"
+msgstr ""
+
+msgid "Log in"
 msgstr ""
 
 msgid "Long"
@@ -1011,6 +1038,9 @@ msgstr ""
 msgid "Prefix|Version"
 msgstr ""
 
+msgid "Present time"
+msgstr ""
+
 msgid "Preview"
 msgstr ""
 
@@ -1131,6 +1161,9 @@ msgstr ""
 msgid "Search by email..."
 msgstr ""
 
+msgid "Search or drag the pin"
+msgstr ""
+
 msgid "See everything on the map for a birds-eye view"
 msgstr ""
 
@@ -1170,6 +1203,9 @@ msgstr ""
 msgid "Showing first 10 records."
 msgstr ""
 
+msgid "Sign out"
+msgstr ""
+
 msgid "Sign up"
 msgstr ""
 
@@ -1189,6 +1225,12 @@ msgid "Site %{site} was deleted"
 msgstr ""
 
 msgid "Site '%s' successfully created"
+msgstr ""
+
+msgid "Site '%{old_name}' was renamed to '%{new_name}'"
+msgstr ""
+
+msgid "Site '%{site_name}' changed: %{changes}"
 msgstr ""
 
 msgid "Site Name"
@@ -1650,9 +1692,6 @@ msgstr ""
 msgid "add Layers"
 msgstr ""
 
-msgid "alerts"
-msgstr ""
-
 msgid "all"
 msgstr ""
 
@@ -1749,7 +1788,13 @@ msgstr ""
 msgid "leave blank if you don't want to change it"
 msgstr ""
 
+msgid "location changed from %{old_location} to %{new_location}"
+msgstr ""
+
 msgid "name changed from %{first_change} to %{second_change}"
+msgstr ""
+
+msgid "name changed from '%{old_name}' to '%{new_name}'"
 msgstr ""
 
 msgid "new"

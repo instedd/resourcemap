@@ -20,6 +20,38 @@ class Field::HierarchyField < Field
     value if find_hierarchy_option_by_id(value)
   end
 
+  def csv_headers
+    headers = []
+    headers << code
+
+    # Add one column for each level of the hierarchy
+    1.upto(hierarchy_max_height) do |i|
+      headers << "#{code}-#{i}"
+    end
+    headers
+  end
+
+  def csv_values(value)
+    rows = []
+    # Add the field's value
+    rows << value
+
+    # This rescue is because the hiearchy could possibly have invalid values and
+    # ascendants_of_in_hierarchy raise an "invalid value" exception if the stored value is not valid
+    ancestors = ascendants_of_in_hierarchy(value) rescue []
+
+    # Add all values
+    ancestors.reverse.each do |ancestor|
+      rows << ancestor[:name]
+    end
+
+    # Add empty values for the missing elements (if the value is not a leaf)
+    (hierarchy_max_height - ancestors.count).times do
+      rows << ""
+    end
+    rows
+  end
+
   def human_value(value)
     find_hierarchy_value(value)
   end
@@ -59,21 +91,26 @@ class Field::HierarchyField < Field
     end
   end
 
-  def ascendants_of_in_hierarchy(node_id_or_name)
+  def ascendants_of_in_hierarchy(node_id)
+    return [] if node_id.nil?
     begin
-      valid_value?(node_id_or_name)
-      node_ids = [node_id_or_name]
+      valid_value?(node_id)
+      node_ids = [node_id]
     rescue
-      node_ids = find_hierarchy_id_by_name(node_id_or_name)
-      raise invalid_field_message(node_id_or_name) if node_ids.blank?
+      raise invalid_field_message(node_id)
     end
 
     options = []
     node_ids.each do |node_id|
-      while (!node_id.blank?)
-        option = find_hierarchy_option_by_id(node_id)
-        options << { id: option[:id], name: option[:name], type: option[:type]}
-        node_id = option[:parent_id]
+      @ascendants_cache ||= {}
+      options += @ascendants_cache[node_id] ||= begin
+        ascendants = []
+        while (!node_id.blank?)
+          option = find_hierarchy_option_by_id(node_id)
+          ascendants << { id: option[:id], name: option[:name], type: option[:type]}
+          node_id = option[:parent_id]
+        end
+        ascendants
       end
     end
 
@@ -100,6 +137,22 @@ class Field::HierarchyField < Field
     end
 
     options.map { |item| item[:id] }
+  end
+
+  def hierarchy_max_height
+    if @cache_for_read
+      @max_height ||= config['hierarchy'].map {|n| max_height(n) + 1 }.max
+    else
+      config['hierarchy'].map {|n| max_height(n) + 1 }.max
+    end
+  end
+
+  def max_height(node)
+    if node["sub"] && node["sub"].count > 0
+      node["sub"].map {|n| max_height(n) + 1 }.max
+    else
+      0
+    end
   end
 
   def cache_for_read
@@ -166,7 +219,7 @@ class Field::HierarchyField < Field
 
   def find_hierarchy_option_by_id(value)
     if @cache_for_read
-      @options_by_id ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:id].to_s] = opt[:name] }
+      @options_by_id ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:id].to_s] = opt }
       return @options_by_id[value.to_s]
     end
 

@@ -38,7 +38,9 @@
       %span{ko(text: :name, attr: {title: :name})}
       - #if can? :show, collection
       - if !current_user.is_guest
+        /ko if: anyUpdatePermissions
         %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button'}
+        //ko
 
   .tablescroll.cheight.sites
     %table.GralTable.CleanTable
@@ -52,7 +54,7 @@
         /ko if: hasMoreSites() && !loadingSites()
         %tr
           %td.loadmore
-            = ko_link_to "Load more sites...", :loadMoreSites
+            = ko_link_to _("Load more sites..."), :loadMoreSites
         //ko
         /ko if: hasMoreSites() && loadingSites()
         %tr
@@ -62,7 +64,9 @@
     /ko if: !currentSnapshot
     -# if can? :create, Site
     - if current_user && !current_user.is_guest
+      /ko if: anyUpdatePermissions
       %button.flocation{ko(click: '$root.createSite')} Create Site
+      //ko
     //ko
 
   //ko
@@ -98,7 +102,7 @@
               %div
                 %label Location:
                 /ko if: locationWriteable
-                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-text', placeholder: 'Search or drag the pin'}
+                = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-text', placeholder: _('Search or drag the pin')}
                 //ko
                 /ko if: ! locationWriteable
                 %span.value{ko(text: :locationText)}
@@ -201,7 +205,7 @@
               /ko if: writeable
               %div.site_row.writeable{ko(click: 'edit')}
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
-                %label.field-name{ko(text: "name + ':'", topPopover: "'Field Code: ' + code", css: { error: :error })}
+                %label.field-name{ko(text: "name + ':'", topPopover: "__('Field Code') + ': ' + code", css: { error: :error })}
                 /ko if: hasValue() && !error()
                 %span.value{ko(text: :valueUI, visible: '!editing()')}
                 /ko if: kind == 'site' && !editing() && !error()
@@ -221,7 +225,7 @@
               /ko if: !writeable
               %div.site_row
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
-                %label.field-name{ko(text: 'name', topPopover: "'Field Code: ' + code", css: { error: :error })}
+                %label.field-name{ko(text: 'name', topPopover: "_('Field Code') + ': ' + code", css: { error: :error })}
                 /ko if: hasValue() && !error()
                 %span.value{ko(text: :valueUI)}
                 /ko if: kind == 'site' && !editing() && !error()

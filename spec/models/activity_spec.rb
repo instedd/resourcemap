@@ -269,6 +269,23 @@ describe Activity do
         'description' => "Site '#{site.name}' changed: 'beds' changed from (nothing) to 30"
     end
 
+    it "creates one after deleting one site's property" do
+      site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 30}, user: user
+
+      Activity.delete_all
+
+      site.properties_will_change!
+      site.properties[beds.es_code] = nil
+      site.save!
+
+      assert_activity 'site', 'changed',
+        'collection_id' => collection.id,
+        'user_id' => user.id,
+        'site_id' => site.id,
+        'data' => {'name' => site.name, 'changes' => {'properties' => [{beds.es_code => 30}, {}]}},
+        'description' => "Site '#{site.name}' changed: 'beds' changed from 30 to (nothing)"
+    end
+
     it "creates one after changing one site's property" do
       site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20}, user: user
 

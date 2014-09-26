@@ -43,7 +43,7 @@ class ApiController < ApplicationController
   end
 
   def api_error_message(message)
-    check_api_text = 'Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/REST_API'
+    check_api_text = 'Check the API documentation: https://github.com/instedd/resourcemap/wiki/REST_API'
     "#{message} - #{check_api_text}"
   end
 end

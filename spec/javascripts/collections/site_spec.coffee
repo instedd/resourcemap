@@ -18,6 +18,7 @@ describe 'Collection', ->
         long_analyzed: "17",
         updated_at: "2014-01-09T13:42:57Z"
         properties: {
+          42:"This Luhn",
           50:20
         },
         type: "site",
@@ -34,14 +35,17 @@ describe 'Collection', ->
       @collection = new Collection @data_collection
       window.model = new MainViewModel [@collection]
 
-      @field = new Field { id: 1, code: 'luhn_id', name: 'Luhn_id', kind: 'identifier', config: {format: "Luhn" } }, (esCode) -> 'next_value'
+      @field = new Field { id: 50, code: 'luhn_id', name: 'Luhn_id', kind: 'identifier', config: {format: "Luhn" } }, (esCode) -> 'next_value'
 
-      @layer = new Layer({fields: {@field}, name:'luhn_layer'})
+      @otherField = new Field { id: 42, code: 'luhn_name', name: 'Luhn name', kind: 'text', writeable: true }
+
+      @layer = new Layer({fields: {@field, @otherField}, name:'luhn_layer'})
 
       @site = new Site @collection, @data_site
 
       @collection.layers.push(@layer)
       @collection.fields.push(@field)
+      @collection.fields.push(@otherField)
       window.model.currentCollection(@collection)
 
       spyOn(@site, 'createMarker')
@@ -51,5 +55,19 @@ describe 'Collection', ->
       @site.startEditMode()
       expect(@site.collection.fields()[0].value()).toEqual('next_value')
 
+    it 'should delete values when blanking the text fields', ->
+      @site.startEditMode()
 
+      expect(@site.properties()[42]).toEqual('This Luhn')
+      expect(@site.properties()[50]).toEqual(20)
 
+      @field.value("")
+      @otherField.value("Other Luhn")
+
+      @site.copyPropertiesFromCollection(@collection)
+      
+      expect(@site.properties()[42]).toBeDefined()
+      expect(@site.properties()[50]).toBeDefined()
+
+      expect(@site.properties()[42]).toEqual('Other Luhn')
+      expect(@site.properties()[50]).toEqual('')

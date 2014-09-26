@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-25 21:10-0300\n"
-"PO-Revision-Date: 2014-07-24 19:40+0200\n"
-"Last-Translator:  <jblandini@manas.com.ar>\n"
+"POT-Creation-Date: 2014-09-22 19:02-0300\n"
+"PO-Revision-Date: 2014-08-28 15:14+0200\n"
+"Last-Translator: Clara <cpuyade@manas.com.ar>\n"
 "Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -19,10 +19,10 @@ msgstr ""
 "X-Generator: Pootle 2.0.1\n"
 
 msgid " Item id already exists."
-msgstr ""
+msgstr "l'identité de l'élément existe déjà"
 
 msgid " Item id is required."
-msgstr ""
+msgstr "L'identité de l'élément est nécessaire"
 
 msgid "\""
 msgstr "\""
@@ -49,6 +49,9 @@ msgid "%{kind} field %{name} %{code} was deleted"
 msgstr "champ %{kind} %{name} %{code} a été supprimé"
 
 msgid "%{kind} field '%{name}' %{code} %{key} changed to %{field_key}"
+msgstr "champ %{kind} field '%{name}' %{code} %{key} modifié en %{field_key}"
+
+msgid "%{sites} were imported"
 msgstr ""
 
 msgid "%{user} became an administrator"
@@ -57,11 +60,17 @@ msgstr ""
 msgid "%{user} removed from administrators group"
 msgstr ""
 
-msgid "(85512345678)"
+msgid "'%{code}' changed from %{old_value} to %{new_value}"
+msgstr "%{code} modifié de %{old_value} à %{new_value}"
+
+msgid "'%{code}' changed from (nothing) to %{new_value}"
 msgstr ""
 
+msgid "(85512345678)"
+msgstr "(85512345678)"
+
 msgid "(for example: 85512345678)"
-msgstr ""
+msgstr "(par exemple : 85512345678)"
 
 msgid "(no value)"
 msgstr "(aucune valeur)"
@@ -83,7 +92,7 @@ msgid "Access the API in"
 msgstr "Accéder à l'API dans"
 
 msgid "Account updated successfully"
-msgstr ""
+msgstr "Compte mis à jour avec succès"
 
 msgid "Accurately tracking and allocating resources is critical to getting the  most from every asset at your disposal. Resource Map can help you maximize your resource allocation and usage."
 msgstr "Suivre et affecter des ressources avec précision est essentiel pour obtenir le maximum de chaque actif dont vous disposez. La Carte des ressources peut vous aider à maximiser votre affectation et utilisation des ressources."
@@ -95,13 +104,13 @@ msgid "Activity"
 msgstr "Activité"
 
 msgid "Activity|Action"
-msgstr ""
+msgstr "Action"
 
 msgid "Activity|Data"
-msgstr ""
+msgstr "Données"
 
 msgid "Activity|Item type"
-msgstr ""
+msgstr "Élément"
 
 msgid "Add Alert"
 msgstr "Ajouter un avertissement"
@@ -143,7 +152,7 @@ msgid "Admin"
 msgstr "Administration"
 
 msgid "Admin permissions changed"
-msgstr ""
+msgstr "Admin permissions modifiées"
 
 msgid "Advanced"
 msgstr "Avancé"
@@ -155,13 +164,13 @@ msgid "Alert"
 msgstr "Avertissement"
 
 msgid "Alert property's name is missing"
-msgstr ""
+msgstr "Alerte : le nom de la propriété manque"
 
 msgid "Alerts"
 msgstr "Avertissements"
 
 msgid "All"
-msgstr ""
+msgstr "Tous"
 
 msgid "All of following conditions"
 msgstr "Toutes les conditions suivantes"
@@ -179,10 +188,10 @@ msgid "Android Phone SMS Gateway -Basic Setup(Recommended)"
 msgstr "Passerelle SMS téléphone Android - Configuration de base (recommandée)"
 
 msgid "Anonymous permissions changed"
-msgstr ""
+msgstr "Anonymes permissions modifiées"
 
 msgid "Anonymous users"
-msgstr ""
+msgstr "Utilisateurs anonymes"
 
 msgid "Any of the following conditions"
 msgstr "Une des conditions suivantes"
@@ -197,13 +206,13 @@ msgid "Are you sure to delete reminder"
 msgstr ""
 
 msgid "Are you sure to delete this gateway?"
-msgstr ""
+msgstr "Etes-vous sûr que vous souhaitez supprimer cette passerelle ?"
 
 msgid "Are you sure you want to delete %s?"
-msgstr ""
+msgstr "Etes-vous sûr que vous souhaitez supprimer %s ?"
 
 msgid "Are you sure you want to delete layer %s"
-msgstr ""
+msgstr "Etes-vous sûr de vouloir supprimer la couche %s"
 
 # Shouldn't the English read "this collection's site" or "these collection's sites"?
 msgid "Are you sure you want to delete this collection's sites?"
@@ -213,10 +222,10 @@ msgid "Are you sure you want to delete this collection? All sites, layers, field
 msgstr "Etes-vous certain que vous souhaitez supprimer cette collecte ? Tous les sites, couches, champs, membres et activités seront également supprimés."
 
 msgid "Are you sure you want to remove %s from the collection?"
-msgstr ""
+msgstr "Etes-vous sûr que vous souhaitez supprimer %s de la collecte ?"
 
 msgid "Are you sure you want to remove this member from the collection?"
-msgstr ""
+msgstr "Etes-vous sûr que vous souhaitez supprimer ce membre de la collecte ?"
 
 msgid "Attributes"
 msgstr "Attributs"
@@ -244,28 +253,28 @@ msgid "Change site display on map"
 msgstr "Modifier l'affichage du site sur la carte"
 
 msgid "Channel"
-msgstr ""
+msgstr "Canal"
 
 msgid "Channel|Advanced setup"
-msgstr ""
+msgstr "Configuration avancée"
 
 msgid "Channel|Basic setup"
-msgstr ""
+msgstr "Configuration de base"
 
 msgid "Channel|Is enable"
-msgstr ""
+msgstr "Activer"
 
 msgid "Channel|Name"
-msgstr ""
+msgstr "Nom"
 
 msgid "Channel|National setup"
-msgstr ""
+msgstr "Configuration nationale"
 
 msgid "Channel|Nuntium channel name"
-msgstr ""
+msgstr "Nom du canal Nuntium"
 
 msgid "Channel|Password"
-msgstr ""
+msgstr "Mot de passe"
 
 msgid "Check the"
 msgstr "Vérifier le/la"
@@ -289,16 +298,16 @@ msgid "Collection"
 msgstr "Collecte"
 
 msgid "Collection %{collection_name} created"
-msgstr ""
+msgstr "Collecte  %{collection_name} créée"
 
 msgid "Collection %{collection_name} deleted"
-msgstr ""
+msgstr "Collecte  %{collection_name} supprimée"
 
 msgid "Collection %{collection_name} updated"
-msgstr ""
+msgstr "Collecte %{collection_name} mise à jour"
 
 msgid "Collection %{collection_name}'s sites deleted"
-msgstr ""
+msgstr "sites supprimés dans collecte %{collection_name}"
 
 msgid "Collection '%{name}' was created"
 msgstr "'%{name}' de collecte a été créé"
@@ -317,43 +326,43 @@ msgid "Collections"
 msgstr "Collectes"
 
 msgid "Collection|Anonymous location permission"
-msgstr ""
+msgstr "Autorisation de emplacement anonyme"
 
 msgid "Collection|Anonymous name permission"
-msgstr ""
+msgstr "Droit d'accès anonyme"
 
 msgid "Collection|Description"
-msgstr ""
+msgstr "Description"
 
 msgid "Collection|Icon"
-msgstr ""
+msgstr "Icône"
 
 msgid "Collection|Lat"
-msgstr ""
+msgstr "Latitude"
 
 msgid "Collection|Lng"
-msgstr ""
+msgstr "Langue"
 
 msgid "Collection|Logo"
-msgstr ""
+msgstr "Logo"
 
 msgid "Collection|Max lat"
-msgstr ""
+msgstr "Latitude maximum"
 
 msgid "Collection|Max lng"
-msgstr ""
+msgstr "Max Lng"
 
 msgid "Collection|Min lat"
-msgstr ""
+msgstr "Latitude minimum"
 
 msgid "Collection|Min lng"
-msgstr ""
+msgstr "Min Lng"
 
 msgid "Collection|Name"
-msgstr ""
+msgstr "Nom"
 
 msgid "Collection|Quota"
-msgstr ""
+msgstr "Quota"
 
 msgid "Column Settings"
 msgstr "Paramètres des colonnes"
@@ -362,7 +371,7 @@ msgid "Conditions"
 msgstr "Conditions"
 
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmer"
 
 msgid "Confirmed At"
 msgstr "Confirmé à"
@@ -392,10 +401,10 @@ msgid "Curate Data"
 msgstr "Organiser les données"
 
 msgid "Custom permissions for 1 site"
-msgstr ""
+msgstr "Droits d'accès personnalisés pour 1 site"
 
 msgid "Custom permissions for sites"
-msgstr ""
+msgstr "Droits d'accès personnalisés pour les sites"
 
 msgid "DD/MM/YYYY (e.g. \"31/12/2013\")"
 msgstr "JOUR/MOIS/ANNEE (ex: 31/12/2013)"
@@ -413,7 +422,7 @@ msgid "Define basic information about this collection"
 msgstr "Définir l'information de base sur cette collecte"
 
 msgid "Delete Site"
-msgstr ""
+msgstr "Supprimer le site"
 
 msgid "Delete collection"
 msgstr "Supprimer la collecte"
@@ -422,13 +431,13 @@ msgid "Delete this collection's sites"
 msgstr "Supprimer les sites de cette collecte"
 
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 msgid "Do not send notifications"
 msgstr "Ne pas envoyer de notification"
 
 msgid "Do you want to delete this item and its children?"
-msgstr ""
+msgstr "Souhaitez-vous supprimer cet élément et ses enfants?"
 
 msgid "Done"
 msgstr "Terminé"
@@ -441,6 +450,12 @@ msgstr "Télécharger un CSV avec tous les sites dans cette collecte"
 msgid "Download a template CSV file"
 msgstr "Télécharger un fichier modèle de CSV"
 
+msgid "Download as CSV"
+msgstr "Télécharger comme CSV"
+
+msgid "Download sample CSV"
+msgstr "Télécharger un CSV modèle"
+
 msgid "Edit"
 msgstr "Éditer"
 
@@ -448,7 +463,7 @@ msgid "Edit Account"
 msgstr "Éditer le compte"
 
 msgid "Edit Site"
-msgstr ""
+msgstr "Éditer le site"
 
 msgid "Edit or create a hierarchy for this field."
 msgstr "Éditer ou créer une hiérarchie pour ce champ"
@@ -460,8 +475,11 @@ msgstr "Courrier électronique"
 msgid "Endpoint URL :"
 msgstr "Endpoint URL :"
 
+msgid "Enter Snapshot name"
+msgstr "Entrez le nom du cliché"
+
 msgid "Enter new site name"
-msgstr ""
+msgstr "Entrer un nouveau nom de site"
 
 msgid "Events"
 msgstr "Évènements"
@@ -479,61 +497,61 @@ msgid "Features"
 msgstr "Caractéristiques"
 
 msgid "Field"
-msgstr ""
+msgstr "Champ"
 
 msgid "Field history"
-msgstr ""
+msgstr "Historique du champ"
 
 msgid "Field semantics, usually meaningful to external systems that depend on Resource Map"
 msgstr "Sémantique du champ normalement significative pour les systèmes externes qui dépendent de la Carte des ressources"
 
 msgid "FieldHistory|Code"
-msgstr ""
+msgstr "Code"
 
 msgid "FieldHistory|Config"
-msgstr ""
+msgstr "Configuration du champ"
 
 msgid "FieldHistory|Kind"
-msgstr ""
+msgstr "Type"
 
 msgid "FieldHistory|Metadata"
-msgstr ""
+msgstr "Méta-données"
 
 msgid "FieldHistory|Name"
-msgstr ""
+msgstr "Nom du champ"
 
 msgid "FieldHistory|Ord"
-msgstr ""
+msgstr "Ordre du champ"
 
 msgid "FieldHistory|Valid since"
-msgstr ""
+msgstr "Valide depuis"
 
 msgid "FieldHistory|Valid to"
-msgstr ""
+msgstr "Valide jusqu'à"
 
 msgid "FieldHistory|Version"
-msgstr ""
+msgstr "Version du champ"
 
 msgid "Fields"
 msgstr "Champs"
 
 msgid "Field|Code"
-msgstr ""
+msgstr "Code"
 
 msgid "Field|Config"
-msgstr ""
+msgstr "Configuration"
 
 msgid "Field|Kind"
-msgstr ""
+msgstr "Type"
 
 msgid "Field|Metadata"
-msgstr ""
+msgstr "Métadonnées"
 
 msgid "Field|Name"
-msgstr ""
+msgstr "Nom"
 
 msgid "Field|Ord"
-msgstr ""
+msgstr "Ordre"
 
 msgid "Find out how →"
 msgstr "Rechercher comment →"
@@ -580,6 +598,9 @@ msgstr "Revenir au présent"
 msgid "Group by"
 msgstr "Regrouper par"
 
+msgid "Hide"
+msgstr ""
+
 msgid "Hide Configuration"
 msgstr "Masquer la configuration"
 
@@ -590,10 +611,10 @@ msgid "Hierarchy"
 msgstr "Hiérarchie"
 
 msgid "Hierarchy Editor"
-msgstr ""
+msgstr "Éditeur de hiérarchie"
 
 msgid "Hierarchy Editor for %s field"
-msgstr ""
+msgstr "Éditeur de hiérarchie pour champ %s"
 
 # Term normally used in IT context
 msgid "Home"
@@ -616,13 +637,13 @@ msgid "Identify"
 msgstr "Identifier"
 
 msgid "Identity"
-msgstr ""
+msgstr "Identité"
 
 msgid "Identity|Provider"
-msgstr ""
+msgstr "Prestataire"
 
 msgid "Identity|Token"
-msgstr ""
+msgstr "Jeton"
 
 msgid "If you change an option code the sites' properties with this value will be lost."
 msgstr "Si vous changez un code d'option, les propriétés des sites comportant cette valeur seront perdues."
@@ -650,7 +671,7 @@ msgid "Import in progress."
 msgstr "Importation en cours."
 
 msgid "Import job"
-msgstr ""
+msgstr "Importer la tâche"
 
 msgid "Import layers from collection:"
 msgstr "Couches d'importation de la collecte :"
@@ -659,19 +680,19 @@ msgid "Import wizard"
 msgstr "Guide intelligent de l'importation"
 
 msgid "ImportJob|Exception"
-msgstr ""
+msgstr "Exception"
 
 msgid "ImportJob|Finished at"
-msgstr ""
+msgstr "Terminée à"
 
 msgid "ImportJob|Original filename"
-msgstr ""
+msgstr "Nom de fichier d'origine"
 
 msgid "ImportJob|Status"
-msgstr ""
+msgstr "État"
 
 msgid "Imported layers from %{collection_name}"
-msgstr ""
+msgstr "Couches importées de %{collection_name}"
 
 msgid "Importing data"
 msgstr "Importer des données"
@@ -690,16 +711,16 @@ msgid "Insightful:"
 msgstr "Perspicace :"
 
 msgid "Invalid credentials"
-msgstr ""
+msgstr "Authentifiant invalide"
 
 msgid "Invalid parameters. Parameters should include 'user' and 'password'."
-msgstr ""
+msgstr "Paramètres invalides. Les paramètres devraient inclure  'utilisateur' et 'mot de passe'."
 
 msgid "Item name is required."
-msgstr ""
+msgstr "Le nom de l'élément est nécessaire"
 
 msgid "JSON"
-msgstr "Notation des objets du langage JAVA"
+msgstr "JSON"
 
 msgid "Key"
 msgstr "Touche"
@@ -711,10 +732,10 @@ msgid "Lat"
 msgstr "Latitude"
 
 msgid "Layer"
-msgstr ""
+msgstr "Couche"
 
 msgid "Layer %s successfully deleted"
-msgstr ""
+msgstr "Couche %s supprimée avec succès"
 
 msgid "Layer %{layer} changed: %{changes}"
 msgstr "Couche %{layer} modifiée : %{changes}"
@@ -729,7 +750,7 @@ msgid "Layer %{layer} was renamed to %{changes}"
 msgstr "Couche %{layer} a été renommée %{changes}"
 
 msgid "Layer '%s' successfully saved"
-msgstr ""
+msgstr "Couche  '%s' sauvegardée avec succès"
 
 msgid "Layer changed"
 msgstr "Couche modifiée"
@@ -741,52 +762,55 @@ msgid "Layer deleted"
 msgstr "Couche supprimée"
 
 msgid "Layer history"
-msgstr ""
+msgstr "Historique de la couche"
 
 msgid "Layer membership"
-msgstr ""
+msgstr "Membres de la couche"
 
 msgid "LayerHistory|Anonymous user permission"
-msgstr ""
+msgstr "Droit d'accès pour utilisateur anonyme"
 
 msgid "LayerHistory|Name"
-msgstr ""
+msgstr "Nom de la couche"
 
 msgid "LayerHistory|Ord"
-msgstr ""
+msgstr "Ordre de la couche"
 
 msgid "LayerHistory|Public"
-msgstr ""
+msgstr "Public"
 
 msgid "LayerHistory|Valid since"
-msgstr ""
+msgstr "Valide depuis"
 
 msgid "LayerHistory|Valid to"
-msgstr ""
+msgstr "Valide jusqu'à"
 
 msgid "LayerHistory|Version"
-msgstr ""
+msgstr "Version"
 
 msgid "LayerMembership|Read"
-msgstr ""
+msgstr "Lire"
 
 msgid "LayerMembership|Write"
-msgstr ""
+msgstr "Écrire"
 
 msgid "Layers"
 msgstr "Couches"
 
 msgid "Layer|Anonymous user permission"
-msgstr ""
+msgstr "Droit d'accès pour utilisateur anonyme"
 
 msgid "Layer|Name"
-msgstr ""
+msgstr "Nom"
 
 msgid "Layer|Ord"
-msgstr ""
+msgstr "Ordre"
 
 msgid "Load more"
 msgstr "Charger davantage"
+
+msgid "Load more sites..."
+msgstr ""
 
 msgid "Loading..."
 msgstr "En train de charger..."
@@ -798,13 +822,16 @@ msgid "Location missing"
 msgstr "Emplacement manquant"
 
 msgid "Location permission"
-msgstr ""
+msgstr "Droit d'accès à l'emplacement"
 
 msgid "Location:"
 msgstr "Emplacement :"
 
 msgid "LocationPermission|Action"
-msgstr ""
+msgstr "Action"
+
+msgid "Log in"
+msgstr "Connexion"
 
 msgid "Long"
 msgstr "Longitude"
@@ -834,22 +861,20 @@ msgstr "La carte est prête :"
 msgid "Medicine is at its best when it helps people avoid illness in the first place. Resource Map aids prevention efforts by giving teams new ways to manage key supply chain items, such as vaccines, vitamins, and other disease prevention tools. And by uploading statistics on various measures of health, you can even use Resource Map to monitor the effectiveness of your interventions. After all, a healthy community is one of your most important resources."
 msgstr "La meilleure situation est lorsque la médecine aide les populations à éviter les maladies. La Carte des ressources facilite les efforts de prévention en donnant aux équipes de nouvelles façons de gérer les éléments clés de la chaîne d'approvisionnement tels que les vaccins, les vitamines et les'autres outils de prévention des maladies. En téléchargeant en amont les statistiques sur diverses mesures de santé, vous pouvez même utiliser la Carte des ressources pour surveiller l'efficacité de vos interventions. Après tout, une communauté en bonne santé est une de vos ressources les plus importantes."
 
-#, fuzzy
 msgid "Member %{user} was added"
-msgstr "Couche %{layer} a été supprimée"
+msgstr "Membre %{user} a été ajouté"
 
-#, fuzzy
 msgid "Member %{user} was removed"
-msgstr "Couche %{layer} a été supprimée"
+msgstr "Membre %{user} a été supprimée"
 
 msgid "Member added"
-msgstr ""
+msgstr "Membre ajouté"
 
 msgid "Member permissions changed"
-msgstr ""
+msgstr "Membre permissions modifiées"
 
 msgid "Member removed"
-msgstr ""
+msgstr "Membre supprimée"
 
 msgid "Member → Site → Layer"
 msgstr "Membre → Site → Couche"
@@ -858,58 +883,58 @@ msgid "Members"
 msgstr "Membres"
 
 msgid "Membership"
-msgstr ""
+msgstr "Membre"
 
 msgid "Membership|Admin"
-msgstr ""
+msgstr "Administration"
 
 msgid "Message"
 msgstr "Message"
 
 msgid "Message|Application"
-msgstr ""
+msgstr "Application"
 
 msgid "Message|Body"
-msgstr ""
+msgstr "Corps"
 
 msgid "Message|Carrier"
-msgstr ""
+msgstr "Porteur"
 
 msgid "Message|Channel"
-msgstr ""
+msgstr "Canal"
 
 msgid "Message|Country"
-msgstr ""
+msgstr "Pays"
 
 msgid "Message|From"
-msgstr ""
+msgstr "De"
 
 msgid "Message|Guid"
-msgstr ""
+msgstr "IUG"
 
 msgid "Message|Is send"
-msgstr ""
+msgstr "Envoyer"
 
 msgid "Message|Reply"
-msgstr ""
+msgstr "Répondre"
 
 msgid "Message|Subject"
-msgstr ""
+msgstr "Objet"
 
 msgid "Message|To"
-msgstr ""
+msgstr "A l'intention de"
 
 msgid "Monitoring Food Prices and Supply Levels"
 msgstr "Surveiller les prix des aliments et le niveau des approvisionnements "
 
 msgid "Move down"
-msgstr ""
+msgstr "Déplacer vers le bas"
 
 msgid "Move to layer..."
 msgstr "Passer à la couche..."
 
 msgid "Move up"
-msgstr ""
+msgstr "Déplacer vers le haut"
 
 msgid "My Collections"
 msgstr "Mes collectes"
@@ -921,13 +946,13 @@ msgid "Name and location can be private only if every other layer is"
 msgstr ""
 
 msgid "Name permission"
-msgstr ""
+msgstr "Droit d'accès par nom"
 
 msgid "Name:"
 msgstr "Nom :"
 
 msgid "NamePermission|Action"
-msgstr ""
+msgstr "Action"
 
 msgid "National Gateway(Only Some Country Supported)"
 msgstr "Passerelle nationale (certains pays seulement)"
@@ -939,10 +964,10 @@ msgid "New item"
 msgstr "Nouvel élément"
 
 msgid "No"
-msgstr ""
+msgstr "Non"
 
 msgid "No users found"
-msgstr ""
+msgstr "Aucun utilisateur trouvé"
 
 msgid "None"
 msgstr "Aucun"
@@ -954,7 +979,7 @@ msgid "Note: your last import to this collection was based on a file named %s, %
 msgstr "Remarque :votre dernière importation à cette collecte a échoué et était basée sur un fichier nommé %s, il y a %s."
 
 msgid "Notification's message is missing"
-msgstr ""
+msgstr "Le message de notification manque"
 
 msgid "Notifications"
 msgstr "Notifications"
@@ -1021,9 +1046,12 @@ msgid "Possible values for this field."
 msgstr "Valeurs possibles pour ce champ."
 
 msgid "Prefix"
-msgstr ""
+msgstr "Préfixe"
 
 msgid "Prefix|Version"
+msgstr "Version"
+
+msgid "Present time"
 msgstr ""
 
 msgid "Preview"
@@ -1057,31 +1085,31 @@ msgid "Refine results"
 msgstr "Affiner les résultats"
 
 msgid "Reminder"
-msgstr ""
+msgstr "Rappel"
 
 msgid "Reminders"
 msgstr "Rappels"
 
 msgid "Reminder|Is all site"
-msgstr ""
+msgstr "Dans tout le site"
 
 msgid "Reminder|Name"
-msgstr ""
+msgstr "Nom"
 
 msgid "Reminder|Next run"
-msgstr ""
+msgstr "Prochaine exécution"
 
 msgid "Reminder|Reminder message"
-msgstr ""
+msgstr "Message de rappel"
 
 msgid "Reminder|Schedule"
-msgstr ""
+msgstr "Calendrier"
 
 msgid "Reminder|Sites"
-msgstr ""
+msgstr "Sites"
 
 msgid "Reminder|Status"
-msgstr ""
+msgstr "État"
 
 msgid "Remove columns for fields you are not interested in updating"
 msgstr "Supprimer les colonnes pour les champs que vous ne souhaitez pas mettre à jour"
@@ -1090,19 +1118,19 @@ msgid "Remove rows for sites you are not interested in updating"
 msgstr "Supprimer les lignes pour les sites que vous ne souhaitez pas mettre à jour"
 
 msgid "Remove this member"
-msgstr ""
+msgstr "Supprimer ce membre"
 
 msgid "Repeat"
-msgstr ""
+msgstr "Répéter"
 
 msgid "Repeat|Name"
-msgstr ""
+msgstr "Nom"
 
 msgid "Repeat|Order"
-msgstr ""
+msgstr "Ordre"
 
 msgid "Repeat|Rule"
-msgstr ""
+msgstr "Règle"
 
 msgid "Report a bug"
 msgstr "Signaler un bogue"
@@ -1145,6 +1173,9 @@ msgid "Saving reminder, please wait..."
 msgstr "En train de sauvegarder le rappel, veuillez patienter..."
 
 msgid "Search by email..."
+msgstr "Rechercher par courrier électronique..."
+
+msgid "Search or drag the pin"
 msgstr ""
 
 msgid "See everything on the map for a birds-eye view"
@@ -1175,16 +1206,19 @@ msgid "Show them"
 msgstr "Afficher"
 
 msgid "Showing %d sites out of %d"
-msgstr ""
+msgstr "Afficher sites %d sur %d"
 
 msgid "Showing 1 site out of %d"
-msgstr ""
+msgstr "Afficher 1 site sur %j"
 
 msgid "Showing all %d sites"
-msgstr ""
+msgstr "Afficher tous les sites %d"
 
 msgid "Showing first 10 records."
 msgstr "Afficher les 10 premiers enregistrements."
+
+msgid "Sign out"
+msgstr "Quitter"
 
 msgid "Sign up"
 msgstr "S'inscrire"
@@ -1207,7 +1241,13 @@ msgid "Site %{site} was deleted"
 msgstr "Site %{site} a été supprimé"
 
 msgid "Site '%s' successfully created"
-msgstr ""
+msgstr "Site '%s' créé avec succès"
+
+msgid "Site '%{old_name}' was renamed to '%{new_name}'"
+msgstr "Site %{old_name} a été renommée %{new_name}"
+
+msgid "Site '%{site_name}' changed: %{changes}"
+msgstr "Site %{site_name} modifiée: %{changes}"
 
 msgid "Site Name"
 msgstr "Nom du site"
@@ -1222,100 +1262,100 @@ msgid "Site deleted"
 msgstr "Site supprimé"
 
 msgid "Site history"
-msgstr ""
+msgstr "Historique du site"
 
 msgid "SiteHistory|Id with prefix"
-msgstr ""
+msgstr "Id avec préfixe"
 
 msgid "SiteHistory|Lat"
-msgstr ""
+msgstr "Latitude"
 
 msgid "SiteHistory|Lng"
-msgstr ""
+msgstr "Lng"
 
 msgid "SiteHistory|Location mode"
-msgstr ""
+msgstr "Emplacement du site"
 
 msgid "SiteHistory|Name"
-msgstr ""
+msgstr "Nom du site"
 
 msgid "SiteHistory|Properties"
-msgstr ""
+msgstr "Propriétés du site"
 
 msgid "SiteHistory|Uuid"
-msgstr ""
+msgstr "UUID"
 
 msgid "SiteHistory|Valid since"
-msgstr ""
+msgstr "Valide depuis"
 
 msgid "SiteHistory|Valid to"
-msgstr ""
+msgstr "Valide jusqu'à"
 
 msgid "SiteHistory|Version"
-msgstr ""
+msgstr "Version"
 
 msgid "Sites"
 msgstr "Sites"
 
 msgid "Sites permission"
-msgstr ""
+msgstr "Droit d'accès aux sites"
 
 msgid "SitesPermission|All sites"
-msgstr ""
+msgstr "Tous les sites"
 
 msgid "SitesPermission|Some sites"
-msgstr ""
+msgstr "Certains sites"
 
 msgid "Site|Id with prefix"
-msgstr ""
+msgstr "Id avec préfixe"
 
 msgid "Site|Lat"
-msgstr ""
+msgstr "Latitude"
 
 msgid "Site|Lng"
-msgstr ""
+msgstr "Langue"
 
 msgid "Site|Location mode"
-msgstr ""
+msgstr "Mode d'emplacement"
 
 msgid "Site|Name"
-msgstr ""
+msgstr "Nom"
 
 msgid "Site|Properties"
-msgstr ""
+msgstr "Propriétés"
 
 msgid "Site|Uuid"
-msgstr ""
+msgstr "Uuid"
 
 msgid "Site|Version"
-msgstr ""
+msgstr "Version"
 
 msgid "Snapshot"
-msgstr ""
+msgstr "Instantané d'écran"
 
 msgid "Snapshot %{name} created"
-msgstr ""
+msgstr "Instantané d'écran %{name} créé"
 
 msgid "Snapshot %{name} loaded"
-msgstr ""
+msgstr "Instantané d'écran %{name} chargé"
 
 msgid "Snapshot %{snapshot_name} unloaded"
-msgstr ""
+msgstr "Instantané d'écran  %{snapshot_name} vidé"
 
 msgid "Snapshot could not be created: %{errors}"
-msgstr ""
+msgstr "Instantané d'écran n'a pas pu être créé : %{errors}"
 
 msgid "Snapshots"
 msgstr "Clichés"
 
 msgid "Snapshot|Date"
-msgstr ""
+msgstr "Date"
 
 msgid "Snapshot|Name"
-msgstr ""
+msgstr "Nom"
 
 msgid "Some"
-msgstr ""
+msgstr "Certains"
 
 msgid "Some sites"
 msgstr "Certains sites"
@@ -1404,40 +1444,40 @@ msgid "This wizard will guide you through importing a CSV file"
 msgstr "Ce guide intelligent vous guidera tout au long de l'importation d'un fichier CSV"
 
 msgid "Threshold"
-msgstr ""
+msgstr "Seuil"
 
 msgid "Threshold|Color"
-msgstr ""
+msgstr "Couleur"
 
 msgid "Threshold|Conditions"
-msgstr ""
+msgstr "Conditions"
 
 msgid "Threshold|Email notification"
-msgstr ""
+msgstr "Notification par courrier électronique"
 
 msgid "Threshold|Is all condition"
-msgstr ""
+msgstr "Toutes les conditions"
 
 msgid "Threshold|Is all site"
-msgstr ""
+msgstr "Dans tout le site"
 
 msgid "Threshold|Is notify"
-msgstr ""
+msgstr "Notifier"
 
 msgid "Threshold|Message notification"
-msgstr ""
+msgstr "Notification d'un message"
 
 msgid "Threshold|Name"
-msgstr ""
+msgstr "Nom"
 
 msgid "Threshold|Ord"
-msgstr ""
+msgstr "Ordre"
 
 msgid "Threshold|Phone notification"
-msgstr ""
+msgstr "Notification par téléphone"
 
 msgid "Threshold|Sites"
-msgstr ""
+msgstr "Sites"
 
 msgid "Time"
 msgstr "Temps"
@@ -1484,7 +1524,7 @@ msgid "Upload it for bulk sites updates"
 msgstr "Télécharger en amont pour mises à jour massives des sites"
 
 msgid "Upload new logo"
-msgstr ""
+msgstr "Télécharger vers l'amont le nouveau logo"
 
 # CSV =?
 msgid "Upload your CSV file"
@@ -1510,76 +1550,76 @@ msgid "User Name :"
 msgstr "Nom de l'utilisateur :"
 
 msgid "User|Authentication token"
-msgstr ""
+msgstr "Jeton d'authentification"
 
 msgid "User|Collection count"
-msgstr ""
+msgstr "Nombre de collectes"
 
 msgid "User|Confirmation sent at"
-msgstr ""
+msgstr "Confirmation envoyée à"
 
 msgid "User|Confirmation token"
-msgstr ""
+msgstr "Jeton de confirmation"
 
 msgid "User|Confirmed at"
-msgstr ""
+msgstr "Confirmé à"
 
 msgid "User|Current sign in at"
-msgstr ""
+msgstr "Ouverture de session actuelle à"
 
 msgid "User|Current sign in ip"
-msgstr ""
+msgstr "Ouverture de session actuelle dans ip"
 
 msgid "User|Email"
-msgstr ""
+msgstr "Courrier électronique"
 
 msgid "User|Encrypted password"
-msgstr ""
+msgstr "Mot de passe codé"
 
 msgid "User|Gateway count"
-msgstr ""
+msgstr "Passerelles"
 
 msgid "User|Is super user"
-msgstr ""
+msgstr "Super utilisateur"
 
 msgid "User|Last sign in at"
-msgstr ""
+msgstr "Dernière ouverture de session à"
 
 msgid "User|Last sign in ip"
-msgstr ""
+msgstr "Dernière ouverture de session en"
 
 msgid "User|Layer count"
-msgstr ""
+msgstr "Couches"
 
 msgid "User|Phone number"
-msgstr ""
+msgstr "Numéro de téléphone"
 
 msgid "User|Remember created at"
-msgstr ""
+msgstr "Rappel créé à"
 
 msgid "User|Reset password sent at"
-msgstr ""
+msgstr "Réinitialiser le mot de passe envoyé à"
 
 msgid "User|Reset password token"
-msgstr ""
+msgstr "Réinitialiser le jeton de mot de passe"
 
 msgid "User|Sign in count"
-msgstr ""
+msgstr "Nombre d'ouvertures de session"
 
 msgid "User|Site count"
-msgstr ""
+msgstr "Nombre de sites"
 
 msgid "User|Success outcome"
-msgstr ""
+msgstr "Succès"
 
 msgid "User|Unconfirmed email"
-msgstr ""
+msgstr "Courrier électronique non confirmé"
 
 msgid "Valid credentials"
-msgstr ""
+msgstr "Authentifiant valide"
 
 msgid "Value"
-msgstr ""
+msgstr "Valeur"
 
 msgid "View Configuration"
 msgstr "Afficher la configuration"
@@ -1597,10 +1637,10 @@ msgid "View your collections"
 msgstr "Afficher vos collectes"
 
 msgid "Viewing %d sites in map"
-msgstr ""
+msgstr "Afficher les sites %d sur la carte"
 
 msgid "Viewing 1 site in map"
-msgstr ""
+msgstr "Afficher 1 site sur la carte"
 
 msgid "Visualize and update"
 msgstr "Visualiser et mettre à jour"
@@ -1645,7 +1685,7 @@ msgid "With the support of the Clinton Health Access Initiative (CHAI), CNM uses
 msgstr "Avec l'appui de la Clinton Health Access Initiative (CHAI), le CNM utilise la carte des ressources pour appuyer son programme sur les médicaments antipaludiques avec notre outil pour capturer les mises à jour des médicaments antipaludiques dans les centres de santé exposés au paludisme pour un cycle de deux semaines. L'objectif d'une surveillance si étroite des ressources est d'améliorer la gestion des stocks de médicaments pour le traitement du paludisme. Cet outil aide les centres de santé à éviter de surstocker ou de sous-stocker des médicaments importants."
 
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 msgid "You don't need to leave this window open while the data is imported, we'll take care of that for you. However, if you're still here when the importation ends, we'll let you know so you can start working on your new data right away."
 msgstr "Il n'est pas nécessaire de laisser cette fenêtre ouverte pendant l'importation des données, nous nous en chargerons pour vous. Toutefois, si vous êtes toujours là à la fin de l'importation, nous vous en informerons pour que vous puissiez commencer à travailler immédiatement sur vos nouvelles données."
@@ -1669,16 +1709,13 @@ msgid "]"
 msgstr " ]"
 
 msgid "a field with code '%s' already exists in the layer named %s"
-msgstr ""
+msgstr "un champ avec le code '%s' existe déjà dans la couche nommée %s"
 
 msgid "a field with name '%s' already exists in the layer named %s"
-msgstr ""
+msgstr "un champ avec le nom  '%s' existe déjà dans la couche nommée %s"
 
 msgid "add Layers"
 msgstr "ajouter des couches"
-
-msgid "alerts"
-msgstr "Avertissements"
 
 msgid "all"
 msgstr "tous"
@@ -1696,7 +1733,7 @@ msgid "by knowing where your resources are in real time"
 msgstr "en sachant où vos ressources se trouvent en temps réel"
 
 msgid "can't be blank"
-msgstr ""
+msgstr "ne peut être vierge"
 
 msgid "check all"
 msgstr "vérifier tout"
@@ -1711,7 +1748,7 @@ msgid "distribution patterns and anomalies with visual mapping and trend analysi
 msgstr "Modèles de distribution et anomalies avec une carte visuelle et une analyse des tendances"
 
 msgid "duplicated field code '%s'"
-msgstr ""
+msgstr "Code de champ en double  '%s'"
 
 msgid "duplicated field name '%s'"
 msgstr ""
@@ -1776,8 +1813,14 @@ msgstr "est :"
 msgid "leave blank if you don't want to change it"
 msgstr "laisser en blanc si vous ne souhaitez pas le modifier"
 
+msgid "location changed from %{old_location} to %{new_location}"
+msgstr ""
+
 msgid "name changed from %{first_change} to %{second_change}"
 msgstr "nom modifié de %{first_change} à %{second_change}"
+
+msgid "name changed from '%{old_name}' to '%{new_name}'"
+msgstr "nom modifié de %{old_name} à %{new_name}"
 
 msgid "new"
 msgstr "nouveau"
@@ -1834,10 +1877,10 @@ msgid "the last week"
 msgstr "la dernière semaine"
 
 msgid "the layer must have at least one field"
-msgstr ""
+msgstr "la couche doit comporter au moins un champ"
 
 msgid "the layer's Name is missing"
-msgstr ""
+msgstr "Le nom de la couche manque"
 
 msgid "true"
 msgstr "vrai"
@@ -1865,3 +1908,5 @@ msgstr "→ ;"
 
 #~ msgid "Import wizard: %{sites}"
 #~ msgstr "Guide intelligent de l'importation :%{sites}"
+#~ msgid "alerts"
+#~ msgstr "Avertissements"

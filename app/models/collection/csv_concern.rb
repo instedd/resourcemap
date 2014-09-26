@@ -11,10 +11,15 @@ module Collection::CsvConcern
 
   def to_csv(elastic_search_api_results, user, snapshot_id = nil)
     fields = self.visible_fields_for(user, {snapshot_id: snapshot_id})
+    fields.each(&:cache_for_read)
 
     CSV.generate do |csv|
       header = ['resmap-id', 'name', 'lat', 'long']
-      fields.each { |field| header << field.code }
+      fields.each do |field|
+        field.csv_headers.each do |column_header|
+          header << column_header
+        end
+      end
       header << 'last updated'
       csv << header
 
@@ -23,10 +28,8 @@ module Collection::CsvConcern
 
         row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
         fields.each do |field|
-          if field.kind == 'yes_no'
-            row << (Field.yes?(source['properties'][field.code]) ? 'yes' : 'no')
-          else
-            row << Array(source['properties'][field.code]).join(", ")
+          field.csv_values(source['properties'][field.code]).each do | value |
+            row << value
           end
         end
         row << Site.iso_string_to_rfc822(source['updated_at'])

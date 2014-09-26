@@ -9,12 +9,11 @@ else
 end
 
 set :application, "resource_map"
-set :repository,  "https://bitbucket.org/instedd/resource_map"
-set :scm, :mercurial
+set :repository,  "https://github.com/instedd/resourcemap.git"
 set :user, 'ubuntu'
 set :group, 'ubuntu'
 set :deploy_via, :remote_cache
-set :branch, ENV['REVISION'] || 'default'
+set :branch, ENV['REVISION'] || 'master'
 
 default_run_options[:pty] = true
 default_environment['TERM'] = ENV['TERM']
@@ -29,7 +28,7 @@ namespace :deploy do
   end
 
   task :symlink_configs, :roles => :app do
-    %W(database.yml settings.yml google_maps.key guisso.yml nuntium.yml newrelic.yml).each do |file|
+    %W(database.yml settings.yml google_maps.key guisso.yml nuntium.yml newrelic.yml poirot.yml).each do |file|
       run "test -e #{shared_path}/#{file} && ln -nfs #{shared_path}/#{file} #{release_path}/config/ || true"
     end
   end

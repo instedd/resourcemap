@@ -103,7 +103,7 @@
           %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'} Cancel
           / /ko
           / ko if: !valid()
-          %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
+          %span{ko(text: "__('Can\\'t save') + ': ' + error()"), style: 'color:red;margin-left:20px'}
           / /ko
     //ko
 

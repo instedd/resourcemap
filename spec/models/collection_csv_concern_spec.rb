@@ -44,6 +44,33 @@ describe Collection::CsvConcern do
     csv[1][4].should eq('100')
   end
 
+
+  it "should add a column for each level of the hierarchy in the CSV" do
+    config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+
+    site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
+    csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
+
+    csv.first.should eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
+    csv[1][4].should eq('100')
+    csv[1][5].should eq('Dad')
+    csv[1][6].should eq('Son')
+  end
+
+  it "should add empty columns for the values that are not leafs" do
+    config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+
+    site = collection.sites.make :properties => {hierarchy_field.es_code => '60'}
+    csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
+
+    csv.first.should eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
+    csv[1][4].should eq('60')
+    csv[1][5].should eq('Dad')
+    csv[1][6].should eq('')
+  end
+
   describe "generate sample csv" do
 
     it "should include only visible fields for the user" do
