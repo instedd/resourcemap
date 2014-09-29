@@ -40,9 +40,6 @@ gem 'poirot_rails', git: "https://github.com/instedd/poirot_rails.git", branch: 
 
 gem 'treetop', '1.4.15'
 
-# gem 'rspec-collection_matchers'
-# gem 'rspec-its'
-
 gem 'protected_attributes'
 gem 'rails-observers'
 gem 'actionpack-page_caching'
@@ -63,7 +60,7 @@ end
 
 group :test, :development do
   gem 'rspec'
-  gem 'rspec-rails', '2.99'
+  gem 'rspec-rails', '~> 3.1.0'
   gem 'faker'
   gem 'machinist', '1.0.6'
   gem 'capistrano'
