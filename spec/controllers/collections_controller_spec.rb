@@ -231,12 +231,12 @@ describe CollectionsController do
     get :search, collection_id: collection.id
 
     result = JSON.parse response.body
-    site = result["sites"]
+    sites = result["sites"]
 
-    site.first.should include("lat")
-    site.first.should include("lng")
-    site.first["lat"].should eq(0)
-    site.first["lng"].should eq(0)
+    sites.first.should include("lat")
+    sites.first.should include("lng")
+    sites.first["lat"].should eq(0)
+    sites.first["lng"].should eq(0)
   end
 
   it "gets a site without a location when the lat is nil, and the lng is nil in search" do
@@ -245,9 +245,9 @@ describe CollectionsController do
     get :search, collection_id: collection.id
 
     result = JSON.parse response.body
-    site = result["sites"]
+    sites = result["sites"]
 
-    site.first.should_not include("lat")
-    site.first.should_not include("lng")
+    sites.first.should_not include("lat")
+    sites.first.should_not include("lng")
   end
 end
