@@ -50,10 +50,10 @@
         %a.white.button{ko(click: '$root.filterByLocationMissing')} OK
       //ko
     //ko
-    #refine-row{ko(click: 'function (data, event) { $root.toggleRefineProperty("name") }')}
-      %img.arrow{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == \"name\" ? 'Down' : 'Right') + '.png'"})}
+    #refine-row{ko(click: 'function (data, event) { $root.toggleRefineProperty("sitename") }')}
+      %img.arrow{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == \"sitename\" ? 'Down' : 'Right') + '.png'"})}
       %span Name
-    /ko if: $root.expandedRefineProperty() == 'name'
+    /ko if: $root.expandedRefineProperty() == 'sitename'
     .filter-content
       %span starts with
 

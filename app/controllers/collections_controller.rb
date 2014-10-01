@@ -222,8 +222,8 @@ class CollectionsController < ApplicationController
     search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
     search.hierarchy params[:hierarchy_code], params[:hierarchy_value] if params[:hierarchy_code]
     search.location_missing if params[:location_missing].present?
-    search.name_search params[:name] if params[:name].present?
-    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing, :locale, :name)
+    search.name_search params[:sitename] if params[:sitename].present?
+    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing, :locale, :sitename)
     results = search.results
     sites = results.map do |result|
       source = result['_source']

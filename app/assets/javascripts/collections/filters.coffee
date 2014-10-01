@@ -56,7 +56,7 @@ onCollections ->
       @value = value
 
     setQueryParamsNonEmpty: (options, api = false) =>
-      options.name = "#{@value}"
+      options.sitename = "#{@value}"
 
     descriptionNonEmpty: =>
       "where Name starts with \"#{@value}\""

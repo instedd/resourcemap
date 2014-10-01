@@ -255,7 +255,7 @@ describe CollectionsController do
     collection.sites.make name: 'Target'
     collection.sites.make name: 'NotThisOne'
 
-    get :search, collection_id: collection.id, name: 'Target'
+    get :search, collection_id: collection.id, sitename: 'Target'
 
     result = JSON.parse response.body
     sites = result["sites"]
@@ -268,7 +268,7 @@ describe CollectionsController do
     collection.sites.make name: 'Target'
     collection.sites.make name: 'NotThisOne'
 
-    get :search, collection_id: collection.id, name: 'Tar'
+    get :search, collection_id: collection.id, sitename: 'Tar'
 
     result = JSON.parse response.body
     sites = result["sites"]
@@ -281,7 +281,7 @@ describe CollectionsController do
     collection.sites.make name: 'Target'
     collection.sites.make name: 'NotThisOne'
 
-    get :search, collection_id: collection.id, name: 'TakeThat'
+    get :search, collection_id: collection.id, sitename: 'TakeThat'
 
     result = JSON.parse response.body
     sites = result["sites"]
@@ -294,7 +294,7 @@ describe CollectionsController do
     collection.sites.make name: 'NotThisOne'
     collection.sites.make name: 'TallLand'
 
-    get :search, collection_id: collection.id, name: 'Ta'
+    get :search, collection_id: collection.id, sitename: 'Ta'
 
     result = JSON.parse response.body
     sites = result["sites"]
@@ -314,7 +314,7 @@ describe CollectionsController do
     collection.sites.make name: 'NotThisOne', properties: { numeric.es_code => 25 }
     collection.sites.make name: 'TallLand', properties: { numeric.es_code => 20 }
 
-    get :search, collection_id: collection.id, name: 'Ta', numeric.es_code => { "=" => 25 }
+    get :search, collection_id: collection.id, sitename: 'Ta', numeric.es_code => { "=" => 25 }
 
     result = JSON.parse response.body
     sites = result["sites"]
