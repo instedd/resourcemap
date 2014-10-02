@@ -322,6 +322,61 @@ describe Api::CollectionsController do
     end
   end
 
+  describe "Filter by name" do
+    let(:text) { layer.text_fields.make :code => 'text'}
+    let(:numeric) { layer.numeric_fields.make :code => 'numeric' }
+    let(:yes_no) { layer.yes_no_fields.make :code => 'yes_no'}
+    let(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    config_hierarchy = [{ id: 'dad', name: 'Dad', sub: [{id: 'son', name: 'Son'}, {id: 'bro', name: 'Bro'}]}]
+    let(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy',  config: { hierarchy: config_hierarchy }.with_indifferent_access }
+    let(:site_ref) { layer.site_fields.make :code => 'site' }
+    let(:date) { layer.date_fields.make :code => 'date' }
+    let(:director) { layer.user_fields.make :code => 'user'}
+
+    let!(:site) { collection.sites.make  :name => "Site_B", :properties => {
+      text.es_code => 'foo',
+      numeric.es_code => 1,
+      yes_no.es_code => true,
+      select_one.es_code => 1,
+      select_many.es_code => [1, 2],
+      hierarchy.es_code => 'dad',
+      site_ref.es_code => site2.id,
+      date.es_code => "2012-10-24T00:00:00Z",
+      director.es_code => user.email }
+    }
+
+    let!(:site2) {collection.sites.make :name => "Site_A", properties: { hierarchy.es_code => 'bro' } }
+
+    before(:each) { sign_in user }
+
+    it "should find both sites by name" do
+      get :show, id: collection.id, format: 'json', sitename: 'Site_'
+
+      json = JSON.parse response.body
+      json['sites'].length.should eq(2)
+      ["Site_A", "Site_B"].should include(json['sites'][0]["name"])
+      ["Site_A", "Site_B"].should include(json['sites'][1]["name"])
+    end
+
+    ['Site_A', 'Site_B'].each do |sitename|
+      it "should find '#{sitename}' by name" do
+        get :show, id: collection.id, format: 'json', sitename: sitename
+
+        json = JSON.parse response.body
+        json['sites'].length.should eq(1)
+        json['sites'][0]["name"].should eq(sitename)
+      end
+    end
+
+    it "should not find sites when filtering with non-matching names" do
+      get :show, id: collection.id, format: 'json', sitename: 'None like this'
+
+      json = JSON.parse response.body
+      json['sites'].should be_empty
+    end
+  end
+
   describe "Date fields" do
     let(:date_mdy) { layer.date_fields.make :code => 'date_mdy', config:  {'format' => 'mm_dd_yyyy'} }
     let(:date_dmy) { layer.date_fields.make :code => 'date_dmy', config:  {'format' => 'dd_mm_yyyy'} }
