@@ -60,6 +60,38 @@ describe Api::CollectionsController do
 
     before(:each) { sign_in user }
 
+    describe "Collection filters" do
+
+      it "should find both sites by name" do
+        pending("Filter by name with whitespaces is failling")
+        get :show, id: collection.id, format: 'json', sitename: 'Site '
+
+        json = JSON.parse response.body
+        json['sites'].length.should eq(2)
+        ["Site A", "Site B"].should include(json['sites'][0]["name"])
+        ["Site A", "Site B"].should include(json['sites'][1]["name"])
+      end
+
+      ['Site A', 'Site B'].each do |sitename|
+        it "should find '#{sitename}' by name" do
+          pending("Filter by name with whitespaces is failling")
+          get :show, id: collection.id, format: 'json', sitename: sitename
+
+          json = JSON.parse response.body
+          json['sites'].length.should eq(1)
+          json['sites'][0]["name"].should eq(sitename)
+        end
+      end
+
+      it "should not find sites when filtering with non-matching names" do
+        pending("Filter by name with whitespaces is failling")
+        get :show, id: collection.id, format: 'json', sitename: 'None like this'
+
+        json = JSON.parse response.body
+        json['sites'].should be_empty
+      end
+    end
+
     describe "GET JSON collection" do
       before(:each) do
         get :show, id: collection.id, format: 'json', locale: 'en'
