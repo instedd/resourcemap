@@ -469,6 +469,34 @@ describe ImportWizard do
     sites[1].properties.should eq({select_many.es_code => [1, 2]})
   end
 
+  it "imports with existing select many property ignoring case" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Column']
+      csv << ['Foo', 'onE']
+      csv << ['Bar', 'One, tWo']
+      csv << ['', '']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: select_many.id},
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.execute user, collection, specs
+
+    collection.layers.all.should eq([layer])
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({select_many.es_code => [1]})
+
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({select_many.es_code => [1, 2]})
+  end
+
   it "should also update hierarchy fields in bulk update using name" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Column']
