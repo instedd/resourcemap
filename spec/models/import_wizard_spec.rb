@@ -412,6 +412,35 @@ describe ImportWizard do
     sites[1].properties.should eq({select_one.es_code => 2})
   end
 
+  it "imports with existing select one ignoring case" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Column']
+      csv << ['Foo', 'OnE']
+      csv << ['Bar', 'Two']
+      csv << ['', '']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: select_one.id},
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.execute user, collection, specs
+
+    collection.layers.all.should eq([layer])
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({select_one.es_code => 1})
+
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({select_one.es_code => 2})
+
+  end
+
   it "imports with name and existing select_many property" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Column']
