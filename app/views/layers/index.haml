@@ -86,7 +86,7 @@
                       %span{ko(click: "function() { $root.newField('#{field[:name]}') }")}
                         %button{ style: "margin-left:10px; margin-bottom:4px;", class: field[:css_class], title: "Add new #{field[:name].titleize.downcase} field" }
                         %br/
-                        = field[:name].titleize
+                        = _(field[:name].titleize)
                   %br/
                   %br/
 
@@ -166,4 +166,3 @@
           %select{ko(value: :selectedImportCollectionId, options: :importCollectionIds, optionsText: 'function(o){return importCollectionLabelFor(o)}')}
           %button.white{ko(click: "importLayersFromCollection"), type: :button, title: 'Import'} Import
         //ko
-
