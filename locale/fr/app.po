@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-22 19:02-0300\n"
+"POT-Creation-Date: 2014-10-06 14:45-0300\n"
 "PO-Revision-Date: 2014-08-28 15:14+0200\n"
 "Last-Translator: Clara <cpuyade@manas.com.ar>\n"
 "Language-Team: French\n"
@@ -633,6 +633,9 @@ msgstr "Icône"
 msgid "Id:"
 msgstr "Identité :"
 
+msgid "Identifier"
+msgstr ""
+
 msgid "Identify"
 msgstr "Identifier"
 
@@ -990,6 +993,9 @@ msgstr "Notifier les personnes suivantes"
 msgid "Now specify how to map each column to a field."
 msgstr "Spécifier maintenant comment reporter chaque colonne à un champ."
 
+msgid "Numeric"
+msgstr ""
+
 msgid "OK"
 msgstr "OK"
 
@@ -1025,6 +1031,9 @@ msgstr ""
 
 msgid "Permissions per layer"
 msgstr "Droits d'accès par couche"
+
+msgid "Phone"
+msgstr ""
 
 msgid "Please"
 msgstr "S'il vous plaît"
@@ -1183,6 +1192,12 @@ msgstr "Vue d'ensemble de la situation"
 
 msgid "Select logo from uploaded image"
 msgstr "Choisir le logo à partir de l'image téléchargée en amont"
+
+msgid "Select Many"
+msgstr ""
+
+msgid "Select One"
+msgstr ""
 
 msgid "Send Now!"
 msgstr "Envoyer maintenant !"
@@ -1386,6 +1401,9 @@ msgstr "Tester votre passerelle"
 
 msgid "Testing Environmental Health"
 msgstr "En train de tester la santé de l'environnement"
+
+msgid "Text"
+msgstr ""
 
 msgid "The National Center for Parasitology, Entomology and Malaria Control (CNM)"
 msgstr "Le Centre national pour la Parasitologie, l'Entomologie et la lutte contre le paludisme (CNM)"
@@ -1686,6 +1704,9 @@ msgstr "Avec l'appui de la Clinton Health Access Initiative (CHAI), le CNM utili
 
 msgid "Yes"
 msgstr "Oui"
+
+msgid "Yes No"
+msgstr ""
 
 msgid "You don't need to leave this window open while the data is imported, we'll take care of that for you. However, if you're still here when the importation ends, we'll let you know so you can start working on your new data right away."
 msgstr "Il n'est pas nécessaire de laisser cette fenêtre ouverte pendant l'importation des données, nous nous en chargerons pour vous. Toutefois, si vous êtes toujours là à la fin de l'importation, nous vous en informerons pour que vous puissiez commencer à travailler immédiatement sur vos nouvelles données."
