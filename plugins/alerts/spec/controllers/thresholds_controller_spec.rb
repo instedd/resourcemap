@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ThresholdsController do
+describe ThresholdsController, :type => :controller do
   include Devise::TestHelpers
 
   let(:user) { User.make }
@@ -15,8 +15,8 @@ describe ThresholdsController do
       post :create, "threshold"=>{"color"=>"red", "ord" => 1, "sites" => {"0" => sites}, "conditions"=>{"0"=>condition_attributes}}, "collection_id" => collection.id
 
       threshold = collection.thresholds.last
-      threshold.conditions.size.should == 1
-      threshold.conditions[0].should eq condition_attributes
+      expect(threshold.conditions.size).to eq(1)
+      expect(threshold.conditions[0]).to eq condition_attributes
     end
   end
 
@@ -30,7 +30,7 @@ describe ThresholdsController do
       put :update, "threshold"=>{ "conditions"=>{"0"=>condition_attributes}, "sites" => {"0" => sites}}, "collection_id" => collection.id, "id" => threshold.id
 
       threshold.reload
-      threshold.conditions[0].should eq condition_attributes
+      expect(threshold.conditions[0]).to eq condition_attributes
     end
   end
 

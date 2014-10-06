@@ -1,10 +1,14 @@
 require 'spec_helper'
 
-describe Threshold do
-  it { should belong_to :collection }
-  it { should validate_presence_of(:ord) }
-  it { should validate_presence_of(:color) }
-  its(:conditions) { should eq([]) }
+describe Threshold, :type => :model do
+  it { is_expected.to belong_to :collection }
+  it { is_expected.to validate_presence_of(:ord) }
+  it { is_expected.to validate_presence_of(:color) }
+
+  describe '#conditions' do
+    subject { super().conditions }
+    it { is_expected.to eq([]) }
+  end
 
   let(:user) { User.make }
   let(:collection) { user.create_collection Collection.make }
@@ -15,7 +19,7 @@ describe Threshold do
 
   it "should convert conditions' value to int if the field is int" do
     threshold = collection.thresholds.make conditions: [ field: beds.es_code, op: :lt, value: '10' ]
-    threshold.conditions[0][:value].should eq(10)
+    expect(threshold.conditions[0][:value]).to eq(10)
   end
 
   [

@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe CSDContactMapping do 
+describe CSDContactMapping, :type => :model do 
 	describe 'names' do
 		it 'is empty' do
 			m = CSDContactMapping.new 'Contact', []
-			m.names.should be_empty
+			expect(m.names).to be_empty
 		end
 
 		it 'has two names' do
@@ -13,17 +13,17 @@ describe CSDContactMapping do
 
 			m = CSDContactMapping.new "Contact 1", [name1, name2]
 
-			m.names.should have(2).items
+			expect(m.names.size).to eq(2)
 
-			m.names[0].class.should be(CSDNameMapping)
-			m.names[1].class.should be(CSDNameMapping)
+			expect(m.names[0].class).to be(CSDNameMapping)
+			expect(m.names[1].class).to be(CSDNameMapping)
 		end
 	end
 
 	describe 'addresses' do
 		it 'is empty' do
 			m = CSDContactMapping.new 'Contact', []
-			m.addresses.should be_empty
+			expect(m.addresses).to be_empty
 		end
 
 		it 'has two addresses' do
@@ -32,10 +32,10 @@ describe CSDContactMapping do
 
 			m = CSDContactMapping.new("Contact 1", [address1, address2])
 
-			m.addresses.should have(2).items
+			expect(m.addresses.size).to eq(2)
 
-			m.addresses[0].class.should be(CSDAddressMapping)
-			m.addresses[1].class.should be(CSDAddressMapping)
+			expect(m.addresses[0].class).to be(CSDAddressMapping)
+			expect(m.addresses[1].class).to be(CSDAddressMapping)
 		end
 	end
 end

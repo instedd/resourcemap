@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'active_support/builder' unless defined?(Builder)
 
-describe FacilityXmlGenerator do
+describe FacilityXmlGenerator, :type => :model do
 	let(:collection) { Collection.make}
 	let(:layer) { collection.layers.make }
 
@@ -12,10 +12,10 @@ describe FacilityXmlGenerator do
 
 	let(:language_config) {{
 				options: [
-					{id: 1, code: "en", label: "English"}, 
+					{id: 1, code: "en", label: "English"},
 					{id: 2, code: "es", label: "Spanish"},
 					{id: 3, code: "fr", label: "French"}
-				]	 
+				]
 			}.with_indifferent_access}
 
 	def set_facility_attribute(key, value)
@@ -30,16 +30,16 @@ describe FacilityXmlGenerator do
 		it 'should use existing OID annotated field' do
 			oid_field = layer.identifier_fields.make.csd_facility_oid!
 			facility_properties[oid_field.code] = "oid_value"
-			
+
 			generator = FacilityXmlGenerator.new collection
-			generator.generate_oid(facility, facility_properties).should eq("oid_value")
+			expect(generator.generate_oid(facility, facility_properties)).to eq("oid_value")
 		end
 
 		it 'should generate OID from UUID' do
 			set_facility_attribute "uuid", "1234-5678-9012-3456"
 
 			generator = FacilityXmlGenerator.new collection
-			generator.generate_oid(facility, facility_properties).should eq(generator.to_oid("1234-5678-9012-3456"))
+			expect(generator.generate_oid(facility, facility_properties)).to eq(generator.to_oid("1234-5678-9012-3456"))
 		end
 	end
 
@@ -48,10 +48,10 @@ describe FacilityXmlGenerator do
 			coded_fruits = layer.select_one_fields.make(
 				config: {
 					options: [
-						{id: 1, code: "A", label: "Apple"}, 
+						{id: 1, code: "A", label: "Apple"},
 						{id: 2, code: "B", label: "Banana"},
 						{id: 3, code: "P", label: "Peach"}
-					]	 
+					]
 				}.with_indifferent_access
 			).csd_coded_type!("fruits")
 		}
@@ -60,16 +60,16 @@ describe FacilityXmlGenerator do
 			coded_supermarkets = layer.select_one_fields.make(
 				config: {
 					options: [
-						{id: 1, code: "C", label: "Carrefour"}, 
+						{id: 1, code: "C", label: "Carrefour"},
 						{id: 2, code: "J", label: "Jumbo"}
-					] 
+					]
 				}.with_indifferent_access
 			).csd_coded_type!("supermarkets")
 		}
 
 		it '' do
 			facility_properties[coded_fruits.code] = 'B'
-			facility_properties[coded_supermarkets.code] = 'J'			
+			facility_properties[coded_supermarkets.code] = 'J'
 
 			generator = FacilityXmlGenerator.new collection
 
@@ -77,19 +77,18 @@ describe FacilityXmlGenerator do
 				generator.generate_coded_types xml, facility_properties
 			end
 
-			doc = Nokogiri.XML xml
+			doc = Nokogiri.XML xml.target!
+			expect(doc.xpath("//codedType").length).to eq(2)
 
-			doc.xpath("//codedType").length.should eq(2)
-			
 			fruits_xml = doc.xpath("//codedType[@codingSchema='fruits']")
-			fruits_xml.attr('code').value.should eq('B')
-			fruits_xml.attr('codingSchema').value.should eq('fruits')
-			fruits_xml.text.should eq('Banana')
+			expect(fruits_xml.attr('code').value).to eq('B')
+			expect(fruits_xml.attr('codingSchema').value).to eq('fruits')
+			expect(fruits_xml.text).to eq('Banana')
 
 			supermarkets_xml = doc.xpath("//codedType[@codingSchema='supermarkets']")
-			supermarkets_xml.attr('code').value.should eq('J')
-			supermarkets_xml.attr('codingSchema').value.should eq('supermarkets')
-			supermarkets_xml.text.should eq('Jumbo')
+			expect(supermarkets_xml.attr('code').value).to eq('J')
+			expect(supermarkets_xml.attr('codingSchema').value).to eq('supermarkets')
+			expect(supermarkets_xml.text).to eq('Jumbo')
 		end
 	end
 
@@ -106,13 +105,13 @@ describe FacilityXmlGenerator do
 				generator.generate_other_ids xml, facility_properties
 			end
 
-			doc = Nokogiri.XML xml
+			doc = Nokogiri.XML xml.target!
 
-			doc.xpath("//otherID").length.should eq(1)
+			expect(doc.xpath("//otherID").length).to eq(1)
 
 			other_id = doc.xpath("//otherID[1]")
-			other_id.attr('code').value.should eq('my_moh_dhis_id')
-			other_id.attr('assigningAuthorityName').value.should eq('MOH')
+			expect(other_id.attr('code').value).to eq('my_moh_dhis_id')
+			expect(other_id.attr('assigningAuthorityName').value).to eq('MOH')
 		end
 	end
 
@@ -164,30 +163,30 @@ describe FacilityXmlGenerator do
 				generator.generate_contacts xml, facility_properties
 			end
 
-			doc = Nokogiri.XML xml
+			doc = Nokogiri.XML xml.target!
 
-			doc.xpath("//contact").length.should eq(2)
+			expect(doc.xpath("//contact").length).to eq(2)
 
-			doc.xpath("//contact[1]/person/name/commonName[@language='en']").text.should eq("Anderson, Andrew")
-			doc.xpath("//contact[1]/person/name/forename").text.should eq("Andrew")
-			doc.xpath("//contact[1]/person/name/surname").text.should eq("Anderson")
+			expect(doc.xpath("//contact[1]/person/name/commonName[@language='en']").text).to eq("Anderson, Andrew")
+			expect(doc.xpath("//contact[1]/person/name/forename").text).to eq("Andrew")
+			expect(doc.xpath("//contact[1]/person/name/surname").text).to eq("Anderson")
 
-			doc.xpath("//contact[1]/person/address/addressLine[@component='streetAddress']").text.should eq("2222 19th Ave SW")
-			doc.xpath("//contact[1]/person/address/addressLine[@component='city']").text.should eq("Santa Fe")
-			doc.xpath("//contact[1]/person/address/addressLine[@component='stateProvince']").text.should eq("NM")
-			doc.xpath("//contact[1]/person/address/addressLine[@component='country']").text.should eq("USA")
-			doc.xpath("//contact[1]/person/address/addressLine[@component='postalCode']").text.should eq("87124")
+			expect(doc.xpath("//contact[1]/person/address/addressLine[@component='streetAddress']").text).to eq("2222 19th Ave SW")
+			expect(doc.xpath("//contact[1]/person/address/addressLine[@component='city']").text).to eq("Santa Fe")
+			expect(doc.xpath("//contact[1]/person/address/addressLine[@component='stateProvince']").text).to eq("NM")
+			expect(doc.xpath("//contact[1]/person/address/addressLine[@component='country']").text).to eq("USA")
+			expect(doc.xpath("//contact[1]/person/address/addressLine[@component='postalCode']").text).to eq("87124")
 
-			
-			doc.xpath("//contact[2]/person/name/commonName[@language='en']").text.should eq("Juarez, Julio")
-			doc.xpath("//contact[2]/person/name/forename").text.should eq("Julio")
-			doc.xpath("//contact[2]/person/name/surname").text.should eq("Juarez")
 
-			doc.xpath("//contact[2]/person/address/addressLine[@component='streetAddress']").text.should eq("2222 19th Ave SW")
-			doc.xpath("//contact[2]/person/address/addressLine[@component='city']").text.should eq("Santa Fe")
-			doc.xpath("//contact[2]/person/address/addressLine[@component='stateProvince']").text.should eq("NM")
-			doc.xpath("//contact[2]/person/address/addressLine[@component='country']").text.should eq("USA")
-			doc.xpath("//contact[2]/person/address/addressLine[@component='postalCode']").text.should eq("87124")
+			expect(doc.xpath("//contact[2]/person/name/commonName[@language='en']").text).to eq("Juarez, Julio")
+			expect(doc.xpath("//contact[2]/person/name/forename").text).to eq("Julio")
+			expect(doc.xpath("//contact[2]/person/name/surname").text).to eq("Juarez")
+
+			expect(doc.xpath("//contact[2]/person/address/addressLine[@component='streetAddress']").text).to eq("2222 19th Ave SW")
+			expect(doc.xpath("//contact[2]/person/address/addressLine[@component='city']").text).to eq("Santa Fe")
+			expect(doc.xpath("//contact[2]/person/address/addressLine[@component='stateProvince']").text).to eq("NM")
+			expect(doc.xpath("//contact[2]/person/address/addressLine[@component='country']").text).to eq("USA")
+			expect(doc.xpath("//contact[2]/person/address/addressLine[@component='postalCode']").text).to eq("87124")
 		end
 	end
 
@@ -205,19 +204,19 @@ describe FacilityXmlGenerator do
 				generator.generate_languages xml, facility_properties
 			end
 
-			doc = Nokogiri.XML xml
+			doc = Nokogiri.XML xml.target!
 
-			doc.xpath("//language").should have(2).items
-			
+			expect(doc.xpath("//language").size).to eq(2)
+
 			language1_xml = doc.xpath("//language[1]")
-			language1_xml.attr('code').value.should eq('en')
-			language1_xml.attr('codingSchema').value.should eq('BCP 47')
-			language1_xml.text.should eq('English')
+			expect(language1_xml.attr('code').value).to eq('en')
+			expect(language1_xml.attr('codingSchema').value).to eq('BCP 47')
+			expect(language1_xml.text).to eq('English')
 
 			language2_xml = doc.xpath("//language[2]")
-			language2_xml.attr('code').value.should eq('es')
-			language2_xml.attr('codingSchema').value.should eq('BCP 47')
-			language2_xml.text.should eq('Spanish')
+			expect(language2_xml.attr('code').value).to eq('es')
+			expect(language2_xml.attr('codingSchema').value).to eq('BCP 47')
+			expect(language2_xml.text).to eq('Spanish')
 		end
 	end
 
@@ -227,7 +226,7 @@ describe FacilityXmlGenerator do
 				oid: layer.text_fields.make
 					.csd_organization("Organization 1")
 					.csd_oid!(Field::CSDApiConcern.csd_organization_tag),
-				service1: { 
+				service1: {
 					oid: layer.text_fields.make
 						.csd_organization("Organization 1")
 						.csd_service("Service 1")
@@ -283,7 +282,7 @@ describe FacilityXmlGenerator do
 						.csd_organization("Organization 1")
 						.csd_service("Service 2")
 						.csd_oid!(Field::CSDApiConcern.csd_service_tag)
-				}				
+				}
 			}
 
 			facility_properties[organization[:oid].code] = "an_oid"
@@ -307,28 +306,28 @@ describe FacilityXmlGenerator do
 				generator.generate_organizations xml, facility_properties
 			end
 
-			doc = Nokogiri.XML xml
+			doc = Nokogiri.XML xml.target!
 
-			doc.xpath("//organizations").should have(1).items
-			doc.xpath("//organizations/organization").should have(1).item
+			expect(doc.xpath("//organizations").size).to eq(1)
+			expect(doc.xpath("//organizations/organization").size).to eq(1)
 
-			doc.xpath("//organizations/organization[1]").attr('oid').value.should eq("an_oid")
+			expect(doc.xpath("//organizations/organization[1]").attr('oid').value).to eq("an_oid")
 
-			doc.xpath("//organizations/organization[1]/service[1]").attr('oid').value.should eq("service1 oid")
-			doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").attr('language').value.should eq("en")
-			doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").text.should eq("Connectathon Radiation Therapy")
-			doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('code').value.should eq("en")
-			doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingSchema').value.should eq("BCP 47")
-			doc.xpath("//organizations/organization[1]/service[1]/language[1]").text.should eq("English")
-			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/openFlag[1]").text.should eq("1")
-			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/dayOfTheWeek[1]").text.should eq("1")
-			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/beginningHour[1]").text.should eq("09:00:00")
-			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/endingHour[1]").text.should eq("12:00:00")
-			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/beginEffectiveDate[1]").text.should eq("2013-12-01")
+			expect(doc.xpath("//organizations/organization[1]/service[1]").attr('oid').value).to eq("service1 oid")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").attr('language').value).to eq("en")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").text).to eq("Connectathon Radiation Therapy")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('code').value).to eq("en")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingSchema').value).to eq("BCP 47")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").text).to eq("English")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/openFlag[1]").text).to eq("1")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/dayOfTheWeek[1]").text).to eq("1")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/beginningHour[1]").text).to eq("09:00:00")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/endingHour[1]").text).to eq("12:00:00")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/beginEffectiveDate[1]").text).to eq("2013-12-01")
 
-			doc.xpath("//organizations/organization[1]/service[1]/operatingHours[2]/openFlag[1]").text.should eq("0")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[2]/openFlag[1]").text).to eq("0")
 
-			doc.xpath("//organizations/organization[1]/service[2]").attr('oid').value.should eq("service2 oid")
+			expect(doc.xpath("//organizations/organization[1]/service[2]").attr('oid').value).to eq("service2 oid")
 		end
 	end
 
@@ -357,7 +356,7 @@ describe FacilityXmlGenerator do
 					.csd_operating_hours("OH2", Field::CSDApiConcern::csd_facility_tag)
 					.csd_open_flag!
 			}
-			
+
 			facility_properties[facility_oh1[:open_flag].code] = true
 			facility_properties[facility_oh1[:day_of_the_week].code] = 1
 			facility_properties[facility_oh1[:beginning_hour].code] = "08:00:00"
@@ -372,17 +371,17 @@ describe FacilityXmlGenerator do
 				generator.generate_operating_hours xml, facility_properties, collection.csd_operating_hours
 			end
 
-			doc = Nokogiri.XML xml
+			doc = Nokogiri.XML xml.target!
 
-			doc.xpath("//operatingHours").should have(2).items
+			expect(doc.xpath("//operatingHours").size).to eq(2)
 
-			doc.xpath("//operatingHours[1]/openFlag[1]").text.should eq("1")
-			doc.xpath("//operatingHours[1]/dayOfTheWeek[1]").text.should eq("1")
-			doc.xpath("//operatingHours[1]/beginningHour[1]").text.should eq("08:00:00")
-			doc.xpath("//operatingHours[1]/endingHour[1]").text.should eq("18:00:00")
-			doc.xpath("//operatingHours[1]/beginEffectiveDate[1]").text.should eq("2013-12-01")
+			expect(doc.xpath("//operatingHours[1]/openFlag[1]").text).to eq("1")
+			expect(doc.xpath("//operatingHours[1]/dayOfTheWeek[1]").text).to eq("1")
+			expect(doc.xpath("//operatingHours[1]/beginningHour[1]").text).to eq("08:00:00")
+			expect(doc.xpath("//operatingHours[1]/endingHour[1]").text).to eq("18:00:00")
+			expect(doc.xpath("//operatingHours[1]/beginEffectiveDate[1]").text).to eq("2013-12-01")
 
-			doc.xpath("//operatingHours[2]/openFlag[1]").text.should eq("0")
+			expect(doc.xpath("//operatingHours[2]/openFlag[1]").text).to eq("0")
 		end
 	end
 
@@ -395,13 +394,13 @@ describe FacilityXmlGenerator do
 				generator.generate_record(xml, facility)
 			end
 
-			doc = Nokogiri.XML xml
+			doc = Nokogiri.XML xml.target!
 
-			doc.xpath("//record").should have(1).item
-			doc.xpath("//record[1]").attr('created').value.should eq(facility["_source"]["created_at"].to_s)
-			doc.xpath("//record[1]").attr('updated').value.should eq(facility["_source"]["updated_at"].to_s)
-			doc.xpath("//record[1]").attr('status').value.should eq("Active")
-			doc.xpath("//record[1]").attr('sourceDirectory').value.should eq("http://localhost:3000")
+			expect(doc.xpath("//record").size).to eq(1)
+			expect(doc.xpath("//record[1]").attr('created').value).to eq(facility["_source"]["created_at"].to_s)
+			expect(doc.xpath("//record[1]").attr('updated').value).to eq(facility["_source"]["updated_at"].to_s)
+			expect(doc.xpath("//record[1]").attr('status').value).to eq("Active")
+			expect(doc.xpath("//record[1]").attr('sourceDirectory').value).to eq("http://localhost:3000")
 		end
 	end
 end

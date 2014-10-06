@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::AlertConcerns do
+describe Site::AlertConcerns, :type => :model do
   let(:user) { User.make }
   let(:collection) { user.create_collection Collection.make }
   let(:layer) { collection.layers.make }
@@ -23,11 +23,11 @@ describe Site::AlertConcerns do
         let!(:threshold){ collection.thresholds.make is_notify: true, is_all_site: true, email_notification: {users: [user_field.es_code]}, phone_notification: {users: [user_field.es_code]}, message_notification: "alert sms", conditions: [ field: bed_field.es_code, op: :gt, value: 10 ]}
         let!(:site) {collection.sites.make :properties => {bed_field.es_code => 15, user_field.es_code => user.email}}
         it "should add sms_que into Resque.enqueue" do
-          SmsTask.should have_queued([user.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
+          expect(SmsTask).to have_queued([user.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
         end
 
         it "should add email_que into Resque.enqueue" do
-          EmailTask.should have_queued([user.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
+          expect(EmailTask).to have_queued([user.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
         end
       end
 
@@ -35,11 +35,11 @@ describe Site::AlertConcerns do
         let!(:threshold){ collection.thresholds.make is_notify: true, is_all_site: true, email_notification: {members: [user.id]}, phone_notification: {members: [user.id]}, message_notification: "alert sms", conditions: [ field: bed_field.es_code, op: :lt, value: 10 ]}
         let!(:site) {collection.sites.make :properties => {bed_field.es_code => 5}}
         it "should add sms_que into Resque.enqueue" do
-          SmsTask.should have_queued([user.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
+          expect(SmsTask).to have_queued([user.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
         end
 
         it "should add email_que into Resque.enqueue" do
-          EmailTask.should have_queued([user.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
+          expect(EmailTask).to have_queued([user.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
         end
       end
 
@@ -47,11 +47,11 @@ describe Site::AlertConcerns do
         let!(:threshold){ collection.thresholds.make is_notify: true, is_all_site: true, email_notification: {fields: [email_field.es_code]}, phone_notification: {fields: [phone_field.es_code]}, message_notification: "alert sms", conditions: [ field: bed_field.es_code, op: :lt, value: 10 ]}
         let!(:site) {collection.sites.make :properties => {bed_field.es_code => 5, phone_field.es_code => '123456', email_field.es_code => 'foo@example.com'}}
         it "should add sms_que into Resque.enqueue" do
-          SmsTask.should have_queued(['123456'], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
+          expect(SmsTask).to have_queued(['123456'], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
         end
 
         it "should add email_que into Resque.enqueue" do
-          EmailTask.should have_queued(['foo@example.com'], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
+          expect(EmailTask).to have_queued(['foo@example.com'], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
         end
       end
 
@@ -60,11 +60,11 @@ describe Site::AlertConcerns do
         let!(:site) {collection.sites.make :properties => {bed_field.es_code => 5, phone_field.es_code => '123456', email_field.es_code => 'foo@example.com', user_field.es_code => user_2.email}}
 
         it "should add sms_que into Resque.enqueue" do
-          SmsTask.should have_queued([user.phone_number, '123456', user_2.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
+          expect(SmsTask).to have_queued([user.phone_number, '123456', user_2.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
         end
 
         it "should add email_que into Resque.enqueue" do
-          EmailTask.should have_queued([user.email, 'foo@example.com', user_2.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
+          expect(EmailTask).to have_queued([user.email, 'foo@example.com', user_2.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
         end
       end
     end
@@ -81,11 +81,11 @@ describe Site::AlertConcerns do
         end
 
         it "should add sms_que into Resque.enqueue" do
-          SmsTask.should have_queued([user_2.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
+          expect(SmsTask).to have_queued([user_2.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
         end
 
         it "should add email_que into Resque.enqueue" do
-          EmailTask.should have_queued([user_2.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
+          expect(EmailTask).to have_queued([user_2.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
         end
       end
 
@@ -97,11 +97,11 @@ describe Site::AlertConcerns do
           site1.save!
         end
         it "should add sms_que into Resque.enqueue" do
-          SmsTask.should have_queued([user.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
+          expect(SmsTask).to have_queued([user.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
         end
 
         it "should add email_que into Resque.enqueue" do
-          EmailTask.should have_queued([user.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
+          expect(EmailTask).to have_queued([user.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
         end
       end
 
@@ -113,11 +113,11 @@ describe Site::AlertConcerns do
           site1.save!
         end
         it "should add sms_que into Resque.enqueue" do
-          SmsTask.should have_queued([user_2.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
+          expect(SmsTask).to have_queued([user_2.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
         end
 
         it "should add email_que into Resque.enqueue" do
-          EmailTask.should have_queued([user_3.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
+          expect(EmailTask).to have_queued([user_3.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
         end
       end
 
@@ -129,11 +129,11 @@ describe Site::AlertConcerns do
           site1.save!
         end
         it "should add sms_que into Resque.enqueue" do
-          SmsTask.should have_queued([user.phone_number, user_2.phone_number, user_3.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
+          expect(SmsTask).to have_queued([user.phone_number, user_2.phone_number, user_3.phone_number], threshold.message_notification, 'smart', collection.id).in(:sms_queue)
         end
 
         it "should add email_que into Resque.enqueue" do
-          EmailTask.should have_queued([user.email, user_2.email, user_3.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
+          expect(EmailTask).to have_queued([user.email, user_2.email, user_3.email], threshold.message_notification, "[ResourceMap] Alert Notification").in(:email_queue)
         end
       end
     end

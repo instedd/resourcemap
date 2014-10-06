@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChannelsController do
+describe ChannelsController, :type => :controller do
   skip do
     include Devise::TestHelpers
     let(:user) { User.make }
@@ -9,7 +9,7 @@ describe ChannelsController do
     before(:each) { sign_in user }
 
 
-    describe 'get reminders' do
+    describe 'get reminders', :type => :controller do
       it 'should get channels' do
         get :index, :collection_id => collection.id
         assert_response :success

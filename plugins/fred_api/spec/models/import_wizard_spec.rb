@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImportWizard do
+describe ImportWizard, :type => :model do
   let(:user) { User.make }
 
   let(:collection) { user.create_collection Collection.make_unsaved }
@@ -35,12 +35,12 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, specs
 
-      sites = collection.sites.all
-      sites.length.should eq(3)
+      sites = collection.sites
+      expect(sites.length).to eq(3)
 
-      sites[0].properties[luhn.es_code].should eq('100000-9')
-      sites[1].properties[luhn.es_code].should eq('100001-7')
-      sites[2].properties[luhn.es_code].should eq('100002-5')
+      expect(sites[0].properties[luhn.es_code]).to eq('100000-9')
+      expect(sites[1].properties[luhn.es_code]).to eq('100001-7')
+      expect(sites[2].properties[luhn.es_code]).to eq('100002-5')
     end
 
     it "import into existing field should not generate a new value, because the the luhn value should not be changed unless the user specify a new value" do
@@ -61,9 +61,9 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, specs
 
-      sites = collection.sites.all
-      sites.length.should eq(1)
-      sites[0].properties[luhn.es_code].should eq('100000-9')
+      sites = collection.sites
+      expect(sites.length).to eq(1)
+      expect(sites[0].properties[luhn.es_code]).to eq('100000-9')
     end
 
     it "imports into existing field and with the same value" do
@@ -84,9 +84,9 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, specs
 
-      sites = collection.sites.all
-      sites.length.should eq(1)
-      sites[0].properties[luhn.es_code].should eq('100000-9')
+      sites = collection.sites
+      expect(sites.length).to eq(1)
+      expect(sites[0].properties[luhn.es_code]).to eq('100000-9')
     end
 
     it "imports into existing field and with the same value(also identifying the site with a string)" do
@@ -107,9 +107,9 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, specs
 
-      sites = collection.sites.all
-      sites.length.should eq(1)
-      sites[0].properties[luhn.es_code].should eq('100000-9')
+      sites = collection.sites
+      expect(sites.length).to eq(1)
+      expect(sites[0].properties[luhn.es_code]).to eq('100000-9')
     end
 
     it "imports into existing field with invalid values" do
@@ -133,19 +133,19 @@ describe ImportWizard do
 
       sites_errors = sites[:errors]
       data_errors = sites_errors[:data_errors]
-      data_errors.length.should eq(3)
+      expect(data_errors.length).to eq(3)
 
-      data_errors[0][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: The value must be in this format: nnnnnn-n (where 'n' is a number).")
-      data_errors[0][:column].should eq(1)
-      data_errors[0][:rows].should eq([0])
+      expect(data_errors[0][:description]).to eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: The value must be in this format: nnnnnn-n (where 'n' is a number).")
+      expect(data_errors[0][:column]).to eq(1)
+      expect(data_errors[0][:rows]).to eq([0])
 
-      data_errors[1][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: Invalid Luhn check digit.")
-      data_errors[1][:column].should eq(1)
-      data_errors[1][:rows].should eq([1])
+      expect(data_errors[1][:description]).to eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: Invalid Luhn check digit.")
+      expect(data_errors[1][:column]).to eq(1)
+      expect(data_errors[1][:rows]).to eq([1])
 
-      data_errors[2][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: The value already exists in the collection.")
-      data_errors[2][:column].should eq(1)
-      data_errors[2][:rows].should eq([2])
+      expect(data_errors[2][:description]).to eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: The value already exists in the collection.")
+      expect(data_errors[2][:column]).to eq(1)
+      expect(data_errors[2][:rows]).to eq([2])
     end
 
 
@@ -169,11 +169,11 @@ describe ImportWizard do
 
       data_errors = sites_errors[:data_errors]
 
-      data_errors.length.should eq(1)
+      expect(data_errors.length).to eq(1)
 
-      data_errors[0][:description].should eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: the value is repeated in rows 1 and 2.")
-      data_errors[0][:column].should eq(1)
-      data_errors[0][:rows].should eq([0, 1])
+      expect(data_errors[0][:description]).to eq("Some of the values in field 'Luhn' (2nd column) are not valid for the type luhn identifier: the value is repeated in rows 1 and 2.")
+      expect(data_errors[0][:column]).to eq(1)
+      expect(data_errors[0][:rows]).to eq([0, 1])
     end
 
      it "should not show validation error if the luhn value is empty (because the value will be autogenerated)" do
@@ -194,7 +194,7 @@ describe ImportWizard do
 
       sites_errors = sites[:errors]
       data_errors = sites_errors[:data_errors]
-      data_errors.length.should eq(0)
+      expect(data_errors.length).to eq(0)
     end
 
     it "should store max luhn value in a json file" do
@@ -220,9 +220,9 @@ describe ImportWizard do
       ImportWizard.validate_sites_with_columns user, collection, specs
 
       luhn_data = JSON.load(File.read(aditional_data_file_for(user, collection)))
-      luhn_data[luhn.es_code].should eq('100002-5')
-      luhn_data[luhn2.es_code].should eq(nil)
-      luhn_data[luhn3.es_code].should eq('100001-7')
+      expect(luhn_data[luhn.es_code]).to eq('100002-5')
+      expect(luhn_data[luhn2.es_code]).to eq(nil)
+      expect(luhn_data[luhn3.es_code]).to eq('100001-7')
 
     end
   end
@@ -246,12 +246,12 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, specs
 
-      sites = collection.sites.all
-      sites.length.should eq(3)
+      sites = collection.sites
+      expect(sites.length).to eq(3)
 
-      sites[0].properties[normal.es_code].should eq('1')
-      sites[1].properties[normal.es_code].should eq('2')
-      sites[2].properties[normal.es_code].should eq('3')
+      expect(sites[0].properties[normal.es_code]).to eq('1')
+      expect(sites[1].properties[normal.es_code]).to eq('2')
+      expect(sites[2].properties[normal.es_code]).to eq('3')
     end
 
     it "should not show validation errors for existing normal identifier field with the same value" do
@@ -274,7 +274,7 @@ describe ImportWizard do
 
       sites_errors = sites[:errors]
       data_errors = sites_errors[:data_errors]
-      data_errors.length.should eq(0)
+      expect(data_errors.length).to eq(0)
     end
 
     it "imports into existing normal identifier field with the same value" do
@@ -295,9 +295,9 @@ describe ImportWizard do
       ImportWizard.mark_job_as_pending user, collection
       ImportWizard.execute user, collection, specs
 
-      sites = collection.sites.all
-      sites.length.should eq(1)
-      sites[0].properties[normal.es_code].should eq('1')
+      sites = collection.sites
+      expect(sites.length).to eq(1)
+      expect(sites[0].properties[normal.es_code]).to eq('1')
     end
 
     it "should  show validation errors for repeated normal identifier inside the collection" do
@@ -319,11 +319,11 @@ describe ImportWizard do
 
       sites_errors = sites[:errors]
       data_errors = sites_errors[:data_errors]
-      data_errors.length.should eq(1)
+      expect(data_errors.length).to eq(1)
 
-      data_errors[0][:description].should eq("Some of the values in field 'Normal' (2nd column) are not valid for the type identifier: The value already exists in the collection.")
-      data_errors[0][:column].should eq(1)
-      data_errors[0][:rows].should eq([0])
+      expect(data_errors[0][:description]).to eq("Some of the values in field 'Normal' (2nd column) are not valid for the type identifier: The value already exists in the collection.")
+      expect(data_errors[0][:column]).to eq(1)
+      expect(data_errors[0][:rows]).to eq([0])
     end
 
     it "show validation error if the values are repeated in the CSV" do
@@ -344,11 +344,11 @@ describe ImportWizard do
 
       sites_errors = sites[:errors]
       data_errors = sites_errors[:data_errors]
-      data_errors.length.should eq(1)
+      expect(data_errors.length).to eq(1)
 
-      data_errors[0][:description].should eq("Some of the values in field 'Normal' (2nd column) are not valid for the type identifier: the value is repeated in rows 1 and 2.")
-      data_errors[0][:column].should eq(1)
-      data_errors[0][:rows].should eq([0, 1])
+      expect(data_errors[0][:description]).to eq("Some of the values in field 'Normal' (2nd column) are not valid for the type identifier: the value is repeated in rows 1 and 2.")
+      expect(data_errors[0][:column]).to eq(1)
+      expect(data_errors[0][:rows]).to eq([0, 1])
     end
   end
 

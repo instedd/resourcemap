@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-describe Collection::CSDApiConcern do 
+describe Collection::CSDApiConcern, :type => :model do 
 	let(:collection) { Collection.make }
 	let(:layer) { collection.layers.make }
 
 	describe 'csd_facility_oid_field' do
 		it 'is nil if there is no field with the right metadata' do
-			collection.csd_facility_oid.should be_nil
+			expect(collection.csd_facility_oid).to be_nil
 		end
 
 		it 'chooses the right field given proper metadata configs' do
 			oid_field = layer.identifier_fields.make.csd_facility_oid!
 
-			collection.csd_facility_oid.id.should eq(oid_field.id)
+			expect(collection.csd_facility_oid.id).to eq(oid_field.id)
 		end		
 	end
 
@@ -44,8 +44,8 @@ describe Collection::CSDApiConcern do
 
 			csd_coded_type_fields = collection.csd_coded_types
 
-			csd_coded_type_fields.should have(2).items
-			csd_coded_type_fields.map(&:id).should include(g.id, h.id)
+			expect(csd_coded_type_fields.size).to eq(2)
+			expect(csd_coded_type_fields.map(&:id)).to include(g.id, h.id)
 		end
 	end
 
@@ -56,8 +56,8 @@ describe Collection::CSDApiConcern do
 
 			other_ids = collection.csd_other_ids
 
-			other_ids.should have(1).item
-			other_ids[0].id.should eq(f.id)
+			expect(other_ids.size).to eq(1)
+			expect(other_ids[0].id).to eq(f.id)
 		end
 	end
 
@@ -73,16 +73,16 @@ describe Collection::CSDApiConcern do
 
 			contacts = collection.csd_contacts
 
-			contacts.should have(2).items
+			expect(contacts.size).to eq(2)
 
-			contacts[0].class.should be(CSDContactMapping)
-			contacts[1].class.should be(CSDContactMapping)
+			expect(contacts[0].class).to be(CSDContactMapping)
+			expect(contacts[1].class).to be(CSDContactMapping)
 
-			contacts[0].contact.should eq("Contact 1")
-			contacts[0].all_components.map(&:id).should include(f1.id, f2.id, f3.id)
+			expect(contacts[0].contact).to eq("Contact 1")
+			expect(contacts[0].all_components.map(&:id)).to include(f1.id, f2.id, f3.id)
 
-			contacts[1].contact.should eq("Contact 2")
-			contacts[1].all_components.map(&:id).should include(g1.id, g2.id, g3.id)
+			expect(contacts[1].contact).to eq("Contact 2")
+			expect(contacts[1].all_components.map(&:id)).to include(g1.id, g2.id, g3.id)
 		end
 	end
 
@@ -93,10 +93,10 @@ describe Collection::CSDApiConcern do
 
 			orgs = collection.csd_organizations
 
-			orgs.should have(2).items
+			expect(orgs.size).to eq(2)
 
-			orgs[0].class.should be(CSDOrganizationMapping)
-			orgs[1].class.should be(CSDOrganizationMapping)
+			expect(orgs[0].class).to be(CSDOrganizationMapping)
+			expect(orgs[1].class).to be(CSDOrganizationMapping)
 		end
 	end
 end

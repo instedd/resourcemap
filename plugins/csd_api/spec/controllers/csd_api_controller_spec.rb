@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CsdApiController do
+describe CsdApiController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
@@ -41,7 +41,7 @@ describe CsdApiController do
       request_id = "urn:uuid:4924fff9-e0f4-48c8-a403-955760fcc667"
       request.env["RAW_POST_DATA"] = generate_request(request_id)
       post :get_directory_modifications, collection_id: collection.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
     end
 
     it "should accept SOAP request and respond with a valid envelope" do
@@ -55,32 +55,32 @@ describe CsdApiController do
 
 
       # Valid Envelope attributes
-      assert response_hash["Envelope"].should include( {"xmlns:soap"=>"http://www.w3.org/2003/05/soap-envelope", "xmlns:wsa"=>"http://www.w3.org/2005/08/addressing", "xmlns:csd"=>"urn:ihe:iti:csd:2013"} )
+      assert expect(response_hash["Envelope"]).to include( {"xmlns:soap"=>"http://www.w3.org/2003/05/soap-envelope", "xmlns:wsa"=>"http://www.w3.org/2005/08/addressing", "xmlns:csd"=>"urn:ihe:iti:csd:2013"} )
 
       # Valid 'Action' in Header
-      response_hash["Envelope"]["Header"]["Action"].should eq("urn:ihe:iti:csd:2013:GetDirectoryModificationsResponse")
+      expect(response_hash["Envelope"]["Header"]["Action"]).to eq("urn:ihe:iti:csd:2013:GetDirectoryModificationsResponse")
 
       # Valid 'MessageId' in Header
       message_id = response_hash["Envelope"]["Header"]["MessageID"]
-      assert message_id.should be
-      assert message_id.should start_with "urn:uuid:"
+      assert expect(message_id).to be
+      assert expect(message_id).to start_with "urn:uuid:"
       uuid = message_id.split(':').last
-      (UUIDTools::UUID.parse uuid).should be_valid
+      expect(UUIDTools::UUID.parse uuid).to be_valid
 
       # Valid anonymous 'To' in Header
-      assert response_hash["Envelope"]["Header"]["To"].should eq("http://www.w3.org/2005/08/addressing/anonymous")
+      assert expect(response_hash["Envelope"]["Header"]["To"]).to eq("http://www.w3.org/2005/08/addressing/anonymous")
 
       # Valid 'RelatesTo' in Header
-      assert response_hash["Envelope"]["Header"]["RelatesTo"].should eq(request_id)
+      assert expect(response_hash["Envelope"]["Header"]["RelatesTo"]).to eq(request_id)
 
       # Valid Body attibutes
       body = response_hash["Envelope"]["Body"]["getModificationsResponse"]["CSD"]
-      body.should include({"xmlns"=>"urn:ihe:iti:csd:2013", "xmlns:xsi"=>"http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation"=>"urn:ihe:iti:csd:2013 CSD.xsd"})
+      expect(body).to include({"xmlns"=>"urn:ihe:iti:csd:2013", "xmlns:xsi"=>"http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation"=>"urn:ihe:iti:csd:2013 CSD.xsd"})
 
-      body.has_key?("organizationDirectory").should be_truthy
-      body.has_key?("serviceDirectory").should be_truthy
-      body.has_key?("facilityDirectory").should be_truthy
-      body.has_key?("providerDirectory").should be_truthy
+      expect(body.has_key?("organizationDirectory")).to be_truthy
+      expect(body.has_key?("serviceDirectory")).to be_truthy
+      expect(body.has_key?("facilityDirectory")).to be_truthy
+      expect(body.has_key?("providerDirectory")).to be_truthy
 
     end
 
@@ -152,9 +152,9 @@ describe CsdApiController do
 
       body = response_hash["Envelope"]["Body"]["getModificationsResponse"]["CSD"]
 
-      body["facilityDirectory"].length.should eq(1)
+      expect(body["facilityDirectory"].length).to eq(1)
       facility = body["facilityDirectory"]["facility"]
-      facility["oid"].should eq("2.25.309768652999692686176651983274504471835.646.5.329800735698586629295641978511506172918")
+      expect(facility["oid"]).to eq("2.25.309768652999692686176651983274504471835.646.5.329800735698586629295641978511506172918")
     end
 
     #TODO: simplify test by using new utility methods
@@ -224,46 +224,46 @@ describe CsdApiController do
 
       body = response_hash["Envelope"]["Body"]["getModificationsResponse"]["CSD"]
 
-      body["facilityDirectory"].length.should eq(1)
+      expect(body["facilityDirectory"].length).to eq(1)
 
       facility = body["facilityDirectory"]["facility"]
 
       # Should include 'name'
       name = facility["primaryName"]
-      name.should eq 'Site A'
+      expect(name).to eq 'Site A'
 
       # Should include 'otherName's
       other_names = facility["otherName"]
-      other_names.length.should eq(2)
+      expect(other_names.length).to eq(2)
 
-      other_names.first["language"].should eq "french"
-      other_names.first["commonName"].should eq "Terrain A"
+      expect(other_names.first["language"]).to eq "french"
+      expect(other_names.first["commonName"]).to eq "Terrain A"
 
-      other_names.last["language"].should eq "spanish"
-      other_names.last["commonName"].should eq "Sitio A"
+      expect(other_names.last["language"]).to eq "spanish"
+      expect(other_names.last["commonName"]).to eq "Sitio A"
 
       # Should include 'geocode'
-      facility["geocode"]["latitude"].should eq("10.0")
-      facility["geocode"]["longitude"].should eq("20.0")
-      facility["geocode"]["coordinateSystem"].should eq("WGS-84")
+      expect(facility["geocode"]["latitude"]).to eq("10.0")
+      expect(facility["geocode"]["longitude"]).to eq("20.0")
+      expect(facility["geocode"]["coordinateSystem"]).to eq("WGS-84")
 
       # Should include 'contactPoint'
-      facility["contactPoint"].length.should eq(2)
+      expect(facility["contactPoint"].length).to eq(2)
       contact1 = facility["contactPoint"][0]
-      contact1["equipment"].should eq("Equipment for contact 1")
-      contact1["purpose"].should eq("Main contact")
-      contact1["certificate"].should eq("1234")
-      contact1["codedType"]["code"].should eq "two"
-      contact1["codedType"]["codingSchema"].should eq "moh.gov.rw"
+      expect(contact1["equipment"]).to eq("Equipment for contact 1")
+      expect(contact1["purpose"]).to eq("Main contact")
+      expect(contact1["certificate"]).to eq("1234")
+      expect(contact1["codedType"]["code"]).to eq "two"
+      expect(contact1["codedType"]["codingSchema"]).to eq "moh.gov.rw"
 
       contact2 = facility["contactPoint"][1]
-      contact2["equipment"].should eq("Contact 2")
+      expect(contact2["equipment"]).to eq("Contact 2")
 
       # Should include 'record'
-      facility["record"]["created"].should eq("2013-12-18T18:40:28+00:00")
-      facility["record"]["updated"].should eq("2013-12-18T18:40:28+00:00")
-      facility["record"]["sourceDirectory"].should eq("http://#{Settings.host}")
-      facility["record"]["status"].should eq("Active")
+      expect(facility["record"]["created"]).to eq("2013-12-18T18:40:28+00:00")
+      expect(facility["record"]["updated"]).to eq("2013-12-18T18:40:28+00:00")
+      expect(facility["record"]["sourceDirectory"]).to eq("http://#{Settings.host}")
+      expect(facility["record"]["status"]).to eq("Active")
     end
   end
 end

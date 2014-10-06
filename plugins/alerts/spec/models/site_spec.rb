@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site do
+describe Site, :type => :model do
 
   let(:user) { User.make }
   let(:collection) { user.create_collection Collection.make(selected_plugins: ['alerts']) }
@@ -18,9 +18,9 @@ describe Site do
     client = Elasticsearch::Client.new
     results = client.search index: site.index_name
     results = results["hits"]["hits"]
-    results.length.should eq(1)
-    results[0]["_source"]["alert"].should eq(true)
-    results[0]["_source"]["color"].should eq('red')
+    expect(results.length).to eq(1)
+    expect(results[0]["_source"]["alert"]).to eq(true)
+    expect(results[0]["_source"]["color"]).to eq('red')
   end
 
   describe "get notification numbers" do
@@ -32,16 +32,16 @@ describe Site do
     let(:site) { collection.sites.make properties: {telephone.es_code => '123456', owner.es_code => user_2.email} }
 
     it "should include member phone number" do
-      site.notification_numbers(alert).should include user.phone_number
+      expect(site.notification_numbers(alert)).to include user.phone_number
     end
 
     it "should not include other member phone number" do
-      site.notification_numbers(alert).should_not include User.make.phone_number
+      expect(site.notification_numbers(alert)).not_to include User.make.phone_number
     end
 
     it "should not include nil phone_number" do
       user.update_attributes phone_number: nil
-      site.notification_numbers(alert).should_not include user.phone_number
+      expect(site.notification_numbers(alert)).not_to include user.phone_number
     end
 
     context "when alert phone notification is empty" do
@@ -50,21 +50,21 @@ describe Site do
       end
 
       it "should return empty phone list" do
-        site.notification_numbers(alert).should == []
+        expect(site.notification_numbers(alert)).to eq([])
       end
     end
 
     it "should include site property" do
-      site.notification_numbers(alert).should include '123456'
+      expect(site.notification_numbers(alert)).to include '123456'
     end
 
     it "should not include blank string site property" do
       site.update_attributes properties: {telephone.es_code => ''}
-      site.notification_numbers(alert).should_not include ''
+      expect(site.notification_numbers(alert)).not_to include ''
     end
 
     it "should include user field phone number" do
-      site.notification_numbers(alert).should include user_2.phone_number
+      expect(site.notification_numbers(alert)).to include user_2.phone_number
     end
 
     context "when user field does not have phone number" do
@@ -73,7 +73,7 @@ describe Site do
       end
 
       it "should not include nil in" do
-        site.notification_numbers(alert).should_not include nil
+        expect(site.notification_numbers(alert)).not_to include nil
       end
     end
   end
@@ -87,11 +87,11 @@ describe Site do
     let(:site) { collection.sites.make properties: {email.es_code => 'info@example.com', owner.es_code => user_2.email} }
 
     it "should include member email" do
-      site.notification_emails(alert).should include user.email
+      expect(site.notification_emails(alert)).to include user.email
     end
 
     it "should not include other member email" do
-      site.notification_emails(alert).should_not include User.make.email
+      expect(site.notification_emails(alert)).not_to include User.make.email
     end
 
     context "when alert email notification is empty" do
@@ -100,21 +100,21 @@ describe Site do
       end
 
       it "should return empty email list" do
-        site.notification_emails(alert).should == []
+        expect(site.notification_emails(alert)).to eq([])
       end
     end
 
     it "should include site property" do
-      site.notification_emails(alert).should include 'info@example.com'
+      expect(site.notification_emails(alert)).to include 'info@example.com'
     end
 
     it "should not include blank string site property" do
       site.update_attributes properties: {email.es_code => ''}
-      site.notification_emails(alert).should_not include ''
+      expect(site.notification_emails(alert)).not_to include ''
     end
 
     it "should include user field email" do
-      site.notification_emails(alert).should include user_2.email
+      expect(site.notification_emails(alert)).to include user_2.email
     end
   end
 end
