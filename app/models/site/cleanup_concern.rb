@@ -2,7 +2,7 @@ module Site::CleanupConcern
   extend ActiveSupport::Concern
 
   included do
-  	before_validation :remove_blank_properties, :if => :properties
+    before_validation :remove_blank_properties, :if => :properties
   end
 
   def remove_blank_properties
