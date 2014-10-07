@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Field do
+  auth_scope_unsafe
+
   def history_concern_class
     Field::TextField
   end

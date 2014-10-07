@@ -1,0 +1,2 @@
+class ShareChannelPolicy < ApplicationPolicy
+end

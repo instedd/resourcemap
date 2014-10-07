@@ -14,6 +14,10 @@ class User < ActiveRecord::Base
 
   attr_accessor :is_guest
 
+  def policy(record)
+    Pundit.policy!(self, record)
+  end
+
   def membership_for_collection(collection)
     membership = self.memberships.find_by_collection_id(collection.id)
     if is_guest || !membership
@@ -39,8 +43,9 @@ class User < ActiveRecord::Base
   end
 
   def create_collection(collection)
+    raise "The collection must be unsaved" unless collection.new_record?
     return false unless collection.save
-    memberships.create! collection_id: collection.id, admin: true
+    AuthCop.unsafe { memberships.create! collection_id: collection.id, admin: true }
     collection.register_gateways_under_user_owner(self)
     collection
   end

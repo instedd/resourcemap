@@ -13,7 +13,7 @@ module Site::UuidConcern
  		begin
  			uuid = UUIDTools::UUID.parse self.uuid
  		rescue
- 			errors.add(:uuid, "is not valid") 
+ 			errors.add(:uuid, "is not valid")
  		end
  		errors.add(:uuid, "is not valid") if uuid && !uuid.valid?
  	end
@@ -28,7 +28,7 @@ end
 class UnchangeableValidator < ActiveModel::EachValidator
   def validate_each(object, attribute, value)
     if !object.new_record? && value.present?
-      original = object.class.send(:where, "id = #{object.id}").select("id, #{attribute.to_s}").first
+      original = object.class.send(:where, "#{object.class.table_name}.id = #{object.id}").select("#{object.class.table_name}.id, #{attribute.to_s}").first
       if original.send(attribute) != value
         object.errors[attribute] << (options[:message] || "cannot be changed once assigned")
       end

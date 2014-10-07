@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe "layer access" do
-  let!(:collection) { Collection.make }
-  let!(:user) { User.make }
-  let!(:membership) { Membership.create! user_id: user.id, collection_id: collection.id }
+  auth_scope(:user) { User.make }
+  let!(:collection) { user.create_collection Collection.make_unsaved }
+  let(:user2) { AuthCop.unsafe { User.make } }
+  let!(:membership) { Membership.create! user_id: user2.id, collection_id: collection.id }
   let!(:layer1) { collection.layers.make }
   let!(:field1) { layer1.text_fields.make collection_id: collection.id }
   let!(:layer2) { collection.layers.make }
@@ -15,20 +16,19 @@ describe "layer access" do
       membership.set_layer_access :verb => :read, :access => true, :layer_id => layer1.id
       membership.set_layer_access :verb => :read, :access => false, :layer_id => layer2.id
 
-      layers = collection.visible_layers_for user
-      layers.length.should eq(1)
-      layers[0][:name].should eq(layer1.name)
+      AuthCop.with_auth_scope(user2) do
+        layers = collection.visible_layers_for user2
+        layers.length.should eq(1)
+        layers[0][:name].should eq(layer1.name)
 
-      fields = layers[0][:fields]
-      fields.length.should eq(1)
-      fields[0][:id].should eq(field1.es_code)
-      fields[0][:writeable].should be_false
+        fields = layers[0][:fields]
+        fields.length.should eq(1)
+        fields[0][:id].should eq(field1.es_code)
+        fields[0][:writeable].should be_false
+      end
     end
 
     it "returns all fields if admin" do
-      membership.admin = true
-      membership.save!
-
       layers = collection.visible_layers_for user
       layers.length.should eq(2)
       layers[0][:name].should eq(layer1.name)
@@ -47,23 +47,22 @@ describe "layer access" do
   end
 
   describe "guest user" do
-    let!(:guest_user) { GuestUser.new }
-    let!(:user_ability) {Ability.new guest_user}
-    let!(:collection2) { Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read') }
-    let!(:l1) { collection2.layers.make(anonymous_user_permission: 'read') }
-    let!(:l2) { collection2.layers.make}
+    let(:guest_user) { AuthCop.unsafe { GuestUser.new } }
+    let(:collection2) { user.create_collection Collection.make_unsaved(anonymous_name_permission: 'read', anonymous_location_permission: 'read') }
+    let(:l1) { collection2.layers.make(anonymous_user_permission: 'read') }
+    let(:l2) { collection2.layers.make}
 
     it "can read if layer has read permission for anonymous" do
-      (user_ability.can? :read, l1).should be_true
+      guest_user.policy(l1).read?.should be_true
     end
 
     it "can't read if collection hasn't got read permission for anonymous" do
-      (user_ability.can? :read, l2).should be_false
+      guest_user.policy(l2).read?.should be_false
     end
 
     it "is not able to update layers" do
-      (user_ability.can? :update, l1, collection2).should be_false
-      (user_ability.can? :update, l2, collection2).should be_false
+      guest_user.policy(l1).update?.should be_false
+      guest_user.policy(l2).update?.should be_false
     end
   end
 

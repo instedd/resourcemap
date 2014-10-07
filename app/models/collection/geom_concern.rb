@@ -19,10 +19,12 @@ module Collection::GeomConcern
 
   def compute_bounding_box
     set_bounds = false
-    sites.where('lat is not null && lng is not null').select('min(lat) as v1, max(lat) as v2, min(lng) as v3, max(lng) as v4').each do |v|
-      if v.v1 && v.v2 && v.v3 && v.v4
-        set_bounding_box v.v1, v.v2, v.v3, v.v4
-        set_bounds = true
+    AuthCop.unsafe do
+      sites.where('sites.lat is not null && sites.lng is not null').select('min(sites.lat) as v1, max(sites.lat) as v2, min(sites.lng) as v3, max(sites.lng) as v4').each do |v|
+        if v.v1 && v.v2 && v.v3 && v.v4
+          set_bounding_box v.v1, v.v2, v.v3, v.v4
+          set_bounds = true
+        end
       end
     end
 

@@ -99,6 +99,8 @@ RSpec.configure do |config|
     File.delete file
   end
 
+  include AuthCop::SpecHelpers
+
   $test_count = 0
 
   # Delete all test indexes after every 10 tests

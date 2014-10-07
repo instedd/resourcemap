@@ -1,9 +1,11 @@
 class Ability
-
-  include CanCan::Ability
+  attr_reader :user
+  # include CanCan::Ability
 
   def initialize(user, format = nil)
+    @user = user
 
+    # Channel, Threshold, FieldHistory, UserSnapshot, LayerMembership
     ### Collection ###
 
     # Admin abilities
@@ -16,9 +18,16 @@ class Ability
     # Permission to read collection was allowing guest to see settings page
     can :read, Collection, :anonymous_name_permission => "read" unless format && format.html?
 
+    can :create, Collection unless user.is_guest
+
+    can :read, Field, :collection => {:memberships => { :user_id => user.id } }
+    can :manage, Field, :collection => {:memberships => { :user_id => user.id, admin: true } }
+
     can [:search, :index], Site, :collection => {:anonymous_name_permission => "read"}
     can [:search, :index], Site, :collection => {:memberships => { :user_id => user.id }}
     can :delete, Site, :collection => {:memberships => { :user_id => user.id , :admin => true } }
+
+    can :manage, ImportJob, collection: {memberships: { user_id: user.id, admin: true }}
 
     if !user.is_guest
       can [:new, :create], Collection
@@ -38,7 +47,9 @@ class Ability
       # A user may read a layer if she's the collection administrator...
       can :read, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
       # ...or if she has been given explicit read access to it.
-      can :read, Layer, :collection => { :memberships => { :user_id => user.id} }, :id => user.readable_layer_ids
+      # can :read, Layer, :collection => { :memberships => { :user_id => user.id} }, :id => user.readable_layer_ids
+
+      can :read, Layer, layer_memberships: { membership: { user_id: user.id } }
     end
 
     # A user can write a layer only if she is the collection admin
@@ -58,6 +69,9 @@ class Ability
     else
       can :read, LayerHistory, :layer_id => user.readable_layer_ids
     end
+    can :create, LayerHistory, collection: { memberships: { user_id: user.id, admin: true }}
+
+    can :create, FieldHistory, collection: { memberships: { user_id: user.id, admin: true }}
 
     ### Site properties ###
     can :read_site_property, Field do |field, site|
@@ -82,6 +96,19 @@ class Ability
 
     # Full update, only admins have rights to do this
     can :update, Site, :collection => { :memberships => { :user_id => user.id, :admin => true } }
+    can :create, Site, collection: { memberships: { user_id: user.id, admin: true }}
+    can :create, SiteHistory, collection: { memberships: { user_id: user.id, admin: true }}
+
+    can :read, Membership, collection: { memberships: { user_id: user.id } }
+    can :manage, Membership, collection: { memberships: { user_id: user.id, admin: true } }
+
+    can :manage, LayerMembership, membership: { collection: { memberships: { user_id: user.id, admin: true }}}
+
+    can :read, DefaultFieldPermission, membership: { user_id: user.id }
+    can :manage, DefaultFieldPermission, membership: { collection: { memberships: { user_id: user.id, admin: true }}}
+    can :read, Activity, collection: { memberships: { user_id: user.id }}
+
+    # can :read, User
 
     can :update_name, Membership do |user_membership|
       user_membership.can_update?("name")

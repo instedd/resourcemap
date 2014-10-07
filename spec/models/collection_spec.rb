@@ -1,12 +1,13 @@
 require 'spec_helper'
 describe Collection do
+  auth_scope(:user) { User.make }
+
   it { should have_many :memberships }
   it { should have_many :users }
   it { should have_many :layers }
   it { should have_many :fields }
   it { should have_many :thresholds }
 
-  let(:user) { User.make }
   let(:collection) { user.create_collection Collection.make_unsaved(anonymous_name_permission: 'read', anonymous_location_permission: 'read')}
   let(:collection2) { user.create_collection Collection.make_unsaved(anonymous_name_permission: 'none', anonymous_location_permission: 'none')}
   let!(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'foo', name: 'Foo', ord: 1}] }
@@ -73,21 +74,21 @@ describe Collection do
       snp_1 = collection.snapshots.create! date: Time.now, name: 'snp1'
       snp_2 = collection.snapshots.create! date: Time.now, name: 'snp2'
 
-      snp_1.user_snapshots.create! user: User.make
-      snp_2.user_snapshots.create! user: User.make
+      snp_1.user_snapshots.create! user: AuthCop.unsafe { User.make }
+      snp_2.user_snapshots.create! user: AuthCop.unsafe { User.make }
 
-      collection.user_snapshots.count.should eq(2)
-      collection.user_snapshots.first.snapshot.name.should eq('snp1')
-      collection.user_snapshots.last.snapshot.name.should eq('snp2')
+      user_snapshots = AuthCop.unsafe { collection.user_snapshots.to_a }
+      user_snapshots.count.should eq(2)
+      user_snapshots[0].snapshot.name.should eq('snp1')
+      user_snapshots[1].snapshot.name.should eq('snp2')
     end
 
     it "should obtain snapshot for user if user_snapshot exists" do
-      user = User.make
       snp_1 = collection.snapshots.create! date: Time.now, name: 'snp1'
       snp_1.user_snapshots.create! user: user
 
       snp_2 = collection.snapshots.create! date: Time.now, name: 'snp2'
-      snp_2.user_snapshots.create! user: User.make
+      snp_2.user_snapshots.create! user: AuthCop.unsafe { User.make }
 
       snapshot = collection.snapshot_for(user)
       snapshot.name.should eq('snp1')
@@ -95,9 +96,8 @@ describe Collection do
 
     it "should obtain nil snapshot_name for user if user_snapshot does not exists" do
       snp_1 = collection.snapshots.create! date: Time.now, name: 'snp1'
-      snp_1.user_snapshots.create! user: User.make
+      snp_1.user_snapshots.create! user: AuthCop.unsafe { User.make }
 
-      user = User.make
       snapshot = collection.snapshot_for(user)
       snapshot.should be_nil
     end
@@ -110,27 +110,26 @@ describe Collection do
     end
 
     it "should obtain membership for collection user" do
-      member = User.make
+      member = AuthCop.unsafe { User.make }
       membership_for_member = collection.memberships.create! :user_id => member.id, admin: false
       membership = collection.membership_for(member)
       membership.admin.should be(false)
     end
 
     it "should obtain membership if collection has anonymous read permission and user is not member " do
-      non_member = User.make
+      non_member = AuthCop.unsafe { User.make }
       membership = collection.membership_for(non_member)
       membership.should_not be_nil
     end
 
     it "should not obtain membership if collection doesn't have anonymous read permission and useris not member" do
-      non_member = User.make
+      non_member = AuthCop.unsafe { User.make }
       membership = collection2.membership_for(non_member)
       membership.should be_nil
     end
 
     it "should obtain dummy membership for guest user" do
-      guest = User.make
-      guest.is_guest = true
+      guest = AuthCop.unsafe { User.new(is_guest: true) }
       membership = collection.membership_for(guest)
       membership.admin.should be(false)
     end
@@ -148,20 +147,6 @@ describe Collection do
         collection.selected_plugins = ["", 'plugin_1', ""]
         collection.plugins.should eq({'plugin_1' => {}})
       end
-    end
-  end
-
-  describe 'gateway' do
-    let(:admin_user) { User.make }
-    let(:collection_1) { admin_user.create_collection Collection.make name: 'test'}
-    let!(:gateway) { admin_user.channels.make name: 'default', basic_setup: true, ticket_code: '2222'  }
-
-    it 'should return user_owner of collection' do
-      collection_1.get_user_owner.should eq admin_user
-    end
-
-    it 'should return gateway under user_owner' do
-      collection_1.get_gateway_under_user_owner.should eq gateway
     end
   end
 

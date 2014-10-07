@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Collection::GeomConcern do
-  let(:collection) { Collection.make }
+  auth_scope(:user) { User.make }
+  let(:collection) { user.create_collection Collection.make_unsaved }
 
   it "calculates center from children sites" do
     site1 = collection.sites.make :lat => 30, :lng => 20

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Collection::CsvConcern do
-  let(:user) { User.make }
-  let(:collection) { user.create_collection Collection.make }
+  auth_scope(:user) { User.make }
+  let(:collection) { user.create_collection Collection.make_unsaved }
   let(:layer) { collection.layers.make }
 
   it "imports csv" do
@@ -29,7 +29,7 @@ describe Collection::CsvConcern do
     date = layer.date_fields.make :code => 'date'
     site = collection.sites.make :properties => {date.es_code => '1985-10-19T00:00:00Z'}
 
-    csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
+    csv =  CSV.parse collection.to_csv(collection.new_search(current_user: user).unlimited.api_results, user)
 
     csv[1][4].should eq('10/19/1985')
   end
@@ -40,7 +40,7 @@ describe Collection::CsvConcern do
 
     site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
 
-    csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
+    csv =  CSV.parse collection.to_csv(collection.new_search(current_user: user).unlimited.api_results, user)
     csv[1][4].should eq('100')
   end
 
@@ -74,7 +74,7 @@ describe Collection::CsvConcern do
   describe "generate sample csv" do
 
     it "should include only visible fields for the user" do
-      user2 = User.make
+      user2 = AuthCop.unsafe { User.make }
 
       layer_visible = collection.layers.make
       layer_invisible = collection.layers.make

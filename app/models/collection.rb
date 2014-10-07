@@ -5,7 +5,7 @@ class Collection < ActiveRecord::Base
   include Collection::PluginsConcern
   include Collection::ImportLayersSchemaConcern
 
-  mount_uploader :logo, LogoUploader
+  # mount_uploader :logo, LogoUploader
   attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
 
   validates_presence_of :name, :message => N_("can't be blank")
@@ -15,7 +15,7 @@ class Collection < ActiveRecord::Base
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
   has_many :layers, order: 'layers.ord', dependent: :delete_all
-  has_many :fields, order: 'ord', dependent: :delete_all
+  has_many :fields, order: 'fields.ord', dependent: :delete_all
   has_many :thresholds, dependent: :delete_all
   has_many :reminders, dependent: :delete_all
   has_many :share_channels, dependent: :delete_all
@@ -81,13 +81,11 @@ class Collection < ActiveRecord::Base
   end
 
   def visible_fields_for(user, options)
-    current_ability = Ability.new(user)
-
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
-      visible_layers = layer_histories.accessible_by(current_ability).at_date(date).includes(:layer).map(&:layer)
+      visible_layers = layer_histories.at_date(date).includes(:layer).map(&:layer)
     else
-      visible_layers = layers.accessible_by(current_ability).all
+      visible_layers = layers.all
     end
 
     visible_layers = visible_layers.uniq
@@ -105,13 +103,11 @@ class Collection < ActiveRecord::Base
   end
 
   def visible_layers_for(user, options = {})
-    current_ability = Ability.new(user)
-
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
-      visible_layers = layer_histories.accessible_by(current_ability).at_date(date)
+      visible_layers = layer_histories.at_date(date)
     else
-      visible_layers = layers.accessible_by(current_ability).includes(:fields)
+      visible_layers = layers.includes(:fields)
     end
 
     json_layers = []
@@ -133,7 +129,7 @@ class Collection < ActiveRecord::Base
         json_field[:kind] = field.kind
         json_field[:config] = field.config
         json_field[:ord] = field.ord
-        json_field[:writeable] = current_ability.can?(:update_site_property, field, nil)
+        json_field[:writeable] = user.policy(field).update_site_property?
 
         json_layer[:fields] << json_field
       end

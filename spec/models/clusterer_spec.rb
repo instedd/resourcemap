@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Clusterer do
+  auth_scope_unsafe
   let(:clusterer) { Clusterer.new 1 }
   let(:collection) { Collection.make }
   it "leaves single site alone" do
@@ -117,7 +118,7 @@ describe Clusterer do
       clusters[:original_ghost].should eq([{:lat => 20, :lng => 30}])
 
     end
-  
+
     it 'should set status = false when two sites in difference collection in the same cluster' do
       clusterer.add :id => 1, :lat => 20, :lng => 30, :alert => "true", :collection_id => collection.id
       clusterer.add :id => 2, :lat => 21, :lng => 31, :collection_id => 1
@@ -128,7 +129,7 @@ describe Clusterer do
         {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 1, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false, :alert => true, :status => false, :icon => "default", :color => ""}
       ])
     end
-    
+
     it 'should return status = true, icon = cycling and color = nil  when two sites in difference collection in the same cluster' do
       clusterer.add :id => 1, :lat => 20, :lng => 30, :alert => "true", :collection_id => collection.id, :icon => 'cycling'
       clusterer.add :id => 2, :lat => 21, :lng => 31, :collection_id => collection.id , :icon => 'cycling'

@@ -14,6 +14,12 @@ class ApplicationController < ActionController::Base
   before_filter :set_gettext_locale
   before_filter :redirect_to_localized_url
   before_filter :show_language_selector
+  around_filter :auth_cop_scope
+
+  def auth_cop_scope
+    ability = AuthCop.unsafe { current_ability }
+    AuthCop.with_auth_scope(ability) { yield }
+  end
 
   expose(:new_search_options) do
     if current_user_snapshot.at_present?
@@ -31,18 +37,18 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  rescue_from CanCan::AccessDenied do |exception|
-    respond_to do |format|
-      format.html {
-        if current_user.is_guest
-          authenticate_user!
-        else
-         render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
-        end
-      }
-      format.json { render_json({ message: "Access Denied"}, status: :forbidden) }
-    end
-  end
+  # rescue_from CanCan::AccessDenied do |exception|
+  #   respond_to do |format|
+  #     format.html {
+  #       if current_user.is_guest
+  #         authenticate_user!
+  #       else
+  #        render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
+  #       end
+  #     }
+  #     format.json { render_json({ message: "Access Denied"}, status: :forbidden) }
+  #   end
+  # end
 
   def guest_user
     @guest_user ||= User.new(is_guest: true)

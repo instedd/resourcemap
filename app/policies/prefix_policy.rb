@@ -1,0 +1,2 @@
+class PrefixPolicy < ApplicationPolicy
+end

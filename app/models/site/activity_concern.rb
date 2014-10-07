@@ -55,7 +55,9 @@ module Site::ActivityConcern
     site_data['lng'] = lng if lng
     site_data['properties'] = properties if properties.present?
 
-    Site::ActivityConcern.strategy.create_activity 'site', 'created', collection.id, id, user.id, site_data
+    AuthCop.unsafe do
+      Site::ActivityConcern.strategy.create_activity 'site', 'created', collection.id, id, user.id, site_data
+    end
   end
 
   def record_name_was
@@ -84,11 +86,15 @@ module Site::ActivityConcern
     end
 
     if site_changes.present?
-      Site::ActivityConcern.strategy.create_activity 'site', 'changed', collection.id, id, user.id, {'name' => @name_was || name, 'changes' => site_changes}
+      AuthCop.unsafe do
+        Site::ActivityConcern.strategy.create_activity 'site', 'changed', collection.id, id, user.id, {'name' => @name_was || name, 'changes' => site_changes}
+      end
     end
   end
 
   def create_deleted_activity
-    Site::ActivityConcern.strategy.create_activity 'site', 'deleted', collection.id, id, user.id, {'name' => name}
+    AuthCop.unsafe do
+      Site::ActivityConcern.strategy.create_activity 'site', 'deleted', collection.id, id, user.id, {'name' => name}
+    end
   end
 end

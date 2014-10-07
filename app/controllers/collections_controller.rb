@@ -1,6 +1,6 @@
 class CollectionsController < ApplicationController
 
-  authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
+  # authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
 
   # we cannot call this exposure 'collections' becuause if we do,
   # decent_exposure will load the "collection" from "collections"

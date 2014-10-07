@@ -1,0 +1,2 @@
+class SiteHistoryPolicy < ApplicationPolicy
+end

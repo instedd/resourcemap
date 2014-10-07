@@ -40,14 +40,14 @@ Site.blueprint do
   name
   lat { rand(180) - 90 }
   lng { rand(360) - 180 }
-  user { User.make }
+  user { AuthCop.current_user || User.make }
 end
 
 Layer.blueprint do
   collection
   name
   ord { collection.next_layer_ord }
-  user { User.make }
+  user { AuthCop.current_user || User.make }
 end
 
 Field.subclasses.each do |field_kind|
@@ -98,7 +98,7 @@ Reminder.blueprint do
 end
 
 Channel.blueprint do
-  user
+  user { AuthCop.current_user || User.make }
 end
 
 Membership.blueprint do

@@ -71,7 +71,9 @@ module Collection::CsvConcern
 
       new_sites.each &:save!
 
-      Activity.create! item_type: 'collection', action: 'csv_imported', collection_id: id, user_id: user.id, 'data' => {'sites' => new_sites.length}
+      AuthCop.unsafe do
+        Activity.create! item_type: 'collection', action: 'csv_imported', collection_id: id, user_id: user.id, 'data' => {'sites' => new_sites.length}
+      end
     end
   end
 

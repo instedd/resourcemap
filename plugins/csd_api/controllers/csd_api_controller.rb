@@ -7,7 +7,7 @@ class CsdApiController < ApplicationController
 
   skip_before_filter :verify_authenticity_token
 
-  authorize_resource :collection, :decent_exposure => true
+  # authorize_resource :collection, :decent_exposure => true
 
   rescue_from Exception, :with => :rescue_error
 

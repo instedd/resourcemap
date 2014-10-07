@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/manastech/authcop.git
+  revision: 95d9fe0caf5b1bc5a6486ded9b9008341e68ed2e
+  branch: master
+  specs:
+    authcop (0.0.1)
+
+GIT
   remote: https://github.com/instedd/alto_guisso.git
   revision: 170ad8f8cdf0e46438db06668894bb986111182b
   branch: master
@@ -93,7 +100,6 @@ GEM
       terminal-table (~> 1.4)
     breadcrumbs_on_rails (2.2.0)
     builder (3.0.4)
-    cancan (1.6.10)
     capistrano (2.15.5)
       highline
       net-scp (>= 1.0.0)
@@ -262,6 +268,8 @@ GEM
     pry-stack_explorer (0.4.9.1)
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
+    pundit (0.3.0)
+      activesupport (>= 3.0.0)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -413,11 +421,14 @@ DEPENDENCIES
   active_model_serializers
   activerecord-import
   alto_guisso!
+<<<<<<< HEAD
   better_errors (< 2.0.0)
   binding_of_caller
+=======
+  authcop!
+>>>>>>> Migrating cancan to pundit/authcop to enforce more security
   brakeman
   breadcrumbs_on_rails
-  cancan (~> 1.6.10)
   capistrano
   capybara
   carrierwave
@@ -455,6 +466,7 @@ DEPENDENCIES
   pry
   pry-debugger
   pry-stack_explorer
+  pundit
   rails (~> 3.2.0)
   resque
   resque-scheduler

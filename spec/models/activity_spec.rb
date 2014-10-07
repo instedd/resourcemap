@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Activity do
-  let!(:user) { User.make }
+  auth_scope(:user) { User.make }
   let!(:collection) { user.create_collection Collection.make_unsaved }
 
   it "creates one when collection is created" do
@@ -13,7 +13,7 @@ describe Activity do
   end
 
   it "creates one when layer is created" do
-    Activity.delete_all
+    AuthCop.unsafe { Activity.delete_all }
 
     layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
 
@@ -29,7 +29,7 @@ describe Activity do
     it "creates one when layer's name changes" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       layer.name = 'Layer2'
       layer.save!
@@ -45,7 +45,7 @@ describe Activity do
     it "creates one when layer's field is added" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       layer.update_attributes! fields_attributes: [{kind: 'text', code: 'two', name: 'Two', ord: 2}]
 
@@ -62,7 +62,7 @@ describe Activity do
     it "creates one when layer's field's code changes" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       field = layer.fields.last
 
@@ -79,7 +79,7 @@ describe Activity do
     it "creates one when layer's field's name changes" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       field = layer.fields.last
 
@@ -96,15 +96,11 @@ describe Activity do
     it "creates one when layer's field's options changes" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'select_one', code: 'one', name: 'One', config: {'options' => [{'code' => '1', 'label' => 'One'}]}, ord: 1}]
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       field = layer.fields.last
 
-      begin
-        layer.update_attributes! fields_attributes: [{id: field.id, code: 'one', name: 'One', kind: 'select_one', config: {'options' => [{'code' => '2', 'label' => 'Two'}]}, ord: 1}]
-      rescue Exception => ex
-        puts ex.backtrace
-      end
+      layer.update_attributes! fields_attributes: [{id: field.id, code: 'one', name: 'One', kind: 'select_one', config: {'options' => [{'code' => '2', 'label' => 'Two'}]}, ord: 1}]
 
       assert_activity 'layer', 'changed',
         'collection_id' => collection.id,
@@ -117,7 +113,7 @@ describe Activity do
     it "creates one when layer's field is removed" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}, {kind: 'text', code: 'two', name: 'Two', ord: 2}]
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       field = layer.fields.last
 
@@ -135,7 +131,7 @@ describe Activity do
   it "creates one when layer is destroyed" do
     layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
 
-    Activity.delete_all
+    AuthCop.unsafe { Activity.delete_all }
 
     layer.destroy
 
@@ -151,7 +147,7 @@ describe Activity do
     layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'beds', name: 'Beds', ord: 1}]
     field = layer.fields.first
 
-    Activity.delete_all
+    AuthCop.unsafe { Activity.delete_all }
 
     site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {field.es_code => 20}, user: user
 
@@ -164,7 +160,7 @@ describe Activity do
   end
 
   it "creates one after importing a csv" do
-    Activity.delete_all
+    AuthCop.unsafe { Activity.delete_all }
 
     collection.import_csv user, %(
       resmap-id, name, lat, lng
@@ -187,7 +183,7 @@ describe Activity do
     it "creates one after changing one site's name" do
       site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.name = 'Bar'
       site.save!
@@ -203,7 +199,7 @@ describe Activity do
     it "creates one after changing one site's location" do
       site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lat = 15.1234567
       site.save!
@@ -219,7 +215,7 @@ describe Activity do
     it "creates one after adding location in site without location" do
       site = collection.sites.create! name: 'Foo', properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lat = 15.1234567
       site.lng = 34.123456
@@ -237,7 +233,7 @@ describe Activity do
     it "creates one after removing location in site with location" do
       site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lat = nil
       site.lng = nil
@@ -255,7 +251,7 @@ describe Activity do
     it "creates one after adding one site's property" do
       site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.properties_will_change!
       site.properties[beds.es_code] = 30
@@ -289,7 +285,7 @@ describe Activity do
     it "creates one after changing one site's property" do
       site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.properties_will_change!
       site.properties[beds.es_code] = 30
@@ -306,7 +302,7 @@ describe Activity do
     it "creates one after changing many site's properties" do
       site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20, text.es_code => 'foo'}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.properties_will_change!
       site.properties[beds.es_code] = 30
@@ -324,7 +320,7 @@ describe Activity do
     it "doesn't create one after siglaning properties will change but they didn't change" do
       site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.properties_will_change!
       site.save!
@@ -335,7 +331,7 @@ describe Activity do
     it "doesn't create one if lat/lng updated but not changed" do
       site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: 0, properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lat = "-1.9537"
       site.lng = 0
@@ -347,7 +343,7 @@ describe Activity do
     it "creates one after changing lat to nil" do
       site = collection.sites.create! name: 'Foo', lat: 0, lng: "30.10309", properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lat = nil
       site.save!
@@ -362,7 +358,7 @@ describe Activity do
     it "creates one after changing lng to nil" do
       site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lng = nil
       site.save!
@@ -377,7 +373,7 @@ describe Activity do
     it "creates one after changing lat and lng from nil to a value" do
       site = collection.sites.create! name: 'Foo', properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lat = "44.123"
       site.lng = "-33.2"
@@ -393,7 +389,7 @@ describe Activity do
     it "creates one after changing lat and lng to nil" do
       site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lat = nil
       site.lng = nil
@@ -409,7 +405,7 @@ describe Activity do
     it "creates one after changing lat more than 1e-04" do
       site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lat = site.lat + 1e-04
       site.save!
@@ -424,7 +420,7 @@ describe Activity do
     it "creates one after changing lng more than 1e-04" do
       site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lng = site.lng + 1e-04
       site.save!
@@ -439,7 +435,7 @@ describe Activity do
     it "doesn't create one after changing lat less than 1e-04" do
       site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lat = site.lat + 1e-05
       site.save!
@@ -450,7 +446,7 @@ describe Activity do
     it "doesn't create one after changing lng less than 1e-04" do
       site = collection.sites.create! name: 'Foo', lat: "-1.9537", lng: "30.10309", properties: {beds.es_code => 20}, user: user
 
-      Activity.delete_all
+      AuthCop.unsafe { Activity.delete_all }
 
       site.lng = site.lng + 1e-05
       site.save!
@@ -462,7 +458,7 @@ describe Activity do
   it "creates one after destroying a site" do
     site = collection.sites.create! name: 'Foo', lat: 10.0, lng: 20.0, location_mode: :manual, user: user
 
-    Activity.delete_all
+    AuthCop.unsafe { Activity.delete_all }
 
     site.destroy
 

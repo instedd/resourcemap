@@ -14,7 +14,9 @@ module Layer::ActivityConcern
       hash['config'] = field.config if field.config
       hash
     end
-    Activity.create! item_type: 'layer', action: 'created', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name, 'fields' => fields_data}
+    AuthCop.unsafe do
+      Activity.create! item_type: 'layer', action: 'created', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name, 'fields' => fields_data}
+    end
   end
 
   def record_status_before_update
@@ -62,10 +64,14 @@ module Layer::ActivityConcern
     layer_changes['changed'] = changed if changed.present?
     layer_changes['deleted'] = deleted if deleted.present?
 
-    Activity.create! item_type: 'layer', action: 'changed', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => @name_was || name, 'changes' => layer_changes}
+    AuthCop.unsafe do
+      Activity.create! item_type: 'layer', action: 'changed', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => @name_was || name, 'changes' => layer_changes}
+    end
   end
 
   def create_deleted_activity
-    Activity.create! item_type: 'layer', action: 'deleted', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name}
+    AuthCop.unsafe do
+      Activity.create! item_type: 'layer', action: 'deleted', collection_id: collection.id, layer_id: id, user_id: user.id, 'data' => {'name' => name}
+    end
   end
 end

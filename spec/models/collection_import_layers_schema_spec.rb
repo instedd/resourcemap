@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 describe Collection::ImportLayersSchemaConcern do
-	let(:collection) { Collection.make }
-	let(:other_collection) { Collection.make }
+	auth_scope(:user) { User.make }
+	let(:collection) { user.create_collection Collection.make_unsaved }
+	let(:other_collection) { user.create_collection Collection.make_unsaved }
 	let(:other_layer) { other_collection.layers.make name: "Adminsitrative Information", ord: 1, anonymous_user_permission: 'none' }
-
-	let(:user) { User.make}
 
 	it 'should import json_layer without fields' do
 		json = [other_layer].to_json

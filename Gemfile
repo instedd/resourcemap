@@ -24,7 +24,7 @@ gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
 gem 'uuidtools'
 gem 'newrelic_rpm'
-gem 'cancan', '~> 1.6.10'
+gem 'pundit'
 gem "omniauth"
 gem "omniauth-openid"
 gem 'alto_guisso', git: "https://github.com/instedd/alto_guisso.git", branch: 'master'
@@ -36,6 +36,7 @@ gem 'activerecord-import'
 gem 'active_model_serializers'
 gem 'includes-count'
 gem 'poirot_rails', git: "https://github.com/instedd/poirot_rails.git", branch: 'master' unless ENV['CI']
+gem 'authcop', github: "manastech/authcop", branch: 'master'
 
 group :test do
   gem 'shoulda-matchers'

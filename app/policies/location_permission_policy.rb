@@ -1,0 +1,2 @@
+class LocationPermissionPolicy < DefaultFieldPermissionPolicy
+end

@@ -9,7 +9,7 @@ class LayersController < ApplicationController
   before_filter :fix_field_config, only: [:create, :update]
 
 
-  authorize_resource :layer, :decent_exposure => true, :except => :create
+  # authorize_resource :layer, :decent_exposure => true, :except => :create
 
   expose(:layers) {
     authorize! :read, collection

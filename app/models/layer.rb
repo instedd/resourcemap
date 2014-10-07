@@ -21,7 +21,8 @@ class Layer < ActiveRecord::Base
 
   # Returns the next ord value for a field that is going to be created
   def next_field_ord
-    field = fields.pluck('max(ord) as o').first
+    # field = fields.pluck('max(ord) as o').first
+    field = fields.order(:ord).last.try(:ord)
     field ? field.to_i + 1 : 1
   end
 

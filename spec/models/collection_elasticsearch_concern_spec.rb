@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Collection::ElasticsearchConcern do
-  let(:collection) { Collection.make }
+  auth_scope(:user) { User.make }
+  let(:collection) { user.create_collection Collection.make_unsaved }
 
   it "creates index on create" do
     client = Elasticsearch::Client.new
@@ -22,16 +23,9 @@ describe Collection::ElasticsearchConcern do
     index_name_for_snapshot = Collection.index_name 32, snapshot_id: 12
     index_name_for_snapshot.should eq("collection_test_32_12")
 
-    collection = Collection.make
-    index_name_for_user_without_collection = Collection.index_name collection.id, user: User.make
-    index_name_for_user_without_collection.should eq("collection_test_#{collection.id}")
-
-    collection = Collection.make
-    index_name_for_user_without_snapshot = Collection.index_name(collection.id, user: User.make)
+    index_name_for_user_without_snapshot = Collection.index_name(collection.id, user: user)
     index_name_for_user_without_snapshot.should eq("collection_test_#{collection.id}")
 
-    user = User.make
-    collection = Collection.make
     collection.snapshots.create! date: Time.now, name: 'last_year'
     snapshot = collection.snapshots.first
     UserSnapshot.make :user => user, :snapshot => snapshot

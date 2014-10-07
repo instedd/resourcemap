@@ -23,6 +23,7 @@ module ResourceMap
 
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
+    config.autoload_paths += ["#{Rails.root}/app/policies/"]
     config.autoload_paths += Dir["#{config.root}/plugins/"]
     config.autoload_paths += Dir["#{config.root}/plugins/*/{helpers,controllers,models,workers}"]
 

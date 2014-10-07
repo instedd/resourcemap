@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Field::DateField do
+  auth_scope_unsafe
 
   describe "Default format" do
     it "should be created with mm/dd/yyyy format by default" do

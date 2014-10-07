@@ -1,6 +1,6 @@
 require 'spec_helper'
 describe Site::IndexUtils do
-  let(:user) { User.make }
+  auth_scope(:user) { User.make }
   let(:collection) { user.create_collection Collection.make_unsaved }
   let(:site) {collection.sites.make :name => 'site_01'}
 

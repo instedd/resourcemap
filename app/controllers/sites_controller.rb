@@ -2,7 +2,7 @@ class SitesController < ApplicationController
   before_filter :authenticate_api_user!, :except => [:index, :search], :unless => Proc.new { collection && collection.anonymous_name_permission == 'read' }
   before_filter :authenticate_collection_admin!, :only => :update
 
-  authorize_resource :only => [:index, :search], :decent_exposure => true
+  # authorize_resource :only => [:index, :search], :decent_exposure => true
 
   expose(:sites) {if !current_user_snapshot.at_present? && collection then collection.site_histories.at_date(current_user_snapshot.snapshot.date) else collection.sites end}
   expose(:site) { Site.find(params[:site_id] || params[:id]) }

@@ -2,10 +2,10 @@
 require 'spec_helper'
 
 describe ImportWizard do
-  let!(:user) { User.make }
+  auth_scope(:user) { User.make }
 
   let!(:collection) { user.create_collection Collection.make_unsaved }
-  let!(:user2) { collection.users.make :email => 'user2@email.com'}
+  let!(:user2) { AuthCop.unsafe { User.make :email => 'user2@email.com'} }
   let!(:membership) { collection.memberships.create! :user_id => user2.id }
 
   let!(:layer) { collection.layers.make }
