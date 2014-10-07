@@ -395,6 +395,9 @@ onCollections ->
       json.properties = @properties() if @properties()
       json
 
+    diff: =>
+      {}
+
     # Ary: I have no idea why, but without this here toJSON() doesn't work
     # in Firefox. It seems a problem with the bindings caused by the fat arrow
     # (=>), but I couldn't figure it out. This "solves" it for now.

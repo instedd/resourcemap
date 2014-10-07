@@ -71,3 +71,8 @@ describe 'Collection', ->
 
       expect(@site.properties()[42]).toEqual('Other Luhn')
       expect(@site.properties()[50]).toEqual('')
+
+    it 'should give an empty diff when there are no changes', ->
+      @site.startEditMode()
+      expect(@site.diff()).toBeDefined()
+      expect(@site.diff()).toEqual({})
