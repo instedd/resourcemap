@@ -396,7 +396,9 @@ onCollections ->
       json
 
     diff: =>
-      {}
+      diff = {}
+      diff.name = @name() if @originalName != @name()
+      diff
 
     # Ary: I have no idea why, but without this here toJSON() doesn't work
     # in Firefox. It seems a problem with the bindings caused by the fat arrow

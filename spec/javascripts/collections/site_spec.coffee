@@ -76,3 +76,13 @@ describe 'Collection', ->
       @site.startEditMode()
       expect(@site.diff()).toBeDefined()
       expect(@site.diff()).toEqual({})
+
+    it 'should show the name changed in the diff', ->
+      @site.startEditMode()
+      expect(@site.diff()).toBeDefined()
+      expect(@site.diff()).toEqual({})
+      @site.name("New name")
+      expect(@site.diff().name).toBeDefined()
+      expect(@site.diff().lat).toBeUndefined()
+      expect(@site.diff().long).toBeUndefined()
+      expect(@site.diff().name).toEqual("New name")
