@@ -1,4 +1,4 @@
 require 'spec_helper'
 
-describe Repeat do
+describe Repeat, :type => :model do
 end

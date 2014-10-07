@@ -9,26 +9,26 @@ describe ReminderTask do
   let(:site) { collection.sites.make :properties => {phone_field.es_code => users[0].phone_number, email_field.es_code => users[0].email}}
 
   it 'should include site owner phone_number' do
-    ReminderTask.get_site_properties_value_by_kind(site, 'phone').should include(users[0].phone_number)
+    expect(ReminderTask.get_site_properties_value_by_kind(site, 'phone')).to include(users[0].phone_number)
   end
 
   it 'should not include other user phone_number' do
-  ReminderTask.get_site_properties_value_by_kind(site, 'phone').should_not include(users[1].phone_number)
+  expect(ReminderTask.get_site_properties_value_by_kind(site, 'phone')).not_to include(users[1].phone_number)
   end
 
   it 'should include site owner email' do
-    ReminderTask.get_site_properties_value_by_kind(site, 'email').should include(users[0].email)
+    expect(ReminderTask.get_site_properties_value_by_kind(site, 'email')).to include(users[0].email)
   end
 
   it 'should not include other user email' do
-    ReminderTask.get_site_properties_value_by_kind(site, 'email').should_not include(users[1].email)
+    expect(ReminderTask.get_site_properties_value_by_kind(site, 'email')).not_to include(users[1].email)
   end
 
   it 'should return array of phone_number of site_owner' do
-    ReminderTask.get_site_properties_value_by_kind(site, 'phone').should eq [users[0].phone_number]
+    expect(ReminderTask.get_site_properties_value_by_kind(site, 'phone')).to eq [users[0].phone_number]
   end
 
   it 'should return array of email of site_owner' do
-    ReminderTask.get_site_properties_value_by_kind(site, 'email').should eq [users[0].email]
+    expect(ReminderTask.get_site_properties_value_by_kind(site, 'email')).to eq [users[0].email]
   end
 end

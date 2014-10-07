@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RemindersController do
+describe RemindersController, :type => :controller do
   include Devise::TestHelpers
 
   let(:user) { User.make }
@@ -26,7 +26,7 @@ describe RemindersController do
 
   it "should update reminder" do
     put :update, :id => reminder.id, :collection_id => collection.id, :reminder => { name: "foo" }
-    Reminder.find(reminder).name.should == "foo"
+    expect(Reminder.find(reminder).name).to eq("foo")
   end
 
   it "should destroy reminder" do
@@ -37,6 +37,6 @@ describe RemindersController do
 
   it 'should update status' do
     post :set_status, :id => reminder.id, :collection_id => collection.id, :status => true
-    Reminder.find(reminder).status.should == true
+    expect(Reminder.find(reminder).status).to eq(true)
   end
 end
