@@ -1,15 +1,16 @@
 language: ruby
 cache: bundler
 rvm:
-  - 1.9.3-p484
+- 1.9.3-p484
 bundler_args: --jobs=8 --without development
 services:
-  - elasticsearch
+- elasticsearch
 before_script:
-  - bundle exec rake db:setup
-  - bundle exec rake db:test:prepare
+- bundle exec rake db:setup
+- bundle exec rake db:test:prepare
 script:
-  - bundle exec rspec spec/
-  - bundle exec guard-jasmine
+- bundle exec rspec spec/
+- bundle exec guard-jasmine
 notifications:
-  hipchat: "fDYQeP7/X+9RZ8EWHSguckqSYJm2WwyLbXD+LQP/vuu+7Lrby41cllF7gqbMPDN9dsOo0gH+RbkHuTm+SCvN8xFcE4x/IDwcOBJgEVS+65YcFjQ/sY38fmzQRTaevjjZ44ghWknP70Wg9UJTet8j/mppvfDUHjexpC2/iCysqos="
+  slack:
+    secure: DCdc+fWXLZ8ISmp4lA5NcpvJugQ/cPxLAdRxxYhvO4P3wpjpL4OXoiZHyb1lxcq9ripMrf/jqgb4p3GlYwN/1o+B9v9MwjmyyT3BQGvxVWA30XRaiCxGojfWTq2banOv6pZ3VQ7qwHVsU+8QMxlclEQUWO7yCJEoMlgIp3fWHks=
