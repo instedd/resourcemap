@@ -14,8 +14,8 @@ describe 'Collection', ->
         name: "luhn_site",
         lat:17,
         lat_analyzed: "17",
-        long:17,
-        long_analyzed: "17",
+        lng:17,
+        lng_analyzed: "17",
         updated_at: "2014-01-09T13:42:57Z"
         properties: {
           42:"This Luhn",
@@ -84,5 +84,5 @@ describe 'Collection', ->
       @site.name("New name")
       expect(@site.diff().name).toBeDefined()
       expect(@site.diff().lat).toBeUndefined()
-      expect(@site.diff().long).toBeUndefined()
+      expect(@site.diff().lng).toBeUndefined()
       expect(@site.diff().name).toEqual("New name")
