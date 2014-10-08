@@ -106,3 +106,10 @@ describe 'Collection', ->
       expect(@site.diff().lng).toBeDefined()
       expect(@site.diff().name).toBeUndefined()
       expect(@site.diff().lng).toEqual(42.0)
+
+    it "shouldn't show a diff if not in editMode", ->
+      expect(@site.diff()).toBeDefined()
+      expect(@site.diff()).toEqual({})
+      @site.name("New name")
+      expect(@site.diff()).toBeDefined()
+      expect(@site.diff()).toEqual({})

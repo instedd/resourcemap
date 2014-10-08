@@ -397,9 +397,9 @@ onCollections ->
 
     diff: =>
       diff = {}
-      diff.name = @name() if @originalName != @name()
-      diff.lat = @lat() if @originalPosition.lat() != @lat()
-      diff.lng = @lng() if @originalPosition.lng() != @lng()
+      diff.name = @name() if @originalName && @originalName != @name()
+      diff.lat = @lat() if @originalPosition && @originalPosition.lat() != @lat()
+      diff.lng = @lng() if @originalPosition && @originalPosition.lng() != @lng()
       diff
 
     # Ary: I have no idea why, but without this here toJSON() doesn't work
