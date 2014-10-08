@@ -5,7 +5,7 @@ class GatewaysController < ApplicationController
     method = Channel.nuntium_info_methods
     respond_to do |format|
       format.html
-      format.json { render_json(params[:without_nuntium] ?  current_user.channels.where("channels.is_enable=?", true).all.as_json : current_user.channels.select('channels.id,channels.name,channels.password,channels.nuntium_channel_name,channels.is_enable,channels.basic_setup, channels.advanced_setup, channels.national_setup').all.as_json(methods: method)) }
+      format.json { render_json(params[:without_nuntium] ?  current_user.channels.where("channels.is_enable=?", true).as_json : current_user.channels.select('channels.id,channels.name,channels.password,channels.nuntium_channel_name,channels.is_enable,channels.basic_setup, channels.advanced_setup, channels.national_setup').as_json(methods: method)) }
     end
   end
 
