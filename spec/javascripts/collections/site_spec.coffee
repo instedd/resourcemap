@@ -86,3 +86,23 @@ describe 'Collection', ->
       expect(@site.diff().lat).toBeUndefined()
       expect(@site.diff().lng).toBeUndefined()
       expect(@site.diff().name).toEqual("New name")
+
+    it 'should show the latitude changed in the diff', ->
+      @site.startEditMode()
+      expect(@site.diff()).toBeDefined()
+      expect(@site.diff()).toEqual({})
+      @site.lat(42.0)
+      expect(@site.diff().lat).toBeDefined()
+      expect(@site.diff().lng).toBeUndefined()
+      expect(@site.diff().name).toBeUndefined()
+      expect(@site.diff().lat).toEqual(42.0)
+
+    it 'should show the longitude changed in the diff', ->
+      @site.startEditMode()
+      expect(@site.diff()).toBeDefined()
+      expect(@site.diff()).toEqual({})
+      @site.lng(42.0)
+      expect(@site.diff().lat).toBeUndefined()
+      expect(@site.diff().lng).toBeDefined()
+      expect(@site.diff().name).toBeUndefined()
+      expect(@site.diff().lng).toEqual(42.0)
