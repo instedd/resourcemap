@@ -89,7 +89,7 @@ describe UserSnapshot, :type => :model do
 
       expect(user_snapshot.go_to!('my snapshot')).to eq(true)
 
-      expect(user_snapshot.snapshot).to eq(user_snapshot.snapshot)
+      expect(user_snapshot.snapshot).to eq(my_snapshot)
       expect(user_snapshot.snapshot.name).to eq('my snapshot')
     end
   end

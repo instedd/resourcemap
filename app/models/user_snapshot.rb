@@ -22,7 +22,7 @@ class UserSnapshot < ActiveRecord::Base
 
     return false unless snapshot_to_load
 
-    self.snapshot_id = snapshot_to_load.id
+    self.snapshot = snapshot_to_load
     self.save!
 
     true
