@@ -54,7 +54,6 @@ group :test do
   gem 'database_cleaner'
   gem 'simplecov'
   gem 'simplecov-rcov'
-  gem 'brakeman'
   gem 'timecop'
 end
 
