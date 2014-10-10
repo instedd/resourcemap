@@ -1,4 +1,4 @@
-Oj.default_options = {mode: :compat}
+Oj.default_options = {mode: :compat, bigdecimal_load: :float }
 
 class Object
   def to_json_oj
