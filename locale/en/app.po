@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-22 19:02-0300\n"
+"POT-Creation-Date: 2014-10-06 14:45-0300\n"
 "PO-Revision-Date: 2014-06-03 14:06-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English\n"
@@ -624,6 +624,9 @@ msgstr ""
 msgid "Id:"
 msgstr ""
 
+msgid "Identifier"
+msgstr ""
+
 msgid "Identify"
 msgstr ""
 
@@ -978,6 +981,9 @@ msgstr ""
 msgid "Now specify how to map each column to a field."
 msgstr ""
 
+msgid "Numeric"
+msgstr ""
+
 msgid "OK"
 msgstr ""
 
@@ -1012,6 +1018,9 @@ msgid "Permission changed from %{previous_permission} to %{new_permission} in na
 msgstr ""
 
 msgid "Permissions per layer"
+msgstr ""
+
+msgid "Phone"
 msgstr ""
 
 msgid "Please"
@@ -1168,6 +1177,12 @@ msgid "See everything on the map for a birds-eye view"
 msgstr ""
 
 msgid "Select logo from uploaded image"
+msgstr ""
+
+msgid "Select Many"
+msgstr ""
+
+msgid "Select One"
 msgstr ""
 
 msgid "Send Now!"
@@ -1369,6 +1384,9 @@ msgid "Test Your Gateway"
 msgstr ""
 
 msgid "Testing Environmental Health"
+msgstr ""
+
+msgid "Text"
 msgstr ""
 
 msgid "The National Center for Parasitology, Entomology and Malaria Control (CNM)"
@@ -1660,6 +1678,9 @@ msgid "With the support of the Clinton Health Access Initiative (CHAI), CNM uses
 msgstr ""
 
 msgid "Yes"
+msgstr ""
+
+msgid "Yes No"
 msgstr ""
 
 msgid "You don't need to leave this window open while the data is imported, we'll take care of that for you. However, if you're still here when the importation ends, we'll let you know so you can start working on your new data right away."

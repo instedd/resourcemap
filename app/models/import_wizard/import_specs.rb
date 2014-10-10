@@ -186,6 +186,12 @@ class ImportWizard::ImportSpecs
       return
     end
 
+    if column[:header] =~ /hierarchy-\d/i
+      column[:use_as] = :ignore
+      column[:kind] = :ignore
+      return
+    end
+
     found = false
 
     column[:code] = column[:header].downcase.gsub(/\s+/, '') rescue ''

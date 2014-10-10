@@ -231,12 +231,12 @@ describe CollectionsController, :type => :controller do
     get :search, collection_id: collection.id
 
     result = JSON.parse response.body
-    site = result["sites"]
+    sites = result["sites"]
 
-    expect(site.first).to include("lat")
-    expect(site.first).to include("lng")
-    expect(site.first["lat"]).to eq(0)
-    expect(site.first["lng"]).to eq(0)
+    expect(sites.first).to include("lat")
+    expect(sites.first).to include("lng")
+    expect(sites.first["lat"]).to eq(0)
+    expect(sites.first["lng"]).to eq(0)
   end
 
   it "gets a site without a location when the lat is nil, and the lng is nil in search" do
@@ -245,9 +245,86 @@ describe CollectionsController, :type => :controller do
     get :search, collection_id: collection.id
 
     result = JSON.parse response.body
-    site = result["sites"]
+    sites = result["sites"]
 
-    expect(site.first).not_to include("lat")
-    expect(site.first).not_to include("lng")
+    expect(sites.first).not_to include("lat")
+    expect(sites.first).not_to include("lng")
   end
+
+  it "gets a site searching by its full name" do
+    collection.sites.make name: 'Target'
+    collection.sites.make name: 'NotThisOne'
+
+    get :search, collection_id: collection.id, sitename: 'Target'
+
+    result = JSON.parse response.body
+    sites = result["sites"]
+
+    sites.first.should include("name")
+    sites.first["name"].should eq("Target")
+  end
+
+  it "gets a site searching by its prefix" do
+    collection.sites.make name: 'Target'
+    collection.sites.make name: 'NotThisOne'
+
+    get :search, collection_id: collection.id, sitename: 'Tar'
+
+    result = JSON.parse response.body
+    sites = result["sites"]
+
+    sites.first.should include("name")
+    sites.first["name"].should eq("Target")
+  end
+
+  it "doesn't get any site when name doesn't match" do
+    collection.sites.make name: 'Target'
+    collection.sites.make name: 'NotThisOne'
+
+    get :search, collection_id: collection.id, sitename: 'TakeThat'
+
+    result = JSON.parse response.body
+    sites = result["sites"]
+
+    sites.should be_empty
+  end
+
+  it "gets multiple matching sites by name" do
+    collection.sites.make name: 'Target'
+    collection.sites.make name: 'NotThisOne'
+    collection.sites.make name: 'TallLand'
+
+    get :search, collection_id: collection.id, sitename: 'Ta'
+
+    result = JSON.parse response.body
+    sites = result["sites"]
+
+    sites.should have(2).items
+    sites.map { |site| site['name'] }.should include 'Target'
+    sites.map { |site| site['name'] }.should include 'TallLand'
+    sites.first['name'].should_not eq('NotThisOne')
+    sites.second['name'].should_not eq('NotThisOne')
+  end
+
+  it "applys multiple filters" do
+    layer = collection.layers.make
+    numeric = layer.numeric_fields.make :code => 'numeric'
+
+    collection.sites.make name: 'Target', properties: { numeric.es_code => 25 }
+    collection.sites.make name: 'NotThisOne', properties: { numeric.es_code => 25 }
+    collection.sites.make name: 'TallLand', properties: { numeric.es_code => 20 }
+
+    get :search, collection_id: collection.id, sitename: 'Ta', numeric.es_code => { "=" => 25 }
+
+    result = JSON.parse response.body
+    sites = result["sites"]
+
+    sites.should have(1).items
+    sites.first['name'].should_not eq('TallLand')
+    sites.first['name'].should eq('Target')
+    sites.first.should include('properties')
+    sites.first['properties'].should include numeric.es_code
+    sites.first['properties'][numeric.es_code].should eq(25)
+  end
+
 end

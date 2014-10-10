@@ -119,7 +119,7 @@ class Api::CollectionsController < ApiController
   end
 
   def build_search(*options)
-    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :page_size, :location_missing, :locale]
+    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :sitename, :page_size, :location_missing, :locale]
 
     search = new_search
 
@@ -142,6 +142,7 @@ class Api::CollectionsController < ApiController
     search.box *valid_box_coordinates if params[:box]
     search.select_fields(params[:fields]) if params[:fields]
     search.name(params[:name]) if params[:name]
+    search.name_start_with(params[:sitename]) if params[:sitename]
     search.location_missing if params[:location_missing].present?
 
     if params[:lat] || params[:lng] || params[:radius]

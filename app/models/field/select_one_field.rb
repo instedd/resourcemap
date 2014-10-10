@@ -107,7 +107,9 @@ class Field::SelectOneField < Field
 
     value_id = nil
     if @cache_for_read
-      value_id = @options_by_code_or_label_in_cache[value.to_s]
+      @options_by_code_or_label_in_cache.each do |code,option|
+        value_id = option if code.downcase == value.to_s.downcase
+      end
     else
       config['options'].each do |option|
         value_id = option['id'] if option['label'] == value || option['code'] == value

@@ -93,6 +93,9 @@ GEM
     bert (1.1.6)
     bertrpc (1.3.1)
       bert (>= 1.1.0, < 2.0.0)
+    better_errors (1.1.0)
+      coderay (>= 1.0.0)
+      erubis (>= 2.6.6)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     breadcrumbs_on_rails (2.3.0)
@@ -433,6 +436,8 @@ DEPENDENCIES
   activerecord-deprecated_finders
   activerecord-import
   alto_guisso!
+  better_errors (< 2.0.0)
+  binding_of_caller
   breadcrumbs_on_rails
   cancancan (~> 1.9)
   capistrano

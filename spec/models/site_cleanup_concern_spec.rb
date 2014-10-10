@@ -33,5 +33,22 @@ describe Site::CleanupConcern, :type => :model do
     site = collection.sites.make properties: { beds.es_code => nil}
     expect(site.properties).not_to have_key(beds.es_code)
   end
+
+  it "should translate latitude from GPS coordinates" do
+    site = collection.sites.make lat: '35.8 N'
+    site.lat.to_f.should eq(35.8)
+
+    site = collection.sites.make lat: '65.924S'
+    site.lat.to_f.should eq(-65.924)
+  end
+
+  it "should translate longitude from GPS coordinates" do
+    site = collection.sites.make lng: '35.85790E'
+    site.lng.to_f.should eq(35.8579)
+
+    site = collection.sites.make lng: '65.92 w'
+    site.lng.to_f.should eq(-65.92)
+  end
+
 end
 

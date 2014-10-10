@@ -97,7 +97,7 @@ class Field::SelectManyField < Field
   def decode_option(value)
     value_id = nil
     config['options'].each do |option|
-      value_id = option['id'] if option['label'] == value || option['code'] == value
+      value_id = option['id'] if option['label'].downcase == value.downcase || option['code'].downcase == value.downcase
     end
 
     if value_id.nil?

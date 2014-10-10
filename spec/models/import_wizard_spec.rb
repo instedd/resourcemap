@@ -412,6 +412,35 @@ describe ImportWizard, :type => :model do
     expect(sites[1].properties).to eq({select_one.es_code => 2})
   end
 
+  it "imports with existing select one ignoring case" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Column']
+      csv << ['Foo', 'OnE']
+      csv << ['Bar', 'Two']
+      csv << ['', '']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: select_one.id},
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.execute user, collection, specs
+
+    collection.layers.all.should eq([layer])
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({select_one.es_code => 1})
+
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({select_one.es_code => 2})
+
+  end
+
   it "imports with name and existing select_many property" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Column']
@@ -438,6 +467,34 @@ describe ImportWizard, :type => :model do
 
     expect(sites[1].name).to eq('Bar')
     expect(sites[1].properties).to eq({select_many.es_code => [1, 2]})
+  end
+
+  it "imports with existing select many property ignoring case" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Column']
+      csv << ['Foo', 'onE']
+      csv << ['Bar', 'One, tWo']
+      csv << ['', '']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Column', use_as: 'existing_field', field_id: select_many.id},
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.execute user, collection, specs
+
+    collection.layers.all.should eq([layer])
+
+    sites = collection.sites.all
+    sites.length.should eq(2)
+
+    sites[0].name.should eq('Foo')
+    sites[0].properties.should eq({select_many.es_code => [1]})
+
+    sites[1].name.should eq('Bar')
+    sites[1].properties.should eq({select_many.es_code => [1, 2]})
   end
 
   it "should also update hierarchy fields in bulk update using name" do
@@ -815,6 +872,28 @@ describe ImportWizard, :type => :model do
     expect(column_spec).to include({:header=>"date", :kind=>:date, :code=>"date", :label=>"Date", :use_as=>:existing_field, :field_id=>date.id, :layer_id=>layer.id})
     expect(column_spec).to include({:header=>"user", :kind=>:user, :code=>"user", :label=>"User", :use_as=>:existing_field, :field_id=>director.id, :layer_id=>layer.id})
     expect(column_spec).to include({:header=>"email", :kind=>:email, :code=>"email", :label=>"Email", :use_as=>:existing_field, :field_id=>email_field.id, :layer_id=>layer.id})
+
+    ImportWizard.delete_files(user, collection)
+  end
+
+  it "should ignore extended hierarchy columns when guessing column spec" do
+    csv_string = CSV.generate do |csv|
+     csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'hierarchy', 'hierarchy-1', 'hierarchy-2']
+     csv << ["123", 'Foo old', '1.2', '3.4', 'Son', 'Dad', 'Son']
+    end
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    column_spec = ImportWizard.guess_columns_spec user, collection
+
+    column_spec.length.should eq(7)
+
+    column_spec.should include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
+    column_spec.should include({:header=>"Name", :kind=>:name, :use_as=>:name})
+    column_spec.should include({:header=>"Lat", :kind=>:location, :use_as=>:lat})
+    column_spec.should include({:header=>"Lon", :kind=>:location, :use_as=>:lng})
+    column_spec.should include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :field_id=>hierarchy.id, :layer_id=>layer.id})
+    column_spec.should include({:header=>"hierarchy-1", :kind=>:ignore, :use_as=>:ignore})
+    column_spec.should include({:header=>"hierarchy-2", :kind=>:ignore, :use_as=>:ignore})
 
     ImportWizard.delete_files(user, collection)
   end

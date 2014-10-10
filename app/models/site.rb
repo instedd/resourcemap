@@ -167,6 +167,32 @@ class Site < ActiveRecord::Base
     parameters
   end
 
+  def lat=(value)
+    if value =~ /(\d+.?\d*)\s?(N|S)/i
+      coordinate = $1.to_f
+      if $2 =~ /s/i
+        write_attribute(:lat, -coordinate)
+      else
+        write_attribute(:lat, coordinate)
+      end
+    else
+      write_attribute(:lat, value)
+    end
+  end
+
+  def lng=(value)
+    if value =~ /(\d+.?\d*)\s?(E|W)/i
+      coordinate = $1.to_f
+      if $2 =~ /w/i
+        write_attribute(:lng, -coordinate)
+      else
+        write_attribute(:lng, coordinate)
+      end
+    else
+      write_attribute(:lng, value)
+    end
+  end
+
 
   private
 

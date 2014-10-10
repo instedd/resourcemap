@@ -74,6 +74,8 @@ group :development do
   gem 'pry-stack_explorer'
   gem 'dist', :git => 'https://github.com/manastech/dist.git'
   gem 'ruby-prof', :git => 'https://github.com/ruby-prof/ruby-prof.git'
+  gem 'better_errors', '<2.0.0'
+  gem 'binding_of_caller' # already provided by pry-stack_explorer
 end
 
 # Gems used only for assets and not required
