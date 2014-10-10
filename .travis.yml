@@ -1,7 +1,5 @@
 language: ruby
 cache: bundler
-rvm:
-- 1.9.3-p484
 bundler_args: --jobs=8 --without development
 services:
 - elasticsearch
