@@ -36,18 +36,18 @@ describe Site::CleanupConcern, :type => :model do
 
   it "should translate latitude from GPS coordinates" do
     site = collection.sites.make lat: '35.8 N'
-    site.lat.to_f.should eq(35.8)
+    expect(site.lat.to_f).to eq(35.8)
 
     site = collection.sites.make lat: '65.924S'
-    site.lat.to_f.should eq(-65.924)
+    expect(site.lat.to_f).to eq(-65.924)
   end
 
   it "should translate longitude from GPS coordinates" do
     site = collection.sites.make lng: '35.85790E'
-    site.lng.to_f.should eq(35.8579)
+    expect(site.lng.to_f).to eq(35.8579)
 
     site = collection.sites.make lng: '65.92 w'
-    site.lng.to_f.should eq(-65.92)
+    expect(site.lng.to_f).to eq(-65.92)
   end
 
 end

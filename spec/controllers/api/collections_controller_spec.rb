@@ -67,9 +67,9 @@ describe Api::CollectionsController, :type => :controller do
         get :show, id: collection.id, format: 'json', sitename: 'Site '
 
         json = JSON.parse response.body
-        json['sites'].length.should eq(2)
-        ["Site A", "Site B"].should include(json['sites'][0]["name"])
-        ["Site A", "Site B"].should include(json['sites'][1]["name"])
+        expect(json['sites'].length).to eq(2)
+        expect(["Site A", "Site B"]).to include(json['sites'][0]["name"])
+        expect(["Site A", "Site B"]).to include(json['sites'][1]["name"])
       end
 
       ['Site A', 'Site B'].each do |sitename|
@@ -78,17 +78,16 @@ describe Api::CollectionsController, :type => :controller do
           get :show, id: collection.id, format: 'json', sitename: sitename
 
           json = JSON.parse response.body
-          json['sites'].length.should eq(1)
-          json['sites'][0]["name"].should eq(sitename)
+          expect(json['sites'].length).to eq(1)
+          expect(json['sites'][0]["name"]).to eq(sitename)
         end
       end
 
       it "should not find sites when filtering with non-matching names" do
-        pending("Filter by name with whitespaces is failling")
         get :show, id: collection.id, format: 'json', sitename: 'None like this'
 
         json = JSON.parse response.body
-        json['sites'].should be_empty
+        expect(json['sites']).to be_empty
       end
     end
 
@@ -386,9 +385,9 @@ describe Api::CollectionsController, :type => :controller do
       get :show, id: collection.id, format: 'json', sitename: 'Site_'
 
       json = JSON.parse response.body
-      json['sites'].length.should eq(2)
-      ["Site_A", "Site_B"].should include(json['sites'][0]["name"])
-      ["Site_A", "Site_B"].should include(json['sites'][1]["name"])
+      expect(json['sites'].length).to eq(2)
+      expect(["Site_A", "Site_B"]).to include(json['sites'][0]["name"])
+      expect(["Site_A", "Site_B"]).to include(json['sites'][1]["name"])
     end
 
     ['Site_A', 'Site_B'].each do |sitename|
@@ -396,8 +395,8 @@ describe Api::CollectionsController, :type => :controller do
         get :show, id: collection.id, format: 'json', sitename: sitename
 
         json = JSON.parse response.body
-        json['sites'].length.should eq(1)
-        json['sites'][0]["name"].should eq(sitename)
+        expect(json['sites'].length).to eq(1)
+        expect(json['sites'][0]["name"]).to eq(sitename)
       end
     end
 
@@ -405,7 +404,7 @@ describe Api::CollectionsController, :type => :controller do
       get :show, id: collection.id, format: 'json', sitename: 'None like this'
 
       json = JSON.parse response.body
-      json['sites'].should be_empty
+      expect(json['sites']).to be_empty
     end
   end
 

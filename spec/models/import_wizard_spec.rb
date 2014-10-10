@@ -428,16 +428,16 @@ describe ImportWizard, :type => :model do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.all.should eq([layer])
+    expect(collection.layers).to eq([layer])
 
-    sites = collection.sites.all
-    sites.length.should eq(2)
+    sites = collection.sites
+    expect(sites.length).to eq(2)
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({select_one.es_code => 1})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({select_one.es_code => 1})
 
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({select_one.es_code => 2})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({select_one.es_code => 2})
 
   end
 
@@ -485,16 +485,16 @@ describe ImportWizard, :type => :model do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    collection.layers.all.should eq([layer])
+    expect(collection.layers).to eq([layer])
 
-    sites = collection.sites.all
-    sites.length.should eq(2)
+    sites = collection.sites
+    expect(sites.length).to eq(2)
 
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({select_many.es_code => [1]})
+    expect(sites[0].name).to eq('Foo')
+    expect(sites[0].properties).to eq({select_many.es_code => [1]})
 
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({select_many.es_code => [1, 2]})
+    expect(sites[1].name).to eq('Bar')
+    expect(sites[1].properties).to eq({select_many.es_code => [1, 2]})
   end
 
   it "should also update hierarchy fields in bulk update using name" do
@@ -885,15 +885,15 @@ describe ImportWizard, :type => :model do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
 
-    column_spec.length.should eq(7)
+    expect(column_spec.length).to eq(7)
 
-    column_spec.should include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
-    column_spec.should include({:header=>"Name", :kind=>:name, :use_as=>:name})
-    column_spec.should include({:header=>"Lat", :kind=>:location, :use_as=>:lat})
-    column_spec.should include({:header=>"Lon", :kind=>:location, :use_as=>:lng})
-    column_spec.should include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :field_id=>hierarchy.id, :layer_id=>layer.id})
-    column_spec.should include({:header=>"hierarchy-1", :kind=>:ignore, :use_as=>:ignore})
-    column_spec.should include({:header=>"hierarchy-2", :kind=>:ignore, :use_as=>:ignore})
+    expect(column_spec).to include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
+    expect(column_spec).to include({:header=>"Name", :kind=>:name, :use_as=>:name})
+    expect(column_spec).to include({:header=>"Lat", :kind=>:location, :use_as=>:lat})
+    expect(column_spec).to include({:header=>"Lon", :kind=>:location, :use_as=>:lng})
+    expect(column_spec).to include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :field_id=>hierarchy.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"hierarchy-1", :kind=>:ignore, :use_as=>:ignore})
+    expect(column_spec).to include({:header=>"hierarchy-2", :kind=>:ignore, :use_as=>:ignore})
 
     ImportWizard.delete_files(user, collection)
   end

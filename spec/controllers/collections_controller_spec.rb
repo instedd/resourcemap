@@ -260,8 +260,8 @@ describe CollectionsController, :type => :controller do
     result = JSON.parse response.body
     sites = result["sites"]
 
-    sites.first.should include("name")
-    sites.first["name"].should eq("Target")
+    expect(sites.first).to include("name")
+    expect(sites.first["name"]).to eq("Target")
   end
 
   it "gets a site searching by its prefix" do
@@ -273,8 +273,8 @@ describe CollectionsController, :type => :controller do
     result = JSON.parse response.body
     sites = result["sites"]
 
-    sites.first.should include("name")
-    sites.first["name"].should eq("Target")
+    expect(sites.first).to include("name")
+    expect(sites.first["name"]).to eq("Target")
   end
 
   it "doesn't get any site when name doesn't match" do
@@ -286,7 +286,7 @@ describe CollectionsController, :type => :controller do
     result = JSON.parse response.body
     sites = result["sites"]
 
-    sites.should be_empty
+    expect(sites).to be_empty
   end
 
   it "gets multiple matching sites by name" do
@@ -299,11 +299,11 @@ describe CollectionsController, :type => :controller do
     result = JSON.parse response.body
     sites = result["sites"]
 
-    sites.should have(2).items
-    sites.map { |site| site['name'] }.should include 'Target'
-    sites.map { |site| site['name'] }.should include 'TallLand'
-    sites.first['name'].should_not eq('NotThisOne')
-    sites.second['name'].should_not eq('NotThisOne')
+    expect(sites.size).to eq(2)
+    expect(sites.map { |site| site['name'] }).to include 'Target'
+    expect(sites.map { |site| site['name'] }).to include 'TallLand'
+    expect(sites.first['name']).not_to eq('NotThisOne')
+    expect(sites.second['name']).not_to eq('NotThisOne')
   end
 
   it "applys multiple filters" do
@@ -319,12 +319,12 @@ describe CollectionsController, :type => :controller do
     result = JSON.parse response.body
     sites = result["sites"]
 
-    sites.should have(1).items
-    sites.first['name'].should_not eq('TallLand')
-    sites.first['name'].should eq('Target')
-    sites.first.should include('properties')
-    sites.first['properties'].should include numeric.es_code
-    sites.first['properties'][numeric.es_code].should eq(25)
+    expect(sites.size).to eq(1)
+    expect(sites.first['name']).not_to eq('TallLand')
+    expect(sites.first['name']).to eq('Target')
+    expect(sites.first).to include('properties')
+    expect(sites.first['properties']).to include numeric.es_code
+    expect(sites.first['properties'][numeric.es_code]).to eq(25)
   end
 
 end
