@@ -13,12 +13,12 @@
           %td.collectionCell{ko(css: {with_snapshot: 'currentSnapshot'})}
             %input{ko(checked: :checked), type: :checkbox}
             %a.collectionName{ko(text: :name, attr: {title: :name}, click: '$root.enterCollection')}"
+            %button.enterRow.farrow{ko(click: '$root.enterCollection'), type: :button}
             /ko if: currentSnapshot
             .snapshot_on.right
               .i18g-snapshot
             .clear
             //ko
-            %button.enterRow.farrow{ko(click: '$root.enterCollection'), type: :button}
         //ko
     %br{:clear => "all"}/
 
