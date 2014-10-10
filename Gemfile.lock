@@ -30,8 +30,8 @@ GIT
       zmq
 
 GIT
-  remote: https://github.com/juanboca/gettext_i18n_rails_js
-  revision: e2a054bd3794d81f084676c7096ab7d06cb8befa
+  remote: https://github.com/juanboca/gettext_i18n_rails_js.git
+  revision: 3a9671d40b1ac30b47f03451f4c0bc41c10858ba
   branch: master
   specs:
     gettext_i18n_rails_js (0.0.9)
@@ -455,7 +455,7 @@ DEPENDENCIES
   faker
   foreman
   gettext (~> 3.1.2)
-  gettext_i18n_rails_js (~> 0.0.9)!
+  gettext_i18n_rails_js!
   guard-jasmine
   haml-magic-translations
   haml-rails (~> 0.4)
