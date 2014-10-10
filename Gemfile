@@ -5,7 +5,7 @@ gem 'mysql2'
 gem 'devise'
 gem 'haml-rails', '~> 0.4'
 gem 'gettext', '~> 3.1.2'
-gem 'gettext_i18n_rails_js', '~> 0.0.9', :path => '~/gettext_i18n_rails_js'
+gem 'gettext_i18n_rails_js', '~> 0.0.9', git: "https://github.com/juanboca/gettext_i18n_rails_js", branch: 'master'
 gem 'ruby_parser', :require => false, :group => :development
 gem 'haml-magic-translations'
 gem 'decent_exposure'

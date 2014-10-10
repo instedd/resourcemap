@@ -30,6 +30,16 @@ GIT
       zmq
 
 GIT
+  remote: https://github.com/juanboca/gettext_i18n_rails_js
+  revision: e2a054bd3794d81f084676c7096ab7d06cb8befa
+  branch: master
+  specs:
+    gettext_i18n_rails_js (0.0.9)
+      gettext_i18n_rails (>= 0.7.1)
+      po_to_json (>= 0.0.7)
+      rails (>= 3.2.0)
+
+GIT
   remote: https://github.com/manastech/dist.git
   revision: e55f7fa83fbb1386622d362f7b5ccdd99ed03529
   specs:
@@ -40,14 +50,6 @@ GIT
   revision: e3317c4bf0b58dceee86e5dd9cf03165fcfd964f
   specs:
     ruby-prof (0.15.1)
-
-PATH
-  remote: ~/gettext_i18n_rails_js
-  specs:
-    gettext_i18n_rails_js (0.0.9)
-      gettext_i18n_rails (>= 0.7.1)
-      po_to_json (>= 0.0.7)
-      rails (>= 3.2.0)
 
 GEM
   remote: https://rubygems.org/
