@@ -31,6 +31,8 @@ ActionDispatch::Reloader.to_prepare do
   Plugin.hooks(:extend_model).each do |extension|
     extension[:class].send :include, extension[:with]
   end
+
+  Plugin.hooks(:config).each { |block| block.call }
 end
 
 class ActiveRecord::Migrator

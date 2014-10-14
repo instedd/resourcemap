@@ -14,4 +14,6 @@ class Reminders::Plugin < Plugin
       end
 		end
 	}
+
+  config { IceCube.compatibility = 12 }
 end
