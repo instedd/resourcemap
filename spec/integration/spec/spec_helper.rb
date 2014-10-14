@@ -1,5 +1,4 @@
 require "rubygems"
-require "rspec/autorun"
 require "selenium-webdriver"
 Dir[File.expand_path("../helpers/*.rb", __FILE__)].each do |file|
   require file
