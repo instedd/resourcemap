@@ -181,8 +181,16 @@ class Site < ActiveRecord::Base
 
   def valid_properties
     fields = collection.fields.each(&:cache_for_read).index_by(&:es_code)
+    old_properties = properties_was
 
     properties.each do |es_code, value|
+      # Only valid properties that changed. This check is cheaper than
+      # checking wether a value is valid or not, depending on the field type.
+      if old_properties
+        old_value = old_properties[es_code]
+        next if value == old_value
+      end
+
       field = fields[es_code]
       if field
         begin
