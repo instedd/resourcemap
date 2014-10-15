@@ -396,10 +396,19 @@ onCollections ->
       json
 
     diff: =>
+      return {} unless @inEditMode()
       diff = {}
       diff.name = @name() if @originalName && @originalName != @name()
-      diff.lat = @lat() if @originalPosition && @originalPosition.lat() != @lat()
-      diff.lng = @lng() if @originalPosition && @originalPosition.lng() != @lng()
+      diff.lat = @lat() if @originalPosition && @originalPosition.lat() != @position().lat()
+      diff.lng = @lng() if @originalPosition && @originalPosition.lng() != @position().lng()
+      diff.properties = @propertiesDiff() unless _.isEqual(@propertiesDiff(), {})
+      diff
+
+    propertiesDiff: =>
+      return {} unless @inEditMode()
+      diff = {}
+      for field in window.model.currentCollection().fields()
+        diff[field.esCode] = field.value() if field.hasChanged()
       diff
 
     # Ary: I have no idea why, but without this here toJSON() doesn't work

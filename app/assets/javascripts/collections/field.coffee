@@ -183,6 +183,9 @@ onCollections ->
 
       return true
 
+    hasChanged: =>
+      return ! _.isEqual(@originalValue, @value())
+
     edit: =>
         return if not @onEnteredEditMode()
         @editing(true)
