@@ -49,7 +49,6 @@ module Site::ElasticsearchConcern
         time = Time.new(year, month, day, hour, minute, second, offset)
         ActiveSupport::TimeWithZone.new(time.utc, Time.zone)
       else
-        p 1
         Time.zone.parse(es_time_string)
       end
     end
