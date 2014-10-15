@@ -2,9 +2,10 @@ class Reminder < ActiveRecord::Base
   belongs_to :collection
   belongs_to :repeat
   serialize :schedule, IceCube::Schedule
-  serialize :sites, Array 
+  serialize :sites, Array
   before_save :set_schedule_rule
   before_save :set_next_run
+  before_save :serialize_site_properties
 
   def reminder_date
     schedule.try(:start_time)
@@ -31,7 +32,7 @@ class Reminder < ActiveRecord::Base
 
   def target_sites
     if is_all_site
-      collection.sites 
+      collection.sites
     else
       sites
     end
@@ -39,5 +40,11 @@ class Reminder < ActiveRecord::Base
 
   def self.reset_reminders_recurrence_rule
     all.each { |reminder| reminder.update_attributes reminder_date: reminder.reminder_date }
+  end
+
+  def serialize_site_properties
+    if sites_changed?
+      sites.each{|s| s.properties = s.properties.to_json if s.properties.is_a?(Hash)}
+    end
   end
 end

@@ -9,4 +9,16 @@ describe Reminder do
     Reminder.reset_reminders_recurrence_rule
     Reminder.first.schedule.recurrence_rules.count.should == 1
   end
+
+  # After saving sites with properties as a hash, load is failing with "TypeError: can't convert Hash into String"
+  it "should serialize site's properties to json" do
+    col = Collection.make
+    layer = col.layers.make
+    field = layer.text_fields.make code: 'text'
+    site = Site.make(collection_id: col.id, properties: {field.id.to_s => 'text'})
+    reminder = Reminder.make collection_id: col.id, sites: [site]
+    loaded = Reminder.first
+    loaded.should eq(reminder)
+    loaded.sites.first.properties.should eq({field.id.to_s => 'text'})
+  end
 end

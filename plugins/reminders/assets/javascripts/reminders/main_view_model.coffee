@@ -1,4 +1,4 @@
-onReminders -> 
+onReminders ->
   class @MainViewModel
     constructor: (collectionId) ->
       @reminders        = ko.observableArray()
@@ -12,7 +12,7 @@ onReminders ->
       reminder = new Reminder collection_id: @collectionId()
       @currentReminder reminder
       @reminders.push reminder
-      
+
     editReminder: (reminder) =>
       @originalReminder = reminder.clone()
       @currentReminder reminder
@@ -24,7 +24,7 @@ onReminders ->
         $.post "/plugin/reminders/collections/#{@collectionId()}/reminders/#{@currentReminder().id}.json", reminder: json, _method: 'put', @saveReminderCallback
       else
         $.post "/plugin/reminders/collections/#{@collectionId()}/reminders.json", reminder: json, @saveReminderCallback
-    
+
     saveReminderCallback: (data) =>
       @currentReminder().id = data.id
       @currentReminder null
@@ -36,7 +36,7 @@ onReminders ->
       else
         @reminders.remove @currentReminder()
       @currentReminder(null)
-      
+
     deleteReminder: (reminder) =>
       if window.confirm(__('Are you sure to delete reminder'))
         @deletedReminder = reminder
@@ -53,7 +53,7 @@ onReminders ->
       reminder.setStatus false, @reminderStatusCallback
 
     reminderStatusCallback: (data) =>
-    
+
     findRepeat: (id) =>
       return repeat for repeat in @repeats() when repeat.id() == id
 
