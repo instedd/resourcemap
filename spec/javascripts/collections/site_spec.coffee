@@ -178,3 +178,29 @@ describe 'Collection', ->
         expect(@site.diff().properties[42]).toBeDefined()
         expect(@site.diff().properties[42]).toEqual("New value")
         expect(@site.diff().properties[28]).toBeUndefined()
+
+      it "should give similar toJSON() and diff() outputs when all site's properties have changed - except for the id", ->
+        spyOn(@collection, 'fetchFields').andCallFake((callback) =>
+          callback()
+        )
+
+        @site.copyPropertiesToCollection(@site.collection)
+        expect(@collection.fetchFields).toHaveBeenCalledWith(jasmine.any(Function))
+        @site.startEditMode()
+        expect(@site.diff()).toBeDefined()
+        expect(@site.diff()).toEqual({})
+
+        @site.name("New name")
+        @site.lat(25)
+        @site.lng(30)
+        @textField.value("Other new text")
+        @otherField.value("New value")
+        @site.copyPropertiesFromCollection(@collection)
+
+        site_to_json = @site.toJSON()
+        expect(site_to_json).toBeDefined()
+        expect(site_to_json.id).toBeDefined()
+        delete site_to_json.id
+
+        expect(@site.diff()).toBeDefined()
+        expect(@site.diff()).toEqual(site_to_json)
