@@ -54,4 +54,11 @@ describe Site::ElasticsearchConcern do
     }
     results["hits"]["hits"].length.should eq(1)
   end
+
+  describe "parse_time" do
+    it "parses correct time" do
+      str = "20140522T063835.000+0000"
+      Site.parse_time(str).should eq(Time.zone.parse(str))
+    end
+  end
 end
