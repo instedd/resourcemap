@@ -65,6 +65,7 @@ onCollections ->
 
     @removeSite: (site) ->
       @sites.remove site
+      @siteSearchCount(parseInt(@siteSearchCount()) - 1)
       delete window.model.siteIds[site.id()]
       delete @siteIds[site.id()]
 
