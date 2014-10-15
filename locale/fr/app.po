@@ -1927,7 +1927,3 @@ msgstr "→ ; dans"
 msgid "→;"
 msgstr "→ ;"
 
-#~ msgid "Import wizard: %{sites}"
-#~ msgstr "Guide intelligent de l'importation :%{sites}"
-#~ msgid "alerts"
-#~ msgstr "Avertissements"
