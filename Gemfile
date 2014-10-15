@@ -13,7 +13,6 @@ gem "instedd-rails", '~> 0.0.22'
 gem "breadcrumbs_on_rails"
 gem "elasticsearch"
 gem "elasticsearch-ruby"
-# gem "valium"
 gem "resque", :require => "resque/server"
 gem 'resque-scheduler', '~> 3.0.0'
 gem "nuntium_api", "~> 0.13", :require => "nuntium"
@@ -24,7 +23,6 @@ gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
 gem 'uuidtools'
 gem 'newrelic_rpm'
-# gem 'cancan', '~> 1.6.10'
 gem 'cancancan', '~> 1.9'
 gem "omniauth"
 gem "omniauth-openid"
