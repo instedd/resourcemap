@@ -34,8 +34,4 @@
 
     $('#add_member').click -> createMembership()
 
-    # fixedHeaderTable setup. Fixes are necessary because table length is very small on load so orginal measurements are off
-    $('table.GralTable').fixedHeaderTable footer: false, cloneHeadToFoot: false, fixedColumn: false, themeClass: 'GralTable'
-    $('.fht-tbody').height('400px')
-    $('.fht-tbody .fht-table').css(marginTop:'-30px')
     $('.hidden-until-loaded').show()
