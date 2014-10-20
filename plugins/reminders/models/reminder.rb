@@ -5,7 +5,6 @@ class Reminder < ActiveRecord::Base
   serialize :sites, Array
   before_save :set_schedule_rule
   before_save :set_next_run
-  before_save :serialize_site_properties
 
   def reminder_date
     schedule.try(:start_time)
@@ -42,9 +41,4 @@ class Reminder < ActiveRecord::Base
     all.each { |reminder| reminder.update_attributes reminder_date: reminder.reminder_date }
   end
 
-  def serialize_site_properties
-    if sites_changed?
-      sites.each{|s| s.properties = s.properties.to_json if s.properties.is_a?(Hash)}
-    end
-  end
 end
