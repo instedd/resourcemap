@@ -467,14 +467,14 @@ describe FredApiController, :type => :controller do
         request.env["RAW_POST_DATA"] = {properties: json_data}.to_json
         put :update_facility, collection_id: collection.id, id: site_with_properties.id
 
-        response.status.should eq(200)
+        expect(response.status).to eq(200)
         json = JSON.parse response.body
-        json["name"].should eq(site_with_properties.name)
-        json["properties"].length.should eq(4)
-        json["properties"]['manager'].should eq("Mrs. Liz 2")
-        json["properties"]['numBeds'].should eq(55)
-        json["properties"]['services'].should eq(['XR', 'OBG'])
-        json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+        expect(json["name"]).to eq(site_with_properties.name)
+        expect(json["properties"].length).to eq(4)
+        expect(json["properties"]['manager']).to eq("Mrs. Liz 2")
+        expect(json["properties"]['numBeds']).to eq(55)
+        expect(json["properties"]['services']).to eq(['XR', 'OBG'])
+        expect(json["properties"]['inagurationDay']).to eq("2012-10-24T00:00:00Z")
       end
 
       it "should update multiple properties" do
@@ -486,14 +486,14 @@ describe FredApiController, :type => :controller do
         request.env["RAW_POST_DATA"] = {properties: json_data}.to_json
         put :update_facility, collection_id: collection.id, id: site_with_properties.id
 
-        response.status.should eq(200)
+        expect(response.status).to eq(200)
         json = JSON.parse response.body
-        json["name"].should eq(site_with_properties.name)
-        json["properties"].length.should eq(4)
-        json["properties"]['manager'].should eq("Mrs. Liz 2")
-        json["properties"]['numBeds'].should eq(42)
-        json["properties"]['services'].should eq(['XR', 'OBG'])
-        json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+        expect(json["name"]).to eq(site_with_properties.name)
+        expect(json["properties"].length).to eq(4)
+        expect(json["properties"]['manager']).to eq("Mrs. Liz 2")
+        expect(json["properties"]['numBeds']).to eq(42)
+        expect(json["properties"]['services']).to eq(['XR', 'OBG'])
+        expect(json["properties"]['inagurationDay']).to eq("2012-10-24T00:00:00Z")
       end
 
       it "should update name and multiple properties" do
@@ -505,14 +505,14 @@ describe FredApiController, :type => :controller do
         request.env["RAW_POST_DATA"] = {properties: json_data, name: 'Mr Abbot Gray'}.to_json
         put :update_facility, collection_id: collection.id, id: site_with_properties.id
 
-        response.status.should eq(200)
+        expect(response.status).to eq(200)
         json = JSON.parse response.body
-        json["name"].should eq("Mr Abbot Gray")
-        json["properties"].length.should eq(4)
-        json["properties"]['manager'].should eq("Mrs. Liz 2")
-        json["properties"]['numBeds'].should eq(42)
-        json["properties"]['services'].should eq(['XR', 'OBG'])
-        json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+        expect(json["name"]).to eq("Mr Abbot Gray")
+        expect(json["properties"].length).to eq(4)
+        expect(json["properties"]['manager']).to eq("Mrs. Liz 2")
+        expect(json["properties"]['numBeds']).to eq(42)
+        expect(json["properties"]['services']).to eq(['XR', 'OBG'])
+        expect(json["properties"]['inagurationDay']).to eq("2012-10-24T00:00:00Z")
       end
     end
 

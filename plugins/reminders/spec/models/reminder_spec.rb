@@ -18,7 +18,7 @@ describe Reminder, :type => :model do
     site = Site.make(collection_id: col.id, properties: {field.id.to_s => 'text'})
     reminder = Reminder.make collection_id: col.id, sites: [site]
     loaded = Reminder.first
-    loaded.should eq(reminder)
-    loaded.sites.first.properties.should eq({field.id.to_s => 'text'})
+    expect(loaded).to eq(reminder)
+    expect(loaded.sites.first.properties).to eq({field.id.to_s => 'text'})
   end
 end
