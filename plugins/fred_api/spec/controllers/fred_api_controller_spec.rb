@@ -450,6 +450,72 @@ describe FredApiController do
       json["properties"]['inagurationDay'].should eq("2013-10-24T00:00:00Z")
     end
 
+    describe "partial updates" do
+
+      let!(:site_with_properties) { collection.sites.make :properties => {
+        text.es_code => "Mrs. Liz",
+        numeric.es_code => 55,
+        select_many.es_code => [1, 2],
+        date.es_code => "2012-10-24T00:00:00Z",
+      }}
+
+      it "should update a single property" do
+        json_data = {
+        :manager => "Mrs. Liz 2"
+        }
+
+        request.env["RAW_POST_DATA"] = {properties: json_data}.to_json
+        put :update_facility, collection_id: collection.id, id: site_with_properties.id
+
+        response.status.should eq(200)
+        json = JSON.parse response.body
+        json["name"].should eq(site_with_properties.name)
+        json["properties"].length.should eq(4)
+        json["properties"]['manager'].should eq("Mrs. Liz 2")
+        json["properties"]['numBeds'].should eq(55)
+        json["properties"]['services'].should eq(['XR', 'OBG'])
+        json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+      end
+
+      it "should update multiple properties" do
+        json_data = {
+        :manager => "Mrs. Liz 2",
+        :numBeds => 42
+        }
+
+        request.env["RAW_POST_DATA"] = {properties: json_data}.to_json
+        put :update_facility, collection_id: collection.id, id: site_with_properties.id
+
+        response.status.should eq(200)
+        json = JSON.parse response.body
+        json["name"].should eq(site_with_properties.name)
+        json["properties"].length.should eq(4)
+        json["properties"]['manager'].should eq("Mrs. Liz 2")
+        json["properties"]['numBeds'].should eq(42)
+        json["properties"]['services'].should eq(['XR', 'OBG'])
+        json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+      end
+
+      it "should update name and multiple properties" do
+        json_data = {
+        :manager => "Mrs. Liz 2",
+        :numBeds => 42
+        }
+
+        request.env["RAW_POST_DATA"] = {properties: json_data, name: 'Mr Abbot Gray'}.to_json
+        put :update_facility, collection_id: collection.id, id: site_with_properties.id
+
+        response.status.should eq(200)
+        json = JSON.parse response.body
+        json["name"].should eq("Mr Abbot Gray")
+        json["properties"].length.should eq(4)
+        json["properties"]['manager'].should eq("Mrs. Liz 2")
+        json["properties"]['numBeds'].should eq(42)
+        json["properties"]['services'].should eq(['XR', 'OBG'])
+        json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+      end
+    end
+
     it "should update identifiers" do
       moh_id = layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS"}
 
