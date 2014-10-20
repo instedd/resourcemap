@@ -91,7 +91,11 @@ onCollections ->
               @expandedRefinePropertyValue(value.substring(1))
             else
               @expandedRefinePropertyValue(value)
-            @filterByProperty()
+
+            if key == 'sitename'
+              @filterByName()
+            else
+              @filterByProperty()
 
       @ignorePerformSearchOrHierarchy = false
       @performSearchOrHierarchy()
