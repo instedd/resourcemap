@@ -2,6 +2,7 @@ onCollections ->
 
   class @UrlRewriteViewModel
     @rewriteUrl: ->
+      return if @processingURL
       query = {}
 
       # Append collection parameters (search, filters, hierarchy, etc.)
@@ -105,3 +106,5 @@ onCollections ->
       @groupBy(@currentCollection().findFieldByEsCode(groupBy)) if groupBy && @currentCollection()
 
       @processingURL = false
+
+      @rewriteUrl()
