@@ -65,6 +65,8 @@ onCollections ->
               when 'last_day' then @filterByLastDay()
               when 'last_week' then @filterByLastWeek()
               when 'last_month' then @filterByLastMonth()
+          when 'location_missing'
+            @filterByLocationMissing()
           when 'selected_site'
             selectedSiteId = parseInt(value)
           when 'selected_collection'
