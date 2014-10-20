@@ -1,15 +1,15 @@
 onReminders ->
-  class @Reminder 
+  class @Reminder
     constructor: (data) ->
-      @id           = data?.id 
-      @collectionId = data?.collection_id 
+      @id           = data?.id
+      @collectionId = data?.collection_id
       @name         = ko.observable data?.name
       @enableCss    = ko.observable 'cb-enable'
-      @disableCss   = ko.observable 'cb-disalbe'
+      @disableCss   = ko.observable 'cb-disable'
       @isAllSites   = ko.observable data.is_all_site ? true
       @targetFor    = ko.computed
         read: -> if @isAllSites() then 'all_sites' else 'some_sites'
-        write: (value) -> 
+        write: (value) ->
           @isAllSites switch value
             when 'all_sites' then true
             when 'some_sites' then false
@@ -34,7 +34,7 @@ onReminders ->
       @nameError            = ko.computed => "Reminder's name is missing" if $.trim(@name()).length == 0
       @sitesError           = ko.computed => "Sites is missing" if !@isAllSites() and @sites().length == 0
       @reminderDateError    = ko.computed =>
-        if @reminderDate().length == 0 then "Reminder's date is missing" 
+        if @reminderDate().length == 0 then "Reminder's date is missing"
         ## FIXME: To check for invalid reminderDate uncomment below line, but Phantomjs used in Jenkins consider 'YYYY-MM-DD' to be invalid date
         # else unless @reminderDate().toDate() then "Reminder's date is invalid"
 
@@ -65,7 +65,7 @@ onReminders ->
       collection_id: @collectionId
       is_all_site: @isAllSites()
       sites: $.map(@sites(), (x) -> x.id) unless @isAllSites()
-   
+
     getSitesRepeatLabel: =>
       sites = if @isAllSites() then ["all sites"] else $.map @sites(), (site) => site.name
       detail = @repeat().name() + " for " + sites.join(",")

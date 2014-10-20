@@ -136,7 +136,7 @@ onCollections ->
       @editingSite().copyPropertiesFromCollection(@currentCollection())
 
       if @editingSite().id()
-        @editingSite().update_site(@editingSite().toJSON(), callback)
+        @editingSite().update_site(@editingSite().diff(), callback)
       else
         @editingSite().create_site(@editingSite().toJSON(), callback)
 

@@ -501,6 +501,16 @@ ul.taglist li a { display:block }
   }
 }
 
+.middlebuttons > div.superblyTagfieldDiv {
+  overflow: visible;
+  text-overflow: clip;
+
+  & > div {
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
 
 .feditor-container { position:relative }
 .feditor-container .rightbuttons{ top:-6px; right:5px }
@@ -515,9 +525,9 @@ ul.taglist li a { display:block }
 
 td.loadmore { height: 36px }
 
-.tablescroll .superblyTagItems { display:inline-block;padding:0;margin:0 }
+/*.tablescroll .superblyTagItems { display:inline-block;padding:0;margin:0 }
 .tablescroll .superblyTagItem { top:4px;cursor:pointer }
-
+*/
 .hidden-until-loaded { display: none }
 .ready { display: inherit !important }
 
@@ -668,11 +678,11 @@ form.w80 {
   width: 960px;
 }
 
-.select-many.superblyTagfieldClearer {
+/*.select-many.superblyTagfieldClearer {
   height: 1px;
   padding: 2px;
 }
-
+*/
 .empty_hierarchy_message {
   vertical-align: middle;
   text-align: center;

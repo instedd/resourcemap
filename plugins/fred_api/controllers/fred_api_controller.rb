@@ -48,8 +48,8 @@ class FredApiController < ApplicationController
     end
     facility_params = validate_site_params(facility_params)
     site.user = current_user
-    site.properties_will_change!
-    site.update_attributes! facility_params
+    site.validate_and_process_parameters facility_params, current_user
+    site.save!
 
     render_json(find_facility_and_apply_fred_format(site.id), status: :ok, :location => url_for_facility(site.id))
   end

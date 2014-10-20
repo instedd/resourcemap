@@ -395,6 +395,22 @@ onCollections ->
       json.properties = @properties() if @properties()
       json
 
+    diff: =>
+      return {} unless @inEditMode()
+      diff = {}
+      diff.name = @name() if @originalName && @originalName != @name()
+      diff.lat = @lat() if @originalPosition && @originalPosition.lat() != @position().lat()
+      diff.lng = @lng() if @originalPosition && @originalPosition.lng() != @position().lng()
+      diff.properties = @propertiesDiff() unless _.isEqual(@propertiesDiff(), {})
+      diff
+
+    propertiesDiff: =>
+      return {} unless @inEditMode()
+      diff = {}
+      for field in window.model.currentCollection().fields()
+        diff[field.esCode] = field.value() if field.hasChanged()
+      diff
+
     # Ary: I have no idea why, but without this here toJSON() doesn't work
     # in Firefox. It seems a problem with the bindings caused by the fat arrow
     # (=>), but I couldn't figure it out. This "solves" it for now.

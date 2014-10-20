@@ -5,10 +5,10 @@
 onReminders -> if $('#reminders-main').length > 0
   match = window.location.toString().match(/\/collections\/(\d+)\/reminders/)
   collectionId = parseInt(match[1])
-  
+
   window.model = new MainViewModel(collectionId)
   ko.applyBindings(window.model)
-  
+
   $.get '/repeats.json', (data) ->
     window.model.repeats $.map data, (repeat) -> new Repeat repeat
 
@@ -16,5 +16,5 @@ onReminders -> if $('#reminders-main').length > 0
       window.model.reminders $.map data, (reminder) ->
         reminder.repeat = window.model.findRepeat repeatId if repeatId = reminder.repeat_id
         new Reminder reminder
-  
+
   $('.hidden-until-loaded').show()
