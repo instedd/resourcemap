@@ -2,6 +2,7 @@ onCollections ->
 
   class @UrlRewriteViewModel
     @rewriteUrl: ->
+      return if @processingURL
       query = {}
 
       # Append collection parameters (search, filters, hierarchy, etc.)
@@ -64,6 +65,8 @@ onCollections ->
               when 'last_day' then @filterByLastDay()
               when 'last_week' then @filterByLastWeek()
               when 'last_month' then @filterByLastMonth()
+          when 'location_missing'
+            @filterByLocationMissing()
           when 'selected_site'
             selectedSiteId = parseInt(value)
           when 'selected_collection'
@@ -90,7 +93,11 @@ onCollections ->
               @expandedRefinePropertyValue(value.substring(1))
             else
               @expandedRefinePropertyValue(value)
-            @filterByProperty()
+
+            if key == 'sitename'
+              @filterByName()
+            else
+              @filterByProperty()
 
       @ignorePerformSearchOrHierarchy = false
       @performSearchOrHierarchy()
@@ -105,3 +112,5 @@ onCollections ->
       @groupBy(@currentCollection().findFieldByEsCode(groupBy)) if groupBy && @currentCollection()
 
       @processingURL = false
+
+      @rewriteUrl()
