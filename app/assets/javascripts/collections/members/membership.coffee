@@ -6,6 +6,26 @@ class @Membership extends Expandable
     _self = @
     @root = root
 
+    $(window).scroll ->
+      isSticky = $(".table-header").hasClass("sticky")
+      table_header = $(".table-header")
+      table = $("#memberPermissionsTable")
+
+      should_be_sticky = $(this).scrollTop() > table.offset().top && ($(this).scrollTop() < table.offset().top + table.outerHeight())
+      if should_be_sticky
+        table_header.css('top', Math.min(0, table.offset().top + table.outerHeight() - table_header.outerHeight() - $('#add_member_container').outerHeight() - $(this).scrollTop()) )
+        if !isSticky
+          table_header.addClass "sticky"
+          $(".membersFirstRow td").css("padding-top", $(".table-header").height())
+          $("#memberPermissionsTable .membersFirstRow td").each (index, element) =>
+            $(".table-header th:eq("+index+")").width($(element).width())
+      else
+        if isSticky
+          table_header.removeClass "sticky"
+          $(".membersFirstRow td").css("padding-top", '')
+          $("#memberPermissionsTable .membersFirstRow td").each (index, element) =>
+            $(".table-header th:eq("+index+")").removeAttr("width")
+
     # Defined this before callModuleConstructors because it's used by MembershipLayout
     @userId = ko.observable data?.user_id
     @userDisplayName = ko.observable data?.user_display_name

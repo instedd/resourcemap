@@ -280,3 +280,10 @@ hr.underlineExpandedMember {
   width: 340px;
   z-index: 200;
 }
+
+.table-header.sticky {
+  position: fixed;
+  z-index: 1;
+  padding: 0;
+}
+
