@@ -1,0 +1,15 @@
+language: ruby
+cache: bundler
+bundler_args: --jobs=8 --without development
+services:
+- elasticsearch
+- redis-server
+before_script:
+- bundle exec rake db:setup
+- bundle exec rake db:test:prepare
+script:
+- bundle exec rspec spec/
+- bundle exec guard-jasmine
+notifications:
+  slack:
+    secure: DCdc+fWXLZ8ISmp4lA5NcpvJugQ/cPxLAdRxxYhvO4P3wpjpL4OXoiZHyb1lxcq9ripMrf/jqgb4p3GlYwN/1o+B9v9MwjmyyT3BQGvxVWA30XRaiCxGojfWTq2banOv6pZ3VQ7qwHVsU+8QMxlclEQUWO7yCJEoMlgIp3fWHks=
