@@ -61,13 +61,13 @@ group :test, :development do
   gem 'jasminerice'
   gem 'guard-jasmine'
   gem 'pry'
-  gem 'pry-debugger'
 end
 
 group :development do
   gem 'pry-stack_explorer'
   gem 'dist', :git => 'https://github.com/manastech/dist.git'
   gem 'ruby-prof', :git => 'https://github.com/ruby-prof/ruby-prof.git'
+  gem 'pry-debugger'
 end
 
 # Gems used only for assets and not required
