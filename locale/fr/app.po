@@ -1988,6 +1988,10 @@ msgstr "Site|Nom"
 msgid "Collection|Name"
 msgstr "Collection|Nom"
 
+
+msgid "Search"
+msgstr "Rechercher"
+
 msgid "Search by email..."
 msgstr "Rechercher par courrier électronique..."
 
