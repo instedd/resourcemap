@@ -196,7 +196,7 @@ GEM
     ice_cube (0.8.0)
     includes-count (0.2)
       activerecord
-    instedd-rails (0.0.22)
+    instedd-rails (0.0.24)
       breadcrumbs_on_rails (>= 2.2.0)
       haml-rails
       rails (>= 3.0)
@@ -435,7 +435,7 @@ DEPENDENCIES
   haml-rails (~> 0.4)
   ice_cube
   includes-count
-  instedd-rails (~> 0.0.22)
+  instedd-rails (~> 0.0.24)
   jasminerice
   jquery-rails (~> 2.0.2)
   knockoutjs-rails
