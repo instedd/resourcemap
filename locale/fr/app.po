@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-05-15 17:05-0300\n"
-"PO-Revision-Date: 2014-10-20 18:24+0200\n"
-"Last-Translator: Valeria <vtiffenberg@manas.com.ar>\n"
+"PO-Revision-Date: 2014-10-22 18:44+0200\n"
+"Last-Translator:  <steesdale@instedd.org>\n"
 "Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgid "(85512345678)"
 msgstr "(85512345678)"
 
 msgid "(no value)"
-msgstr "(aucune valeur)"
+msgstr "(pas de valeur)"
 
 msgid "(nothing)"
 msgstr "(rien)"
@@ -165,13 +165,14 @@ msgstr "Appliquer cet avertissement à"
 # Shouldn't the English read "this collection's site" or "these collection's sites"?
 msgid "Are you sure you want to delete this collection's sites?"
 msgstr ""
-"Etes-vous certain que vous souhaitez supprimer les sites de cette collecte ?"
+"Etes-vous certain que vous souhaitez supprimer les sites de cette collection "
+"?"
 
 msgid ""
 "Are you sure you want to delete this collection? All sites, layers, fields, me"
 "mberships and activities will also be deleted."
 msgstr ""
-"Etes-vous certain que vous souhaitez supprimer cette collecte ? Tous les "
+"Etes-vous certain que vous souhaitez supprimer cette collection ? Tous les "
 "sites, couches, champs, membres et activités seront également supprimés."
 
 msgid "Attributes"
@@ -194,7 +195,7 @@ msgid "Center for Malaria Parasitology and Entomology"
 msgstr "Centre pour la Parasitologie et l'Entomologie du paludisme"
 
 msgid "Change basic information about this collection"
-msgstr "Modifier l'information de base sur cette collecte"
+msgstr "Modifier l'information de base sur cette collection"
 
 msgid "Change site display on map"
 msgstr "Modifier l'affichage du site sur la carte"
@@ -218,23 +219,23 @@ msgid "Collapse all"
 msgstr "Réduire tout"
 
 msgid "Collection"
-msgstr "Collecte"
+msgstr "Collection"
 
 msgid "Collection '%{name}' was created"
-msgstr "'%{name}' de collecte a été créé"
+msgstr "'%{name}' de collection a été créé"
 
 # CSV?
 msgid "Collection CSV imported"
-msgstr "Collecte de CSV importée"
+msgstr "Collection de CSV importée"
 
 msgid "Collection created"
-msgstr "Collecte créée"
+msgstr "Collection créée"
 
 msgid "Collection imported"
-msgstr "Collecte importée"
+msgstr "Collection importée"
 
 msgid "Collections"
-msgstr "Collectes"
+msgstr "Collections"
 
 msgid "Column Settings"
 msgstr "Paramètres des colonnes"
@@ -252,7 +253,7 @@ msgid "Context"
 msgstr "Contexte"
 
 msgid "Create Collection"
-msgstr "Créer une collecte"
+msgstr "Créer une collection"
 
 msgid "Create Site"
 msgstr "Créer un site"
@@ -261,7 +262,7 @@ msgid "Create account"
 msgstr "Créer un compte"
 
 msgid "Create new collection"
-msgstr "Créer une nouvelle collecte"
+msgstr "Créer une nouvelle collection"
 
 msgid "Curate"
 msgstr "Organiser"
@@ -282,23 +283,23 @@ msgid "Define and track custom data types and variables"
 msgstr "Définir et suivre les types et variables de données personnalisées"
 
 msgid "Define basic information about this collection"
-msgstr "Définir l'information de base sur cette collecte"
+msgstr "Définir l'information de base sur cette collection"
 
 msgid "Delete collection"
-msgstr "Supprimer la collecte"
+msgstr "Supprimer la collection"
 
 msgid "Delete this collection's sites"
-msgstr "Supprimer les sites de cette collecte"
+msgstr "Supprimer les sites de cette collection"
 
 msgid "Do not send notifications"
 msgstr "Ne pas envoyer de notification"
 
 msgid "Done"
-msgstr "Terminé"
+msgstr "Terminer"
 
 # CSV?
 msgid "Download a CSV with all the sites in this collection"
-msgstr "Télécharger un CSV avec tous les sites dans cette collecte"
+msgstr "Télécharger un CSV avec tous les sites dans cette collection"
 
 # CSV?
 msgid "Download a template CSV file"
@@ -417,7 +418,7 @@ msgid "Go back to present"
 msgstr "Revenir au présent"
 
 msgid "Group by"
-msgstr "Regrouper par"
+msgstr "Groupé par"
 
 msgid "Hide Configuration"
 msgstr "Masquer la configuration"
@@ -484,7 +485,7 @@ msgid "Import in progress."
 msgstr "Importation en cours."
 
 msgid "Import layers from collection:"
-msgstr "Couches d'importation de la collecte :"
+msgstr "Couches d'importation de la collection:"
 
 msgid "Import wizard"
 msgstr "Guide intelligent de l'importation"
@@ -534,7 +535,7 @@ msgid "Insightful:"
 msgstr "Perspicace :"
 
 msgid "JSON"
-msgstr "Notation des objets du langage JAVA"
+msgstr "JSON"
 
 msgid "Key"
 msgstr "Touche"
@@ -579,10 +580,10 @@ msgid "Location"
 msgstr "Emplacement"
 
 msgid "Location missing"
-msgstr "Emplacement manquant"
+msgstr "Localisation manquante"
 
 msgid "Location:"
-msgstr "Emplacement :"
+msgstr "Localisation:"
 
 msgid "Long"
 msgstr "Longitude"
@@ -598,10 +599,11 @@ msgid "Make better decisions"
 msgstr "Prendre de meilleures décisions"
 
 msgid "Manage layers and fields of this collection's sites"
-msgstr "Gérer les couches et les champs des sites de cette collecte"
+msgstr "Gérer les couches et les champs des sites de cette collection"
 
 msgid "Manage who can see this collection and who can read/write its layers"
-msgstr "Gérer qui peut voir cette collecte et qui peut lire/rédiger les couches"
+msgstr ""
+"Gérer qui peut voir cette collection et qui peut lire/rédiger les couches"
 
 msgid "Managing Disease Prevention Supplies"
 msgstr "Gérer les fournitures pour la prévention des maladies"
@@ -643,13 +645,13 @@ msgid "Move to layer..."
 msgstr "Passer à la couche..."
 
 msgid "My Collections"
-msgstr "Mes collectes"
+msgstr "Mes Collections"
 
 msgid "Name"
 msgstr "Nom"
 
 msgid "Name:"
-msgstr "Nom :"
+msgstr "Nom:"
 
 msgid "National Gateway(Only Some Country Supported)"
 msgstr "Passerelle nationale (certains pays seulement)"
@@ -674,7 +676,7 @@ msgid ""
 "Note: your last import to this collection was based on a file named %s, %s ago"
 "."
 msgstr ""
-"Remarque :votre dernière importation à cette collecte a échoué et était "
+"Remarque :votre dernière importation à cette collection a échoué et était "
 "basée sur un fichier nommé %s, il y a %s."
 
 msgid "Notifications"
@@ -721,15 +723,15 @@ msgid ""
 "Please fill all the required information to configure this collection to be ac"
 "cessible via CSD API."
 msgstr ""
-"Veuillez remplir toute l'information requise pour configurer cette collecte "
-"pour qu'elle soit accessible par le biais de l'API de CSD."
+"Veuillez remplir toute l'information requise pour configurer cette "
+"collection pour qu'elle soit accessible par le biais de l'API de CSD."
 
 msgid ""
 "Please select the SMS gateways to be used for this collection. When using more"
 " than one gateway the system will use one of the other gateways if the primary"
 " fails."
 msgstr ""
-"Veuillez sélectionner les passerelles SMS à utiliser pour cette collecte. "
+"Veuillez sélectionner les passerelles SMS à utiliser pour cette collection. "
 "Lorsque vous utilisez plus d'une passerelle, le système utilisera une des "
 "autres passerelles si la première passerelle échoue."
 
@@ -841,7 +843,7 @@ msgid "Send text messages to:"
 msgstr "Envoyer des SMS à :"
 
 msgid "Set SMS quota for individual collection"
-msgstr "Définir le quota de SMS pour la collecte individuelle"
+msgstr "Définir le quota de SMS pour la collection individuelle"
 
 msgid "Settings"
 msgstr "Paramètres"
@@ -850,7 +852,7 @@ msgid "Show columns:"
 msgstr "Afficher les colonnes :"
 
 msgid "Show them"
-msgstr "Afficher"
+msgstr "Montrer"
 
 msgid "Showing first 10 records."
 msgstr "Afficher les 10 premiers enregistrements."
@@ -996,7 +998,7 @@ msgid "Then you will be able to define how to use each column."
 msgstr "Vous pourrez ensuite définir comment utiliser chaque colonne."
 
 msgid "There are no snapshots for this collection."
-msgstr "Il n'y pas de cliché pour cette collecte."
+msgstr "Il n'y pas de cliché pour cette collection."
 
 msgid "There are sites with no location set"
 msgstr "Il y a des sites sans emplacement défini"
@@ -1050,7 +1052,7 @@ msgstr "Mise à jour"
 
 # It would be helpful to know within what
 msgid "Updated within"
-msgstr "Mis à jour d'ici"
+msgstr "Changé"
 
 msgid "Upload"
 msgstr "Télécharger en amont"
@@ -1113,7 +1115,7 @@ msgid "View as"
 msgstr "Afficher en tant que"
 
 msgid "View your collections"
-msgstr "Afficher vos collectes"
+msgstr "Afficher vos collections"
 
 msgid "Visualize and update"
 msgstr "Visualiser et mettre à jour"
@@ -1330,22 +1332,22 @@ msgid "is 'yes'"
 msgstr "est « oui »"
 
 msgid "is between"
-msgstr "est entre"
+msgstr "entre"
 
 msgid "is greater than"
-msgstr "est supérieur à"
+msgstr "est plus que"
 
 msgid "is greater than or equal to"
-msgstr "est supérieur ou égal à"
+msgstr "est plus que ou égale à"
 
 msgid "is less than"
-msgstr "est inférieur à"
+msgstr "est moins que"
 
 msgid "is less than or equal to"
-msgstr "est inférieur ou égal à"
+msgstr "est moins que ou égale à"
 
 msgid "is not"
-msgstr "n'est pas"
+msgstr "different de égale"
 
 msgid "is:"
 msgstr "est :"
@@ -1369,7 +1371,7 @@ msgid "or"
 msgstr "ou"
 
 msgid "please select collection to set message quota"
-msgstr "veuillez sélectionner la collecte pour définir le quota de messages"
+msgstr "veuillez sélectionner la collection pour définir le quota de messages"
 
 msgid "processing the hierarchy file"
 msgstr "En train de traiter le fichier de hiérarchie"
@@ -1386,7 +1388,7 @@ msgstr ""
 "de recevoir des SMS"
 
 msgid "set message quota to the selected collection"
-msgstr "définir le quota des messages pour la collecte sélectionnée"
+msgstr "définir le quota des messages pour la collection sélectionnée"
 
 msgid "show more"
 msgstr "afficher plus"
@@ -1398,19 +1400,19 @@ msgid "sites"
 msgstr "sites"
 
 msgid "starts with"
-msgstr "commence avec"
+msgstr "débute par"
 
 msgid "the last day"
-msgstr "le dernier jour"
+msgstr "Mise à jour au cours des dernières 24 heures"
 
 msgid "the last hour"
-msgstr "la dernière heure"
+msgstr "Mise à jour dans la dernière heure"
 
 msgid "the last month"
-msgstr "le dernier mois"
+msgstr "Mise à jour au cours du dernier mois"
 
 msgid "the last week"
-msgstr "la dernière semaine"
+msgstr "Mise à jour dans la dernière semaine"
 
 msgid "true"
 msgstr "vrai"
@@ -1484,13 +1486,13 @@ msgid "Layer|Name"
 msgstr "Layer|Nom"
 
 msgid "Collection %{collection_name}'s sites deleted"
-msgstr "sites supprimés dans collecte %{collection_name}"
+msgstr "sites supprimés dans collection %{collection_name}"
 
 msgid "Field|Kind"
 msgstr "Field|Type"
 
 msgid "Collection %{collection_name} deleted"
-msgstr "Collecte  %{collection_name} supprimée"
+msgstr "Collection  %{collection_name} supprimée"
 
 msgid "User|Success outcome"
 msgstr "User|Succès"
@@ -1586,7 +1588,7 @@ msgid "Do you want to delete this item and its children?"
 msgstr "Souhaitez-vous supprimer cet élément et ses enfants?"
 
 msgid "Collection %{collection_name} created"
-msgstr "Collecte  %{collection_name} créée"
+msgstr "Collection  %{collection_name} créée"
 
 msgid "Message|Channel"
 msgstr "Message|Canal"
@@ -1712,10 +1714,10 @@ msgid "Snapshot|Name"
 msgstr "Snapshot|Nom"
 
 msgid "User|Collection count"
-msgstr "User|Nombre de collectes"
+msgstr "User|Nombre de collection"
 
 msgid "Collection %{collection_name} updated"
-msgstr "Collecte %{collection_name} mise à jour"
+msgstr "Collection %{collection_name} mise à jour"
 
 msgid "LocationPermission|Action"
 msgstr "LocationPermission|Action"
@@ -1820,7 +1822,7 @@ msgid "SiteHistory|Uuid"
 msgstr "SiteHistory|UUID"
 
 msgid "Are you sure you want to remove this member from the collection?"
-msgstr "Etes-vous sûr que vous souhaitez supprimer ce membre de la collecte ?"
+msgstr "Etes-vous sûr que vous souhaitez supprimer ce membre de la collection ?"
 
 msgid "Message|Body"
 msgstr "Message|Corps"
@@ -1870,7 +1872,7 @@ msgid "FieldHistory|Code"
 msgstr "FieldHistory|Code"
 
 msgid "Are you sure you want to remove %s from the collection?"
-msgstr "Etes-vous sûr que vous souhaitez supprimer %s de la collecte ?"
+msgstr "Etes-vous sûr que vous souhaitez supprimer %s de la collection?"
 
 msgid "Identity"
 msgstr "Identité"
