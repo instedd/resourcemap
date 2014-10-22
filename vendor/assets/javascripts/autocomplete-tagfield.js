@@ -9,6 +9,11 @@
  *
  * Date: Sun Apr 14 00:47:29 2011 -0500
  */
+
+// 10-22-2014: Added searchField setting to distinguish between search parameter and field on the dropdown.
+// If there's no searchField, it should default to displayField
+
+
 (function($) {
 	$.fn.autocompleteTagField = function(userOptions) {
 		var settings = {
@@ -41,18 +46,19 @@
 		var proxy = settings.proxy;
 		var minChar = settings.minChar;
 		var displayField = settings.displayField;
+		var searchField = settings.searchField;
 		var valueField = settings.valueField;
 
 		var preset = settings.preset;
 		var allowNewTags = settings.allowNewTags;
 		var showTagsNumber = settings.showTagsNumber;
 		var addItemOnBlur = settings.addItemOnBlur;
-		
+
 		// prepare needed vars
 		var inserted = new Array();
 		// array of object
 		var suggestionList = new Array();
-		
+
 		// state of remote proxy data loaded
 		var isProxyLoaded = false;
 		// store an array of object that response from proxy
@@ -139,7 +145,7 @@
 		function setValue() {
       tagField.val(JSON.stringify(toJSON())).change();
 		}
-		
+
 		function toJSON(){
 		  var items = new Array();
 		  for(i=0; i<inserted.length; i++){
@@ -207,7 +213,7 @@
 			}
 			return false;
 		}
-		
+
 		function lookupInserted(value){
 		  for(i=0; i<inserted.length; i++){
 		    if(inserted[i][displayField] == value){
@@ -254,30 +260,32 @@
 			var object = inserted[last_index];
 			removeItem(object);
 		}
-		
+
 		function showLocalProxy(value){
 		   var result = new Array();
 		   for (var i = 0; i < suggestionList.length; i++){
-		     if (suggestionList[i][displayField].substring(0, value.length).toLowerCase() == value.toLowerCase()){
-		       result.push(suggestionList[i]);
+	     	 if (suggestionList[i][displayField].substring(0, value.length).toLowerCase() == value.toLowerCase()){
+		      result.push(suggestionList[i]);
 		     }
 		   }
 		   show(result);
 		}
-		
+
 		function showRemoteProxy(value){
 		  var url = proxy.substring(proxy.length - 1) == "/" ? proxy.substring(0, proxy.length - 1) : proxy;
-      $.get(url + "?" + displayField + "=" + value.substring(0, minChar), function(sites) {
+		  if(searchField != undefined && searchField != "") {
+		  	var fullUrl = url + "?" + searchField + "=" + value.substring(0, minChar)
+		  }
+		  else var fullUrl = url + "?" + displayField + "=" + value.substring(0, minChar)
+      $.get(fullUrl, function(sites) {
         isProxyLoaded = true;
-        suggestionList = $.map(sites, function(site) {
-          return site;
-        });
+        suggestionList = sites.sites;
         // in case user typing fast key up event not response immediately
         if (value.length == minChar) show(suggestionList);
         else showLocalProxy(value);
       });
 		}
-		
+
 		function showSuggestionList(value){
 		  if(!isProxyLoaded){
 		    showRemoteProxy(value);
@@ -285,7 +293,7 @@
 		    showLocalProxy(value);
 		  }
 		}
-		
+
 		function show(list){
 			for (var i = 0; i < list.length; i++) {
 				if (!isInserted(list[i])) {
@@ -322,7 +330,7 @@
 			}else{
 				suggestList.show();
 			}
-			
+
 			if (value.length >= minChar) {
 			  currentValue = value;
         suggestList.empty();
