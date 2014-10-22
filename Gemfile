@@ -9,7 +9,7 @@ gem 'gettext_i18n_rails_js', git: "https://github.com/juanboca/gettext_i18n_rail
 gem 'ruby_parser', :require => false, :group => :development
 gem 'haml-magic-translations'
 gem 'decent_exposure'
-gem "instedd-rails", '~> 0.0.22'
+gem "instedd-rails", '~> 0.0.24'
 gem "breadcrumbs_on_rails"
 gem "elasticsearch"
 gem "elasticsearch-ruby"
