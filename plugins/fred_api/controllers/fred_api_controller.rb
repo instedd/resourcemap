@@ -23,6 +23,14 @@ class FredApiController < ApplicationController
     end
   end
 
+  def forbidden_response
+    render_json({ message: "Permissions were insufficient to perform the request", code: 403}, status: 403)
+  end
+
+  def unauthorized_response
+    render_json({ message: "This action requires authorization", code: 401}, status: 401)
+  end
+
   def show_facility
     render_json find_facility_and_apply_fred_format(site.id)
   end

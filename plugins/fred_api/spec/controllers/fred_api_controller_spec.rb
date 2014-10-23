@@ -332,12 +332,6 @@ describe FredApiController, :type => :controller do
       expect(response.status).to eq(401)
     end
 
-    it "should return 401 if the user is not signed_in" do
-      sign_out user
-      get :show_facility, id: site.id, format: 'json', collection_id: collection.id
-      expect(response.status).to eq(401)
-    end
-
     it "should return 403 if user is do not have permission to access the site" do
       user2 = User.make
       sign_out user
@@ -826,6 +820,110 @@ describe FredApiController, :type => :controller do
 
       json = JSON.parse response.body
       expect(json["properties"]['moh-id']).to eq("100000-9")
+    end
+
+  end
+
+  # https://github.com/instedd/resourcemap/issues/717
+  describe 'write permissions' do
+
+    context 'for read-only member' do
+      before(:each) do
+        sign_out user
+        unauthorized_user = User.make
+        membership = collection.memberships.create! :user_id => unauthorized_user.id, admin: false
+        LayerMembership.make layer: layer, membership: membership, read: true, write: false
+        sign_in unauthorized_user
+      end
+
+      it "should not delete sites" do
+        site = collection.sites.make name: 'Site C'
+        delete :delete_facility, id: site.id, collection_id: collection.id
+        json = JSON.parse response.body
+        expect(json["code"]).to eq(403)
+        recovered_site = Site.find_by_name 'Site C'
+        expect(recovered_site).to eq(site)
+      end
+
+      it "should not perform an update" do
+        site = collection.sites.make :name => "Kakamega HC", :properties => {
+          text.es_code => "Mrs. Liz",
+          numeric.es_code => 55,
+          select_many.es_code => [1, 2],
+          date.es_code => "2012-10-24T00:00:00Z",
+        }
+
+        request.env["RAW_POST_DATA"] = { :name => "Kakamega HC 2" }.to_json
+        put :update_facility, collection_id: collection.id, id: site.id
+        expect(response.status).to eq(403)
+        non_updated_site = Site.find site.id
+        expect(non_updated_site.name).to eq('Kakamega HC')
+      end
+
+      it "should not create a facility" do
+        request.env["RAW_POST_DATA"] = { name: 'Kakamega HC' }.to_json
+        post :create_facility, collection_id: collection.id
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'for non-member' do
+      before(:each) do
+        sign_out user
+        unauthorized_user = User.make
+        sign_in unauthorized_user
+      end
+
+      it "should not delete sites" do
+        site = collection.sites.make name: 'Site C'
+        delete :delete_facility, id: site.id, collection_id: collection.id
+        json = JSON.parse response.body
+        expect(json["code"]).to eq(403)
+        recovered_site = Site.find_by_name 'Site C'
+        expect(recovered_site).to eq(site)
+      end
+
+      it "should not perform an update" do
+        site = collection.sites.make :name => "Kakamega HC", :properties => {
+          text.es_code => "Mrs. Liz",
+          numeric.es_code => 55,
+          select_many.es_code => [1, 2],
+          date.es_code => "2012-10-24T00:00:00Z",
+        }
+
+        request.env["RAW_POST_DATA"] = { :name => "Kakamega HC 2" }.to_json
+        put :update_facility, collection_id: collection.id, id: site.id
+        expect(response.status).to eq(403)
+        non_updated_site = Site.find site.id
+        expect(non_updated_site.name).to eq('Kakamega HC')
+      end
+
+      it "should not create a facility" do
+        request.env["RAW_POST_DATA"] = { name: 'Kakamega HC' }.to_json
+        post :create_facility, collection_id: collection.id
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'for guest' do
+      before(:each) do
+        sign_out user
+      end
+
+      it "should not delete sites" do
+        site = collection.sites.make name: 'Site C'
+        delete :delete_facility, id: site.id, collection_id: collection.id
+        json = JSON.parse response.body
+        expect(json["code"]).to eq(401)
+        recovered_site = Site.find_by_name 'Site C'
+        expect(recovered_site).to eq(site)
+      end
+
+      it "should not create a facility" do
+        request.env["RAW_POST_DATA"] = { name: 'Kakamega HC' }.to_json
+        post :create_facility, collection_id: collection.id
+        expect(response.status).to eq(401)
+      end
     end
 
   end

@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_collection_admin!
-    head :unauthorized and return if current_user.is_guest
+    unauthorized_response and return if current_user.is_guest
     forbidden_response unless current_user.admins?(collection)
   end
 
@@ -79,6 +79,10 @@ class ApplicationController < ActionController::Base
 
   def forbidden_response
     head :forbidden
+  end
+
+  def unauthorized_response
+    head :unauthorized
   end
 
   def show_collections_breadcrumb
