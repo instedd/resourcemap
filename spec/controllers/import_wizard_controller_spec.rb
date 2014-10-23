@@ -30,6 +30,7 @@ describe ImportWizardsController, :type => :controller do
     }
     post :execute, collection_id: collection.id, columns: specs
     expect(response.response_code).to eq(401)
+    ImportWizard.delete_files(user2, collection)
   end
 
   it "should get job status of an enqued job" do
@@ -45,6 +46,7 @@ describe ImportWizardsController, :type => :controller do
     get :job_status, collection_id: collection.id
     json_response = JSON.parse response.body
     expect(json_response["status"]).to eq("pending")
+    ImportWizard.delete_files(user, collection)
   end
 
   it "should not fail when quering job status of a non enqued job" do

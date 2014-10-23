@@ -253,6 +253,7 @@ describe ImportWizard, :type => :model do
     column_spec = ImportWizard.guess_columns_spec user, collection
     processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
     expect(processed_sites[:errors][:data_errors].count).to eq(0)
+    ImportWizard.delete_files(user, collection)
   end
 
   it "imports with new select one mapped to both code and label" do
@@ -794,7 +795,7 @@ describe ImportWizard, :type => :model do
 
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     expect { ImportWizard.execute(user, collection, specs) }.to raise_error
-
+    ImportWizard.delete_files(user, collection)
   end
 
   it "should create new fields with all property values" do
@@ -909,6 +910,7 @@ describe ImportWizard, :type => :model do
     processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
     sites_preview = processed_sites[:sites]
     expect(sites_preview.length).to eq(0)
+    ImportWizard.delete_files(user, collection)
   end
 
   it "should not fail when there is no data in the csv (2)" do
@@ -918,6 +920,7 @@ describe ImportWizard, :type => :model do
     processed_sites = (ImportWizard.validate_sites_with_columns user, collection, column_spec)
     sites_preview = processed_sites[:sites]
     expect(sites_preview.length).to eq(0)
+    ImportWizard.delete_files(user, collection)
   end
 
   it "should get sites & errors for invalid existing fields" do
@@ -1012,6 +1015,7 @@ describe ImportWizard, :type => :model do
     expect(data_errors[1][:example]).to eq("Example of valid date: 01/25/2013.")
     expect(data_errors[2][:example]).to eq("Example of valid email: myemail@resourcemap.com.")
     expect(data_errors[3][:example]).to eq("Some valid values for this hierarchy are: 60, 100, 101.")
+    ImportWizard.delete_files(user, collection)
   end
 
   it "should get sites & errors for invalid existing fields if field_id is string" do
@@ -1029,7 +1033,7 @@ describe ImportWizard, :type => :model do
 
      data_errors = errors[:data_errors]
      expect(data_errors.length).to eq(1)
-
+     ImportWizard.delete_files(user, collection)
   end
 
   it "should get error for invalid new fields" do
@@ -1439,7 +1443,6 @@ describe ImportWizard, :type => :model do
 
     expect(sites_errors[:non_existent_site_id]).to be(nil)
     ImportWizard.delete_files(user, collection)
-
   end
 
   it "shouldn't fail with blank lines at the end" do
@@ -1465,6 +1468,7 @@ describe ImportWizard, :type => :model do
     column_spec = ImportWizard.guess_columns_spec user, collection
     sites_errors = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:errors]
     # do nothing (the test is that it shouldn't raise)
+    ImportWizard.delete_files(user, collection)
   end
 
   it "should not import files with invalid extension" do
@@ -1475,7 +1479,6 @@ describe ImportWizard, :type => :model do
       end
       expect { ImportWizard.import user, collection, 'example.txt', "one, two" }.to raise_error
     end
-
   end
 
   it "should not import malformed csv files" do
@@ -1484,6 +1487,7 @@ describe ImportWizard, :type => :model do
       csv << ['Foo', '1.2', '3.4', '10']
     end
     expect { ImportWizard.import user, collection, 'foo.csv', csv_string }.to raise_error
+    File.delete("#{Rails.root}/tmp/import_wizard/#{user.id}_#{collection.id}.csv")
   end
 
   it "should not fail when there is latin1 characters" do
@@ -1505,6 +1509,7 @@ describe ImportWizard, :type => :model do
     column_spec = ImportWizard.guess_columns_spec user, collection
     expect {ImportWizard.validate_sites_with_columns user, collection, column_spec}.to_not raise_error
     File.delete('utf8.csv')
+    ImportWizard.delete_files(user, collection)
   end
 
   describe 'updates' do
@@ -1777,6 +1782,7 @@ describe ImportWizard, :type => :model do
       sites_errors = sites_preview[:errors]
 
       expect(sites_errors[:invalid_site_identifier]).to eq([{:rows=>[1], :column=>0}])
+      ImportWizard.delete_files(user, collection)
     end
 
     it "should not show validation error in other luhn fields the pivot is an identifier" do
@@ -1801,6 +1807,7 @@ describe ImportWizard, :type => :model do
       expect(data_errors.length).to eq(0)
 
       expect(sites_errors[:invalid_site_identifier]).to be_nil
+      ImportWizard.delete_files(user, collection)
     end
 
     it "should show validation error in other if a value already exists for an exisiting luhn value" do
@@ -1826,6 +1833,7 @@ describe ImportWizard, :type => :model do
       expect(data_errors.length).to eq(1)
 
       expect(sites_errors[:invalid_site_identifier]).to be_nil
+      ImportWizard.delete_files(user, collection)
     end
 
     it "should import using an identifier field as pivot" do
@@ -1964,6 +1972,7 @@ describe ImportWizard, :type => :model do
       expect(data_errors.length).to eq(1)
 
       expect(data_errors.first[:description]).to eq "Some of the values in field 'other-id' (3rd column) are not valid for the type identifier: The value already exists in the collection."
+      ImportWizard.delete_files(user, collection)
     end
   end
 end
