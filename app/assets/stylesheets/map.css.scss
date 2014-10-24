@@ -261,11 +261,12 @@ label.error.field-name {
 }
 
 .map-bottom-error {
-  max-width:280px;
+  max-width:379px;
   color:#ff6600;
   margin-left:8px;
 
   label.error {
     white-space:normal;
+    vertical-align: sub;
   }
 }
