@@ -490,9 +490,6 @@ msgstr "Couches d'importation de la collection:"
 msgid "Import wizard"
 msgstr "Guide intelligent de l'importation"
 
-#~ msgid "Import wizard: %{sites}"
-#~ msgstr "Guide intelligent de l'importation :%{sites}"
-
 msgid "Importing data"
 msgstr "Importer des données"
 
@@ -1256,9 +1253,6 @@ msgstr " ]"
 msgid "add Layers"
 msgstr "ajouter des couches"
 
-#~ msgid "alerts"
-#~ msgstr "Avertissements"
-
 msgid "all"
 msgstr "tous"
 
@@ -1990,6 +1984,9 @@ msgstr "Collection|Nom"
 
 msgid "Search by email..."
 msgstr "Rechercher par courrier électronique..."
+
+msgid "Search"
+msgstr "Rechercher"
 
 msgid "SitesPermission|All sites"
 msgstr "SitesPermission|Tous les sites"
