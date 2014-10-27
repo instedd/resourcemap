@@ -2,8 +2,8 @@ class FredApiController < ApplicationController
   skip_before_filter :set_gettext_locale
   skip_before_filter :redirect_to_localized_url
 
-  before_filter :authenticate_api_user!
   before_filter :authenticate_collection_admin!
+  before_filter :authenticate_api_user!
 
   before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :update_facility]
   before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility, :update_facility]
