@@ -1,6 +1,7 @@
 class FredApiController < ApplicationController
-  skip_before_filter :set_gettext_locale
-  skip_before_filter :redirect_to_localized_url
+  skip_before_action :set_gettext_locale
+  skip_before_action :redirect_to_localized_url
+  skip_before_action :verify_authenticity_token
 
   before_filter :authenticate_collection_admin!
   before_filter :authenticate_api_user!
