@@ -1,5 +1,6 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  skip_before_filter :check_guisso_cookie
+  skip_before_action :check_guisso_cookie
+  skip_before_action :verify_authenticity_token
 
   def instedd
     load_locale
