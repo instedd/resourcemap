@@ -1,5 +1,4 @@
 class RemindersController < ApplicationController
-  # before_filter :authenticate_user!
   before_filter :authenticate_collection_user!
 
   def index
