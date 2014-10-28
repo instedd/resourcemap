@@ -39,4 +39,20 @@ describe RemindersController, :type => :controller do
     post :set_status, :id => reminder.id, :collection_id => collection.id, :status => true
     expect(Reminder.find(reminder).status).to eq(true)
   end
+
+  it "should not create reminder for guest" do
+    sign_out user
+    expect {
+      post :create, collection_id: collection.id, reminder: { name: "foo", reminder_date: "2012-05-06T00:30:00Z 0:00", reminder_message: "foo", repeat_id: repeat.id, collection_id: 1, sites: [site.id] }
+    }.to change { Reminder.count }.by 0
+  end
+
+  it "should not create reminder for non-member" do
+    sign_out user
+    non_member = User.make
+    sign_in non_member
+    expect {
+      post :create, collection_id: collection.id, reminder: { name: "foo", reminder_date: "2012-05-06T00:30:00Z 0:00", reminder_message: "foo", repeat_id: repeat.id, collection_id: 1, sites: [site.id] }
+    }.to change { Reminder.count }.by 0
+  end
 end
