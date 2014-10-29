@@ -1,16 +1,19 @@
 .GralTable th.members-tree {
-  border:1px solid white;
-  color:#555555;
+  @include border-radius(8px 0 0 0 !important);
   background-color:#D0D0D0;
   background-image:none;
+  color:#555555;
+  border:1px solid white;
+  width: 300px !important;
 }
 
-.GralTable .expandedMember .member {
-  padding-left:5px;
+.GralTable td.member {
+  padding: 0 5px;
 }
 
 .GralTable th.members-permission, td.members-permission {
   text-align: center;
+  width: 60px;
 }
 
 .GralTable tr.membersFirstRow td {
@@ -33,13 +36,6 @@
   padding-bottom:5px;
 }
 
-.GralTable .expandedMember td {
-  padding:0px;
-}
-
-.GralTable .expandedMember .lastCell {
-  padding-right:5px;
-}
 
 hr.underlineExpandedMember {
   height:1px;
@@ -76,18 +72,9 @@ hr.underlineExpandedMember {
   float:right;
 }
 
-.memberHeaderRow, .defaultLayerPermissionsRow, .layerRow, .customPermissionsTitleRow, .customPermissionRow, .addCustomPermissionRow {
-  height:32px;
-  background-color: #FFFFFF;
-}
-
-.memberHeaderRow .permissionColumn {
-  height:23px;
-  padding-top: 9px;
-}
 
 .permissionColumn {
-  width:60px;
+  width:67px;
   height:32px;
   float: left;
   text-align: center;
@@ -116,32 +103,21 @@ hr.underlineExpandedMember {
 
 .lastColumn {
   height:32px;
-  width:406px;
+  width:380px;
   padding-right:6px;
   float:left;
 }
 
 .memberHeaderColumn {
+  @include box-sizing(border-box);
   width:290px;
-  height:32px;
   float: left;
   padding-left:6px;
-  background-color: #EEEEEE;
   font-size: 12px;
 }
 
-.memberHeaderRow .memberHeaderColumn {
-  height:26px;
-  padding-top:6px;
-  font-size: 14px
-}
-
-.permissionColumn, .lastColumn {
-  background-color: #EEEEEE;
-}
 
 .defaultLayerPermissionsRow .memberHeaderColumn {
-  width:277px;
   padding-left:19px;
 }
 
@@ -158,10 +134,11 @@ hr.underlineExpandedMember {
 }
 
 .layerRow .memberHeaderColumn {
-  width:223px;
-  height:21px;
   padding-top:11px;
   padding-left: 73px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .customPermissionsTitleRow .memberHeaderColumn {
@@ -223,7 +200,6 @@ hr.underlineExpandedMember {
   position: absolute;
   bottom: 0px;
   margin-bottom: -1px;
-  width:52px;
 }
 
 .addCustomPermissionRow .memberHeaderColumn .frame {
@@ -245,9 +221,7 @@ hr.underlineExpandedMember {
   background-color: #DEDEDE;
 }
 
-.removeMemberRow {
-  height: auto !important;
-}
+
 
 .removeMemberRow .permissionColumn {
   padding-bottom:5px;
@@ -259,31 +233,57 @@ hr.underlineExpandedMember {
   padding-top: 5px;
 }
 
-.removeMemberRow .memberHeaderColumn {
-  padding-bottom:5px;
-  padding-top: 5px;
-  padding-left:18px;
-  width:930px;
-  height: auto !important;
-}
-
-.memberHeaderColumn.collapsed, .permissionColumn.collapsed, .permissionColumn.admin.collapsed, .lastColumn.collapsed {
-  background-color: white;
-  border-bottom: 1px #EEEEEE solid;
-}
-
 #disabled-name-warning-message {
   color: red;
   left: 56px;
   position: absolute;
   top: 7px;
   width: 340px;
-  z-index: 200;
+  z-index: 1;
 }
 
 .table-header.sticky {
   position: fixed;
-  z-index: 1;
+  z-index: 2;
   padding: 0;
+  width: 960px;
+  th.members-tree {
+    @include border-radius(0 !important);
+    width: 303px !important;
+  }
+  th.members-permission {
+    width: 60px !important;
+  }
 }
 
+#memberPermissionsTable {
+  div {
+    min-height: 20px;
+    line-height: 22px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.defaultLayerPermissionsRow, .layerRow, .memberHeaderRow {
+  @include clearfix();
+}
+
+tr.membersRow {
+  div {
+    background-color: #ffffff;
+  }
+  &.expandedMember {
+    div {
+      background-color: #eeeeee;
+    }
+  }
+}
+
+.memberHeaderRow {
+  border-bottom: 1px solid #eeeeee;
+}
+.removeMemberRow {
+  padding: 5px 15px !important;
+  line-height: 14px !important;
+}

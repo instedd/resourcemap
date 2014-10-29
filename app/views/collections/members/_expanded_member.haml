@@ -12,8 +12,8 @@
     .lastColumn
 
   .defaultLayerPermissionsRow
+    %hr.underlineExpandedMember
     .memberHeaderColumn
-      %hr.underlineExpandedMember
       .defaultLayerPermissionsTitle{ko(click: :toggleDefaultLayerPermissions)}
         %img.members-collapse-icon{ko(attr: {src: "defaultLayerPermissionsArrow('#{InsteddRails.url}')" })}
         %span.memberDetailsTitle
@@ -21,19 +21,15 @@
 
 
     .permissionColumn
-      %hr.underlineExpandedMember
-        %input{ko(disable: :admin, checked: "allLayersNone", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
+      %input{ko(disable: :admin, checked: "allLayersNone", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
 
     .permissionColumn
-      %hr.underlineExpandedMember
-        %input{ko(disable: :admin, checked: "allLayersRead", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
+      %input{ko(disable: :admin, checked: "allLayersRead", :attr => { "name" => "userId" }), :value => "all", :type => 'radio'}
 
     .permissionColumn
-      %hr.underlineExpandedMember
-        %input{ko(disable: :admin, checked: "allLayersUpdate", :attr => { "name" => "userId" }, visible: "updateCheckboxVisible()"), :value => "all", :type => 'radio'}
+      %input{ko(disable: :admin, checked: "allLayersUpdate", :attr => { "name" => "userId" }, visible: "updateCheckboxVisible()"), :value => "all", :type => 'radio'}
 
     .permissionColumn.admin
-      %hr.underlineExpandedMember
     .lastColumn
 
   /ko if: defaultLayerPermissionsExpanded
@@ -84,6 +80,5 @@
 
   /ko if: !isAnonymous
   .removeMemberRow
-    .memberHeaderColumn
-      = render './ko_confirm_box', :action_description => _('Remove this member'), :icon_class => 'fdelete', :confirm_action_prompt => _('Are you sure you want to remove this member from the collection?')
+    = render './ko_confirm_box', :action_description => _('Remove this member'), :icon_class => 'fdelete', :confirm_action_prompt => _('Are you sure you want to remove this member from the collection?')
   //ko

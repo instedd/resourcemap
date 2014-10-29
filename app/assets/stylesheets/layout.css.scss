@@ -746,3 +746,24 @@ a.tgrey {
 }
 
 
+.sbox.grey.confirm {
+  @include clearfix();
+  background-color: #d0d0d0;
+  padding: 6px !important;
+  div {
+    background-color: inherit;
+    line-height: 16px !important;
+    &.icon.fclose.black {
+      background-position: 0 -60px;
+      margin-top: -1px;
+      float: left;
+    }
+    &.action-buttons {
+      text-align: right;
+      a {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+  }
+}
