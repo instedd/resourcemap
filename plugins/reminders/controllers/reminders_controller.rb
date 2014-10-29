@@ -1,5 +1,6 @@
 class RemindersController < ApplicationController
-  before_filter :authenticate_collection_user!
+  before_filter :authenticate_user!
+  authorize_resource decent_exposure: true
 
   def index
     respond_to do |format| format.html do
@@ -19,7 +20,6 @@ class RemindersController < ApplicationController
   end
 
   def update
-    reminder = reminders.find params[:id]
     reminder.update_attributes! params[:reminder].except(:sites)
     reminder.sites = Site.select("id, collection_id, name, properties").find params[:reminder][:sites] if params[:reminder][:sites]
 
