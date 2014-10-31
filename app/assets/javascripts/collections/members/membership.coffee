@@ -17,14 +17,10 @@ class @Membership extends Expandable
         if !isSticky
           table_header.addClass "sticky"
           $(".membersFirstRow td").css("padding-top", $(".table-header").height())
-          # $("#memberPermissionsTable .membersFirstRow td").each (index, element) =>
-          #   $(".table-header th:eq("+index+")").width($(element).width())
       else
         if isSticky
           table_header.removeClass "sticky"
           $(".membersFirstRow td").css("padding-top", '')
-          # $("#memberPermissionsTable .membersFirstRow td").each (index, element) =>
-          #   $(".table-header th:eq("+index+")").removeAttr("width")
 
     # Defined this before callModuleConstructors because it's used by MembershipLayout
     @userId = ko.observable data?.user_id
