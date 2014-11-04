@@ -289,6 +289,10 @@ onCollections ->
       # If so, give me num1.num1 and num2.num2
       if match = text.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
         options.success(new google.maps.LatLng(parseFloat(match[1]), parseFloat(match[2])))
+      else if match = text.match(/^\s*(\d+(?:\.\d+)?)\s*(N|S)\s*,\s*(\d+(?:\.\d+)?)\s*(E|W)\s*$/i)
+        lat = if match[2].match(/n/i) then parseFloat(match[1]) else -parseFloat(match[1])
+        lng = if match[4].match(/e/i) then parseFloat(match[3]) else -parseFloat(match[3])
+        options.success(new google.maps.LatLng(lat, lng))
       else
         if text == ''
           options.success(null)
