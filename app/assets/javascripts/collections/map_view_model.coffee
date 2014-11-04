@@ -280,7 +280,7 @@ onCollections ->
 
     @drawClustersInMap: (clusters = []) ->
       dataClusterIds = {}
-      editing = window.model.editingSiteLocation()
+      # editing = window.model.editingSiteLocation()
 
       # Add clusters if they are not already on the map
       for cluster in clusters
@@ -290,7 +290,7 @@ onCollections ->
           currentCluster.setData(cluster, false)
         else
           currentCluster = @createCluster(cluster)
-        currentCluster.setInactive() if editing
+        currentCluster.setInactive() if @editingSite()
 
       # Determine which clusters need to be removed from the map
       toRemove = []

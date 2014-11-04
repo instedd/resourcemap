@@ -48,8 +48,13 @@ onCollections ->
       @countDownListener = google.maps.event.addDomListener @countClick, 'mousedown', listenerDownCallback
       @countUpListener = google.maps.event.addDomListener @countClick, 'mouseup', listenerUpCallback
 
-      @setMarkerIcon(@div, @data.icon, @data.color, @data.alert) if @data.status 
-    
+      # debugger
+      if window.model.editingSite()
+        @setMarkerIcon(@div, 'default_inactive')
+      else if @data.status
+        @setMarkerIcon(@div, @data.icon, @data.color, @data.alert)
+
+
     draw: =>
       pos = @getProjection().fromLatLngToDivPixel @position
       @div.style.left = @divClick.style.left = "#{pos.x - 17}px"
@@ -63,7 +68,7 @@ onCollections ->
       @digits = 0 if @digits < 0
       @countDiv.style.left = @countClick.style.left = "#{pos.x - 12 - @digits}px"
       @countDiv.style.top = @countClick.style.top = "#{pos.y + 2}px"
-    
+
       if @startAs
         $(@div).addClass(@startAs)
         delete @startAs
@@ -103,12 +108,17 @@ onCollections ->
       if @div
         $(@div).removeClass('target')
         $(@div).removeClass('inactive')
+        if @data.status
+          @setMarkerIcon(@div, @data.icon, @data.color, @data.alert)
+        else
+          @setMarkerIcon(@div, 'default')
         @draw() if draw
 
     setInactive: (draw = true) =>
       if @div
         $(@div).removeClass('target')
         $(@div).addClass('inactive')
+        @setMarkerIcon(@div, 'default_inactive')
         @draw() if draw
       else
         @startAs = 'inactive'
@@ -128,9 +138,9 @@ onCollections ->
 
     setMarkerIcon:(marker, icon, color, alert) =>
       if alert
-        marker.style.backgroundImage = "url(/assets/markers/resmap_#{@alertMarker(color)}_#{icon}.png)" 
+        marker.style.backgroundImage = "url(/assets/markers/resmap_#{@alertMarker(color)}_#{icon}.png)"
       else
-        marker.style.backgroundImage = "url(/assets/resmap_#{icon}.png)" 
+        marker.style.backgroundImage = "url(/assets/resmap_#{icon}.png)"
 
     alertMarker: (color_code) ->
       switch color_code
