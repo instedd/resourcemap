@@ -56,8 +56,8 @@
                   %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'margin-top:0', title: 'Move field up'}
                   %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'}), title: 'Move field down'}
                 .change_layer
-                  %a{ko(click: 'selectingLayerClick', attr: '{id: name}'), style: 'float:right', href: '#'} Move to layer...
-                  = select_tag :layer, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', event: '{ change: selectingLayerSelect }'), :style => "display: none; position:relative;float:right;"
+                  %a{ko(click: 'selectingLayerClick', attr: '{id: code}'), style: 'float:right', href: '#'} Move to layer...
+                  = select_tag :layer, nil, 'data-bind' => kov(attr: '{id: code}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', event: '{ click: function(item,event){event.stopPropagation();}, change: selectingLayerSelect }'), :style => "display: none; position:relative;float:right;"
 
               .feditor-button
                 %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"}), title: 'Select field'}
