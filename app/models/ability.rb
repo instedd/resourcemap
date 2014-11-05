@@ -95,6 +95,10 @@ class Ability
 
     can [:create, :update, :read, :destroy, :set_status], Reminder, :collection => { :memberships => { :user_id => user.id } }
 
+    ### Alerts ###
+
+    can [:create, :update, :read, :destroy, :set_order], Threshold, :collection => { :memberships => { :user_id => user.id } }
+
   end
 
   def user_memberships(user)
