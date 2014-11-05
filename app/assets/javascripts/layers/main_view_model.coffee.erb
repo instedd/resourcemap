@@ -97,13 +97,13 @@ onLayers ->
       #if layer is new, we need to set id
       if @currentLayer().id()
         notice = Jed.sprintf(__("Layer '%s' successfully saved"), @currentLayer().name())
-      else      
+      else
         notice = Jed.sprintf(__("Layer '%s' successfully saved"), @currentLayer().name())
 
       $.status.showNotice(notice, 2000)
 
       @currentLayer().id(data.id)
-      
+
       layersToReloadOrder = [@currentLayer()]
 
       i = 0
@@ -181,6 +181,7 @@ onLayers ->
       @currentField().hasFocus(true)
 
     selectField: (field) =>
+      return if @currentField() == field
       @currentField(field)
       @currentField().hasFocus(true)
 
