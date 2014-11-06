@@ -1,6 +1,6 @@
 module Capybara::CollectionHelper
 
-  def create_collection_for (user)
+  def create_collection_for(user)
     collection = user.collections.make name: 'Central Hospital'
     user.memberships.make collection: collection, admin: true
     collection
