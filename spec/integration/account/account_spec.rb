@@ -82,5 +82,24 @@ describe "account", :type => :request do
 
   end
 
+  it " should change phone number", js:true do
+
+    login_as (user)
+    visit collections_path
+    find_by_id('User').click
+    click_link 'Settings'
+
+    within "form#edit_user" do
+      fill_in "user_phone_number", :with => '12345'
+      click_button 'Update'
+    end
+
+    expect(page).to have_content 'Account updated successfully'
+    find_by_id('User').click
+    click_link 'Settings'
+    expect(page).to have_content "12345"
+
+  end
+
 end
 
