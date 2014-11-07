@@ -101,5 +101,36 @@ describe "account", :type => :request do
 
   end
 
+  it " should change password", js:true do
+
+    login_as (user)
+    visit collections_path
+    find_by_id('User').click
+    click_link('Settings')
+    click_link('Change my password')
+
+    within "form#edit_user" do
+      fill_in "user_password", :with => "Password01"
+      fill_in "user_password_confirmation", :with => "Password01"
+      fill_in "user_current_password", :with => user.password
+      click_button('Update')
+    end
+
+    notice.should have_content('Password was successfully updated.')
+
+    visit destroy_user_session_path
+
+    user.reload
+
+    within login_form do
+      fill_in  "Email", :with => user.email
+      fill_in  "Password", :with => "Password01"
+      login_button.click
+    end
+
+    page.should have_content(user.email)
+
+  end
+
 end
 
