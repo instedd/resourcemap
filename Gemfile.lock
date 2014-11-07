@@ -391,6 +391,9 @@ GEM
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
     slop (3.6.0)
+    spring (1.1.3)
+    spring-commands-rspec (1.0.2)
+      spring (>= 0.9.1)
     sprockets (2.11.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -495,6 +498,7 @@ DEPENDENCIES
   shoulda-matchers
   simplecov
   simplecov-rcov
+  spring-commands-rspec
   timecop
   treetop (= 1.4.15)
   uglifier (>= 2.5.0)
