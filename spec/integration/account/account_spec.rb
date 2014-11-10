@@ -64,7 +64,16 @@ describe "account", :type => :request do
       fill_in  "Phone number", :with => "1234567"
       click_button ('Create account')
     end
+    new_user = User.find_by_email('user@manas.com.ar')
+    new_user.should_not be_nil
+    new_user.confirmation_token.should_not be_nil
+    expect(new_user.confirmed?).to be_falsey
 
+    visit "/users/confirmation?#{get_confirmation_token()}"
+
+    page.should have_content('Your account was successfully confirmed. You are now signed in.')
+    new_user = User.find_by_email('user@manas.com.ar')
+    expect(new_user.confirmed?).to be_truthy
   end
 
   it "should fail to login", js:true do
