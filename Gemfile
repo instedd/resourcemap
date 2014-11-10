@@ -45,7 +45,7 @@ gem 'actionpack-action_caching'
 gem 'activerecord-deprecated_finders'
 
 group :test do
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', require: false
   gem 'resque_spec'
   gem 'selenium-webdriver'
   gem 'capybara'

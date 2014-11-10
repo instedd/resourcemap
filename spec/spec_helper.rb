@@ -21,6 +21,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require File.expand_path("../../spec/blueprints", __FILE__)
 require 'rspec/rails'
 require 'capybara/rspec'
+require 'shoulda-matchers'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
