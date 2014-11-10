@@ -268,4 +268,33 @@ describe MembershipsController, :type => :controller do
       expect(membership.admin).to be_falsey
     end
   end
+
+  describe "user permissions" do
+    it "should destroy another user's membership as admin" do
+      sign_in user
+      membership
+      expect {
+        delete :destroy, collection_id: collection.id, id: user_2.id
+      }.to change { Membership.count }.by -1
+    end
+
+    it "should not destroy another user's membership as a regular user" do
+      sign_in user_2
+      membership
+      user_3 = User.make
+      collection.memberships.create! user_id: user_3.id, admin: false
+
+      expect {
+        delete :destroy, collection_id: collection.id, id: user_3.id
+      }.to change { Membership.count }.by 0
+    end
+
+    it "should allow user to leave collection as regular user" do
+      sign_in user_2
+      membership
+      expect {
+        delete :leave_collection, collection_id: collection.id
+      }.to change { Membership.count }.by -1
+    end
+  end
 end
