@@ -39,6 +39,5 @@
 
       .left
         = render './confirm_box', :action_code => 'delete-collection', :action_description => _('Delete collection'), :icon_class => 'fdelete', :confirm_action_prompt => _('Are you sure you want to delete this collection? All sites, layers, fields, memberships and activities will also be deleted.'), :action_url => collection_path
-    - else
-      .left
-        = render './confirm_box', :action_code => 'leave-collection', :action_description => _("Leave collection"), :icon_class => 'fclose', :confirm_action_prompt => _("Are you sure you want to leave this collection? You will not be able to access it anymore"), :action_url => leave_collection_collection_memberships_path(collection)
+    .left
+      = render './confirm_box', :action_code => 'leave-collection', :action_description => _("Leave collection"), :icon_class => 'fleave', :confirm_action_prompt => _("Are you sure you want to leave this collection? You will not be able to access it anymore"), :action_url => leave_collection_collection_memberships_path(collection)
