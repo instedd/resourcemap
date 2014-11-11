@@ -18,4 +18,8 @@ module Capybara::CollectionHelper
   	layer.text_fields.make(:name => 'Central Hospital Layer 1 Field', :code => 'CHL1F')
   end
 
+  def first_collection_path
+    '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button'
+  end
+
 end
