@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "account", :type => :request do
+describe "account", :type => :request, uses_collections_structure: true do
   let (:user) do
     new_user
   end
@@ -10,7 +10,7 @@ describe "account", :type => :request do
   end
 
   it "should login", js:true do
-
+    who_african_region.memberships.create! :user_id => user.id
     visit collections_path
     click_link 'Log in'
 
@@ -21,7 +21,11 @@ describe "account", :type => :request do
     end
 
     expect(page).to have_content('Signed in successfully.')
-
+    expect(page).to have_content('WHO African Region')
+    #page.find(:xpath, first_collection_path).click
+    #expect(page).to have_content('Rwanda')
+    #expect(page).to have_content('Kenya')
+    #expect(page).to have_content('Tanzania')
   end
 
   it " should not change password", js:true do
