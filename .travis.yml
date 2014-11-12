@@ -3,6 +3,13 @@ cache: bundler
 rvm:
 - 1.9.3
 bundler_args: --jobs=8 --without development
+before_install:
+- phantomjs --version
+- wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2
+- tar -xf phantomjs-1.9.7-linux-x86_64.tar.bz2
+- sudo rm -rf /usr/local/phantomjs
+- sudo mv phantomjs-1.9.7-linux-x86_64 /usr/local/phantomjs
+- phantomjs --version
 services:
 - elasticsearch
 - redis-server
