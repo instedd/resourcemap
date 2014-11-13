@@ -61,6 +61,8 @@ onCollections ->
         if @selectedSite() && @selectedSite().id() == site.id()
           @unselectSite()
 
+        if @currentCollection() == undefined
+          @currentCollection(site.collection)
         site.collection.updatePermission site, => @editingSite(site)
         @selectSite(site)
         siteSearchCount = @currentCollection().siteSearchCount()
