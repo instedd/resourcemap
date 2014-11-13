@@ -2,100 +2,81 @@
   .right
     .illustration
 
-  %h1.home{:style => "margin-top: 0px;"} Make better decisions
-  %p.sub{:style => "font-size: 26px;"} by knowing where your resources are in real time
+  %h1.home Make better decisions
+  %p.sub by knowing where your resources are in real time
 
-  %p{:style => "font-size: 16px;"}
-    %span.r-arrow{:style => "margin-left: 4px"}
-    %span{:style => "font-weight:bold;"}
-      Free:
-    Use it for free in the cloud OR download the code, it’s open source!
-  %p{:style => "font-size: 16px;"}
-    %span.r-arrow{:style => "margin-left: 4px"}
-    %span{:style => "font-weight:bold;"}
-      Insightful:
-    Gain insight into the location & distribution of your resources
-  %p{:style => "font-size: 16px;"}
-    %span.r-arrow{:style => "margin-left: 4px"}
-    %span{:style => "font-weight:bold;"}
-      Collaborative:
-    Your team can record, track and analyze resources
-  %p{:style => "font-size: 16px;"}
-    %span.r-arrow{:style => "margin-left: 4px"}
-    %span{:style => "font-weight:bold;"}
-      SMS Enabled:
-    Use SMS to query, update or receive alerts from the system
-  %p{:style => "font-size: 16px;"}
-    %span.r-arrow{:style => "margin-left: 4px"}
-    %span{:style => "font-weight:bold;"}
-      Map Ready:
-    See everything on the map for a birds-eye view
+  .arrow-bullets
+    %p
+      %span.r-arrow
+      %b Free:
+      Use it for free in the cloud OR download the code, it’s open source!
+    %p
+      %span.r-arrow
+      %b Insightful:
+      Gain insight into the location & distribution of your resources
+    %p
+      %span.r-arrow
+      %b Collaborative:
+      Your team can record, track and analyze resources
+    %p
+      %span.r-arrow
+      %b SMS Enabled:
+      Use SMS to query, update or receive alerts from the system
+    %p
+      %span.r-arrow
+      %b Map Ready:
+      See everything on the map for a birds-eye view
 
   %br/
 
   - if current_user
     %p
-      =link_button_to _('View your collections'), collections_path, :class => "orange" , :style => "font-size: 24px; height: 52px; width: 260px;margin: auto;"
+      =link_button_to _('View your collections'), collections_path, :class => "orange large"
 
     %p
   - else
     %p
-      = link_button_to 'Sign up for free', guisso_sign_up_path_for(:user), :class => "orange", :style => "font-size: 24px; height: 52px; width: 220px;margin: auto;"
-  .clear
-  / #container
-  .home-middle-bar{:style => "margin: 25px auto 20px;"}
+      = link_button_to 'Sign up for free', guisso_sign_up_path_for(:user), :class => "orange large"
+  .home-middle-bar
     .benefits
       %ul#benefits-container
         %li
           %span.get-update.left
           %h3 Get updates
           %p as they happen, using a live map or text message request
-          %br{:clear => "all"}/
         %li
           %span.visualize-and-update.left
           %h3 Visualize and update
           %p resource allocations without a complex and expensive GIS
-          %br{:clear => "all"}/
         %li
           %span.update.left
           %h3 Update
           %p resource data from any text messaging-capable phone
-          %br{:clear => "all"}/
         %li
           %span.identify.left
           %h3 Identify
           %p distribution patterns and anomalies with visual mapping and trend analysis
-          %br{:clear => "all"}/
         %li
           %span.receive.left
           %h3 Receive
           %p important alerts instantly and address them proactively
-          %br{:clear => "all"}/
         %li
           %span.collaborate.left
           %h3 Collaborate
           %p easily on resource allocation decisions
-          %br{:clear => "all"}/
         %li
           %span.maintain.left
           %h3 Maintain
           %p complete control over the visibility of resource allocation data
-          %br{:clear => "all"}/
         %li
           %span.i48grad-free.left
           %h3 Free
           %p for anyone to use to help increase their social impact
-          %br{:clear => "all"}/
-
         %li
           %span.i48grad-openSource.left
           %h3 Open Source
           %p code for developers to use to improve its design and functionality
-          %br{:clear => "all"}/
-      / #benefits-container
-    / #benefits
-  / #home-middle-bar
-  #container
+  .container
     %h1 What can I use it for?
     %p.desc
       Accurately tracking and allocating resources is critical to getting the most from every asset at your disposal. Here are a few ways that Resource Map can help you maximize your resource allocation and usage:
@@ -112,7 +93,7 @@
       %p Whether you're helping economically disadvantaged people find nutritious, fresh, and affordable produce, managing food banks, or simply trying to chart the most popular edibles in a given area, Resource Map makes it easy. And since Resource Map can be updated using almost any cellular phone, your resource data is always just as fresh as the food.
 
     .clear
-    %br/
+    %br
 
     .left.w45
       %h2 Managing Disease Prevention Supplies
@@ -126,43 +107,43 @@
       %p The health of any community is intimately related to the health of the environment that surrounds it. Resource Map helps to keep the air clean, the water pure, and sanitation effective by giving you instant, visual access to an array of environmental quality indicators. Field reports can be filed with any phone capable of text messaging, allowing your team the mobility it needs to test and report environmental conditions more frequently and easily.
 
     .clear
-    %br/
-    %br/
+    %br
+    %br
     .box.plain.grey.features
 
       %h2 Features
       %br
       .left.w40
         %div
-          %span.r-arrow>
+          %span.r-arrow
           View and update resource allocations via the Web or SMS text message
         %div
-          %span.r-arrow>
+          %span.r-arrow
           Receive instant Web or text alerts when resources are low
         %div
-          %span.r-arrow>
+          %span.r-arrow
           Request resource status updates using text messages
         %div
-          %span.r-arrow>
+          %span.r-arrow
           Import existing resource allocation data from spreadsheets
 
       .right.w45
         %div
-          %span.r-arrow>
+          %span.r-arrow
           Export your Resource Map database for further analysis in other applications
         %div
-          %span.r-arrow>
+          %span.r-arrow
           View aggregated data on a live resource map
         %div
-          %span.r-arrow>
+          %span.r-arrow
           Define and track custom data types and variables
         %div
-          %span.r-arrow>
+          %span.r-arrow
           Visualize live and historical data on a map or using a graph
 
       .clear
-    %br/
-    %br/
+    %br
+    %br
 
     .w45.left
 
@@ -174,7 +155,7 @@
     .clear
     %hr
 
-  #container
+  .container
     %h1 Who is using it?
 
     .left.w45
@@ -202,10 +183,9 @@
   .clear
   %br/
   %hr/
-  %div.w45.support
+  .w45
     %h2
       How can I help?
-    %span
     %p
       Got suggestions or feature requests? Join the discussion.
       %br
@@ -218,7 +198,5 @@
       %br
       %a.button.black.fbulb{:href=>"https://github.com/instedd/resourcemap/issues?status=new"}
         %span Visit our backlog
-
-
 
   .clear

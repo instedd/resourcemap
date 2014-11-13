@@ -14,7 +14,10 @@
 
 
 
-.tableheader span, .tableheader button { vertical-align:middle }
+.tableheader span,
+.tableheader button {
+  vertical-align: middle;
+}
 
 .tablescroll {
   overflow:auto;
@@ -23,11 +26,11 @@
   span.loadmore {
     padding-top: 12px;
     vertical-align: middle;
-    text-align:center;
-    width:100%;
-    height:30px;
-    display:inline-block;
-    border-top:1px #EEE solid;
+    text-align: center;
+    width: 100%;
+    height: 30px;
+    display: inline-block;
+    border-top: 1px #EEE solid;
   }
 
   div {
@@ -35,11 +38,11 @@
     margin:5px 0 0 0;
 
     label {
-      font-weight:bold;
+      font-weight: bold;
       display: inline-block;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      vertical-align:sub;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: sub;
 
       &.error {
         display: inline-block !important;
@@ -61,14 +64,121 @@
       cursor: pointer;
     }
   hr {
-    width:316px;
-    margin:0px 0px 10px 5px
+    width: 316px;
+    margin: 0px 0px 10px 5px;
   }
   table {
-    width: 100%
+    width: 100%;
   }
   .hierarchy-container {
-    width: auto
+    width: auto;
+  }
+
+
+  .GralTable {
+    border-bottom: 1px #EEE solid;
+
+    tr {
+      &:nth-child(2) { background:none !important; }
+      &.active td { background:#d0d0d0; }
+      td:first-child { border-right:1px solid #eeeeee; }
+    }
+
+    th.r { text-align:right; }
+
+    td {
+      div {
+        display:inline-block;
+        overflow:hidden;
+
+        img {
+          display:inline-block;
+          vertical-align:middle;
+          margin:2px 2px 0 0;
+        }
+
+        span {
+          margin-top:2px;
+          white-space:nowrap;
+
+          &.value {
+            margin-top:0px;
+            white-space:nowrap;
+            vertical-align:top;
+            cursor:pointer;
+          }
+        }
+
+        p {
+          display:inline-block;
+          padding:0;
+          margin:0px 0 0 0;
+          vertical-align:middle;
+          white-space:nowrap;
+
+          a { color:inherit; }
+        }
+      }
+
+      span {
+        white-space: nowrap;
+        vertical-align:middle;
+      }
+
+      &.r { text-align:right; }
+
+      /* My collections view */
+      &.collectionCell {
+
+        input {
+          float:left;
+          margin-top:8px;
+        }
+
+        .collectionName {
+          width:230px;
+          float:left;
+          margin-top:6px;
+          margin-left:4px;
+          overflow: hidden;
+          text-overflow:ellipsis;
+        }
+        &.with_snapshot .collectionName {
+          width:208px;
+        }
+      }
+
+      button.enterRow.farrow {
+        position:relative;
+        float:right;
+        right:0px;
+        top:0px;
+      }
+
+    }
+
+    &.tableview td.collectionCell .collectionName {
+      width:270px;
+    }
+
+  }
+
+  td.siteCell {
+    padding-right: 26px !important;
+    position: relative;
+
+    div {
+      display: block !important;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    button.enterRow.farrow {
+      position: absolute;
+      top: 5px;
+      right: 3px;
+    }
   }
 }
 
@@ -96,61 +206,43 @@
   }
 }
 
-.tablescroll .GralTable tr:nth-child(2) { background:none !important }
-.tablescroll .GralTable tr.active td { background:#d0d0d0 }
-.tablescroll .GralTable tr td:first-child { border-right:1px solid #eeeeee }
-.tablescroll .GralTable td div { display:inline-block; overflow:hidden;  }
-.tablescroll .GralTable td div img { display:inline-block; vertical-align:middle; margin:2px 2px 0 0 }
-.tablescroll .GralTable td div span { margin-top:2px; white-space:nowrap }
-.tablescroll .GralTable td div span.value { margin-top:0px; white-space:nowrap; vertical-align:top; cursor:pointer }
-.tablescroll .GralTable td div p { display:inline-block; padding:0; margin:0px 0 0 0; vertical-align:middle; white-space:nowrap }
-.tablescroll .GralTable td div p a { color:inherit }
-.tablescroll .GralTable td button.farrow {   }
-.tablescroll .GralTable th.r { text-align:right }
-.tablescroll .GralTable td.r { text-align:right }
-.tablescroll .GralTable td span { white-space: nowrap; vertical-align:middle; /*height:4px*/ }
-
-/* My collections view */
-.tablescroll .GralTable td.collectionCell input {
-  float:left;
-  margin-top:8px;
-}
-
-.tablescroll .GralTable td.collectionCell .collectionName {
-  /*width:230px;*/
-  float:left;
-  margin-top:6px;
-  margin-left:4px;
-  overflow: hidden;
-  text-overflow:ellipsis;
-}
-
-.tablescroll .GralTable.tableview td.collectionCell .collectionName {
-  width:270px;
-}
-
-.tablescroll .GralTable td button.enterRow.farrow {
-  position:relative;
-  float:right;
-  right:0px;
-  top:0px;
-}
-
-.tablescroll .GralTable td.siteCell button.enterRow.farrow {
-  top:5px;
-}
-
-.tablescroll .GralTable {
-  border-bottom: 1px #EEE solid;
-}
-
 .no_h_scrollbar {
   overflow-wrap: break-word;
 }
 
-.stat-r { background:#ff4800; background-image:none !important; border-top:1px solid #bf3602; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
-.stat-y { background:#fcbb00; background-image:none !important; border-top:1px solid #bc8b00; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
-.stat-g { background:#79e820; background-image:none !important; border-top:1px solid #5bae18; display:inline-block; vertical-align:middle; margin:0 2px 0 0 !important; width:12px; height:12px; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px }
+.stat-r {
+  @include border-radius(3px);
+  background:#ff4800;
+  background-image:none !important;
+  border-top:1px solid #bf3602;
+  display:inline-block;
+  vertical-align:middle;
+  margin:0 2px 0 0 !important;
+  width:12px;
+  height:12px;
+}
+.stat-y {
+  @include border-radius(3px);
+  background:#fcbb00;
+  background-image:none !important;
+  border-top:1px solid #bc8b00;
+  display:inline-block;
+  vertical-align:middle;
+  margin:0 2px 0 0 !important;
+  width:12px;
+  height:12px;
+}
+.stat-g {
+  @include border-radius(3px);
+  background:#79e820;
+  background-image:none !important;
+  border-top:1px solid #5bae18;
+  display:inline-block;
+  vertical-align:middle;
+  margin:0 2px 0 0 !important;
+  width:12px;
+  height:12px;
+}
 
 .tablebottom {
   color: #555555;

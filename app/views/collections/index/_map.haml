@@ -147,7 +147,7 @@
   -# Show Site form
   /ko if: showSite
   %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, novalidate: 'novalidate'}
-    .tableheader
+    .tableheader.elipsis
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
       %span{ko(text: :name)}
