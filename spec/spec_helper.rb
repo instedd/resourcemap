@@ -61,7 +61,7 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = if Capybara.current_driver == :rack_test
       :transaction
     else
-      [:truncation]
+      [:deletion]
     end
     DatabaseCleaner.start
   end

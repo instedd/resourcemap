@@ -22,4 +22,8 @@ module Capybara::CollectionHelper
     '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button'
   end
 
+  def first_site_path
+    '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button'
+  end
+
 end

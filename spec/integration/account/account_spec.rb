@@ -22,10 +22,6 @@ describe "account", :type => :request, uses_collections_structure: true do
 
     expect(page).to have_content('Signed in successfully.')
     expect(page).to have_content('WHO African Region')
-    #page.find(:xpath, first_collection_path).click
-    #expect(page).to have_content('Rwanda')
-    #expect(page).to have_content('Kenya')
-    #expect(page).to have_content('Tanzania')
   end
 
   it " should not change password", js:true do
