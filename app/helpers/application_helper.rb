@@ -32,7 +32,6 @@ module ApplicationHelper
 
   def any_update_permissions?(collection, user)
     mem = collection.membership_for(user)
-    puts mem
     name_or_location = mem.can_update?('name') || mem.can_update?('location')
     name_or_location || mem.layer_memberships.any?{ |l| l.write }
   end
