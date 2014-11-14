@@ -30,4 +30,11 @@ module ApplicationHelper
     Field::plugin_kinds.has_key?(kind) ? Field::plugin_kinds[kind][:edit_view] : "collections/fields/#{kind}_edit_view"
   end
 
+  def any_update_permissions?(collection, user)
+    mem = collection.membership_for(user)
+    puts mem
+    name_or_location = mem.can_update?('name') || mem.can_update?('location')
+    name_or_location || mem.layer_memberships.any?{ |l| l.write }
+  end
+
 end
