@@ -21,9 +21,7 @@ class CollectionsController < ApplicationController
     user_memberships = current_user.memberships.map{|c| c.collection_id.to_s}
     collections_with_snapshot_by_user = collections_with_snapshot.select{|col| user_memberships.include?(col["id"].to_s)}
 
-    if params[:collection_id].blank? && current_user.is_guest
-      redirect_to root_url
-    elsif params[:name].present?
+    if params[:name].present?
       render_json Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
       add_breadcrumb _("Collections"), 'javascript:window.model.goToRoot()'
