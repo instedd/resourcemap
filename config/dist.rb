@@ -20,3 +20,7 @@ end
 config :newrelic do
   string :license_key, prompt: "New Relic license key (leave empty to disable)"
 end
+
+config :guisso do
+
+end
