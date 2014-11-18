@@ -40,7 +40,7 @@ shared_context "collections structure", uses_collections_structure: true do
 
   def create_collection_with_all_fields(name, options={})
     coll = Collection.make name: name
-    coll.sites.make name: "Second Site"
+    coll.sites.make name: "Second Site", id: 2
     layer = options[:layer] || options[:fields_on] || Layer.make(collection: coll, name: "#{name} layer")
     all_fields = []
 
@@ -98,8 +98,6 @@ shared_context "collections structure", uses_collections_structure: true do
       "numeric" => 987654321,
       "text" => "before_changed",
       "select_one" => 1,
-      "select_many" => [1],
-      "hierarchy" => '0',
       "date" => '2013-12-15T00:00:00Z',
       "email" => 'before@manas.com.ar',
       "identifier" => '42',
@@ -115,7 +113,7 @@ shared_context "collections structure", uses_collections_structure: true do
       properties[f.es_code] = kind_and_value[f.kind]
     end
 
-    site = c.sites.make properties: properties, name: site_name
+    site = c.sites.make properties: properties, name: site_name, id: 1
 
     create_method "#{collection_name}_#{site_name}" do
       site.reload

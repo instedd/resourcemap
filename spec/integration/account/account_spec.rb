@@ -20,7 +20,7 @@ describe "account", :type => :request, uses_collections_structure: true do
       click_button('Log In')
     end
 
-    expect(page).to have_content('Signed in successfully.')
+    expect(find(notice_div)).to have_content('Signed in successfully')
     expect(page).to have_content('WHO African Region')
   end
 
@@ -116,7 +116,6 @@ describe "account", :type => :request, uses_collections_structure: true do
     visit collections_path
     find_by_id('User').click
     click_link('Settings')
-    click_link('Change my password')
 
     within "form#edit_user" do
       fill_in "user_password", :with => "Password01"
@@ -125,16 +124,19 @@ describe "account", :type => :request, uses_collections_structure: true do
       click_button('Update')
     end
 
-    notice.should have_content('Password was successfully updated.')
+    expect(find(notice_div)).to have_content('You updated your account successfully.')
 
-    visit destroy_user_session_path
+    find_by_id('User').click
+    click_link('Sign out')
 
     user.reload
+
+    click_link 'Log in'
 
     within login_form do
       fill_in  "Email", :with => user.email
       fill_in  "Password", :with => "Password01"
-      login_button.click
+      click_button('Log In')
     end
 
     page.should have_content(user.email)

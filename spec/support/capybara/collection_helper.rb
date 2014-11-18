@@ -26,4 +26,9 @@ module Capybara::CollectionHelper
     '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button'
   end
 
+  def label_for_id(element, id)
+    x = element[:config]["options"].detect { |f| f["id"] == id }
+    x["label"]
+  end
+
 end

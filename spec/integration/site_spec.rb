@@ -1,10 +1,5 @@
 require 'spec_helper'
 
-def label_for_id(element, id)
-  x = element[:config]["options"].detect { |f| f["id"] == id }
-  x["label"]
-end
-
 describe "change field values", :type => :request, uses_collections_structure: true do
   let (:user) do
     new_user
@@ -12,7 +7,7 @@ describe "change field values", :type => :request, uses_collections_structure: t
 
   it "", js:true do
     multicollection.memberships.create! :user_id => user.id, :admin => true
-    s = multicollection.sites.make name: "Third Site"
+    s = multicollection.sites.make name: "Third Site", id: 3
     login_as(user)
     visit collections_path
     find(:xpath, first_collection_path).click
