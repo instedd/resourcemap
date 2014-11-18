@@ -208,93 +208,10 @@ body.fullscreen #container {
   }
 }
 
-.box.slightly-padded {
-  padding: 0;
-  padding-top: 2px;
-
-  .tableheader {
-    background: transparent;
-    border-right:1px solid #eeeeee;
-    margin-top: -3px;
-    margin-left:4px;
-    height: 35px;
-
-    &.expanded {
-      border-right: 0px;
-
-      .mapheader {
-        margin-right: 9px;
-        margin-top: 3px;
-      }
-    }
-  }
-  .tablescroll {
-    background:url(#{$InsteddRailsUrl + "/theme/images/interface/backtd.png"}) repeat-x left 0px #ffffff;
-    padding-top: 10px;
-
-    .GralTable td {
-      padding-left: 0px;
-
-      div {
-        display:inline-block;
-        overflow:hidden;
-        text-overflow:ellipsis;
-        margin-top: 7px;
-      }
-    }
-  }
-  .GralTable.tableview td {
-    padding-left: 3px;
-  }
-}
-
-.tablescroll.cheight .GralTable {
-
-  td {
-    position: relative;
-    padding: 0 5px 0 5px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    height: 40px;
-    max-width: 172px;
-
-    a {
-      cursor: pointer;
-    }
-
-    button {
-      position: absolute;
-      right: 5px;
-      top: 3px;
-    }
-  }
-}
 
 .grayselected {
   @include border-radius(5px);
   background: #EBEBEB;
-}
-
-.tableheader {
-  background:url(#{$InsteddRailsUrl + "/theme/images/interface/backtd.png"}) repeat-x left 32px #ffffff;
-  height:40px;
-  z-index:1;
-
-  & > div.title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    position: relative;
-    padding-right: 25px;
-    line-height: 30px;
-
-    button.fconfiguration {
-      position: absolute;
-      right: 0px;
-      top: 2px;
-    }
-  }
 }
 
 ul.taglist {
@@ -341,12 +258,12 @@ ul.taglist {
     margin-top:10px;
     width:610px;
     height:30px;
-    cursor: pointer
+    cursor: pointer;
 
     span {
       color:#1f86c8;
       display:inline-block;
-      padding-top:8px
+      padding-top:8px;
     }
   }
 
@@ -379,17 +296,18 @@ ul.taglist {
       display: none;
     }
   }
-}
 
-.middlebuttons > div.superblyTagfieldDiv {
-  overflow: visible;
-  text-overflow: clip;
-
-  & > div {
+  & > div.superblyTagfieldDiv {
     overflow: visible;
     text-overflow: clip;
+
+    & > div {
+      overflow: visible;
+      text-overflow: clip;
+    }
   }
 }
+
 
 .feditor-container {
   position:relative;
@@ -444,13 +362,13 @@ td.loadmore { height: 36px }
     margin: 0px;
     padding: 0px;
     vertical-align: baseline;
-    color: #666666
+    color: #666666;
   }
 
   span {
     vertical-align: baseline;
     margin: 0 0 0 3px;
-    color: #666666
+    color: #666666;
     a { color:#000000 }
   }
 
@@ -728,5 +646,46 @@ a.tgrey {
         vertical-align: middle;
       }
     }
+  }
+}
+
+select.condition,
+select.compare {
+  width: 200px;
+
+  & + .premove {
+    vertical-align: middle;
+  }
+}
+
+.people-notification {
+  @include clearfix();
+  margin-top: 15px;
+
+  > div {
+    @include box-sizing(border-box);
+    display: inline-block;
+    vertical-align: top;
+    width: 48%;
+  }
+  .list-box {
+    @include box-sizing(border-box);
+    width: auto;
+    padding: 5px;
+
+    label {
+      display: block;
+      margin: 3px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+.wp100 {
+  width: 100%;
+
+  .superblyTagfieldDiv {
+    width: inherit;
   }
 }

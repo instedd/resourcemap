@@ -37,37 +37,41 @@
     -# /ko with: currentReminder
     .box.w60
       %label{ko(css: {error: :nameError})} Name
-      %br/
-      %input.w30{ko(value: :name, valueUpdate: :afterkeydown), type: :text}
-      %br/
+      %br
+      %input.wp100{ko(value: :name, valueUpdate: :afterkeydown), type: :text}
+      %br
+      %br
       %label{ko(css: {error: :sitesError})} Sites
-      %br/
+      %br
       %label.smalltext site's owner will receive this reminder
       %br
-      %input{ko(checked: :targetFor), value: 'all_sites', name: :targetForGroup, type: :radio}
-      %label All sites
-      %input{ko(checked: :targetFor), value: 'some_sites', name: :targetForGroup, type: :radio}
-      %label Some sites
+      %label
+        %input{ko(checked: :targetFor), value: 'all_sites', name: :targetForGroup, type: :radio}
+        All sites
+      %label
+        %input{ko(checked: :targetFor), value: 'some_sites', name: :targetForGroup, type: :radio}
+        Some sites
       %br
-      .middlebuttons{ko(visible: '!isAllSites()' )}
+      .wp100{ko(visible: '!isAllSites()' )}
         %input.sites{ko(autocompleteTagField: :sites, objectType: "Site"), proxy: collection_sites_path(collection), valueField: :id, displayField: :name, searchField: :sitename, type: :text}
-      %br/
+      %br
       %label{ko(css: {error: :reminderDateError})} Date
-      %br/
+      %br
 
       %input.ux-datepicker.w20{ko(datePicker: :reminderDate), type: :text }
       %select{ko(options: :TIMES, value: :reminderTime)}
       %label repeat
       %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat)}
-      %br/
+      %br
+      %br
 
       %label{ko(css: {error: :reminderMessageError})} Message
-      %br/
+      %br
       %textarea.ux-wajbar.w30{ko(value: :reminderMessage, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
 
       .clear
 
-      %hr/
+      %hr
       .bottom-actions
         /ko if: $root.isSaving()
         Saving reminder, please wait...
@@ -80,7 +84,7 @@
         %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red; margin-left:20px'}
         //ko
     //ko
-    %br/
+    %br
     //ko
     -# Add new reminder link
     .box.grey.add{ ko(visible: '!currentReminder()', click: 'showAddReminder'), style: 'display:none'}
