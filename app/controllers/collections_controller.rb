@@ -28,7 +28,11 @@ class CollectionsController < ApplicationController
       respond_to do |format|
         format.html do
           if Guisso.enabled? && current_user.is_guest && cannot?(:read, collection)
-            redirect_to_guisso
+            if params[:collection_id].present?
+              redirect_to_guisso(custom_message: 'This is a private collection')
+            else
+              redirect_to_guisso
+            end
           end
         end
         format.json { render_json collections_with_snapshot_by_user }
