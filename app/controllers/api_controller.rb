@@ -11,7 +11,7 @@ class ApiController < ApplicationController
     yield
   rescue => ex
     Rails.logger.info ex.message
-    Rails.logger.info ex.backtrace
+    Rails.logger.info ex.backtrace.join("\n")
 
     if ex.is_a?(CanCan::AccessDenied)
       render_error_response_403
