@@ -48,19 +48,24 @@ describe "change field values", :type => :request, uses_collections_structure: t
         elsif page.has_selector?(field_select_value)
             x = find('select[id *= -input-]')
         end
-        if x && x[:id]
-            if x[:id] != "yes-no-input-yes_no"
-                key = '#'+x[:id]
-                expect(x.value).to eq(old_values_for_fields[key])
-                if x[:id] == "select-one-input-selone"
-                    select(new_value_for_select_one, :from => x[:id])
-                else
-                    fill_in x[:id], :with => new_values_for_fields[key]
-                end
+
+        if x[:id] != "yes-no-input-yes_no"
+            key = '#'+x[:id]
+            expect(x.value).to eq(old_values_for_fields[key])
+            if x[:id] == "select-one-input-selone"
+                select(new_value_for_select_one, :from => x[:id])
+            else
+                fill_in x[:id], :with => new_values_for_fields[key]
                 if x[:id] == "phone-input-phone"
                     all_span = go_back_and_refresh
                 end
             end
+        else
+            all_span = go_back_and_refresh
+            expect(all_span[i]).to have_content('yes')
+            all_span[i].click
+            find("#yes-no-input-yes_no").click
+            click_button('OK')
         end
     end
   end
@@ -74,14 +79,16 @@ describe "change field values", :type => :request, uses_collections_structure: t
         elsif page.has_selector?(field_select_value)
             x = find('select[id *= -input-]')
         end
-        if x && x[:id]
-            if x[:id] != "yes-no-input-yes_no"
-                key = '#'+x[:id]
-                expect(x.value).to eq(new_values_for_fields[key])
-                if x[:id] == "phone-input-phone"
-                    all_span = go_back_and_refresh
-                end
+
+        if x[:id] != "yes-no-input-yes_no"
+            key = '#'+x[:id]
+            expect(x.value).to eq(new_values_for_fields[key])
+            if x[:id] == "phone-input-phone"
+                all_span = go_back_and_refresh
             end
+        else
+            all_span = go_back_and_refresh
+            expect(all_span[i]).to have_content('no')
         end
     end
   end
@@ -119,7 +126,6 @@ describe "change field values", :type => :request, uses_collections_structure: t
     fill_in "phone-input-phone", :with => new_values_for_fields['#phone-input-phone']
     fill_in "site-input-site", :with => new_values_for_fields['#site-input-site']
     fill_in "user-input-user", :with => new_values_for_fields['#user-input-user']
-    page.uncheck('yes-no-input-yes_no')
     click_button 'Done'
 
     click_link 'Edit Site'
