@@ -31,4 +31,18 @@ module Capybara::CollectionHelper
     x["label"]
   end
 
+  def field_input_value
+    'input[id *= "-input-"]'
+  end
+
+  def field_select_value
+    'select[id *= "-input-"]'
+  end
+
+  def go_back_and_refresh
+    find('button.pback').click
+    find(:xpath, first_site_path).click
+    page.all('span.value')
+  end
+
 end
