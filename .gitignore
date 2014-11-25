@@ -21,7 +21,6 @@ VERSION
 coverage/*
 config/settings.yml
 config/guisso.yml
-uploads
 spec/integration/screenshots/*
 .vagrant
 
