@@ -16,4 +16,8 @@ module Capybara::AccountHelper
     last_email.body.match(/confirmation_token=\w*/)
   end
 
+  def notice_div
+    'div.flash_notice'
+  end
+
 end
