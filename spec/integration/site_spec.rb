@@ -56,6 +56,7 @@ describe "change field values", :type => :request, uses_collections_structure: t
                 select(new_value_for_select_one, :from => x[:id])
             else
                 fill_in x[:id], :with => new_values_for_fields[key]
+                #Delete this if after fixing issue #807
                 if x[:id] == "phone-input-phone"
                     all_span = go_back_and_refresh
                 end
@@ -93,7 +94,7 @@ describe "change field values", :type => :request, uses_collections_structure: t
     end
   end
 
-  it "in edit mode", js:true do
+  it "should edit site in edit mode", js:true do
     multicollection.memberships.create! :user_id => user.id, :admin => true
     s = multicollection.sites.make name: "Third Site", id: 3
     login_as(user)
@@ -142,7 +143,7 @@ describe "change field values", :type => :request, uses_collections_structure: t
     expect(find('#user-input-user').value).to eq(new_values_for_fields['#user-input-user'])
   end
 
-  it "in single editing mode", js:true do
+  it "should edit site in single editing mode", js:true do
     multicollection.memberships.create! :user_id => user.id, :admin => true
     s = multicollection.sites.make name: "Third Site", id: 3
     login_as(user)
@@ -156,6 +157,32 @@ describe "change field values", :type => :request, uses_collections_structure: t
     go_back_and_refresh
 
     expect_new_values
+  end
+
+  it "should edit complex fields in edit mode", js:true do
+    complex.memberships.create! :user_id => user.id, :admin => true
+    login_as(user)
+    visit collections_path
+    find(:xpath, first_collection_path).click
+    find(:xpath, first_site_path).click
+
+    click_link 'Edit Site'
+    x = find(container_element)
+    expect(x).not_to have_content('One')
+    expect(x).not_to have_content('Two')
+    x.find('span[id = "Add more"]').click
+    find('a', :text => 'One').click
+    find('a', :text => 'Two').click
+
+    expect(x).not_to have_content('child1')
+
+    x.find('a > img').click
+    find('span', :text => 'child1').click
+    click_button 'Done'
+    click_link 'Edit Site'
+    x = find(container_element)
+    expect(x).to have_content('child1')
+    expect(x).to have_content('child2')
   end
 
 end

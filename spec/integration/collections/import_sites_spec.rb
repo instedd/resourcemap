@@ -10,20 +10,19 @@ describe "import_layer", :type => :request, uses_collections_structure:true do
     date_escode = multicollection_date_field.es_code
     identifier_escode = multicollection_identifier_field.es_code
     new_value_for_select_one = label_for_id(multicollection_select_one_field, '2')
+    multicollection.memberships.create! :user_id => user.id, :admin => true
+    login_as (user)
+    visit collections_path
+    find(:xpath, first_collection_path).click
+    find("#collections-main").find("button.fconfiguration").click
+    find("a.fexport").click
+    attach_file("upload","multicollection_site.csv")
 
     with_resque do
-        multicollection.memberships.create! :user_id => user.id, :admin => true
-        login_as (user)
-        visit collections_path
-        find(:xpath, first_collection_path).click
-        find("#collections-main").find("button.fconfiguration").click
-        find("a.fexport").click
-        attach_file("upload","multicollection_site.csv")
-        sleep 1
         click_button "Start importing"
         sleep 3
-        click_button "Browse collection"
     end
+    click_button "Browse collection"
 
     find(:xpath, first_site_path).click
 

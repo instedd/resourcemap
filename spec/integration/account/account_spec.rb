@@ -110,7 +110,7 @@ describe "account", :type => :request, uses_collections_structure: true do
 
   end
 
-  it " should change password", js:true do
+  it "should change password", js:true do
 
     login_as (user)
     visit collections_path
