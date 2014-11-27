@@ -45,4 +45,8 @@ module Capybara::CollectionHelper
     page.all('span.value')
   end
 
+  def container_element
+    'div.tablescroll'
+  end
+
 end
