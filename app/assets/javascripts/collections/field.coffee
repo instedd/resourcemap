@@ -25,17 +25,18 @@ onCollections ->
       @defaultValue = ko.observable()
 
       @valueUI =  ko.computed
-       read: =>  @valueUIFor(@value())
-       write: (value) =>
-        if !value
-          new_value = @defaultValue() || ''
-          @value(new_value)
-          @value.valueHasMutated()
-        else
-          new_value = @valueUIFrom(value)
-          if new_value
+        read: =>
+          @valueUIFor(@value())
+        write: (value) =>
+          if !value
+            new_value = @defaultValue() || ''
             @value(new_value)
             @value.valueHasMutated()
+          else
+            new_value = @valueUIFrom(value)
+            if new_value
+              @value(new_value)
+              @value.valueHasMutated()
 
       if @kind in ['select_one', 'select_many']
         @options = if data.config?.options?
