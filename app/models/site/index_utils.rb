@@ -7,10 +7,15 @@ module Site::IndexUtils
       index: {
         analysis: {
           analyzer: {
+            default_index: {
+              tokenizer: :standard,
+              filter: [:lowercase, :asciifolding],
+              type: :custom
+            },
             downcase: {
               tokenizer: :keyword,
-              filter: :lowercase,
-              type: :custom,
+              filter: [:lowercase],
+              type: :custom
             }
           }
         }
