@@ -5,7 +5,7 @@ describe "import_wizard", :type => :request, uses_collections_structure: true do
     new_user
   end
 
-  it "should import", js:true, uses_collections_structure: true do
+  it "should import a site", js:true, uses_collections_structure: true do
 
     date_escode = multicollection_date_field.es_code
     identifier_escode = multicollection_identifier_field.es_code
@@ -15,7 +15,7 @@ describe "import_wizard", :type => :request, uses_collections_structure: true do
     visit collections_path
     find(:xpath, first_collection_path).click
     find("#collections-main").find("button.fconfiguration").click
-    find("a.fexport").click
+    click_link "Upload it for bulk sites updates"
     attach_file("upload","multicollection_site.csv")
 
     with_resque do
