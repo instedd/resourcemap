@@ -46,4 +46,19 @@ describe "layer", :type => :request, uses_collections_structure: true do
 
   end
 
+  it "should delete layer", js:true do
+
+    who_african_region.memberships.create! :user_id => user.id, :admin => true
+    login_as (user)
+    visit collections_path
+    find(:xpath, first_collection_path).click
+    find("#collections-main").find("button.fconfiguration").click
+    click_link "Layers"
+    click_button "Remove layer"
+    confirm_popup
+
+    expect(page).to have_content "Layer WHO African Region layer successfully deleted"
+
+  end
+
 end
