@@ -45,13 +45,29 @@ describe "import_wizard", :type => :request, uses_collections_structure: true do
     who_african_region.memberships.create! :user_id => user.id, :admin => true
     login_as (user)
     visit collections_path
-    page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
+    find(:xpath, first_collection_path).click
     find("#collections-main").find("button.fconfiguration").click
     click_link "Upload it for bulk sites updates"
     page.has_content? ('#upload')
     page.attach_file 'upload', 'sanitized_rwanda_schema.json'
+
     expect(page).to have_content ('Invalid file format. Only CSV files are allowed.')
-    page.save_screenshot ("Upload bulk fail.png")
+
+  end
+
+  it "should cancel import", js:true, uses_collections_structure: true do
+
+    multicollection.memberships.create! :user_id => user.id, :admin => true
+    login_as (user)
+    visit collections_path
+    find(:xpath, first_collection_path).click
+    find("#collections-main").find("button.fconfiguration").click
+    click_link "Upload it for bulk sites updates"
+    attach_file("upload","multicollection_site.csv")
+    click_button "Start importing"
+    click_button "Cancel import"
+
+    expect(page).to have_content "Import canceled"
 
   end
 
