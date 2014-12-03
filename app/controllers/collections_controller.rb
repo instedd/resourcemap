@@ -139,11 +139,6 @@ class CollectionsController < ApplicationController
     send_data collection.csv_template, type: 'text/csv', filename: "collection_sites_template.csv"
   end
 
-  def upload_csv
-    collection.import_csv current_user, params[:file].read
-    redirect_to collections_path
-  end
-
   def create_snapshot
     @snapshot = Snapshot.create(date: Time.now, name: params[:snapshot][:name], collection: collection)
     if @snapshot.valid?

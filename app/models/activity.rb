@@ -1,6 +1,6 @@
 class Activity < ActiveRecord::Base
   ItemTypesAndActions = {
-    'collection' => %w(created imported csv_imported),
+    'collection' => %w(created imported),
     'layer' => %w(created changed deleted),
     'site' => %w(created changed deleted),
     'membership' => %w(created deleted),
@@ -27,8 +27,8 @@ class Activity < ActiveRecord::Base
     case [item_type, action]
     when ['collection', 'created']
       _("Collection '%{name}' was created") % {name: "#{data['name']}"}
-    when ['collection', 'csv_imported']
-      _("Import CSV: %{sites}") % {sites: "#{sites_were_imported_text}"}
+    when ['collection', 'imported']
+      _("New CSV imported into collection '%{name}'") % {name: "#{data['name']}"}
     when ['layer', 'created']
       fields_str = data['fields'].map { |f| "#{f['name']} (#{f['code']})" }.join ', '
       str = _("Layer %{layer} was created with fields: %{fields}") % {layer: "'#{data['name']}'", fields: "#{fields_str}"}

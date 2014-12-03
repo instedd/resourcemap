@@ -86,8 +86,6 @@ ResourceMap::Application.routes.draw do
       get 'csv_template'
       get 'max_value_of_property'
 
-      post 'upload_csv'
-
       post 'create_snapshot'
       post 'load_snapshot'
       post 'unload_current_snapshot'

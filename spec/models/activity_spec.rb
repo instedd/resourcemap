@@ -163,19 +163,30 @@ describe Activity, :type => :model do
       'description' => "Site '#{site.name}' was created"
   end
 
-  it "creates one after importing a csv" do
+  it "creates one after importing a csv through wizard" do
     Activity.delete_all
 
-    collection.import_csv user, %(
-      resmap-id, name, lat, lng
-      1, Site 1, 30, 40
-    ).strip
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Lat', 'Lon']
+      csv << ['Site', '30', '40']
+    end
 
-    assert_activity 'collection', 'csv_imported',
-      'collection_id' => collection.id,
-      'user_id' => user.id,
-      'data' => {'sites' => 1},
-      'description' => "Import CSV: 1 site were imported"
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'}
+    ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string
+    ImportWizard.mark_job_as_pending user, collection
+    ImportWizard.execute user, collection, specs
+
+    activities = Activity.all
+    expect(activities.length).to eq(2)
+    expect(activities[1].item_type).to eq('site')
+    expect(activities[1].action).to eq('created')
+    expect(activities[0].item_type).to eq('collection')
+    expect(activities[0].action).to eq('imported')
   end
 
   context "site changed" do
