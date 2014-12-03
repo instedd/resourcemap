@@ -6,14 +6,13 @@ describe "layer", :type => :request, uses_collections_structure: true do
   end
 
   before :each do
+    who_african_region.memberships.create! :user_id => user.id, :admin => true
+    login_as (user)
     visit collections_path
   end
 
   it "should import layer", js:true do
 
-    who_african_region.memberships.create! :user_id => user.id, :admin => true
-    login_as (user)
-    visit collections_path
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[3]/button').click
     fill_in  "collection_name", :with => 'Test Collection'
     click_button "Save"
@@ -28,9 +27,6 @@ describe "layer", :type => :request, uses_collections_structure: true do
 
   it "should create layer", js:true do
 
-    who_african_region.memberships.create! :user_id => user.id, :admin => true
-    login_as (user)
-    visit collections_path
     find(:xpath, first_collection_path).click
     find("#collections-main").find("button.fconfiguration").click
     click_link "Layers"
@@ -48,9 +44,6 @@ describe "layer", :type => :request, uses_collections_structure: true do
 
   it "should delete layer", js:true do
 
-    who_african_region.memberships.create! :user_id => user.id, :admin => true
-    login_as (user)
-    visit collections_path
     find(:xpath, first_collection_path).click
     find("#collections-main").find("button.fconfiguration").click
     click_link "Layers"
