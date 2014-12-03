@@ -137,7 +137,7 @@
           The site cannot be saved due to validation errors
       //ko
       .right
-        %button.grey{type: 'submit'} Done
+        %button.grey{ko(disable: '$root.savingSite'), type: 'submit'} Done
         %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
       .clear
   //ko

@@ -137,6 +137,7 @@ describe MembershipsController, :type => :controller do
       expect(activity.data['name']).to eq(layer.name)
       expect(activity.data['previous_permission']).to eq('read')
       expect(activity.data['new_permission']).to eq('update')
+      expect(activity.description).to eq("Permission changed from read to update in layer '#{layer.name}' for #{user2.email}")
     end
 
     it "should create activity when name permission changed" do
@@ -147,6 +148,8 @@ describe MembershipsController, :type => :controller do
       activity = Activity.first
       expect(activity.item_type).to eq('name_permission')
       expect(activity.action).to eq('changed')
+      expect(activity.data["changes"]).to eq(["read", "update"])
+      expect(activity.description).to eq("Permission changed from read to update in name layer for #{user2.email}")
       expect(activity.user_id).to eq(user.id)
       expect(activity.collection_id).to eq(collection.id)
       expect(activity.data['user']).to eq(user2.email)
@@ -168,6 +171,8 @@ describe MembershipsController, :type => :controller do
       activity = Activity.first
       expect(activity.item_type).to eq('location_permission')
       expect(activity.action).to eq('changed')
+      expect(activity.data["changes"]).to eq(["read", "update"])
+      expect(activity.description).to eq("Permission changed from read to update in location layer for #{user2.email}")
       expect(activity.user_id).to eq(user.id)
       expect(activity.collection_id).to eq(collection.id)
       expect(activity.data['user']).to eq(user2.email)
@@ -193,6 +198,7 @@ describe MembershipsController, :type => :controller do
       expect(activity.collection_id).to eq(collection.id)
       expect(activity.data["built_in_layer"]).to eq("name")
       expect(activity.data["changes"]).to eq(["none", "read"])
+      expect(activity.description).to eq("Permission changed from none to read in name layer for anonymous users")
     end
 
     it "should create activity when location permission changed for anonymous user" do
@@ -207,6 +213,7 @@ describe MembershipsController, :type => :controller do
       expect(activity.collection_id).to eq(collection.id)
       expect(activity.data["built_in_layer"]).to eq("location")
       expect(activity.data["changes"]).to eq(["none", "read"])
+      expect(activity.description).to eq("Permission changed from none to read in location layer for anonymous users")
     end
 
     it "should create activity when layer membership changed for anonymous user" do
@@ -222,8 +229,86 @@ describe MembershipsController, :type => :controller do
       expect(activity.collection_id).to eq(collection.id)
       expect(activity.data['name']).to eq(layer.name)
       expect(activity.data["changes"]).to eq(["none", "read"])
+      expect(activity.description).to eq("Permission changed from none to read in layer '#{layer.name}' for anonymous users")
     end
 
+    it "should create activity when layer_membership changed" do
+      layer
+      membership
+      post :set_layer_access, collection_id: collection.id, verb: 'read', access: 'true', id: user2.id, layer_id: layer.id
+      Activity.delete_all
+      post :set_layer_access, collection_id: collection.id, verb: 'write', access: 'true', id: user2.id, layer_id: layer.id
+      expect(Activity.count).to eq(1)
+      activity = Activity.first
+      activity.data = {}
+      activity.save!
+      activity.reload
+      expect(activity.item_type).to eq('layer_membership')
+      expect(activity.action).to eq('changed')
+      expect{activity.description}.not_to raise_error
+      expect(activity.description).not_to eq("There was an error processing this activity")
+    end
+
+    it "should handle correctly the activity description when location permission changed and changes not present" do
+      membership
+      Activity.delete_all
+      post :set_access, object: 'location', new_action: 'update', collection_id: collection.id, id: user2.id
+      expect(Activity.count).to eq(1)
+      activity = Activity.first
+      activity.data = {}
+      activity.save!
+      activity.reload
+      expect(activity.item_type).to eq('location_permission')
+      expect(activity.action).to eq('changed')
+      expect{activity.description}.not_to raise_error
+      expect(activity.description).not_to eq("There was an error processing this activity")
+    end
+
+    it "should handle correctly the activity description when name permission changed for anonymous user and changes not present" do
+      membership
+      Activity.delete_all
+      post :set_access_anonymous_user, object: 'name', new_action: 'read', collection_id: collection.id
+      expect(Activity.count).to eq(1)
+      activity = Activity.first
+      activity.data = {}
+      activity.save!
+      activity.reload
+      expect(activity.item_type).to eq('anonymous_name_location_permission')
+      expect(activity.action).to eq('changed')
+      expect{activity.description}.not_to raise_error
+      expect(activity.description).not_to eq("There was an error processing this activity")
+    end
+
+    it "should handle correctly the activity description when location permission changed for anonymous user and changes not present" do
+      membership
+      Activity.delete_all
+      post :set_access_anonymous_user, object: 'location', new_action: 'read', collection_id: collection.id
+      expect(Activity.count).to eq(1)
+      activity = Activity.first
+      activity.data = {}
+      activity.save!
+      activity.reload
+      expect(activity.item_type).to eq('anonymous_name_location_permission')
+      expect(activity.action).to eq('changed')
+      expect{activity.description}.not_to raise_error
+      expect(activity.description).not_to eq("There was an error processing this activity")
+    end
+
+    it "should handle correctly the activity description when layer membership changed for anonymous user and changes not present" do
+      layer
+      membership
+      Activity.delete_all
+      post :set_layer_access_anonymous_user, layer_id: layer.id, verb: 'read', access: 'true', collection_id: collection.id
+      expect(Activity.count).to eq(1)
+      activity = Activity.first
+      activity.data = {}
+      activity.save!
+      activity.reload
+      expect(activity.item_type).to eq('anonymous_layer_permission')
+      expect(activity.action).to eq('changed')
+      expect{activity.description}.not_to raise_error
+      expect(activity.description).not_to eq("There was an error processing this activity")
+    end
   end
 
   describe "search" do

@@ -106,7 +106,7 @@ onCollections ->
             value = @properties()[field.esCode]
             field.setValueFromSite(value)
 
-    update_site: (json, callback) =>
+    update_site: (json, callback, failed_callback = null) =>
       data = {site: JSON.stringify json}
       $.ajax({
           type: "POST",
@@ -118,12 +118,13 @@ onCollections ->
             callback(data) if callback && typeof(callback) == 'function' )
           global: false
         }).fail((data) =>
+          failed_callback() if failed_callback != null
           if @showFieldErrors(data)
             $(".tablescroll").animate({
               scrollTop: $('.error label').position().top + $(".tablescroll").scrollTop() - 60
             }, 2000))
 
-    create_site: (json, callback) =>
+    create_site: (json, callback, failed_callback = null) =>
       data = {site: JSON.stringify json}
       $.ajax({
           type: "POST",
@@ -140,7 +141,10 @@ onCollections ->
             $.status.showNotice notice, 2000
             callback(data) if callback && typeof(callback) == 'function' )
           global: false
-        }).fail(@showFieldErrors)
+        }).fail((data) =>
+          failed_callback() if failed_callback != null
+          @showFieldErrors
+        )
 
     clearFieldErrors: =>
       @collection.nameFieldError(null)

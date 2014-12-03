@@ -166,23 +166,37 @@ describe "change field values", :type => :request, uses_collections_structure: t
     find(:xpath, first_collection_path).click
     find(:xpath, first_site_path).click
 
+    container_single_edit_mode = find(container_element)
+    expect(container_single_edit_mode).not_to have_content('child1')
+    expect(container_single_edit_mode).not_to have_content('One')
+    expect(container_single_edit_mode).not_to have_content('Two')
+
     click_link 'Edit Site'
-    x = find(container_element)
-    expect(x).not_to have_content('One')
-    expect(x).not_to have_content('Two')
-    x.find('span[id = "Add more"]').click
+    container_edit_mode = find(container_element)
+    expect(container_edit_mode).not_to have_content('One')
+    expect(container_edit_mode).not_to have_content('Two')
+    expect(container_edit_mode).not_to have_content('child1')
+
+    container_edit_mode.find('span[id = "Add more"]').click
     find('a', :text => 'One').click
     find('a', :text => 'Two').click
 
-    expect(x).not_to have_content('child1')
-
-    x.find('a > img').click
+    container_edit_mode.find('a > img').click
     find('span', :text => 'child1').click
+
     click_button 'Done'
+
+    container_single_edit_mode = find(container_element)
+    expect(container_single_edit_mode).to have_content('child1')
+    expect(container_single_edit_mode).to have_content('One')
+    expect(container_single_edit_mode).to have_content('Two')
+
     click_link 'Edit Site'
-    x = find(container_element)
-    expect(x).to have_content('child1')
-    expect(x).to have_content('child2')
+    container_edit_mode = find(container_element)
+    expect(container_edit_mode).to have_content('One')
+    expect(container_edit_mode).to have_content('Two')
+    expect(container_edit_mode).to have_content('child1')
+    expect(container_edit_mode).to have_content('child2')
   end
 
 end

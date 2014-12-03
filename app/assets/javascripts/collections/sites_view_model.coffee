@@ -6,6 +6,7 @@ onCollections ->
       @selectedSite = ko.observable()
       @selectedHierarchy = ko.observable()
       @loadingSite = ko.observable(false)
+      @savingSite = ko.observable(false)
       @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
       @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       @expandLeftColumn = ko.computed =>
@@ -119,6 +120,8 @@ onCollections ->
           @editSite site
 
     @saveSite: ->
+      return if @savingSite()
+      @savingSite(true)
       callback = (data) =>
         @currentCollection().reloadSites()
 
@@ -133,14 +136,19 @@ onCollections ->
           @editingSite().deleteMarker()
           @exitSite()
 
+        @savingSite(false)
+
+      failed_callback = =>
+        @savingSite(false)
+
         window.model.updateSitesInfo()
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
 
       if @editingSite().id()
-        @editingSite().update_site(@editingSite().diff(), callback)
+        @editingSite().update_site(@editingSite().diff(), callback, failed_callback)
       else
-        @editingSite().create_site(@editingSite().toJSON(), callback)
+        @editingSite().create_site(@editingSite().toJSON(), callback, failed_callback)
 
     @exitSite: ->
       if !@editingSite()?.inEditMode()
