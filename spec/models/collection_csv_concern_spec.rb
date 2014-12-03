@@ -5,26 +5,6 @@ describe Collection::CsvConcern, :type => :model do
   let(:collection) { user.create_collection Collection.make }
   let(:layer) { collection.layers.make }
 
-  it "imports csv" do
-    collection.import_csv user, %(
-      resmap-id, name, lat, lng
-      1, Site 1, 10, 20
-      2, Site 2, 30, 40
-    ).strip
-
-    collection.reload
-    roots = collection.sites
-    expect(roots.length).to eq(2)
-
-    expect(roots[0].name).to eq('Site 1')
-    expect(roots[0].lat.to_f).to eq(10.0)
-    expect(roots[0].lng.to_f).to eq(20.0)
-
-    expect(roots[1].name).to eq('Site 2')
-    expect(roots[1].lat.to_f).to eq(30.0)
-    expect(roots[1].lng.to_f).to eq(40.0)
-  end
-
   it "should print date as MM/DD/YYYY" do
     date = layer.date_fields.make :code => 'date'
     site = collection.sites.make :properties => {date.es_code => '1985-10-19T00:00:00Z'}
