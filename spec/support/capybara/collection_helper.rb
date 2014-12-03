@@ -49,4 +49,8 @@ module Capybara::CollectionHelper
     'div.tablescroll'
   end
 
+  def first_last_update_path
+    '//*[@id="collections-main"]/div[2]/div/div[2]/table/tbody/tr[1]/td[4]'
+  end
+
 end
