@@ -45,4 +45,14 @@ describe "snapshots", :type => :request, uses_collections_structure: true do
 
   end
 
+  it "should not edit site using snapshot", js:true do
+
+    choose 'Snapshot1'
+    visit collections_path
+    find(:xpath, first_collection_path).click
+    expect(page).not_to have_content "Kenya"
+    page.has_content? "You are currently viewing this collection's data as it was on snapshot Snapshot1."
+
+  end
+
 end
