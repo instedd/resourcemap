@@ -337,6 +337,16 @@ describe Search, :type => :model do
       assert_results collection.new_search.full_text_search("Censús"), a_site
     end
 
+    it "searches case-insensitive" do
+      a_site = collection.sites.make :name => "cutralco"
+      assert_results collection.new_search.full_text_search("CutralCo"), a_site
+    end
+
+    it "indexes accents-insensitive" do
+      colon = collection.sites.make  name: 'colón'
+      assert_results collection.new_search.full_text_search("colon"), colon
+    end
+
     it "escapes symbols" do
       assert_results collection.new_search.full_text_search("hello?/{#."), site4
     end

@@ -9,9 +9,9 @@ module Collection::ElasticsearchConcern
   def create_index
     index_properties = {
       refresh: true,
-      mappings: { site: site_mapping },
+      mappings: { site: site_mapping }
     }
-    index_properties.merge!(Site::IndexUtils::DowncaseAnalyzer)
+    index_properties.merge!(Site::IndexUtils::DefaultIndexSettings)
 
     result = Elasticsearch::Client.new.indices.create index: index_name, body: index_properties
 
