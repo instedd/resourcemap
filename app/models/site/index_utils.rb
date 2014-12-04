@@ -2,7 +2,7 @@ module Site::IndexUtils
   extend self
 
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
-  DowncaseAnalyzer = {
+  DefaultIndexSettings = {
     settings: {
       index: {
         analysis: {
