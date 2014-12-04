@@ -69,4 +69,12 @@ describe "snapshots", :type => :request, uses_collections_structure: true do
 
   end
 
+  it "should not take a snapshot", js:true do
+
+    click_button 'Take new snapshot'
+    expect(page).to have_content "Name can't be blank"
+    expect(page).to have_content 'Snapshot could not be created'
+
+  end
+
 end
