@@ -18,7 +18,9 @@ module KnockoutHelper
 
   def ko_number_field_tag(name, options = {})
     html_opts = options.delete(:html)
-    number_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: :afterkeydown)).merge(html_opts || {})
+    # Made this a text_field_tag instead of number because knockout + html number fields erased all input when value was invalid.
+    # Without validation. Text field allows for user feedback when value is invalid
+    text_field_tag name, '', ko(options.reverse_merge(value: name, valueUpdate: :afterkeydown)).merge(html_opts || {})
   end
 
   def ko_html_field_tag(name, options = {})
