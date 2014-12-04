@@ -45,5 +45,18 @@ describe "collection", :type => :request, uses_collections_structure: true do
     expect(page).to have_content "Collection Central Hospital updated"
   end
 
+  it "should clear search", js:true do
+
+    visit collections_path
+    find(:xpath, first_collection_path).click
+    fill_in 'search', :with => "Kenya\n"
+
+    expect(page).to have_content 'Kenya'
+    click_link 'clear search'
+
+    expect(page).to have_content 'Rwanda'
+
+  end
+
 end
 
