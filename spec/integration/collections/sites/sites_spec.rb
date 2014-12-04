@@ -26,4 +26,16 @@ describe "sites", :type => :request, uses_collections_structure: true do
 
   end
 
+  it "should filter sites by name", js:true do
+
+    find('.refine').click
+    find(:xpath, '//div[@class="refine-popup box"]/div[3]').click
+    find(:xpath, '//div[@class="refine-popup box"]/div[4]/input').set("Ken")
+    find(:xpath, '//div[@class="refine-popup box"]/div[4]/a').click
+    expect(page).to have_content 'where Name starts with "Ken" '
+    expect(page).to have_content 'Kenya'
+    expect(page).not_to have_content 'Rwanda'
+
+  end
+
 end
