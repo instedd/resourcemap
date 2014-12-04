@@ -58,5 +58,14 @@ describe "collection", :type => :request, uses_collections_structure: true do
 
   end
 
+  it "should delete a collection", js:true do
+
+    click_link "Delete collection"
+    click_link "Confirm"
+
+    expect(page).to have_content "Collection Central Hospital deleted"
+
+  end
+
 end
 
