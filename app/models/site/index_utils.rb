@@ -2,15 +2,26 @@ module Site::IndexUtils
   extend self
 
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
-  DowncaseAnalyzer = {
+  DefaultIndexSettings = {
     settings: {
       index: {
         analysis: {
           analyzer: {
+            default_index: {
+              tokenizer: :standard,
+              filter: [:lowercase, :preserving_asciifolding],
+              type: :custom
+            },
             downcase: {
               tokenizer: :keyword,
-              filter: :lowercase,
-              type: :custom,
+              filter: [:lowercase],
+              type: :custom
+            }
+          },
+          filter: {
+            preserving_asciifolding: {
+              type: :asciifolding,
+              preserve_original: true
             }
           }
         }
