@@ -67,5 +67,14 @@ describe "collection", :type => :request, uses_collections_structure: true do
 
   end
 
+  it "should change to collection via breadcrumb", js:true do
+
+    click_link "Settings"
+    page.find(:xpath, '//div[@class="BreadCrumb"]/ul/li[1]/a').click
+
+    expect(page).to have_content "My Collections"
+    expect(page).to have_content "Create Collection"
+  end
+
 end
 
