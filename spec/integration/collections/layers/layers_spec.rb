@@ -9,10 +9,13 @@ describe "layer", :type => :request, uses_collections_structure: true do
     who_african_region.memberships.create! :user_id => user.id, :admin => true
     login_as (user)
     visit collections_path
+    find(:xpath, first_collection_path).click
+    find("#collections-main").find("button.fconfiguration").click
   end
 
   it "should import layer", js:true do
 
+    visit collections_path
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[3]/button').click
     fill_in  "collection_name", :with => 'Test Collection'
     click_button "Save"
@@ -27,8 +30,6 @@ describe "layer", :type => :request, uses_collections_structure: true do
 
   it "should create layer", js:true do
 
-    find(:xpath, first_collection_path).click
-    find("#collections-main").find("button.fconfiguration").click
     click_link "Layers"
     click_button 'Add new layer'
     fill_in 'name', :with => 'Test'
@@ -44,13 +45,21 @@ describe "layer", :type => :request, uses_collections_structure: true do
 
   it "should delete layer", js:true do
 
-    find(:xpath, first_collection_path).click
-    find("#collections-main").find("button.fconfiguration").click
     click_link "Layers"
     click_button "Remove layer"
     confirm_popup
 
     expect(page).to have_content "Layer WHO African Region layer successfully deleted"
+
+  end
+
+  it "should edit layer", js:true do
+
+    click_link "Layers"
+    click_button "Edit"
+    fill_in 'Name', :with => 'Test Layer'
+    click_button 'Save layer'
+    expect(page).to have_content "Layer 'Test Layer' successfully saved"
 
   end
 
