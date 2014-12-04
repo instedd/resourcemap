@@ -13,13 +13,9 @@ module Collection::ElasticsearchConcern
     }
     index_properties.merge!(Site::IndexUtils::DefaultIndexSettings)
 
-    result = Elasticsearch::Client.new.indices.create index: index_name, body: index_properties
-
-    unless result["acknowledged"]
-      error = "Can't create index for collection #{name} (ID: #{id})."
-      Rails.logger.error error
-      Rails.logger.error "ElasticSearch response was: #{result}."
-      raise error
+    Elasticsearch::Client.new.tap do |client|
+      ensure_acknowledged client.indices.create index: raw_index_name, body: index_properties
+      ensure_acknowledged client.indices.put_alias index: raw_index_name, name: index_name
     end
 
     # This is because in the tests collections are created and the
@@ -67,6 +63,10 @@ module Collection::ElasticsearchConcern
     self.class.index_name id, options
   end
 
+  def raw_index_name
+    self.class.raw_index_name id
+  end
+
   def new_search(options = {})
     Search.new(self, options)
   end
@@ -89,22 +89,23 @@ module Collection::ElasticsearchConcern
     self.class.index_names_with_options(id, options)
   end
 
+  private
+
+  def ensure_acknowledged(result)
+    unless result["acknowledged"]
+      error = "Can't create index for collection #{name} (ID: #{id})."
+      Rails.logger.error error
+      Rails.logger.error "ElasticSearch response was: #{result}."
+      raise error
+    end
+  end
+
   module ClassMethods
+    ALIASING_PREFIX = 'active'
     INDEX_NAME_PREFIX = Rails.env == 'test' ? "collection_test" : "collection"
 
     def index_name(id, options = {})
-      if options[:snapshot_id]
-        return "#{INDEX_NAME_PREFIX}_#{id}_#{options[:snapshot_id]}"
-      end
-
-      if options[:user]
-        snapshot = Collection.find(id).snapshot_for(options[:user])
-        if snapshot
-          return "#{INDEX_NAME_PREFIX}_#{id}_#{snapshot.id}"
-        end
-      end
-
-      "#{INDEX_NAME_PREFIX}_#{id}"
+      alias_for_raw_index_name raw_index_name(id, options)
     end
 
     def index_names_with_options(*ids, options)
@@ -124,6 +125,27 @@ module Collection::ElasticsearchConcern
         index_name(id, options)
       end
       index_names.join ","
+    end
+
+    def raw_index_name(id, options = {})
+      if options[:snapshot_id]
+        return "#{INDEX_NAME_PREFIX}_#{id}_#{options[:snapshot_id]}"
+      end
+
+      if options[:user]
+        snapshot = Collection.find(id).snapshot_for(options[:user])
+        if snapshot
+          return "#{INDEX_NAME_PREFIX}_#{id}_#{snapshot.id}"
+        end
+      end
+
+      "#{INDEX_NAME_PREFIX}_#{id}"
+    end
+
+    private
+
+    def alias_for_raw_index_name(raw_index_name)
+      "#{ALIASING_PREFIX}_#{raw_index_name}"
     end
   end
 end
