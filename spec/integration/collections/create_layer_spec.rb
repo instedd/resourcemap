@@ -18,7 +18,6 @@ describe "create_layer", :type => :request do
    	fill_in 'code', :with => 'Codigo'
    	click_button 'Save layer'
    	expect(page).to have_content "Saving layer, please wait..."
-   	sleep 2
    	expect(page).to have_content "Layer 'Test' successfully saved"
 
   end
