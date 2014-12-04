@@ -63,4 +63,20 @@ describe "layer", :type => :request, uses_collections_structure: true do
 
   end
 
+  it "should sort layer", js:true do
+
+    layers = %w{ Beds Rooms }
+    layers.each do |layer|
+      lay = collection.layers.make(:name => layer)
+      lay.text_fields.make
+    end
+
+    click_link "Layers"
+    click_button "Move layer down"
+    page.find(:xpath, '//div[@id="layers-main"]/div[1]/button').click
+
+    expect(page).to have_content layers[0]
+
+  end
+
 end
