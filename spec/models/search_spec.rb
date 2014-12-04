@@ -342,12 +342,9 @@ describe Search, :type => :model do
       assert_results collection.new_search.full_text_search("CutralCo"), a_site
     end
 
-    describe "searches accents-insensitive" do
-      let!(:colon) { collection.sites.make  name: 'colón' }
-      let!(:paternal) { collection.sites.make name: 'paternal' }
-
-      it { assert_results collection.new_search.full_text_search("colon"), colon }
-      it { assert_results collection.new_search.full_text_search("páternal"), paternal }
+    it "indexes accents-insensitive" do
+      colon = collection.sites.make  name: 'colón'
+      assert_results collection.new_search.full_text_search("colon"), colon
     end
 
     it "escapes symbols" do

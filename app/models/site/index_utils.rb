@@ -9,13 +9,19 @@ module Site::IndexUtils
           analyzer: {
             default_index: {
               tokenizer: :standard,
-              filter: [:lowercase, :asciifolding],
+              filter: [:lowercase, :preserving_asciifolding],
               type: :custom
             },
             downcase: {
               tokenizer: :keyword,
               filter: [:lowercase],
               type: :custom
+            }
+          },
+          filter: {
+            preserving_asciifolding: {
+              type: :asciifolding,
+              preserve_original: true
             }
           }
         }

@@ -18,7 +18,6 @@ module ElasticSearch::QueryHelper
     #
     # Can return nil if no condition was generated except comparison of field values.
     def full_text_search(text, search_base, collection, fields = nil)
-      text = ActiveSupport::Inflector.transliterate(text) if text.is_a? String
       search_hash = SearchParser.new text
 
       conditions = []
