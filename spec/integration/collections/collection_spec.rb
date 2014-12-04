@@ -9,10 +9,13 @@ describe "collection", :type => :request, uses_collections_structure: true do
     who_african_region.memberships.create! :user_id => user.id, :admin => true
     login_as (user)
     visit collections_path
+    find(:xpath, first_collection_path).click
+    find("#collections-main").find("button.fconfiguration").click
   end
 
   it "should create collection", js:true do
 
+    visit collections_path
     page.find(:xpath, '//div[@id="collections-main"]/div[1]/div[3]/button').click
     fill_in  "collection_name", :with => 'My collection'
     click_button "Save"
@@ -26,13 +29,20 @@ describe "collection", :type => :request, uses_collections_structure: true do
 
   it "should change a collection name", js:true do
 
-    find(:xpath, first_collection_path).click
-    find("#collections-main").find("button.fconfiguration").click
     click_link "Settings"
     fill_in  "collection_name", :with => 'New Colection Name'
     click_button "Save"
     expect(page).to have_content "Collection New Colection Name updated"
 
+  end
+
+  it " should change a collections icon", js:true do
+
+    click_link "Settings"
+    page.find(".army").click
+    click_button "Save"
+
+    expect(page).to have_content "Collection Central Hospital updated"
   end
 
 end
