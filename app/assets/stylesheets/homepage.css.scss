@@ -160,3 +160,33 @@ ul#benefits-container li {
   vertical-align: middle;
   width: 96px;
 }
+
+:lang(fr)   {
+  .homepage {
+    .benefits .jcarousel-item h3 {
+      font-size: 14px;
+    }
+    h1 {
+      line-height: 45px;
+    }
+    .features div div {
+      position: relative;
+      padding-left: 15px;
+      span {
+        position: absolute;
+        left: 15px;
+        top: 4px;
+      }
+    }
+  }
+  .arrow-bullets p {
+    position: relative;
+    padding-left: 15px;
+
+    span {
+      position: absolute;
+      left: 2px;
+      top: 4px;
+    }
+  }
+}
