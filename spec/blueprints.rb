@@ -38,8 +38,8 @@ end
 Site.blueprint do
   collection
   name
-  lat { rand(180) - 90 }
-  lng { rand(360) - 180 }
+  lat { rand(179) - 89 }
+  lng { rand(359) - 179 }
   user { User.make }
 end
 
