@@ -16,4 +16,8 @@ module Capybara::CustomFinders
     find(:xpath, '//*[@id="memberPermissionsTable"]/table/tbody/tr[5]/td/div/div[5]/input').click
   end
 
+  def click_on(link)
+    find(:xpath, link).click
+  end
+
 end

@@ -53,4 +53,12 @@ module Capybara::CollectionHelper
     '//*[@id="collections-main"]/div[2]/div/div[2]/table/tbody/tr[1]/td[4]'
   end
 
+  def create_collection_link
+    '//div[@id="collections-main"]/div[1]/div[3]/button'
+  end
+
+  def breadcrumb_collection_link
+    '//div[@class="BreadCrumb"]/ul/li[1]/a'
+  end
+
 end
