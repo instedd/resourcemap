@@ -73,5 +73,15 @@ describe "collection", :type => :request, uses_collections_structure: true do
     expect(page).to have_content "My Collections"
     expect(page).to have_content "Create Collection"
   end
+
+  it "should export collection sites as RSS", js:true do
+    click_link('RSS')
+
+    new_window=page.driver.browser.window_handles.last
+    page.within_window new_window do
+        expect(page.title).to eq who_african_region.name
+        expect(page.current_url).to include("/api/collections/#{who_african_region.id}.rss")
+    end
+  end
 end
 
