@@ -24,7 +24,7 @@ onCollections ->
 
       @defaultValue = ko.observable()
 
-      @valueUI =  ko.computed
+      @valueUI = ko.computed
         read: =>
           @valueUIFor(@value())
         write: (value) =>
@@ -125,7 +125,7 @@ onCollections ->
         if value then @fieldHierarchyItemsMap[value] else ''
       else if @kind == 'site'
         name = window.model.currentCollection()?.findSiteNameById(value)
-        if value && name then name else ''
+        if name && value then name else value
       else if @kind == 'date'
         if value
           if @format == "dd_mm_yyyy"
@@ -151,7 +151,10 @@ onCollections ->
 
     valueUIFrom: (value) =>
       if @kind == 'site'
-        window.model.currentCollection()?.findSiteIdByName(value)
+        if site = window.model.currentCollection()?.findSiteIdByName(value)
+          site
+        else
+          value
       else
         value
 
