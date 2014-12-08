@@ -61,4 +61,12 @@ module Capybara::CollectionHelper
     '//div[@class="BreadCrumb"]/ul/li[1]/a'
   end
 
+  def expand_advanced_options
+    find(:xpath, '//div[@class="tabsline"]/div[@id="layers-main"]/div[2]/img').click
+  end
+
+  def edit_layer_button
+    '//div[@id="layers-main"]/div[2]/button'
+  end
+
 end
