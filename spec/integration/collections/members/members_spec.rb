@@ -52,6 +52,17 @@ describe "members", :type => :request, uses_collections_structure: true do
     expect(page).to have_content 'Leave collection'
     expect(page).to have_content "Members"
   end
+
+  it "should remove member", js:true do
+    member = User.make(:email => 'member@member.com')
+    who_african_region.memberships.create! :user_id => member.id, :admin => false
+    click_link "Members"
+    expand_member_settings
+    find('.icon').click
+    confirm_remove_member
+
+    expect(page).to have_no_content ('member@member.com')
+  end
 end
 
 describe "non-members", :type => :request, uses_collections_structure: true do

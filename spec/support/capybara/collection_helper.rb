@@ -84,4 +84,12 @@ module Capybara::CollectionHelper
   def access(collection_id,section)
     visit("http://127.0.0.1:56758/en/collections/#{collection_id}/#{section}")
   end
+
+  def expand_member_settings
+    find(:xpath, '//div[@id="memberPermissionsTable"]/table/tbody/tr[5]/td/div/div[1]/img').click
+  end
+
+  def confirm_remove_member
+    find(:xpath, '//div[@id="memberPermissionsTable"]/table/tbody/tr[5]/td/div[6]/div/div/div[3]/a[1]').click
+  end
 end
