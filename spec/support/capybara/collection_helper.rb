@@ -69,4 +69,7 @@ module Capybara::CollectionHelper
     '//div[@id="layers-main"]/div[2]/button'
   end
 
+  def no_member_email
+    '//div[@id="autocomplete_container"]/ul/li/a'
+  end
 end
