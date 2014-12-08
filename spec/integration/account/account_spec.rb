@@ -12,6 +12,7 @@ describe "account", :type => :request, uses_collections_structure: true do
   it "should login", js:true do
     who_african_region.memberships.create! :user_id => user.id
     visit collections_path
+
     click_link 'Log in'
 
     within login_form do
@@ -25,7 +26,6 @@ describe "account", :type => :request, uses_collections_structure: true do
   end
 
   it " should not change password", js:true do
-
     login_as (user)
     visit collections_path
     find_by_id('User').click
@@ -38,22 +38,19 @@ describe "account", :type => :request, uses_collections_structure: true do
     end
 
     expect(page).to have_content "Password confirmation doesn't match Password"
-
   end
 
   it " should log out", js:true do
-
     login_as (user)
     visit collections_path
     find_by_id('User').click
+
     click_link 'Sign out'
 
     expect(page).to have_content('Signed out successfully.')
-
   end
 
   it "should create an account", js:true do
-
     click_link 'Create account'
     page.has_content? "form#new_user"
 
@@ -64,20 +61,23 @@ describe "account", :type => :request, uses_collections_structure: true do
       fill_in  "Phone number", :with => "1234567"
       click_button ('Create account')
     end
+
     new_user = User.find_by_email('user@manas.com.ar')
     new_user.should_not be_nil
     new_user.confirmation_token.should_not be_nil
+
     expect(new_user.confirmed?).to be_falsey
 
     visit "/users/confirmation?#{get_confirmation_token()}"
 
     page.should have_content('Your account was successfully confirmed. You are now signed in.')
+
     new_user = User.find_by_email('user@manas.com.ar')
+
     expect(new_user.confirmed?).to be_truthy
   end
 
   it "should fail to login", js:true do
-
     click_link 'Log in'
 
     within login_form do
@@ -86,13 +86,10 @@ describe "account", :type => :request, uses_collections_structure: true do
       click_button('Log In')
     end
 
-    page.save_screenshot 'login_fail.png'
     expect(page).to have_content("Invalid email or password.")
-
   end
 
   it " should change phone number", js:true do
-
     login_as (user)
     visit collections_path
     find_by_id('User').click
@@ -104,14 +101,14 @@ describe "account", :type => :request, uses_collections_structure: true do
     end
 
     expect(page).to have_content 'Account updated successfully'
+
     find_by_id('User').click
     click_link 'Settings'
-    expect(page).to have_content "12345"
 
+    expect(page).to have_content "12345"
   end
 
   it "should change password", js:true do
-
     login_as (user)
     visit collections_path
     find_by_id('User').click
@@ -140,8 +137,6 @@ describe "account", :type => :request, uses_collections_structure: true do
     end
 
     page.should have_content(user.email)
-
   end
-
 end
 
