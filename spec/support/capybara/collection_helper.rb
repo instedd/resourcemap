@@ -80,4 +80,8 @@ module Capybara::CollectionHelper
   def fill_starts_with(name)
     find(:xpath, '//div[@class="refine-popup box"]/div[4]/input').set(name)
   end
+
+  def access(collection_id,section)
+    visit("http://127.0.0.1:56758/en/collections/#{collection_id}/#{section}")
+  end
 end

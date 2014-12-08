@@ -54,3 +54,33 @@ describe "members", :type => :request, uses_collections_structure: true do
   end
 end
 
+describe "non-members", :type => :request, uses_collections_structure: true do
+  let (:user) do
+    new_user
+  end
+
+  before :each do
+    who_african_region.memberships.create!
+    login_as (user)
+    visit collections_path
+  end
+
+  it "should not access to Collection settings if user do not have permission to access the collection", js:true do
+    access(who_african_region.id,"members")
+
+    expect(page).not_to have_content 'Members'
+
+    access(who_african_region.id,"settings")
+
+    expect(page).not_to have_content 'Settings'
+
+    access(who_african_region.id,"layers")
+
+    expect(page).not_to have_content 'Layers'
+
+    access(who_african_region.id,"import_wizard")
+
+    expect(page).not_to have_content 'Import Wizard'
+  end
+end
+

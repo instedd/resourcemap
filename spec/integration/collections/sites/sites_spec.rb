@@ -26,7 +26,6 @@ describe "sites", :type => :request, uses_collections_structure: true do
 
   it "should filter sites by name", js:true do
     find('.refine').click
-    sleep 3
     click_on expand_name
     fill_starts_with("Ken")
     find('.button').click
@@ -35,5 +34,4 @@ describe "sites", :type => :request, uses_collections_structure: true do
     expect(page).to have_content 'Kenya'
     expect(page).not_to have_content 'Rwanda'
   end
-
 end
