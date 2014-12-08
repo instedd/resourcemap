@@ -72,4 +72,12 @@ module Capybara::CollectionHelper
   def no_member_email
     '//div[@id="autocomplete_container"]/ul/li/a'
   end
+
+  def expand_name
+    '//div[@class="refine-popup box"]/div[3]'
+  end
+
+  def fill_starts_with(name)
+    find(:xpath, '//div[@class="refine-popup box"]/div[4]/input').set(name)
+  end
 end

@@ -13,7 +13,6 @@ describe "sites", :type => :request, uses_collections_structure: true do
   end
 
   it "should create a site", js:true do
-
     find_button("Create Site").click
     fill_in 'name', :with => 'New site'
     fill_in 'locationText', :with => '-37.991902, -57.602087'
@@ -23,19 +22,18 @@ describe "sites", :type => :request, uses_collections_structure: true do
 
     find(:xpath, first_collection_path).click
     click_link 'Edit Site'
-
   end
 
   it "should filter sites by name", js:true do
-
     find('.refine').click
-    find(:xpath, '//div[@class="refine-popup box"]/div[3]').click
-    find(:xpath, '//div[@class="refine-popup box"]/div[4]/input').set("Ken")
-    find(:xpath, '//div[@class="refine-popup box"]/div[4]/a').click
+    sleep 3
+    click_on expand_name
+    fill_starts_with("Ken")
+    find('.button').click
+
     expect(page).to have_content 'where Name starts with "Ken" '
     expect(page).to have_content 'Kenya'
     expect(page).not_to have_content 'Rwanda'
-
   end
 
 end
