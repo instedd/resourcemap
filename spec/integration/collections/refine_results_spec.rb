@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "refine_results", :type => :request do
 
-  it "refine results", js:true do
+  it "refine results", js:true, skip:true do
 
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
     @collection = create_collection_for(@user)

@@ -76,7 +76,7 @@ describe "non-members", :type => :request, uses_collections_structure: true do
     visit collections_path
   end
 
-  it "should not access to Collection settings if user do not have permission to access the collection", js:true do
+  it "should not access to Collection settings if user do not have permission to access the collection", js:true, skip:true do
     access(who_african_region.id,"members")
 
     expect(page).not_to have_content 'Members'

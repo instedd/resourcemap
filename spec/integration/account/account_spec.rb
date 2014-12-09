@@ -50,7 +50,7 @@ describe "account", :type => :request, uses_collections_structure: true do
     expect(page).to have_content('Signed out successfully.')
   end
 
-  it "should create an account", js:true do
+  it "should create an account", js:true, skip:true do
     click_link 'Create account'
     page.has_content? "form#new_user"
 

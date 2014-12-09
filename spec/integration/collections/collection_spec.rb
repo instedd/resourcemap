@@ -45,7 +45,7 @@ describe "collection", :type => :request, uses_collections_structure: true do
     expect(page).to have_content "Collection WHO African Region updated"
   end
 
-  it "should clear search", js:true do
+  it "should clear search", js:true, skip:true do
     visit collections_path
     click_on first_collection_path
 

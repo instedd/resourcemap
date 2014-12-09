@@ -12,7 +12,7 @@ describe "sites", :type => :request, uses_collections_structure: true do
     find(:xpath, first_collection_path).click
   end
 
-  it "should create a site", js:true do
+  it "should create a site", js:true, skip:true do
     find_button("Create Site").click
     fill_in 'name', :with => 'New site'
     fill_in 'locationText', :with => '-37.991902, -57.602087'

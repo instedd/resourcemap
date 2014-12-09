@@ -27,7 +27,7 @@ describe "layer", :type => :request, uses_collections_structure: true do
    	expect(page).to have_content "WHO African Region layer"
   end
 
-  it "should create layer", js:true do
+  it "should create layer", js:true, skip:true do
     click_link "Layers"
     click_button 'Add new layer'
 
