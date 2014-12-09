@@ -53,6 +53,7 @@ describe "collection", :type => :request, uses_collections_structure: true do
 
     expect(page).to have_content 'Kenya'
 
+    sleep 1
     click_link 'clear search'
 
     expect(page).to have_content 'Rwanda'

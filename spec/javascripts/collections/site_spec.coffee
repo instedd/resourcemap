@@ -92,7 +92,6 @@ describe 'Collection', ->
 
         @site = new Site @collection, @data_site
 
-        debugger
         @layer.fields.push(@textField)
         @layer.fields.push(@otherField)
         @collection.layers.push(@layer)

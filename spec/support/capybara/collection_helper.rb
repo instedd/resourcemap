@@ -90,6 +90,6 @@ module Capybara::CollectionHelper
   end
 
   def confirm_remove_member
-    find(:xpath, '//div[@id="memberPermissionsTable"]/table/tbody/tr[5]/td/div[6]/div/div/div[3]/a[1]').click
+    find('a', :text => 'Confirm').click
   end
 end
