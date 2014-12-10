@@ -81,15 +81,15 @@ module Capybara::CollectionHelper
     find(:xpath, '//div[@class="refine-popup box"]/div[4]/input').set(name)
   end
 
-  def access(collection_id,section)
-    visit("http://127.0.0.1:56758/en/collections/#{collection_id}/#{section}")
-  end
-
   def expand_member_settings
     find(:xpath, '//div[@id="memberPermissionsTable"]/table/tbody/tr[5]/td/div/div[1]/img').click
   end
 
   def confirm_remove_member
     find('a', :text => 'Confirm').click
+  end
+
+  def access_denied_message
+     "The page you are trying to access doesn't exist or you don't have permission for accessing it. Contact the administrator if you think you should."
   end
 end

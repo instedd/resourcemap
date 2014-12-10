@@ -76,22 +76,26 @@ describe "non-members", :type => :request, uses_collections_structure: true do
     visit collections_path
   end
 
-  it "should not access to Collection settings if user do not have permission to access the collection", js:true, skip:true do
-    access(who_african_region.id,"members")
+  it "should not access to Collection settings if user do not have permission to access the collection", js:true do
 
+    id = who_african_region.id
+
+    visit(collection_members_path(:collection_id => id))
     expect(page).not_to have_content 'Members'
+    expect(page).to have_content access_denied_message
 
-    access(who_african_region.id,"settings")
-
+    visit(collection_settings_path(:collection_id => id))
     expect(page).not_to have_content 'Settings'
+    expect(page).to have_content access_denied_message
 
-    access(who_african_region.id,"layers")
-
+    visit(collection_layers_path(:collection_id => id))
     expect(page).not_to have_content 'Layers'
+    expect(page).to have_content access_denied_message
 
-    access(who_african_region.id,"import_wizard")
-
+    visit(collection_import_wizard_path(:collection_id => id))
     expect(page).not_to have_content 'Import Wizard'
+    expect(page).to have_content access_denied_message
   end
+
 end
 
