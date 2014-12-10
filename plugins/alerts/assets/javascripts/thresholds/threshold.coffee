@@ -7,7 +7,7 @@ onThresholds -
       @isAllCondition = ko.observable data?.is_all_condition.toString()
       @isNotify = ko.observable data?.is_notify.toString()
       @messageNotification = ko.observable data?.message_notification
-    
+
       @fieldsEmail  = ko.observableArray data?.email_notification["fields"] ? []
       @usersEmail   = ko.observableArray data?.email_notification["users"] ? []
       @membersEmail = ko.observableArray data?.email_notification["members"] ? []
@@ -23,6 +23,9 @@ onThresholds -
       @icon = ko.observable(collectionIcon ? "default")
       @iconUrl = ko.computed => "/assets/markers/resmap_#{@alertMarker(@color())}_#{@icon()}.png"
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
+      @missingFields = @conditions().some( (condition) ->
+        condition.field() == undefined
+      )
       @propertyNameError = ko.computed =>
         if $.trim(@propertyName()).length > 0
           return null
@@ -76,11 +79,11 @@ onThresholds -
         users: @usersEmail()
         fields: @fieldsEmail()
         members: @membersEmail()
-      phone_notification: 
+      phone_notification:
         users: @usersPhone()
         fields: @fieldsPhone()
         members: @membersPhone()
-      
+
       message_notification: @messageNotification()
       sites: $.map(@alertSites(), (site) -> site.toJSON())
       conditions: $.map(@conditions(), (condition) -> condition.toJSON())
@@ -92,9 +95,9 @@ onThresholds -
 
     addFieldNameToMessageNotification:(field) =>
       @messageNotification(@messageNotification() + ' [' + field.name() + ']')
-    
-    # will removed it as soon as possible 
-    # we changed color code but on ES not change so we need this method 
+
+    # will removed it as soon as possible
+    # we changed color code but on ES not change so we need this method
     alertMarker: (color_code) ->
       switch color_code
         when '#b30b0b'

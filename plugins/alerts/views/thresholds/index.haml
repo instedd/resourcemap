@@ -17,7 +17,13 @@
         %span
 
           %span{ ko(text: :propertyName) }
-          → ; in
+          →
+          /ko if: missingFields
+          Invalid because of a deleted field in a condition
+          //ko
+
+          /ko if: !missingFields
+          in
           /ko if: isAllSite() == "true"
           all sites
           //ko
@@ -44,13 +50,16 @@
           %span{ ko(text: 'op().label()') }
           %span{ ko(text: 'formattedValue') }
 
+
           /ko if: valueType().label() == 'a percentage of'
           of
           %span{ ko(text: 'compareField().name()') }
           //ko
+          -# Closing for !missingFields:
+          //ko
 
           //ko
-          ,change icon to:
+          → change icon to:
           %br
           .alert-icon
             %img{"data-bind" => "attr: { src:iconUrl }" }
@@ -99,6 +108,8 @@
           Any of the following conditions
         %br
         /ko foreach :conditions
+        /ko if: !missingField
+
         %select.condition{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
 
         /ko if: field().operators().length == 1
@@ -123,8 +134,14 @@
         %select.compare{ ko(options: '$root.compareFields', optionsText: "'name'", value: :compareField, hasfocus: true) }
         //ko
         //ko
-
         //ko
+        -# Missing Field closure:
+        //ko
+
+        /ko if: missingField
+        Invalid condition due to field missing. Please remove
+        //ko
+
         %button.premove{ ko(click: '$parent.removeCondition') }
         %br
         //ko
