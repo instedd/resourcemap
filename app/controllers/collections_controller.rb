@@ -44,7 +44,7 @@ class CollectionsController < ApplicationController
     redirect_to collection_layers_path(collection), notice: notice_text unless current_user.admins? the_other_collection
 
     #TODO: refactor :)
-    json_layers = the_other_collection.layers.includes(:fields).all.as_json(include: :fields).to_json
+    json_layers = the_other_collection.layers.includes(:fields).as_json(include: :fields).to_json
 
     collection.import_schema json_layers, current_user
     redirect_to collection_layers_path(collection), notice: notice_text

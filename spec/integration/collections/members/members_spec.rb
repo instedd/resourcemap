@@ -98,4 +98,3 @@ describe "non-members", :type => :request, uses_collections_structure: true do
   end
 
 end
-

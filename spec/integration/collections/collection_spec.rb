@@ -78,8 +78,7 @@ describe "collection", :type => :request, uses_collections_structure: true do
   it "should export collection sites as RSS", js:true do
     click_link('RSS')
 
-    new_window=page.driver.browser.window_handles.last
-    page.within_window new_window do
+    page.within_window windows.last do
         expect(page.title).to eq who_african_region.name
         expect(page.current_url).to include("/api/collections/#{who_african_region.id}.rss")
     end
@@ -88,8 +87,7 @@ describe "collection", :type => :request, uses_collections_structure: true do
   it "should export collection sites as json", js:true do
     click_link('JSON')
 
-    new_window=page.driver.browser.window_handles.last
-    page.within_window new_window do
+    page.within_window windows.last do
         expect(page).to have_content who_african_region.name
         expect(page.current_url).to include("/api/collections/#{who_african_region.id}.json")
     end
