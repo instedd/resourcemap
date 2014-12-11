@@ -157,18 +157,17 @@ onCollections ->
       field.exitEditing() for field in @currentCollection().fields()
       if @editingSite()?.inEditMode()
         @editingSite().exitEditMode()
-      else
-        if @editingSite()
-          # Unselect site if it's not on the tree
-          @editingSite().editingLocation(false)
-          @editingSite().deleteMarker() unless @editingSite().id()
-          @editingSite(null)
-          window.model.setAllMarkersActive()
-          if @goBackToTable
-            @showTable()
-            delete @goBackToTable
-          else
-            @reloadMapSites()
+      if @editingSite()
+        # Unselect site if it's not on the tree
+        @editingSite().editingLocation(false)
+        @editingSite().deleteMarker() unless @editingSite().id()
+        @editingSite(null)
+        window.model.setAllMarkersActive()
+        if @goBackToTable
+          @showTable()
+          delete @goBackToTable
+        else
+          @reloadMapSites()
 
       @loadBreadCrumb()
       @rewriteUrl()
