@@ -138,7 +138,7 @@
       //ko
       .right
         %button.grey{ko(disable: '$root.savingSite'), type: 'submit'} Done
-        %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
+        %span{ko(click: 'exitEditMode'), style: 'cursor:pointer'} Cancel
       .clear
   //ko
 
@@ -245,7 +245,7 @@
               //ko
               //ko
               //ko
-    /ko if: !$root.currentSnapshot() && $root.currentCollection().sitesPermission.canUpdate($root.showSite())
+    /ko if: !$root.currentSnapshot() && $root.currentCollection() && $root.currentCollection().sitesPermission.canUpdate($root.showSite())
     .tablebottom
       -# if (can? :edit, site)
       - if current_user && !current_user.is_guest
