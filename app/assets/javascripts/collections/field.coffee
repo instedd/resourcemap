@@ -177,7 +177,7 @@ onCollections ->
     # Returns whether the field has actually entered edit mode or not
     onEnteredEditMode: =>
       return false if window.model.currentCollection()?.currentSnapshot
-      @originalValue = @value()
+      @originalValue = @value() unless @error()
 
       # For select many, if it's an array we need to duplicate it
       if @kind == 'select_many' && typeof(@) == 'object'
