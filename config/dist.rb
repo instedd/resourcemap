@@ -6,6 +6,7 @@ set :maintainer, 'Carolina Hadad <chadad@manas.com.ar>'
 set :description, 'InSTEDD Resource Map'
 set :summary, description
 
+use :git
 use :mail
 use :nodejs
 
