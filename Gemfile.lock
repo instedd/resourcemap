@@ -41,7 +41,7 @@ GIT
 
 GIT
   remote: https://github.com/manastech/dist.git
-  revision: 59f65f566f293f8f545fbafbe5fbe034f16306c0
+  revision: 570e2bd1c90104df8880edc93cf8a1a659fcf093
   specs:
     dist (0.0.2)
 
