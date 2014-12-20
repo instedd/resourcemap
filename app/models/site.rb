@@ -132,18 +132,19 @@ class Site < ActiveRecord::Base
     end
 
     if site_params.has_key?("properties")
-      fields = collection.fields.index_by(&:es_code)
+      fields_by_es_code = collection.fields.index_by(&:es_code)
+      fields_by_code = collection.fields.index_by(&:code)
 
       properties_will_change!
 
-      site_params["properties"].each_pair do |es_code, value|
+      site_params["properties"].each_pair do |es_code_or_code, value|
+        field = fields_by_es_code[es_code_or_code] || fields_by_code[es_code_or_code]
 
-        #Next if there is no changes in the property
-        next if value == self.properties[es_code]
+        # Next if there is no changes in the property
+        next if value == self.properties[field.es_code]
 
-        field = fields[es_code]
-        user.authorize! :update_site_property, field, "Not authorized to update site property with code #{es_code}"
-        self.properties[es_code] = field.decode_from_ui(value)
+        user.authorize! :update_site_property, field, "Not authorized to update site property with code #{es_code_or_code}"
+        self.properties[field.es_code] = field.decode_from_ui(value)
       end
     end
 

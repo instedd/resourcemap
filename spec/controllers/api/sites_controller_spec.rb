@@ -88,7 +88,7 @@ describe Api::SitesController, :type => :controller do
 
     before(:each) { sign_in user }
 
-    it 'should create a new site' do
+    it 'should create a new site using es_code' do
       site_params = {:name => "new site", :lat => "-7.338135", :lng => "29.836455", :properties => {
         text.es_code => "new text",
         numeric.es_code => "123",
@@ -115,6 +115,33 @@ describe Api::SitesController, :type => :controller do
       validate_site_property_value(new_site, email_field, "myemail@mail.com")
     end
 
+
+    it 'should create a new site using codes' do
+      site_params = {:name => "new site", :lat => "-7.338135", :lng => "29.836455", :properties => {
+        text.code => "new text",
+        numeric.code => "123",
+        select_one.code => 1,
+        select_many.code => [1,2],
+        hierarchy.code => "101",
+        site_field.code=> site.id,
+        date.code => "2013-02-05T00:00:00Z",
+        director.code => user.email,
+        email_field.code => "myemail@mail.com" }}.to_json
+      post :create, {:id => collection.id, :site => site_params}
+
+      expect(response).to be_success
+      new_site = Site.find_by_name "new site"
+
+      validate_site_property_value(new_site, text, "new text")
+      validate_site_property_value(new_site, numeric, 123)
+      validate_site_property_value(new_site, select_one, 1)
+      validate_site_property_value(new_site, select_many, [1,2])
+      validate_site_property_value(new_site, hierarchy, "101")
+      validate_site_property_value(new_site, site_field, site.id)
+      validate_site_property_value(new_site, date, "2013-02-05T00:00:00Z")
+      validate_site_property_value(new_site, director, user.email)
+      validate_site_property_value(new_site, email_field, "myemail@mail.com")
+    end
 
     context 'full update' do
       it "should update fields" do
@@ -220,13 +247,27 @@ describe Api::SitesController, :type => :controller do
         expect(modified_site.properties[text.es_code]).to eq("existing value")
       end
 
-      it 'should not delete existing properties when only the one of them is modified' do
+      it 'should not delete existing properties when only the one of them is modified (using es_code)' do
         site.properties[text.es_code] = "existing value"
         site.properties[numeric.es_code] = 12
 
         site.save!
 
         site_params = {:properties => {text.es_code => "new value"}}.to_json
+        post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+
+        modified_site = site.reload
+        expect(modified_site.properties[text.es_code]).to eq("new value")
+        expect(modified_site.properties[numeric.es_code]).to eq(12)
+      end
+
+      it 'should not delete existing properties when only the one of them is modified (using code)' do
+        site.properties[text.es_code] = "existing value"
+        site.properties[numeric.es_code] = 12
+
+        site.save!
+
+        site_params = {:properties => {text.code => "new value"}}.to_json
         post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
         modified_site = site.reload
