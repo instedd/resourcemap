@@ -1,0 +1,192 @@
+.homepage {
+    width: 960px;
+    margin: 0 auto;
+
+  h1.home {
+    margin-top: 10px;
+  }
+
+  h2 {
+    line-height: 27px;
+  }
+
+  .illustration {
+    background: url("/assets/data_collection.png") no-repeat scroll 0 0 transparent;
+    height: 286px;
+    width: 401px;
+  }
+
+  .food {
+    background: url("/assets/tracking_food.jpg") no-repeat scroll 0 0 transparent;
+    height: 260px;
+    width: 360px;
+  }
+
+  .medical {
+    background: url("/assets/tracking_medical.png") no-repeat scroll 0 0 transparent;
+    height: 200px;
+    width: 300px;
+  }
+}
+
+.arrow-bullets {
+  p {
+    font-size: 16px;
+  }
+
+  .r-arrow {
+    margin-left: 0 !important;
+  }
+}
+.orange.large {
+  font-size: 24px;
+  padding: 10px 15px !important;
+  height: auto;
+}
+
+ul#benefits-container li {
+  @include clearfix();
+}
+
+
+.get-update {
+  background: url("/assets/get_update.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.visualize-and-update {
+  background: url("/assets/visualize_and_update.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.update {
+  background: url("/assets/update.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.identify {
+  background: url("/assets/identify.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.receive {
+  background: url("/assets/receive.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.collaborate {
+  background: url("/assets/collaborate.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.maintain {
+  background: url("/assets/maintain.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.tracking-medical-supplies {
+  background: url("/assets/tracking_medical_supplies_and_personnel.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.managing-disease-prevention-supplies {
+  background: url("/assets/managing_disease_prevention_supplies.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.monitoring-food-price {
+  background: url("/assets/monitoring_food_price_and_supply_levels.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.testing-enviromental-health {
+  background: url("/assets/testing_enviromental_health.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.client-cnm {
+  background: url("/assets/centre_nationale_de_malaria.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.client-wranda-ministry-of-health {
+  background: url("/assets/rwanda_coat_of_arms.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.client-CMPE {
+  background: url("/assets/Center_for_Malaria_Parasitology_and_Entomology_of_Lao_PDR.png") no-repeat scroll center top transparent;
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+:lang(fr)   {
+  .homepage {
+    .benefits .jcarousel-item h3 {
+      font-size: 14px;
+    }
+    h1 {
+      line-height: 45px;
+    }
+    .features div div {
+      position: relative;
+      padding-left: 15px;
+      span {
+        position: absolute;
+        left: 15px;
+        top: 4px;
+      }
+    }
+  }
+  .arrow-bullets p {
+    position: relative;
+    padding-left: 15px;
+
+    span {
+      position: absolute;
+      left: 2px;
+      top: 4px;
+    }
+  }
+}

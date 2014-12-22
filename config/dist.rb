@@ -6,6 +6,7 @@ set :maintainer, 'Carolina Hadad <chadad@manas.com.ar>'
 set :description, 'InSTEDD Resource Map'
 set :summary, description
 
+use :git
 use :mail
 use :nodejs
 
@@ -19,4 +20,8 @@ end
 
 config :newrelic do
   string :license_key, prompt: "New Relic license key (leave empty to disable)"
+end
+
+config :guisso do
+
 end

@@ -38,9 +38,7 @@
       %span{ko(text: :name, attr: {title: :name})}
       - #if can? :show, collection
       - if !current_user.is_guest
-        /ko if: anyUpdatePermissions
         %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button'}
-        //ko
 
   .tablescroll.cheight.sites
     %table.GralTable.CleanTable
@@ -139,15 +137,15 @@
           The site cannot be saved due to validation errors
       //ko
       .right
-        %button.grey{type: 'submit'} Done
-        %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
+        %button.grey{ko(disable: '$root.savingSite'), type: 'submit'} Done
+        %span{ko(click: 'exitEditMode'), style: 'cursor:pointer'} Cancel
       .clear
   //ko
 
   -# Show Site form
   /ko if: showSite
   %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, novalidate: 'novalidate'}
-    .tableheader
+    .tableheader.elipsis
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
       %span{ko(text: :name)}
@@ -247,7 +245,7 @@
               //ko
               //ko
               //ko
-    /ko if: !$root.currentSnapshot() && $root.currentCollection().sitesPermission.canUpdate($root.showSite())
+    /ko if: !$root.currentSnapshot() && $root.currentCollection() && $root.currentCollection().sitesPermission.canUpdate($root.showSite())
     .tablebottom
       -# if (can? :edit, site)
       - if current_user && !current_user.is_guest

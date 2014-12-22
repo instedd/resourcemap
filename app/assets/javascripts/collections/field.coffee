@@ -24,18 +24,19 @@ onCollections ->
 
       @defaultValue = ko.observable()
 
-      @valueUI =  ko.computed
-       read: =>  @valueUIFor(@value())
-       write: (value) =>
-        if !value
-          new_value = @defaultValue() || ''
-          @value(new_value)
-          @value.valueHasMutated()
-        else
-          new_value = @valueUIFrom(value)
-          if new_value
+      @valueUI = ko.computed
+        read: =>
+          @valueUIFor(@value())
+        write: (value) =>
+          if !value
+            new_value = @defaultValue() || ''
             @value(new_value)
             @value.valueHasMutated()
+          else
+            new_value = @valueUIFrom(value)
+            if new_value
+              @value(new_value)
+              @value.valueHasMutated()
 
       if @kind in ['select_one', 'select_many']
         @options = if data.config?.options?
@@ -124,7 +125,7 @@ onCollections ->
         if value then @fieldHierarchyItemsMap[value] else ''
       else if @kind == 'site'
         name = window.model.currentCollection()?.findSiteNameById(value)
-        if value && name then name else ''
+        if name && value then name else value
       else if @kind == 'date'
         if value
           if @format == "dd_mm_yyyy"
@@ -150,7 +151,10 @@ onCollections ->
 
     valueUIFrom: (value) =>
       if @kind == 'site'
-        window.model.currentCollection()?.findSiteIdByName(value)
+        if site = window.model.currentCollection()?.findSiteIdByName(value)
+          site
+        else
+          value
       else
         value
 
@@ -173,7 +177,7 @@ onCollections ->
     # Returns whether the field has actually entered edit mode or not
     onEnteredEditMode: =>
       return false if window.model.currentCollection()?.currentSnapshot
-      @originalValue = @value()
+      @originalValue = @value() unless @error()
 
       # For select many, if it's an array we need to duplicate it
       if @kind == 'select_many' && typeof(@) == 'object'

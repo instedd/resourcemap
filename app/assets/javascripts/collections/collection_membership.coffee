@@ -11,9 +11,17 @@ onCollections ->
         callback() if typeof(callback) is 'function'
         return
 
+      loaded = false
+
       # TODO: Remove this and load it form curren_user_membership
       $.get "/collections/#{@id}/sites_permission", {}, (data) =>
         @sitesPermission = new SitesPermission(data)
+        if loaded
+          @membershipInitialized = true
+          callback() if typeof(callback) is 'function'
+        else
+          loaded = true
+
 
       $.get "/collections/#{@id}/current_user_membership.json", {}, (membership) =>
         @namePermission = membership.name
@@ -21,9 +29,12 @@ onCollections ->
         nameOrLocation = @namePermission == "update" || @locationPermission == "update"
         @anyUpdatePermissions = nameOrLocation || $.grep(membership.layers, (l) ->
           l.write).length > 0
+        if loaded
+          @membershipInitialized = true
+          callback() if typeof(callback) is 'function'
+        else
+          loaded = true
 
-      @membershipInitialized = true
-      callback() if typeof(callback) is 'function'
 
     @readable: (site) ->
       @sitesPermission.canRead(site)

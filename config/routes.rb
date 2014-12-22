@@ -68,6 +68,7 @@ ResourceMap::Application.routes.draw do
           get 'search'
           post 'set_layer_access_anonymous_user'
           post 'set_access_anonymous_user'
+          delete :leave_collection
         end
         member do
           post 'set_access'
@@ -84,8 +85,6 @@ ResourceMap::Application.routes.draw do
       get 'quotas'
       get 'csv_template'
       get 'max_value_of_property'
-
-      post 'upload_csv'
 
       post 'create_snapshot'
       post 'load_snapshot'

@@ -52,7 +52,7 @@
     -# Form editor or new
     /ko if: $data == $root.currentGateway()
     .box.w60
-      .middlebuttons
+      %div
         %label{ko(visible: '!nationalSetup()', css: {error: 'nameError'})} Name
         %input{ko(visible: '!nationalSetup()', value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
         %br

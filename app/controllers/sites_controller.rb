@@ -99,7 +99,6 @@ class SitesController < ApplicationController
     if params[:collection_ids].is_a? String
       collection_ids_array = params[:collection_ids].split ","
     elsif params[:collection_ids].is_a? Array
-      p "en el array"
       collection_ids_array = params[:collection_ids]
     end
 

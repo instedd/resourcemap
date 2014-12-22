@@ -8,8 +8,10 @@ class Snapshot < ActiveRecord::Base
   after_create :create_index
 
   def create_index
-    index_properties = { mappings: { site: site_mapping } }
-    index_properties.merge!(Site::IndexUtils::DowncaseAnalyzer)
+    index_properties = {
+      mappings: { site: site_mapping }
+    }
+    index_properties.merge!(Site::IndexUtils::DefaultIndexSettings)
 
     client = Elasticsearch::Client.new
     client.indices.create index: index_name, body: index_properties

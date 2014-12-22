@@ -1,7 +1,7 @@
 /ko if: !currentCollection() && !editingSite()
 -# Collections
 .tableheader.expanded
-  %div.title My Collections
+  .title My Collections
   .mapheader.right
     %button.icon_button.right{ko(click: '$root.togglefullscreen', css: {frestore: '$root.fullscreen()', ffullscreen: '!$root.fullscreen()'}) }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: "{active: !$root.showingMap()}")}
@@ -31,10 +31,10 @@
 /ko if: !editingSite()
 /ko with: currentCollection
 .tableheader.expanded
-  %div.title
+  .title
     %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
     %span
-    %span.elipsis{ko(text: :name), style: "display: inline-block;"}
+    %span.elipsis{ko(text: :name)}
     - if !current_user.is_guest
       %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
   = render 'collections/index/export'

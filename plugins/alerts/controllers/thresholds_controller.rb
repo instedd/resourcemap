@@ -20,11 +20,13 @@ class ThresholdsController < ApplicationController
     params[:threshold][:phone_notification] = {} unless params[:threshold][:phone_notification] # phone not selected
     threshold = thresholds.new params[:threshold].except(:sites)
     threshold.sites = Site.get_id_and_name params[:threshold][:sites] if params[:threshold][:sites]#select only id and name
+    authorize! :create, threshold
     threshold.save!
     render_json threshold
   end
 
   def set_order
+    authorize! :set_order, threshold
     threshold.update_attribute :ord, params[:ord]
 
     render_json threshold
@@ -34,6 +36,7 @@ class ThresholdsController < ApplicationController
     params[:threshold][:email_notification] = {} unless params[:threshold][:email_notification] # email not selected
     params[:threshold][:phone_notification] = {} unless params[:threshold][:phone_notification] # phone not selected
     params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]} if params[:threshold][:sites]
+    authorize! :update, threshold
     threshold.update_attributes! params[:threshold].except(:sites)
     if params[:threshold][:sites]
       threshold.sites = Site.get_id_and_name params[:threshold][:sites]
@@ -43,8 +46,8 @@ class ThresholdsController < ApplicationController
   end
 
   def destroy
-    threshold.destroy
-
+    authorize! :destroy, threshold
+    threshold.destroy!
     render_json threshold
   end
 

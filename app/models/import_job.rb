@@ -53,7 +53,11 @@ class ImportJob < ActiveRecord::Base
   end
 
   def finish
-    Rails.logger.error "Inconsistent status for job with id #{self.id}. Should be in status 'in_progress' before marking it as 'finished'" unless self.status_in_progress?
+    if self.status_in_progress?
+      Activity.create! item_type: 'collection', action: 'imported', collection_id: collection.id, user_id: user.id, 'data' => {'name' => collection.name}
+    else
+      Rails.logger.error "Inconsistent status for job with id #{self.id}. Should be in status 'in_progress' before marking it as 'finished'"
+    end
     self.status = :finished
     self.finished_at = Time.now
     self.save!

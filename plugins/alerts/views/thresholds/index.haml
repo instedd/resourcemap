@@ -17,7 +17,13 @@
         %span
 
           %span{ ko(text: :propertyName) }
-          → ; in
+          →
+          /ko if: missingFields
+          Invalid because of a deleted field in a condition
+          //ko
+
+          /ko if: !missingFields
+          in
           /ko if: isAllSite() == "true"
           all sites
           //ko
@@ -44,13 +50,16 @@
           %span{ ko(text: 'op().label()') }
           %span{ ko(text: 'formattedValue') }
 
+
           /ko if: valueType().label() == 'a percentage of'
           of
           %span{ ko(text: 'compareField().name()') }
           //ko
+          -# Closing for !missingFields:
+          //ko
 
           //ko
-          ,change icon to:
+          → change icon to:
           %br
           .alert-icon
             %img{"data-bind" => "attr: { src:iconUrl }" }
@@ -66,34 +75,42 @@
 
     -# Form editor
     /ko if: $data == $root.currentThreshold()
-    .box.w90
+    .box.w60
       .rightbuttons
         -#%button.fdelete{ ko(visible: '!isNewRecord') }
       %h1.header_text Properties
-      .middlebuttons
+      %div
         %label{ko(css: {error: 'propertyNameError'})} Name
         %br
-        %input{ko(value: :propertyName),type: :text, style: 'width:240px'}
+        %input.wp100{ko(value: :propertyName),type: :text, style: 'width:100%'}
         %br
-        Apply this alert to
         %br
-        %input{"data-bind" => "checked: isAllSite", :value => "true", :name => "site", :type => "radio"}
-        %label All sites
-        %input{"data-bind" => "checked: isAllSite", :value => "false", :name => "site", :type => "radio"}
-        %label Some sites
+        %label Apply this alert to
         %br
-        .middlebuttons{ko(visible: 'isAllSite() == "false"' )}
+        %label
+          %input{"data-bind" => "checked: isAllSite", :value => "true", :name => "site", :type => "radio"}
+          All sites
+        %label
+          %input{"data-bind" => "checked: isAllSite", :value => "false", :name => "site", :type => "radio"}
+          Some sites
+        %br
+        %br
+        %div.wp100{ko(visible: 'isAllSite() == "false"' )}
           %input.sites{ko(autocompleteTagField: 'alertSites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
       %br
       %h1.header_text Conditions
-      .middlebuttons
-        %input{"data-bind" => "checked: isAllCondition", :value => "true", :name => "condition", :type => "radio"}
-        %label All of following conditions
-        %input{"data-bind" => "checked: isAllCondition", :value => "false", :name => "condition", :type => "radio"}
-        %label Any of the following conditions
+      %div
+        %label
+          %input{"data-bind" => "checked: isAllCondition", :value => "true", :name => "condition", :type => "radio"}
+          All of following conditions
+        %label
+          %input{"data-bind" => "checked: isAllCondition", :value => "false", :name => "condition", :type => "radio"}
+          Any of the following conditions
         %br
         /ko foreach :conditions
-        %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
+        /ko if: !missingField
+
+        %select.condition{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
 
         /ko if: field().operators().length == 1
         %span{ ko(text: 'field().operators()[0].label') }
@@ -114,11 +131,17 @@
         /ko if: !(field().kind() == 'text')
         /ko if: valueType().label() == 'a percentage of'
         = "% compared to"
-        %select{ ko(options: '$root.compareFields', optionsText: "'name'", value: :compareField, hasfocus: true) }
+        %select.compare{ ko(options: '$root.compareFields', optionsText: "'name'", value: :compareField, hasfocus: true) }
         //ko
+        //ko
+        //ko
+        -# Missing Field closure:
         //ko
 
+        /ko if: missingField
+        Invalid condition due to field missing. Please remove
         //ko
+
         %button.premove{ ko(click: '$parent.removeCondition') }
         %br
         //ko
@@ -142,39 +165,37 @@
       %br
       %h1.header_text Notifications
 
-      %input{"data-bind" => "checked: isNotify", :value => "false", :name => "notification", :type => "radio"}
-      %label Do not send notifications
-      %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"}
-      %label Notify these people
-      %br
-      .middlebuttons{ko(visible: 'isNotify() == "true"' ), :style => "height: 320px;"}
-        .middlebuttons.w30{:style => "float: left;"}
+      %label
+        %input{"data-bind" => "checked: isNotify", :value => "false", :name => "notification", :type => "radio"}
+        Do not send notifications
+      %label
+        %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"}
+        Notify these people
+      .people-notification{ko(visible: 'isNotify() == "true"' )}
+        %div
           Send emails to:
-          %p.list-box
+          .list-box
             - collection.fields.find_all_by_kind('user').each  do |field|
-              %input{ko(checked: 'usersEmail'), value: field.es_code, type: "checkbox"}= field.name
-              %br
+              %label
+                %input{ko(checked: 'usersEmail'), value: field.es_code, type: "checkbox"}= field.name
             - collection.fields.find_all_by_kind('email').each do |field|
-              %input{ko(checked: 'fieldsEmail'), value: field.es_code, type: "checkbox"}= field.name
-              %br
-            %br
+              %label
+                %input{ko(checked: 'fieldsEmail'), value: field.es_code, type: "checkbox"}= field.name
             - collection.users.each do |user|
-              %input{ko(checked: 'membersEmail'), value: user.id, type: "checkbox"}= user.email
-              %br
-        .middlebuttons.w30{:style => "float: left;"}
+              %label
+                %input{ko(checked: 'membersEmail'), value: user.id, type: "checkbox"}= user.email
+        %div
           Send text messages to:
-          %p.list-box
+          .list-box
             - collection.fields.find_all_by_kind('user').each  do |field|
-              %input{ko(checked: 'usersPhone'), value: field.es_code, type: "checkbox"}= field.name
-              %br
+              %label
+                %input{ko(checked: 'usersPhone'), value: field.es_code, type: "checkbox"}= field.name
             - collection.fields.find_all_by_kind('phone').each do |field|
-              %input{ko(checked: 'fieldsPhone'), value: field.es_code, type: "checkbox"}= field.name
-              %br
-            %br
+              %label
+                %input.lalalale{ko(checked: 'fieldsPhone'), value: field.es_code, type: "checkbox"}= field.name
             - collection.users.each do |user|
-              %input{ko(checked: 'membersPhone'), value: user.id, type: "checkbox"}= user.email
-              %br
-        .clear
+              %label
+                %input{ko(checked: 'membersPhone'), value: user.id, type: "checkbox"}= user.email
         %label{ko(css: {error: 'notificationMessageError'})} Message
         %br/
         %label.smalltext
@@ -213,18 +234,20 @@
     -# New threshold link
     /ko if: fields().length
     .box.grey.add{ ko(visible: '!currentThreshold()', click: 'addThreshold'), style: 'display:none'}
-      %span
-        Add Alert
-      %button.cadd.right
-      %br{clear: :all}
+      .toptitle
+        %span
+          Add Alert
+      .rightbuttons
+        %button.cadd.right
     //ko
     //ko
 
     -# New threshold link
     /ko if: fields().length
     .box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
-      %span
-        Add Alert
-      %button.cadd.right
-      %br{clear: :all}
+      .toptitle
+        %span
+          Add Alert
+      .rightbuttons
+        %button.cadd.right
     //ko

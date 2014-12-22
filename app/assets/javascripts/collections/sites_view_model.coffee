@@ -6,6 +6,7 @@ onCollections ->
       @selectedSite = ko.observable()
       @selectedHierarchy = ko.observable()
       @loadingSite = ko.observable(false)
+      @savingSite = ko.observable(false)
       @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
       @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       @expandLeftColumn = ko.computed =>
@@ -61,6 +62,8 @@ onCollections ->
         if @selectedSite() && @selectedSite().id() == site.id()
           @unselectSite()
 
+        if @currentCollection() == undefined
+          @currentCollection(site.collection)
         site.collection.updatePermission site, => @editingSite(site)
         @selectSite(site)
         siteSearchCount = @currentCollection().siteSearchCount()
@@ -117,6 +120,8 @@ onCollections ->
           @editSite site
 
     @saveSite: ->
+      return if @savingSite()
+      @savingSite(true)
       callback = (data) =>
         @currentCollection().reloadSites()
 
@@ -131,14 +136,19 @@ onCollections ->
           @editingSite().deleteMarker()
           @exitSite()
 
+        @savingSite(false)
+
+      failed_callback = =>
+        @savingSite(false)
+
         window.model.updateSitesInfo()
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
 
       if @editingSite().id()
-        @editingSite().update_site(@editingSite().diff(), callback)
+        @editingSite().update_site(@editingSite().diff(), callback, failed_callback)
       else
-        @editingSite().create_site(@editingSite().toJSON(), callback)
+        @editingSite().create_site(@editingSite().toJSON(), callback, failed_callback)
 
     @exitSite: ->
       if !@editingSite()?.inEditMode()
@@ -147,18 +157,17 @@ onCollections ->
       field.exitEditing() for field in @currentCollection().fields()
       if @editingSite()?.inEditMode()
         @editingSite().exitEditMode()
-      else
-        if @editingSite()
-          # Unselect site if it's not on the tree
-          @editingSite().editingLocation(false)
-          @editingSite().deleteMarker() unless @editingSite().id()
-          @editingSite(null)
-          window.model.setAllMarkersActive()
-          if @goBackToTable
-            @showTable()
-            delete @goBackToTable
-          else
-            @reloadMapSites()
+      if @editingSite()
+        # Unselect site if it's not on the tree
+        @editingSite().editingLocation(false)
+        @editingSite().deleteMarker() unless @editingSite().id()
+        @editingSite(null)
+        window.model.setAllMarkersActive()
+        if @goBackToTable
+          @showTable()
+          delete @goBackToTable
+        else
+          @reloadMapSites()
 
       @loadBreadCrumb()
       @rewriteUrl()

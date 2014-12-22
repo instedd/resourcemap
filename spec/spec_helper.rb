@@ -21,6 +21,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require File.expand_path("../../spec/blueprints", __FILE__)
 require 'rspec/rails'
 require 'capybara/rspec'
+require 'shoulda-matchers'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -60,7 +61,7 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = if Capybara.current_driver == :rack_test
       :transaction
     else
-      [:truncation]
+      [:deletion]
     end
     DatabaseCleaner.start
   end
@@ -104,12 +105,13 @@ RSpec.configure do |config|
 
   $test_count = 0
 
-  # Delete all test indexes after every 10 tests
-  config.after(:each) do
-    if (($test_count += 1) % 10 == 0)
-      Elasticsearch::Client.new.indices.delete index: "collection_test_*"
-    end
+  def delete_all_elasticsearch_indices
+    Elasticsearch::Client.new.indices.delete index: "collection_test_*"
   end
+
+  # Delete all test before and after the suite
+  config.before(:all) { delete_all_elasticsearch_indices }
+  config.after(:all) { delete_all_elasticsearch_indices }
 
 # Mock nuntium access and gateways management
   config.before(:each) do

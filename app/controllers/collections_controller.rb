@@ -21,16 +21,18 @@ class CollectionsController < ApplicationController
     user_memberships = current_user.memberships.map{|c| c.collection_id.to_s}
     collections_with_snapshot_by_user = collections_with_snapshot.select{|col| user_memberships.include?(col["id"].to_s)}
 
-    if params[:collection_id].blank? && current_user.is_guest
-      redirect_to root_url
-    elsif params[:name].present?
+    if params[:name].present?
       render_json Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
       add_breadcrumb _("Collections"), 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html do
           if Guisso.enabled? && current_user.is_guest && cannot?(:read, collection)
-            redirect_to_guisso
+            if params[:collection_id].present?
+              redirect_to_guisso(custom_message: 'This is a private collection')
+            else
+              redirect_to_guisso
+            end
           end
         end
         format.json { render_json collections_with_snapshot_by_user }
@@ -46,7 +48,7 @@ class CollectionsController < ApplicationController
     redirect_to collection_layers_path(collection), notice: notice_text unless current_user.admins? the_other_collection
 
     #TODO: refactor :)
-    json_layers = the_other_collection.layers.includes(:fields).all.as_json(include: :fields).to_json
+    json_layers = the_other_collection.layers.includes(:fields).as_json(include: :fields).to_json
 
     collection.import_schema json_layers, current_user
     redirect_to collection_layers_path(collection), notice: notice_text
@@ -139,11 +141,6 @@ class CollectionsController < ApplicationController
 
   def csv_template
     send_data collection.csv_template, type: 'text/csv', filename: "collection_sites_template.csv"
-  end
-
-  def upload_csv
-    collection.import_csv current_user, params[:file].read
-    redirect_to collections_path
   end
 
   def create_snapshot

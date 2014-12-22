@@ -46,6 +46,12 @@ class MembershipsController < ApplicationController
     redirect_to collection_members_path(collection)
   end
 
+  def leave_collection
+    membership = collection.memberships.find_by_user_id current_user.id
+    membership.destroy
+    redirect_to collections_path
+  end
+
   def set_access
     generic_set_access {|membership| membership.set_access params}
   end

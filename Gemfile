@@ -45,7 +45,7 @@ gem 'actionpack-action_caching'
 gem 'activerecord-deprecated_finders'
 
 group :test do
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', require: false
   gem 'resque_spec'
   gem 'selenium-webdriver'
   gem 'capybara'
@@ -58,6 +58,7 @@ end
 group :test, :development do
   gem 'rspec'
   gem 'rspec-rails', '~> 3.1.0'
+  gem 'spring-commands-rspec'
   gem 'faker'
   gem 'machinist', '1.0.6'
   gem 'capistrano'

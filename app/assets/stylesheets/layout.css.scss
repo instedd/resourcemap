@@ -38,36 +38,30 @@ body.fullscreen #container {
         overflow: hidden;
         text-overflow: ellipsis;
         display: inline-block;
-
       }
     }
   }
 
-  ul.locale-selector
-  {
+  ul.locale-selector {
+    font-size: 12px;
     width: 15%;
     height: 16px;
     text-align: right;
     margin-right: 30px;
     margin-top: 25px;
 
-    font-size: 12px;
-
-    li{
+    li {
       display: inline;
       list-style: none;
       padding: 2px 4px;
 
-      &.selected{
+      &.selected {
+        @include border-radius(3px);
         background: #dedede;
-        border-radius: 3px;
-        -moz-border-radius: 3px;
-        -webkit-border-radius: 3px;
         cursor: default;
       }
     }
   }
-
 }
 
 #footer-container {
@@ -77,10 +71,6 @@ body.fullscreen #container {
 
 #toolbar {
   width: 96%;
-
-/*  li {
-    margin-left:120px;
-  }*/
 }
 
 #NavMenu ul {
@@ -91,135 +81,7 @@ body.fullscreen #container {
   padding: 7px 5px !important;
 }
 
-.homepage .illustration {
-  background: url("/assets/data_collection.png") no-repeat scroll 0 0 transparent;
-  height: 286px;
-  width: 401px;
-}
 
-.homepage .food {
-  background: url("/assets/tracking_food.jpg") no-repeat scroll 0 0 transparent;
-  height: 260px;
-  width: 360px;
-}
-
-.homepage .medical {
-  background: url("/assets/tracking_medical.png") no-repeat scroll 0 0 transparent;
-  height: 200px;
-  width: 300px;
-}
-
-.get-update {
-  background: url("/assets/get_update.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 48px;
-  vertical-align: middle;
-  width: 48px;
-}
-
-.visualize-and-update {
-  background: url("/assets/visualize_and_update.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 48px;
-  vertical-align: middle;
-  width: 48px;
-}
-
-.update {
-  background: url("/assets/update.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 48px;
-  vertical-align: middle;
-  width: 48px;
-}
-
-.identify {
-  background: url("/assets/identify.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 48px;
-  vertical-align: middle;
-  width: 48px;
-}
-
-.receive {
-  background: url("/assets/receive.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 48px;
-  vertical-align: middle;
-  width: 48px;
-}
-
-.collaborate {
-  background: url("/assets/collaborate.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 48px;
-  vertical-align: middle;
-  width: 48px;
-}
-
-.maintain {
-  background: url("/assets/maintain.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 48px;
-  vertical-align: middle;
-  width: 48px;
-}
-
-.tracking-medical-supplies {
-  background: url("/assets/tracking_medical_supplies_and_personnel.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 96px;
-  vertical-align: middle;
-  width: 96px;
-}
-
-.managing-disease-prevention-supplies {
-  background: url("/assets/managing_disease_prevention_supplies.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 96px;
-  vertical-align: middle;
-  width: 96px;
-}
-
-.monitoring-food-price {
-  background: url("/assets/monitoring_food_price_and_supply_levels.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 96px;
-  vertical-align: middle;
-  width: 96px;
-}
-
-.testing-enviromental-health {
-  background: url("/assets/testing_enviromental_health.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 96px;
-  vertical-align: middle;
-  width: 96px;
-}
-
-.client-cnm {
-  background: url("/assets/centre_nationale_de_malaria.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 96px;
-  vertical-align: middle;
-  width: 96px;
-}
-
-.client-wranda-ministry-of-health {
-  background: url("/assets/rwanda_coat_of_arms.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 96px;
-  vertical-align: middle;
-  width: 96px;
-}
-
-.client-CMPE {
-  background: url("/assets/Center_for_Malaria_Parasitology_and_Entomology_of_Lao_PDR.png") no-repeat scroll center top transparent;
-  display: inline-block;
-  height: 96px;
-  vertical-align: middle;
-  width: 96px;
-}
 
 ::-webkit-input-placeholder {
   font-style: italic;
@@ -260,22 +122,10 @@ body.fullscreen #container {
   white-space:normal;
 }
 
-
-
-.homepage {
-  width: 960px;
-  margin: 0 auto;
-}
-
-
-
 .sitesBox {
-  height: 37px;
-  padding-top: 1px !important;
-  padding-right: 0px !important;
-  padding-bottom: 1px !important;
-  padding-left: 0px !important;
   font-size: 12px;
+  padding: 1px 0 !important;
+  height: 37px;
   margin-bottom: 13px !important;
   margin-right: 13px !important;
 }
@@ -291,11 +141,9 @@ body.fullscreen #container {
   margin: 3px 5px !important;
 }
 
-
 .loading {
-  background-image: url("/assets/loading_white.gif");
+  background: url("/assets/loading_white.gif") no-repeat;
   padding: 0 0 0 27px;
-  background-repeat: no-repeat;
 }
 
 #validating_msg {
@@ -314,20 +162,45 @@ body.fullscreen #container {
 }
 
 /* ------------ table ------------------- */
-.GralTable td {
-  padding:0px 6px;
-}
-.GralTable td.add { color:#1e87c9 }
-.GralTable button { vertical-align:middle }
-.GralTable span { vertical-align:middle; }
-.GralTable tr { clear:both }
-.GralTable .selected { background-color: #D0D0D0; border-radius: 4px; }
-.titletable { padding:4px 0 2px 2px; display:inline-block !important; margin-left:5px !important }
-.exp { background: url(#{$InsteddRailsUrl + "/theme/images/icons/misc/black/arrowRight.png"}) no-repeat 2px 50%; padding-left:16px }
-.col { background: url(#{$InsteddRailsUrl + "/theme/images/icons/misc/black/arrowDown.png"}) no-repeat 0px 50%; padding-left:16px }
+.GralTable {
 
-.box.nopadd { padding:0 }
-.box.nopadd .left { border-right:1px solid #eeeeee}
+  tr { clear:both }
+
+  td {
+    padding:0px 6px;
+
+    &.add {
+      color:#1e87c9
+    }
+  }
+  button {
+    vertical-align: middle
+  }
+  span { vertical-align: middle;
+  }
+  .selected {
+    @include border-radius(4px);
+    background-color: #D0D0D0;
+  }
+}
+.titletable {
+  padding:4px 0 2px 2px;
+  display:inline-block !important;
+  margin-left:5px !important
+}
+.exp {
+  background: url(#{$InsteddRailsUrl + "/theme/images/icons/misc/black/arrowRight.png"}) no-repeat 2px 50%;
+  padding-left:16px
+}
+.col {
+  background: url(#{$InsteddRailsUrl + "/theme/images/icons/misc/black/arrowDown.png"}) no-repeat 0px 50%;
+  padding-left:16px
+}
+
+.box.nopadd {
+  padding: 0;
+  .left { border-right: 1px solid #eeeeee;}
+}
 
 #import-wizard-main .GralTable {
   td {
@@ -335,153 +208,77 @@ body.fullscreen #container {
   }
 }
 
-.box.slightly-padded {
-  padding:0;
-  padding-top:2px;
-}
-
-.box.slightly-padded .tableheader {
-  border-right:1px solid #eeeeee;
-  margin-top: -3px;
-  margin-left:4px;
-  height: 35px;
-  background: transparent;
-}
-
-.box.slightly-padded .tableheader.expanded {
-  border-right: 0px;
-}
-
-.tableheader.expanded .mapheader {
-  margin-right:9px;
-  margin-top:3px;
-}
-
-.box.slightly-padded .tablescroll {
-  padding-top:10px;
-  background:url(#{$InsteddRailsUrl + "/theme/images/interface/backtd.png"}) repeat-x left 0px #ffffff;
-}
-
-.box.slightly-padded .GralTable td {
-  padding-left: 0px;
-}
-
-.box.slightly-padded .GralTable.tableview td {
-  padding-left: 3px;
-}
-
-.box.slightly-padded .tablescroll .GralTable td div {
-  display:inline-block;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  margin-top: 7px;
-}
-
-.tablescroll.cheight .GralTable {
-
-  td {
-    position: relative;
-    padding: 0 5px 0 5px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    height: 40px;
-    max-width: 172px;
-
-    a {
-      cursor: pointer;
-    }
-
-    button {
-      position: absolute;
-      right: 5px;
-      top: 3px;
-    }
-  }
-
-}
 
 .grayselected {
   @include border-radius(5px);
   background: #EBEBEB;
 }
 
-.tableheader {
-  background:url(#{$InsteddRailsUrl + "/theme/images/interface/backtd.png"}) repeat-x left 32px #ffffff;
-  height:40px;
-  z-index:1;
-
-  & > div.title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    position: relative;
-    padding-right: 25px;
-    line-height: 30px;
-
-    button.fconfiguration {
-      position: absolute;
-      right: 0px;
-      top: 2px;
-    }
-  }
-
-}
-
-
-
 ul.taglist {
+  @include border-radius(3px);
+  @include box-shadow(0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset);
   padding:0 4px;
   border:1px solid #dddddd;
   height:128px;
   overflow:auto;
   overflow-x:hidden;
-  -webkit-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset;
-  -moz-box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset;
-  box-shadow: 0px 0.05em 1px 1px rgba(0, 0, 0, 0.2) inset;
-  border-radius:3px;
-  -moz-border-radius:3px;
-  -webkit-border-radius:3px;
   margin-bottom:3px;
-}
-ul.taglist li {
-  margin:3px 0;
-  border:1px solid #dddddd;
-  border-radius:3px;
-  -moz-border-radius:3px;
-  -webkit-border-radius:3px;
-  cursor: pointer;
-  position: relative;
-  &:after {
-    background:url(#{$InsteddRailsUrl + "/theme/images/interface/add.png"}) no-repeat 98% -15px;
-    content:'';
-    display: table;
-    position: absolute;
-    right: 5px;
-    top: 0px;
-    width: 18px;
-    height: 18px;
+
+  li {
+    @include border-radius(3px);
+    margin:3px 0;
+    border:1px solid #dddddd;
+    cursor: pointer;
+    position: relative;
+    a {
+      display:block
+    }
+    &:hover {
+      background-color:#eaeaea
+    }
+    &:after {
+      background:url(#{$InsteddRailsUrl + "/theme/images/interface/add.png"}) no-repeat 98% -15px;
+      content:'';
+      display: table;
+      position: absolute;
+      right: 5px;
+      top: 0px;
+      width: 18px;
+      height: 18px;
+    }
   }
 }
-ul.taglist li:hover { background-color:#eaeaea }
-ul.taglist li a { display:block }
 
 .box {
+  @include box-shadow(0px 1px 1px 1px rgba(0, 0, 0, 0.3));
   position:relative;
-  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.3)
-}
-.box.add { padding:0 5px; margin-top:10px; width:610px; height:30px; cursor: pointer }
-.box.add span { color:#1f86c8; display:inline-block; padding-top:8px }
-.box label { color:#555555 }
 
-.toptitle { width:552px; float:left; }
-.toptitle span { color:#000000 }
+  &.add {
+    padding:0 5px;
+    margin-top:10px;
+    width:610px;
+    height:30px;
+    cursor: pointer;
+
+    span {
+      color:#1f86c8;
+      display:inline-block;
+      padding-top:8px;
+    }
+  }
+
+  label { color:#555555 }
+}
+
+.toptitle {
+  width: 550px;
+
+  span { color: #000000 }
+}
 
 
 .middlebuttons {
-  margin-top:25px;
+  margin-top:5px;
 
   & > div {
     color: #555555 !important;
@@ -499,35 +296,55 @@ ul.taglist li a { display:block }
       display: none;
     }
   }
-}
 
-.middlebuttons > div.superblyTagfieldDiv {
-  overflow: visible;
-  text-overflow: clip;
-
-  & > div {
+  & > div.superblyTagfieldDiv {
     overflow: visible;
     text-overflow: clip;
+
+    & > div {
+      overflow: visible;
+      text-overflow: clip;
+    }
   }
 }
 
 
-.feditor-container { position:relative }
-.feditor-container .rightbuttons{ top:-6px; right:5px }
-.w30.feditor-sidebar { width:280px !important }
-.w30.feditor-sidebar > input[type="text"] { width:275px !important }
-.w30.feditor-sidebar > select { width:280px !important }
+.feditor-container {
+  position:relative;
 
-.fmap { background-image: url(/assets/map.png); position: relative; left: 6px; }
-.fmap.active { background-position: 0px -60px; }
-.ftable { background-image: url(/assets/table.png); }
-.ftable.active { background-position: 0px -60px; }
+  .rightbuttons {
+    top: -6px;
+    right: 5px;
+  }
+}
+
+.w30.feditor-sidebar {
+  width: 280px !important;
+
+  & > input[type="text"] {
+    width: 275px !important
+  }
+  & > select {
+    width:280px !important
+  }
+}
+
+.fmap {
+  background-image: url(/assets/map.png);
+  position: relative;
+  left: 6px;
+
+  &.active { background-position: 0px -60px; }
+}
+.ftable {
+  background-image: url(/assets/table.png);
+
+  &.active { background-position: 0px -60px; }
+}
 
 td.loadmore { height: 36px }
 
-/*.tablescroll .superblyTagItems { display:inline-block;padding:0;margin:0 }
-.tablescroll .superblyTagItem { top:4px;cursor:pointer }
-*/
+
 .hidden-until-loaded { display: none }
 .ready { display: inherit !important }
 
@@ -540,16 +357,45 @@ td.loadmore { height: 36px }
   display:inline-block;
   margin:2px 2px 2px 0;
   padding-right:4px;
-}
-.greyback button { margin:0px; padding:0px; vertical-align:baseline; color:#666666 }
-.greyback span { vertical-align:baseline; margin:0 0 0 3px; color:#666666 }
-.greyback:active span { display:inline-block }
-.greyback span a { color:#000000 }
 
-.expdiv, .coldiv { border-bottom:1px solid #dddddd; padding-left:0px !important; width:95% }
-.expdiv span, .coldiv span { color:#555555; padding:0 2px 0 22px; border-bottom:1px solid #ffffff; display:inline-block; margin-bottom:-2px; vertical-align:middle }
-.coldiv span { background: url(#{$InsteddRailsUrl + "/theme/images/icons/misc/grey/arrowRight.png"}) no-repeat 10px 50% #ffffff }
-.expdiv span { background: url(#{$InsteddRailsUrl + "/theme/images/icons/misc/grey/arrowDown.png"}) no-repeat 10px 50% #ffffff }
+  button {
+    margin: 0px;
+    padding: 0px;
+    vertical-align: baseline;
+    color: #666666;
+  }
+
+  span {
+    vertical-align: baseline;
+    margin: 0 0 0 3px;
+    color: #666666;
+    a { color:#000000 }
+  }
+
+  &:active span { display:inline-block }
+}
+
+.expdiv,
+.coldiv {
+  border-bottom:1px solid #dddddd;
+  padding-left:0px !important;
+  width:95%;
+
+  span {
+    color: #555555;
+    padding: 0 2px 0 22px;
+    border-bottom: 1px solid #ffffff;
+    display: inline-block;
+    margin-bottom: -2px;
+    vertical-align: middle;
+  }
+}
+.coldiv span {
+  background: url(#{$InsteddRailsUrl + "/theme/images/icons/misc/grey/arrowRight.png"}) no-repeat 10px 50% #ffffff;
+}
+.expdiv span {
+  background: url(#{$InsteddRailsUrl + "/theme/images/icons/misc/grey/arrowDown.png"}) no-repeat 10px 50% #ffffff;
+}
 
 .tableheader .pback {
   margin-left: 3px;
@@ -622,34 +468,65 @@ td.loadmore { height: 36px }
 .hierarchy {
   img:hover { opacity: 0.5; }
   span:hover { opacity: 0.5; }
+  &.active { background:#d0d0d0; }
 }
-.hierarchy.active { background:#d0d0d0 }
-.header_text {margin-bottom: 5px; font-size: 18px;}
+.header_text {
+  margin-bottom: 5px;
+  font-size: 18px;
+}
 
-.template_text {float:left;width: 600px;}
-.template_text span{color: #7FA9E4; cursor: pointer}
-.stat { border-radius: 4px; display: inline-block; height: 20px; width: 20px; vertical-align:middle }
-.list-box {height: 120px; width: 280px; overflow: auto; border: 1px solid #eee; color: #000; margin-bottom: 1.5em}
+.template_text {
+  float:left;
+  width: 600px;
 
-.permission-edtior { line-height: 28px; }
-.permission-edtior span { display: inline-block; min-width: 180px; }
+  span {
+    color: #7FA9E4;
+    cursor: pointer;
+  }
+}
+.stat {
+  @include border-radius(4px);
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  vertical-align:middle;
+}
+.list-box {
+  color: #000;
+  border: 1px solid #eee;
+  margin-bottom: 1.5em;
+  height: 120px;
+  width: 280px;
+  overflow: auto;
+}
+
+.permission-edtior {
+  line-height: 28px;
+
+  span {
+    display: inline-block;
+    min-width: 180px;
+  }
+}
 
 .orange { color:#F60; }
 .black { color:black; }
+
 
 /* Import Wizard */
 
 .error_description li {
   margin-top: 5px;
   font-weight: bold;
+
+  .moreInfo {
+    margin-left: 18px;
+    font-size: 10px;
+    line-height: initial;
+    font-weight: normal;
+  }
 }
 
-.error_description li .moreInfo{
-  margin-left: 18px;
-  font-size: 10px;
-  line-height: initial;
-  font-weight: normal;
-}
 .error_column li {
   font-size: 14px;
 }
@@ -658,8 +535,13 @@ td.loadmore { height: 36px }
   margin-left: 5px;
 }
 
-#columnUsageTemplate .popup-row { margin-bottom:5px;}
-#columnUsageTemplate hr { margin-bottom:10px;}
+#columnUsageTemplate {
+
+  .popup-row { margin-bottom:5px;}
+
+  hr { margin-bottom:10px;}
+}
+
 #import-wizard-main .alert { margin:0px;}
 
 .info-box {
@@ -668,8 +550,12 @@ td.loadmore { height: 36px }
   padding: 5px;
 }
 
-#columnUsageTemplate #field-type-options { margin-top: 5px;}
-#columnUsageTemplate .popup-row label {color: #555;}
+#columnUsageTemplate {
+
+  #field-type-options { margin-top: 5px;}
+  .popup-row label {color: #555;}
+}
+
 .column_header.error_column { color: #F60;}
 
 .box.w80,
@@ -678,11 +564,6 @@ form.w80 {
   width: 960px;
 }
 
-/*.select-many.superblyTagfieldClearer {
-  height: 1px;
-  padding: 2px;
-}
-*/
 .empty_hierarchy_message {
   vertical-align: middle;
   text-align: center;
@@ -746,3 +627,65 @@ a.tgrey {
 }
 
 
+.sbox.grey.confirm {
+  @include clearfix();
+  background-color: #d0d0d0;
+  padding: 6px !important;
+  div {
+    background-color: inherit;
+    line-height: 16px !important;
+    &.icon.fclose.black {
+      background-position: 0 -60px;
+      margin-top: -1px;
+      float: left;
+    }
+    &.action-buttons {
+      text-align: right;
+      a {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+select.condition,
+select.compare {
+  width: 200px;
+
+  & + .premove {
+    vertical-align: middle;
+  }
+}
+
+.people-notification {
+  @include clearfix();
+  margin-top: 15px;
+
+  > div {
+    @include box-sizing(border-box);
+    display: inline-block;
+    vertical-align: top;
+    width: 48%;
+  }
+  .list-box {
+    @include box-sizing(border-box);
+    width: auto;
+    padding: 5px;
+
+    label {
+      display: block;
+      margin: 3px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+.wp100 {
+  width: 100%;
+
+  .superblyTagfieldDiv {
+    width: inherit;
+  }
+}

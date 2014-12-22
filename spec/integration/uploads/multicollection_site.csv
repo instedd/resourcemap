@@ -1,0 +1,3 @@
+resmap-id,name,lat,long,numeric,text,selone,date,email,identifier,phone,site,user,YNr,last updated
+1,multicollection_site,10.0,90.0,1234567890,after_changed,bar_one,12/15/2015,after@manas.com.ar,360,55555,2,user@manas.com.ar,no,"Mon, 17 Nov 2014 22:09:36 +0000"
+

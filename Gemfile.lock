@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/instedd/alto_guisso.git
-  revision: 170ad8f8cdf0e46438db06668894bb986111182b
+  revision: 8b4c60f7bb93dabfa80f33341285512cb42d3f32
   branch: master
   specs:
     alto_guisso (0.0.1)
@@ -41,7 +41,7 @@ GIT
 
 GIT
   remote: https://github.com/manastech/dist.git
-  revision: e55f7fa83fbb1386622d362f7b5ccdd99ed03529
+  revision: 570e2bd1c90104df8880edc93cf8a1a659fcf093
   specs:
     dist (0.0.2)
 
@@ -210,7 +210,7 @@ GEM
     highline (1.6.21)
     hike (1.2.3)
     hitimes (1.2.2)
-    httpclient (2.4.0)
+    httpclient (2.5.3.3)
     i18n (0.6.11)
     ice_cube (0.12.1)
     includes-count (0.2)
@@ -395,6 +395,9 @@ GEM
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
     slop (3.6.0)
+    spring (1.1.3)
+    spring-commands-rspec (1.0.2)
+      spring (>= 0.9.1)
     sprockets (2.11.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -498,6 +501,7 @@ DEPENDENCIES
   shoulda-matchers
   simplecov
   simplecov-rcov
+  spring-commands-rspec
   timecop
   treetop (= 1.4.15)
   uglifier (>= 2.5.0)

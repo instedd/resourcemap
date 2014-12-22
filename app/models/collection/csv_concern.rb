@@ -54,27 +54,6 @@ module Collection::CsvConcern
     end
   end
 
-  def import_csv(user, string_or_io)
-    Collection.transaction do
-      csv = CSV.new string_or_io, return_headers: false
-
-      new_sites = []
-      csv.each do |row|
-        next unless row[0].present? && row[0] != 'resmap-id'
-
-        site = sites.new name: row[1].strip, user: user
-        site.mute_activities = true
-        site.lat = row[2].strip if row[2].present?
-        site.lng = row[3].strip if row[3].present?
-        new_sites << site
-      end
-
-      new_sites.each &:save!
-
-      Activity.create! item_type: 'collection', action: 'csv_imported', collection_id: id, user_id: user.id, 'data' => {'sites' => new_sites.length}
-    end
-  end
-
   def decode_hierarchy_csv_file(file_path)
     begin
       csv = CSV.read(file_path)

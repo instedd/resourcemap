@@ -14,20 +14,13 @@
 
 #memberPermissionsTable.tablewrapp.w80.hidden-until-loaded
   %table.GralTable
-    %colgroup
-      %col{width: '300px'}
-      %col{width: '60px'}
-      %col{width: '60px'}
-      %col{width: '60px'}
-      %col{width: '60px'}
-      %col{width: '420px'}
     %tr.table-header
-      %th.members-tree{style: '-webkit-border-radius:8px 0 0 0;-moz-border-radius:8px 0 0 0;'} Member → Site → Layer
+      %th.members-tree Member → Site → Layer
       %th.members-permission None
       %th.members-permission Read
       %th.members-permission Update
       %th.members-permission Admin
-      %th
+      %th{width: '420px'}
     %tr{ :class => :membersFirstRow }
       %td
       %td

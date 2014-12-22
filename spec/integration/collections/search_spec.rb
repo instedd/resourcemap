@@ -1,7 +1,7 @@
-require 'spec_helper' 
+require 'spec_helper'
 
-describe "search", :type => :request do 
- 
+describe "search", :type => :request do
+
   it "should search", js:true do
     user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
     page.save_screenshot 'filter_sites.png'
@@ -15,13 +15,13 @@ describe "search", :type => :request do
     visit collections_path
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     fill_in 'search', :with => "Aida Rohan\n"
-    sleep 5
+
     page.save_screenshot 'Search.png'
-    sleep 3
+
     page.has_content? 'Aida Rohan'
-    sleep 3
+
     expect(page).to have_no_content 'Alek Ortiz'
-    sleep 2
+
   end
 end
 

@@ -106,7 +106,7 @@ onCollections ->
             value = @properties()[field.esCode]
             field.setValueFromSite(value)
 
-    update_site: (json, callback) =>
+    update_site: (json, callback, failed_callback = null) =>
       data = {site: JSON.stringify json}
       $.ajax({
           type: "POST",
@@ -118,12 +118,13 @@ onCollections ->
             callback(data) if callback && typeof(callback) == 'function' )
           global: false
         }).fail((data) =>
+          failed_callback() if failed_callback != null
           if @showFieldErrors(data)
             $(".tablescroll").animate({
               scrollTop: $('.error label').position().top + $(".tablescroll").scrollTop() - 60
             }, 2000))
 
-    create_site: (json, callback) =>
+    create_site: (json, callback, failed_callback = null) =>
       data = {site: JSON.stringify json}
       $.ajax({
           type: "POST",
@@ -140,7 +141,10 @@ onCollections ->
             $.status.showNotice notice, 2000
             callback(data) if callback && typeof(callback) == 'function' )
           global: false
-        }).fail(@showFieldErrors)
+        }).fail((data) =>
+          failed_callback() if failed_callback != null
+          @showFieldErrors
+        )
 
     clearFieldErrors: =>
       @collection.nameFieldError(null)
@@ -289,6 +293,10 @@ onCollections ->
       # If so, give me num1.num1 and num2.num2
       if match = text.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
         options.success(new google.maps.LatLng(parseFloat(match[1]), parseFloat(match[2])))
+      else if match = text.match(/^\s*(\d+(?:\.\d+)?)\s*(N|S)\s*,\s*(\d+(?:\.\d+)?)\s*(E|W)\s*$/i)
+        lat = if match[2].match(/n/i) then parseFloat(match[1]) else -parseFloat(match[1])
+        lng = if match[4].match(/e/i) then parseFloat(match[3]) else -parseFloat(match[3])
+        options.success(new google.maps.LatLng(lat, lng))
       else
         if text == ''
           options.success(null)

@@ -6,9 +6,11 @@
   = tab _("Overview"), collection_path(collection)
   - if can? :members, collection
     = tab _("Members"), collection_members_path(collection)
-  = tab _("Layers"), collection_layers_path(collection)
-  = tab _("Import wizard"), collection_import_wizard_path(collection)
-  = tab _("Settings"), collection_settings_path(collection)
-  = render_hook collection, :collection_tab, :collection => collection
-  - if Settings.is_on? :channels
-    = tab _("Quotas"), collection_quotas_path(collection)
+  - if any_update_permissions? collection, current_user
+    - if can? :edit, Layer
+      = tab _("Layers"), collection_layers_path(collection)
+    = tab _("Import wizard"), collection_import_wizard_path(collection)
+    = tab _("Settings"), collection_settings_path(collection)
+    = render_hook collection, :collection_tab, :collection => collection
+    - if Settings.is_on? :channels
+      = tab _("Quotas"), collection_quotas_path(collection)

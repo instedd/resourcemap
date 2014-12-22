@@ -69,14 +69,14 @@ onLayers ->
       return unless @selecting
 
       if window.model.currentLayer() != @layer()
-        $("a[id='#{@name()}']").html("Move to layer '#{@layer().name()}' upon save")
+        $("a[id='#{@code()}']").html("Move to layer '#{@layer().name()}' upon save")
       else
-        $("a[id='#{@name()}']").html('Move to layer...')
+        $("a[id='#{@code()}']").html('Move to layer...')
       @switchMoveToLayerElements false
 
     switchMoveToLayerElements: (v) =>
-      $("a##{@name()}").toggle()
-      $("select[id='#{@name()}']").toggle()
+      $("a##{@code()}").toggle()
+      $("select[id='#{@code()}']").toggle()
       @selecting = v
 
     buttonClass: =>

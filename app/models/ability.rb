@@ -90,6 +90,15 @@ class Ability
     can :update_location, Membership do |user_membership|
       user_membership.can_update?("location")
     end
+
+    ### Reminders ###
+
+    can [:create, :update, :read, :destroy, :set_status], Reminder, :collection => { :memberships => { :user_id => user.id } }
+
+    ### Alerts ###
+
+    can [:create, :update, :read, :destroy, :set_order], Threshold, :collection => { :memberships => { :user_id => user.id } }
+
   end
 
   def user_memberships(user)

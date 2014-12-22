@@ -1,6 +1,6 @@
 class Activity < ActiveRecord::Base
   ItemTypesAndActions = {
-    'collection' => %w(created imported csv_imported),
+    'collection' => %w(created imported),
     'layer' => %w(created changed deleted),
     'site' => %w(created changed deleted),
     'membership' => %w(created deleted),
@@ -27,8 +27,8 @@ class Activity < ActiveRecord::Base
     case [item_type, action]
     when ['collection', 'created']
       _("Collection '%{name}' was created") % {name: "#{data['name']}"}
-    when ['collection', 'csv_imported']
-      _("Import CSV: %{sites}") % {sites: "#{sites_were_imported_text}"}
+    when ['collection', 'imported']
+      _("New CSV imported into collection '%{name}'") % {name: "#{data['name']}"}
     when ['layer', 'created']
       fields_str = data['fields'].map { |f| "#{f['name']} (#{f['code']})" }.join ', '
       str = _("Layer %{layer} was created with fields: %{fields}") % {layer: "'#{data['name']}'", fields: "#{fields_str}"}
@@ -47,21 +47,38 @@ class Activity < ActiveRecord::Base
     when ['membership', 'deleted']
       _("Member %{user} was removed") % {user: "#{data['user']}"}
     when ['layer_membership', 'changed']
-      layer_membership_permission_changed
+      (data['previous_permission'] && data['new_permission'] ?
+        _("Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for %{user}") :
+        _("Permission changed in layer %{layer} for %{user}")
+      ) % {
+        previous_permission: data['previous_permission'],
+        new_permission: data['new_permission'],
+        layer: "'#{data['name']}'",
+        user: data['user']
+      }
     when ['name_permission', 'changed']
-      _("Permission changed from %{previous_permission} to %{new_permission} in name layer for %{user}") %
-      {previous_permission: "#{data['changes'][0]}", new_permission: "#{data['changes'][1]}", user: "#{data['user']}"}
+      (data.nil? || data['changes'].nil? ?
+        _("Permission changed in name layer for %{user}") :
+        _("Permission changed from %{previous_permission} to %{new_permission} in name layer for %{user}")
+      ) % {previous_permission: (data['changes'][0] rescue nil), new_permission: (data['changes'][1] rescue nil), user: data['user']}
     when['location_permission', 'changed']
-      _("Permission changed from %{previous_permission} to %{new_permission} in location layer for #{data['user']}") %
-       {previous_permission: "#{data['changes'][0]}", new_permission: "#{data['changes'][1]}", user: "#{data['user']}" }
+      (data.nil? || data['changes'].nil? ?
+        _("Permission changed in location layer for %{user}") :
+        _("Permission changed from %{previous_permission} to %{new_permission} in location layer for #{data['user']}")
+      ) % {previous_permission: (data['changes'][0] rescue nil), new_permission: (data['changes'][1] rescue nil), user: data['user']}
     when['anonymous_name_location_permission', 'changed']
-      anonymous_name_location_changed
+      (data.nil? || data['changes'].nil? ?
+        _("Permission changed in %{layer} layer for anonymous users") :
+        _("Permission changed from %{previous_permission} to %{new_permission} in %{layer} layer for anonymous users")
+      ) % {previous_permission: (data['changes'][0] rescue nil), new_permission: (data['changes'][1] rescue nil), layer: data['built_in_layer']}
     when['anonymous_layer_permission', 'changed']
-      _("Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for anonymous users") %
-      {previous_permission: "#{data['changes'][0]}", new_permission: "#{data['changes'][1]}", layer: "'#{data['name']}'"}
+      (data.nil? || data['changes'].nil? ?
+        _("Permission changed in layer %{layer} for anonymous users") :
+        _("Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for anonymous users")
+      ) % {previous_permission: (data['changes'][0] rescue nil), new_permission: (data['changes'][1] rescue nil), layer: "'#{data['name']}'"}
     when['admin_permission','changed']
       admin_permission_changed data
-    end
+    end rescue _("There was an error processing this activity")
   end
 
   def item_id
@@ -139,18 +156,6 @@ class Activity < ActiveRecord::Base
     else
       _("Layer %{layer} changed: %{changes}") % {layer: "'#{data['name']}'", changes: "#{changes}"}
     end
-  end
-
-  def layer_membership_permission_changed
-    _("Permission changed from %{previous_permission} to %{new_permission} in layer %{layer} for %{user}") % {previous_permission: "#{data['previous_permission']}", new_permission: "#{data['new_permission']}", layer: "'#{data['name']}'", user: "#{data['user']}"}
-  end
-
-  def anonymous_name_location_changed
-    built_in_layer = data['built_in_layer']
-    previous_permission = data['changes'][0]
-    new_permission = data['changes'][1]
-    _("Permission changed from %{previous_permission} to %{new_permission} in %{layer} layer for anonymous users") %
-     {previous_permission: "#{previous_permission}", new_permission: "#{new_permission}", layer: "#{built_in_layer}"}
   end
 
   def admin_permission_changed(data)
