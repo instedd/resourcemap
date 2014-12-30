@@ -17,6 +17,7 @@ before_script:
 - bundle exec rake db:test:prepare
 script:
 - bundle exec rspec spec/ plugins/
+- bundle exec rspec -t js spec/integration/
 - bundle exec guard-jasmine
 notifications:
   slack:

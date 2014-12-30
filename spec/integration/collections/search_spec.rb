@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "search", :type => :request do
 
-  it "should search", js:true do
+  it "should search", js:true, skip:true do
     user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
     page.save_screenshot 'filter_sites.png'
     collection = create_collection_for (user)
