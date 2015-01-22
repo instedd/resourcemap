@@ -279,23 +279,59 @@ describe CsdApiController, :type => :controller do
 
       entity_id_field = layer.identifier_fields.create!(ord: 2, name: "Entity ID", code: "entity_id").csd_facility_entity_id!
 
+      contact_common_name_field_contact_1 = layer.text_fields.create!(ord: 3, name: "Common Name Contact 1", code: 'common_name_contact_1')
+        .csd_contact("Contact 1").csd_name("Name 1", Field::CSDApiConcern::csd_contact_tag).csd_common_name!("en")
+      contact_forename_field_contact_1 = layer.text_fields.create!(ord: 4, name: "Forename Contact 1", code: 'forename_contact_1')
+        .csd_contact("Contact 1").csd_name("Name 1", Field::CSDApiConcern::csd_contact_tag).csd_forename!
+      contact_surname_field_contact_1 = layer.text_fields.create!(ord: 5, name: "Surname Contact 1", code: 'surname_contact_1')
+        .csd_contact("Contact 1").csd_name("Name 1", Field::CSDApiConcern::csd_contact_tag).csd_surname!
+
+
+      contact_common_name_field_contact_2 = layer.text_fields.create!(ord: 6, name: "Common Name Contact 2", code: 'common_name_contact_2')
+        .csd_contact("Contact 2").csd_name("Name 2", Field::CSDApiConcern::csd_contact_tag).csd_common_name!("en")
+      contact_forename_field_contact_2 = layer.text_fields.create!(ord: 7, name: "Forename Contact 2", code: 'forename_contact_2')
+        .csd_contact("Contact 2").csd_name("Name 2", Field::CSDApiConcern::csd_contact_tag).csd_forename!
+      contact_surname_field_contact_2 = layer.text_fields.create!(ord: 8, name: "Surname Contact 2", code: 'surname_contact_2')
+        .csd_contact("Contact 2").csd_name("Name 2", Field::CSDApiConcern::csd_contact_tag).csd_surname!
+
       stub_time Time.iso8601("2014-12-01T14:00:00-00:00").to_s
       site_a = collection.sites.create!(name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
         properties: {
           coded_type_medical_specialty.es_code => 1,
-          entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.11"
+          entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.11",
+          contact_common_name_field_contact_1.es_code => "Anderson, Andrew",
+          contact_forename_field_contact_1.es_code => "Andrew",
+          contact_surname_field_contact_1.es_code => "Anderson",
+
+          contact_common_name_field_contact_2.es_code => "Juarez, Julio",
+          contact_forename_field_contact_2.es_code => "Julio",
+          contact_surname_field_contact_2.es_code => "Juarez"
         })
 
       site_b = collection.sites.create!(name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user,
         properties: {
           coded_type_medical_specialty.es_code => 2,
-          entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.12"
+          entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.12",
+          contact_common_name_field_contact_1.es_code => "Benson, Barbara",
+          contact_forename_field_contact_1.es_code => "Barbara",
+          contact_surname_field_contact_1.es_code => "Benson",
+
+          contact_common_name_field_contact_2.es_code => "Martinez, Ruby",
+          contact_forename_field_contact_2.es_code => "Ruby",
+          contact_surname_field_contact_2.es_code => "Martinez"
         })
 
       site_c = collection.sites.create!(name: 'Connectathon Dialysis Facility Two', lat: 34.5441, lng: 122.4717, user: user,
         properties: {
           coded_type_medical_specialty.es_code => 2,
-          entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.13"
+          entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.13",
+          contact_common_name_field_contact_1.es_code => "Robertson, Robert",
+          contact_forename_field_contact_1.es_code => "Robert",
+          contact_surname_field_contact_1.es_code => "Robertson",
+
+          contact_common_name_field_contact_2.es_code => "Juarez, Angel",
+          contact_forename_field_contact_2.es_code => "Angel",
+          contact_surname_field_contact_2.es_code => "Juarez"
         })
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")

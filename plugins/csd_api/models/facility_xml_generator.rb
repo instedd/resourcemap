@@ -30,6 +30,7 @@ class FacilityXmlGenerator
     facility_properties = facility["_source"]["properties"]
 
     xml.tag!("facility", "entityID" => generate_entity_id(facility, facility_properties)) do
+
       generate_other_ids(xml, facility_properties)
       generate_coded_types(xml, facility_properties)
 
@@ -130,7 +131,7 @@ class FacilityXmlGenerator
           contact.names.each do |name|
             xml.tag!("name") do
               name.common_names.each do |common_name|
-                xml.tag!("commonName", "language" => common_name.language) do
+                xml.tag!("commonName") do
                   xml.text!(facility_properties[common_name.field.code])
                 end
               end
