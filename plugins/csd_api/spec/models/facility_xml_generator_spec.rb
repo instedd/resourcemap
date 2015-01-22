@@ -26,20 +26,20 @@ describe FacilityXmlGenerator, :type => :model do
 		facility["_source"]["properties"]
 	end
 
-	describe 'OID generation' do
-		it 'should use existing OID annotated field' do
-			oid_field = layer.identifier_fields.make.csd_facility_oid!
-			facility_properties[oid_field.code] = "oid_value"
+	describe 'entityID generation' do
+		it 'should use existing entityID annotated field' do
+			entity_id_field = layer.identifier_fields.make.csd_facility_entity_id!
+			facility_properties[entity_id_field.code] = "value"
 
 			generator = FacilityXmlGenerator.new collection
-			expect(generator.generate_oid(facility, facility_properties)).to eq("oid_value")
+			expect(generator.generate_entity_id(facility, facility_properties)).to eq("value")
 		end
 
-		it 'should generate OID from UUID' do
+		it 'should generate entityID from UUID' do
 			set_facility_attribute "uuid", "1234-5678-9012-3456"
 
 			generator = FacilityXmlGenerator.new collection
-			expect(generator.generate_oid(facility, facility_properties)).to eq(generator.to_oid("1234-5678-9012-3456"))
+			expect(generator.generate_entity_id(facility, facility_properties)).to eq("1234-5678-9012-3456")
 		end
 	end
 
@@ -80,21 +80,21 @@ describe FacilityXmlGenerator, :type => :model do
 			doc = Nokogiri.XML xml.target!
 			expect(doc.xpath("//codedType").length).to eq(2)
 
-			fruits_xml = doc.xpath("//codedType[@codingSchema='fruits']")
+			fruits_xml = doc.xpath("//codedType[@codingScheme='fruits']")
 			expect(fruits_xml.attr('code').value).to eq('B')
-			expect(fruits_xml.attr('codingSchema').value).to eq('fruits')
+			expect(fruits_xml.attr('codingScheme').value).to eq('fruits')
 			expect(fruits_xml.text).to eq('Banana')
 
-			supermarkets_xml = doc.xpath("//codedType[@codingSchema='supermarkets']")
+			supermarkets_xml = doc.xpath("//codedType[@codingScheme='supermarkets']")
 			expect(supermarkets_xml.attr('code').value).to eq('J')
-			expect(supermarkets_xml.attr('codingSchema').value).to eq('supermarkets')
+			expect(supermarkets_xml.attr('codingScheme').value).to eq('supermarkets')
 			expect(supermarkets_xml.text).to eq('Jumbo')
 		end
 	end
 
 	describe 'Other id generation' do
 		it '' do
-			oid_field = layer.identifier_fields.make.csd_facility_oid!
+			entity_id_field = layer.identifier_fields.make.csd_facility_entity_id!
 			other_id_field = layer.identifier_fields.make(config: { "context" => "DHIS", "agency" => "MOH" }.with_indifferent_access)
 
 			facility_properties[other_id_field.code] = 'my_moh_dhis_id'

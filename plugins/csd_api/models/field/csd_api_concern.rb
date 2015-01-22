@@ -1,15 +1,15 @@
 module Field::CSDApiConcern
   extend ActiveSupport::Concern
 
-  def csd_coded_type!(coding_schema)
+  def csd_coded_type!(coding_scheme)
   	put_in_metadata "CSDType", "codedType"
-  	put_in_metadata "codingSchema", coding_schema
+  	put_in_metadata "codingScheme", coding_scheme
   	save!
   	self
   end
 
-  def csd_facility_oid!
-  	put_in_metadata "CSDType", "facilityOid"
+  def csd_facility_entity_id!
+  	put_in_metadata "CSDType", "facilityEntityId"
   	save!
   	self
   end
@@ -204,11 +204,11 @@ module Field::CSDApiConcern
   end
 
   def csd_coded_type?
-  	csd_declared_type?("codedType") && in_metadata?("codingSchema")
+  	csd_declared_type?("codedType") && in_metadata?("codingScheme")
   end
 
-  def csd_facility_oid?
-  	csd_declared_type? "facilityOid" 
+  def csd_facility_entity_id?
+  	csd_declared_type? "facilityEntityId"
   end
 
   def csd_oid?(for_element)
@@ -217,7 +217,7 @@ module Field::CSDApiConcern
   end
 
   def csd_other_id?
-    self.is_a?(Field::IdentifierField) && !csd_facility_oid?
+    self.is_a?(Field::IdentifierField) && !csd_facility_entity_id?
   end
 
   def csd_declared_type?(type)

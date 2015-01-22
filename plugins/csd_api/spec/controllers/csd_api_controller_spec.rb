@@ -154,7 +154,7 @@ describe CsdApiController, :type => :controller do
 
       expect(body["facilityDirectory"].length).to eq(1)
       facility = body["facilityDirectory"]["facility"]
-      expect(facility["oid"]).to eq("2.25.309768652999692686176651983274504471835.646.5.329800735698586629295641978511506172918")
+      expect(facility["primaryName"]).to eq('Site B changed')
     end
 
     #TODO: simplify test by using new utility methods
@@ -245,7 +245,6 @@ describe CsdApiController, :type => :controller do
       # Should include 'geocode'
       expect(facility["geocode"]["latitude"]).to eq("10.0")
       expect(facility["geocode"]["longitude"]).to eq("20.0")
-      expect(facility["geocode"]["coordinateSystem"]).to eq("WGS-84")
 
       # Should include 'contactPoint'
       expect(facility["contactPoint"].length).to eq(2)
@@ -266,4 +265,52 @@ describe CsdApiController, :type => :controller do
       expect(facility["record"]["status"]).to eq("Active")
     end
   end
+
+  describe "SOAP Service API Version 1.1" do
+    it "should return CSD facility attributes for each CSD-field in the collection" do
+      user = collection.get_user_owner
+
+      layer = collection.layers.make name: 'Connectathon Fields'
+      coded_type_medical_specialty = layer.select_one_fields.create!(ord: 1, name: 'Medical Specialty', code: 'medical_specialty',
+        config: {'options' =>[
+          {'id' => 1, 'code' => '103-110', 'label' => 'Radiology - Imaging Services'},
+          {'id' => 2, 'code' => '103-003', 'label' => 'Dialysis'}]})
+        .csd_coded_type! "1.3.6.1.4.1.21367.100.1"
+
+      entity_id_field = layer.identifier_fields.create!(ord: 2, name: "Entity ID", code: "entity_id").csd_facility_entity_id!
+
+      stub_time Time.iso8601("2014-12-01T14:00:00-00:00").to_s
+      site_a = collection.sites.create!(name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
+        properties: {
+          coded_type_medical_specialty.es_code => 1,
+          entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.11"
+        })
+
+      site_b = collection.sites.create!(name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user,
+        properties: {
+          coded_type_medical_specialty.es_code => 2,
+          entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.12"
+        })
+
+      site_c = collection.sites.create!(name: 'Connectathon Dialysis Facility Two', lat: 34.5441, lng: 122.4717, user: user,
+        properties: {
+          coded_type_medical_specialty.es_code => 2,
+          entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.13"
+        })
+
+      request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
+      post :get_directory_modifications, collection_id: collection.id
+
+      response_xml = Nokogiri::XML(response.body) do |config|
+        config.strict.noblanks
+      end.xpath('//soap:Body')
+
+      result_xml = Nokogiri::XML(File.open("#{Rails.root}/plugins/csd_api/spec/controllers/csd-facilities-connectathon-result.xml.erb")) do |config|
+        config.strict.noblanks
+      end.xpath('//soap:Body')
+
+      expect(response_xml.to_s).to eq(result_xml.to_s)
+    end
+  end
+
 end

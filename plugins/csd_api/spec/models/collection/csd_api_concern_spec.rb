@@ -1,19 +1,19 @@
 require 'spec_helper'
 
-describe Collection::CSDApiConcern, :type => :model do 
+describe Collection::CSDApiConcern, :type => :model do
 	let(:collection) { Collection.make }
 	let(:layer) { collection.layers.make }
 
-	describe 'csd_facility_oid_field' do
+	describe 'csd_facility_entity_id_field' do
 		it 'is nil if there is no field with the right metadata' do
-			expect(collection.csd_facility_oid).to be_nil
+			expect(collection.csd_facility_entity_id).to be_nil
 		end
 
 		it 'chooses the right field given proper metadata configs' do
-			oid_field = layer.identifier_fields.make.csd_facility_oid!
+			entity_id_field = layer.identifier_fields.make.csd_facility_entity_id!
 
-			expect(collection.csd_facility_oid.id).to eq(oid_field.id)
-		end		
+			expect(collection.csd_facility_entity_id.id).to eq(entity_id_field.id)
+		end
 	end
 
 	describe 'csd_coded_type_fields' do
@@ -25,10 +25,10 @@ describe Collection::CSDApiConcern, :type => :model do
 			g = layer.select_one_fields.make(
 				config: {
 					options: [
-						{id: 1, code: "A", label: "Apple"}, 
+						{id: 1, code: "A", label: "Apple"},
 						{id: 2, code: "B", label: "Banana"},
 						{id: 3, code: "P", label: "Peach"}
-					]	 
+					]
 				}
 			).csd_coded_type!("fruits")
 
@@ -36,9 +36,9 @@ describe Collection::CSDApiConcern, :type => :model do
 			h = layer.select_one_fields.make(
 				config: {
 					options: [
-						{id: 1, code: "C", label: "Carrefour"}, 
+						{id: 1, code: "C", label: "Carrefour"},
 						{id: 2, code: "J", label: "Jumbo"}
-					] 
+					]
 				}
 			).csd_coded_type!("supermarkets")
 
@@ -52,7 +52,7 @@ describe Collection::CSDApiConcern, :type => :model do
 	describe 'csd_other_ids' do
 		it '' do
 			f = layer.identifier_fields.make
-			g = layer.identifier_fields.make.csd_facility_oid!
+			g = layer.identifier_fields.make.csd_facility_entity_id!
 
 			other_ids = collection.csd_other_ids
 
@@ -88,8 +88,8 @@ describe Collection::CSDApiConcern, :type => :model do
 
 	describe 'csd_organizations' do
 		it '' do
-			o1 = layer.text_fields.make.csd_organization("Org 1").csd_oid!(Field::CSDApiConcern::csd_organization_tag) 
-			o2 = layer.text_fields.make.csd_organization("Org 2").csd_oid!(Field::CSDApiConcern::csd_organization_tag) 
+			o1 = layer.text_fields.make.csd_organization("Org 1").csd_oid!(Field::CSDApiConcern::csd_organization_tag)
+			o2 = layer.text_fields.make.csd_organization("Org 2").csd_oid!(Field::CSDApiConcern::csd_organization_tag)
 
 			orgs = collection.csd_organizations
 
