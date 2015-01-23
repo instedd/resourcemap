@@ -55,11 +55,17 @@ class FacilityXmlGenerator
     xml
   end
 
+  def operating_hours_tag_has_content?(facility_properties, oh)
+    return oh.open_flag && facility_properties[oh.open_flag.code] ||
+      oh.day_of_the_week && facility_properties[oh.day_of_the_week.code] ||
+      oh.beginning_hour && facility_properties[oh.beginning_hour.code] ||
+      oh.ending_hour && facility_properties[oh.ending_hour.code] ||
+      oh.begin_effective_date && facility_properties[oh.begin_effective_date.code]
+  end
+
   def generate_operating_hours(xml, facility_properties, operating_hours)
     operating_hours.each do |oh|
-      if (facility_properties[oh.open_flag.code] || facility_properties[oh.day_of_the_week.code] ||
-          facility_properties[oh.beginning_hour.code] || facility_properties[oh.ending_hour.code] ||
-          facility_properties[oh.begin_effective_date.code])
+      if (operating_hours_tag_has_content?(facility_properties, oh))
         xml.tag!("operatingHours") do
           if oh.open_flag
             xml.tag!("openFlag") do

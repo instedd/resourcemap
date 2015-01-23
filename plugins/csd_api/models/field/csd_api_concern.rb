@@ -76,6 +76,18 @@ module Field::CSDApiConcern
     self
   end
 
+  def csd_facility_address!(address_type)
+    csd_facility_address(address_type)
+    save!
+    self
+  end
+
+   def csd_facility_address(address_type)
+    put_in_metadata Field::CSDApiConcern::csd_facility_address_tag, "facilityAddress"
+    put_in_metadata "CSDCode", address_type
+    self
+  end
+
   def csd_address_line!(component)
     put_in_metadata Field::CSDApiConcern::csd_address_line_tag, component
     save!
@@ -191,6 +203,11 @@ module Field::CSDApiConcern
   end
 
   def csd_address?(parent_tag)
+    in_metadata?(Field::CSDApiConcern::csd_address_tag) &&
+    metadata_value_for("CSDChildOf") == parent_tag
+  end
+
+  def csd_facility_address?(parent_tag)
     in_metadata?(Field::CSDApiConcern::csd_address_tag) &&
     metadata_value_for("CSDChildOf") == parent_tag
   end
@@ -343,6 +360,10 @@ module Field::CSDApiConcern
 
   def self.csd_address_tag
     "CSDAddress"
+  end
+
+  def self.csd_facility_address_tag
+    "CSDFacilityAddress"
   end
 
   def self.csd_address_line_tag
