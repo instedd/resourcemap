@@ -407,6 +407,33 @@ describe CsdApiController, :type => :controller do
         .csd_operating_hours("OH5", Field::CSDApiConcern::csd_facility_tag)
         .csd_begin_effective_date!
 
+      # TODO: Refactor
+      billing_address_street_field = layer.text_fields.create!(ord: 38, name: "Billing Address Street", code: "billing_address_street",
+          metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"streetAddress"}, "2"=>{"key"=>"CSDCode", "value"=>"Billing"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+      billing_address_city_field = layer.text_fields.create!(ord: 39, name: "Billing Address City", code: "billing_address_city",
+          metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"city"}, "2"=>{"key"=>"CSDCode", "value"=>"Billing"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+      billing_address_state_field = layer.text_fields.create!(ord: 40, name: "Billing Address stateProvince", code: "billing_address_state_province",
+          metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"stateProvince"}, "2"=>{"key"=>"CSDCode", "value"=>"Billing"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+      billing_address_country_field = layer.text_fields.create!(ord: 41, name: "Billing Address Country", code: "billing_address_state_country",
+          metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"country"}, "2"=>{"key"=>"CSDCode", "value"=>"Billing"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+      billing_address_postal_code_field = layer.text_fields.create!(ord: 42, name: "Billing Address PostalCode", code: "billing_address_state_postal_code",
+          metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"postalCode"}, "2"=>{"key"=>"CSDCode", "value"=>"Billing"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+
+      practice_address_street_field = layer.text_fields.create!(ord: 43, name: "Practice Address Street", code: "practice_address_street",
+          metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"streetAddress"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+      practice_address_city_field = layer.text_fields.create!(ord: 44, name: "Practice Address City", code: "practice_address_city",
+          metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"city"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+
+      practice_address_state_field = layer.text_fields.create!(ord: 45, name: "Practice Address stateProvince", code: "practice_address_state_province",
+          metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"stateProvince"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+
+      practice_address_country_field = layer.text_fields.create!(ord: 46, name: "Practice Address Country", code: "practice_address_state_country",
+          metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"country"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+      practice_address_postal_code_field = layer.text_fields.create!(ord: 347, name: "Practice Address PostalCode", code: "practice_address_state_postal_code",
+          metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"postalCode"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+
+
+
       stub_time Time.iso8601("2014-12-01T14:00:00-00:00").to_s
       site_a = collection.sites.create!(name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
         properties: {
@@ -462,6 +489,18 @@ describe CsdApiController, :type => :controller do
           oh_5_beginning_hour_field.es_code => '09:00:00',
           oh_5_ending_hour_field.es_code => '17:00:00',
           oh_5_begin_effective_date_field.es_code => '2013-12-01',
+
+          billing_address_street_field.es_code => "1234 Cactus Way",
+          billing_address_city_field.es_code => 'Santa Fe',
+          billing_address_state_field.es_code => "NM",
+          billing_address_country_field.es_code => "USA",
+          billing_address_postal_code_field.es_code => "87501",
+
+          practice_address_street_field.es_code => "2222 19th Ave SW",
+          practice_address_city_field.es_code => 'Santa Fe',
+          practice_address_state_field.es_code => "NM",
+          practice_address_country_field.es_code => "USA",
+          practice_address_postal_code_field.es_code => "87124",
         })
 
       site_b = collection.sites.create!(name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user,
@@ -500,6 +539,18 @@ describe CsdApiController, :type => :controller do
           oh_5_beginning_hour_field.es_code => '05:00:00',
           oh_5_ending_hour_field.es_code => '17:00:00',
           oh_5_begin_effective_date_field.es_code => '2013-12-01',
+
+          billing_address_street_field.es_code => "1234 Cactus Way",
+          billing_address_city_field.es_code => 'Santa Fe',
+          billing_address_state_field.es_code => "NM",
+          billing_address_country_field.es_code => "USA",
+          billing_address_postal_code_field.es_code => "87501",
+
+          practice_address_street_field.es_code => "2222 19th Ave SW",
+          practice_address_city_field.es_code => 'Rio Rancho',
+          practice_address_state_field.es_code => "NM",
+          practice_address_country_field.es_code => "USA",
+          practice_address_postal_code_field.es_code => "87124",
         })
 
       site_c = collection.sites.create!(name: 'Connectathon Dialysis Facility Two', lat: 34.5441, lng: 122.4717, user: user,
@@ -538,6 +589,18 @@ describe CsdApiController, :type => :controller do
           oh_5_beginning_hour_field.es_code => '05:00:00',
           oh_5_ending_hour_field.es_code => '17:00:00',
           oh_5_begin_effective_date_field.es_code => '2014-12-01',
+
+          billing_address_street_field.es_code => "434 W. Gurley Street",
+          billing_address_city_field.es_code => 'Prescott',
+          billing_address_state_field.es_code => "AZ",
+          billing_address_country_field.es_code => "USA",
+          billing_address_postal_code_field.es_code => "86301",
+
+          practice_address_street_field.es_code => "434 W. Gurley Street",
+          practice_address_city_field.es_code => 'Prescott',
+          practice_address_state_field.es_code => "AZ",
+          practice_address_country_field.es_code => "USA",
+          practice_address_postal_code_field.es_code => "86301",
         })
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
