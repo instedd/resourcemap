@@ -143,7 +143,6 @@ class FacilityXmlGenerator
               end
             end
           end
-
           contact.addresses.each do |address|
             xml.tag!("address") do
               address.address_lines.each do |address_line|

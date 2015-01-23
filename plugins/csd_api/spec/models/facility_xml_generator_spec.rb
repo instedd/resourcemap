@@ -167,7 +167,7 @@ describe FacilityXmlGenerator, :type => :model do
 
 			expect(doc.xpath("//contact").length).to eq(2)
 
-			expect(doc.xpath("//contact[1]/person/name/commonName[@language='en']").text).to eq("Anderson, Andrew")
+			expect(doc.xpath("//contact[1]/person/name/commonName").text).to eq("Anderson, Andrew")
 			expect(doc.xpath("//contact[1]/person/name/forename").text).to eq("Andrew")
 			expect(doc.xpath("//contact[1]/person/name/surname").text).to eq("Anderson")
 
@@ -178,7 +178,7 @@ describe FacilityXmlGenerator, :type => :model do
 			expect(doc.xpath("//contact[1]/person/address/addressLine[@component='postalCode']").text).to eq("87124")
 
 
-			expect(doc.xpath("//contact[2]/person/name/commonName[@language='en']").text).to eq("Juarez, Julio")
+			expect(doc.xpath("//contact[2]/person/name/commonName").text).to eq("Juarez, Julio")
 			expect(doc.xpath("//contact[2]/person/name/forename").text).to eq("Julio")
 			expect(doc.xpath("//contact[2]/person/name/surname").text).to eq("Juarez")
 
