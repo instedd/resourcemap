@@ -441,6 +441,9 @@ describe CsdApiController, :type => :controller do
       service_1_name_field = layer.text_fields.create!(ord: 50, name: "Service 1 Name", code: "service_1_name")
         .csd_organization("Org1").csd_service!("Service 1").csd_name!("name1", Field::CSDApiConcern::csd_service_tag)
 
+      service_1_language_field = layer.select_one_fields.create!(ord: 50, name: "Service 1 Language", code: "service_1_language", config: language_config)
+        .csd_organization("Org1").csd_service!("Service 1").csd_language!("BCP 47", Field::CSDApiConcern::csd_service_tag)
+
       stub_time Time.iso8601("2014-12-01T14:00:00-00:00").to_s
       site_a = collection.sites.create!(name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
         properties: {
@@ -512,6 +515,7 @@ describe CsdApiController, :type => :controller do
           organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1",
           service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.102",
           service_1_name_field.es_code => "Connectathon Radiation Therapy",
+          service_1_language_field.es_code => 1
 
         })
 
@@ -567,6 +571,7 @@ describe CsdApiController, :type => :controller do
           organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1",
           service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
           service_1_name_field.es_code => "Connectathon Dialysis Service",
+          service_1_language_field.es_code => 1
 
         })
 
@@ -622,6 +627,7 @@ describe CsdApiController, :type => :controller do
           organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1",
           service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
           service_1_name_field.es_code => "Connectathon Dialysis Service",
+          service_1_language_field.es_code => 1
 
         })
 
