@@ -435,6 +435,8 @@ describe CsdApiController, :type => :controller do
       organization_1_field = layer.text_fields.create!(ord: 48, name: "Organization 1", code: "org_1")
         .csd_organization("Org1").csd_oid!(Field::CSDApiConcern::csd_organization_tag)
 
+      service_1_field = layer.text_fields.create!(ord: 49, name: "Service 1", code: "service_1")
+        .csd_organization("Org1").csd_service!("Service 1").csd_oid!(Field::CSDApiConcern::csd_service_tag)
 
       stub_time Time.iso8601("2014-12-01T14:00:00-00:00").to_s
       site_a = collection.sites.create!(name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
@@ -504,7 +506,8 @@ describe CsdApiController, :type => :controller do
           practice_address_country_field.es_code => "USA",
           practice_address_postal_code_field.es_code => "87124",
 
-          organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1"
+          organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1",
+          service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.102",
         })
 
       site_b = collection.sites.create!(name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user,
@@ -556,7 +559,8 @@ describe CsdApiController, :type => :controller do
           practice_address_country_field.es_code => "USA",
           practice_address_postal_code_field.es_code => "87124",
 
-          organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1"
+          organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1",
+          service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
 
         })
 
@@ -609,8 +613,8 @@ describe CsdApiController, :type => :controller do
           practice_address_country_field.es_code => "USA",
           practice_address_postal_code_field.es_code => "86301",
 
-          organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1"
-
+          organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1",
+          service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104"
         })
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
