@@ -314,7 +314,6 @@ describe FacilityXmlGenerator, :type => :model do
 			expect(doc.xpath("//organizations/organization[1]").attr('entityID').value).to eq("an_oid")
 
 			expect(doc.xpath("//organizations/organization[1]/service[1]").attr('entityID').value).to eq("service1 oid")
-			expect(doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").attr('language').value).to eq("en")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").text).to eq("Connectathon Radiation Therapy")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('code').value).to eq("en")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingScheme').value).to eq("BCP 47")
@@ -327,7 +326,7 @@ describe FacilityXmlGenerator, :type => :model do
 
 			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[2]/openFlag[1]").text).to eq("1")
 
-			expect(doc.xpath("//organizations/organization[1]/service[2]").attr('oid').value).to eq("service2 oid")
+			expect(doc.xpath("//organizations/organization[1]/service[2]").attr('entityID').value).to eq("service2 oid")
 		end
 	end
 
