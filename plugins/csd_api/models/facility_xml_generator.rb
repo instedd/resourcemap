@@ -57,34 +57,38 @@ class FacilityXmlGenerator
 
   def generate_operating_hours(xml, facility_properties, operating_hours)
     operating_hours.each do |oh|
-      xml.tag!("operatingHours") do
-        if oh.open_flag
-          xml.tag!("openFlag") do
-            xml.text!(facility_properties[oh.open_flag.code] ? "1" : "0")
+      if (facility_properties[oh.open_flag.code] || facility_properties[oh.day_of_the_week.code] ||
+          facility_properties[oh.beginning_hour.code] || facility_properties[oh.ending_hour.code] ||
+          facility_properties[oh.begin_effective_date.code])
+        xml.tag!("operatingHours") do
+          if oh.open_flag
+            xml.tag!("openFlag") do
+              xml.text!(facility_properties[oh.open_flag.code] ? "1" : "0")
+            end
           end
-        end
 
-        if oh.day_of_the_week
-          xml.tag!("dayOfTheWeek") do
-            xml.text!(facility_properties[oh.day_of_the_week.code].to_s)
+          if oh.day_of_the_week
+            xml.tag!("dayOfTheWeek") do
+              xml.text!(facility_properties[oh.day_of_the_week.code].to_s)
+            end
           end
-        end
 
-        if oh.beginning_hour
-          xml.tag!("beginningHour") do
-            xml.text!(facility_properties[oh.beginning_hour.code] || "")
+          if oh.beginning_hour
+            xml.tag!("beginningHour") do
+              xml.text!(facility_properties[oh.beginning_hour.code] || "")
+            end
           end
-        end
 
-        if oh.ending_hour
-          xml.tag!("endingHour") do
-            xml.text!(facility_properties[oh.ending_hour.code] || "")
+          if oh.ending_hour
+            xml.tag!("endingHour") do
+              xml.text!(facility_properties[oh.ending_hour.code] || "")
+            end
           end
-        end
 
-        if oh.begin_effective_date
-          xml.tag!("beginEffectiveDate") do
-            xml.text!(facility_properties[oh.begin_effective_date.code] || "")
+          if oh.begin_effective_date
+            xml.tag!("beginEffectiveDate") do
+              xml.text!(facility_properties[oh.begin_effective_date.code] || "")
+            end
           end
         end
       end

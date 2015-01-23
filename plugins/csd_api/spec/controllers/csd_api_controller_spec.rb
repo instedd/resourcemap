@@ -322,10 +322,90 @@ describe CsdApiController, :type => :controller do
         ]
       }.with_indifferent_access
 
-      language_1_field = layer.select_one_fields.make(ord: 11, name: "Language 1", code: 'language_1', config: language_config)
+      language_1_field = layer.select_one_fields.create!(ord: 11, name: "Language 1", code: 'language_1', config: language_config)
         .csd_language!("BCP 47", Field::CSDApiConcern::csd_facility_tag)
-      language_2_field = layer.select_one_fields.make(ord: 12, name: "Language 2", code: 'language_2', config: language_config)
+      language_2_field = layer.select_one_fields.create!(ord: 12, name: "Language 2", code: 'language_2', config: language_config)
         .csd_language!("BCP 47", Field::CSDApiConcern::csd_facility_tag)
+
+      oh_1_open_flag_field = layer.yes_no_fields.create!(ord: 13, name: "Open Flag OH1", code: 'open_flag_oh1')
+          .csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+          .csd_open_flag!
+      oh_1_day_of_the_week_field = layer.numeric_fields.create!(ord: 14, name: "Day of Week OH1", code: 'day_of_week_oh1')
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+        .csd_day_of_the_week!
+      oh_1_beginning_hour_field = layer.text_fields.create!(ord: 15, name: "Beginning Hour OH1", code: 'beginning_hour_oh1')
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+        .csd_beginning_hour!
+      oh_1_ending_hour_field = layer.text_fields.create!(ord: 16, name: "Ending Hour OH1", code: 'ending_hour_oh1')
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+        .csd_ending_hour!
+      oh_1_begin_effective_date_field = layer.text_fields.create!(ord: 17, name: "Begin Effective OH1", code: 'begin_effective_oh1')
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+        .csd_begin_effective_date!
+
+      oh_2_open_flag_field = layer.yes_no_fields.create!(ord: 18, name: "Open Flag OH2", code: 'open_flag_oh2')
+          .csd_operating_hours("OH2", Field::CSDApiConcern::csd_facility_tag)
+          .csd_open_flag!
+      oh_2_day_of_the_week_field = layer.numeric_fields.create!(ord: 19, name: "Day of Week OH2", code: 'day_of_week_oh2')
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_facility_tag)
+        .csd_day_of_the_week!
+      oh_2_beginning_hour_field = layer.text_fields.create!(ord: 20, name: "Beginning Hour OH2", code: 'beginning_hour_oh2')
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_facility_tag)
+        .csd_beginning_hour!
+      oh_2_ending_hour_field = layer.text_fields.create!(ord: 21, name: "Ending Hour OH2", code: 'ending_hour_oh2')
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_facility_tag)
+        .csd_ending_hour!
+      oh_2_begin_effective_date_field = layer.text_fields.create!(ord: 22, name: "Begin Effective OH2", code: 'begin_effective_oh2')
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_facility_tag)
+        .csd_begin_effective_date!
+
+      oh_3_open_flag_field = layer.yes_no_fields.create!(ord: 23, name: "Open Flag OH3", code: 'open_flag_oh3')
+          .csd_operating_hours("OH3", Field::CSDApiConcern::csd_facility_tag)
+          .csd_open_flag!
+      oh_3_day_of_the_week_field = layer.numeric_fields.create!(ord: 24, name: "Day of Week OH3", code: 'day_of_week_oh3')
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_facility_tag)
+        .csd_day_of_the_week!
+      oh_3_beginning_hour_field = layer.text_fields.create!(ord: 25, name: "Beginning Hour OH3", code: 'beginning_hour_oh3')
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_facility_tag)
+        .csd_beginning_hour!
+      oh_3_ending_hour_field = layer.text_fields.create!(ord: 26, name: "Ending Hour OH3", code: 'ending_hour_oh3')
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_facility_tag)
+        .csd_ending_hour!
+      oh_3_begin_effective_date_field = layer.text_fields.create!(ord: 27, name: "Begin Effective OH3", code: 'begin_effective_oh3')
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_facility_tag)
+        .csd_begin_effective_date!
+
+      oh_4_open_flag_field = layer.yes_no_fields.create!(ord: 28, name: "Open Flag OH4", code: 'open_flag_oh4')
+          .csd_operating_hours("OH4", Field::CSDApiConcern::csd_facility_tag)
+          .csd_open_flag!
+      oh_4_day_of_the_week_field = layer.numeric_fields.create!(ord: 29, name: "Day of Week OH4", code: 'day_of_week_oh4')
+        .csd_operating_hours("OH4", Field::CSDApiConcern::csd_facility_tag)
+        .csd_day_of_the_week!
+      oh_4_beginning_hour_field = layer.text_fields.create!(ord: 30, name: "Beginning Hour OH4", code: 'beginning_hour_oh4')
+        .csd_operating_hours("OH4", Field::CSDApiConcern::csd_facility_tag)
+        .csd_beginning_hour!
+      oh_4_ending_hour_field = layer.text_fields.create!(ord: 31, name: "Ending Hour OH4", code: 'ending_hour_oh4')
+        .csd_operating_hours("OH4", Field::CSDApiConcern::csd_facility_tag)
+        .csd_ending_hour!
+      oh_4_begin_effective_date_field = layer.text_fields.create!(ord: 32, name: "Begin Effective OH4", code: 'begin_effective_oh4')
+        .csd_operating_hours("OH4", Field::CSDApiConcern::csd_facility_tag)
+        .csd_begin_effective_date!
+
+      oh_5_open_flag_field = layer.yes_no_fields.create!(ord: 33, name: "Open Flag OH5", code: 'open_flag_oh5')
+          .csd_operating_hours("OH5", Field::CSDApiConcern::csd_facility_tag)
+          .csd_open_flag!
+      oh_5_day_of_the_week_field = layer.numeric_fields.create!(ord: 34, name: "Day of Week OH5", code: 'day_of_week_oh5')
+        .csd_operating_hours("OH5", Field::CSDApiConcern::csd_facility_tag)
+        .csd_day_of_the_week!
+      oh_5_beginning_hour_field = layer.text_fields.create!(ord: 35, name: "Beginning Hour OH5", code: 'beginning_hour_oh5')
+        .csd_operating_hours("OH5", Field::CSDApiConcern::csd_facility_tag)
+        .csd_beginning_hour!
+      oh_5_ending_hour_field = layer.text_fields.create!(ord: 36, name: "Ending Hour OH5", code: 'ending_hour_oh5')
+        .csd_operating_hours("OH5", Field::CSDApiConcern::csd_facility_tag)
+        .csd_ending_hour!
+      oh_5_begin_effective_date_field = layer.text_fields.create!(ord: 37, name: "Begin Effective OH5", code: 'begin_effective_oh5')
+        .csd_operating_hours("OH5", Field::CSDApiConcern::csd_facility_tag)
+        .csd_begin_effective_date!
 
       stub_time Time.iso8601("2014-12-01T14:00:00-00:00").to_s
       site_a = collection.sites.create!(name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
@@ -351,7 +431,37 @@ describe CsdApiController, :type => :controller do
           contact_2_postal_code_field.es_code => "87124",
 
           language_1_field.es_code => 1,
-          language_2_field.es_code => 2
+          language_2_field.es_code => 2,
+
+          oh_1_open_flag_field.es_code => true,
+          oh_1_day_of_the_week_field.es_code => 1,
+          oh_1_beginning_hour_field.es_code => '08:00:00',
+          oh_1_ending_hour_field.es_code => '18:00:00',
+          oh_1_begin_effective_date_field.es_code => '2014-12-01',
+
+          oh_2_open_flag_field.es_code => true,
+          oh_2_day_of_the_week_field.es_code => 2,
+          oh_2_beginning_hour_field.es_code => '13:00:00',
+          oh_2_ending_hour_field.es_code => '17:00:00',
+          oh_2_begin_effective_date_field.es_code => '2014-12-01',
+
+          oh_3_open_flag_field.es_code => true,
+          oh_3_day_of_the_week_field.es_code => 3,
+          oh_3_beginning_hour_field.es_code => '09:00:00',
+          oh_3_ending_hour_field.es_code => '17:00:00',
+          oh_3_begin_effective_date_field.es_code => '2014-12-01',
+
+          oh_4_open_flag_field.es_code => true,
+          oh_4_day_of_the_week_field.es_code => 4,
+          oh_4_beginning_hour_field.es_code => '13:00:00',
+          oh_4_ending_hour_field.es_code => '17:00:00',
+          oh_4_begin_effective_date_field.es_code => '2014-12-01',
+
+          oh_5_open_flag_field.es_code => true,
+          oh_5_day_of_the_week_field.es_code => 5,
+          oh_5_beginning_hour_field.es_code => '09:00:00',
+          oh_5_ending_hour_field.es_code => '17:00:00',
+          oh_5_begin_effective_date_field.es_code => '2013-12-01',
         })
 
       site_b = collection.sites.create!(name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user,
@@ -377,7 +487,19 @@ describe CsdApiController, :type => :controller do
           contact_2_postal_code_field.es_code => "87124",
 
           language_1_field.es_code => 1,
-          language_2_field.es_code => 2
+          language_2_field.es_code => 2,
+
+          oh_1_open_flag_field.es_code => true,
+          oh_1_day_of_the_week_field.es_code => 1,
+          oh_1_beginning_hour_field.es_code => '08:00:00',
+          oh_1_ending_hour_field.es_code => '17:00:00',
+          oh_1_begin_effective_date_field.es_code => '2014-12-01',
+
+          oh_5_open_flag_field.es_code => true,
+          oh_5_day_of_the_week_field.es_code => 5,
+          oh_5_beginning_hour_field.es_code => '05:00:00',
+          oh_5_ending_hour_field.es_code => '17:00:00',
+          oh_5_begin_effective_date_field.es_code => '2013-12-01',
         })
 
       site_c = collection.sites.create!(name: 'Connectathon Dialysis Facility Two', lat: 34.5441, lng: 122.4717, user: user,
@@ -403,7 +525,19 @@ describe CsdApiController, :type => :controller do
           contact_2_postal_code_field.es_code => "87124",
 
           language_1_field.es_code => 1,
-          language_2_field.es_code => 2
+          language_2_field.es_code => 2,
+
+          oh_1_open_flag_field.es_code => true,
+          oh_1_day_of_the_week_field.es_code => 1,
+          oh_1_beginning_hour_field.es_code => '08:00:00',
+          oh_1_ending_hour_field.es_code => '17:00:00',
+          oh_1_begin_effective_date_field.es_code => '2014-12-01',
+
+          oh_5_open_flag_field.es_code => true,
+          oh_5_day_of_the_week_field.es_code => 5,
+          oh_5_beginning_hour_field.es_code => '05:00:00',
+          oh_5_ending_hour_field.es_code => '17:00:00',
+          oh_5_begin_effective_date_field.es_code => '2014-12-01',
         })
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
