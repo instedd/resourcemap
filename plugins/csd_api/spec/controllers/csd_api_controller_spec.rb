@@ -253,7 +253,7 @@ describe CsdApiController, :type => :controller do
       expect(contact1["purpose"]).to eq("Main contact")
       expect(contact1["certificate"]).to eq("1234")
       expect(contact1["codedType"]["code"]).to eq "two"
-      expect(contact1["codedType"]["codingSchema"]).to eq "moh.gov.rw"
+      expect(contact1["codedType"]["codingScheme"]).to eq "moh.gov.rw"
 
       contact2 = facility["contactPoint"][1]
       expect(contact2["equipment"]).to eq("Contact 2")
@@ -314,6 +314,19 @@ describe CsdApiController, :type => :controller do
       contact_2_postal_code_field = layer.text_fields.create!(ord: 10, name: "PostalCode Contact 2", code: 'postal_code_contact_2')
         .csd_contact("Contact 2").csd_address("Address 2", Field::CSDApiConcern::csd_contact_tag).csd_address_line!("postalCode")
 
+      language_config = {
+        options: [
+          {id: 1, code: "en", label: "English"},
+          {id: 2, code: "es", label: "Spanish"},
+          {id: 3, code: "fr", label: "French"}
+        ]
+      }.with_indifferent_access
+
+      language_1_field = layer.select_one_fields.make(ord: 11, name: "Language 1", code: 'language_1', config: language_config)
+        .csd_language!("BCP 47", Field::CSDApiConcern::csd_facility_tag)
+      language_2_field = layer.select_one_fields.make(ord: 12, name: "Language 2", code: 'language_2', config: language_config)
+        .csd_language!("BCP 47", Field::CSDApiConcern::csd_facility_tag)
+
       stub_time Time.iso8601("2014-12-01T14:00:00-00:00").to_s
       site_a = collection.sites.create!(name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
         properties: {
@@ -336,6 +349,9 @@ describe CsdApiController, :type => :controller do
           contact_2_state_province_field.es_code => "NM",
           contact_2_country_field.es_code => "USA",
           contact_2_postal_code_field.es_code => "87124",
+
+          language_1_field.es_code => 1,
+          language_2_field.es_code => 2
         })
 
       site_b = collection.sites.create!(name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user,
@@ -359,6 +375,9 @@ describe CsdApiController, :type => :controller do
           contact_2_state_province_field.es_code => "NM",
           contact_2_country_field.es_code => "USA",
           contact_2_postal_code_field.es_code => "87124",
+
+          language_1_field.es_code => 1,
+          language_2_field.es_code => 2
         })
 
       site_c = collection.sites.create!(name: 'Connectathon Dialysis Facility Two', lat: 34.5441, lng: 122.4717, user: user,
@@ -382,6 +401,9 @@ describe CsdApiController, :type => :controller do
           contact_2_state_province_field.es_code => "NM",
           contact_2_country_field.es_code => "USA",
           contact_2_postal_code_field.es_code => "87124",
+
+          language_1_field.es_code => 1,
+          language_2_field.es_code => 2
         })
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")

@@ -210,12 +210,12 @@ describe FacilityXmlGenerator, :type => :model do
 
 			language1_xml = doc.xpath("//language[1]")
 			expect(language1_xml.attr('code').value).to eq('en')
-			expect(language1_xml.attr('codingSchema').value).to eq('BCP 47')
+			expect(language1_xml.attr('codingScheme').value).to eq('BCP 47')
 			expect(language1_xml.text).to eq('English')
 
 			language2_xml = doc.xpath("//language[2]")
 			expect(language2_xml.attr('code').value).to eq('es')
-			expect(language2_xml.attr('codingSchema').value).to eq('BCP 47')
+			expect(language2_xml.attr('codingScheme').value).to eq('BCP 47')
 			expect(language2_xml.text).to eq('Spanish')
 		end
 	end
@@ -317,7 +317,7 @@ describe FacilityXmlGenerator, :type => :model do
 			expect(doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").attr('language').value).to eq("en")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").text).to eq("Connectathon Radiation Therapy")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('code').value).to eq("en")
-			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingSchema').value).to eq("BCP 47")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingScheme').value).to eq("BCP 47")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").text).to eq("English")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/openFlag[1]").text).to eq("1")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/dayOfTheWeek[1]").text).to eq("1")

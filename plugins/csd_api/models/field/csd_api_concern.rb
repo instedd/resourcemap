@@ -85,7 +85,7 @@ module Field::CSDApiConcern
   def csd_language!(coding_schema, parent_tag)
     put_in_metadata Field::CSDApiConcern::csd_language_tag, ""
     put_in_metadata "CSDChildOf", parent_tag
-    put_in_metadata "codingSchema", coding_schema
+    put_in_metadata "codingScheme", coding_schema
     save!
     self
   end
