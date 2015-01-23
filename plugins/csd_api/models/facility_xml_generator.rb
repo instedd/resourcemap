@@ -104,7 +104,7 @@ class FacilityXmlGenerator
   def generate_organizations(xml, facility_properties)
     xml.tag!("organizations") do
       @organizations.each do |org|
-        xml.tag!("organization", "oid" => facility_properties[org.oid.code]) do
+        xml.tag!("organization", "entityID" => facility_properties[org.oid.code]) do
           org.services.each do |service|
             xml.tag!("service", "oid" => facility_properties[service.oid.code]) do
               service.names.each do |name|

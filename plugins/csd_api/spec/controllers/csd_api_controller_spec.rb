@@ -429,9 +429,11 @@ describe CsdApiController, :type => :controller do
 
       practice_address_country_field = layer.text_fields.create!(ord: 46, name: "Practice Address Country", code: "practice_address_state_country",
           metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"country"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
-      practice_address_postal_code_field = layer.text_fields.create!(ord: 347, name: "Practice Address PostalCode", code: "practice_address_state_postal_code",
+      practice_address_postal_code_field = layer.text_fields.create!(ord: 47, name: "Practice Address PostalCode", code: "practice_address_state_postal_code",
           metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"postalCode"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
 
+      organization_1_field = layer.text_fields.create!(ord: 48, name: "Organization 1", code: "org_1")
+        .csd_organization("Org1").csd_oid!(Field::CSDApiConcern::csd_organization_tag)
 
 
       stub_time Time.iso8601("2014-12-01T14:00:00-00:00").to_s
@@ -501,6 +503,8 @@ describe CsdApiController, :type => :controller do
           practice_address_state_field.es_code => "NM",
           practice_address_country_field.es_code => "USA",
           practice_address_postal_code_field.es_code => "87124",
+
+          organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1"
         })
 
       site_b = collection.sites.create!(name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user,
@@ -551,6 +555,9 @@ describe CsdApiController, :type => :controller do
           practice_address_state_field.es_code => "NM",
           practice_address_country_field.es_code => "USA",
           practice_address_postal_code_field.es_code => "87124",
+
+          organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1"
+
         })
 
       site_c = collection.sites.create!(name: 'Connectathon Dialysis Facility Two', lat: 34.5441, lng: 122.4717, user: user,
@@ -601,6 +608,9 @@ describe CsdApiController, :type => :controller do
           practice_address_state_field.es_code => "AZ",
           practice_address_country_field.es_code => "USA",
           practice_address_postal_code_field.es_code => "86301",
+
+          organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1"
+
         })
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")

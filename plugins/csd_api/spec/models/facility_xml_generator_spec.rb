@@ -311,7 +311,7 @@ describe FacilityXmlGenerator, :type => :model do
 			expect(doc.xpath("//organizations").size).to eq(1)
 			expect(doc.xpath("//organizations/organization").size).to eq(1)
 
-			expect(doc.xpath("//organizations/organization[1]").attr('oid').value).to eq("an_oid")
+			expect(doc.xpath("//organizations/organization[1]").attr('entityID').value).to eq("an_oid")
 
 			expect(doc.xpath("//organizations/organization[1]/service[1]").attr('oid').value).to eq("service1 oid")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").attr('language').value).to eq("en")
