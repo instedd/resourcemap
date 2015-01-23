@@ -80,7 +80,7 @@ class Collection < ActiveRecord::Base
     target_fields
   end
 
-  def visible_fields_for(user, options)
+  def visible_fields_for(user, options = {})
     current_ability = Ability.new(user)
 
     if options[:snapshot_id]

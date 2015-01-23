@@ -20,9 +20,11 @@ class Field::HierarchyField < Field
     value if find_hierarchy_option_by_id(value)
   end
 
-  def csv_headers
+  def csv_headers(human = false)
     headers = []
     headers << code
+
+    return headers if human
 
     # Add one column for each level of the hierarchy
     1.upto(hierarchy_max_height) do |i|
@@ -31,10 +33,14 @@ class Field::HierarchyField < Field
     headers
   end
 
-  def csv_values(value)
+  def csv_values(value, human = false)
     rows = []
     # Add the field's value
-    rows << value
+    if human
+      rows << human_value(value)
+    else
+      rows << value
+    end
 
     # This rescue is because the hiearchy could possibly have invalid values and
     # ascendants_of_in_hierarchy raise an "invalid value" exception if the stored value is not valid

@@ -1,16 +1,16 @@
 module Api::JsonHelper
-  def collection_json(collection, results)
+  def collection_json(collection, results, user, options = {})
     obj = {}
     obj[:name] = collection.name
     obj[:previousPage] = url_for(params.merge page: results.previous_page, only_path: false) if results.previous_page
     obj[:nextPage] = url_for(params.merge page: results.next_page, only_path: false) if results.next_page
     obj[:count] = results.total
     obj[:totalPages] = results.total_pages
-    obj[:sites] = results.map {|result| site_item_json result}
+    obj[:sites] = process_labels(collection, results, user, options[:human])
     obj
   end
 
-  def site_item_json(result)
+  def site_item_json(result, human = false, fields = [])
     source = result['_source']
 
     obj = {}
@@ -24,8 +24,25 @@ module Api::JsonHelper
       obj[:long] = source['location']['lon']
     end
 
-    obj[:properties] = source['properties']
+    obj[:properties] = {}
+    if human
+      source['properties'].each do |code, value|
+        field = fields.select{|f| f.code == code }.first
+        obj[:properties][code] = field.csv_values(value, human).first
+      end
+    else
+      obj[:properties] = source['properties']
+    end
 
     obj
+  end
+
+  def process_labels(collection, results, user, human = false)
+    fields = []
+    if human
+      fields = collection.visible_fields_for(user)
+      fields.each(&:cache_for_read)
+    end
+    results.map {|result| site_item_json result, human, fields}
   end
 end

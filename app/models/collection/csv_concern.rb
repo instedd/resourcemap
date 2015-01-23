@@ -9,7 +9,7 @@ module Collection::CsvConcern
     end
   end
 
-  def to_csv(elastic_search_api_results, user, snapshot_id = nil)
+  def to_csv(elastic_search_api_results, user, snapshot_id = nil, options = {})
     fields = self.visible_fields_for(user, {snapshot_id: snapshot_id})
     fields.each(&:cache_for_read)
 
@@ -28,7 +28,7 @@ module Collection::CsvConcern
 
         row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
         fields.each do |field|
-          field.csv_values(source['properties'][field.code]).each do | value |
+          field.csv_values(source['properties'][field.code], options[:human]).each do | value |
             row << value
           end
         end

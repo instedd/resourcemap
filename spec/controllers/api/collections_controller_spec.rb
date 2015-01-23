@@ -539,4 +539,48 @@ describe Api::CollectionsController, :type => :controller do
       expect(Collection.count).to eq(1)
     end
   end
+
+  it "returns names for select one and many and hierarchies with human flag" do
+    sign_in user
+    layer = collection.layers.make
+    select_one = layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+    select_many = layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+    config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+
+    collection.sites.make name: 'TallLand', properties: { select_one.es_code => 2, select_many.es_code => [1,2], hierarchy_field.es_code => '100' }
+
+    get :show, id: collection.id, human: true,  format: 'json'
+    expect(response).to be_success
+    json = JSON.parse response.body
+    expect(json["sites"].first["properties"]['select_one']).to eq('Two')
+    expect(json["sites"].first["properties"]['select_many']).to eq('One, Two')
+    expect(json["sites"].first["properties"]['hierarchy']).to eq('Dad - Son')
+  end
+
+  it "returns codes for select one, many and hierarchies without human flag" do
+    sign_in user
+    layer = collection.layers.make
+    select_one = layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+    select_many = layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+    config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+
+    collection.sites.make name: 'TallLand', properties: { select_one.es_code => 2, select_many.es_code => [1,2], hierarchy_field.es_code => '100' }
+
+    get :show, id: collection.id, format: 'json'
+    expect(response).to be_success
+    json = JSON.parse response.body
+    expect(json["sites"].first["properties"]['select_one']).to eq('two')
+    expect(json["sites"].first["properties"]['select_many']).to eq(['one', 'two'])
+    expect(json["sites"].first["properties"]['hierarchy']).to eq('100')
+
+    get :show, id: collection.id, human: false, format: 'json'
+    expect(response).to be_success
+    json = JSON.parse response.body
+    expect(json["sites"].first["properties"]['select_one']).to eq('two')
+    expect(json["sites"].first["properties"]['select_many']).to eq(['one', 'two'])
+    expect(json["sites"].first["properties"]['hierarchy']).to eq('100')
+  end
+
 end

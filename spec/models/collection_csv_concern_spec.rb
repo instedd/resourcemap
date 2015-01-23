@@ -51,6 +51,62 @@ describe Collection::CsvConcern, :type => :model do
     expect(csv[1][6]).to eq('')
   end
 
+  context 'human flag' do
+    context "turned on" do
+      it "should send select one names" do
+        select_one = layer.select_one_fields.make :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+        site = collection.sites.make :properties => {select_one.es_code => 1}
+
+        csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user, nil, {human: true})
+
+        expect(csv[1][4]).to eq('One')
+      end
+
+      it "should send select many names" do
+        select_many = layer.select_many_fields.make :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+        site = collection.sites.make :properties => {select_many.es_code => [1,2]}
+
+        csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user, nil, {human: true})
+
+        expect(csv[1][4]).to eq('One, Two')
+      end
+
+      it "should send hierarchy names" do
+        config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
+        hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+
+        site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
+        csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user, nil, {human: true})
+
+        expect(csv.first).to eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
+        expect(csv[1][4]).to eq('Dad - Son')
+        expect(csv[1][5]).to eq('Dad')
+        expect(csv[1][6]).to eq('Son')
+      end
+
+    end
+
+    context "turned off" do
+      it "should send select one codes" do
+        select_one = layer.select_one_fields.make :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+        site = collection.sites.make :properties => {select_one.es_code => 1}
+
+        csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
+
+        expect(csv[1][4]).to eq('one')
+      end
+
+      it "should send select many codes" do
+        select_many = layer.select_many_fields.make :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+        site = collection.sites.make :properties => {select_many.es_code => [1,2]}
+
+        csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
+
+        expect(csv[1][4]).to eq('one, two')
+      end
+    end
+  end
+
   describe "generate sample csv" do
 
     it "should include only visible fields for the user" do
