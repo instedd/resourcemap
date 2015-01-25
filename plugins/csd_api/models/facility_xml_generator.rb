@@ -101,29 +101,36 @@ class FacilityXmlGenerator
     end
   end
 
+  def service_tag_has_content?(facility_properties, service)
+    return service.oid && facility_properties[service.oid.code]
+  end
+
   def generate_organizations(xml, facility_properties)
     xml.tag!("organizations") do
       @organizations.each do |org|
         xml.tag!("organization", "entityID" => facility_properties[org.oid.code]) do
           org.services.each do |service|
-            xml.tag!("service", "entityID" => facility_properties[service.oid.code]) do
-              service.names.each do |name|
-                xml.tag!("name") do
-                  xml.tag!("commonName") do
-                    xml.text!(facility_properties[name.all_components.first.code] || "")
+
+            if service_tag_has_content?(facility_properties, service)
+              xml.tag!("service", "entityID" => facility_properties[service.oid.code]) do
+                service.names.each do |name|
+                  xml.tag!("name") do
+                    xml.tag!("commonName") do
+                      xml.text!(facility_properties[name.all_components.first.code] || "")
+                    end
                   end
                 end
-              end
 
-              service.languages.each do |language|
-                if facility_properties[language.field.code]
-                  xml.tag!("language", "code" => facility_properties[language.field.code], "codingScheme" => language.coding_schema) do
-                    xml.text!(language.field.human_value_by_option_code(facility_properties[language.field.code]))
+                service.languages.each do |language|
+                  if facility_properties[language.field.code]
+                    xml.tag!("language", "code" => facility_properties[language.field.code], "codingScheme" => language.coding_schema) do
+                      xml.text!(language.field.human_value_by_option_code(facility_properties[language.field.code]))
+                    end
                   end
                 end
-              end
 
-              generate_operating_hours(xml, facility_properties, service.operating_hours)
+                generate_operating_hours(xml, facility_properties, service.operating_hours)
+              end
             end
           end
         end
