@@ -463,6 +463,255 @@ describe CsdApiController, :type => :controller do
       service_4_language_field = layer.select_one_fields.create!(ord: 60, name: "Service 4 Language", code: "service_4_language", config: language_config)
         .csd_organization("Org1").csd_service!("Service 4").csd_language!("BCP 47", Field::CSDApiConcern::csd_service_tag)
 
+      service_1_oh_1_open_flag_field = layer.yes_no_fields.create!(ord: 61, name: "Service 1 Operating Hour 1 Open Flag", code: 'service_1_open_flag_oh1')
+          .csd_organization("Org1").csd_service!("Service 1")
+          .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_1_oh_1_day_of_the_week_field = layer.numeric_fields.create!(ord: 62, name: "Service 1 Day of Week OH1", code: 'service_1_day_of_week_oh1')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_1_oh_1_beginning_hour_field = layer.text_fields.create!(ord: 63, name: "Service 1Beginning Hour OH1", code: 'service_1_beginning_hour_oh1')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_1_oh_1_ending_hour_field = layer.text_fields.create!(ord: 64, name: "Service 1 Ending Hour OH1", code: 'service_1_ending_hour_oh1')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_1_oh_1_begin_effective_date_field = layer.text_fields.create!(ord: 65, name: "Service 1Begin Effective OH1", code: 'service_1_begin_effective_oh1')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+
+      service_1_oh_2_open_flag_field = layer.yes_no_fields.create!(ord: 66, name: "Service 1 Operating Hour 2 Open Flag", code: 'service_1_open_flag_oh2')
+          .csd_organization("Org1").csd_service!("Service 1")
+          .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_1_oh_2_day_of_the_week_field = layer.numeric_fields.create!(ord: 67, name: "Service 1 Day of Week OH2", code: 'service_1_day_of_week_oh2')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_1_oh_2_beginning_hour_field = layer.text_fields.create!(ord: 68, name: "Service 1Beginning Hour OH2", code: 'service_1_beginning_hour_oh2')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_1_oh_2_ending_hour_field = layer.text_fields.create!(ord: 69, name: "Service 1 Ending Hour OH2", code: 'service_1_ending_hour_oh2')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_1_oh_2_begin_effective_date_field = layer.text_fields.create!(ord: 70, name: "Service 1 Begin Effective OH2", code: 'service_1_begin_effective_oh2')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+      service_1_oh_3_open_flag_field = layer.yes_no_fields.create!(ord: 71, name: "Service 1 Operating Hour 3 Open Flag", code: 'service_1_open_flag_oh3')
+          .csd_organization("Org1").csd_service!("Service 1")
+          .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_1_oh_3_day_of_the_week_field = layer.numeric_fields.create!(ord: 72, name: "Service 1 Day of Week OH3", code: 'service_1_day_of_week_oh3')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_1_oh_3_beginning_hour_field = layer.text_fields.create!(ord: 73, name: "Service 1Beginning Hour OH3", code: 'service_1_beginning_hour_oh3')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_1_oh_3_ending_hour_field = layer.text_fields.create!(ord: 74, name: "Service 1 Ending Hour OH3", code: 'service_1_ending_hour_oh3')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_1_oh_3_begin_effective_date_field = layer.text_fields.create!(ord: 75, name: "Service 1 Begin Effective OH3", code: 'service_1_begin_effective_oh3')
+        .csd_organization("Org1").csd_service!("Service 1")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+
+      service_2_oh_1_open_flag_field = layer.yes_no_fields.create!(ord: 76, name: "Service 2 Operating Hour 1 Open Flag", code: 'service_2_open_flag_oh1')
+          .csd_organization("Org1").csd_service!("Service 2")
+          .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_2_oh_1_day_of_the_week_field = layer.numeric_fields.create!(ord: 77, name: "Service 2 Day of Week OH1", code: 'service_2_day_of_week_oh1')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_2_oh_1_beginning_hour_field = layer.text_fields.create!(ord: 78, name: "Service 2Beginning Hour OH1", code: 'service_2_beginning_hour_oh1')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_2_oh_1_ending_hour_field = layer.text_fields.create!(ord: 79, name: "Service 2 Ending Hour OH1", code: 'service_2_ending_hour_oh1')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_2_oh_1_begin_effective_date_field = layer.text_fields.create!(ord: 80, name: "Service 2 Begin Effective OH1", code: 'service_2_begin_effective_oh1')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+
+      service_2_oh_2_open_flag_field = layer.yes_no_fields.create!(ord: 81, name: "Service 2 Operating Hour 2 Open Flag", code: 'service_2_open_flag_oh2')
+          .csd_organization("Org1").csd_service!("Service 2")
+          .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_2_oh_2_day_of_the_week_field = layer.numeric_fields.create!(ord: 82, name: "Service 2 Day of Week OH2", code: 'service_2_day_of_week_oh2')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_2_oh_2_beginning_hour_field = layer.text_fields.create!(ord: 83, name: "Service 2 Beginning Hour OH2", code: 'service_2_beginning_hour_oh2')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_2_oh_2_ending_hour_field = layer.text_fields.create!(ord: 84, name: "Service 2 Ending Hour OH2", code: 'service_2_ending_hour_oh2')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_2_oh_2_begin_effective_date_field = layer.text_fields.create!(ord: 85, name: "Service 2 Begin Effective OH2", code: 'service_2_begin_effective_oh2')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+      service_2_oh_3_open_flag_field = layer.yes_no_fields.create!(ord: 86, name: "Service 2 Operating Hour 3 Open Flag", code: 'service_2_open_flag_oh3')
+          .csd_organization("Org1").csd_service!("Service 2")
+          .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_2_oh_3_day_of_the_week_field = layer.numeric_fields.create!(ord: 87, name: "Service 2 Day of Week OH3", code: 'service_2_day_of_week_oh3')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_2_oh_3_beginning_hour_field = layer.text_fields.create!(ord: 88, name: "Service 2Beginning Hour OH3", code: 'service_2_beginning_hour_oh3')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_2_oh_3_ending_hour_field = layer.text_fields.create!(ord: 89, name: "Service 2 Ending Hour OH3", code: 'service_2_ending_hour_oh3')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_2_oh_3_begin_effective_date_field = layer.text_fields.create!(ord: 92, name: "Service 2 Begin Effective OH3", code: 'service_2_begin_effective_oh3')
+        .csd_organization("Org1").csd_service!("Service 2")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+
+      service_3_oh_1_open_flag_field = layer.yes_no_fields.create!(ord: 93, name: "Service 3 Operating Hour 1 Open Flag", code: 'service_3_open_flag_oh1')
+          .csd_organization("Org1").csd_service!("Service 3")
+          .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_3_oh_1_day_of_the_week_field = layer.numeric_fields.create!(ord: 94, name: "Service 3 Day of Week OH1", code: 'service_3_day_of_week_oh1')
+        .csd_organization("Org1").csd_service!("Service 3")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_3_oh_1_beginning_hour_field = layer.text_fields.create!(ord: 95, name: "Service 3 Beginning Hour OH1", code: 'service_3_beginning_hour_oh1')
+        .csd_organization("Org1").csd_service!("Service 3")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_3_oh_1_ending_hour_field = layer.text_fields.create!(ord: 96, name: "Service 3 Ending Hour OH1", code: 'service_3_ending_hour_oh1')
+        .csd_organization("Org1").csd_service!("Service 3")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_3_oh_1_begin_effective_date_field = layer.text_fields.create!(ord: 97, name: "Service 3 Begin Effective OH1", code: 'service_3_begin_effective_oh1')
+        .csd_organization("Org1").csd_service!("Service 3")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+
+      service_3_oh_2_open_flag_field = layer.yes_no_fields.create!(ord: 98, name: "Service 3 Operating Hour 2 Open Flag", code: 'service_3_open_flag_oh2')
+          .csd_organization("Org1").csd_service!("Service 3")
+          .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_3_oh_2_day_of_the_week_field = layer.numeric_fields.create!(ord: 99, name: "Service 3 Day of Week OH2", code: 'service_3_day_of_week_oh2')
+        .csd_organization("Org1").csd_service!("Service 3")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_3_oh_2_beginning_hour_field = layer.text_fields.create!(ord: 100, name: "Service 3 Beginning Hour OH2", code: 'service_3_beginning_hour_oh2')
+        .csd_organization("Org1").csd_service!("Service 3")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_3_oh_2_ending_hour_field = layer.text_fields.create!(ord: 101, name: "Service 3 Ending Hour OH2", code: 'service_3_ending_hour_oh2')
+        .csd_organization("Org1").csd_service!("Service 3")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_3_oh_2_begin_effective_date_field = layer.text_fields.create!(ord: 102, name: "Service 3 Begin Effective OH2", code: 'service_3_begin_effective_oh2')
+        .csd_organization("Org1").csd_service!("Service 3")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+
+      service_4_oh_2_open_flag_field = layer.yes_no_fields.create!(ord: 103, name: "Service 4 Operating Hour 2 Open Flag", code: 'service_4_open_flag_oh2')
+          .csd_organization("Org1").csd_service!("Service 4")
+          .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_4_oh_2_day_of_the_week_field = layer.numeric_fields.create!(ord: 104, name: "Service 4 Day of Week OH2", code: 'service_4_day_of_week_oh2')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_4_oh_2_beginning_hour_field = layer.text_fields.create!(ord: 105, name: "Service 4 Beginning Hour OH2", code: 'service_4_beginning_hour_oh2')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_4_oh_2_ending_hour_field = layer.text_fields.create!(ord: 106, name: "Service 4 Ending Hour OH2", code: 'service_4_ending_hour_oh2')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_4_oh_2_begin_effective_date_field = layer.text_fields.create!(ord: 107, name: "Service 4 Begin Effective OH2", code: 'service_4_begin_effective_oh2')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH2", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+
+     service_4_oh_1_open_flag_field = layer.yes_no_fields.create!(ord: 108, name: "Service 4 Operating Hour 1 Open Flag", code: 'service_4_open_flag_oh1')
+          .csd_organization("Org1").csd_service!("Service 4")
+          .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_4_oh_1_day_of_the_week_field = layer.numeric_fields.create!(ord: 109, name: "Service 4 Day of Week OH1", code: 'service_4_day_of_week_oh1')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_4_oh_1_beginning_hour_field = layer.text_fields.create!(ord: 110, name: "Service 4 Beginning Hour OH1", code: 'service_4_beginning_hour_oh1')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_4_oh_1_ending_hour_field = layer.text_fields.create!(ord: 111, name: "Service 4 Ending Hour OH1", code: 'service_4_ending_hour_oh1')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_4_oh_1_begin_effective_date_field = layer.text_fields.create!(ord: 112, name: "Service 4 Begin Effective OH1", code: 'service_4_begin_effective_oh1')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH1", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+      service_4_oh_3_open_flag_field = layer.yes_no_fields.create!(ord: 113, name: "Service 4 Operating Hour 3 Open Flag", code: 'service_4_open_flag_oh3')
+          .csd_organization("Org1").csd_service!("Service 4")
+          .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_4_oh_3_day_of_the_week_field = layer.numeric_fields.create!(ord: 114, name: "Service 4 Day of Week OH3", code: 'service_4_day_of_week_oh3')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_4_oh_3_beginning_hour_field = layer.text_fields.create!(ord: 115, name: "Service 4 Beginning Hour OH3", code: 'service_4_beginning_hour_oh3')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_4_oh_3_ending_hour_field = layer.text_fields.create!(ord: 116, name: "Service 4 Ending Hour OH3", code: 'service_4_ending_hour_oh3')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_4_oh_3_begin_effective_date_field = layer.text_fields.create!(ord: 117, name: "Service 4 Begin Effective OH3", code: 'service_4_begin_effective_oh3')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH3", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+
+      service_4_oh_4_open_flag_field = layer.yes_no_fields.create!(ord: 118, name: "Service 4 Operating Hour 4 Open Flag", code: 'service_4_open_flag_oh4')
+          .csd_organization("Org1").csd_service!("Service 4")
+          .csd_operating_hours("OH4", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_4_oh_4_day_of_the_week_field = layer.numeric_fields.create!(ord: 119, name: "Service 4 Day of Week OH4", code: 'service_4_day_of_week_oh4')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH4", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_4_oh_4_beginning_hour_field = layer.text_fields.create!(ord: 120, name: "Service 4 Beginning Hour OH4", code: 'service_4_beginning_hour_oh4')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH4", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_4_oh_4_ending_hour_field = layer.text_fields.create!(ord: 121, name: "Service 4 Ending Hour OH4", code: 'service_4_ending_hour_oh4')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH4", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_4_oh_4_begin_effective_date_field = layer.text_fields.create!(ord: 122, name: "Service 4 Begin Effective OH4", code: 'service_4_begin_effective_oh4')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH4", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+
+
+      service_4_oh_5_open_flag_field = layer.yes_no_fields.create!(ord: 123, name: "Service 4 Operating Hour 5 Open Flag", code: 'service_4_open_flag_oh5')
+          .csd_organization("Org1").csd_service!("Service 4")
+          .csd_operating_hours("OH5", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_4_oh_5_day_of_the_week_field = layer.numeric_fields.create!(ord: 124, name: "Service 4 Day of Week OH5", code: 'service_4_day_of_week_oh5')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH5", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_4_oh_5_beginning_hour_field = layer.text_fields.create!(ord: 125, name: "Service 4 Beginning Hour OH5", code: 'service_4_beginning_hour_oh5')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH5", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_4_oh_5_ending_hour_field = layer.text_fields.create!(ord: 126, name: "Service 4 Ending Hour OH5", code: 'service_4_ending_hour_oh5')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH5", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_4_oh_5_begin_effective_date_field = layer.text_fields.create!(ord: 127, name: "Service 4 Begin Effective OH5", code: 'service_4_begin_effective_oh5')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH5", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+      service_4_oh_6_open_flag_field = layer.yes_no_fields.create!(ord: 123, name: "Service 4 Operating Hour 6 Open Flag", code: 'service_4_open_flag_oh6')
+          .csd_organization("Org1").csd_service!("Service 4")
+          .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag)
+          .csd_open_flag!
+      service_4_oh_6_day_of_the_week_field = layer.numeric_fields.create!(ord: 124, name: "Service 4 Day of Week OH6", code: 'service_4_day_of_week_oh6')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+      service_4_oh_6_beginning_hour_field = layer.text_fields.create!(ord: 125, name: "Service 4 Beginning Hour OH6", code: 'service_4_beginning_hour_oh6')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+      service_4_oh_6_ending_hour_field = layer.text_fields.create!(ord: 126, name: "Service 4 Ending Hour OH6", code: 'service_4_ending_hour_oh6')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+      service_4_oh_6_begin_effective_date_field = layer.text_fields.create!(ord: 127, name: "Service 4 Begin Effective OH6", code: 'service_4_begin_effective_oh6')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
+
       stub_time Time.iso8601("2014-12-01T14:00:00-00:00").to_s
       site_a = collection.sites.create!(name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
         properties: {
@@ -537,17 +786,101 @@ describe CsdApiController, :type => :controller do
           service_1_name_field.es_code => "Connectathon Radiation Therapy",
           service_1_language_field.es_code => 1,
 
+          service_1_oh_1_open_flag_field.es_code => true,
+          service_1_oh_1_day_of_the_week_field.es_code => 1,
+          service_1_oh_1_beginning_hour_field.es_code => '09:00:00',
+          service_1_oh_1_ending_hour_field.es_code => '12:00:00',
+          service_1_oh_1_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_1_oh_2_open_flag_field.es_code => true,
+          service_1_oh_2_day_of_the_week_field.es_code => 3,
+          service_1_oh_2_beginning_hour_field.es_code => '09:00:00',
+          service_1_oh_2_ending_hour_field.es_code => '12:00:00',
+          service_1_oh_2_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_1_oh_3_open_flag_field.es_code => true,
+          service_1_oh_3_day_of_the_week_field.es_code => 5,
+          service_1_oh_3_beginning_hour_field.es_code => '09:00:00',
+          service_1_oh_3_ending_hour_field.es_code => '12:00:00',
+          service_1_oh_3_begin_effective_date_field.es_code => '2014-12-01',
+
           service_2_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.113",
           service_2_name_field.es_code => "Connectathon Women's Imaging Service",
           service_2_language_field.es_code => 1,
+
+          service_2_oh_1_open_flag_field.es_code => true,
+          service_2_oh_1_day_of_the_week_field.es_code => 1,
+          service_2_oh_1_beginning_hour_field.es_code => '13:00:00',
+          service_2_oh_1_ending_hour_field.es_code => '17:00:00',
+          service_2_oh_1_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_2_oh_2_open_flag_field.es_code => true,
+          service_2_oh_2_day_of_the_week_field.es_code => 3,
+          service_2_oh_2_beginning_hour_field.es_code => '13:00:00',
+          service_2_oh_2_ending_hour_field.es_code => '17:00:00',
+          service_2_oh_2_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_2_oh_3_open_flag_field.es_code => true,
+          service_2_oh_3_day_of_the_week_field.es_code => 5,
+          service_2_oh_3_beginning_hour_field.es_code => '13:00:00',
+          service_2_oh_3_ending_hour_field.es_code => '17:00:00',
+          service_2_oh_3_begin_effective_date_field.es_code => '2014-12-01',
 
           service_3_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.113",
           service_3_name_field.es_code => "Connectathon Servicio de Radiologica de la Mujer",
           service_3_language_field.es_code => 2,
 
+          service_3_oh_1_open_flag_field.es_code => true,
+          service_3_oh_1_day_of_the_week_field.es_code => 2,
+          service_3_oh_1_beginning_hour_field.es_code => '13:00:00',
+          service_3_oh_1_ending_hour_field.es_code => '17:00:00',
+          service_3_oh_1_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_3_oh_2_open_flag_field.es_code => true,
+          service_3_oh_2_day_of_the_week_field.es_code => 4,
+          service_3_oh_2_beginning_hour_field.es_code => '13:00:00',
+          service_3_oh_2_ending_hour_field.es_code => '17:00:00',
+          service_3_oh_2_begin_effective_date_field.es_code => '2014-12-01',
+
           service_4_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.110",
           service_4_name_field.es_code => "Connectathon Screening X-ray",
           service_4_language_field.es_code => 1,
+
+          service_4_oh_1_open_flag_field.es_code => true,
+          service_4_oh_1_day_of_the_week_field.es_code => 1,
+          service_4_oh_1_beginning_hour_field.es_code => '08:00:00',
+          service_4_oh_1_ending_hour_field.es_code => '18:00:00',
+          service_4_oh_1_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_4_oh_2_open_flag_field.es_code => true,
+          service_4_oh_2_day_of_the_week_field.es_code => 2,
+          service_4_oh_2_beginning_hour_field.es_code => '08:00:00',
+          service_4_oh_2_ending_hour_field.es_code => '18:00:00',
+          service_4_oh_2_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_4_oh_3_open_flag_field.es_code => true,
+          service_4_oh_3_day_of_the_week_field.es_code => 3,
+          service_4_oh_3_beginning_hour_field.es_code => '08:00:00',
+          service_4_oh_3_ending_hour_field.es_code => '18:00:00',
+          service_4_oh_3_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_4_oh_4_open_flag_field.es_code => true,
+          service_4_oh_4_day_of_the_week_field.es_code => 4,
+          service_4_oh_4_beginning_hour_field.es_code => '08:00:00',
+          service_4_oh_4_ending_hour_field.es_code => '18:00:00',
+          service_4_oh_4_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_4_oh_5_open_flag_field.es_code => true,
+          service_4_oh_5_day_of_the_week_field.es_code => 5,
+          service_4_oh_5_beginning_hour_field.es_code => '08:00:00',
+          service_4_oh_5_ending_hour_field.es_code => '18:00:00',
+          service_4_oh_5_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_4_oh_6_open_flag_field.es_code => true,
+          service_4_oh_6_day_of_the_week_field.es_code => 6,
+          service_4_oh_6_beginning_hour_field.es_code => '08:00:00',
+          service_4_oh_6_ending_hour_field.es_code => '18:00:00',
+          service_4_oh_6_begin_effective_date_field.es_code => '2014-12-01',
         })
 
       site_b = collection.sites.create!(name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user,
@@ -605,9 +938,39 @@ describe CsdApiController, :type => :controller do
           service_1_name_field.es_code => "Connectathon Dialysis Service",
           service_1_language_field.es_code => 1,
 
+          service_1_oh_1_open_flag_field.es_code => true,
+          service_1_oh_1_day_of_the_week_field.es_code => 1,
+          service_1_oh_1_beginning_hour_field.es_code => '09:00:00',
+          service_1_oh_1_ending_hour_field.es_code => '17:00:00',
+          service_1_oh_1_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_1_oh_2_open_flag_field.es_code => true,
+          service_1_oh_2_day_of_the_week_field.es_code => 2,
+          service_1_oh_2_beginning_hour_field.es_code => '09:00:00',
+          service_1_oh_2_ending_hour_field.es_code => '17:00:00',
+          service_1_oh_2_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_1_oh_3_open_flag_field.es_code => true,
+          service_1_oh_3_day_of_the_week_field.es_code => 3,
+          service_1_oh_3_beginning_hour_field.es_code => '09:00:00',
+          service_1_oh_3_ending_hour_field.es_code => '17:00:00',
+          service_1_oh_3_begin_effective_date_field.es_code => '2014-12-01',
+
           service_2_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
           service_2_name_field.es_code => "Connectathon Diálisis Servicio",
           service_2_language_field.es_code => 2,
+
+          service_2_oh_1_open_flag_field.es_code => true,
+          service_2_oh_1_day_of_the_week_field.es_code => 4,
+          service_2_oh_1_beginning_hour_field.es_code => '09:00:00',
+          service_2_oh_1_ending_hour_field.es_code => '17:00:00',
+          service_2_oh_1_begin_effective_date_field.es_code => '2015-01-01',
+
+          service_2_oh_2_open_flag_field.es_code => true,
+          service_2_oh_2_day_of_the_week_field.es_code => 5,
+          service_2_oh_2_beginning_hour_field.es_code => '09:00:00',
+          service_2_oh_2_ending_hour_field.es_code => '17:00:00',
+          service_2_oh_2_begin_effective_date_field.es_code => '2015-01-01',
         })
 
       site_c = collection.sites.create!(name: 'Connectathon Dialysis Facility Two', lat: 34.5441, lng: 122.4717, user: user,
@@ -660,13 +1023,57 @@ describe CsdApiController, :type => :controller do
           practice_address_postal_code_field.es_code => "86301",
 
           organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1",
-          service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
-          service_1_name_field.es_code => "Connectathon Dialysis Service",
-          service_1_language_field.es_code => 1,
 
-          service_2_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
-          service_2_name_field.es_code => "Connectathon Diálisis Servicio",
-          service_2_language_field.es_code => 2,
+          service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
+          service_1_name_field.es_code => "Connectathon Diálisis Servicio",
+          service_1_language_field.es_code => 2,
+
+          service_1_oh_1_open_flag_field.es_code => true,
+          service_1_oh_1_day_of_the_week_field.es_code => 5,
+          service_1_oh_1_beginning_hour_field.es_code => '09:00:00',
+          service_1_oh_1_ending_hour_field.es_code => '17:00:00',
+          service_1_oh_1_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_4_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
+          service_4_name_field.es_code => "Connectathon Dialysis Service",
+          service_4_language_field.es_code => 1,
+
+          service_4_oh_1_open_flag_field.es_code => true,
+          service_4_oh_1_day_of_the_week_field.es_code => 1,
+          service_4_oh_1_beginning_hour_field.es_code => '09:00:00',
+          service_4_oh_1_ending_hour_field.es_code => '17:00:00',
+          service_4_oh_1_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_4_oh_2_open_flag_field.es_code => true,
+          service_4_oh_2_day_of_the_week_field.es_code => 2,
+          service_4_oh_2_beginning_hour_field.es_code => '09:00:00',
+          service_4_oh_2_ending_hour_field.es_code => '17:00:00',
+          service_4_oh_2_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_4_oh_3_open_flag_field.es_code => true,
+          service_4_oh_3_day_of_the_week_field.es_code => 3,
+          service_4_oh_3_beginning_hour_field.es_code => '09:00:00',
+          service_4_oh_3_ending_hour_field.es_code => '17:00:00',
+          service_4_oh_3_begin_effective_date_field.es_code => '2013-12-01',
+
+          service_4_oh_4_open_flag_field.es_code => true,
+          service_4_oh_4_day_of_the_week_field.es_code => 4,
+          service_4_oh_4_beginning_hour_field.es_code => '09:00:00',
+          service_4_oh_4_ending_hour_field.es_code => '17:00:00',
+          service_4_oh_4_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_4_oh_5_open_flag_field.es_code => true,
+          service_4_oh_5_day_of_the_week_field.es_code => 5,
+          service_4_oh_5_beginning_hour_field.es_code => '09:00:00',
+          service_4_oh_5_ending_hour_field.es_code => '17:00:00',
+          service_4_oh_5_begin_effective_date_field.es_code => '2014-12-01',
+
+          service_4_oh_6_open_flag_field.es_code => true,
+          service_4_oh_6_day_of_the_week_field.es_code => 6,
+          service_4_oh_6_beginning_hour_field.es_code => '09:00:00',
+          service_4_oh_6_ending_hour_field.es_code => '17:00:00',
+          service_4_oh_6_begin_effective_date_field.es_code => '2014-12-01',
+
         })
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
