@@ -130,6 +130,12 @@ class FacilityXmlGenerator
                 end
 
                 generate_operating_hours(xml, facility_properties, service.operating_hours)
+
+                if service.free_busy_uri && facility_properties[service.free_busy_uri.code]
+                  xml.tag!("freeBusyURI") do
+                    xml.text!(facility_properties[service.free_busy_uri.code])
+                  end
+                end
               end
             end
           end

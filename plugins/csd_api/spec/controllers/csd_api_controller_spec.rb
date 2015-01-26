@@ -712,6 +712,18 @@ describe CsdApiController, :type => :controller do
         .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
 
 
+      service_1_free_busy_uri = layer.text_fields.create!(ord: 128, name: "Service 1 free busy uri", code: "service_1_free_busy_uri")
+        .csd_organization("Org1").csd_service!("Service 1").csd_free_busy_uri!
+
+      service_2_free_busy_uri = layer.text_fields.create!(ord: 129, name: "Service 2 free busy uri", code: "service_2_free_busy_uri")
+        .csd_organization("Org1").csd_service!("Service 2").csd_free_busy_uri!
+
+      service_3_free_busy_uri = layer.text_fields.create!(ord: 130, name: "Service 3 free busy uri", code: "service_3_free_busy_uri")
+              .csd_organization("Org1").csd_service!("Service 3").csd_free_busy_uri!
+
+      service_4_free_busy_uri = layer.text_fields.create!(ord: 131, name: "Service 4 free busy uri", code: "service_4_free_busy_uri")
+              .csd_organization("Org1").csd_service!("Service 4").csd_free_busy_uri!
+
       stub_time Time.iso8601("2014-12-01T14:00:00-00:00").to_s
       site_a = collection.sites.create!(name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
         properties: {
@@ -785,6 +797,7 @@ describe CsdApiController, :type => :controller do
           service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.102",
           service_1_name_field.es_code => "Connectathon Radiation Therapy",
           service_1_language_field.es_code => 1,
+          service_1_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
 
           service_1_oh_1_open_flag_field.es_code => true,
           service_1_oh_1_day_of_the_week_field.es_code => 1,
@@ -807,6 +820,7 @@ describe CsdApiController, :type => :controller do
           service_2_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.113",
           service_2_name_field.es_code => "Connectathon Women's Imaging Service",
           service_2_language_field.es_code => 1,
+          service_2_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
 
           service_2_oh_1_open_flag_field.es_code => true,
           service_2_oh_1_day_of_the_week_field.es_code => 1,
@@ -829,6 +843,7 @@ describe CsdApiController, :type => :controller do
           service_3_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.113",
           service_3_name_field.es_code => "Connectathon Servicio de Radiologica de la Mujer",
           service_3_language_field.es_code => 2,
+          service_3_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
 
           service_3_oh_1_open_flag_field.es_code => true,
           service_3_oh_1_day_of_the_week_field.es_code => 2,
@@ -845,6 +860,7 @@ describe CsdApiController, :type => :controller do
           service_4_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.110",
           service_4_name_field.es_code => "Connectathon Screening X-ray",
           service_4_language_field.es_code => 1,
+          service_4_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
 
           service_4_oh_1_open_flag_field.es_code => true,
           service_4_oh_1_day_of_the_week_field.es_code => 1,
@@ -937,6 +953,7 @@ describe CsdApiController, :type => :controller do
           service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
           service_1_name_field.es_code => "Connectathon Dialysis Service",
           service_1_language_field.es_code => 1,
+          service_1_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
 
           service_1_oh_1_open_flag_field.es_code => true,
           service_1_oh_1_day_of_the_week_field.es_code => 1,
@@ -959,6 +976,7 @@ describe CsdApiController, :type => :controller do
           service_2_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
           service_2_name_field.es_code => "Connectathon Diálisis Servicio",
           service_2_language_field.es_code => 2,
+          service_2_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
 
           service_2_oh_1_open_flag_field.es_code => true,
           service_2_oh_1_day_of_the_week_field.es_code => 4,

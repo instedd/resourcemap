@@ -21,6 +21,12 @@ module Field::CSDApiConcern
     self
   end
 
+  def csd_free_busy_uri!
+    put_in_metadata "CSDAttribute", "free_busy_uri"
+    save!
+    self
+  end
+
   def csd_contact(contact_code)
     put_in_metadata "CSDType", "contact"
     put_in_metadata "CSDCode", contact_code
@@ -231,6 +237,10 @@ module Field::CSDApiConcern
   def csd_oid?(for_element)
     metadata_value_for("CSDAttributeFor") == for_element &&
     metadata_value_for("CSDAttribute") == "oid"
+  end
+
+  def csd_free_busy_uri?
+    metadata_value_for("CSDAttribute") == "free_busy_uri"
   end
 
   def csd_other_id?
