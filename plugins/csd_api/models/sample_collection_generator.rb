@@ -458,7 +458,7 @@ class SampleCollectionGenerator
 
     time_override = Time.iso8601("2014-12-01T14:00:00-00:00").to_s
 
-    site_a = Site.create!(collection_id: collection.id, name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
+    site_a = Site.create!(collection_id: collection.id, name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user, created_at: time_override, updated_at: time_override,
       properties: {
         coded_type_medical_specialty.es_code => 1,
         entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.11",
