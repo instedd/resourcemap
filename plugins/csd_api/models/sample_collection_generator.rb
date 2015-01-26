@@ -2,15 +2,13 @@
 class SampleCollectionGenerator
   def self.fill(collection)
     user = collection.get_user_owner
-
     layer = collection.layers.create! name: 'Connectathon Fields', ord: 1, user: user
     coded_type_medical_specialty = layer.select_one_fields.create!(ord: 1, name: 'Medical Specialty', code: 'medical_specialty',
       config: {'options' =>[
         {'id' => 1, 'code' => '103-110', 'label' => 'Radiology - Imaging Services'},
-        {'id' => 2, 'code' => '103-003', 'label' => 'Dialysis'}]})
-      .csd_coded_type! "1.3.6.1.4.1.21367.100.1"
+        {'id' => 2, 'code' => '103-003', 'label' => 'Dialysis'}]}).csd_coded_type! "1.3.6.1.4.1.21367.100.1"
 
-    entity_id_field = layer.identifier_fields.create!(ord: 2, name: "Entity ID", code: "entity_id").csd_facility_entity_id!
+    entity_id_field = layer.identifier_fields.create!(ord: 2, name: "Entity ID", code: "entity_id", config: {"context"=>"test", "agency"=>"test", "format"=>"Normal"}).csd_facility_entity_id!
 
     contact_1_common_name_field = layer.text_fields.create!(ord: 3, name: "Common Name Contact 1", code: 'common_name_contact_1')
       .csd_contact("Contact 1").csd_name("Name 1", Field::CSDApiConcern::csd_contact_tag).csd_common_name!("en")
@@ -427,23 +425,6 @@ class SampleCollectionGenerator
       .csd_organization("Org1").csd_service!("Service 4")
       .csd_operating_hours("OH5", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
 
-    service_4_oh_6_open_flag_field = layer.yes_no_fields.create!(ord: 123, name: "Service 4 Operating Hour 6 Open Flag", code: 'service_4_open_flag_oh6')
-        .csd_organization("Org1").csd_service!("Service 4")
-        .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag)
-        .csd_open_flag!
-    service_4_oh_6_day_of_the_week_field = layer.numeric_fields.create!(ord: 124, name: "Service 4 Day of Week OH6", code: 'service_4_day_of_week_oh6')
-      .csd_organization("Org1").csd_service!("Service 4")
-      .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
-    service_4_oh_6_beginning_hour_field = layer.text_fields.create!(ord: 125, name: "Service 4 Beginning Hour OH6", code: 'service_4_beginning_hour_oh6')
-      .csd_organization("Org1").csd_service!("Service 4")
-      .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
-    service_4_oh_6_ending_hour_field = layer.text_fields.create!(ord: 126, name: "Service 4 Ending Hour OH6", code: 'service_4_ending_hour_oh6')
-      .csd_organization("Org1").csd_service!("Service 4")
-      .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
-    service_4_oh_6_begin_effective_date_field = layer.text_fields.create!(ord: 127, name: "Service 4 Begin Effective OH6", code: 'service_4_begin_effective_oh6')
-      .csd_organization("Org1").csd_service!("Service 4")
-      .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
-
 
     service_1_free_busy_uri = layer.text_fields.create!(ord: 128, name: "Service 1 free busy uri", code: "service_1_free_busy_uri")
       .csd_organization("Org1").csd_service!("Service 1").csd_free_busy_uri!
@@ -457,9 +438,27 @@ class SampleCollectionGenerator
     service_4_free_busy_uri = layer.text_fields.create!(ord: 131, name: "Service 4 free busy uri", code: "service_4_free_busy_uri")
             .csd_organization("Org1").csd_service!("Service 4").csd_free_busy_uri!
 
+
+    service_4_oh_6_open_flag_field = layer.yes_no_fields.create!(ord: 132, name: "Service 4 Operating Hour 6 Open Flag", code: 'service_4_open_flag_oh6')
+        .csd_organization("Org1").csd_service!("Service 4")
+        .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag)
+        .csd_open_flag!
+    service_4_oh_6_day_of_the_week_field = layer.numeric_fields.create!(ord: 133, name: "Service 4 Day of Week OH6", code: 'service_4_day_of_week_oh6')
+      .csd_organization("Org1").csd_service!("Service 4")
+      .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_day_of_the_week!
+    service_4_oh_6_beginning_hour_field = layer.text_fields.create!(ord: 134, name: "Service 4 Beginning Hour OH6", code: 'service_4_beginning_hour_oh6')
+      .csd_organization("Org1").csd_service!("Service 4")
+      .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_beginning_hour!
+    service_4_oh_6_ending_hour_field = layer.text_fields.create!(ord: 135, name: "Service 4 Ending Hour OH6", code: 'service_4_ending_hour_oh6')
+      .csd_organization("Org1").csd_service!("Service 4")
+      .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_ending_hour!
+    service_4_oh_6_begin_effective_date_field = layer.text_fields.create!(ord: 136, name: "Service 4 Begin Effective OH6", code: 'service_4_begin_effective_oh6')
+      .csd_organization("Org1").csd_service!("Service 4")
+      .csd_operating_hours("OH6", Field::CSDApiConcern::csd_service_tag).csd_begin_effective_date!
+
     time_override = Time.iso8601("2014-12-01T14:00:00-00:00").to_s
 
-    site_a = collection.sites.create!(name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user, created_at: time_override, updated_at: time_override,
+    site_a = Site.create!(collection_id: collection.id, name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user,
       properties: {
         coded_type_medical_specialty.es_code => 1,
         entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.11",
@@ -633,7 +632,7 @@ class SampleCollectionGenerator
         service_4_oh_6_begin_effective_date_field.es_code => '2014-12-01',
       })
 
-    site_b = collection.sites.create!(name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user, created_at: time_override, updated_at: time_override,
+    site_b = Site.create!(collection_id: collection.id, name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user, created_at: time_override, updated_at: time_override,
       properties: {
         coded_type_medical_specialty.es_code => 2,
         entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.12",
@@ -725,7 +724,7 @@ class SampleCollectionGenerator
         service_2_oh_2_begin_effective_date_field.es_code => '2015-01-01',
       })
 
-    site_c = collection.sites.create!(name: 'Connectathon Dialysis Facility Two', lat: 34.5441, lng: 122.4717, user: user, created_at: time_override, updated_at: time_override,
+    site_c = Site.create!(collection_id: collection.id, name: 'Connectathon Dialysis Facility Two', lat: 34.5441, lng: 122.4717, user: user, created_at: time_override, updated_at: time_override,
       properties: {
         coded_type_medical_specialty.es_code => 2,
         entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.13",
@@ -830,8 +829,8 @@ class SampleCollectionGenerator
   end
 
   def self.generate(owner)
-    collection = Collection.create! name: "CSD #{Time.now}", icon: "default"  
-    owner.create_collection collection
+    collection = Collection.create! name: "CSD #{Time.now}", icon: "default"
+    collection = owner.create_collection collection
     fill collection
   end
 end

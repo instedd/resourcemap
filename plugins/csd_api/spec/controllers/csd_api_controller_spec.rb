@@ -269,7 +269,12 @@ describe CsdApiController, :type => :controller do
 
   describe "SOAP Service API Version 1.1" do
     it "should return CSD facility attributes for each CSD-field in the collection" do
+
+      user = User.create!(email: 'test@test.com', password: '1234567')
+      collection = Collection.create! name: "CSD #{Time.now}", icon: "default"
+      user.create_collection collection
       SampleCollectionGenerator.fill collection
+
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
       post :get_directory_modifications, collection_id: collection.id
