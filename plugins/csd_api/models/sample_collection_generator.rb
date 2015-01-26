@@ -461,7 +461,7 @@ class SampleCollectionGenerator
     site_a = Site.create!(collection_id: collection.id, name: 'Connectathon Radiology Facility', lat: 35.05, lng: 106.60, user: user, created_at: time_override, updated_at: time_override,
       properties: {
         coded_type_medical_specialty.es_code => 1,
-        entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.11",
+        entity_id_field.es_code => "e9964293-e169-4298-b4d0-ab07bf0cd78f",
         contact_1_common_name_field.es_code => "Anderson, Andrew",
         contact_1_forename_field.es_code => "Andrew",
         contact_1_surname_field.es_code => "Anderson",
@@ -525,9 +525,9 @@ class SampleCollectionGenerator
         practice_address_country_field.es_code => "USA",
         practice_address_postal_code_field.es_code => "87124",
 
-        organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1",
+        organization_1_field.es_code => "08c3286e-2163-462c-b77f-1f431d7351ab",
 
-        service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.102",
+        service_1_field.es_code => "3c43ed80-b323-4f31-b450-57ce5923fc85",
         service_1_name_field.es_code => "Connectathon Radiation Therapy",
         service_1_language_field.es_code => 1,
         service_1_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
@@ -550,7 +550,7 @@ class SampleCollectionGenerator
         service_1_oh_3_ending_hour_field.es_code => '12:00:00',
         service_1_oh_3_begin_effective_date_field.es_code => '2014-12-01',
 
-        service_2_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.113",
+        service_2_field.es_code => "def4c912-46ae-4e23-a78c-80ea597a82ee",
         service_2_name_field.es_code => "Connectathon Women's Imaging Service",
         service_2_language_field.es_code => 1,
         service_2_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
@@ -573,7 +573,7 @@ class SampleCollectionGenerator
         service_2_oh_3_ending_hour_field.es_code => '17:00:00',
         service_2_oh_3_begin_effective_date_field.es_code => '2014-12-01',
 
-        service_3_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.113",
+        service_3_field.es_code => "def4c912-46ae-4e23-a78c-80ea597a82ee",
         service_3_name_field.es_code => "Connectathon Servicio de Radiologica de la Mujer",
         service_3_language_field.es_code => 2,
         service_3_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
@@ -590,7 +590,7 @@ class SampleCollectionGenerator
         service_3_oh_2_ending_hour_field.es_code => '17:00:00',
         service_3_oh_2_begin_effective_date_field.es_code => '2014-12-01',
 
-        service_4_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.110",
+        service_4_field.es_code => "97f25cbb-d1dd-4849-b369-f8d7c35f7775",
         service_4_name_field.es_code => "Connectathon Screening X-ray",
         service_4_language_field.es_code => 1,
         service_4_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
@@ -635,7 +635,7 @@ class SampleCollectionGenerator
     site_b = Site.create!(collection_id: collection.id, name: 'Connectathon Dialysis Facility One', lat: 35.05, lng: 106.60, user: user, created_at: time_override, updated_at: time_override,
       properties: {
         coded_type_medical_specialty.es_code => 2,
-        entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.12",
+        entity_id_field.es_code => "a3eb03db-0094-4059-9156-8de081cb5885",
         contact_1_common_name_field.es_code => "Benson, Barbara",
         contact_1_forename_field.es_code => "Barbara",
         contact_1_surname_field.es_code => "Benson",
@@ -681,9 +681,9 @@ class SampleCollectionGenerator
         practice_address_country_field.es_code => "USA",
         practice_address_postal_code_field.es_code => "87124",
 
-        organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1",
+        organization_1_field.es_code => "08c3286e-2163-462c-b77f-1f431d7351ab",
 
-        service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
+        service_1_field.es_code => "9f45a9bd-f360-4f5a-9f39-a04f19720424",
         service_1_name_field.es_code => "Connectathon Dialysis Service",
         service_1_language_field.es_code => 1,
         service_1_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
@@ -706,7 +706,7 @@ class SampleCollectionGenerator
         service_1_oh_3_ending_hour_field.es_code => '17:00:00',
         service_1_oh_3_begin_effective_date_field.es_code => '2014-12-01',
 
-        service_2_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
+        service_2_field.es_code => "9f45a9bd-f360-4f5a-9f39-a04f19720424",
         service_2_name_field.es_code => "Connectathon Diálisis Servicio",
         service_2_language_field.es_code => 2,
         service_2_free_busy_uri.es_code => "http://tbd/free/busy/facilities",
@@ -727,7 +727,7 @@ class SampleCollectionGenerator
     site_c = Site.create!(collection_id: collection.id, name: 'Connectathon Dialysis Facility Two', lat: 34.5441, lng: 122.4717, user: user, created_at: time_override, updated_at: time_override,
       properties: {
         coded_type_medical_specialty.es_code => 2,
-        entity_id_field.es_code => "1.3.6.1.4.1.21367.200.99.13",
+        entity_id_field.es_code => "be4d27c3-21b8-481f-9fed-6524a8eb9bac",
         contact_1_common_name_field.es_code => "Robertson, Robert",
         contact_1_forename_field.es_code => "Robert",
         contact_1_surname_field.es_code => "Robertson",
@@ -773,9 +773,9 @@ class SampleCollectionGenerator
         practice_address_country_field.es_code => "USA",
         practice_address_postal_code_field.es_code => "86301",
 
-        organization_1_field.es_code => "1.3.6.1.4.1.21367.200.99.1",
+        organization_1_field.es_code => "08c3286e-2163-462c-b77f-1f431d7351ab",
 
-        service_1_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
+        service_1_field.es_code => "9f45a9bd-f360-4f5a-9f39-a04f19720424",
         service_1_name_field.es_code => "Connectathon Diálisis Servicio",
         service_1_language_field.es_code => 2,
 
@@ -785,7 +785,7 @@ class SampleCollectionGenerator
         service_1_oh_1_ending_hour_field.es_code => '17:00:00',
         service_1_oh_1_begin_effective_date_field.es_code => '2014-12-01',
 
-        service_4_field.es_code => "1.3.6.1.4.1.21367.200.99.111.101.104",
+        service_4_field.es_code => "9f45a9bd-f360-4f5a-9f39-a04f19720424",
         service_4_name_field.es_code => "Connectathon Dialysis Service",
         service_4_language_field.es_code => 1,
 

@@ -108,11 +108,11 @@ class FacilityXmlGenerator
   def generate_organizations(xml, facility_properties)
     xml.tag!("organizations") do
       @organizations.each do |org|
-        xml.tag!("organization", "entityID" => facility_properties[org.oid.code]) do
+        xml.tag!("organization", "entityID" => "urn:uuid:#{facility_properties[org.oid.code]}") do
           org.services.each do |service|
 
             if service_tag_has_content?(facility_properties, service)
-              xml.tag!("service", "entityID" => facility_properties[service.oid.code]) do
+              xml.tag!("service", "entityID" => "urn:uuid:#{facility_properties[service.oid.code]}") do
                 service.names.each do |name|
                   xml.tag!("name") do
                     xml.tag!("commonName") do
@@ -296,9 +296,9 @@ class FacilityXmlGenerator
   def generate_entity_id(facility, facility_properties)
     #If there's an explicitly set up EntityID, use its value as is, otherwise we use the UUID.
     if @entity_id_field
-      facility_properties[@entity_id_field.code] || ""
+      "urn:uuid:#{facility_properties[@entity_id_field.code] || ""}"
     else
-      facility["_source"]["uuid"]
+      "urn:uuid:#{facility["_source"]["uuid"]}"
     end
   end
 
