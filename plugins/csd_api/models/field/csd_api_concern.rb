@@ -89,13 +89,20 @@ module Field::CSDApiConcern
   end
 
    def csd_facility_address(address_type)
-    put_in_metadata Field::CSDApiConcern::csd_facility_address_tag, "facilityAddress"
+    put_in_metadata Field::CSDApiConcern::csd_address_tag, "CSDAddress"
     put_in_metadata "CSDCode", address_type
     self
   end
 
   def csd_address_line!(component)
     put_in_metadata Field::CSDApiConcern::csd_address_line_tag, component
+    save!
+    self
+  end
+
+  def csd_address_code!(component)
+    put_in_metadata Field::CSDApiConcern::csd_component, component
+    put_in_metadata "CSDChildOf", Field::CSDApiConcern::csd_facility_tag
     save!
     self
   end
@@ -372,10 +379,6 @@ module Field::CSDApiConcern
     "CSDAddress"
   end
 
-  def self.csd_facility_address_tag
-    "CSDFacilityAddress"
-  end
-
   def self.csd_address_line_tag
     "CSDAddressLine"
   end
@@ -410,6 +413,10 @@ module Field::CSDApiConcern
 
   def self.csd_begin_effective_date_tag
     "CSDBeginEffectiveDate"
+  end
+
+  def self.csd_component
+    "CSDComponent"
   end
 
   #These methods should either:

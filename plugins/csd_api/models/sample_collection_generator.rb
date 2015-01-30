@@ -138,30 +138,17 @@ class SampleCollectionGenerator
       .csd_operating_hours("OH5", Field::CSDApiConcern::csd_facility_tag)
       .csd_begin_effective_date!
 
-    # TODO: Refactor
-    billing_address_street_field = layer.text_fields.create!(ord: 38, name: "Billing Address Street", code: "billing_address_street",
-        metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"streetAddress"}, "2"=>{"key"=>"CSDCode", "value"=>"Billing"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
-    billing_address_city_field = layer.text_fields.create!(ord: 39, name: "Billing Address City", code: "billing_address_city",
-        metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"city"}, "2"=>{"key"=>"CSDCode", "value"=>"Billing"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
-    billing_address_state_field = layer.text_fields.create!(ord: 40, name: "Billing Address stateProvince", code: "billing_address_state_province",
-        metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"stateProvince"}, "2"=>{"key"=>"CSDCode", "value"=>"Billing"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
-    billing_address_country_field = layer.text_fields.create!(ord: 41, name: "Billing Address Country", code: "billing_address_state_country",
-        metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"country"}, "2"=>{"key"=>"CSDCode", "value"=>"Billing"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
-    billing_address_postal_code_field = layer.text_fields.create!(ord: 42, name: "Billing Address PostalCode", code: "billing_address_state_postal_code",
-        metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"postalCode"}, "2"=>{"key"=>"CSDCode", "value"=>"Billing"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+    billing_address_street_field = layer.text_fields.create!(ord: 38, name: "Billing Address Street", code: "billing_address_street").csd_facility_address!("Billing").csd_address_code!("streetAddress")
+    billing_address_city_field = layer.text_fields.create!(ord: 39, name: "Billing Address City", code: "billing_address_city").csd_facility_address!("Billing").csd_address_code!("city")
+    billing_address_state_field = layer.text_fields.create!(ord: 40, name: "Billing Address stateProvince", code: "billing_address_state_province").csd_facility_address!("Billing").csd_address_code!("stateProvince")
+    billing_address_country_field = layer.text_fields.create!(ord: 41, name: "Billing Address Country", code: "billing_address_state_country").csd_facility_address!("Billing").csd_address_code!("country")
+    billing_address_postal_code_field = layer.text_fields.create!(ord: 42, name: "Billing Address PostalCode", code: "billing_address_state_postal_code").csd_facility_address!("Billing").csd_address_code!("postalCode")
 
-    practice_address_street_field = layer.text_fields.create!(ord: 43, name: "Practice Address Street", code: "practice_address_street",
-        metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"streetAddress"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
-    practice_address_city_field = layer.text_fields.create!(ord: 44, name: "Practice Address City", code: "practice_address_city",
-        metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"city"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
-
-    practice_address_state_field = layer.text_fields.create!(ord: 45, name: "Practice Address stateProvince", code: "practice_address_state_province",
-        metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"stateProvince"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
-
-    practice_address_country_field = layer.text_fields.create!(ord: 46, name: "Practice Address Country", code: "practice_address_state_country",
-        metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"country"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
-    practice_address_postal_code_field = layer.text_fields.create!(ord: 47, name: "Practice Address PostalCode", code: "practice_address_state_postal_code",
-        metadata: {"0"=>{"key"=>"CSDAddress", "value"=>"CSDAddress"}, "1"=>{"key"=>"CSDComponent", "value"=>"postalCode"}, "2"=>{"key"=>"CSDCode", "value"=>"Practice"}, "3"=> {"key"=> "CSDChildOf", "value" => "CSDFacility"}})
+    practice_address_street_field = layer.text_fields.create!(ord: 43, name: "Practice Address Street", code: "practice_address_street").csd_facility_address!("Practice").csd_address_code!("streetAddress")
+    practice_address_city_field = layer.text_fields.create!(ord: 44, name: "Practice Address City", code: "practice_address_city").csd_facility_address!("Practice").csd_address_code!("city")
+    practice_address_state_field = layer.text_fields.create!(ord: 45, name: "Practice Address stateProvince", code: "practice_address_state_province").csd_facility_address!("Practice").csd_address_code!("stateProvince")
+    practice_address_country_field = layer.text_fields.create!(ord: 46, name: "Practice Address Country", code: "practice_address_state_country").csd_facility_address!("Practice").csd_address_code!("country")
+    practice_address_postal_code_field = layer.text_fields.create!(ord: 47, name: "Practice Address PostalCode", code: "practice_address_state_postal_code").csd_facility_address!("Practice").csd_address_code!("postalCode")
 
     organization_1_field = layer.text_fields.create!(ord: 48, name: "Organization 1", code: "org_1")
       .csd_organization("Org1").csd_oid!(Field::CSDApiConcern::csd_organization_tag)
