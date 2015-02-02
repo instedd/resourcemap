@@ -32,14 +32,14 @@ describe FacilityXmlGenerator, :type => :model do
 			facility_properties[entity_id_field.code] = "value"
 
 			generator = FacilityXmlGenerator.new collection
-			expect(generator.generate_entity_id(facility, facility_properties)).to eq("value")
+			expect(generator.generate_entity_id(facility, facility_properties)).to eq("urn:uuid:value")
 		end
 
 		it 'should generate entityID from UUID' do
 			set_facility_attribute "uuid", "1234-5678-9012-3456"
 
 			generator = FacilityXmlGenerator.new collection
-			expect(generator.generate_entity_id(facility, facility_properties)).to eq("1234-5678-9012-3456")
+			expect(generator.generate_entity_id(facility, facility_properties)).to eq("urn:uuid:1234-5678-9012-3456")
 		end
 	end
 
@@ -311,9 +311,9 @@ describe FacilityXmlGenerator, :type => :model do
 			expect(doc.xpath("//organizations").size).to eq(1)
 			expect(doc.xpath("//organizations/organization").size).to eq(1)
 
-			expect(doc.xpath("//organizations/organization[1]").attr('entityID').value).to eq("an_oid")
+			expect(doc.xpath("//organizations/organization[1]").attr('entityID').value).to eq("urn:uuid:an_oid")
 
-			expect(doc.xpath("//organizations/organization[1]/service[1]").attr('entityID').value).to eq("service1 oid")
+			expect(doc.xpath("//organizations/organization[1]/service[1]").attr('entityID').value).to eq("urn:uuid:service1 oid")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").text).to eq("Connectathon Radiation Therapy")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('code').value).to eq("en")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingScheme').value).to eq("BCP 47")
@@ -326,7 +326,7 @@ describe FacilityXmlGenerator, :type => :model do
 
 			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[2]/openFlag[1]").text).to eq("1")
 
-			expect(doc.xpath("//organizations/organization[1]/service[2]").attr('entityID').value).to eq("service2 oid")
+			expect(doc.xpath("//organizations/organization[1]/service[2]").attr('entityID').value).to eq("urn:uuid:service2 oid")
 		end
 	end
 
