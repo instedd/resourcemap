@@ -158,7 +158,7 @@ describe 'Collection', ->
           expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
 
         it 'year should be incorrect. Superior limit', ->
-          value = "7/30/2065"
+          value = "7/30/2075"
           [month, day, year] = value.split('/')
           expect(@field.dateIsCorrect(month,day,year)).toBeFalsy()
 

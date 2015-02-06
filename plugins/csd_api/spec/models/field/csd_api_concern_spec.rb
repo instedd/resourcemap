@@ -1,19 +1,19 @@
 require 'spec_helper'
 require_relative '../../csd_field_spec_helper'
 
-describe Field::CSDApiConcern, :type => :model do 
+describe Field::CSDApiConcern, :type => :model do
 	include CSDFieldSpecHelper
 
 	describe "configuring fields as CSD types" do
 		it "turns a select one field into a CSD coded type" do
 			f = Field::SelectOneField.make.csd_coded_type! "fruits"
 			expect(f).to be_csd_coded_type
-			expect(f.metadata_value_for("codingSchema")).to eq("fruits")
+			expect(f.metadata_value_for("codingScheme")).to eq("fruits")
 		end
 
-		it "turns a identifier field into a CSD OID" do
-			f = Field::IdentifierField.make.csd_facility_oid!
-			expect(f).to be_csd_facility_oid
+		it "turns a identifier field into a CSD entityID" do
+			f = Field::IdentifierField.make.csd_facility_entity_id!
+			expect(f).to be_csd_facility_entity_id
 		end
 
 		it "turns a text field into a generic OID" do
@@ -36,7 +36,7 @@ describe Field::CSDApiConcern, :type => :model do
 		describe "contact" do
 			it "turns a field into part of a Contact element" do
 				f = Field::TextField.make.csd_contact! "A contact"
-	 
+
 				expect(f).to be_csd_contact
 				expect(f.metadata_value_for("CSDCode")).to eq("A contact")
 			end
@@ -56,7 +56,7 @@ describe Field::CSDApiConcern, :type => :model do
 			end
 
 			describe "address" do
-				it "turns a text field into an Address Line" do 
+				it "turns a text field into an Address Line" do
 					f = Field::TextField.make.csd_address_line! "streetLine"
 					expect(f).to be_csd_address_line
 					expect(f.metadata_value_for(Field::CSDApiConcern::csd_address_line_tag)).to eq("streetLine")
@@ -74,19 +74,19 @@ describe Field::CSDApiConcern, :type => :model do
 
 	describe "CSD field metadata" do
 		describe "oid" do
-			let (:oid_field) { identifier_with_metadata({"CSDType" => "facilityOid"}) }
+			let (:entity_id_field) { identifier_with_metadata({"CSDType" => "facilityEntityId"}) }
 
 			it "is the facility's oid" do
-			 	expect(oid_field).to be_csd_facility_oid
+			 	expect(entity_id_field).to be_csd_facility_entity_id
 			end
 
 			it "is not an otherId" do
-				expect(oid_field).not_to be_csd_other_id
+				expect(entity_id_field).not_to be_csd_other_id
 			end
-		end		
+		end
 
 		it "coded type" do
-			select_one_with_metadata({"CSDType" => "codedType", "codingSchema" => "foo"}) do |f|
+			select_one_with_metadata({"CSDType" => "codedType", "codingScheme" => "foo"}) do |f|
 				expect(f).to be_csd_coded_type
 			end
 		end
@@ -113,7 +113,7 @@ describe Field::CSDApiConcern, :type => :model do
 			select_one_with_metadata({"CSDType" => "contactPoint"}) do |f|
 				expect(f).to be_csd_contact_point
 			end
-		end		
+		end
 
 		it "language" do
 			select_one_with_metadata({Field::CSDApiConcern::csd_language_tag => "language", "CSDChildOf" => "parentTag"}) do |f|
@@ -132,8 +132,8 @@ describe Field::CSDApiConcern, :type => :model do
 				expect(Field::IdentifierField.make).to be_csd_other_id
 			end
 
-			it "is not an oid" do
-				expect(Field::IdentifierField.make.csd_facility_oid!).not_to be_csd_other_id
+			it "is not an entityID" do
+				expect(Field::IdentifierField.make.csd_facility_entity_id!).not_to be_csd_other_id
 			end
 		end
 

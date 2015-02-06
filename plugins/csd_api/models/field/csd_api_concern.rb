@@ -1,15 +1,15 @@
 module Field::CSDApiConcern
   extend ActiveSupport::Concern
 
-  def csd_coded_type!(coding_schema)
+  def csd_coded_type!(coding_scheme)
   	put_in_metadata "CSDType", "codedType"
-  	put_in_metadata "codingSchema", coding_schema
+  	put_in_metadata "codingScheme", coding_scheme
   	save!
   	self
   end
 
-  def csd_facility_oid!
-  	put_in_metadata "CSDType", "facilityOid"
+  def csd_facility_entity_id!
+  	put_in_metadata "CSDType", "facilityEntityId"
   	save!
   	self
   end
@@ -17,6 +17,12 @@ module Field::CSDApiConcern
   def csd_oid!(for_element)
     put_in_metadata "CSDAttributeFor", for_element
     put_in_metadata "CSDAttribute", "oid"
+    save!
+    self
+  end
+
+  def csd_free_busy_uri!
+    put_in_metadata "CSDAttribute", "free_busy_uri"
     save!
     self
   end
@@ -76,8 +82,27 @@ module Field::CSDApiConcern
     self
   end
 
+  def csd_facility_address!(address_type)
+    csd_facility_address(address_type)
+    save!
+    self
+  end
+
+   def csd_facility_address(address_type)
+    put_in_metadata Field::CSDApiConcern::csd_address_tag, "CSDAddress"
+    put_in_metadata "CSDCode", address_type
+    self
+  end
+
   def csd_address_line!(component)
     put_in_metadata Field::CSDApiConcern::csd_address_line_tag, component
+    save!
+    self
+  end
+
+  def csd_address_code!(component)
+    put_in_metadata Field::CSDApiConcern::csd_component, component
+    put_in_metadata "CSDChildOf", Field::CSDApiConcern::csd_facility_tag
     save!
     self
   end
@@ -85,7 +110,7 @@ module Field::CSDApiConcern
   def csd_language!(coding_schema, parent_tag)
     put_in_metadata Field::CSDApiConcern::csd_language_tag, ""
     put_in_metadata "CSDChildOf", parent_tag
-    put_in_metadata "codingSchema", coding_schema
+    put_in_metadata "codingScheme", coding_schema
     save!
     self
   end
@@ -195,6 +220,11 @@ module Field::CSDApiConcern
     metadata_value_for("CSDChildOf") == parent_tag
   end
 
+  def csd_facility_address?(parent_tag)
+    in_metadata?(Field::CSDApiConcern::csd_address_tag) &&
+    metadata_value_for("CSDChildOf") == parent_tag
+  end
+
   def csd_other_name?
   	csd_declared_type? "otherName"
   end
@@ -204,11 +234,11 @@ module Field::CSDApiConcern
   end
 
   def csd_coded_type?
-  	csd_declared_type?("codedType") && in_metadata?("codingSchema")
+  	csd_declared_type?("codedType") && in_metadata?("codingScheme")
   end
 
-  def csd_facility_oid?
-  	csd_declared_type? "facilityOid" 
+  def csd_facility_entity_id?
+  	csd_declared_type? "facilityEntityId"
   end
 
   def csd_oid?(for_element)
@@ -216,8 +246,12 @@ module Field::CSDApiConcern
     metadata_value_for("CSDAttribute") == "oid"
   end
 
+  def csd_free_busy_uri?
+    metadata_value_for("CSDAttribute") == "free_busy_uri"
+  end
+
   def csd_other_id?
-    self.is_a?(Field::IdentifierField) && !csd_facility_oid?
+    self.is_a?(Field::IdentifierField) && !csd_facility_entity_id?
   end
 
   def csd_declared_type?(type)
@@ -379,6 +413,10 @@ module Field::CSDApiConcern
 
   def self.csd_begin_effective_date_tag
     "CSDBeginEffectiveDate"
+  end
+
+  def self.csd_component
+    "CSDComponent"
   end
 
   #These methods should either:

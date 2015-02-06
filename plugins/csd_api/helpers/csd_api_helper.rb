@@ -3,6 +3,7 @@ require "facility_xml_generator"
 module CsdApiHelper
 
   def facilities_directory_xml_for_get_modifications(xml, facilities, request_id, collection)
+    xml.instruct! :xml, version: "1.0", encoding: "UTF-8"
     xml.soap(:Envelope, xs_header_specification) do
       xml.soap :Header do
         xml.tag!("wsa:Action", { "soap:mustUnderstand" => "1"}) do

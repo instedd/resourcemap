@@ -108,7 +108,7 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_to_localized_url
-    redirect_to params.to_h if params[:locale].nil? && request.get?
+    redirect_to params.to_hash if params[:locale].nil? && request.get?
   end
 
   def ignore_public_attribute

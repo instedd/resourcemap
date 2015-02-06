@@ -39,10 +39,13 @@ class Api::CollectionsController < ApiController
 
     @results = perform_search *options
 
+    format_options = {}
+    format_options[:human] = true if Field.yes?(params[:human])
+
     respond_to do |format|
       format.rss { render :show, layout: false }
-      format.csv { collection_csv(collection, @results) }
-      format.json { render_json collection_json(collection, @results) }
+      format.csv { collection_csv(collection, @results, format_options) }
+      format.json { render_json collection_json(collection, @results, current_user, format_options) }
     end
   end
 
@@ -119,7 +122,7 @@ class Api::CollectionsController < ApiController
   end
 
   def build_search(*options)
-    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :sitename, :page_size, :location_missing, :locale]
+    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :sitename, :page_size, :location_missing, :locale, :human]
 
     search = new_search
 
@@ -178,8 +181,8 @@ class Api::CollectionsController < ApiController
     coords
   end
 
-  def collection_csv(collection, results)
-    sites_csv = collection.to_csv(results, current_user)
+  def collection_csv(collection, results, options = {})
+    sites_csv = collection.to_csv(results, current_user, nil, options)
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
 

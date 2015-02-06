@@ -16,7 +16,7 @@ class Field::YesNoField < Field
     false
   end
 
-  def csv_values(value)
+  def csv_values(value, human = false)
     [Field.yes?(value) ? 'yes' : 'no']
   end
 
