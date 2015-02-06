@@ -1,8 +1,8 @@
 module Collection::CSDApiConcern
   extend ActiveSupport::Concern
 
-  def csd_facility_oid
-    identifier_fields.find(&:csd_facility_oid?)
+  def csd_facility_entity_id
+    identifier_fields.find(&:csd_facility_entity_id?)
   end
 
   def csd_coded_types
@@ -59,7 +59,7 @@ module Collection::CSDApiConcern
           .map{|g| CSDOperatingHoursMapping.new(g[0], g[1])}
   end
 
-  private 
+  private
 
   def csd_contact_points_in(fields)
     fields.select(&:csd_contact_point?).group_by {|f| f.metadata_value_for("CSDCode") }

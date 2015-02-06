@@ -1,4 +1,4 @@
-xml.instruct!
+xml.instruct! :xml, version: "1.0", encoding: "UTF-8"
 xml.facilities "xmlns" => "http://facilityregistry.org/api/v1", "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation" => "http://facilityregistry.org/api/v1 fred.xsd" do
   @fred_json_facilities.each do |f|
     xml.facility do

@@ -4,6 +4,6 @@ class CSDLanguageMapping
 
 	def initialize(field)
 		@field = field
-		@coding_schema = field.metadata_value_for("codingSchema")
+		@coding_schema = field.metadata_value_for("codingScheme")
 	end
 end

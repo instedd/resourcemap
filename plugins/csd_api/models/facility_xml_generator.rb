@@ -15,7 +15,7 @@ class FacilityXmlGenerator
 
     @status_field = collection.csd_status
 
-    @oid_field = collection.csd_facility_oid
+    @entity_id_field = collection.csd_facility_entity_id
 
     @coded_type_fields = collection.csd_coded_types
 
@@ -29,7 +29,8 @@ class FacilityXmlGenerator
   def generate_facility_xml(xml, facility)
     facility_properties = facility["_source"]["properties"]
 
-    xml.tag!("facility", "oid" => generate_oid(facility, facility_properties)) do
+    xml.tag!("facility", "entityID" => generate_entity_id(facility, facility_properties)) do
+
       generate_other_ids(xml, facility_properties)
       generate_coded_types(xml, facility_properties)
 
@@ -42,7 +43,6 @@ class FacilityXmlGenerator
       xml.tag!("geocode") do
         xml.tag!("latitude", facility["_source"]["location"]["lat"])
         xml.tag!("longitude", facility["_source"]["location"]["lon"])
-        xml.tag!("coordinateSystem", "WGS-84")
       end
 
       generate_languages(xml, facility_properties)
@@ -55,67 +55,88 @@ class FacilityXmlGenerator
     xml
   end
 
+  def operating_hours_tag_has_content?(facility_properties, oh)
+    return oh.open_flag && facility_properties[oh.open_flag.code] ||
+      oh.day_of_the_week && facility_properties[oh.day_of_the_week.code] ||
+      oh.beginning_hour && facility_properties[oh.beginning_hour.code] ||
+      oh.ending_hour && facility_properties[oh.ending_hour.code] ||
+      oh.begin_effective_date && facility_properties[oh.begin_effective_date.code]
+  end
+
   def generate_operating_hours(xml, facility_properties, operating_hours)
     operating_hours.each do |oh|
-      xml.tag!("operatingHours") do
-        if oh.open_flag
-          xml.tag!("openFlag") do
-            xml.text!(facility_properties[oh.open_flag.code] ? "1" : "0")
+      if (operating_hours_tag_has_content?(facility_properties, oh))
+        xml.tag!("operatingHours") do
+          if oh.open_flag
+            xml.tag!("openFlag") do
+              xml.text!(facility_properties[oh.open_flag.code] ? "1" : "0")
+            end
           end
-        end
-        
-        if oh.day_of_the_week
-          xml.tag!("dayOfTheWeek") do
-            xml.text!(facility_properties[oh.day_of_the_week.code].to_s)
+
+          if oh.day_of_the_week
+            xml.tag!("dayOfTheWeek") do
+              xml.text!(facility_properties[oh.day_of_the_week.code].to_s)
+            end
           end
-        end
 
-        if oh.beginning_hour
-          xml.tag!("beginningHour") do
-            xml.text!(facility_properties[oh.beginning_hour.code] || "")
-          end                  
-        end
-
-        if oh.ending_hour
-          xml.tag!("endingHour") do
-            xml.text!(facility_properties[oh.ending_hour.code] || "")
+          if oh.beginning_hour
+            xml.tag!("beginningHour") do
+              xml.text!(facility_properties[oh.beginning_hour.code] || "")
+            end
           end
-        end
 
-        if oh.begin_effective_date 
-          xml.tag!("beginEffectiveDate") do
-            xml.text!(facility_properties[oh.begin_effective_date.code] || "")
-          end                  
+          if oh.ending_hour
+            xml.tag!("endingHour") do
+              xml.text!(facility_properties[oh.ending_hour.code] || "")
+            end
+          end
+
+          if oh.begin_effective_date
+            xml.tag!("beginEffectiveDate") do
+              xml.text!(facility_properties[oh.begin_effective_date.code] || "")
+            end
+          end
         end
       end
     end
   end
 
+  def service_tag_has_content?(facility_properties, service)
+    return service.oid && facility_properties[service.oid.code]
+  end
+
   def generate_organizations(xml, facility_properties)
-    xml.tag!("organizations") do 
+    xml.tag!("organizations") do
       @organizations.each do |org|
-        xml.tag!("organization", "oid" => facility_properties[org.oid.code]) do
+        xml.tag!("organization", "entityID" => "urn:uuid:#{facility_properties[org.oid.code]}") do
           org.services.each do |service|
-            xml.tag!("service", "oid" => facility_properties[service.oid.code]) do 
-              service.names.each do |name|
-                xml.tag!("name") do
-                  name.common_names.each do |common_name|
-                    xml.tag!("commonName", "language" => common_name.language) do
-                      xml.text!(facility_properties[common_name.field.code] || "")
+
+            if service_tag_has_content?(facility_properties, service)
+              xml.tag!("service", "entityID" => "urn:uuid:#{facility_properties[service.oid.code]}") do
+                service.names.each do |name|
+                  xml.tag!("name") do
+                    xml.tag!("commonName") do
+                      xml.text!(facility_properties[name.all_components.first.code] || "")
                     end
-                  end                  
+                  end
+                end
+
+                service.languages.each do |language|
+                  if facility_properties[language.field.code]
+                    xml.tag!("language", "code" => facility_properties[language.field.code], "codingScheme" => language.coding_schema) do
+                      xml.text!(language.field.human_value_by_option_code(facility_properties[language.field.code]))
+                    end
+                  end
+                end
+
+                generate_operating_hours(xml, facility_properties, service.operating_hours)
+
+                if service.free_busy_uri && facility_properties[service.free_busy_uri.code]
+                  xml.tag!("freeBusyURI") do
+                    xml.text!(facility_properties[service.free_busy_uri.code])
+                  end
                 end
               end
-
-              service.languages.each do |language|
-                if facility_properties[language.field.code]
-                  xml.tag!("language", "code" => facility_properties[language.field.code], "codingSchema" => language.coding_schema) do
-                    xml.text!(language.field.human_value_by_option_code(facility_properties[language.field.code]))
-                  end
-                end                
-              end
-
-              generate_operating_hours(xml, facility_properties, service.operating_hours)              
             end
           end
         end
@@ -131,9 +152,9 @@ class FacilityXmlGenerator
           contact.names.each do |name|
             xml.tag!("name") do
               name.common_names.each do |common_name|
-                xml.tag!("commonName", "language" => common_name.language) do
+                xml.tag!("commonName") do
                   xml.text!(facility_properties[common_name.field.code])
-                end                
+                end
               end
               xml.tag!("forename") do
                 xml.text!(facility_properties[name.forename.code])
@@ -143,7 +164,6 @@ class FacilityXmlGenerator
               end
             end
           end
-
           contact.addresses.each do |address|
             xml.tag!("address") do
               address.address_lines.each do |address_line|
@@ -160,7 +180,7 @@ class FacilityXmlGenerator
 
   def generate_coded_types(xml, facility_properties)
     @coded_type_fields.each do |f|
-      xml.tag!("codedType", "code" => facility_properties[f.code], "codingSchema" => f.metadata_value_for("codingSchema")) do
+      xml.tag!("codedType", "code" => facility_properties[f.code], "codingScheme" => f.metadata_value_for("codingScheme")) do
         xml.text!(f.human_value_by_option_code(facility_properties[f.code]))
       end
     end
@@ -179,20 +199,20 @@ class FacilityXmlGenerator
   end
 
   def generate_record(xml, facility)
-    xml.tag!("record", 
-      "created" => facility["_source"]["created_at"].to_datetime.iso8601, 
-      "updated" => facility["_source"]["updated_at"].to_datetime.iso8601, 
+    xml.tag!("record",
+      "created" => facility["_source"]["created_at"].to_datetime.iso8601,
+      "updated" => facility["_source"]["updated_at"].to_datetime.iso8601,
       "status" => "Active",
       "sourceDirectory" => "http://#{Settings.host}")
-    
+
     xml
   end
 
   def generate_languages(xml, facility_properties)
     @language_fields.each do |language_field|
       value = facility_properties[language_field.code] || ""
-      schema = language_field.metadata_value_for("codingSchema") || ""
-      xml.tag!("language", "code" => value, "codingSchema" => schema) do
+      schema = language_field.metadata_value_for("codingScheme") || ""
+      xml.tag!("language", "code" => value, "codingScheme" => schema) do
         xml.text!(language_field.human_value_by_option_code(value))
       end
     end
@@ -219,7 +239,7 @@ class FacilityXmlGenerator
             xml.tag!("code", value)
             # TODO: move this to a field's method
             schema = entry(coded_type_field_for_this_contact.metadata, "OptionList") || ""
-            xml.tag!("codingSchema", schema)
+            xml.tag!("codingScheme", schema)
           end
 
         end
@@ -267,28 +287,19 @@ class FacilityXmlGenerator
         xml.tag!("code", value)
         # TODO: move this to a field's method
         schema = entry(facility_type_field.metadata, "OptionList") || ""
-        xml.tag!("codingSchema", schema)
+        xml.tag!("codingScheme", schema)
       end
     end
     xml
   end
 
-  def generate_oid(facility, facility_properties)
-    #If there's an explicitly set up OID, use its value as is, otherwise generate 
-    #one from the UUID.
-    if @oid_field
-      facility_properties[@oid_field.code] || ""
+  def generate_entity_id(facility, facility_properties)
+    #If there's an explicitly set up EntityID, use its value as is, otherwise we use the UUID.
+    if @entity_id_field
+      "urn:uuid:#{facility_properties[@entity_id_field.code] || ""}"
     else
-      to_oid facility["_source"]["uuid"]
+      "urn:uuid:#{facility["_source"]["uuid"]}"
     end
-  end
-
-  def to_oid(uuid)
-    #These should move to collection level settings
-    parent_id = "309768652999692686176651983274504471835"
-    country_code = "646"
-
-    "2.25.#{parent_id}.#{country_code}.5.#{uuid.delete("-").hex}"      
   end
 
   def generate_other_ids(xml, facility_properties)

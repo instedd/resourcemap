@@ -26,20 +26,20 @@ describe FacilityXmlGenerator, :type => :model do
 		facility["_source"]["properties"]
 	end
 
-	describe 'OID generation' do
-		it 'should use existing OID annotated field' do
-			oid_field = layer.identifier_fields.make.csd_facility_oid!
-			facility_properties[oid_field.code] = "oid_value"
+	describe 'entityID generation' do
+		it 'should use existing entityID annotated field' do
+			entity_id_field = layer.identifier_fields.make.csd_facility_entity_id!
+			facility_properties[entity_id_field.code] = "value"
 
 			generator = FacilityXmlGenerator.new collection
-			expect(generator.generate_oid(facility, facility_properties)).to eq("oid_value")
+			expect(generator.generate_entity_id(facility, facility_properties)).to eq("urn:uuid:value")
 		end
 
-		it 'should generate OID from UUID' do
+		it 'should generate entityID from UUID' do
 			set_facility_attribute "uuid", "1234-5678-9012-3456"
 
 			generator = FacilityXmlGenerator.new collection
-			expect(generator.generate_oid(facility, facility_properties)).to eq(generator.to_oid("1234-5678-9012-3456"))
+			expect(generator.generate_entity_id(facility, facility_properties)).to eq("urn:uuid:1234-5678-9012-3456")
 		end
 	end
 
@@ -80,21 +80,21 @@ describe FacilityXmlGenerator, :type => :model do
 			doc = Nokogiri.XML xml.target!
 			expect(doc.xpath("//codedType").length).to eq(2)
 
-			fruits_xml = doc.xpath("//codedType[@codingSchema='fruits']")
+			fruits_xml = doc.xpath("//codedType[@codingScheme='fruits']")
 			expect(fruits_xml.attr('code').value).to eq('B')
-			expect(fruits_xml.attr('codingSchema').value).to eq('fruits')
+			expect(fruits_xml.attr('codingScheme').value).to eq('fruits')
 			expect(fruits_xml.text).to eq('Banana')
 
-			supermarkets_xml = doc.xpath("//codedType[@codingSchema='supermarkets']")
+			supermarkets_xml = doc.xpath("//codedType[@codingScheme='supermarkets']")
 			expect(supermarkets_xml.attr('code').value).to eq('J')
-			expect(supermarkets_xml.attr('codingSchema').value).to eq('supermarkets')
+			expect(supermarkets_xml.attr('codingScheme').value).to eq('supermarkets')
 			expect(supermarkets_xml.text).to eq('Jumbo')
 		end
 	end
 
 	describe 'Other id generation' do
 		it '' do
-			oid_field = layer.identifier_fields.make.csd_facility_oid!
+			entity_id_field = layer.identifier_fields.make.csd_facility_entity_id!
 			other_id_field = layer.identifier_fields.make(config: { "context" => "DHIS", "agency" => "MOH" }.with_indifferent_access)
 
 			facility_properties[other_id_field.code] = 'my_moh_dhis_id'
@@ -167,7 +167,7 @@ describe FacilityXmlGenerator, :type => :model do
 
 			expect(doc.xpath("//contact").length).to eq(2)
 
-			expect(doc.xpath("//contact[1]/person/name/commonName[@language='en']").text).to eq("Anderson, Andrew")
+			expect(doc.xpath("//contact[1]/person/name/commonName").text).to eq("Anderson, Andrew")
 			expect(doc.xpath("//contact[1]/person/name/forename").text).to eq("Andrew")
 			expect(doc.xpath("//contact[1]/person/name/surname").text).to eq("Anderson")
 
@@ -178,7 +178,7 @@ describe FacilityXmlGenerator, :type => :model do
 			expect(doc.xpath("//contact[1]/person/address/addressLine[@component='postalCode']").text).to eq("87124")
 
 
-			expect(doc.xpath("//contact[2]/person/name/commonName[@language='en']").text).to eq("Juarez, Julio")
+			expect(doc.xpath("//contact[2]/person/name/commonName").text).to eq("Juarez, Julio")
 			expect(doc.xpath("//contact[2]/person/name/forename").text).to eq("Julio")
 			expect(doc.xpath("//contact[2]/person/name/surname").text).to eq("Juarez")
 
@@ -210,12 +210,12 @@ describe FacilityXmlGenerator, :type => :model do
 
 			language1_xml = doc.xpath("//language[1]")
 			expect(language1_xml.attr('code').value).to eq('en')
-			expect(language1_xml.attr('codingSchema').value).to eq('BCP 47')
+			expect(language1_xml.attr('codingScheme').value).to eq('BCP 47')
 			expect(language1_xml.text).to eq('English')
 
 			language2_xml = doc.xpath("//language[2]")
 			expect(language2_xml.attr('code').value).to eq('es')
-			expect(language2_xml.attr('codingSchema').value).to eq('BCP 47')
+			expect(language2_xml.attr('codingScheme').value).to eq('BCP 47')
 			expect(language2_xml.text).to eq('Spanish')
 		end
 	end
@@ -290,13 +290,13 @@ describe FacilityXmlGenerator, :type => :model do
 			facility_properties[organization[:service1][:oid].code] = "service1 oid"
 			facility_properties[organization[:service1][:name].code] = "Connectathon Radiation Therapy"
 			facility_properties[organization[:service1][:language].code] = "en"
-			facility_properties[organization[:service1][:operating_hours][:oh1][:open_flag].code] = true
+			facility_properties[organization[:service1][:operating_hours][:oh1][:open_flag].code] = false
 			facility_properties[organization[:service1][:operating_hours][:oh1][:day_of_the_week].code] = 1
 			facility_properties[organization[:service1][:operating_hours][:oh1][:beginning_hour].code] = "09:00:00"
 			facility_properties[organization[:service1][:operating_hours][:oh1][:ending_hour].code] = "12:00:00"
 			facility_properties[organization[:service1][:operating_hours][:oh1][:begin_effective_date].code] = "2013-12-01"
 
-			facility_properties[organization[:service1][:operating_hours][:oh2][:open_flag].code] = false
+			facility_properties[organization[:service1][:operating_hours][:oh2][:open_flag].code] = true
 
 			facility_properties[organization[:service2][:oid].code] = "service2 oid"
 
@@ -311,32 +311,31 @@ describe FacilityXmlGenerator, :type => :model do
 			expect(doc.xpath("//organizations").size).to eq(1)
 			expect(doc.xpath("//organizations/organization").size).to eq(1)
 
-			expect(doc.xpath("//organizations/organization[1]").attr('oid').value).to eq("an_oid")
+			expect(doc.xpath("//organizations/organization[1]").attr('entityID').value).to eq("urn:uuid:an_oid")
 
-			expect(doc.xpath("//organizations/organization[1]/service[1]").attr('oid').value).to eq("service1 oid")
-			expect(doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").attr('language').value).to eq("en")
+			expect(doc.xpath("//organizations/organization[1]/service[1]").attr('entityID').value).to eq("urn:uuid:service1 oid")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/name[1]/commonName").text).to eq("Connectathon Radiation Therapy")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('code').value).to eq("en")
-			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingSchema').value).to eq("BCP 47")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").attr('codingScheme').value).to eq("BCP 47")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/language[1]").text).to eq("English")
-			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/openFlag[1]").text).to eq("1")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/openFlag[1]").text).to eq("0")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/dayOfTheWeek[1]").text).to eq("1")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/beginningHour[1]").text).to eq("09:00:00")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/endingHour[1]").text).to eq("12:00:00")
 			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[1]/beginEffectiveDate[1]").text).to eq("2013-12-01")
 
-			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[2]/openFlag[1]").text).to eq("0")
+			expect(doc.xpath("//organizations/organization[1]/service[1]/operatingHours[2]/openFlag[1]").text).to eq("1")
 
-			expect(doc.xpath("//organizations/organization[1]/service[2]").attr('oid').value).to eq("service2 oid")
+			expect(doc.xpath("//organizations/organization[1]/service[2]").attr('entityID').value).to eq("urn:uuid:service2 oid")
 		end
 	end
 
 	describe 'facility operating hours' do
-		it '' do
+		it 'should generate operatingHours' do
 			facility_oh1 = {
 				open_flag: layer.yes_no_fields.make
-					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
-					.csd_open_flag!,
+				.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+				.csd_open_flag!,
 				day_of_the_week: layer.numeric_fields.make
 					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
 					.csd_day_of_the_week!,
@@ -363,7 +362,7 @@ describe FacilityXmlGenerator, :type => :model do
 			facility_properties[facility_oh1[:ending_hour].code] = "18:00:00"
 			facility_properties[facility_oh1[:begin_effective_date].code] = "2013-12-01"
 
-			facility_properties[facility_oh2[:open_flag].code] = false
+			facility_properties[facility_oh2[:open_flag].code] = true
 
 			generator = FacilityXmlGenerator.new collection
 
@@ -381,7 +380,49 @@ describe FacilityXmlGenerator, :type => :model do
 			expect(doc.xpath("//operatingHours[1]/endingHour[1]").text).to eq("18:00:00")
 			expect(doc.xpath("//operatingHours[1]/beginEffectiveDate[1]").text).to eq("2013-12-01")
 
-			expect(doc.xpath("//operatingHours[2]/openFlag[1]").text).to eq("0")
+			expect(doc.xpath("//operatingHours[2]/openFlag[1]").text).to eq("1")
+		end
+
+		it "should not generate a tag for an empty operatingHours field" do
+			facility_oh1 = {
+				open_flag: layer.yes_no_fields.make
+				.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+				.csd_open_flag!,
+				day_of_the_week: layer.numeric_fields.make
+					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+					.csd_day_of_the_week!,
+				beginning_hour: layer.text_fields.make
+					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+					.csd_beginning_hour!,
+				ending_hour: layer.text_fields.make
+					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+					.csd_ending_hour!,
+				begin_effective_date: layer.text_fields.make
+					.csd_operating_hours("OH1", Field::CSDApiConcern::csd_facility_tag)
+					.csd_begin_effective_date!
+			}
+
+			facility_oh2 = {
+				open_flag: layer.yes_no_fields.make
+					.csd_operating_hours("OH2", Field::CSDApiConcern::csd_facility_tag)
+					.csd_open_flag!
+			}
+
+			facility_properties[facility_oh1[:open_flag].code] = true
+			facility_properties[facility_oh1[:day_of_the_week].code] = 1
+			facility_properties[facility_oh1[:beginning_hour].code] = "08:00:00"
+			facility_properties[facility_oh1[:ending_hour].code] = "18:00:00"
+			facility_properties[facility_oh1[:begin_effective_date].code] = "2013-12-01"
+
+			generator = FacilityXmlGenerator.new collection
+
+			xml.tag!("root") do
+				generator.generate_operating_hours xml, facility_properties, collection.csd_operating_hours
+			end
+
+			doc = Nokogiri.XML xml.target!
+
+			expect(doc.xpath("//operatingHours").size).to eq(1)
 		end
 	end
 

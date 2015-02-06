@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec_helper'
 
 describe CsdApiController, :type => :controller do
@@ -154,7 +155,7 @@ describe CsdApiController, :type => :controller do
 
       expect(body["facilityDirectory"].length).to eq(1)
       facility = body["facilityDirectory"]["facility"]
-      expect(facility["oid"]).to eq("2.25.309768652999692686176651983274504471835.646.5.329800735698586629295641978511506172918")
+      expect(facility["primaryName"]).to eq('Site B changed')
     end
 
     #TODO: simplify test by using new utility methods
@@ -245,7 +246,6 @@ describe CsdApiController, :type => :controller do
       # Should include 'geocode'
       expect(facility["geocode"]["latitude"]).to eq("10.0")
       expect(facility["geocode"]["longitude"]).to eq("20.0")
-      expect(facility["geocode"]["coordinateSystem"]).to eq("WGS-84")
 
       # Should include 'contactPoint'
       expect(facility["contactPoint"].length).to eq(2)
@@ -254,7 +254,7 @@ describe CsdApiController, :type => :controller do
       expect(contact1["purpose"]).to eq("Main contact")
       expect(contact1["certificate"]).to eq("1234")
       expect(contact1["codedType"]["code"]).to eq "two"
-      expect(contact1["codedType"]["codingSchema"]).to eq "moh.gov.rw"
+      expect(contact1["codedType"]["codingScheme"]).to eq "moh.gov.rw"
 
       contact2 = facility["contactPoint"][1]
       expect(contact2["equipment"]).to eq("Contact 2")
@@ -266,4 +266,27 @@ describe CsdApiController, :type => :controller do
       expect(facility["record"]["status"]).to eq("Active")
     end
   end
+
+  describe "SOAP Service API Version 1.1" do
+    it "should return CSD facility attributes for each CSD-field in the collection" do
+
+      collection_2 = Collection.create! name: "CSD #{Time.now}", icon: "default"
+      user.create_collection collection_2
+      SampleCollectionGenerator.fill collection_2
+
+      request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
+      post :get_directory_modifications, collection_id: collection_2.id
+
+      response_xml = Nokogiri::XML(response.body) do |config|
+        config.strict.noblanks
+      end.xpath('//soap:Body')
+
+      result_xml = Nokogiri::XML(File.open("#{Rails.root}/plugins/csd_api/spec/controllers/csd-facilities-connectathon-result.xml.erb")) do |config|
+        config.strict.noblanks
+      end.xpath('//soap:Body')
+
+      expect(response_xml.to_s).to eq(result_xml.to_s)
+    end
+  end
+
 end

@@ -21,6 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   config.vm.network "forwarded_port", guest: 80, host: 9080
+  config.vm.network :forwarded_port, guest: 3000, host: 3000
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -63,9 +64,50 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 
   config.vm.provision "shell", inline: %(
+    apt-add-repository ppa:chris-lea/redis-server
+    apt-get update
+    echo "Installing JDK..."
     apt-get -y install openjdk-7-jre-headless
-    wget -q "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.4.deb"
+    echo "Looking for elasticsearch deb package..."
+    if ! [ -f /home/vagrant/elasticsearch-1.3.4.deb ]; then
+      echo "Not found, downloading elasticsearch 1.3.4 (it may take a while)..."
+      wget "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.4.deb"
+    fi
+    echo "Installing Elastic Search"
     dpkg -i elasticsearch-1.3.4.deb
+    echo "Installing Ruby dev tools..."
+    apt-get -y install ruby-dev
+    echo "Installing git..."
+    apt-get -y install git
+    echo "Installing libssl-dev..."
+    apt-get -y install libssl-dev
+    echo "Installing mysql..."
+    sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password instedd'
+    sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password_again password instedd'
+    apt-get -y install mysql-server-5.5
+    apt-get -y install libmysqlclient-dev
+    echo "Installing libzmq..."
+    apt-get -y install libzmq-dev
+    apt-get -y install libzmq3-dev
+    echo "Installing NodeJS..."
+    apt-get -y install nodejs
+    echo "Installing build-essential..."
+    apt-get -y install build-essential
+    echo "Installing Redis..."
+    apt-get install -y redis-server
+    if ! [ -d /home/vagrant/.rbenv ]; then
+      echo "Installing rbenv..."
+      git clone https://github.com/sstephenson/rbenv.git /home/vagrant/.rbenv
+      echo 'export PATH="/home/vagrant/.rbenv/bin:$PATH"' >> /home/vagrant/.bashrc
+    fi
+    if ! [ -d /home/vagrant/.rbenv/plugins/ruby-build ]; then
+      echo "Installing ruby-build..."
+      git clone https://github.com/sstephenson/ruby-build.git /home/vagrant/.rbenv/plugins/ruby-build
+    fi
+    if ! [ -d /home/vagrant/.rbenv/plugins/bundler ]; then
+      echo "Installing bundler rbenv plugin..."
+      git clone -- https://github.com/carsomyr/rbenv-bundler.git /home/vagrant/.rbenv/plugins/bundler
+    fi  
   )
 
   # Enable provisioning with CFEngine. CFEngine Community packages are
