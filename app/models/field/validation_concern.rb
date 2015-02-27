@@ -11,7 +11,7 @@ module Field::ValidationConcern
       value = [value]
     end
 
-    parsed = value.map { |v| apply_format_query_validation(v, use_codes_instead_of_es_codes) }
+    parsed = value.map { |v| apply_format_query_validation(v, use_codes_instead_of_es_codes) }.flatten
 
     if parsed.count == 1
       parsed.first
