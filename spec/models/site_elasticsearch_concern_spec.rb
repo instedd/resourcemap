@@ -54,4 +54,11 @@ describe Site::ElasticsearchConcern, :type => :model do
     }
     expect(results["hits"]["hits"].length).to eq(1)
   end
+
+  describe "parse_time" do
+    it "parses correct time" do
+      str = "20140522T063835.000+0000"
+      Site.parse_time(str).should eq(Time.zone.parse(str))
+    end
+  end
 end

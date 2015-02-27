@@ -899,6 +899,28 @@ describe ImportWizard, :type => :model do
     ImportWizard.delete_files(user, collection)
   end
 
+  it "should ignore extended hierarchy columns when guessing column spec" do
+    csv_string = CSV.generate do |csv|
+     csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'hierarchy', 'hierarchy-1', 'hierarchy-2']
+     csv << ["123", 'Foo old', '1.2', '3.4', 'Son', 'Dad', 'Son']
+    end
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
+    column_spec = ImportWizard.guess_columns_spec user, collection
+
+    column_spec.length.should eq(7)
+
+    column_spec.should include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
+    column_spec.should include({:header=>"Name", :kind=>:name, :use_as=>:name})
+    column_spec.should include({:header=>"Lat", :kind=>:location, :use_as=>:lat})
+    column_spec.should include({:header=>"Lon", :kind=>:location, :use_as=>:lng})
+    column_spec.should include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :field_id=>hierarchy.id, :layer_id=>layer.id})
+    column_spec.should include({:header=>"hierarchy-1", :kind=>:ignore, :use_as=>:ignore})
+    column_spec.should include({:header=>"hierarchy-2", :kind=>:ignore, :use_as=>:ignore})
+
+    ImportWizard.delete_files(user, collection)
+  end
+
 
   it "should not fail when there is no data in the csv" do
     csv_string = CSV.generate do |csv|
