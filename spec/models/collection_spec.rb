@@ -232,7 +232,6 @@ describe Collection, :type => :model do
       end
 
       it "should not create duplicates when annonymous user has read permissions" do
-        collection.anonymous_name_permission.should be_true
         collection.visible_fields_for(user, {}).should eq([field])
       end
     end
