@@ -11,19 +11,19 @@
   }
 
   .illustration {
-    background: url("/assets/data_collection.png") no-repeat scroll 0 0 transparent;
+    background: asset-url("data_collection.png") no-repeat scroll 0 0 transparent;
     height: 286px;
     width: 401px;
   }
 
   .food {
-    background: url("/assets/tracking_food.jpg") no-repeat scroll 0 0 transparent;
+    background: asset-url("tracking_food.jpg") no-repeat scroll 0 0 transparent;
     height: 260px;
     width: 360px;
   }
 
   .medical {
-    background: url("/assets/tracking_medical.png") no-repeat scroll 0 0 transparent;
+    background: asset-url("tracking_medical.png") no-repeat scroll 0 0 transparent;
     height: 200px;
     width: 300px;
   }
@@ -50,7 +50,7 @@ ul#benefits-container li {
 
 
 .get-update {
-  background: url("/assets/get_update.png") no-repeat scroll center top transparent;
+  background: asset-url("get_update.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -58,7 +58,7 @@ ul#benefits-container li {
 }
 
 .visualize-and-update {
-  background: url("/assets/visualize_and_update.png") no-repeat scroll center top transparent;
+  background: asset-url("visualize_and_update.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -66,7 +66,7 @@ ul#benefits-container li {
 }
 
 .update {
-  background: url("/assets/update.png") no-repeat scroll center top transparent;
+  background: asset-url("update.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -74,7 +74,7 @@ ul#benefits-container li {
 }
 
 .identify {
-  background: url("/assets/identify.png") no-repeat scroll center top transparent;
+  background: asset-url("identify.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -82,7 +82,7 @@ ul#benefits-container li {
 }
 
 .receive {
-  background: url("/assets/receive.png") no-repeat scroll center top transparent;
+  background: asset-url("receive.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -90,7 +90,7 @@ ul#benefits-container li {
 }
 
 .collaborate {
-  background: url("/assets/collaborate.png") no-repeat scroll center top transparent;
+  background: asset-url("collaborate.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -98,7 +98,7 @@ ul#benefits-container li {
 }
 
 .maintain {
-  background: url("/assets/maintain.png") no-repeat scroll center top transparent;
+  background: asset-url("maintain.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -106,7 +106,7 @@ ul#benefits-container li {
 }
 
 .tracking-medical-supplies {
-  background: url("/assets/tracking_medical_supplies_and_personnel.png") no-repeat scroll center top transparent;
+  background: asset-url("tracking_medical_supplies_and_personnel.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -114,7 +114,7 @@ ul#benefits-container li {
 }
 
 .managing-disease-prevention-supplies {
-  background: url("/assets/managing_disease_prevention_supplies.png") no-repeat scroll center top transparent;
+  background: asset-url("managing_disease_prevention_supplies.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -122,7 +122,7 @@ ul#benefits-container li {
 }
 
 .monitoring-food-price {
-  background: url("/assets/monitoring_food_price_and_supply_levels.png") no-repeat scroll center top transparent;
+  background: asset-url("monitoring_food_price_and_supply_levels.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -130,7 +130,7 @@ ul#benefits-container li {
 }
 
 .testing-enviromental-health {
-  background: url("/assets/testing_enviromental_health.png") no-repeat scroll center top transparent;
+  background: asset-url("testing_enviromental_health.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -138,7 +138,7 @@ ul#benefits-container li {
 }
 
 .client-cnm {
-  background: url("/assets/centre_nationale_de_malaria.png") no-repeat scroll center top transparent;
+  background: asset-url("centre_nationale_de_malaria.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -146,7 +146,7 @@ ul#benefits-container li {
 }
 
 .client-wranda-ministry-of-health {
-  background: url("/assets/rwanda_coat_of_arms.png") no-repeat scroll center top transparent;
+  background: asset-url("rwanda_coat_of_arms.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -154,7 +154,7 @@ ul#benefits-container li {
 }
 
 .client-CMPE {
-  background: url("/assets/Center_for_Malaria_Parasitology_and_Entomology_of_Lao_PDR.png") no-repeat scroll center top transparent;
+  background: asset-url("Center_for_Malaria_Parasitology_and_Entomology_of_Lao_PDR.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;

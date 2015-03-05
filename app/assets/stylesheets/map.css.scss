@@ -21,7 +21,7 @@
   width: 29px;
   height: 37px;
   position: absolute;
-  background-image: url(/assets/resmap_default.png);
+  background-image: asset-url("resmap_default.png");
 }
 
 .threshold {
@@ -46,7 +46,7 @@
   width: 38px;
   height: 37px;
   position: absolute;
-  background-image: url(/assets/resmap_cluster_inactive.png);
+  background-image: asset-url("resmap_cluster_inactive.png");
   background-repeat: no-repeat;
   background-position: right top;
 }
@@ -61,19 +61,19 @@
 }
 
 .cluster.inactive {
-  background-image: url(/assets/resmap_default_inactive.png);
+  background-image: asset-url("resmap_default_inactive.png");
 }
 
 .cluster.target {
-  background-image: url(/assets/resmap_default_target.png);
+  background-image: asset-url("resmap_default_target.png");
 }
 
 .threshold.inactive {
-  background-image: url(/assets/marker_inactive.png);
+  background-image: asset-url("marker_inactive.png");
 }
 
 .threshold.target {
-  background-image: url(/assets/marker_target.png);
+  background-image: asset-url("marker_target.png");
 }
 
 .cluster-count {

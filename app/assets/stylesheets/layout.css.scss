@@ -142,7 +142,7 @@ body.fullscreen #container {
 }
 
 .loading {
-  background: url("/assets/loading_white.gif") no-repeat;
+  background: asset-url("loading_white.gif") no-repeat;
   padding: 0 0 0 27px;
 }
 
@@ -330,14 +330,14 @@ ul.taglist {
 }
 
 .fmap {
-  background-image: url(/assets/map.png);
+  background-image: asset-url("map.png");
   position: relative;
   left: 6px;
 
   &.active { background-position: 0px -60px; }
 }
 .ftable {
-  background-image: url(/assets/table.png);
+  background-image: asset-url("table.png");
 
   &.active { background-position: 0px -60px; }
 }
@@ -432,10 +432,10 @@ td.loadmore { height: 36px }
     position:relative;
 
     .fmovedown {
-      background:url(/assets/moveDown.png) no-repeat; position:absolute; bottom:1px;
+      background:asset-url("moveDown.png") no-repeat; position:absolute; bottom:1px;
     }
     .fmoveup {
-      background:url(/assets/moveUp.png) no-repeat; position:absolute; top: 0;
+      background:asset-url("moveUp.png") no-repeat; position:absolute; top: 0;
     }
 
     .fmoveup, .fmovedown {
@@ -570,7 +570,7 @@ form.w80 {
   font-style: italic;
 
   #empty_hierarchy {
-    background: url(/assets/hierarchy_icon.png) no-repeat;
+    background: asset-url("hierarchy_icon.png") no-repeat;
     width: 45px;
     height: 70px;
     display: inline-block;
@@ -578,7 +578,7 @@ form.w80 {
 }
 
 .paddchild {
-  background: url(/assets/icon-addchild.png) no-repeat;
+  background: asset-url("icon-addchild.png") no-repeat;
   width: 24px;
   height: 24px;
   border:none;
@@ -587,7 +587,7 @@ form.w80 {
   cursor: pointer;
 }
 .pdelete {
-  background: url(/assets/icon-trash-plain.png) no-repeat;
+  background: asset-url("icon-trash-plain.png") no-repeat;
   width: 24px;
   height: 24px;
   border:none;

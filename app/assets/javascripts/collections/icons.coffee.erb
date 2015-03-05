@@ -1,0 +1,9 @@
+onCollections ->
+  @icons = {
+  <% Dir["#{Rails.root}/app/assets/images/markers/*"].each do |img| %>
+    <%= "markers/#{File.basename(img)}".inspect %>: <%= asset_path("markers/#{File.basename(img)}").inspect %>
+  <% end %>
+  <% Dir["#{Rails.root}/app/assets/images/resmap_*"].each do |img| %>
+    <%= File.basename(img).inspect %>: <%= asset_path(File.basename(img)).inspect %>
+  <% end %>
+  }
