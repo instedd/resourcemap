@@ -46,7 +46,7 @@ namespace :foreman do
       run "cd #{current_path} && rvmsudo bundle exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"resque=1,resque_scheduler=1\""
     else
       run "echo -e \"PATH=$PATH\\nRAILS_ENV=production\" >  #{current_path}/.env"
-      run "cd #{current_path} && #{try_sudo} bundle exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"resque=1,resque_scheduler=1\""
+      run "cd #{current_path} && #{try_sudo} `which bundle` exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"resque=1,resque_scheduler=1\""
     end
   end
 
