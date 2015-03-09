@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-06 14:45-0300\n"
-"PO-Revision-Date: 2014-10-06 14:45-0300\n"
+"POT-Creation-Date: 2015-03-09 14:45-0300\n"
+"PO-Revision-Date: 2015-03-09 14:45-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -79,9 +79,6 @@ msgid "(nothing)"
 msgstr ""
 
 msgid ","
-msgstr ""
-
-msgid ",change icon to:"
 msgstr ""
 
 msgid "API access"
@@ -219,6 +216,9 @@ msgstr ""
 msgid "Are you sure you want to delete this collection? All sites, layers, fields, memberships and activities will also be deleted."
 msgstr ""
 
+msgid "Are you sure you want to leave this collection? You will not be able to access it anymore"
+msgstr ""
+
 msgid "Are you sure you want to remove %s from the collection?"
 msgstr ""
 
@@ -307,9 +307,6 @@ msgid "Collection %{collection_name}'s sites deleted"
 msgstr ""
 
 msgid "Collection '%{name}' was created"
-msgstr ""
-
-msgid "Collection CSV imported"
 msgstr ""
 
 msgid "Collection created"
@@ -546,9 +543,6 @@ msgstr ""
 msgid "Field|Ord"
 msgstr ""
 
-msgid "Find out how →"
-msgstr ""
-
 msgid "Fix the errors to start importing"
 msgstr ""
 
@@ -588,6 +582,12 @@ msgstr ""
 msgid "Go back to present"
 msgstr ""
 
+msgid "Got a way with code? Help us develop our tools (and make the world a better place at the same time)."
+msgstr ""
+
+msgid "Got suggestions or feature requests? Join the discussion."
+msgstr ""
+
 msgid "Group by"
 msgstr ""
 
@@ -612,6 +612,9 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
+msgid "How can I help?"
+msgstr ""
+
 msgid "How does it work?"
 msgstr ""
 
@@ -622,9 +625,6 @@ msgid "Icon"
 msgstr ""
 
 msgid "Id:"
-msgstr ""
-
-msgid "Identifier"
 msgstr ""
 
 msgid "Identify"
@@ -646,9 +646,6 @@ msgid "If you notice issues with some characters (such as accents) try exporting
 msgstr ""
 
 msgid "Import"
-msgstr ""
-
-msgid "Import CSV: %{sites}"
 msgstr ""
 
 msgid "Import existing resource allocation data from spreadsheets"
@@ -702,6 +699,12 @@ msgstr ""
 msgid "Insightful:"
 msgstr ""
 
+msgid "Invalid because of a deleted field in a condition"
+msgstr ""
+
+msgid "Invalid condition due to field missing. Please remove"
+msgstr ""
+
 msgid "Invalid credentials"
 msgstr ""
 
@@ -712,6 +715,9 @@ msgid "Item name is required."
 msgstr ""
 
 msgid "JSON"
+msgstr ""
+
+msgid "Join our discussion list"
 msgstr ""
 
 msgid "Key"
@@ -796,6 +802,9 @@ msgid "Layer|Name"
 msgstr ""
 
 msgid "Layer|Ord"
+msgstr ""
+
+msgid "Leave collection"
 msgstr ""
 
 msgid "Load more"
@@ -948,6 +957,9 @@ msgstr ""
 msgid "National Gateway(Only Some Country Supported)"
 msgstr ""
 
+msgid "New CSV imported into collection '%{name}'"
+msgstr ""
+
 msgid "New Site"
 msgstr ""
 
@@ -979,9 +991,6 @@ msgid "Notify these people"
 msgstr ""
 
 msgid "Now specify how to map each column to a field."
-msgstr ""
-
-msgid "Numeric"
 msgstr ""
 
 msgid "OK"
@@ -1017,10 +1026,22 @@ msgstr ""
 msgid "Permission changed from %{previous_permission} to %{new_permission} in name layer for %{user}"
 msgstr ""
 
-msgid "Permissions per layer"
+msgid "Permission changed in %{layer} layer for anonymous users"
 msgstr ""
 
-msgid "Phone"
+msgid "Permission changed in layer %{layer} for %{user}"
+msgstr ""
+
+msgid "Permission changed in layer %{layer} for anonymous users"
+msgstr ""
+
+msgid "Permission changed in location layer for %{user}"
+msgstr ""
+
+msgid "Permission changed in name layer for %{user}"
+msgstr ""
+
+msgid "Permissions per layer"
 msgstr ""
 
 msgid "Please"
@@ -1167,6 +1188,9 @@ msgstr ""
 msgid "Saving reminder, please wait..."
 msgstr ""
 
+msgid "Search"
+msgstr ""
+
 msgid "Search by email..."
 msgstr ""
 
@@ -1177,12 +1201,6 @@ msgid "See everything on the map for a birds-eye view"
 msgstr ""
 
 msgid "Select logo from uploaded image"
-msgstr ""
-
-msgid "Select Many"
-msgstr ""
-
-msgid "Select One"
 msgstr ""
 
 msgid "Send Now!"
@@ -1386,9 +1404,6 @@ msgstr ""
 msgid "Testing Environmental Health"
 msgstr ""
 
-msgid "Text"
-msgstr ""
-
 msgid "The National Center for Parasitology, Entomology and Malaria Control (CNM)"
 msgstr ""
 
@@ -1419,6 +1434,9 @@ msgstr ""
 msgid "The page you are trying to access doesn't exist or you don't have permission for accessing it."
 msgstr ""
 
+msgid "The site cannot be saved due to validation errors"
+msgstr ""
+
 msgid "Then you will be able to define how to use each column."
 msgstr ""
 
@@ -1428,10 +1446,10 @@ msgstr ""
 msgid "There are sites with no location set"
 msgstr ""
 
-msgid "There are validation errors that prevent the site from being saved."
+msgid "There was"
 msgstr ""
 
-msgid "There was"
+msgid "There was an error processing this activity"
 msgstr ""
 
 msgid "This may take a while depending on the size of your file."
@@ -1638,6 +1656,9 @@ msgstr ""
 msgid "Viewing 1 site in map"
 msgstr ""
 
+msgid "Visit our backlog"
+msgstr ""
+
 msgid "Visualize and update"
 msgstr ""
 
@@ -1678,9 +1699,6 @@ msgid "With the support of the Clinton Health Access Initiative (CHAI), CNM uses
 msgstr ""
 
 msgid "Yes"
-msgstr ""
-
-msgid "Yes No"
 msgstr ""
 
 msgid "You don't need to leave this window open while the data is imported, we'll take care of that for you. However, if you're still here when the importation ends, we'll let you know so you can start working on your new data right away."
@@ -1771,6 +1789,9 @@ msgid "has no value"
 msgstr ""
 
 msgid "important alerts instantly and address them proactively"
+msgstr ""
+
+msgid "in"
 msgstr ""
 
 msgid "invisible"
@@ -1884,10 +1905,43 @@ msgstr ""
 msgid "uncheck all"
 msgstr ""
 
+msgid "updated within the last day"
+msgstr ""
+
+msgid "updated within the last hour"
+msgstr ""
+
+msgid "updated within the last month"
+msgstr ""
+
+msgid "updated within the last week"
+msgstr ""
+
 msgid "we need your current password to confirm your changes"
 msgstr ""
 
+msgid "where %s %s '%s'"
+msgstr ""
+
+msgid "where %s has no value"
+msgstr ""
+
+msgid "where %s is '%s'"
+msgstr ""
+
+msgid "where %s is between %s and %s"
+msgstr ""
+
+msgid "where %s starts with %s"
+msgstr ""
+
+msgid "where Name starts with '%s'"
+msgstr ""
+
 msgid "with errors"
+msgstr ""
+
+msgid "with location missing"
 msgstr ""
 
 msgid "x"
@@ -1896,7 +1950,10 @@ msgstr ""
 msgid "yes"
 msgstr ""
 
-msgid "→ ; in"
+msgid "→"
+msgstr ""
+
+msgid "→ change icon to:"
 msgstr ""
 
 msgid "→;"

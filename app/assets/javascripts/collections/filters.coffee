@@ -13,7 +13,7 @@ onCollections ->
 
     description: =>
       if @operator == 'empty'
-        "where #{@field.name} has no value"
+        Jed.sprintf(window.__("where %s has no value"), @field.name)
       else
         @descriptionNonEmpty()
 
@@ -24,31 +24,31 @@ onCollections ->
     setQueryParams: (options, api = false) =>
       options.updated_since = 'last_hour'
 
-    description: => "updated within the last hour"
+    description: => __("updated within the last hour")
 
   class @FilterByLastDay extends FilterByDate
     setQueryParams: (options, api = false) =>
       options.updated_since = 'last_day'
 
-    description: => "updated within the last day"
+    description: => __("updated within the last day")
 
   class @FilterByLastWeek extends FilterByDate
     setQueryParams: (options, api = false) =>
       options.updated_since = 'last_week'
 
-    description: => "updated within the last week"
+    description: => __("updated within the last week")
 
   class @FilterByLastMonth extends FilterByDate
     setQueryParams: (options, api = false) =>
       options.updated_since = 'last_month'
 
-    description: => "updated within the last month"
+    description: => __("updated within the last month")
 
   class @FilterByLocationMissing extends Filter
     setQueryParams: (options, api = false) =>
       options.location_missing = true
 
-    description: => "with location missing"
+    description: => __("with location missing")
 
   class @FilterByName extends FilterMaybeEmpty
     constructor: (field, operator, value) ->
@@ -59,7 +59,7 @@ onCollections ->
       options.sitename = "#{@value}"
 
     descriptionNonEmpty: =>
-      "where Name starts with \"#{@value}\""
+      Jed.sprintf(window.__("where Name starts with '%s'"), @value)
 
   class @FilterBySiteProperty extends FilterMaybeEmpty
     constructor: (field, operator, name, id) ->
@@ -72,7 +72,7 @@ onCollections ->
       options[@field.codeForLink(api)] = "#{@id}"
 
     descriptionNonEmpty: =>
-      "where #{@field.name} is \"#{@name}\""
+      Jed.sprintf(window.__("where %s is '%s'"), @field.name, @name)
 
   class @FilterByTextProperty extends FilterMaybeEmpty
     constructor: (field, operator, value) ->
@@ -84,7 +84,7 @@ onCollections ->
       options[@field.codeForLink(api)] = "~=#{@value}"
 
     descriptionNonEmpty: =>
-      "where #{@field.name} starts with \"#{@value}\""
+      Jed.sprintf(window.__("where %s starts with %s"), @field.name, @value)
 
   class @FilterByNumericProperty extends FilterMaybeEmpty
     constructor: (field, operator, value) ->
@@ -134,7 +134,7 @@ onCollections ->
       options[@field.codeForLink(api)]  = "=#{@valueFrom},#{@valueTo}"
 
     descriptionNonEmpty: =>
-      "where #{@field.name} is between #{@valueFrom} and #{@valueTo}"
+      Jed.sprintf(window.__("where %s is between %s and %s"), @field.name, @valueFrom, @valueTo)
 
   class @FilterByHierarchyProperty extends Filter
     constructor: (field, operator, value, valueLabel) ->
@@ -149,7 +149,7 @@ onCollections ->
       options[code][@operator] = @value
 
     description: =>
-      "with #{@field.name} #{@operator} \"#{@valueLabel}\""
+      Jed.sprintf(window.__("where %s %s '%s'"), @field.name, @operator, @valueLabel)
 
   class @FilterBySelectProperty extends Filter
     constructor: (field, value, valueLabel) ->
@@ -168,4 +168,4 @@ onCollections ->
       if @valueLabel
         "where #{@field.name} is \"#{@valueLabel}\""
       else
-        "where #{@field.name} has no value"
+        Jed.sprintf(window.__("where %s has no value"), @field.name)
