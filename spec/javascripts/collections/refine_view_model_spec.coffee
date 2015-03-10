@@ -61,7 +61,7 @@ describe 'Collection', ->
           @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[1].fieldHierarchyItems[0])
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Tres de Febrero\""
+          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under 'Tres de Febrero'"
           expect(@model.filters()[0].value).toEqual '2'
 
         it 'should filter selected item and its descendants', ->
@@ -69,7 +69,7 @@ describe 'Collection', ->
           @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[1])
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Buenos Aires\""
+          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under 'Buenos Aires'"
           expect(@model.filters()[0].value).toEqual "1"
 
         it 'should update current filter value if filtering by existent filter', ->
@@ -77,7 +77,7 @@ describe 'Collection', ->
           @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[1])
           @model.filterByProperty()
 
-          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Buenos Aires\""
+          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under 'Buenos Aires'"
           expect(@model.filters()[0].value).toEqual "1"
           expect(@model.filters().length).toEqual 1
 
@@ -85,7 +85,7 @@ describe 'Collection', ->
           @model.expandedRefinePropertyHierarchy(@hierarchy.fieldHierarchyItems()[1].fieldHierarchyItems[0])
           @model.filterByProperty()
 
-          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under \"Tres de Febrero\""
+          expect(@model.filters()[0].description()).toEqual "with #{@hierarchy.name} under 'Tres de Febrero'"
           expect(@model.filters()[0].value).toEqual "2"
           expect(@model.filters().length).toEqual 1
 
@@ -96,19 +96,19 @@ describe 'Collection', ->
           @model.expandedRefineProperty @owner_field.esCode
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "where #{@owner_field.name} starts with \"foo\""
+          expect(@model.filters()[0].description()).toEqual "where #{@owner_field.name} starts with 'foo'"
 
         it 'of email should add text filter', ->
           @model.expandedRefineProperty @email_field.esCode
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "where #{@email_field.name} starts with \"foo\""
+          expect(@model.filters()[0].description()).toEqual "where #{@email_field.name} starts with 'foo'"
 
         it 'of phone should add text filter', ->
           @model.expandedRefineProperty @phone_field.esCode
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "where #{@phone_field.name} starts with \"foo\""
+          expect(@model.filters()[0].description()).toEqual "where #{@phone_field.name} starts with 'foo'"
 
       describe 'numeric kind', ->
         it 'considers as equal two filters on the same field with the same operator', ->
@@ -216,7 +216,7 @@ describe 'Collection', ->
           @model.expandedRefineProperty @site_field.esCode
           @model.filterByProperty()
           expect(@model.filters().length).toEqual 1
-          expect(@model.filters()[0].description()).toEqual "where #{@site_field.name} is \"site1\""
+          expect(@model.filters()[0].description()).toEqual "where #{@site_field.name} is 'site1'"
 
         it 'should not add filter if site is absent', ->
           model.expandedRefineProperty @site_field.esCode

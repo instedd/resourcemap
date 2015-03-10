@@ -84,7 +84,7 @@ onCollections ->
       options[@field.codeForLink(api)] = "~=#{@value}"
 
     descriptionNonEmpty: =>
-      Jed.sprintf(window.__("where %s starts with %s"), @field.name, @value)
+      Jed.sprintf(window.__("where %s starts with '%s'"), @field.name, @value)
 
   class @FilterByNumericProperty extends FilterMaybeEmpty
     constructor: (field, operator, value) ->
@@ -149,7 +149,7 @@ onCollections ->
       options[code][@operator] = @value
 
     description: =>
-      Jed.sprintf(window.__("where %s %s '%s'"), @field.name, @operator, @valueLabel)
+      Jed.sprintf(window.__("with %s %s '%s'"), @field.name, @operator, @valueLabel)
 
   class @FilterBySelectProperty extends Filter
     constructor: (field, value, valueLabel) ->

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-09 14:45-0300\n"
-"PO-Revision-Date: 2015-03-09 14:45-0300\n"
+"POT-Creation-Date: 2015-03-10 14:32-0300\n"
+"PO-Revision-Date: 2015-03-10 14:32-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1920,9 +1920,6 @@ msgstr ""
 msgid "we need your current password to confirm your changes"
 msgstr ""
 
-msgid "where %s %s '%s'"
-msgstr ""
-
 msgid "where %s has no value"
 msgstr ""
 
@@ -1932,10 +1929,13 @@ msgstr ""
 msgid "where %s is between %s and %s"
 msgstr ""
 
-msgid "where %s starts with %s"
+msgid "where %s starts with '%s'"
 msgstr ""
 
 msgid "where Name starts with '%s'"
+msgstr ""
+
+msgid "with %s %s '%s'"
 msgstr ""
 
 msgid "with errors"
