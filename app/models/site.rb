@@ -117,17 +117,17 @@ class Site < ActiveRecord::Base
     user_membership = user.membership_in(collection)
 
     if site_params.has_key?("name")
-      user.authorize! :update_name, user_membership, "Not authorized to update site name"
+      user.authorize! :update_name, user_membership, message: "Not authorized to update site name"
       self.name = site_params["name"]
     end
 
     if site_params.has_key?("lng")
-      user.authorize! :update_location, user_membership, "Not authorized to update site location"
+      user.authorize! :update_location, user_membership, message: "Not authorized to update site location"
       self.lng = site_params["lng"]
     end
 
     if site_params.has_key?("lat")
-      user.authorize! :update_location, user_membership, "Not authorized to update site location"
+      user.authorize! :update_location, user_membership, message: "Not authorized to update site location"
       self.lat = site_params["lat"]
     end
 
@@ -143,7 +143,7 @@ class Site < ActiveRecord::Base
         # Next if there is no changes in the property
         next if value == self.properties[field.es_code]
 
-        user.authorize! :update_site_property, field, "Not authorized to update site property with code #{es_code_or_code}"
+        user.authorize! :update_site_property, field, message: "Not authorized to update site property with code #{es_code_or_code}"
         self.properties[field.es_code] = field.decode_from_ui(value)
       end
     end

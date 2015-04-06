@@ -14,7 +14,7 @@ class ApiController < ApplicationController
     Rails.logger.info ex.backtrace.join("\n")
 
     if ex.is_a?(CanCan::AccessDenied)
-      render_error_response_403
+      render_error_response_403(ex.message)
     elsif ex.is_a?(ActiveRecord::RecordNotFound)
       render_error_response_422(ex.message)
     else

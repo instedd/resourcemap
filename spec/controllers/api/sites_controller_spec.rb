@@ -21,6 +21,21 @@ describe Api::SitesController, :type => :controller do
     end
   end
 
+  describe "create site" do
+
+    it "should fail stating the problem" do
+      new_user = User.make
+      membership = Membership.make collection: collection, user: new_user, admin: false
+      sign_in new_user
+
+      site_params = {:name => "new site"}.to_json
+      post :create, {:id => collection.id, :site => site_params }
+      expect(response.status).to eq(403)
+      expect(response.body).to include('name')
+    end
+
+  end
+
   describe "Histories" do
     let(:site2) { collection.sites.make name: "New name 0" }
 

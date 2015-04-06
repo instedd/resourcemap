@@ -50,7 +50,7 @@ class Api::SitesController < ApiController
   def update_property
     field = site.collection.fields.where_es_code_is params[:es_code]
     site.user = current_user
-    authorize! :update_site_property, field, "Not authorized to edit site"
+    authorize! :update_site_property, field, message: "Not authorized to edit site"
     updated = site.update_single_property!(params[:es_code], params[:value])
     if updated
       render_json(site, :status => 200)
@@ -61,7 +61,7 @@ class Api::SitesController < ApiController
   end
 
   def destroy
-    authorize! :delete, site, "Not authorized to delete site"
+    authorize! :delete, site, message: "Not authorized to delete site"
     site.user = current_user
     if site.destroy
       head :ok
@@ -79,7 +79,7 @@ class Api::SitesController < ApiController
   end
 
   def update
-    authorize! :update, site, "Not authorized to perform a full update on site"
+    authorize! :update, site, message: "Not authorized to perform a full update on site"
     site_params = JSON.parse params[:site]
     site.user = current_user
     site.properties_will_change!
