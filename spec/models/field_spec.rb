@@ -81,7 +81,7 @@ describe Field, :type => :model do
     ]
 
     field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
-    res = [{:id=>"2", :name=>"grand-child 2", :type=>"ward"}, {:id=>"1", :name=>"child", :type=>"district"}, {:id=>"0", :name=>"root", :type=>"region"}]
+    res = [{"id"=>"2", "name"=>"grand-child 2", "type"=>"ward"}, {"id"=>"1", "name"=>"child", "type"=>"district"}, {"id"=>"0", "name"=>"root", "type"=>"region"}]
     expect(field.ascendants_of_in_hierarchy('2')).to eq(res)
   end
 
@@ -97,8 +97,7 @@ describe Field, :type => :model do
     ]
 
     field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
-    res = [{:id=>"2", :name=>"grand-child 2", :type=>"ward"}, {:id=>"1", :name=>"child", :type=>"district"}, {:id=>"0", :name=>"root", :type=>"region"}]
-    expect(field.ascendants_with_type('2', "district")).to eq({:id=>"1", :name=>"child", :type=>"district"})
+    expect(field.ascendants_with_type('2', "district")).to eq({"id"=>"1", "name"=>"child", "type"=>"district"})
     expect(field.ascendants_with_type('2', "not_found")).to eq(nil)
   end
 
@@ -115,8 +114,7 @@ describe Field, :type => :model do
 
     field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
     field.cache_for_read
-    res = [{:id=>"2", :name=>"grand-child 2", :type=>"ward"}, {:id=>"1", :name=>"child", :type=>"district"}, {:id=>"0", :name=>"root", :type=>"region"}]
-    expect(field.ascendants_with_type('2', "district")).to eq({:id=>"1", :name=>"child", :type=>"district"})
+    expect(field.ascendants_with_type('2', "district")).to eq({"id"=>"1", "name"=>"child", "type"=>"district"})
 
     expect(field.ascendants_with_type('2', "not_found")).to eq(nil)
   end
@@ -222,13 +220,13 @@ describe Field, :type => :model do
     it "for hierarchy with one level" do
       config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}]}]
       field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
-      expect(field.hierarchy_options).to eq([{:id=>0, :name=>"root", :parent_id => ""}, {:id=>1, :name=>"child", :parent_id => 0}])
+      expect(field.hierarchy_options).to eq([{"id"=>0, "name"=>"root", "parent_id" => ""}, {"id"=>1, "name"=>"child", "parent_id" => 0}])
     end
 
     it "for hierarchy with one level two childs" do
       config_hierarchy = [{ id: 0, name: 'root', sub: [{id: 1, name: 'child'}, {id: 2, name: 'child2'}]}]
       field = Field::HierarchyField.make config: { hierarchy: config_hierarchy }.with_indifferent_access
-      expect(field.hierarchy_options).to eq([{:id=>0, :name=>"root", :parent_id => ""}, {:id=>1, :name=>"child", :parent_id => 0}, {:id=>2, :name=>"child2", :parent_id => 0}])
+      expect(field.hierarchy_options).to eq([{"id"=>0, "name"=>"root", "parent_id" => ""}, {"id"=>1, "name"=>"child", "parent_id" => 0}, {"id"=>2, "name"=>"child2", "parent_id" => 0}])
     end
   end
 

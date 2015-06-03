@@ -44,6 +44,9 @@ gem 'actionpack-page_caching'
 gem 'actionpack-action_caching'
 gem 'activerecord-deprecated_finders'
 
+gem 'msgpack'
+gem 'redis'
+
 group :test do
   gem 'shoulda-matchers', require: false
   gem 'resque_spec'

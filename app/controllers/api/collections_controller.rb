@@ -124,6 +124,8 @@ class Api::CollectionsController < ApiController
   def build_search(*options)
     except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :sitename, :page_size, :location_missing, :locale, :human]
 
+    # cache all fields to accelerate condition building
+    collection.fields.each {|field| field.cache_for_read}
     search = new_search
 
     search.use_codes_instead_of_es_codes

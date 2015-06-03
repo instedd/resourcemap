@@ -15,6 +15,7 @@ class FieldsController < ApplicationController
   end
 
   def hierarchy
+    field.cache_for_read
     if !field.hierarchy?
       render_json({message: invalid_hiearchy_message("The field '#{field.code}' is not a hierarchy")}, status: 422)
     elsif value = params[:under]

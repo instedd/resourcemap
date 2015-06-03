@@ -20,6 +20,8 @@ class Field < ActiveRecord::Base
   serialize :config, MarshalZipSerializable
   serialize :metadata
 
+  after_destroy :destroy_cache
+
   def self.reserved_codes
     ['lat', 'long', 'name', 'resmap-id', 'last updated']
   end
@@ -150,6 +152,22 @@ class Field < ActiveRecord::Base
       sanitize_hierarchy_items item['sub'] if item['sub']
     end
   end
-end
 
+  def cached(key, &block)
+    if @cache_for_read
+      instance_variable_get("@#{key}") || (
+        value = RedisCache.cache "field:#{id}:#{key}", updated_at, &block
+        #value = value.with_indifferent_access if value.is_a?(Hash)
+        instance_variable_set "@#{key}", value
+        value
+      )
+    else
+      yield
+    end
+  end
+
+  def destroy_cache
+    RedisCache.evict "field:#{id}:*"
+  end
+end
 
