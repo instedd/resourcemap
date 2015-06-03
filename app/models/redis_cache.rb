@@ -1,33 +1,36 @@
 class RedisCache
   CACHE_PREFIX = "cache:#{Rails.env}:"
 
-  def self.client
-    @@client ||= Redis.new
-  end
-
-  def self.cache(key, etag, &block)
-    client = self.client
-    cache_tag, value = client.hmget CACHE_PREFIX + key, :etag, :value
-    if etag.to_s != cache_tag or value.nil?
-      value = yield
-      #client.hmset CACHE_PREFIX + key, :etag, etag, :value, Marshal.dump(value)
-      client.hmset CACHE_PREFIX + key, :etag, etag, :value, value.to_msgpack
-      value
-    else
-      #Marshal.load(value)
-      MessagePack.unpack(value)
+  class << self
+    def client
+      @client ||= Redis.new
     end
-  end
 
-  def self.evict(key)
-    client.scan_each(match: CACHE_PREFIX + key) do |key|
-      client.del key
+    def cache(key, etag, &block)
+      cache_tag, value = client.hmget with_prefix(key), :etag, :value
+      if etag.to_s != cache_tag or value.nil?
+        value = yield
+        client.hmset with_prefix(key), :etag, etag, :value, value.to_msgpack
+        value
+      else
+        MessagePack.unpack(value)
+      end
     end
-  end
 
-  def self.clear!
-    keys = client.scan_each(match: CACHE_PREFIX + '*').to_a
-    client.del(keys) unless keys.empty?
+    def evict(key)
+      client.scan_each(match: with_prefix(key)) do |key|
+        client.del key
+      end
+    end
+
+    def clear!
+      keys = client.scan_each(match: with_prefix('*')).to_a
+      client.del(keys) unless keys.empty?
+    end
+
+    def with_prefix(key)
+      CACHE_PREFIX + key
+    end
   end
 end
 

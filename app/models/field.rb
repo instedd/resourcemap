@@ -17,7 +17,7 @@ class Field < ActiveRecord::Base
   validates_uniqueness_of :code, :scope => :collection_id
   validates_uniqueness_of :name, :scope => :collection_id
 
-  serialize :config, MarshalZipSerializable
+  serialize :config, MsgpackZipSerializable
   serialize :metadata
 
   after_destroy :destroy_cache
@@ -156,7 +156,7 @@ class Field < ActiveRecord::Base
   def cached(key, &block)
     if @cache_for_read
       instance_variable_get("@#{key}") || (
-        value = RedisCache.cache "field:#{id}:#{key}", updated_at, &block
+        value = RedisCache.cache "field:#{id}:#{key}", updated_at.to_i, &block
         #value = value.with_indifferent_access if value.is_a?(Hash)
         instance_variable_set "@#{key}", value
         value
