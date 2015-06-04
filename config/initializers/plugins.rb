@@ -49,10 +49,10 @@ class ActiveRecord::Migrator
     end
     alias_method_chain :migrations_paths, :plugins
 
-    def get_all_versions_with_plugins
-      return get_all_versions_without_plugins unless current_plugin
+    def get_all_versions_with_plugins(connection = ActiveRecord::Base.connection)
+      return get_all_versions_without_plugins(connection) unless current_plugin
       table = Arel::Table.new(schema_migrations_table_name)
-      ActiveRecord::Base.connection.select_values(table.project(table['version'])).select{ |v| v.match(/-#{current_plugin}/) }.map{ |v| v.to_i }.sort
+      connection.select_values(table.project(table['version'])).select{ |v| v.match(/-#{current_plugin}/) }.map{ |v| v.to_i }.sort
     end
     alias_method_chain :get_all_versions, :plugins
 
