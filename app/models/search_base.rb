@@ -82,9 +82,13 @@ module SearchBase
       return self
     end
 
-    value = field.descendants_of_in_hierarchy value
     query_key = field.es_code
-    add_filter terms: {query_key => value}
+
+    add_filter prefix: {query_key => value}
+
+    # value = field.descendants_of_in_hierarchy value
+    # add_filter terms: {query_key => value}
+
     self
   end
 
