@@ -37,6 +37,13 @@ class Api::CollectionsController < ApiController
       options << :page
     end
 
+    if params[:format] == "json" && options.include?(:all)
+      p = params.clone
+      [:action, :controller, :id, :format].each { |k| p.delete(k) }
+      render text: `#{Rails.root}/crystal-api-server/bin/release/all #{collection.id} '#{p.to_json}'`
+      return
+    end
+
     @results = perform_search *options
 
     format_options = {}

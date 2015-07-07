@@ -1,0 +1,4 @@
+deps do
+  # github "manastech/crystal-mysql"
+  github "benoist/msgpack-crystal"
+end

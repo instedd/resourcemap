@@ -24,3 +24,5 @@ config/guisso.yml
 spec/integration/screenshots/*
 .vagrant
 
+crystal-api-server/libs
+crystal-api-server/bin/release
