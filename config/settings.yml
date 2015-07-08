@@ -1,6 +1,7 @@
 mobile_id: off
 host: localhost:3000
 
+crystal_api_server: 'crystal-api-server/bin/release/darwin-x86_64/all'
 plugins:
   public_collection: on
   snapshot: on

@@ -1,4 +1,7 @@
-@[Link("mysqlclient")]
+@[Link("mysqlclient")] ifdef darwin
+@[Link("zlib")] ifdef linux
+@[Link("dl")] ifdef linux
+@[Link(ldflags: "/usr/lib/x86_64-linux-gnu/libmysqlclient.a")] ifdef linux
 lib LibMySqlClient
   alias CChar = UInt8
   alias CUInt = UInt32

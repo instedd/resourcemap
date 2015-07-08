@@ -37,10 +37,13 @@ class Api::CollectionsController < ApiController
       options << :page
     end
 
-    if params[:format] == "json" && options.include?(:all)
+    enable_crystal_api_server = params.delete("crystal-api-server") != "false"
+    if params[:format] == "json" && options.include?(:all) && Settings.crystal_api_server.present? && enable_crystal_api_server
+      Rails.logger.info "Running crystal-api-server"
+
       p = params.clone
       [:action, :controller, :id, :format].each { |k| p.delete(k) }
-      render text: `#{Rails.root}/crystal-api-server/bin/release/all #{collection.id} '#{p.to_json}'`
+      render text: `#{Rails.root}/#{Settings.crystal_api_server} #{collection.id} '#{p.to_json}'`
       return
     end
 

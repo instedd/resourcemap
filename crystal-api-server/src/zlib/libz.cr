@@ -1,5 +1,5 @@
-# @[Link(ldflags: "-L/usr/local/opt/zlib/lib")]
-@[Link("System")]
+@[Link("System")] ifdef darwin
+@[Link("zlib")] ifdef linux
 lib LibZ
   alias CChar = UInt8
   alias CUInt = UInt32
