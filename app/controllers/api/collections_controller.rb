@@ -117,13 +117,29 @@ class Api::CollectionsController < ApiController
   def served_by_crystal_api_server(path, options)
     enable_crystal_api_server = request.headers["X-PERF-CRYSTAL"] == "true"
 
-    if enable_crystal_api_server && Settings.crystal_api_server.present? && params[:format] == "json" && options.include?(:all)
-      Rails.logger.info "Running crystal-api-server"
+    if enable_crystal_api_server && Settings.crystal_api_server.present? && params[:format] == "json"
       p = params.clone
       [:action, :controller, :id, :format].each { |k| p.delete(k) }
-      render text: `#{Rails.root}/#{Settings.crystal_api_server} #{path} '#{p.to_json}' #{Rails.root} #{Rails.env}`
 
-      return true
+      forward_to_crystal = false
+
+      if params[:action] == "show" && options.include?(:all)
+        if p.keys.count == 1
+          field_param = p[p.keys.first]
+          if field_param.is_a?(Hash)
+            if field_param.keys.count == 1 && field_param.keys.first == "under"
+              forward_to_crystal = true
+            end
+          end
+        end
+      end
+
+      if forward_to_crystal
+        Rails.logger.info "Running crystal-api-server"
+        response.headers["X-PERF-CRYSTAL"] = "true"
+        render text: `#{Rails.root}/#{Settings.crystal_api_server} #{path} '#{p.to_json}' #{Rails.root} #{Rails.env}`
+        return true
+      end
     end
 
     return false
