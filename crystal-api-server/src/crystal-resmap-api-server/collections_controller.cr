@@ -1,10 +1,18 @@
 require "http"
 
 class CollectionsController
-  property! params
+  property! context
+
+  def params
+    context["params"] as Hash(String, JSON::Type)
+  end
+
+  def visible_field_ids
+    (context["visible_field_ids"] as Array(JSON::Type)).map { |x| x as Int64 }.to_a
+  end
 
   def show(collection_id)
-    collection = Collection.find(collection_id)
+    collection = Collection.find(collection_id, visible_field_ids)
 
     client = HTTP::Client.new("localhost", 9200)
 

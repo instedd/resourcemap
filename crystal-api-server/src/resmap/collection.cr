@@ -6,7 +6,7 @@ class Collection
     @fields = [] of Field
   end
 
-  def self.find(id)
+  def self.find(id, visible_field_ids)
     res = self.new
 
     Database.instance.execute("SELECT id, name FROM collections WHERE id=#{id} LIMIT 1").each_row do |row|
@@ -14,7 +14,7 @@ class Collection
       res.name = row.read_string(1)
     end
 
-    res.fields = Field.where({collection_id: id})
+    res.fields = Field.where({collection_id: id, id: visible_field_ids})
 
     res
   end

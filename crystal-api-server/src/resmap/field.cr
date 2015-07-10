@@ -33,7 +33,11 @@ class Field
       builder << "SELECT id, name, code, kind, config FROM fields WHERE 1=1 "
 
       filters.each do |k, v|
-        builder << "AND #{k}=#{v}"
+        if v.is_a?(Array)
+          builder << "AND #{k} IN (#{v.join(", ")}) "
+        else
+          builder << "AND #{k}=#{v} "
+        end
       end
     end
 

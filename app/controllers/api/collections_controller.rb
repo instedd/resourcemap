@@ -129,15 +129,18 @@ class Api::CollectionsController < ApiController
           if field_param.is_a?(Hash)
             if field_param.keys.count == 1 && field_param.keys.first == "under"
               forward_to_crystal = true
+              visible_field_ids = collection.visible_fields_for(current_user).map &:id
             end
           end
         end
       end
 
       if forward_to_crystal
+        command = "#{Rails.root}/#{Settings.crystal_api_server} #{path} '#{{params: p, visible_field_ids: visible_field_ids}.to_json}' #{Rails.root} #{Rails.env}"
         Rails.logger.info "Running crystal-api-server"
+        Rails.logger.info "  #{command}"
         response.headers["X-PERF-CRYSTAL"] = "true"
-        render text: `#{Rails.root}/#{Settings.crystal_api_server} #{path} '#{p.to_json}' #{Rails.root} #{Rails.env}`
+        render text: `#{command}`
         return true
       end
     end
