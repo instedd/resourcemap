@@ -7,4 +7,4 @@ cd crystal-api-server
 
 crystal deps
 mkdir -p bin/release/$TARGET
-crystal build bin/all.cr -o bin/release/$TARGET/all --release
+crystal build bin/cli-server.cr -o bin/release/$TARGET/cli-server --release

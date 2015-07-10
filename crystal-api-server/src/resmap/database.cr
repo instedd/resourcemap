@@ -14,13 +14,22 @@
 require "../libmysql"
 
 class Database
-  def initialize
+  def initialize(config)
     @connection = LibMySqlClient.mysql_init(nil)
-    LibMySqlClient.mysql_real_connect(@connection, "localhost", "root", "", "resource_map", 3306u32, nil, 0u64)
+    LibMySqlClient.mysql_real_connect(@connection,
+      config.fetch("host", "localhost") as String,
+      config.fetch("username") as String, "",
+      "resource_map",
+      (config.fetch("port", "3306") as String).to_u32,
+      nil, 0u64)
+  end
+
+  def make_default
+    @@instance = self
   end
 
   def self.instance
-    @@instance ||= Database.new
+    @@instance.not_nil!
   end
 
   def execute(sql)

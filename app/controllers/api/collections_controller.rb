@@ -43,7 +43,7 @@ class Api::CollectionsController < ApiController
 
       p = params.clone
       [:action, :controller, :id, :format].each { |k| p.delete(k) }
-      render text: `#{Rails.root}/#{Settings.crystal_api_server} #{collection.id} '#{p.to_json}'`
+      render text: `#{Rails.root}/#{Settings.crystal_api_server} /api/collections/#{collection.id} '#{p.to_json}' #{Rails.root} #{Rails.env}`
       return
     end
 
