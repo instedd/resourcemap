@@ -37,13 +37,7 @@ class Api::CollectionsController < ApiController
       options << :page
     end
 
-    enable_crystal_api_server = params.delete("crystal-api-server") != "false"
-    if params[:format] == "json" && options.include?(:all) && Settings.crystal_api_server.present? && enable_crystal_api_server
-      Rails.logger.info "Running crystal-api-server"
-
-      p = params.clone
-      [:action, :controller, :id, :format].each { |k| p.delete(k) }
-      render text: `#{Rails.root}/#{Settings.crystal_api_server} /api/collections/#{collection.id} '#{p.to_json}' #{Rails.root} #{Rails.env}`
+    if served_by_crystal_api_server("/api/collections/#{collection.id}", options)
       return
     end
 
@@ -119,6 +113,21 @@ class Api::CollectionsController < ApiController
   end
 
   private
+
+  def served_by_crystal_api_server(path, options)
+    enable_crystal_api_server = request.headers["X-PERF-CRYSTAL"] == "true"
+
+    if enable_crystal_api_server && Settings.crystal_api_server.present? && params[:format] == "json" && options.include?(:all)
+      Rails.logger.info "Running crystal-api-server"
+      p = params.clone
+      [:action, :controller, :id, :format].each { |k| p.delete(k) }
+      render text: `#{Rails.root}/#{Settings.crystal_api_server} #{path} '#{p.to_json}' #{Rails.root} #{Rails.env}`
+
+      return true
+    end
+
+    return false
+  end
 
   def perform_histogram_search(field, filters=nil)
     search = new_search
