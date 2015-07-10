@@ -56,17 +56,6 @@ class CollectionsController
 
     response = client.get "collection_#{collection_id}/site/_search?pretty", nil, post_body.to_s
 
-    result_sites = Array(JSON::Type).new
-    Site.translate(collection, response) do |api_site|
-      result_sites << api_site
-    end
-
-    result = Hash(String, JSON::Type).new
-    result["name"] = collection.name
-    result["count"] = result_sites.size.to_i64
-    result["totalPages"] = nil
-    result["sites"] = result_sites
-
-    puts result.to_json
+    Site.translate(collection, response, STDOUT)
   end
 end

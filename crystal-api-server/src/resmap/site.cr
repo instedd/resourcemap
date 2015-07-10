@@ -24,74 +24,91 @@ class Site
     Time.parse(value, "%F").to_s("%d/%m/%Y")
   end
 
-  def self.translate(collection, elasticsearch_response)
-    pull = JSON::PullParser.new(elasticsearch_response.body)
+  def self.translate(collection, elasticsearch_response, output)
+    output.json_object do |root|
+      root.field "name", collection.name
+      root.field "totalPages", nil
 
-    pull.on_key("hits") do
+      pull = JSON::PullParser.new(elasticsearch_response.body)
+
       pull.on_key("hits") do
-        pull.read_array do
-          pull.on_key("_source") do
+        pull.read_object do |hit_field_key|
+          case hit_field_key
+          when "total"
+            root.field "count", pull.read_int
+          when "hits"
+            root.field "sites" do
+              output.json_array do |sites_output|
 
-            api_site = Hash(String, JSON::Type).new
+                pull.read_array do
+                  pull.on_key("_source") do
 
-            pull.read_object do |key|
-              # puts key
-              case key
-              when "id"
-                api_site["id"] = pull.read_int
-              when "name"
-                api_site["name"] = pull.read_string
-              when "created_at"
-                api_site["createdAt"] = api_time(pull.read_string)
-              when "updated_at"
-                api_site["updatedAt"] = api_time(pull.read_string)
-              when "location"
-                pull.read_object do |key|
-                  case key
-                  when "lat"
-                    api_site["lat"] = pull.read_float
-                  when "lon"
-                    api_site["long"] = pull.read_float
-                  else
-                    pull.skip
-                  end
-                end
-              when "properties"
-                props = api_site["properties"] = Hash(String, JSON::Type).new
+                    # TODO should not be needed. if JSON::ArrayBuilder will allow to write elements from JSON::ObjectBuilder
+                    api_site = Hash(String, JSON::Type).new
 
-                pull.read_object do |field_key|
-                  f = collection.field_by_id(field_key.to_i)
-                  if f
-                    props[f.code.not_nil!] = case f.kind
-                    when "numeric"
-                      pull.read_float
-                    when "select_one"
-                      v = pull.read_int
-                      f.config_options_value_for_id(v)
-                    when "hierarchy", "identifier", "text", "email", "phone"
-                      pull.read_string
-                    when "date"
-                      api_date(pull.read_string)
-                    when "select_many"
-                      a = [] of JSON::Type
-                      pull.read_array do
-                        a << f.config_options_value_for_id(pull.read_int)
+                    pull.read_object do |key|
+                      # puts key
+                      case key
+                      when "id"
+                        api_site["id"] = pull.read_int
+                      when "name"
+                        api_site["name"] = pull.read_string
+                      when "created_at"
+                        api_site["createdAt"] = api_time(pull.read_string)
+                      when "updated_at"
+                        api_site["updatedAt"] = api_time(pull.read_string)
+                      when "location"
+                        pull.read_object do |key|
+                          case key
+                          when "lat"
+                            api_site["lat"] = pull.read_float
+                          when "lon"
+                            api_site["long"] = pull.read_float
+                          else
+                            pull.skip
+                          end
+                        end
+                      when "properties"
+                        props = api_site["properties"] = Hash(String, JSON::Type).new
+
+                        pull.read_object do |field_key|
+                          f = collection.field_by_id(field_key.to_i)
+                          if f
+                            props[f.code.not_nil!] = case f.kind
+                            when "numeric"
+                              pull.read_float
+                            when "select_one"
+                              v = pull.read_int
+                              f.config_options_value_for_id(v)
+                            when "hierarchy", "identifier", "text", "email", "phone"
+                              pull.read_string
+                            when "date"
+                              api_date(pull.read_string)
+                            when "select_many"
+                              a = [] of JSON::Type
+                              pull.read_array do
+                                a << f.config_options_value_for_id(pull.read_int)
+                              end
+                              a
+                            else
+                              raise "Not implementend #{f.kind}"
+                            end
+                          else
+                            pull.skip
+                          end
+                        end
+                      else
+                        pull.skip
                       end
-                      a
-                    else
-                      raise "Not implementend #{f.kind}"
                     end
-                  else
-                    pull.skip
+
+                    sites_output << api_site
                   end
                 end
-              else
-                pull.skip
               end
-
             end
-
-            yield api_site
+          else
+            pull.skip
           end
         end
       end
