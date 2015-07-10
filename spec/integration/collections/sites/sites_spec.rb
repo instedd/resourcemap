@@ -30,7 +30,7 @@ describe "sites", :type => :request, uses_collections_structure: true do
     fill_starts_with("Ken")
     find('.button').click
 
-    expect(page).to have_content 'where Name starts with "Ken" '
+    expect(page).to have_content "where Name starts with 'Ken' "
     expect(page).to have_content 'Kenya'
     expect(page).not_to have_content 'Rwanda'
   end

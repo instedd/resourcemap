@@ -66,7 +66,7 @@ group :test, :development do
   gem 'machinist', '1.0.6'
   gem 'capistrano'
   gem 'rvm'
-  gem 'rvm-capistrano', '1.5.4'
+  gem 'rvm-capistrano', '1.5.4', require: false
   gem 'jasminerice', '~> 0.1.0', :git => 'https://github.com/bradphelan/jasminerice'
   gem 'guard-jasmine'
   gem 'pry-byebug'
