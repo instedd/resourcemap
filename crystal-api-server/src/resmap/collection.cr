@@ -10,8 +10,8 @@ class Collection
     res = self.new
 
     Database.instance.execute("SELECT id, name FROM collections WHERE id=#{id} LIMIT 1").each_row do |row|
-      res.id = row.read_int(0)
-      res.name = row.read_string(1)
+      res.id = row[0] as Int32
+      res.name = row[1] as String
     end
 
     res.fields = Field.where({collection_id: id, id: visible_field_ids})

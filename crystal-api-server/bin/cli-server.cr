@@ -1,3 +1,4 @@
+require "../src/zlib/*"
 require "yaml"
 require "json"
 require "../src/crystal-resmap-api-server"

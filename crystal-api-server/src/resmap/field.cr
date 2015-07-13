@@ -1,3 +1,5 @@
+require "./serializer"
+
 class Field
   property id, name, code, kind
   property config :: Hash(MessagePack::Type, MessagePack::Type) | Nil
@@ -51,11 +53,17 @@ class Field
 
   def self.init_from_row(row)
     field = self.new
-    field.id = row.read_int(0)
-    field.name = row[1]
-    field.code = row[2]
-    field.kind = row[3]
-    field.config = Serializer::Msgpack.deserialize(Serializer::Gzip.deserialize(row.read_binary(4))) as Hash(MessagePack::Type, MessagePack::Type)|Nil
+    field.id = row[0] as Int32
+    field.name = row[1] as String
+    field.code = row[2] as String
+    field.kind = row[3] as String
+
+    config_array = row[4] as Array(UInt8) | Nil
+    field.config = if config_array
+      Serializer::Msgpack.deserialize(Serializer::Gzip.deserialize(Slice.new(config_array.buffer, config_array.size))) as Hash(MessagePack::Type, MessagePack::Type)
+    else
+      nil
+    end
 
     field
   end

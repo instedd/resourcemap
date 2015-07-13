@@ -1,4 +1,4 @@
-@[Link("System")] ifdef darwin
+@[Link("z")] ifdef darwin
 @[Link("zlib")] ifdef linux
 lib LibZ
   alias CChar = UInt8
