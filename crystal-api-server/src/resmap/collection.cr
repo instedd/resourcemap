@@ -20,10 +20,10 @@ class Collection
   end
 
   def field_by_id(field_id)
-    fields.select { |f| f.id == field_id }.first?
+    fields.find { |f| f.id == field_id }
   end
 
   def field_by_code(field_code)
-    fields.select { |f| f.code == field_code }.first
+    fields.find { |f| f.code == field_code }
   end
 end

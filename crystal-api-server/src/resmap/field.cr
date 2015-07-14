@@ -15,7 +15,7 @@ class Field
   def config_options_value_for_id(id)
     o = config["options"]
     if o.is_a?(Array)
-      option_for_id = o.select { |i| (i as Hash)["id"] == id }.first as Hash
+      option_for_id = o.find { |i| (i as Hash)["id"] == id } as Hash
       option_for_id["code"].to_s
     else
       raise "config options is not an array"

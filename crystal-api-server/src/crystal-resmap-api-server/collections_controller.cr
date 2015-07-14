@@ -28,7 +28,7 @@ class CollectionsController
                 # filter by {{field_code}}[under] = {{id}}
                 # if k =~ /(.*)\[under\]/
 
-                  f = collection.field_by_code(k)
+                  f = collection.field_by_code(k).not_nil!
                   if v.is_a?(Hash) && v.has_key?("under")
                     p = f.find_hierarchy_node(v["under"])
 
