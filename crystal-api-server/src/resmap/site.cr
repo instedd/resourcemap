@@ -29,7 +29,7 @@ class Site
       root.field "name", collection.name
       root.field "totalPages", nil
 
-      pull = JSON::PullParser.new(elasticsearch_response.body)
+      pull = JSON::PullParser.new(elasticsearch_response.body_io)
 
       pull.on_key("hits") do
         pull.read_object do |hit_field_key|

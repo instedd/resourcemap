@@ -54,8 +54,8 @@ class CollectionsController
       obj.field "size", 1000000
     end
 
-    response = client.get "/collection_#{collection_id}/site/_search?pretty", nil, post_body.to_s
-
-    Site.translate(collection, response, STDOUT)
+    client.get("/collection_#{collection_id}/site/_search?pretty", nil, post_body.to_s) do |response|
+      Site.translate(collection, response, STDOUT)
+    end
   end
 end

@@ -21,7 +21,7 @@ module Serializer
         zstream.avail_in = input_data.length.to_u32
         zstream.total_in = input_data.length.to_culong
 
-        buffer = Slice(UInt8).new(input_data.length * 1000)
+        buffer = Slice(UInt8).new(input_data.length * 10)
         zstream.next_out = buffer.to_unsafe
         zstream.avail_out = buffer.length.to_u32
         zstream.total_out = buffer.length.to_culong
