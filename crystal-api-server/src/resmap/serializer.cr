@@ -1,5 +1,6 @@
 require "msgpack"
 require "../zlib/*"
+require "../shims/*"
 
 module Serializer
 
@@ -18,12 +19,12 @@ module Serializer
 
         zstream.next_in = input_data.to_unsafe
         zstream.avail_in = input_data.length.to_u32
-        zstream.total_in = input_data.length.to_u64
+        zstream.total_in = input_data.length.to_culong
 
         buffer = Slice(UInt8).new(input_data.length * 1000)
         zstream.next_out = buffer.to_unsafe
         zstream.avail_out = buffer.length.to_u32
-        zstream.total_out = buffer.length.to_u64
+        zstream.total_out = buffer.length.to_culong
 
         zstream.zalloc = nil as Void*
         zstream.zfree = nil as Void*

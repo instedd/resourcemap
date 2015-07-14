@@ -3,7 +3,11 @@
 lib LibZ
   alias CChar = UInt8
   alias CUInt = UInt32
-  alias CULong = UInt64
+  ifdef x86_64
+    alias CULong = UInt64
+  else
+    alias CULong = UInt32
+  end
   alias CInt = Int32
 
   Z_FINISH = 4
