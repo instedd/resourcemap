@@ -142,8 +142,9 @@ module Site::IndexUtils
 
   def search_properties(site)
     res = {}
-    site.properties.each do |es_code, value|
-      field = site.collection.fields.where_es_code_is es_code
+
+    (Thread.current[:fields] || site.collection.fields).each do |field|
+      value = site.properties[field.es_code]
       field.search_properties(res, value)
     end
 

@@ -44,10 +44,13 @@ module Collection::ElasticsearchConcern
 
     client = Elasticsearch::Client.new
 
+    Thread.current[:fields] = self.fields.each &:cache_for_read
+
     docs = sites.map do |site|
       site.collection = self
       site.to_elastic_search
     end
+    Thread.current[:fields] = nil
     docs.each_slice(1000) do |docs_slice|
       ops = []
       docs_slice.each do |doc|

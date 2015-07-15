@@ -150,7 +150,7 @@ class Search
     hits = results["hits"]
     sites = hits["hits"]
     sites.each do |site|
-      site['_source'].delete 'search_properties'
+      site['_source'].delete 'search_properties' if site['_source']
     end
     total_count = hits["total"]
 

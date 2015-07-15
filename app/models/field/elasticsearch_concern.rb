@@ -43,7 +43,11 @@ module Field::ElasticsearchConcern
 
   def search_properties(hash, value)
     if kind == 'hierarchy'
-      hash["#{es_code}_path"] = self.ascendants_of_in_hierarchy(value).map { |n| n['id'] }
+      begin
+        hash["#{es_code}_path"] = self.ascendants_of_in_hierarchy(value).map { |n| n['id'] }
+      rescue
+        # if hierarchy node does not exist, then we need to skip this
+      end
     end
   end
 
