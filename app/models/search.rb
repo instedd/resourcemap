@@ -149,6 +149,9 @@ class Search
 
     hits = results["hits"]
     sites = hits["hits"]
+    sites.each do |site|
+      site['_source'].delete 'search_properties'
+    end
     total_count = hits["total"]
 
     # When selecting fields, the results are returned in an array.

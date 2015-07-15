@@ -78,13 +78,13 @@ module SearchBase
 
   def under(field, value)
     if value.blank?
-      add_filter missing: {field: field.es_code}
+      add_filter missing: {field: field.es_property_path}
       return self
     end
 
-    value = field.descendants_of_in_hierarchy value
-    query_key = field.es_code
-    add_filter terms: {query_key => value}
+    # search_properties contains all ids to root for hierarchy fields
+    # so filtering on the expected value directly will search for all under
+    add_filter terms: {"search_properties.#{field.es_code}_path" => [field.decode(value)]}
     self
   end
 

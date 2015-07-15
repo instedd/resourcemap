@@ -648,6 +648,18 @@ describe Search, :type => :model do
       search.where unit.es_code => [1, 2]
       assert_results search, site1, site2, site3
     end
+
+    it "result should not container search_properties" do
+      search = collection.new_search
+      search.use_codes_instead_of_es_codes
+      search.where unit.code => 1
+      assert_results search, site1
+      site = search.results.first
+
+      site.should be_has_key('_source')
+      site['_source'].should be_has_key('properties')
+      site['_source'].should_not be_has_key('search_properties')
+    end
   end
 
   context 'filter by yes_no' do

@@ -91,6 +91,7 @@ module Site::IndexUtils
       uuid: site.uuid,
       type: :site,
       properties: site.properties,
+      search_properties: search_properties(site),
       created_at: site.created_at.utc.strftime(DateFormat),
       updated_at: site.updated_at.utc.strftime(DateFormat),
       icon: site.collection.icon,
@@ -125,6 +126,7 @@ module Site::IndexUtils
         created_at: { type: :date, format: :basic_date_time },
         updated_at: { type: :date, format: :basic_date_time },
         properties: { properties: fields_mapping(fields) },
+        search_properties: { properties: search_fields_mapping(fields) },
         version: { type: :long }
       }
     }
@@ -132,5 +134,19 @@ module Site::IndexUtils
 
   def fields_mapping(fields)
     fields.each_with_object({}) { |field, hash| hash[field.es_code] = field.index_mapping }
+  end
+
+  def search_fields_mapping(fields)
+    fields.each_with_object({}) { |field, hash| field.search_fields_mapping(hash) }
+  end
+
+  def search_properties(site)
+    res = {}
+    site.properties.each do |es_code, value|
+      field = site.collection.fields.where_es_code_is es_code
+      field.search_properties(res, value)
+    end
+
+    res
   end
 end

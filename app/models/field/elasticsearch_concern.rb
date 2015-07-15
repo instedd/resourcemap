@@ -31,6 +31,22 @@ module Field::ElasticsearchConcern
     id.to_s
   end
 
+  def es_property_path
+    "property.#{es_code}"
+  end
+
+  def search_fields_mapping(mapping)
+    if kind == 'hierarchy'
+      mapping["#{es_code}_path"] = { type: :string, index: :not_analyzed }
+    end
+  end
+
+  def search_properties(hash, value)
+    if kind == 'hierarchy'
+      hash["#{es_code}_path"] = self.ascendants_of_in_hierarchy(value).map { |n| n['id'] }
+    end
+  end
+
   module ClassMethods
     def where_es_code_is(es_code)
       where(:id => es_code.to_i).first
