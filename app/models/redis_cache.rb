@@ -18,13 +18,12 @@ class RedisCache
     end
 
     def evict(key)
-      client.scan_each(match: with_prefix(key)) do |key|
-        client.del key
-      end
+      keys = client.keys(with_prefix(key))
+      client.del(keys) unless keys.empty?
     end
 
     def clear!
-      keys = client.scan_each(match: with_prefix('*')).to_a
+      keys = client.keys(with_prefix('*'))
       client.del(keys) unless keys.empty?
     end
 
