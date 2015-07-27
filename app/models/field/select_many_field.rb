@@ -7,15 +7,29 @@ class Field::SelectManyField < Field
     "don't match any existing option"
   end
 
-	def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
-		check_presence_of_value(value)
-		query_value(value, use_codes_instead_of_es_codes)
-	end
+  def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
+    check_presence_of_value(value)
+    query_value(value, use_codes_instead_of_es_codes)
+  end
+
+  def cache_for_read
+    @cache_for_read = true
+  end
+
+  def disable_cache_for_read
+    @cache_for_read = false
+  end
+
+  def config_option_by_id(val)
+    cached 'options' do
+      config['options']
+    end.find { |o| o['id'] == val }
+  end
 
   def api_value(value)
    if value.is_a? Array
       return value.map do |val|
-        option = config['options'].find { |o| o['id'] == val }
+        option = config_option_by_id(val)
         option ? option['code'] : val
       end
     else
@@ -26,7 +40,7 @@ class Field::SelectManyField < Field
   def human_value(value)
     if value.is_a? Array
       return value.map do |val|
-        option = config['options'].find { |o| o['id'] == val }
+        option = config_option_by_id(val)
         option ? option['label'] : val
       end.join ', '
     else
