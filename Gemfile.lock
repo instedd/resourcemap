@@ -6,11 +6,20 @@ GIT
       coffee-rails
 
 GIT
-  remote: https://github.com/instedd/alto_guisso.git
-  revision: 8b4c60f7bb93dabfa80f33341285512cb42d3f32
+  remote: https://github.com/instedd/alto_guisso
+  revision: 6d72573c211f45ff95d36847af733449acdfa04a
   branch: master
   specs:
-    alto_guisso (0.0.1)
+    alto_guisso (0.0.2)
+      rack-oauth2
+
+GIT
+  remote: https://github.com/instedd/alto_guisso_rails
+  revision: bd944d08c59e5835285f0d956fb1fb00402fc385
+  branch: master
+  specs:
+    alto_guisso_rails (0.0.1)
+      alto_guisso
       omniauth
       omniauth-openid
       rack-oauth2
@@ -445,6 +454,7 @@ DEPENDENCIES
   activerecord-deprecated_finders
   activerecord-import
   alto_guisso!
+  alto_guisso_rails!
   better_errors (< 2.0.0)
   binding_of_caller
   breadcrumbs_on_rails
