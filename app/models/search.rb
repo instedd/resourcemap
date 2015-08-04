@@ -176,6 +176,8 @@ class Search
     Results.new(results)
   end
 
+  extend ::NewRelic::Agent::MethodTracer
+
   # Returns the results from ElasticSearch but with codes as keys and codes as
   # values (when applicable).
   def api_results
@@ -193,7 +195,9 @@ class Search
       properties.each_pair do |es_code, value|
         field = fields_by_es_code[es_code]
         if field
-          item['_source']['properties'][field.code] = field.api_value(value)
+          self.class.trace_execution_scoped(['Custom/Search/api_results/api_value']) do
+            item['_source']['properties'][field.code] = field.api_value(value)
+          end
         end
       end
     end

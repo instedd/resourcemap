@@ -1,3 +1,5 @@
+require 'new_relic/agent/method_tracer'
+
 module Api::JsonHelper
   def collection_json(collection, results, user, options = {})
     obj = {}
@@ -36,6 +38,9 @@ module Api::JsonHelper
 
     obj
   end
+
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :site_item_json, 'Custom/JsonHelper/site_item_json'
 
   def process_labels(collection, results, user, human = false)
     fields = []
