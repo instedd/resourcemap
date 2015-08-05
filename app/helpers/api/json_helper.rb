@@ -29,8 +29,17 @@ module Api::JsonHelper
     obj[:properties] = {}
     if human
       source['properties'].each do |code, value|
-        field = fields.select{|f| f.code == code }.first
-        obj[:properties][code] = field.csv_values(value, human).first
+        field = fields.find { |f| f.code == code }
+
+        obj[:properties][code] = if field.is_a?(Field::HierarchyField)
+          field.human_value(value) # this case is for optimization only.
+          # Field::HierarchyField#csv_values ends up building the whole ascendent trace
+          # for each element.
+          # Field::SelectOneField#human_value can't be used instead of #csv_values here
+          # since the +value+ has the code but not the id of the selected option.
+        else
+          field.csv_values(value, human).first
+        end
       end
     else
       obj[:properties] = source['properties']
