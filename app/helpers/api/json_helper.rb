@@ -31,7 +31,7 @@ module Api::JsonHelper
       source['properties'].each do |code, value|
         field = fields.find { |f| f.code == code }
 
-        self.class.trace_execution_scoped(["Custom/JsonHelper/site_item_json/#{field.kind}"]) do
+        self.trace_execution_scoped(["Custom/JsonHelper/site_item_json/#{field.kind}"]) do
           obj[:properties][code] = if field.is_a?(Field::HierarchyField)
             field.human_value(value) # this case is for optimization only.
             # Field::HierarchyField#csv_values ends up building the whole ascendent trace
