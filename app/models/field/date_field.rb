@@ -1,13 +1,15 @@
 class Field::DateField < Field
 
   def format_implementation
-    format = if config && config['format']
-      config['format']
-    else
-      "mm_dd_yyyy"
+    @format_implementation ||= begin
+      format = if config && config['format']
+        config['format']
+      else
+        "mm_dd_yyyy"
+      end
+      class_name = "date_#{format}_format".classify
+      "Field::DateFormat::#{class_name}".constantize.new(self)
     end
-    class_name = "date_#{format}_format".classify
-    "Field::DateFormat::#{class_name}".constantize.new(self)
   end
 
   def value_type_description
