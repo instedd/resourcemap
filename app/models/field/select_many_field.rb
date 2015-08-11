@@ -20,10 +20,14 @@ class Field::SelectManyField < Field
     @cache_for_read = false
   end
 
-  def config_option_by_id(val)
+  def cached_options
     cached 'options' do
       config['options']
-    end.find { |o| o['id'] == val }
+    end
+  end
+
+  def config_option_by_id(val)
+    cached_options.find { |o| o['id'] == val }
   end
 
   def api_value(value)
@@ -92,11 +96,11 @@ class Field::SelectManyField < Field
   def query_value(value, use_codes_instead_of_es_codes)
     value_id = nil
     if use_codes_instead_of_es_codes
-      config['options'].each do |option|
+      cached_options.each do |option|
         value_id = option['id'] if option['label'] == value || option['code'] == value
       end
     else
-      config['options'].each do |option|
+      cached_options.each do |option|
         value_id = option['id'] if option['id'].to_s == value.to_s
       end
     end
@@ -110,7 +114,7 @@ class Field::SelectManyField < Field
 
   def decode_option(value)
     value_id = nil
-    config['options'].each do |option|
+    cached_options.each do |option|
       value_id = option['id'] if option['label'].downcase == value.downcase || option['code'].downcase == value.downcase
     end
 
@@ -123,7 +127,7 @@ class Field::SelectManyField < Field
 
   def check_option_exists(value)
     exists = false
-    config['options'].each do |option|
+    cached_options.each do |option|
       exists = true if option['id'].to_s == value.to_s
     end
     raise invalid_field_message(value) if !exists
