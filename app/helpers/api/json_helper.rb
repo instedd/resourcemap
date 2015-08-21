@@ -1,3 +1,5 @@
+require 'new_relic/agent/method_tracer'
+
 module Api::JsonHelper
   def collection_json(collection, results, user, options = {})
     obj = {}
@@ -27,8 +29,19 @@ module Api::JsonHelper
     obj[:properties] = {}
     if human
       source['properties'].each do |code, value|
-        field = fields.select{|f| f.code == code }.first
-        obj[:properties][code] = field.csv_values(value, human).first
+        field = fields.find { |f| f.code == code }
+
+        self.trace_execution_scoped(["Custom/JsonHelper/site_item_json/#{field.kind}"]) do
+          obj[:properties][code] = if field.is_a?(Field::HierarchyField)
+            field.human_value(value) # this case is for optimization only.
+            # Field::HierarchyField#csv_values ends up building the whole ascendent trace
+            # for each element.
+            # Field::SelectOneField#human_value can't be used instead of #csv_values here
+            # since the +value+ has the code but not the id of the selected option.
+          else
+            field.csv_values(value, human).first
+          end
+        end
       end
     else
       obj[:properties] = source['properties']
@@ -36,6 +49,9 @@ module Api::JsonHelper
 
     obj
   end
+
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :site_item_json, 'Custom/JsonHelper/site_item_json'
 
   def process_labels(collection, results, user, human = false)
     fields = []
