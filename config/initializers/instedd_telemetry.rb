@@ -11,5 +11,6 @@ InsteddTelemetry.setup do |config|
    end
 
    config.add_collector Telemetry::SitesCollector
+   config.add_collector Telemetry::MembershipsCollector
 
 end
