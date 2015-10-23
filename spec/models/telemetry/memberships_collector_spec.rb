@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Telemetry::MembershipsCollector do
 
-  it "counts sites grouped by collection_id" do
+  it "counts memberships grouped by collection_id" do
     u1 = User.make
     u2 = User.make
 
