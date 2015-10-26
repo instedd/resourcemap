@@ -5,6 +5,9 @@ class Message < ActiveRecord::Base
   belongs_to :collection  
   after_create :update_message_quota
 
+  after_save :touch_collection_lifespan
+  after_destroy :touch_collection_lifespan
+
   def process!(context=nil)
   	self.reply = visit(parse.command, context)
   end

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Layer, :type => :model do
+  include_examples 'collection lifespan', described_class
+
   it { is_expected.to belong_to :collection }
   it { is_expected.to have_many :fields }
 

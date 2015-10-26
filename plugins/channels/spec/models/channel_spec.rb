@@ -1,5 +1,7 @@
 require 'spec_helper'
 describe Channel, :type => :model do
+  include_examples 'user lifespan', described_class, name: 'abcd'
+
   it { is_expected.to validate_presence_of :name }
 
   it 'should valid when name is more than 4 charracters' do

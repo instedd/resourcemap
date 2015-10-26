@@ -12,6 +12,9 @@ class Channel < ActiveRecord::Base
   attr_accessor  :ticket_code
   attr_accessor  :phone_number
 
+  after_save :touch_user_lifespan
+  after_destroy :touch_user_lifespan
+
   def generate_nuntium_name
     sprintf("#{self.name}-#{self.id}")
   end

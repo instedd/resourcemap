@@ -1,6 +1,9 @@
 require 'spec_helper'
+require 'treetop_dependencies'
 
 describe Message, :type => :model do
+  include_examples 'collection lifespan', described_class, guid: '999', from: 'sms://123', body: "foo"
+
   context "new" do
     subject { Message.new }
 

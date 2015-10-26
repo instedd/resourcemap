@@ -33,6 +33,9 @@ class Collection < ActiveRecord::Base
     logo.recreate_versions! if crop_x.present?
   end
 
+  after_save :touch_lifespan
+  after_destroy :touch_lifespan
+
   def max_value_of_property(es_code)
     client = Elasticsearch::Client.new
     results = client.search index: index_name, type: 'site', body: {
@@ -237,5 +240,11 @@ class Collection < ActiveRecord::Base
         .select{|l| user.can?(:read, l)}
         .as_json(include: :field_histories)
     end
+  end
+
+  private
+
+  def touch_lifespan
+    Telemetry::Lifespan.touch_collection self
   end
 end

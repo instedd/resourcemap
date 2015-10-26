@@ -21,6 +21,10 @@ describe ImportWizard, :type => :model do
   let!(:date) { layer.date_fields.make :code => 'date' }
   let!(:director) { layer.user_fields.make :code => 'user' }
 
+  before :each do
+    collection.reload
+  end
+
   it "imports with name, lat, lon and one new numeric property" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Lat', 'Lon', 'Beds']

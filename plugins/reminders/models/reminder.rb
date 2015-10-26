@@ -6,6 +6,9 @@ class Reminder < ActiveRecord::Base
   before_save :set_schedule_rule
   before_save :set_next_run
 
+  after_save :touch_collection_lifespan
+  after_destroy :touch_collection_lifespan
+
   def reminder_date
     schedule.try(:start_time)
   end

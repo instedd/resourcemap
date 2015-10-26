@@ -236,4 +236,31 @@ describe Collection, :type => :model do
       end
     end
   end
+
+  describe 'telemetry' do
+    it 'should touch lifespan on create' do
+      collection = Collection.make_unsaved
+
+      expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
+
+      collection.save
+    end
+
+    it 'should touch lifespan on update' do
+      collection = Collection.make
+      collection.touch
+
+      expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
+
+      collection.save
+    end
+
+    it 'should touch lifespan on destroy' do
+      collection = Collection.make
+
+      expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
+
+      collection.destroy
+    end
+  end
 end

@@ -15,6 +15,9 @@ class Layer < ActiveRecord::Base
   # This include needs to be after the has_many :fields declaration
   include Layer::ActivityConcern
 
+  after_save :touch_collection_lifespan
+  after_destroy :touch_collection_lifespan
+
   def history_concern_foreign_key
     self.class.name.foreign_key
   end

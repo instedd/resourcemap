@@ -93,4 +93,60 @@ describe UserSnapshot, :type => :model do
       expect(user_snapshot.snapshot.name).to eq('my snapshot')
     end
   end
+
+  describe 'telemetry' do
+    let!(:collection) { Collection.make }
+    let!(:snapshot) { Snapshot.make collection: collection }
+    let!(:user) { User.make }
+
+    it 'should touch collection lifespan on create' do
+      user_snapshot = UserSnapshot.make_unsaved snapshot: snapshot, user: user, collection: collection
+
+      expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection).at_least(:once)
+
+      user_snapshot.save
+    end
+
+    it 'should touch collection lifespan on update' do
+      user_snapshot = UserSnapshot.make snapshot: snapshot, user: user, collection: collection
+      user_snapshot.touch
+
+      expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
+
+      user_snapshot.save
+    end
+
+    it 'should touch collection lifespan on destroy' do
+      user_snapshot = UserSnapshot.make snapshot: snapshot, user: user, collection: collection
+
+      expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
+
+      user_snapshot.destroy
+    end
+
+    it 'should touch user lifespan on create' do
+      user_snapshot = UserSnapshot.make_unsaved snapshot: snapshot, user: user, collection: collection
+
+      expect(Telemetry::Lifespan).to receive(:touch_user).with(user).at_least(:once)
+
+      user_snapshot.save
+    end
+
+    it 'should touch user lifespan on update' do
+      user_snapshot = UserSnapshot.make snapshot: snapshot, user: user, collection: collection
+      user_snapshot.touch
+
+      expect(Telemetry::Lifespan).to receive(:touch_user).with(user)
+
+      user_snapshot.save
+    end
+
+    it 'should touch user lifespan on destroy' do
+      user_snapshot = UserSnapshot.make snapshot: snapshot, user: user, collection: collection
+
+      expect(Telemetry::Lifespan).to receive(:touch_user).with(user)
+
+      user_snapshot.destroy
+    end
+  end
 end

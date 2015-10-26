@@ -13,6 +13,9 @@ class User < ActiveRecord::Base
 
   attr_accessor :is_guest
 
+  after_save :touch_lifespan
+  after_destroy :touch_lifespan
+
   def membership_for_collection(collection)
     membership = self.memberships.find_by_collection_id(collection.id)
     if is_guest || !membership
@@ -156,5 +159,11 @@ class User < ActiveRecord::Base
     self.site_count += 1
     update_successful_outcome_status
     self.save!
+  end
+
+  private
+
+  def touch_lifespan
+    Telemetry::Lifespan.touch_user self
   end
 end

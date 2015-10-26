@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe Membership, :type => :model do
+  include_examples 'collection lifespan', described_class
+  include_examples 'user lifespan', described_class
+
   it { is_expected.to belong_to :user }
   it { is_expected.to belong_to :collection }
   it { is_expected.to have_one :read_sites_permission }

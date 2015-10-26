@@ -15,6 +15,11 @@ class Membership < ActiveRecord::Base
 
   validates :user_id, :uniqueness => { scope: :collection_id, message: "membership already exists" }
 
+  after_save :touch_collection_lifespan
+  after_destroy :touch_collection_lifespan
+  after_save :touch_user_lifespan
+  after_destroy :touch_user_lifespan
+
   #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
   def can_read?(object)
     if admin
