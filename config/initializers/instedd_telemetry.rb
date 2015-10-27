@@ -13,7 +13,7 @@ InsteddTelemetry.setup do |config|
    config.add_collector Telemetry::ActivitiesCollector
    config.add_collector Telemetry::AlertConditionsCollector
    config.add_collector Telemetry::MembershipsCollector
-   config.add_collector Telemetry::NewAccountsCollector
+   config.add_collector Telemetry::NewCollectionsCollector
    config.add_collector Telemetry::SitesCollector
    config.add_collector Telemetry::FieldsCollector
 
