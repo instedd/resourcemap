@@ -59,6 +59,33 @@ describe Telemetry::SitesCollector do
 
   end
 
+  it 'counts collections with 0 sites'  do
+    to = Time.now
+    from = to - 1.week
+    period = InsteddTelemetry::Period.new beginning: from, end: to
+
+    c1 = Collection.make created_at: to - 5.days
+    c2 = Collection.make created_at: to - 1.day
+    c3 = Collection.make created_at: to + 1.day
+
+    Site.make collection: c2, created_at: to + 1.day
+    Site.make collection: c3, created_at: to + 3.days
+
+    counters = stats(period)['counters']
+
+    expect(counters.size).to eq(2)
+    expect(counters).to include({
+      "metric" => "sites",
+      "key" => { "collection_id" => c1.id },
+      "value" => 0
+    })
+    expect(counters).to include({
+      "metric" => "sites",
+      "key" => { "collection_id" => c2.id },
+      "value" => 0
+    })
+  end
+
   def stats(period)
     Telemetry::SitesCollector.collect_stats(period)
   end
