@@ -40,7 +40,7 @@ GIT
 
 GIT
   remote: https://github.com/instedd/telemetry_rails
-  revision: f4dbe4ba3320e5934a66c84b3bfb028c32878008
+  revision: 9004572f9187771f7c0825b9bc2879ced2ded085
   branch: master
   specs:
     instedd_telemetry (0.0.1)
@@ -534,6 +534,3 @@ DEPENDENCIES
   uglifier (>= 2.5.0)
   uuidtools
   will_paginate
-
-BUNDLED WITH
-   1.10.6
