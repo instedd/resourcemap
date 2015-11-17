@@ -1,20 +1,20 @@
 class RecalculteLuhnValuesWithTheNewAlgorithm < ActiveRecord::Migration
 
   class Site < ActiveRecord::Base
-    set_table_name "sites"
+    self.table_name = "sites"
     serialize :properties, Hash
 
   end
 
   class Collection < ActiveRecord::Base
-    set_table_name "collections"
+    self.table_name = "collections"
 
     has_many :sites
   end
 
 
   class Field < ActiveRecord::Base
-    set_table_name "fields"
+    self.table_name = "fields"
     belongs_to :collection
     serialize :config, MarshalZipSerializable
 
