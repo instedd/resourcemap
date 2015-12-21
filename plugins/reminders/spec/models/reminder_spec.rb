@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Reminder, :type => :model do
+  include_examples 'collection lifespan', described_class
+
   let(:collection) { Collection.make }
   let(:repeat) { Repeat.make }
 

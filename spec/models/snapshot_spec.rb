@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Snapshot, :type => :model do
+  include_examples 'collection lifespan', described_class
+
   describe "validations" do
     let!(:snapshot) { Snapshot.make }
 

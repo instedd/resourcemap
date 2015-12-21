@@ -129,3 +129,18 @@ LayerMembership.blueprint do
   write { false }
   membership
 end
+
+FieldHistory.blueprint do
+end
+
+Message.blueprint do
+end
+
+ShareChannel.blueprint do
+end
+
+SiteReminder.blueprint do
+end
+
+SitesPermission.blueprint do
+end

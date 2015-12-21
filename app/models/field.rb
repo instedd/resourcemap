@@ -22,6 +22,9 @@ class Field < ActiveRecord::Base
 
   after_destroy :destroy_cache
 
+  after_save :touch_collection_lifespan
+  after_destroy :touch_collection_lifespan
+
   def self.reserved_codes
     ['lat', 'long', 'name', 'resmap-id', 'last updated']
   end
@@ -170,4 +173,3 @@ class Field < ActiveRecord::Base
     RedisCache.evict "field:#{id}:*"
   end
 end
-

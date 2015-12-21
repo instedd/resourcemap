@@ -1,4 +1,5 @@
 ResourceMap::Application.routes.draw do
+  mount InsteddTelemetry::Engine => '/instedd_telemetry'
   # We need to define devise_for just omniauth_callbacks:uth_callbacks otherwise it does not work with scoped locales
   # see https://github.com/plataformatec/devise/issues/2813
   devise_for :users, skip: [:session, :password, :registration, :confirmation], controllers: { omniauth_callbacks: 'omniauth_callbacks' }

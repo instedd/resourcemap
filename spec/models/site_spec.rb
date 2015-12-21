@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Site, :type => :model do
+  include_examples 'collection lifespan', described_class
+
   let(:user) { User.make }
   it { is_expected.to belong_to :collection }
 
