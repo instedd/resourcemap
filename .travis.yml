@@ -10,6 +10,7 @@ before_install:
 - tar -xf phantomjs-1.9.7-linux-x86_64.tar.bz2
 - sudo rm -rf /usr/local/phantomjs
 - sudo mv phantomjs-1.9.7-linux-x86_64 /usr/local/phantomjs
+- gem update bundler
 services:
 - redis-server
 before_script:
