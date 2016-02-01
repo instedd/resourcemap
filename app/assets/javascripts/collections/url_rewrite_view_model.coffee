@@ -1,7 +1,7 @@
 onCollections ->
 
   class @UrlRewriteViewModel
-    @rewriteUrl: ->
+    @rewriteUrl: (reloadSites = true) ->
       return if @processingURL
       query = {}
 
@@ -35,7 +35,7 @@ onCollections ->
       location.search = $.param query
       History.pushState null, null, location.href
 
-      @reloadMapSites()
+      @reloadMapSites() if reloadSites
 
 
     @processURL: ->
