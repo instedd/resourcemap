@@ -133,12 +133,17 @@ class Api::CollectionsController < ApiController
     if options.include? :page
       search.page_size = params[:page_size].to_i if params[:page_size]
       search.page params[:page].to_i if params[:page]
+      if !params[:page] && !params[:page_size]
+        search.page 1
+      end
       except_params << :page
     elsif options.include? :count
       search.offset 0
       search.limit 0
     elsif options.include? :all
       search.unlimited
+    else
+      search.page 1
     end
 
     search.id(params[:site_id]) if params[:site_id]

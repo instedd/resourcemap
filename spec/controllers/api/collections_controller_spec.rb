@@ -62,6 +62,12 @@ describe Api::CollectionsController, :type => :controller do
 
     describe "Collection filters" do
 
+      it "returns totalPages when no page is specified" do
+        get :show, id: collection.id, format: 'json'
+        json = JSON.parse response.body
+        expect(json['totalPages']).to eq(1)
+      end
+
       it "should find both sites by name" do
         pending("Filter by name with whitespaces is failling")
         get :show, id: collection.id, format: 'json', sitename: 'Site '
