@@ -67,7 +67,7 @@ module HistoryConcern
     history_class = self.class.history_class || histories
     history = history_class.new
     attributes.each_pair do |att_name, att_value|
-      unless ['id', 'created_at', 'updated_at'].include? att_name
+      unless ['id', 'created_at', 'updated_at', 'deleted_at'].include? att_name
         history[att_name] = att_value
       end
     end

@@ -122,7 +122,7 @@ class Api::CollectionsController < ApiController
   end
 
   def build_search(*options)
-    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :sitename, :page_size, :location_missing, :locale, :human]
+    except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :deleted_since, :search, :box, :lat, :lng, :radius, :fields, :name, :sitename, :page_size, :location_missing, :locale, :human]
 
     # cache all fields to accelerate condition building
     collection.fields.each {|field| field.cache_for_read}
@@ -148,6 +148,7 @@ class Api::CollectionsController < ApiController
 
     search.id(params[:site_id]) if params[:site_id]
     search.after params[:updated_since] if params[:updated_since]
+    search.deleted_since params[:deleted_since] if params[:deleted_since]
     search.full_text_search params[:search] if params[:search]
     search.box *valid_box_coordinates if params[:box]
     search.select_fields(params[:fields]) if params[:fields]

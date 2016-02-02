@@ -25,13 +25,16 @@ describe Site::ElasticsearchConcern, :type => :model do
     expect(Site.parse_time(results[0]["_source"]["updated_at"]).to_i).to eq(site.updated_at.to_i)
   end
 
-  it "removes from index after destroy" do
+  it "makrs as deleted when destroyed" do
     site = collection.sites.make
     site.destroy
 
     client = Elasticsearch::Client.new
     results = client.search index: site.index_name
-    expect(results["hits"]["hits"].length).to eq(0)
+    hits = results["hits"]["hits"]
+    expect(hits.length).to eq(1)
+    deleted_at = Time.parse(hits[0]["_source"]["deleted_at"])
+    expect(deleted_at.utc.to_i).to eq(site.deleted_at.utc.to_i)
   end
 
   it "stores sites without lat and lng in index" do

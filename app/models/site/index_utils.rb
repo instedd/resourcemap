@@ -98,6 +98,10 @@ module Site::IndexUtils
       version: (site.version rescue nil)
     }
 
+    if site.respond_to?(:deleted_at) && site.deleted_at
+      hash[:deleted_at] = site.deleted_at.utc.strftime(DateFormat)
+    end
+
     if site.lat && site.lng
       hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f}
       hash[:lat_analyzed] = site.lat.to_s
@@ -124,6 +128,7 @@ module Site::IndexUtils
         lng_analyzed: { type: :string },
         created_at: { type: :date, format: :basic_date_time },
         updated_at: { type: :date, format: :basic_date_time },
+        deleted_at: { type: :date, format: :basic_date_time },
         properties: { properties: fields_mapping(fields) },
         version: { type: :long }
       }

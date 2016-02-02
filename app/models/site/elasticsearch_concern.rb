@@ -5,7 +5,7 @@ module Site::ElasticsearchConcern
 
   included do
     after_save :store_in_index
-    after_destroy :remove_from_index
+    after_destroy :store_in_index
     define_model_callbacks :index
     delegate :index_name, to: :collection
   end
@@ -24,12 +24,6 @@ module Site::ElasticsearchConcern
     search = collection.new_search
     search.id id
     search.results.first
-  end
-
-  def remove_from_index
-    client = Elasticsearch::Client.new
-    client.delete index: index_name, id: id, type: 'site'
-    client.indices.refresh index: index_name
   end
 
   module ClassMethods
