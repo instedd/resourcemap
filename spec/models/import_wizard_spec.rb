@@ -912,15 +912,15 @@ describe ImportWizard, :type => :model do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     column_spec = ImportWizard.guess_columns_spec user, collection
 
-    column_spec.length.should eq(7)
+    expect(column_spec.length).to eq(7)
 
-    column_spec.should include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
-    column_spec.should include({:header=>"Name", :kind=>:name, :use_as=>:name})
-    column_spec.should include({:header=>"Lat", :kind=>:location, :use_as=>:lat})
-    column_spec.should include({:header=>"Lon", :kind=>:location, :use_as=>:lng})
-    column_spec.should include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :field_id=>hierarchy.id, :layer_id=>layer.id})
-    column_spec.should include({:header=>"hierarchy-1", :kind=>:ignore, :use_as=>:ignore})
-    column_spec.should include({:header=>"hierarchy-2", :kind=>:ignore, :use_as=>:ignore})
+    expect(column_spec).to include({:header=>"resmap-id", :kind=> :id, :use_as=>:id, :id_matching_column=>'resmap-id'})
+    expect(column_spec).to include({:header=>"Name", :kind=>:name, :use_as=>:name})
+    expect(column_spec).to include({:header=>"Lat", :kind=>:location, :use_as=>:lat})
+    expect(column_spec).to include({:header=>"Lon", :kind=>:location, :use_as=>:lng})
+    expect(column_spec).to include({:header=>"hierarchy", :kind=>:hierarchy, :code=>"hierarchy", :label=>"Hierarchy", :use_as=>:existing_field, :field_id=>hierarchy.id, :layer_id=>layer.id})
+    expect(column_spec).to include({:header=>"hierarchy-1", :kind=>:ignore, :use_as=>:ignore})
+    expect(column_spec).to include({:header=>"hierarchy-2", :kind=>:ignore, :use_as=>:ignore})
 
     ImportWizard.delete_files(user, collection)
   end

@@ -63,14 +63,14 @@ describe "account", :type => :request, uses_collections_structure: true do
     end
 
     new_user = User.find_by_email('user@manas.com.ar')
-    new_user.should_not be_nil
-    new_user.confirmation_token.should_not be_nil
+    expect(new_user).to_not be_nil
+    expect(new_user.confirmation_token).to_not be_nil
 
     expect(new_user.confirmed?).to be_falsey
 
     visit "/users/confirmation?#{get_confirmation_token()}"
 
-    page.should have_content('Your account was successfully confirmed. You are now signed in.')
+    expect(page).to have_content('Your account was successfully confirmed. You are now signed in.')
 
     new_user = User.find_by_email('user@manas.com.ar')
 
@@ -136,7 +136,7 @@ describe "account", :type => :request, uses_collections_structure: true do
       click_button('Log In')
     end
 
-    page.should have_content(user.email)
+    expect(page).to have_content(user.email)
   end
 end
 

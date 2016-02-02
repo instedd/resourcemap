@@ -141,12 +141,12 @@ describe Collection, :type => :model do
     skip do
       it "should set plugins by names" do
         collection.selected_plugins = ['plugin_1', 'plugin_2']
-        collection.plugins.should eq({'plugin_1' => {}, 'plugin_2' => {}})
+        expect(collection.plugins).to eq({'plugin_1' => {}, 'plugin_2' => {}})
       end
 
       it "should skip blank plugin name when setting plugins" do
         collection.selected_plugins = ["", 'plugin_1', ""]
-        collection.plugins.should eq({'plugin_1' => {}})
+        expect(collection.plugins).to eq({'plugin_1' => {}})
       end
     end
   end
@@ -216,23 +216,23 @@ describe Collection, :type => :model do
       before(:each) { layer }
 
       it "should be visible for collection owner" do
-        collection.visible_fields_for(user, {}).should eq([field])
+        expect(collection.visible_fields_for(user, {})).to eq([field])
       end
 
       it "should not be visible for unrelated user" do
         new_user = User.make
-        collection.visible_fields_for(new_user, {}).should be_empty
+        expect(collection.visible_fields_for(new_user, {})).to be_empty
       end
 
       it "should not create duplicates with multiple users" do
         new_user = User.make
         membership = collection.memberships.create user: new_user
         membership.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
-        collection.visible_fields_for(user, {}).should eq([field])
+        expect(collection.visible_fields_for(user, {})).to eq([field])
       end
 
       it "should not create duplicates when annonymous user has read permissions" do
-        collection.visible_fields_for(user, {}).should eq([field])
+        expect(collection.visible_fields_for(user, {})).to eq([field])
       end
     end
   end

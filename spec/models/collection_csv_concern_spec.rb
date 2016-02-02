@@ -115,10 +115,10 @@ describe Collection::CsvConcern, :type => :model do
     site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
     csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
 
-    csv.first.should eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
-    csv[1][4].should eq('100')
-    csv[1][5].should eq('Dad')
-    csv[1][6].should eq('Son')
+    expect(csv.first).to eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
+    expect(csv[1][4]).to eq('100')
+    expect(csv[1][5]).to eq('Dad')
+    expect(csv[1][6]).to eq('Son')
   end
 
   it "should add empty columns for the values that are not leafs" do
@@ -128,10 +128,10 @@ describe Collection::CsvConcern, :type => :model do
     site = collection.sites.make :properties => {hierarchy_field.es_code => '60'}
     csv =  CSV.parse collection.to_csv(collection.new_search(:current_user_id => user.id).unlimited.api_results, user)
 
-    csv.first.should eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
-    csv[1][4].should eq('60')
-    csv[1][5].should eq('Dad')
-    csv[1][6].should eq('')
+    expect(csv.first).to eq(["resmap-id", "name", "lat", "long", "hierarchy", "hierarchy-1", "hierarchy-2", "last updated"])
+    expect(csv[1][4]).to eq('60')
+    expect(csv[1][5]).to eq('Dad')
+    expect(csv[1][6]).to eq('')
   end
 
   describe "generate sample csv" do
