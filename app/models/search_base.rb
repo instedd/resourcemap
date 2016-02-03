@@ -260,8 +260,33 @@ module SearchBase
     end
   end
 
+  def deleted_since(time)
+    time = parse_time(time)
+    add_filter range: {deleted_at: {gte: Site.format_date(time)}}
+    only_deleted
+  end
+
+  # Shows only deleted sites
+  def only_deleted
+    @deleted = :only_deleted
+  end
+
+  # Shows deleted and non-deleted sites
+  def show_deleted
+    @deleted = :show
+  end
+
   def get_body
     body = {}
+
+    case @deleted
+    when :only_deleted
+      add_filter exists: {field: "deleted_at"}
+    when :show
+      # Nothing
+    else
+      add_filter missing: {field: "deleted_at"}
+    end
 
     if @filters
       if @filters.length == 1

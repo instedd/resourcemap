@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 4.1.6'
-gem 'mysql2'
+gem 'mysql2', '~> 0.3.17'
 gem 'devise'
 gem 'haml-rails', '~> 0.4'
 gem 'gettext', '~> 3.1.2'
@@ -37,6 +37,7 @@ gem 'active_model_serializers'
 gem 'includes-count'
 gem 'poirot_rails', git: "https://github.com/instedd/poirot_rails.git", branch: 'master' unless ENV['CI']
 gem 'instedd_telemetry', git: "https://github.com/instedd/telemetry_rails", branch: 'master'
+gem 'paranoia', '~> 2.0'
 
 gem 'treetop', '1.4.15'
 

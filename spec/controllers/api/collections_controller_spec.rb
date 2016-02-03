@@ -461,6 +461,39 @@ describe Api::CollectionsController, :type => :controller do
     end
   end
 
+  describe "deleted_since" do
+    it "finds sites deleted since" do
+      sign_in user
+
+      site1 = collection.sites.make
+      site2 = collection.sites.make
+      site3 = collection.sites.make
+      site4 = collection.sites.make
+
+      Timecop.freeze(Time.now) do
+        site1.destroy
+
+        Timecop.travel(1.day.from_now)
+        site2.destroy
+
+        Timecop.travel(1.day.from_now)
+        site3.destroy
+
+        Timecop.travel(1.day.from_now)
+        site4.destroy
+
+        Timecop.travel(1.day.from_now)
+
+        get :show, id: collection.id, format: 'json', deleted_since: 49.hours.ago.to_s
+
+        json = JSON.parse(response.body)
+        sites = json["sites"]
+        expect(sites.map { |site| site["id"] }.sort).to eq([site3.id, site4.id])
+        expect(sites.map { |site| Time.parse(site["deletedAt"]).utc.to_i }.sort ).to eq([site3.deleted_at.to_i, site4.deleted_at.to_i])
+      end
+    end
+  end
+
   describe "gets sites by id" do
     before(:each) { sign_in user }
 

@@ -44,7 +44,7 @@ module Collection::ElasticsearchConcern
 
     client = Elasticsearch::Client.new
 
-    docs = sites.map do |site|
+    docs = sites.with_deleted.map do |site|
       site.collection = self
       site.to_elastic_search
     end

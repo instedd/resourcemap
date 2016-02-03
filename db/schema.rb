@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151113151601) do
+ActiveRecord::Schema.define(version: 20160202171553) do
 
   create_table "activities", force: true do |t|
     t.integer  "user_id"
@@ -313,9 +313,11 @@ ActiveRecord::Schema.define(version: 20151113151601) do
     t.string   "id_with_prefix"
     t.string   "uuid"
     t.integer  "version",                                            default: 0
+    t.datetime "deleted_at"
   end
 
   add_index "sites", ["collection_id"], name: "index_sites_on_collection_id", using: :btree
+  add_index "sites", ["deleted_at"], name: "index_sites_on_deleted_at", using: :btree
 
   create_table "sites_permissions", force: true do |t|
     t.integer  "membership_id"

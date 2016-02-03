@@ -217,6 +217,53 @@ describe Search, :type => :model do
         expect { search.where '0' => 10 }.to raise_error(RuntimeError, "Unknown field: 0")
       end
     end
+
+    it "doesn't find deleted sites" do
+      site2.destroy
+
+      search = collection.new_search
+      search.where beds.es_code => 10
+      assert_results search, site4
+    end
+
+    it "finds only deleted sites" do
+      site2.destroy
+
+      search = collection.new_search
+      search.where beds.es_code => 10
+      search.only_deleted
+      assert_results search, site2
+    end
+
+    it "finds deleted and non-deleted sites" do
+      site2.destroy
+
+      search = collection.new_search
+      search.where beds.es_code => 10
+      search.show_deleted
+      assert_results search, site2, site4
+    end
+
+    it "finds deleted since" do
+      Timecop.freeze(Time.now) do
+        site1.destroy
+
+        Timecop.travel(1.day.from_now)
+        site2.destroy
+
+        Timecop.travel(1.day.from_now)
+        site3.destroy
+
+        Timecop.travel(1.day.from_now)
+        site4.destroy
+
+        Timecop.travel(1.day.from_now)
+
+        search = collection.new_search
+        search.deleted_since(49.hours.ago)
+        assert_results search, site3, site4
+      end
+    end
   end
 
   context "find by id" do
