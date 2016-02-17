@@ -65,6 +65,11 @@ describe Api::SitesController, :type => :controller do
       expect(json[0]["name"]).to eq("New name 2")
       expect(json[0]["version"]).to eq(3)
     end
+
+    it "should match site's collection_id" do
+      get :histories, format: 'json', collection_id: (site2.collection_id + 1), id: site2.id
+      expect(response).not_to be_success
+    end
   end
 
   context "destroy" do

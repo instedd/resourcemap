@@ -4,7 +4,13 @@ class Api::SitesController < ApiController
   before_filter :authenticate_api_user!
   before_filter :authenticate_site_user!, except: [:create]
 
-  expose(:site) { Site.find(params[:id]) }
+  expose(:site) do
+    if params[:collection_id]
+      Collection.find(params[:collection_id]).sites.find(params[:id])
+    else
+      Site.find(params[:id])
+    end
+  end
   expose(:collection) { site.collection if site.present? }
 
   def create
