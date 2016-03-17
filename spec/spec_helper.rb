@@ -71,6 +71,12 @@ RSpec.configure do |config|
     Timecop.return
     RedisCache.clear!
   end
+
+  # Dismiss initial Telemetry configuration (for integration testing)
+  config.before(:each) do
+    InsteddTelemetry::Setting.set(:dismissed, true)
+  end
+
   ##########
 
   # Uncomment to view full backtraces
