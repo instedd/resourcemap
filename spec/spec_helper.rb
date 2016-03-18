@@ -53,7 +53,8 @@ RSpec.configure do |config|
 
   Warden.test_mode!
 
-  Capybara.default_wait_time = 5
+  # Set the default timeout for Capybara to re-synchronize with Selenium
+  Capybara.default_max_wait_time = (ENV['CAPYBARA_TIMEOUT'] || '3').to_i
   Capybara.javascript_driver = :selenium
   Capybara.default_selector = :css
 

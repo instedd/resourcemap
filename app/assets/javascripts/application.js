@@ -20,7 +20,6 @@
 //= require jquery.timeago
 //= require jquery.url
 //= require jquery.history
-//= require knockout-2.1.0
 //= require autocomplete-tagfield
 //= require knockout
 //= require jquery.fancybox

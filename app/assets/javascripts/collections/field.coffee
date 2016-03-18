@@ -191,16 +191,16 @@ onCollections ->
       return ! _.isEqual(@originalValue, @value())
 
     edit: =>
-        return if not @onEnteredEditMode()
-        @editing(true)
-        optionsDatePicker = {defaultDate: @value()}
-        optionsDatePicker.onSelect = (dateText) =>
-          @valueUI(dateText)
-          @save()
-        optionsDatePicker.onClose = () =>
-          @save()
-        window.model.initDatePicker(optionsDatePicker)
-        window.model.initAutocomplete()
+      return if not @onEnteredEditMode()
+      @editing(true)
+      optionsDatePicker = {defaultDate: @value()}
+      optionsDatePicker.onSelect = (dateText) =>
+        @valueUI(dateText)
+        @save()
+      optionsDatePicker.onClose = () =>
+        @save()
+      window.model.initDatePicker(optionsDatePicker)
+      window.model.initAutocomplete()
 
     keyPress: (field, event) =>
       switch event.keyCode

@@ -40,57 +40,59 @@ describe "change field values", :type => :request, uses_collections_structure: t
   end
 
   def expect_old_values_and_edit
-    all_span = page.all('span.value')
-    for i in 3..all_span.count() - 1
-        all_span[i].click
-        if page.has_selector?(field_input_value)
-            x = find(field_input_value)
-        elsif page.has_selector?(field_select_value)
-            x = find('select[id *= -input-]')
-        end
+    all_rows = page.all('div.site_row')
+    for i in 3..all_rows.count() - 1
+      row = all_rows[i]
+      row.click
+      x = if row.has_selector?('input')
+            row.find('input')
+          elsif row.has_selector?('select')
+            row.find('select')
+          end
+      expect(x).to_not be_nil
 
-        if x[:id] != "yes-no-input-yes_no"
-            key = '#'+x[:id]
-            expect(x.value).to eq(old_values_for_fields[key])
-            if x[:id] == "select-one-input-selone"
-                select(new_value_for_select_one, :from => x[:id])
-            else
-                fill_in x[:id], :with => new_values_for_fields[key]
-                #Delete this if after fixing issue #807
-                if x[:id] == "phone-input-phone"
-                    all_span = go_back_and_refresh
-                end
-            end
+      if x[:id] != "yes-no-input-yes_no"
+        key = '#'+x[:id]
+        expect(x.value).to eq(old_values_for_fields[key])
+        if x[:id] == "select-one-input-selone"
+          select(new_value_for_select_one, :from => x[:id])
         else
-            all_span = go_back_and_refresh
-            expect(all_span[i]).to have_content('yes')
-            all_span[i].click
-            find("#yes-no-input-yes_no").click
-            click_button('OK')
+          fill_in x[:id], :with => new_values_for_fields[key]
         end
+      else
+        expect(row).to have_content('yes')
+        find("#yes-no-input-yes_no").click
+        click_button('OK')
+      end
     end
   end
 
   def expect_new_values
-    all_span = page.all('span.value')
-    for i in 3..all_span.count() - 1
-        all_span[i].click
-        if page.has_selector?(field_input_value)
-            x = find(field_input_value)
-        elsif page.has_selector?(field_select_value)
-            x = find('select[id *= -input-]')
-        end
-
-        if x[:id] != "yes-no-input-yes_no"
-            key = '#'+x[:id]
-            expect(x.value).to eq(new_values_for_fields[key])
-            if x[:id] == "phone-input-phone"
-                all_span = go_back_and_refresh
+    all_rows = page.all('div.site_row')
+    for i in 3..all_rows.count() - 1
+      row = all_rows[i]
+      x = nil
+      retries = 3
+      while x.nil? and retries > 0
+        row.find('span.value').click
+        x = if row.has_selector?('input')
+              row.find('input')
+            else
+              if row.has_selector?('select')
+                row.find('select')
+              end
             end
-        else
-            all_span = go_back_and_refresh
-            expect(all_span[i]).to have_content('no')
-        end
+        retries = retries - 1
+      end
+      expect(x).to_not be_nil
+
+      if x[:id] != "yes-no-input-yes_no"
+        key = '#'+x[:id]
+        expect(x.value).to eq(new_values_for_fields[key])
+      else
+        click_button('OK')
+        expect(row).to have_content('no')
+      end
     end
   end
 
