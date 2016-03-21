@@ -161,6 +161,26 @@ describe "change field values", :type => :request, uses_collections_structure: t
     expect_new_values
   end
 
+  it "should leave phone editing mode when selecting other field (#807)", js: true do
+    multicollection.memberships.create! :user_id => user.id, :admin => true
+    multicollection.sites.make name: "A site"
+    login_as user
+
+    visit collections_path
+    find(:xpath, first_collection_path).click
+    find(:xpath, first_site_path).click
+
+    field = find('div.site_row', text: 'Multicollection_phone_field')
+    field.click
+
+    expect(field).to have_selector('input')
+
+    other = find('div.site_row', text: 'Multicollection_text_field')
+    other.click
+
+    expect(field).to_not have_selector('input')
+  end
+
   it "should edit complex fields in edit mode", js:true do
     complex.memberships.create! :user_id => user.id, :admin => true
     login_as(user)
