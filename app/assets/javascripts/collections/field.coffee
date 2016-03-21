@@ -202,6 +202,12 @@ onCollections ->
       window.model.initDatePicker(optionsDatePicker)
       window.model.initAutocomplete()
 
+    notifyEdit: (ev) =>
+      # TODO: remove this eventually; this handler exists only to be installed
+      # as the mousedown handler for the field's row DIV. Otherwise, there are
+      # situations when clicking on the row doesn't activate the edition
+      undefined
+
     keyPress: (field, event) =>
       switch event.keyCode
         when 13 then @save()

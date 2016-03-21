@@ -43,12 +43,19 @@ describe "change field values", :type => :request, uses_collections_structure: t
     all_rows = page.all('div.site_row')
     for i in 3..all_rows.count() - 1
       row = all_rows[i]
-      row.click
-      x = if row.has_selector?('input')
-            row.find('input')
-          elsif row.has_selector?('select')
-            row.find('select')
-          end
+      x = nil
+      retries = 2
+      while x.nil? and retries > 0
+        row.find('span.value').click
+        x = if row.has_selector?('input')
+              row.find('input')
+            else
+              if row.has_selector?('select')
+                row.find('select')
+              end
+            end
+        retries = retries - 1
+      end
       expect(x).to_not be_nil
 
       if x[:id] != "yes-no-input-yes_no"
@@ -72,7 +79,7 @@ describe "change field values", :type => :request, uses_collections_structure: t
     for i in 3..all_rows.count() - 1
       row = all_rows[i]
       x = nil
-      retries = 3
+      retries = 2
       while x.nil? and retries > 0
         row.find('span.value').click
         x = if row.has_selector?('input')
