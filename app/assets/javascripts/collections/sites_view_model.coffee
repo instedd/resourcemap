@@ -106,6 +106,9 @@ onCollections ->
       @exitSite() if @editingSite()
       # Remove name popup if any
       window.model.markers[siteId].popup.remove() if window.model.markers[siteId]?.popup
+      if typeof collectionId == 'string'
+        collectionId = parseInt(collectionId)
+
       site = @siteIds[siteId]
       if site
         @editSite site

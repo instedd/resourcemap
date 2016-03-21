@@ -19,4 +19,18 @@ describe "edit_site", :type => :request do
   	sleep 4
   	expect(page).not_to have_content ('26.7574, 14.3574')
   end
+
+  it "should edit the site when navigating through a bookmarked URL", js: true do
+    user = new_user
+    collection = create_collection_for(user)
+    site = create_site_for(collection, 'A Site')
+    login_as user
+
+    # edited site is loaded via AJAX
+    visit collections_path(editing_site: site.id, collection_id: collection.id)
+
+    expect(page).to have_content('Name: A Site')
+    expect(page).to have_link('Edit Site')
+    expect(page).to have_link('Delete Site')
+  end
 end
