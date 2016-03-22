@@ -15,6 +15,8 @@
 //= require jquery.ui.widget
 //= require jquery.iframe-transport
 //= require jquery.fileupload
+//= require jquery.fileupload-process
+//= require jquery.fileupload-validate
 //= require jquery.fixedheadertable.min
 //= require jquery.tablescroll
 //= require jquery.timeago
