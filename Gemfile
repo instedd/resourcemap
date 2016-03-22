@@ -81,6 +81,7 @@ group :development do
   gem 'ruby-prof', :git => 'https://github.com/ruby-prof/ruby-prof.git'
   gem 'better_errors', '<2.0.0'
   gem 'binding_of_caller' # already provided by pry-stack_explorer
+  gem 'quiet_assets'
 end
 
 # Gems used only for assets and not required
