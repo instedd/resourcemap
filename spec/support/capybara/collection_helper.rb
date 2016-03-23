@@ -26,6 +26,18 @@ module Capybara::CollectionHelper
     '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button'
   end
 
+  def collection_has_logo?
+    page.has_selector?('#collection-logo')
+  end
+
+  def collection_with_name_link(name)
+    find('a', text: name).path
+  end
+
+  def collection_configuration_button
+    find('#collections-main button.fconfiguration').path
+  end
+
   def label_for_id(element, id)
     x = element[:config]["options"].detect { |f| f["id"] == id }
     x["label"]

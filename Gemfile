@@ -62,7 +62,6 @@ group :test do
 end
 
 group :test, :development do
-  gem 'rspec'
   gem 'rspec-rails', '~> 3.1.0'
   gem 'spring-commands-rspec'
   gem 'faker'
