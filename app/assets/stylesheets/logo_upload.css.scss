@@ -1,6 +1,5 @@
 #settings {
   #preview-container{
-    margin-top:20px;
     overflow:hidden;
     width: 100px;
     height: 100px;
@@ -8,11 +7,6 @@
 
   #logo-preview {
     margin-top:20px;
-
-    span.preview {
-      vertical-align: middle;
-      padding-right: 15px;
-    }
 
     #preview-container {
       display: inline-block;

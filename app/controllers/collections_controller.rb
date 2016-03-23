@@ -77,8 +77,6 @@ class CollectionsController < ApplicationController
   end
 
   def create
-    # In case user uploads logo into new collection, name is necessary for save.
-    collection.name = "My collection" if request.xhr? && collection.name.blank? && !collection.logo.blank?
     if current_user.create_collection collection
       current_user.collection_count += 1
       current_user.update_successful_outcome_status
@@ -93,10 +91,7 @@ class CollectionsController < ApplicationController
   end
 
   def update
-    if request.xhr? && !params[:collection][:logo].blank? && collection.update_attributes(params[:collection])
-      # Logo upload via ajax
-      render_json({url: collection.logo_url(:grayscale)})
-    elsif collection.update_attributes params[:collection]
+    if collection.update_attributes params[:collection]
       collection.recreate_index
       redirect_to collection_settings_path(collection), notice: _("Collection %{collection_name} updated") % { collection_name: collection.name }
     else
@@ -296,7 +291,16 @@ class CollectionsController < ApplicationController
     render_json info
   end
 
-  def edit_logo
+  # Accept a file logo upload and save it to temporary storage (CarrierWave cache).
+  # The client-side code in settings.coffee deals with attaching the temporary
+  # file to the collection being edited/created.
+  def upload_logo
+    uploader = LogoUploader.new
+    uploader.cache! params[:logo]
 
+    render_json({cache_name: uploader.cache_name,
+                 croppable_url: uploader.url(:croppable),
+                 preview_url: uploader.url(:preview)})
   end
+
 end

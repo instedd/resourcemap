@@ -29,8 +29,8 @@ class Collection < ActiveRecord::Base
   has_many :messages, dependent: :delete_all
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
-  after_update do
-    logo.recreate_versions! if crop_x.present?
+  after_save do
+    logo.recreate_versions!(:grayscale) if logo.present? and crop_x.present?
   end
 
   after_save :touch_lifespan

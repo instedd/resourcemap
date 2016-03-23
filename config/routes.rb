@@ -95,9 +95,10 @@ ResourceMap::Application.routes.draw do
       get 'search'
 
       get 'sites_info'
-      post 'upload_logo'
-      get 'edit_logo'
-      post 'update_logo'
+
+      collection do
+        post 'upload_logo'
+      end
 
       resource :import_wizard, only: [] do
          get 'index'

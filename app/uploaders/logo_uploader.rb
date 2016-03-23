@@ -15,6 +15,14 @@ class LogoUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
+  def extension_whitelist
+    %w(jpg jpeg gif png)
+  end
+
+  def content_type_whitelist
+    /image\//
+  end
+
   # Provide a default URL as a default if there hasn't been a file uploaded:
   # def default_url
   #   # For Rails 3.1+ asset pipeline compatibility:
@@ -41,7 +49,7 @@ class LogoUploader < CarrierWave::Uploader::Base
   end
 
   version :preview do
-    process :grayscale => [450, 400]
+    process :grayscale => [400, 400]
   end
 
   # TODO: These processes might be replaced by resize_and_pad, resize_to_limit or resize_to_fill
@@ -49,7 +57,7 @@ class LogoUploader < CarrierWave::Uploader::Base
 
   # Resizes the image to width x height and crops it based on model attributes
   def crop_from_frame(frame_width, frame_height)
-    return unless model.crop_x.present?
+    return unless model.present? and model.crop_x.present?
     x = model.crop_x.to_i
     y = model.crop_y.to_i
     w = model.crop_w.to_i

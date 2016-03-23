@@ -1,0 +1,28 @@
+- if updateable
+  #logo-editor.field.w60.hidden-until-loaded
+    = label_tag :logo, _("Adjust logo")
+    = image_tag logo.try(:url, :croppable), id: 'cropbox'
+
+    #logo-preview
+      %label Preview
+      #preview-container
+        = image_tag logo.try(:url, :preview), id: 'preview'
+
+- if logo.present?
+  #logo-display.field.w60
+    = label_tag "Logo"
+    .logo-border
+      = image_tag logo.url(:grayscale), id: 'logo'
+
+    %a#edit-logo-button.fedit{:href => '#'} Adjust
+
+- if updateable
+  .field.w60
+    = label_tag :logo, _("Upload new logo")
+    = file_field_tag :logo, id: 'logo-file-upload',
+                            'data-url' => upload_logo_collections_path,
+                            'accept' => 'image/*'
+
+  = form.hidden_field :logo_cache
+  - %w(x y w h).each do |attr|
+    = form.hidden_field "crop_#{attr}"

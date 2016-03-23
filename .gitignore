@@ -24,4 +24,4 @@ config/guisso.yml
 config/telemetry.yml
 spec/integration/screenshots/*
 .vagrant
-
+/public/uploads/

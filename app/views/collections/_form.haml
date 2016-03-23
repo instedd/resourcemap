@@ -28,17 +28,7 @@
       = f.label :description, _("Description")
       = f.text_area :description, rows: 3, :readonly =>  !creation && (cannot? :update, collection)
 
-    .field.w60{class: collection.logo.blank? ? 'hidden-until-loaded' : nil}
-      = label_tag "Logo"
-      .logo-border
-        %img#logo{src: collection.logo_url(:grayscale).blank? ? nil : collection.logo_url(:grayscale)}
-      - if creation || can?(:update, collection)
-        %button#logo-edit.farrow{type: 'button', onclick: "window.location = '#{collection_edit_logo_path(collection) rescue ''}'"} Adjust
-
-    - if creation || can?(:update, collection)
-      .field.w60
-        = f.label :logo, _("Upload new logo")
-        = f.file_field :logo, id: 'fileupload'
+    = render partial: 'logo', locals: {form: f, logo: collection.logo, updateable: (creation || can?(:update, collection))}
 
     .field.w60
       %label
