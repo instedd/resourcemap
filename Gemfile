@@ -76,12 +76,13 @@ group :test, :development do
 end
 
 group :development do
+  gem 'thin', '~> 1.6.4'
   gem 'pry-stack_explorer'
   gem 'dist', :git => 'https://github.com/manastech/dist.git'
   gem 'ruby-prof', :git => 'https://github.com/ruby-prof/ruby-prof.git'
   gem 'better_errors', '<2.0.0'
   gem 'binding_of_caller' # already provided by pry-stack_explorer
-  gem 'quiet_assets'
+  gem 'quiet_assets', '~> 1.1.0'
 end
 
 # Gems used only for assets and not required
