@@ -13,6 +13,11 @@ ResourceMap::Application.configure do
 
   config.eager_load = false
 
+  # Disable concurrency during testing; should not be necessary after upgrading
+  # to Rails 4.2
+  # See https://robots.thoughtbot.com/how-to-fix-circular-dependency-errors-in-rails-integration-tests
+  config.allow_concurrency = false
+
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
