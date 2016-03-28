@@ -165,7 +165,7 @@ describe SitesController, :type => :controller do
       sign_in member
 
       site_params = {:name => "new site"}.to_json
-      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, {:format => :json, :collection_id => collection.id, :id => site.id, :site => site_params }
 
       expect(response.status).to eq(403)
       expect(Site.find_by_name("new site")).to be_nil
@@ -193,7 +193,7 @@ describe SitesController, :type => :controller do
       sign_in member
 
       site_params = {:lat => nil, :lng => nil}.to_json
-      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, {:format => :json, :collection_id => collection.id, :id => site.id, :site => site_params }
 
       expect(response.status).to eq(403)
       site.reload
@@ -240,7 +240,7 @@ describe SitesController, :type => :controller do
       sign_in member
 
       site_params = {:properties => {text.es_code => "new value"}}.to_json
-      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, {:format => :json, :collection_id => collection.id, :id => site.id, :site => site_params }
 
       expect(response.status).to eq(403)
       site.reload
@@ -276,7 +276,7 @@ describe SitesController, :type => :controller do
     membership = Membership.make collection: collection, user: member, admin: false
     sign_in member
 
-    delete :destroy, id: site.id, collection_id: collection.id
+    delete :destroy, format: :json, id: site.id, collection_id: collection.id
     expect(response).to be_forbidden
 
     expect(Site.find_by_id(site.id)).to be
