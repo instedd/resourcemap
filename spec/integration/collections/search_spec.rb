@@ -1,27 +1,26 @@
 require 'spec_helper'
 
 describe "search", :type => :request do
+  let(:user) do
+    new_user
+  end
 
-  it "should search", js:true, skip:true do
-    user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
-    page.save_screenshot 'filter_sites.png'
-    collection = create_collection_for (user)
-    layer = create_layer_for (collection)
-    field = create_field_for (layer)
+  it "should search", js: true do
+    collection = create_collection_for(user)
+    layer = create_layer_for(collection)
+    field = create_field_for(layer)
     10.times { collection.sites.make properties: { field.es_code => 'fra' } }
     10.times { collection.sites.make properties: { field.es_code => 'ter' } }
+    collection.sites.make name: 'Site search test'
     10.times { collection.sites.make properties: { field.es_code => 'nity' } }
-    login_as (user)
+    login_as user
     visit collections_path
-    find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
-    fill_in 'search', :with => "Aida Rohan\n"
+    click_on first_collection_path
+    fill_in 'search', :with => "search test\n"
 
-    page.save_screenshot 'Search.png'
-
-    page.has_content? 'Aida Rohan'
-
-    expect(page).to have_no_content 'Alek Ortiz'
-
+    expect(page).to have_content('clear search')
+    expect(page).to have_content('Site search test')
+    expect(page.find_all('.sites tr').count).to be(1)
   end
 end
 

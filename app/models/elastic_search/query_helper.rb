@@ -1,4 +1,4 @@
-module ElasticSearch::QueryHelper
+module ElasticSearch; module QueryHelper
   class << self
     # Returns a full text search query over the given collection, additionaly
     # specifying which fields to use (will use the collection's fields if not specified).
@@ -126,4 +126,4 @@ module ElasticSearch::QueryHelper
       text.gsub("/", "\\\\/")
     end
   end
-end
+end; end

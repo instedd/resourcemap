@@ -4,7 +4,7 @@ onCollections ->
   class @CollectionMembership
     @constructorCollectionMembership: ->
       @membershipInitialized = false
-      @anyUpdatePermissions = false
+      @anyUpdatePermissions = ko.observable(false)
 
     @fetchMembership: (callback)->
       if @membershipInitialized
@@ -27,7 +27,7 @@ onCollections ->
         @namePermission = membership.name
         @locationPermission = membership.location
         nameOrLocation = @namePermission == "update" || @locationPermission == "update"
-        @anyUpdatePermissions = nameOrLocation || $.grep(membership.layers, (l) ->
+        @anyUpdatePermissions nameOrLocation || $.grep(membership.layers, (l) ->
           l.write).length > 0
         if loaded
           @membershipInitialized = true

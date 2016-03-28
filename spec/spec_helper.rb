@@ -78,6 +78,26 @@ RSpec.configure do |config|
     InsteddTelemetry::Setting.set(:dismissed, true)
   end
 
+  # Take screenshots on acceptance tests failures
+  def take_screenshot(example)
+    meta            = example.metadata
+    filename        = File.basename(meta[:file_path])
+    line_number     = meta[:line_number]
+    screenshot_name = "screenshot-#{filename}-#{line_number}.png"
+
+    page.save_screenshot(screenshot_name)
+
+    puts meta[:full_description] + "\n  Screenshot: #{screenshot_name}"
+  end
+
+  config.after(:each) do |example|
+    if example.metadata[:js] and example.exception.present?
+      take_screenshot(example)
+    end
+  end
+
+
+
   ##########
 
   # Uncomment to view full backtraces

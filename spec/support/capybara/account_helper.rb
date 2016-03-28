@@ -5,7 +5,7 @@ module Capybara::AccountHelper
   end
 
   def new_user
-    user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
+    User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
   end
 
   def last_email
@@ -13,7 +13,9 @@ module Capybara::AccountHelper
   end
 
   def get_confirmation_token
-    last_email.body.match(/confirmation_token=\w*/)
+    # Confirmation tokens are generated using SecureRandom.urlsafe_base64 and
+    # they can contain dashes and underscores
+    last_email.body.match(/confirmation_token=[0-9a-zA-Z_-]*/)
   end
 
   def notice_div

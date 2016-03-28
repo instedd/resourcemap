@@ -1,4 +1,4 @@
-class ElasticSearch::SitesAdapter < Psych::Handler
+module ElasticSearch; class SitesAdapter < Psych::Handler
   IGNORE_FIELDS = %w(type created_at updated_at)
 
   def initialize(listener)
@@ -107,4 +107,4 @@ class ElasticSearch::SitesAdapter < Psych::Handler
       @listener.add site if @excluded_id != site[:id]
     end
   end
-end
+end; end

@@ -5,13 +5,9 @@ describe "account", :type => :request, uses_collections_structure: true do
     new_user
   end
 
-  before :each do
-    visit collections_path
-  end
-
   it "should login", js:true do
     who_african_region.memberships.create! :user_id => user.id
-    visit collections_path
+    visit root_path
 
     click_link 'Log in'
 
@@ -25,9 +21,9 @@ describe "account", :type => :request, uses_collections_structure: true do
     expect(page).to have_content('WHO African Region')
   end
 
-  it " should not change password", js:true do
-    login_as (user)
-    visit collections_path
+  it "should not change password", js:true do
+    login_as user
+    visit root_path
     find_by_id('User').click
     click_link 'Settings'
 
@@ -40,9 +36,9 @@ describe "account", :type => :request, uses_collections_structure: true do
     expect(page).to have_content "Password confirmation doesn't match Password"
   end
 
-  it " should log out", js:true do
-    login_as (user)
-    visit collections_path
+  it "should log out", js:true do
+    login_as user
+    visit root_path
     find_by_id('User').click
 
     click_link 'Sign out'
@@ -50,7 +46,8 @@ describe "account", :type => :request, uses_collections_structure: true do
     expect(page).to have_content('Signed out successfully.')
   end
 
-  it "should create an account", js:true, skip:true do
+  it "should create and confirm an account", js: true do
+    visit root_path
     click_link 'Create account'
     page.has_content? "form#new_user"
 
@@ -70,7 +67,7 @@ describe "account", :type => :request, uses_collections_structure: true do
 
     visit "/users/confirmation?#{get_confirmation_token()}"
 
-    expect(page).to have_content('Your account was successfully confirmed. You are now signed in.')
+    expect(page).to have_content('Your email address has been successfully confirmed. Please sign in.')
 
     new_user = User.find_by_email('user@manas.com.ar')
 
@@ -78,6 +75,7 @@ describe "account", :type => :request, uses_collections_structure: true do
   end
 
   it "should fail to login", js:true do
+    visit root_path
     click_link 'Log in'
 
     within login_form do
@@ -90,8 +88,8 @@ describe "account", :type => :request, uses_collections_structure: true do
   end
 
   it " should change phone number", js:true do
-    login_as (user)
-    visit collections_path
+    login_as user
+    visit root_path
     find_by_id('User').click
     click_link 'Settings'
 
@@ -109,8 +107,8 @@ describe "account", :type => :request, uses_collections_structure: true do
   end
 
   it "should change password", js:true do
-    login_as (user)
-    visit collections_path
+    login_as user
+    visit root_path
     find_by_id('User').click
     click_link('Settings')
 
