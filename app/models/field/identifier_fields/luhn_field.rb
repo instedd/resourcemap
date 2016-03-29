@@ -67,6 +67,7 @@ class Field::IdentifierFields::LuhnField < Field::IdentifierFields::FormatImplem
     search.sort field_es_code, false
     search.offset(0)
     search.limit(1)
+    search.show_deleted
 
     site_with_last_luhn_value = search.results
 

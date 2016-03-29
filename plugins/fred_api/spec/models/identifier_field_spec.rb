@@ -18,5 +18,14 @@ describe "Identifier field", :type => :model do
         collection.sites.make properties: {field.es_code => "1"}
       end.to raise_exception(ActiveRecord::RecordInvalid, /The value already exists in the collection/)
     end
+
+    it "checks for unicity even if site is deleted" do
+      site = collection.sites.make properties: {field.es_code => "1"}
+      site.destroy
+
+      expect do
+        collection.sites.make properties: {field.es_code => "1"}
+      end.to raise_exception(ActiveRecord::RecordInvalid, /The value already exists in the collection/)
+    end
   end
 end

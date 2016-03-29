@@ -111,4 +111,14 @@ describe "Luhn", :type => :model do
       create_site_and_assign_default_values(nil)
     end.not_to raise_error
   end
+
+  it "doesn't repeat id for deleted site" do
+    collection.sites.make
+    s1 = create_site_and_assign_default_values(nil)
+    expect(s1.properties[field.es_code]).to eq("100000-9")
+
+    s1.destroy
+
+    expect(create_site_and_assign_default_values(nil).properties[field.es_code]).to eq("100001-7")
+  end
 end

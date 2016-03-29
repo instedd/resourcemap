@@ -10,6 +10,7 @@ class Field::IdentifierFields::FormatImplementation
     property_code = "properties.#{@field.es_code}"
     search.select_fields(["id",property_code])
     search.unlimited
+    search.show_deleted
 
     existing = search.results.map { |item| item["fields"] }.index_by{|e| e[property_code]}
 
