@@ -11,7 +11,7 @@ class CreateMessages < ActiveRecord::Migration
       t.string :subject
       t.string :body
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

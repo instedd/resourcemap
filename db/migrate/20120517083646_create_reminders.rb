@@ -7,7 +7,7 @@ class CreateReminders < ActiveRecord::Migration
       t.references :repeat
       t.references :collection
 
-      t.timestamps
+      t.timestamps :null => false
     end
     add_index :reminders, :repeat_id
     add_index :reminders, :collection_id

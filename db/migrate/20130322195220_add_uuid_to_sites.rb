@@ -6,8 +6,8 @@ class AddUuidToSites < ActiveRecord::Migration
   def up
   	add_column :sites, :uuid, :string
   	add_column :site_histories, :uuid, :string
-  	Site.update_all ["uuid = ?", UUIDTools::UUID.random_create.to_s]
-  	Site.all.each do |site|
+    Site.unscoped.all.each do |site|
+      site.update_column :uuid, UUIDTools::UUID.random_create.to_s
   		site.histories.update_all ["uuid = ?", site.uuid]
 		end
   end

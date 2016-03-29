@@ -6,7 +6,7 @@ class CreateThresholds < ActiveRecord::Migration
       t.text :condition
       t.integer :collection_id
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

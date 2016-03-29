@@ -9,7 +9,7 @@ class CreateActivities < ActiveRecord::Migration
       t.integer :site_id
       t.text :data
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

@@ -6,7 +6,7 @@ class CreateSitesPermissions < ActiveRecord::Migration
       t.boolean :all_sites, default: true
       t.text :some_sites
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

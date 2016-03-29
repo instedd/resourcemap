@@ -5,7 +5,7 @@ class CreateCollections < ActiveRecord::Migration
       t.text :description
       t.boolean :public
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

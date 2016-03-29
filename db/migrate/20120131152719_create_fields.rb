@@ -7,7 +7,7 @@ class CreateFields < ActiveRecord::Migration
       t.string :code
       t.string :kind
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

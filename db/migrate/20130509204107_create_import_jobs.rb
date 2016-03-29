@@ -5,7 +5,7 @@ class CreateImportJobs < ActiveRecord::Migration
       t.string :original_filename
       t.datetime :finished_at
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

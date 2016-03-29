@@ -7,7 +7,7 @@ class CreateLayerMemberships < ActiveRecord::Migration
       t.boolean :read, :default => false
       t.boolean :write, :default => false
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

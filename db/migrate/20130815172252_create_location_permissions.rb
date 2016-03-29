@@ -3,7 +3,7 @@ class CreateLocationPermissions < ActiveRecord::Migration
     create_table :location_permissions do |t|
       t.string :action, default: 'read'
       t.references :membership
-      t.timestamps
+      t.timestamps :null => false
     end
 
     add_index :location_permissions, :membership_id

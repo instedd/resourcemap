@@ -3,7 +3,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
     create_table(:users) do |t|
       ## Database authenticatable
       t.string :email,              :null => false, :default => ""
-      t.string :encrypted_password, :null => false, :default => ""
+      t.string :encrypted_password, :null => false, :default => "", :limit => 128
 
       ## Recoverable
       t.string   :reset_password_token
@@ -34,7 +34,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       # t.string :authentication_token
 
 
-      t.timestamps
+      t.timestamps :null => false
     end
 
     add_index :users, :email,                :unique => true

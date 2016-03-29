@@ -4,7 +4,7 @@ class AddUserSnapshotTable < ActiveRecord::Migration
       t.references :user
       t.references :snapshot
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

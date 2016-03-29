@@ -8,7 +8,7 @@ class CreateSites < ActiveRecord::Migration
       t.integer :parent_id
       t.string :hierarchy
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

@@ -5,7 +5,7 @@ class CreateShareChannels < ActiveRecord::Migration
       t.integer :collection_id
       t.boolean :status
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

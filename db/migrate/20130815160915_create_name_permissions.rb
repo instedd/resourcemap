@@ -3,7 +3,7 @@ class CreateNamePermissions < ActiveRecord::Migration
     create_table :name_permissions do |t|
       t.string :action, default: 'read'
       t.references :membership
-      t.timestamps
+      t.timestamps :null => false
     end
 
     add_index :name_permissions, :membership_id

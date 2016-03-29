@@ -4,7 +4,7 @@ class CreateRepeats < ActiveRecord::Migration
       t.string :name
       t.integer :order
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

@@ -5,7 +5,7 @@ class AddSnapshot < ActiveRecord::Migration
       t.datetime :date
       t.integer :collection_id
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

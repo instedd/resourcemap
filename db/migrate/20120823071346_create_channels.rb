@@ -10,7 +10,7 @@ class CreateChannels < ActiveRecord::Migration
       t.boolean :is_share
       t.text :share_collections
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

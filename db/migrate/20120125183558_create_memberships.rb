@@ -4,7 +4,7 @@ class CreateMemberships < ActiveRecord::Migration
       t.integer :user_id
       t.integer :collection_id
 
-      t.timestamps
+      t.timestamps :null => false
     end
   end
 end

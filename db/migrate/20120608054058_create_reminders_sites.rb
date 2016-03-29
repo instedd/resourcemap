@@ -4,7 +4,7 @@ class CreateRemindersSites < ActiveRecord::Migration
       t.references :reminder
       t.references :repeat
 
-      t.timestamps
+      t.timestamps :null => false
     end
     add_index :reminders_sites, :reminder_id
     add_index :reminders_sites, :repeat_id
