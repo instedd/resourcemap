@@ -266,17 +266,27 @@ class CollectionsController < ApplicationController
   def sites_info
     options = new_search_options
 
-    total = collection.elasticsearch_count
+    total = collection.elasticsearch_count do
+      {
+        query: {
+          filtered: {
+            filter: {
+              missing: {field: "deleted_at"}
+            }
+          }
+        }
+      }
+    end
+
     no_location = collection.elasticsearch_count do
       {
         query: {
           filtered: {
             filter: {
-              not: {
-                filter: {
-                  exists: {field: :location}
-                }
-              }
+              and: [
+                {missing: {field: "deleted_at"}},
+                {not: {filter: {exists: {field: :location}}}}
+              ]
             }
           }
         }
