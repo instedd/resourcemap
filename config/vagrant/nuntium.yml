@@ -1,0 +1,5 @@
+production:
+  url: http://nuntium.instedd.org
+  account: dyrm.dev
+  application: dyrm.dev
+  password: dev c0der

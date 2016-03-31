@@ -66,9 +66,6 @@ group :test, :development do
   gem 'spring-commands-rspec'
   gem 'faker'
   gem 'machinist', '1.0.6'
-  gem 'capistrano'
-  gem 'rvm'
-  gem 'rvm-capistrano', '1.5.4', require: false
   gem 'jasminerice', '~> 0.1.0', :git => 'https://github.com/bradphelan/jasminerice'
   gem 'guard-jasmine'
   gem 'pry-byebug'
@@ -82,6 +79,16 @@ group :development do
   gem 'better_errors', '<2.0.0'
   gem 'binding_of_caller' # already provided by pry-stack_explorer
   gem 'quiet_assets', '~> 1.1.0'
+end
+
+group :development do
+  gem 'web-console', '~> 2.0'
+  gem 'capistrano',           '~> 3.4', :require => false
+  gem 'capistrano-rails',     '~> 1.1', :require => false
+  gem 'capistrano-bundler',   '~> 1.1', :require => false
+  gem 'capistrano-rvm',       '~> 0.1', :require => false
+  gem 'capistrano-rbenv',     '~> 2.0', :require => false
+  gem 'capistrano-passenger',           :require => false
 end
 
 # Gems used only for assets and not required

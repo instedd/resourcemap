@@ -1,0 +1,7 @@
+common: &default_settings
+  source: resourcemap
+  debug: false
+
+production:
+  <<: *default_settings
+  enabled: false

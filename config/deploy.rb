@@ -1,79 +1,133 @@
-require 'bundler/capistrano'
-
-if ENV['RVM']
-  require 'rvm/capistrano'
-  set :rvm_ruby_string, '2.1.2'
-  set :rvm_type, :system
-else
-  default_run_options[:shell] = "/bin/bash --login"
-end
+# config valid only for current version of Capistrano
+lock '3.4.0'
 
 set :application, "resource_map"
-set :repository,  "https://github.com/instedd/resourcemap.git"
-set :user, 'ubuntu'
-set :group, 'ubuntu'
-set :deploy_via, :remote_cache
-set :branch, ENV['REVISION'] || 'master'
+set :repo_url, "https://github.com/instedd/resourcemap.git"
 
-default_run_options[:pty] = true
-default_environment['TERM'] = ENV['TERM']
+# Default branch is :master
+# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+set :branch, ENV['BRANCH'] || 'master'
 
-after "deploy", "deploy:cleanup" # keep only the last 5 releases
+# Default deploy_to directory is /var/www/my_app_name
+set :deploy_to, "/u/apps/#{fetch(:application)}"
+
+set :scm, :git
+set :format, :pretty
+set :log_level, :info
+set :pty, true
+
+set :linked_files, fetch(:linked_files, []).concat(%W(
+  config/database.yml
+  config/settings.yml
+  config/google_maps.key
+  config/guisso.yml
+  config/nuntium.yml
+  config/newrelic.yml
+  config/poirot.yml
+  config/telemetry.yml
+))
+set :linked_dirs, fetch(:linked_dirs, []).concat(%W(
+  log
+  tmp/pids
+  tmp/cache
+  tmp/sockets
+  public/uploads
+))
+
+# Default value for keep_releases is 5
+set :keep_releases, 5
+
+# Configuration for capistrano/rails
+set :rails_env, :production
+
+# System service configuration (ie. worker processes)
+set :service_name, fetch(:application)
+set :service_opts, { concurrency: 'resque=1,resque_scheduler=1' }
+
+# Configuration for RVM
+set :rvm_type, :system
+set :rvm_ruby_version, File.read('.ruby-version').strip
+
+# Default configuration for rbenv
+set :rbenv_type, :system
+set :rbenv_ruby, File.read('.ruby-version').strip
+# set :rbenv_path, '/usr/local/rbenv'
+
+# These settings are specific to running rvmsudo correctly
+set :rvm_map_bins, fetch(:rvm_map_bins, []).push('rvmsudo')
+set :default_env, fetch(:default_env, {}).merge!({'rvmsudo_secure_path' => '1'})
+
+# Tasks related to system services to be managed by upstart or similar
+# Uses foreman to export the scripts
+namespace :service do
+  task :export do
+    on roles(:app) do
+      opts = {
+        app: fetch(:service_name),
+        log: File.join(shared_path, 'log'),
+        user: fetch(:deploy_user)
+      }.merge(fetch(:service_opts))
+
+      execute(:mkdir, "-p", opts[:log])
+
+      export_command = [:bundle, :exec, :foreman, 'export',
+                        'upstart', '/etc/init',
+                        opts.map { |opt, value| "--#{opt}=\"#{value}\"" }.join(' ')]
+
+      within release_path do
+        case fetch(:version_manager)
+        when :rvm
+          execute :rvmsudo, *export_command
+        when :rbenv
+          execute :sudo, '-E', fetch(:rbenv_prefix), *export_command
+        else
+          execute :sudo, *export_command
+        end
+      end
+    end
+  end
+
+  # Capture the environment variables for Foreman
+  before :export, :set_env do
+    on roles(:app) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :bundle, :exec, "env | grep '^\\(PATH\\|GEM_PATH\\|GEM_HOME\\|RAILS_ENV\\)'", "> .env"
+        end
+      end
+    end
+  end
+
+  task :safe_restart do
+    on roles(:app) do
+      execute "sudo stop #{fetch(:service_name)} ; sudo start #{fetch(:service_name)}"
+    end
+  end
+end
 
 namespace :deploy do
-  task :start do ; end
-  task :stop do ; end
-  task :restart, :roles => :app, :except => { :no_release => true } do
-    run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
-  end
+  after :updated, "service:export"         # Export foreman scripts
+  after :restart, "service:safe_restart"   # Restart background services
 
-  task :symlink_configs, :roles => :app do
-    %W(database.yml settings.yml google_maps.key guisso.yml nuntium.yml newrelic.yml poirot.yml telemetry.yml).each do |file|
-      run "test -e #{shared_path}/#{file} && ln -nfs #{shared_path}/#{file} #{release_path}/config/ || true"
-    end
-    run "ln -nfs #{shared_path}/uploads #{release_path}/public/"
-  end
-
-  task :generate_revision_and_version do
-    run "cd #{current_path} && bundle exec rake deploy:generate_revision_and_version RAILS_ENV=production"
-  end
-end
-
-namespace :foreman do
-  desc 'Export the Procfile to Ubuntu upstart scripts'
-  task :export, :roles => :app do
-    if ENV['RVM']
-      run "echo -e \"PATH=$PATH\\nGEM_HOME=$GEM_HOME\\nGEM_PATH=$GEM_PATH\\nRAILS_ENV=production\" >  #{current_path}/.env"
-      run "cd #{current_path} && rvmsudo bundle exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"resque=1,resque_scheduler=1\""
-    else
-      run "echo -e \"PATH=$PATH\\nRAILS_ENV=production\" >  #{current_path}/.env"
-      run "cd #{current_path} && #{try_sudo} `which bundle` exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"resque=1,resque_scheduler=1\""
+  # Write VERSION file in addition to REVISION that Capistrano sets by default
+  # VERSION should contain a user-visible version of the application
+  after :set_current_revision, :set_current_version do
+    on roles(:all) do
+      within repo_path do
+        set :current_version, capture(:git, :describe, '--always', fetch(:branch))
+      end
+      within release_path do
+        execute :echo, "\"#{fetch(:current_version)}\" > VERSION"
+      end
     end
   end
 
-  desc "Start the application services"
-  task :start, :roles => :app do
-    sudo "start #{application}"
-  end
-
-  desc "Stop the application services"
-  task :stop, :roles => :app do
-    sudo "stop #{application}"
-  end
-
-  desc "Restart the application services"
-  task :restart, :roles => :app do
-    run "sudo start #{application} || sudo restart #{application}"
+  before :deploy, :info do
+    puts "=" * 60
+    puts "Deploying branch #{fetch(:branch)} using #{fetch(:version_manager)}"
+    roles(:all).each do |host|
+      puts "... to #{host.hostname}"
+    end
+    puts "=" * 60
   end
 end
-
-before "deploy:start", "deploy:migrate"
-before "deploy:restart", "deploy:migrate"
-
-after "deploy:update_code", "deploy:symlink_configs"
-
-after "deploy:update", "foreman:export"    # Export foreman scripts
-
-after "deploy:update", "deploy:generate_revision_and_version"
-
-after "deploy:restart", "foreman:restart"   # Restart application scripts
