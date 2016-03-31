@@ -219,6 +219,31 @@ describe CollectionsController, :type => :controller do
       expect(info["total"]).to eq(3)
       expect(info["no_location"]).to be_truthy
     end
+
+    describe "when there are deleted sites" do
+      it "gets when all have location" do
+        collection.sites.make
+        collection.sites.make.destroy
+
+        get :sites_info, collection_id: collection.id
+
+        info = JSON.parse response.body
+        expect(info["total"]).to eq(1)
+        expect(info["no_location"]).to be_falsey
+      end
+    end
+
+    it "gets when some have no location" do
+      collection.sites.make
+      collection.sites.make
+      collection.sites.make(lat: nil, lng: nil).destroy
+
+      get :sites_info, collection_id: collection.id
+
+      info = JSON.parse response.body
+      expect(info["total"]).to eq(2)
+      expect(info["no_location"]).to be_falsey
+    end
   end
 
   it "should ignore local param in search" do
