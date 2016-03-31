@@ -143,7 +143,7 @@ onCollections ->
           global: false
         }).fail((data) =>
           failed_callback() if failed_callback != null
-          @showFieldErrors
+          @showFieldErrors(data)
         )
 
     clearFieldErrors: =>

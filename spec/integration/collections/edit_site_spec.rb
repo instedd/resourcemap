@@ -12,12 +12,10 @@ describe "edit_site", :type => :request do
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     find(:xpath, '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button').click
     click_link 'Edit Site'
-    sleep 2
-  	fill_in 'locationText', :with => '-37.991902, -57.602087'
-  	sleep 3
+    fill_in 'locationText', :with => '-37.991902, -57.602087'
     click_button 'Done'
-  	sleep 4
-  	expect(page).not_to have_content ('26.7574, 14.3574')
+    expect(page).to have_no_content('26.7574, 14.3574')
+    expect(page).to have_content('-37.991902, -57.602087')
   end
 
   it "should edit the site when navigating through a bookmarked URL", js: true do

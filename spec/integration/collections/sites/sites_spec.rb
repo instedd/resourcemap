@@ -25,6 +25,14 @@ describe "sites", :type => :request, uses_collections_structure: true do
     click_link 'Edit Site'
   end
 
+  it "should show validation errors", js: true do
+    click_button 'Create Site'
+    click_button 'Done'
+
+    expect(page).to have_selector('.error')
+    expect(page).to have_content('site cannot be saved due to validation errors')
+  end
+
   it "should filter sites by name", js:true do
     find('.refine').click
     click_on expand_name
