@@ -10,7 +10,7 @@
 
 - if logo.present?
   #logo-display.field.w60
-    = label_tag "Logo"
+    = label_tag :logo
     .logo-border
       = image_tag logo.url(:grayscale), id: 'logo'
 

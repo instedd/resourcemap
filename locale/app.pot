@@ -144,6 +144,9 @@ msgstr ""
 msgid "Adjust"
 msgstr ""
 
+msgid "Adjust logo"
+msgstr ""
+
 msgid "Admin"
 msgstr ""
 

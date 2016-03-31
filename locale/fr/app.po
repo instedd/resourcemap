@@ -120,6 +120,9 @@ msgstr "Ajouter..."
 msgid "Adjust"
 msgstr "Ajuster"
 
+msgid "Adjust logo"
+msgstr "Ajuster logo"
+
 msgid "Admin"
 msgstr "Administration"
 
@@ -1416,7 +1419,7 @@ msgid "→;"
 msgstr "→ ;"
 
 msgid "Showing 1 site out of %d"
-msgstr "Afficher 1 site sur %j"
+msgstr "Afficher 1 site sur %d"
 
 msgid "Upload new logo"
 msgstr "Télécharger vers l'amont le nouveau logo"
