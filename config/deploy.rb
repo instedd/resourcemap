@@ -18,12 +18,13 @@ set :pty, true
 
 set :linked_files, fetch(:linked_files, []).concat(%W(
   config/database.yml
-  config/settings.yml
   config/google_maps.key
   config/guisso.yml
   config/nuntium.yml
   config/newrelic.yml
   config/poirot.yml
+  config/secrets.yml
+  config/settings.yml
   config/telemetry.yml
 ))
 set :linked_dirs, fetch(:linked_dirs, []).concat(%W(

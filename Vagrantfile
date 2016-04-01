@@ -46,6 +46,7 @@ Vagrant.configure(2) do |config|
        guisso.yml
        nuntium.yml
        poirot.yml
+       secrets.yml
        telemetry.yml).each do |file|
       c.vm.provision :file, source: "config/vagrant/#{file}", destination: "/u/apps/resource_map/shared/config/#{file}"
     end
