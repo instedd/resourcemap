@@ -6,10 +6,6 @@ bundler_args: --jobs=8 --without development
 before_install:
 - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.2.deb && sudo dpkg -i --force-confnew elasticsearch-1.3.2.deb
 - sudo service elasticsearch start
-- wget https://github.com/Medium/phantomjs/releases/download/v1.9.19/phantomjs-1.9.8-linux-x86_64.tar.bz2
-- tar -xf phantomjs-1.9.8-linux-x86_64.tar.bz2
-- sudo rm -rf /usr/local/phantomjs
-- sudo mv phantomjs-1.9.8-linux-x86_64 /usr/local/phantomjs
 - gem update bundler
 services:
 - redis-server
