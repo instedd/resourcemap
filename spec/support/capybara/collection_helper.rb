@@ -22,6 +22,14 @@ module Capybara::CollectionHelper
     '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button'
   end
 
+  def back_to_collections_button
+    find('button.pback').path
+  end
+
+  def back_to_sites_button
+    find('button.pback').path
+  end
+
   def first_site_path
     '//div[@id="collections-main"]/div[1]/div[2]/table/tbody/tr[1]/td/button'
   end

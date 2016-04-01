@@ -13,7 +13,7 @@ describe "back_to_colletion_button", :type => :request do
     visit collections_path
     click_on first_collection_path
 
-    find('.pback').click
+    click_on back_to_collections_button
 
     expect(page).to have_content("Central Hospital")
     expect(page).to have_content("My Collections")
