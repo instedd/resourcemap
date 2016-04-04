@@ -44,6 +44,7 @@ describe "edit_site", :type => :request do
 
   it "should not break when clicking a site marker a second time (#862)", js: true do
     page.all('#map img[src*=resmap_default]').last.click
+    expect(page).to have_content(@site.name)
     click_on back_to_sites_button
     expect(page).to have_content(@collection.name)
     click_on back_to_collections_button
@@ -51,6 +52,7 @@ describe "edit_site", :type => :request do
 
     # navigate a second time through the marker
     page.all('#map img[src*=resmap_default]').last.click
+    expect(page).to have_content(@site.name)
     click_on back_to_sites_button
     expect(page).to have_content(@collection.name)
     click_on back_to_collections_button
