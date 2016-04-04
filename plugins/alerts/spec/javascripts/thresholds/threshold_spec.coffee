@@ -58,13 +58,13 @@ describe 'Threshold', ->
       expect(@threshold.valid()).toBeFalsy()
 
   it 'should check is first condtion', ->
-    @threshold.isFirstCondition @threshold.conditions()[0]
+    expect(@threshold.isFirstCondition @threshold.conditions()[0]).toBeTruthy()
 
   it 'should check is last condtion', ->
-    @threshold.isLastCondition @threshold.conditions()[0]
+    expect(@threshold.isLastCondition @threshold.conditions()[0]).toBeTruthy()
 
   it 'should add condition', ->
-    spyOn(window.model, 'findField').andReturn @field_beds
+    spyOn(window.model, 'findField').and.returnValue @field_beds
     @threshold.addNewCondition()
     expect(@threshold.conditions().length).toEqual 2
 

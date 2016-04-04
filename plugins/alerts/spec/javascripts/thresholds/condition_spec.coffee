@@ -13,7 +13,7 @@ describe 'Condition', ->
   describe 'formatted value', ->
     beforeEach ->
       @field = new Field id: 1, kind: 'numeric'
-      spyOn(window.model, 'findField').andReturn @field
+      spyOn(window.model, 'findField').and.returnValue @field
 
     it 'should format value', ->
       condition = new Condition field: '1', type: 'value', value: 12

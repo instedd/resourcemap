@@ -11,7 +11,7 @@ describe 'Membership', ->
       layers: -> [ { id: ->  53 }, { id: -> 56 }, { id: -> 58 } ]
       collectionId: -> 12
 
-    spyOn(SiteCustomPermission, 'arrayFromJson').andReturn []
+    spyOn(SiteCustomPermission, 'arrayFromJson').and.returnValue []
 
   describe 'Some layers are forbidden for member (someLayersNone)', ->
     it 'should be false when member has at least read permission on all layers', ->

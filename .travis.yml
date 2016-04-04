@@ -17,7 +17,7 @@ before_script:
 script:
 - bundle exec rspec spec/ plugins/
 - bundle exec rspec -t js spec/integration/
-- bundle exec guard-jasmine
+- bundle exec rake jasmine:ci
 notifications:
   slack:
     secure: DCdc+fWXLZ8ISmp4lA5NcpvJugQ/cPxLAdRxxYhvO4P3wpjpL4OXoiZHyb1lxcq9ripMrf/jqgb4p3GlYwN/1o+B9v9MwjmyyT3BQGvxVWA30XRaiCxGojfWTq2banOv6pZ3VQ7qwHVsU+8QMxlclEQUWO7yCJEoMlgIp3fWHks=

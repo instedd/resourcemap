@@ -1,11 +1,4 @@
 GIT
-  remote: https://github.com/bradphelan/jasminerice
-  revision: 091349c27343bfa728b8e5745675f9ddbb7d9699
-  specs:
-    jasminerice (0.1.0)
-      coffee-rails
-
-GIT
   remote: https://github.com/instedd/alto_guisso
   revision: 6d72573c211f45ff95d36847af733449acdfa04a
   branch: master
@@ -522,14 +515,14 @@ DEPENDENCIES
   foreman
   gettext (~> 3.1.2)
   gettext_i18n_rails_js!
-  guard-jasmine
+  guard-jasmine (~> 2.0.6)
   haml-magic-translations
   haml-rails (~> 0.4)
   ice_cube
   includes-count
   instedd-rails (~> 0.0.24)
   instedd_telemetry!
-  jasminerice (~> 0.1.0)!
+  jasmine (~> 2.4.0)
   jquery-rails (~> 2.0.2)
   knockoutjs-rails
   lodash-rails

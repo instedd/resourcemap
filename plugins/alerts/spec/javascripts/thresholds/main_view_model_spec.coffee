@@ -47,7 +47,7 @@ describe 'MainViewModel', ->
 
     it "should post the threshold's json", ->
       @model.saveThreshold()
-      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds.json", {threshold: {conditions: [], color : 'tomato', ord: 1, name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
+      expect($.post).toHaveBeenCalledWith("/plugin/alerts/collections/#{@collectionId}/thresholds.json", {threshold: {id: undefined, conditions: [], color : 'tomato', ord: 1, name : 'beds', is_all_site : 'true', is_all_condition : 'true', is_notify : 'true', email_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, phone_notification: {fields: ["1","2"], users: ["1", "2"], members: ["1", "2"]}, message_notification : 'alert_01', sites : [ ]}}, @model.saveThresholdCallback)
 
     it "should put the threshold's json if it has an id", ->
       @threshold.id(1)
@@ -73,7 +73,7 @@ describe 'MainViewModel', ->
 
   describe 'add threshold', ->
     beforeEach ->
-      spyOn(window.model, 'findField').andReturn @field
+      spyOn(window.model, 'findField').and.returnValue @field
       @model.addThreshold()
 
     it 'should add threshold to thresholds', ->
@@ -102,7 +102,7 @@ describe 'MainViewModel', ->
       expect(@model.thresholds()[0].color()).toBe 'tomato'
 
     it 'should restore the conditions when canceling', ->
-      spyOn(window.model, 'findField').andReturn @field
+      spyOn(window.model, 'findField').and.returnValue @field
       @threshold.conditions [new Condition]
       @model.cancelThreshold()
       expect(@model.thresholds()[0].conditions().length).toEqual 0
@@ -118,10 +118,10 @@ describe 'MainViewModel', ->
       expect(window.confirm).toHaveBeenCalledWith 'Are you sure to delete threshold?'
 
     it "should delete the threshold's json", ->
-      spyOn(window, 'confirm').andReturn true
-      spyOn($, 'post').andReturn true
+      spyOn(window, 'confirm').and.returnValue true
+      spyOn($, 'post').and.returnValue true
       @model.deleteThreshold @threshold
-      @expect($.post).toHaveBeenCalledWith "/plugin/alerts/collections/#{@collectionId}/thresholds/#{@threshold.id()}.json", { _method: 'delete' }, @model.deleteThresholdCallback
+      expect($.post).toHaveBeenCalledWith "/plugin/alerts/collections/#{@collectionId}/thresholds/#{@threshold.id()}.json", { _method: 'delete' }, @model.deleteThresholdCallback
 
   describe 'move threshold', ->
     beforeEach ->

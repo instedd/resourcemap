@@ -143,7 +143,7 @@ describe 'Collection', ->
 
       it "should show a property changed in the diff", ->
 
-        spyOn(@collection, 'fetchFields').andCallFake((callback) =>
+        spyOn(@collection, 'fetchFields').and.callFake((callback) =>
           callback()
         )
 
@@ -179,7 +179,7 @@ describe 'Collection', ->
         expect(@site.diff().properties[28]).toBeUndefined()
 
       it "should give similar toJSON() and diff() outputs when all site's properties have changed - except for the id", ->
-        spyOn(@collection, 'fetchFields').andCallFake((callback) =>
+        spyOn(@collection, 'fetchFields').and.callFake((callback) =>
           callback()
         )
 

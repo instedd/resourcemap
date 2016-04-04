@@ -1,0 +1,81 @@
+src_files:
+  - assets/application.js
+
+stylesheets:
+  - assets/application.css
+
+# helpers
+#
+# Return an array of filepaths relative to spec_dir to include before jasmine specs.
+# Default: ["helpers/**/*.js"]
+#
+helpers:
+  - spec/javascripts/spec_helper.coffee
+
+# spec_files
+#
+# Return an array of filepaths relative to spec_dir to include.
+# Default: ["**/*[sS]pec.js"]
+#
+spec_files:
+  - 'spec/javascripts/**/*_spec.coffee'
+  - 'plugins/*/spec/javascripts/**/*_spec.coffee'
+
+# src_dir
+#
+# Source directory path. Your src_files must be returned relative to this path. Will use root if left blank.
+# Default: project root
+#
+src_dir:
+
+# spec_dir
+#
+# Spec directory path. Your spec_files must be returned relative to this path.
+# Default: spec/javascripts
+#
+spec_dir: ''
+
+# spec_helper
+#
+# Ruby file that Jasmine server will require before starting.
+# Returned relative to your root path
+# Default spec/javascripts/support/jasmine_helper.rb
+#
+spec_helper: spec/javascripts/support/jasmine_helper.rb
+
+# boot_dir
+#
+# Boot directory path. Your boot_files must be returned relative to this path.
+# Default: Built in boot file
+#
+boot_dir:
+
+# boot_files
+#
+# Return an array of filepaths relative to boot_dir to include in order to boot Jasmine
+# Default: Built in boot file
+#
+boot_files:
+
+# rack_options
+#
+# Extra options to be passed to the rack server
+# by default, Port and AccessLog are passed.
+#
+# This is an advanced options, and left empty by default
+#
+# EXAMPLE
+#
+# rack_options:
+#   server: 'thin'
+
+# random
+#
+# Run specs in semi-random order.
+# Default: false
+#
+# EXAMPLE:
+#
+# random: true
+#
+random:

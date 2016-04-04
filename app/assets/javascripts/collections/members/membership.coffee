@@ -10,6 +10,7 @@ class @Membership extends Expandable
       isSticky = $(".table-header").hasClass("sticky")
       table_header = $(".table-header")
       table = $("#memberPermissionsTable")
+      return unless table.length > 0
 
       should_be_sticky = $(this).scrollTop() > table.offset().top && ($(this).scrollTop() < table.offset().top + table.outerHeight())
       if should_be_sticky
