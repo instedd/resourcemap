@@ -150,7 +150,7 @@ describe ExecVisitor, "Process update command" do
     expect(Site).to receive(:find_by_id_with_prefix).with('AB1')
     expect {
       @visitor.visit_update_command @node
-    }.to raise_error
+    }.to raise_error(RuntimeError)
   end
 
   it "should user can update resource" do

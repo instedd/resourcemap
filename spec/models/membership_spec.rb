@@ -83,7 +83,7 @@ describe Membership, :type => :model do
     it "should not allow more than one membership per collection and user" do
       yet_another_user = User.make
       yet_another_user.memberships.create! :collection_id => collection.id
-      expect { yet_another_user.memberships.create!(:collection_id => collection.id) }.to raise_error
+      expect { yet_another_user.memberships.create!(:collection_id => collection.id) }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     context "when user is collection admin" do

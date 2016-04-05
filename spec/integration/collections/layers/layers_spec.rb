@@ -37,7 +37,6 @@ describe "layer", :type => :request, uses_collections_structure: true do
     fill_in 'code', :with => 'Code'
     click_button 'Save layer'
 
-    expect(page).to have_content "Saving layer, please wait..."
     expect(page).to have_content "Layer 'Test' successfully saved"
   end
 

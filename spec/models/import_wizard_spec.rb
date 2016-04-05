@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# encoding: utf-8
 require 'spec_helper'
 
 describe ImportWizard, :type => :model do
@@ -798,7 +798,7 @@ describe ImportWizard, :type => :model do
     ]
 
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
-    expect { ImportWizard.execute(user, collection, specs) }.to raise_error
+    expect { ImportWizard.execute(user, collection, specs) }.to raise_error(StandardError)
     ImportWizard.delete_files(user, collection)
   end
 
@@ -1503,7 +1503,7 @@ describe ImportWizard, :type => :model do
       File.open(tmp_file, "w") do |f|
         f.write("one, two")
       end
-      expect { ImportWizard.import user, collection, 'example.txt', "one, two" }.to raise_error
+      expect { ImportWizard.import user, collection, 'example.txt', "one, two" }.to raise_error(RuntimeError)
     end
   end
 
@@ -1512,7 +1512,7 @@ describe ImportWizard, :type => :model do
       csv << ['Name', '2']
       csv << ['Foo', '1.2', '3.4', '10']
     end
-    expect { ImportWizard.import user, collection, 'foo.csv', csv_string }.to raise_error
+    expect { ImportWizard.import user, collection, 'foo.csv', csv_string }.to raise_error(RuntimeError)
     File.delete("#{Rails.root}/tmp/import_wizard/#{user.id}_#{collection.id}.csv")
   end
 
