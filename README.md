@@ -1,4 +1,4 @@
-# ResourceMap
+# Resource Map
 
 [Resource Map](http://instedd.org/technologies/resource-map/) helps people track
 their work, resources and results geographically in a collaborative environment
@@ -68,12 +68,15 @@ supported.
 
 1. Install the bundle:
 
+    ```
     bundle install
+    ```
 
 2. Create and setup de database
 
+   ```
    bundle exec rake db:setup
-
+   ```
 
 ## Running in development
 
@@ -105,7 +108,7 @@ Start the Jasmine server with:
 
     bundle exec rake jasmine
 
-And open a browser tab in http://localhost:8888
+And open a browser tab in [http://localhost:8888](http://localhost:8888)
 
 
 ## Deployment
@@ -117,8 +120,8 @@ deploying.
 The [Vagrant](http://vagrantup.com) configuration file contains two different
 virtual machines for testing, which are provisioned for deployment using
 Capistrano. One is setup to install `RVM` and the other `rbenv`. Check the
-`Vagrantfile` and the configuration files and provisioning scripts in
-`config/vagrant` for a sample provisioning.
+`Vagrantfile` and the configuration files and scripts in `config/vagrant` for a
+sample provisioning.
 
 The Capistrano stages `vagrant-rvm` and `vagrant-rbenv` can be used to deploy
 Resource Map to the virtual machines. Only one of the virtual machines can be
