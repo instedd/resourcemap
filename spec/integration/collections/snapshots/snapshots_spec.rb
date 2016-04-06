@@ -25,7 +25,7 @@ describe "snapshots", :type => :request, uses_collections_structure: true do
     fill_in 'snapshot_name', :with => 'Snapshot2'
     click_button 'Take new snapshot'
     expect(page).to have_content 'Snapshot2'
-    choose ('name_Snapshot2')
+    choose 'Snapshot2'
     expect(page).to have_content 'Snapshot Snapshot2 loaded'
 
   end

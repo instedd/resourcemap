@@ -23,11 +23,12 @@ describe Api::LayersController, :type => :controller do
     end
 
     it "should get layers for a snapshot" do
-      snapshot = collection.snapshots.create! date: Time.now, name: 'last_hour'
-      sleep 1
+      Timecop.travel(1.hour.from_now)
+      snapshot = collection.snapshots.create! date: 1.hour.ago, name: 'last_hour'
       collection.layers.last.destroy
       user_snapshot = UserSnapshot.for(user, collection)
-      user_snapshot.go_to!('last_hour')
+      success = user_snapshot.go_to!(snapshot.id)
+      expect(success).to be_truthy
       get :index, collection_id: collection.id
       json = JSON.parse response.body
 

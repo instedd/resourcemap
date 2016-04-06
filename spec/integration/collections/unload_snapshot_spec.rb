@@ -13,12 +13,11 @@ describe "unload_snapshot", :type => :request do
     click_button 'Take new snapshot'
 
     expect(page).to have_content 'Snapshot3'
-    choose ('name_Snapshot3')
+    choose 'Snapshot3'
 
     expect(page).to have_content 'Snapshot Snapshot3 loaded'
-    choose ('name_')
+    choose 'Present time'
 
-    page.save_screenshot ('Present_time.png')
     expect(page).to have_content ('Snapshot Snapshot3 unloaded')
   end
 end

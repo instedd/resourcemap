@@ -22,8 +22,8 @@ class UserSnapshot < ActiveRecord::Base
   # Loads the given collection snapshot for the related user.
   # Returns false if there's no such a snapshot.
   # Returns true if it succeeds.
-  def go_to!(snapshot_name)
-    snapshot_to_load = collection.snapshots.where(:name => snapshot_name).first
+  def go_to!(snapshot_id)
+    snapshot_to_load = collection.snapshots.find_by(:id => snapshot_id)
 
     return false unless snapshot_to_load
 

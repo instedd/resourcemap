@@ -75,22 +75,22 @@ describe UserSnapshot, :type => :model do
     end
   end
 
-  describe "go_to" do
-    it "returns false and does nothing if there is not any snapshot with the given name" do
+  describe "go_to!" do
+    it "returns false and does nothing if the snapshot doesn't exist" do
       snapshot_before = user_snapshot.snapshot
 
-      expect(user_snapshot.go_to!('a_snapshot_that_doesnt_exist')).to eq(false)
+      invalid_snapshot_id = Snapshot.last.id + 1
+      expect(user_snapshot.go_to!(invalid_snapshot_id)).to eq(false)
 
       expect(user_snapshot.snapshot).to eq(snapshot_before)
     end
 
-    it "loads a snapshot with the given name" do
-      my_snapshot = collection.snapshots.create! date: Time.now , name: 'my snapshot'
+    it "loads a snapshot" do
+      my_snapshot = collection.snapshots.create! date: Time.now, name: 'my snapshot'
 
-      expect(user_snapshot.go_to!('my snapshot')).to eq(true)
+      expect(user_snapshot.go_to!(my_snapshot.id)).to eq(true)
 
       expect(user_snapshot.snapshot).to eq(my_snapshot)
-      expect(user_snapshot.snapshot.name).to eq('my snapshot')
     end
   end
 

@@ -58,7 +58,7 @@ RSpec.configure do |config|
   Capybara.javascript_driver = :selenium
   Capybara.default_selector = :css
 
-  config.before :each do
+  config.before(:each) do |example|
     DatabaseCleaner.strategy = if Capybara.current_driver == :rack_test
       :transaction
     else
@@ -67,7 +67,7 @@ RSpec.configure do |config|
     DatabaseCleaner.start
   end
 
-  config.after do
+  config.after(:each) do
     DatabaseCleaner.clean
     Timecop.return
     RedisCache.clear!

@@ -162,9 +162,12 @@ class CollectionsController < ApplicationController
   end
 
   def load_snapshot
-    if current_user_snapshot.go_to!(params[:name])
-      redirect_to collection_path(collection), notice: _("Snapshot %{name} loaded") % {name: params[:name]}
+    if current_user_snapshot.go_to!(params[:snapshot_id])
+      flash[:notice] = _("Snapshot %{name} loaded") % {name: current_user_snapshot.snapshot.name}
+    else
+      flash[:error] = _("Snapshot not found")
     end
+    redirect_to collection
   end
 
   def max_value_of_property
