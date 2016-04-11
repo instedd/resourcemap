@@ -21,7 +21,7 @@ onThresholds -
       @ord = ko.observable data?.ord
       @color = ko.observable(data?.color)
       @icon = ko.observable(collectionIcon ? "default")
-      @iconUrl = ko.computed => "/assets/markers/resmap_#{@alertMarker(@color())}_#{@icon()}.png"
+      @iconUrl = ko.computed => window.iconAssets["markers/resmap_#{@alertMarker(@color())}_#{@icon()}.png"]
       @conditions = ko.observableArray $.map(data?.conditions ? [], (condition) -> new Condition(condition))
       @missingFields = @conditions().some( (condition) ->
         condition.field() == undefined

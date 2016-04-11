@@ -460,7 +460,7 @@ onCollections ->
         @iconUrl(icon), new google.maps.Size(37, 34), new google.maps.Point(20, 0), new google.maps.Point(10, 34)
       )
 
-    @iconUrl: (icon) -> icon.url ? icons[icon]
+    @iconUrl: (icon) -> icon.url ? window.iconAssets[icon]
 
     @initInsteddPlatform:  ->
       $.instedd.init_components() if $.instedd

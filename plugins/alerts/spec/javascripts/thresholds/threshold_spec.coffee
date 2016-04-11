@@ -2,6 +2,8 @@ describe 'Threshold', ->
   beforeEach ->
     window.runOnCallbacks 'thresholds'
 
+    # define the asset icon to be found by the tests
+    window.iconAssets['markers/resmap_tomato_default.png'] = '/assets/resmap_tomato_default.png'
     @collectionId = 1
     @collectionIcon = 'default' 
     window.model = new MainViewModel @collectionId
@@ -44,8 +46,8 @@ describe 'Threshold', ->
       conditions: [{field: '1', op: 'lt', value: 10, type: 'value', compare_field: '1'}]
     }
 
-  xit 'should color url point to assets directory', ->
-    expect(@threshold.iconUrl()).toEqual "/assets/resmap_#{@collectionIcon}.png"
+  it 'should color url point to assets directory', ->
+    expect(@threshold.iconUrl()).toMatch /^\/assets\/resmap_.*\.png$/
 
   describe 'without data', ->
     beforeEach ->

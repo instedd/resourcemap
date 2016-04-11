@@ -138,9 +138,9 @@ onCollections ->
 
     setMarkerIcon:(marker, icon, color, alert) =>
       if alert
-        marker.style.backgroundImage = "url(#{icons["markers/resmap_#{@alertMarker(color)}_#{icon}.png"]})"
+        marker.style.backgroundImage = "url(#{iconAssets["markers/resmap_#{@alertMarker(color)}_#{icon}.png"]})"
       else
-        marker.style.backgroundImage = "url(#{icons["resmap_#{icon}.png"]})"
+        marker.style.backgroundImage = "url(#{iconAssets["resmap_#{icon}.png"]})"
 
     alertMarker: (color_code) ->
       switch color_code
