@@ -36,6 +36,7 @@ onCollections ->
 
       @rewriteUrl()
 
+      window.model.updateSitesInfo()
       $('.BreadCrumb').load("/collections/breadcrumbs", {})
 
       # Return undefined because otherwise some browsers (i.e. Miss Firefox)

@@ -407,8 +407,8 @@ onCollections ->
       return {} unless @inEditMode()
       diff = {}
       diff.name = @name() if @originalName && @originalName != @name()
-      diff.lat = @lat() if @originalPosition && @originalPosition.lat() != @position().lat()
-      diff.lng = @lng() if @originalPosition && @originalPosition.lng() != @position().lng()
+      diff.lat = @lat() if @originalPosition?.lat() != @position()?.lat()
+      diff.lng = @lng() if @originalPosition?.lng() != @position()?.lng()
       diff.properties = @propertiesDiff() unless _.isEqual(@propertiesDiff(), {})
       diff
 

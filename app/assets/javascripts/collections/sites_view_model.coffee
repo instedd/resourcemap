@@ -141,10 +141,10 @@ onCollections ->
 
         @savingSite(false)
 
+        window.model.updateSitesInfo()
+
       failed_callback = =>
         @savingSite(false)
-
-        window.model.updateSitesInfo()
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
 

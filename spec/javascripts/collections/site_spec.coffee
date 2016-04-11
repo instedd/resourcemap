@@ -82,7 +82,7 @@ describe 'Collection', ->
         expect(@site.properties()[42]).toEqual('Other Luhn')
         expect(@site.properties()[50]).toEqual('')
 
-    describe 'Without identifier fields', ->
+    describe 'Diff\'ing', ->
 
       beforeEach ->
         @layerData = {fields: [], name:'luhn_layer'}
@@ -140,6 +140,28 @@ describe 'Collection', ->
         expect(@site.diff().lng).toBeDefined()
         expect(@site.diff().name).toBeUndefined()
         expect(@site.diff().lng).toEqual(42.0)
+
+      it 'should show the lat/lng when the original position was null', ->
+        @site.lat(null)
+        @site.lng(null)
+        @site.startEditMode()
+        expect(@site.diff()).toEqual({})
+
+        @site.lat(23.0)
+        @site.lng(24.0)
+
+        expect(@site.diff().lat).toEqual(23.0)
+        expect(@site.diff().lng).toEqual(24.0)
+
+      it 'should show empty lat/lng when clearing the location fields', ->
+        @site.startEditMode()
+        @site.lat(null)
+        @site.lng(null)
+
+        expect(@site.diff().lat).toBeDefined()
+        expect(@site.diff().lng).toBeDefined()
+        expect(@site.diff().lat).toEqual(null)
+        expect(@site.diff().lng).toEqual(null)
 
       it "should show a property changed in the diff", ->
 
