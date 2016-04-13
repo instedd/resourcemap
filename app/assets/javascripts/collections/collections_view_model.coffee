@@ -2,7 +2,7 @@ onCollections ->
 
   class @CollectionsViewModel
 
-    @constructor: (collections) ->
+    @constructor: (collections, @api = Resmap.Api) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
       @fullscreen = ko.observable(false)
@@ -56,7 +56,7 @@ onCollections ->
       @unselectSite() if @selectedSite()
       @exitSite() if @editingSite()
 
-      $.get "/collections/#{@currentCollection().id}/sites_by_term.json", (sites) =>
+      @api.Collections.searchSitesByTerm(@currentCollection().id).then (sites) =>
         @currentCollection().allSites(sites)
 
       initialized = @initMap()
@@ -76,7 +76,8 @@ onCollections ->
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.model.updateSitesInfo()
 
-    @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
+    @editCollection: (collection) ->
+      window.location = @api.Collections.collectionUrl(collection.id)
 
 
     @togglefullscreen: ->
@@ -116,5 +117,5 @@ onCollections ->
           $("#collections-main .right").removeClass("expand")
           @reloadMapSites()
 
-
-    @createCollection: -> window.location = "/collections/new"
+    @createCollection: ->
+      window.location = @api.Collections.newCollectionUrl()

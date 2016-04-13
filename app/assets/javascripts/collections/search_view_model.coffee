@@ -1,7 +1,7 @@
 onCollections ->
 
   class @SearchViewModel
-    @constructor: ->
+    @constructor: (collections, @api = Resmap.Api)->
       @search = ko.observable('')
       @lastSearch = ko.observable(null)
 

@@ -1,7 +1,7 @@
 onCollections ->
 
   class @CustomLogoViewModel
-    @constructor: ->
+    @constructor: (collections, @api = Resmap.Api) ->
       @collection_has_logo = ko.computed =>
         if @currentCollection()
           if @currentCollection().logoUrl == undefined

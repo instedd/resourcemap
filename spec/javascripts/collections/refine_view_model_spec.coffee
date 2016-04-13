@@ -2,6 +2,7 @@ describe 'Collection', ->
   beforeEach ->
     window.runOnCallbacks 'collections'
     window.model = new MainViewModel []
+    spyOn(Resmap.Api.Collections, 'get').and.returnValue(new $.Deferred())
 
   describe 'RefineViewModel', ->
     beforeEach ->

@@ -1,7 +1,7 @@
 onCollections ->
 
   class @MapViewModel
-    @constructor: ->
+    @constructor: (collections, @api = Resmap.Api)->
       @showingMap = ko.observable(true)
       @mapSitesCount = ko.observable(0)
       @mapSitesCountText = ko.computed =>
@@ -141,7 +141,7 @@ onCollections ->
         # Save a request to the server if there are no selected collections
         getCallback()
       else
-        $.get "/sites/search.json", query, getCallback
+        @api.Sites.search(query).then getCallback
 
     @generateQueryParams: (bounds, collection_ids, zoom) ->
       ne = bounds.getNorthEast()

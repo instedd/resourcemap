@@ -4,7 +4,7 @@ onCollections ->
 
   # A collection that groups the items by a hierarchy field
   class @CollectionHierarchy extends CollectionDecorator
-    constructor: (collection, field) ->
+    constructor: (collection, field, @collectionsApi = Resmap.Api.Collections) ->
       super(collection)
 
       @field = field
@@ -13,8 +13,8 @@ onCollections ->
 
     isSearch: => false
 
-    sitesUrl: =>
-      "/collections/#{@id}/search.json?#{$.param @queryParams()}"
+    fetchSites: (options) ->
+      @collectionsApi.searchSites(@id, @queryParams(), options)
 
     queryParams: =>
       @setQueryParams {}

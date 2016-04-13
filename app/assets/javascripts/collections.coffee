@@ -5,7 +5,7 @@
 onCollections -> if $('#collections-main').length > 0
 
   History.Adapter.bind window, 'statechange', (e) ->
-      State = History.getState()
+    State = History.getState()
 
   # Start the view model for given collections
   initViewModel = (collections) =>
@@ -21,14 +21,14 @@ onCollections -> if $('#collections-main').length > 0
   # If current_user is guest, she will only have access to the requested collection
   collectionId = parseInt($.url().param('collection_id'))
   if window.currentUserIsGuest
-    $.get "/collections/#{collectionId}.json", {}, (collection) ->
+    Resmap.Api.Collections.get(collectionId).then (collection) ->
       initViewModel [collection]
   else
-    $.get "/collections.json", {}, (collections) ->
+    Resmap.Api.Collections.all().then (collections) ->
       if !collectionId || _.any(collections, (c) -> c.id == collectionId)
         initViewModel(collections)
       else
-        $.get "/collections/#{collectionId}.json", {}, (collection) ->
+        Resmap.Api.Collections.get(collectionId).then (collection) ->
           collections.push(collection)
           initViewModel(collections)
 

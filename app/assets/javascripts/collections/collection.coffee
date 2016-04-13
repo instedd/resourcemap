@@ -3,7 +3,7 @@
 onCollections ->
 
   class @Collection extends CollectionBase
-    constructor: (data) ->
+    constructor: (data, @collectionsApi = Resmap.Api.Collections) ->
       super(data)
       @minLat = data?.min_lat
       @maxLat = data?.max_lat
@@ -31,15 +31,17 @@ onCollections ->
 
     isSearch: => false
 
-    sitesUrl: -> "/collections/#{@id}/sites.json"
+    fetchSites: (options) ->
+      @collectionsApi.fetchSites(@id, options)
 
-    fetchLocation: => $.get "/collections/#{@id}.json", {}, (data) =>
-      @minLat = data.min_lat
-      @maxLat = data.max_lat
-      @minLng = data.min_lng
-      @maxLng = data.max_lng
-      @position(data)
-      @updatedAt(data.updated_at)
+    fetchLocation: ->
+      @collectionsApi.get(@id).then (data) =>
+        @minLat = data.min_lat
+        @maxLat = data.max_lat
+        @minLng = data.min_lng
+        @maxLng = data.max_lng
+        @position(data)   # update the position in Locatable
+        @updatedAt(data.updated_at)
 
     panToPosition: =>
       if @minLat && @maxLat && @minLng && @maxLng

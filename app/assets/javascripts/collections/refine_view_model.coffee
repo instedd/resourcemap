@@ -1,7 +1,7 @@
 onCollections ->
 
   class @RefineViewModel
-    @constructor: ->
+    @constructor: (collections, @api = Resmap.Api)->
       @showingRefinePopup = ko.observable(false)
       @expandedRefineProperty = ko.observable()
       @expandedRefinePropertyOperator = ko.observable()

@@ -4,7 +4,7 @@ onCollections ->
 
   # A collection that is filtered by a search result
   class @CollectionSearch extends CollectionDecorator
-    constructor: (collection, search, filters, sort, sortDirection) ->
+    constructor: (collection, search, filters, sort, sortDirection, @collectionsApi = Resmap.Api.Collections) ->
       super(collection)
 
       @search = search
@@ -22,8 +22,8 @@ onCollections ->
       @collection.addSite site if isNew
       super(site)
 
-    sitesUrl: =>
-      "/collections/#{@id}/search.json?#{$.param @queryParams()}"
+    fetchSites: (options) ->
+      @collectionsApi.searchSites(@id, @queryParams(), options)
 
     queryParams: (api = false) =>
       @setQueryParams {}, api
@@ -40,6 +40,5 @@ onCollections ->
       filter.setQueryParams(q, api) for filter in @filters
       q
 
-    link: (format) =>
-      parameters = $.param  @queryParams(true)
-      "/api/collections/#{@id}.#{format}?#{parameters}"
+    exportUrl: (format) =>
+      @collectionsApi.exportUrl(@id, format, @queryParams(true))

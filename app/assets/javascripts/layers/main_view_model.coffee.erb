@@ -1,6 +1,6 @@
 onLayers ->
   class @MainViewModel
-    constructor: (collectionId, layers) ->
+    constructor: (collectionId, layers, @api = Resmap.Api) ->
       self = @
 
       @collectionId = collectionId
@@ -43,11 +43,11 @@ onLayers ->
       @importCollectionIds = ko.computed =>
         $.map(@adminCollections(), (c) -> c.id)
 
-      $.get "/memberships/collections_i_admin.json", {except_id: @collectionId}, (collection_ids) =>
+      @api.Memberships.collectionsIAdmin(except_id: @collectionId).then (collection_ids) =>
         self.adminCollections(collection_ids)
 
     importLayersFromCollection: =>
-      window.location.href = "/collections/#{@collectionId}/import_layers_from/#{@selectedImportCollectionId()}"
+      window.location.href = @api.Collections.importLayersFromUrl(@collectionId, @selectedImportCollectionId())
 
     importCollectionLabelFor: (o) =>
       return 'loading...' if o == 0
@@ -88,10 +88,9 @@ onLayers ->
       json = {layer: @currentLayer().toJSON()}
 
       if @currentLayer().id()
-        json._method = 'put'
-        $.post "/collections/#{@collectionId}/layers/#{@currentLayer().id()}.json", json, @saveLayerCallback
+        @api.Collections.saveLayer(@collectionId, @currentLayer().id(), json).then @saveLayerCallback
       else
-        $.post "/collections/#{@collectionId}/layers.json", json, @saveLayerCallback
+        @api.Collections.createLayer(@collectionId, json).then @saveLayerCallback
 
     saveLayerCallback: (data) =>
       #if layer is new, we need to set id
@@ -128,16 +127,13 @@ onLayers ->
       @savingLayer(false)
 
     saveLayerOrd: (layer) =>
-      json = {ord: layer.ord()}
-
-      json._method = 'put'
-      $.post "/collections/#{@collectionId}/layers/#{layer.id()}/set_order.json", json
+      @api.Collections.setLayerOrder(@collectionId, layer.id(), layer.ord())
 
     deleteLayer: (layer) =>
       confirmation = Jed.sprintf(__("Are you sure you want to delete layer %s"), layer.name())
 
       if confirm(confirmation)
-        $.post "/collections/#{@collectionId}/layers/#{layer.id()}", {_method: 'delete'}, =>
+        @api.Collections.deleteLayer(@collectionId, layer.id()).then =>
           idx = @layers().indexOf(layer)
           for nextLayer in @layers().slice(idx + 1)
             nextLayer.ord(nextLayer.ord() - 1)

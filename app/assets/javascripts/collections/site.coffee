@@ -6,7 +6,7 @@ onCollections ->
   class @Site extends Module
     @include Locatable
 
-    constructor: (collection, data) ->
+    constructor: (collection, data, @api = Resmap.Api) ->
       @constructorLocatable(data)
       @collection = collection
       @selected = ko.observable()
@@ -50,7 +50,7 @@ onCollections ->
       window.model.highlightSearch(@propertyValue(field))
 
     fetchLocation: =>
-      $.get "/collections/#{@collection.id}/sites/#{@id()}.json", {}, (data) =>
+      @api.Collections.getSite(@collection.id, @id()).then (data) =>
         @position(data)
         @updatedAt(data.updated_at)
       @collection.fetchLocation()
@@ -62,25 +62,19 @@ onCollections ->
 
       @properties()[esCode] = value
 
-      $.ajax({
-        type: "POST",
-        url: "/sites/#{@id()}/update_property.json",
-        data: {es_code: esCode, value: value},
-        success: ((data) =>
-          field.errorMessage("")
-          @propagateUpdatedAt(data.updated_at)
-          window.model.updateSitesInfo()),
-        global: false
-      })
-      .fail((data) =>
+      @api.Sites.updateProperty(@id(), {es_code: esCode, value: value}, global: false).then (data) =>
+        field.errorMessage("")
+        @propagateUpdatedAt(data.updated_at)
+        window.model.updateSitesInfo()
+      , (failureData) =>
         try
-          responseMessage = JSON.parse(data.responseText)
-          if data.status == 422 && responseMessage && responseMessage.error_message
+          responseMessage = JSON.parse(failureData.responseText)
+          if failureData.status == 422 && responseMessage && responseMessage.error_message
             field.errorMessage(responseMessage.error_message)
           else
-            $.handleAjaxError(data)
+            $.handleAjaxError(failureData)
         catch error
-          $.handleAjaxError(data))
+          $.handleAjaxError(failureData)
 
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
@@ -108,43 +102,31 @@ onCollections ->
 
     update_site: (json, callback, failed_callback = null) =>
       data = {site: JSON.stringify json}
-      $.ajax({
-          type: "POST",
-          url: "/collections/#{@collection.id}/sites/#{@id()}/partial_update.json",
-          data: data,
-          success: ((data) =>
-            @clearFieldErrors()
-            @propagateUpdatedAt(data.updated_at)
-            callback(data) if callback && typeof(callback) == 'function' )
-          global: false
-        }).fail((data) =>
-          failed_callback() if failed_callback != null
-          if @showFieldErrors(data)
-            $(".tablescroll").animate({
-              scrollTop: $('.error label').position().top + $(".tablescroll").scrollTop() - 60
-            }, 2000))
+      @api.Collections.partialUpdateSite(@collection.id, @id(), data, global: false).then (data) =>
+        @clearFieldErrors()
+        @propagateUpdatedAt(data.updated_at)
+        callback(data) if callback && typeof(callback) == 'function'
+      , (failureData) =>
+        failed_callback() if failed_callback != null
+        if @showFieldErrors(data)
+          $(".tablescroll").animate({
+            scrollTop: $('.error label').position().top + $(".tablescroll").scrollTop() - 60
+          }, 2000)
+
 
     create_site: (json, callback, failed_callback = null) =>
       data = {site: JSON.stringify json}
-      $.ajax({
-          type: "POST",
-          url: "/collections/#{@collection.id}/sites",
-          data: data,
-          success: ((data) =>
-            @clearFieldErrors()
-            @propagateUpdatedAt(data.updated_at)
-            @id(data.id)
-            @idWithPrefix(data.id_with_prefix)
-
-            notice = Jed.sprintf(__("Site '%s' successfully created"), @name())
-
-            $.status.showNotice notice, 2000
-            callback(data) if callback && typeof(callback) == 'function' )
-          global: false
-        }).fail((data) =>
-          failed_callback() if failed_callback != null
-          @showFieldErrors(data)
-        )
+      @api.Collections.createSite(@collection.id, data, global: false).then (data) =>
+        @clearFieldErrors()
+        @propagateUpdatedAt(data.updated_at)
+        @id(data.id)
+        @idWithPrefix(data.id_with_prefix)
+        notice = Jed.sprintf(__("Site '%s' successfully created"), @name())
+        $.status.showNotice notice, 2000
+        callback(data) if callback && typeof(callback) == 'function'
+      , (failureData) =>
+        failed_callback() if failed_callback != null
+        @showFieldErrors(data)
 
     clearFieldErrors: =>
       @collection.nameFieldError(null)

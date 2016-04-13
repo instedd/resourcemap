@@ -26,10 +26,10 @@ onCollections ->
     @include GatewaysViewModel
     @include CustomLogoViewModel
 
-    constructor: (collections) ->
-      @initialize(collections)
+    constructor: (collections, @api = Resmap.Api) ->
+      @initialize(collections, @api)
 
-    initialize: (collections) ->
+    initialize: (collections, api) ->
       @sitesCount = ko.observable(0)
 
       @sitesWithoutLocation = ko.observable(false)
@@ -64,7 +64,7 @@ onCollections ->
 
     updateSitesInfo: =>
       if @currentCollection()
-        $.get "/collections/#{@currentCollection().id}/sites_info.json", {}, (data) =>
+        @api.Collections.getSitesInfo(@currentCollection().id).then (data) =>
           @sitesCount data.total
           @sitesWithoutLocation data.no_location
           @newSiteProperties = data.new_site_properties
@@ -85,15 +85,14 @@ onCollections ->
         element.remove()
         $(event.target).unbind 'mouseout', mouseoutHandler
       event = $(event.target).bind 'mouseout', mouseoutHandler
-      $.get "/collections/#{@currentCollection().id}/max_value_of_property.json", {property: field.esCode}, (data) =>
+      @api.Collections.getMaxValueOfProperty(@currentCollection().id, field.esCode).then (data) =>
         element.text "Maximum #{field.name}: #{data}"
 
     refreshTimeago: -> $('.timeago').timeago()
 
     isGatewayExist: =>
-      _self = @
-      $.get "/gateways.json", (data) ->
-        _self.isExist(true) if data.length > 0
+      @api.Gateways.all().then (data) =>
+        @isExist(true) if data.length > 0
         $('#profile-main').show()
 
     refreshMapResize: =>

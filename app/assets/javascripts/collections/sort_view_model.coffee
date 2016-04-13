@@ -1,7 +1,7 @@
 onCollections ->
 
   class @SortViewModel
-    @constructor: ->
+    @constructor: (collections, @api = Resmap.Api)->
       @sort = ko.observable()
       @sortDirection = ko.observable()
 

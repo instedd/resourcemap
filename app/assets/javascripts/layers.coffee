@@ -10,7 +10,7 @@ onLayers -> if $('#layers-main').length > 0
     $('.hierarchy_form').submit()
     window.model.startUploadHierarchy()
 
-  $.get "/collections/#{collectionId}/layers.json", {}, (layers) =>
+  Resmap.Api.Collections.getLayers(collectionId).then (layers) =>
     window.model = new MainViewModel(collectionId, layers)
     ko.applyBindings window.model
 

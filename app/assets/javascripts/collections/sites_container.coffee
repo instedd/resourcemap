@@ -20,7 +20,7 @@ onCollections ->
       @loadingSites true
       # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
       # extra element so the user always sees SITES_PER_PAGE elements.
-      $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1}, (data) =>
+      @fetchSites({offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1}).then (data) =>
         sites = data.sites
         @siteSearchCount(data.total_count)
         @sitesPage += 1
@@ -37,7 +37,7 @@ onCollections ->
       @loadingSites true
       @siteIds = {}
       @sites = ko.observableArray()
-      $.get @sitesUrl(), {offset: 0, limit: (@sitesPage - 1) * SITES_PER_PAGE }, (data) =>
+      @fetchSites({offset: 0, limit: (@sitesPage - 1) * SITES_PER_PAGE}).then (data) =>
         sites = data.sites
         @siteSearchCount(data.total_count)
         for site in sites

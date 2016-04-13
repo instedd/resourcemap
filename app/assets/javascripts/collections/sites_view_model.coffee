@@ -1,7 +1,7 @@
 onCollections ->
 
   class @SitesViewModel
-    @constructor: ->
+    @constructor: (collections, @api = Resmap.Api)->
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
       @selectedHierarchy = ko.observable()
@@ -78,7 +78,7 @@ onCollections ->
         @editSite site
       else
         @loadingSite(true)
-        $.get "/collections/#{collectionId}/sites/#{siteId}.json", {}, (data) =>
+        @api.Collections.getSite(collectionId, siteId).then (data) =>
           @loadingSite(false)
           collection = window.model.findCollectionById(collectionId)
           site = new Site(collection, data)
@@ -91,7 +91,7 @@ onCollections ->
         @selectSite site
       else
         @loadingSite(true)
-        $.get "/collections/#{collectionId}/sites/#{siteId}.json", {}, (data) =>
+        @api.Collections.getSite(collectionId, siteId).then (data) =>
           @loadingSite(false)
           collection = window.model.findCollectionById(collectionId)
           # Data will be empty if site is not found
@@ -116,7 +116,7 @@ onCollections ->
         @loadingSite(true)
         if @selectedSite() && @selectedSite().marker
           @setMarkerIcon @selectedSite().marker, 'active'
-        $.get "/collections/#{collectionId}/sites/#{siteId}.json", {}, (data) =>
+        @api.Collections.getSite(collectionId, siteId).then (data) =>
           @loadingSite(false)
           collection = window.model.findCollectionById(collectionId)
           site = new Site(collection, data)
@@ -185,7 +185,7 @@ onCollections ->
       if confirm(confirmation)
         @unselectSite()
         @currentCollection().removeSite(@editingSite())
-        $.post "/sites/#{@editingSite().id()}", {collection_id: @currentCollection().id, _method: 'delete'}, =>
+        @api.Collections.deleteSite(@currentCollection().id, @editingSite().id()).then =>
           @currentCollection().fetchLocation()
           @editingSite().deleteMarker()
           @exitSite()

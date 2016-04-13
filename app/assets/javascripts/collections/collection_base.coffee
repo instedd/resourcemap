@@ -11,7 +11,7 @@ onCollections ->
     @include SitesContainer
     @include CollectionMembership
 
-    constructor: (data) ->
+    constructor: (data, @collectionsApi = Resmap.Api.Collections) ->
       @constructorLocatable(data)
       @constructorSitesContainer()
       @constructorCollectionMembership()
@@ -57,7 +57,7 @@ onCollections ->
         return
 
       @fieldsInitialized = true
-      $.get "/collections/#{@id}/fields", {}, (data) =>
+      @collectionsApi.getFields(@id).then (data) =>
         @layers($.map(data, (x) => new Layer(x)))
 
         fields = []
@@ -81,7 +81,8 @@ onCollections ->
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
 
-    link: (format) => "/api/collections/#{@id}.#{format}"
+    exportUrl: (format) ->
+      @collectionsApi.exportUrl(@id, format)
 
     level: => -1
 
@@ -94,13 +95,15 @@ onCollections ->
       res
 
     unloadCurrentSnapshot: ->
-      $.post "/collections/#{@id}/unload_current_snapshot.json", ->
+      @collectionsApi.unloadCurrentSnapshot(@id).then ->
         window.location.reload()
 
-    searchUsersUrl: -> "/collections/#{@id}/memberships/search.json"
+    searchUsersUrl: ->
+      @collectionsApi.searchUsersUrl(@id)
 
-    searchSitesUrl: -> "/collections/#{@id}/sites_by_term.json"
+    searchSitesUrl: ->
+      @collectionsApi.searchSitesUrl(@id)
 
-    fetchLogoUrl: => $.get "/collections/#{@id}.json", {}, (data) =>
-      @logoUrl = data.logo.grayscale.url
-
+    fetchLogoUrl: ->
+      @collectionsApi.get(@id).then (data) =>
+        @logoUrl = data.logo.grayscale.url

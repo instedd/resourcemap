@@ -7,10 +7,11 @@ onCollections ->
   class @HierarchyItem extends Module
     @include SitesContainer
 
-    constructor: (collection, field, data, level = 0) ->
+    constructor: (collection, field, data, level = 0, @collectionsApi = Resmap.Api.Collections) ->
       @constructorSitesContainer()
 
       @field = field
+      @collection = collection
 
       collection.hierarchyItemsMap[data.id] = @
 
@@ -38,8 +39,8 @@ onCollections ->
       @hierarchyIds().push(item.id)
       $.map item.hierarchyItems, (item) => @loadItemToHierarchyIds(item)
 
-    sitesUrl: =>
-      "/collections/#{window.model.currentCollection().id}/search.json?#{$.param @queryParams()}"
+    fetchSites: (options) ->
+      @collectionsApi.searchSites(@collection.id, @queryParams(), options)
 
     queryParams: =>
       hierarchy_code: @field.esCode

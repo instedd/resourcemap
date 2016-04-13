@@ -1,6 +1,7 @@
 describe 'Collection', ->
   beforeEach ->
     window.runOnCallbacks 'collections'
+    spyOn(Resmap.Api.Collections, 'get').and.returnValue(new $.Deferred())
 
   describe 'CollectionsViewModel', ->
     beforeEach ->

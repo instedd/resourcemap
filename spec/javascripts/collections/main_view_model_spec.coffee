@@ -3,6 +3,7 @@ describe 'Collection', ->
     window.runOnCallbacks 'collections'
     window.model = new MainViewModel []
     @model = window.model
+    spyOn(Resmap.Api.Collections, 'get').and.returnValue(new $.Deferred())
 
   describe 'MainViewModel', ->
 

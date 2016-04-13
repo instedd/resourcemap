@@ -3,11 +3,11 @@
 onCollections ->
 
   class @CollectionDecorator extends CollectionBase
-    constructor: (collection) ->
+    constructor: (collection, @collectionsApi = Resmap.Api.Collections) ->
       # These three are because we are not calling super
       @constructorLocatable(lat: collection.lat(), lng: collection.lng())
-      @constructorSitesContainer()
-      @constructorCollectionMembership()
+      @constructorSitesContainer(@collectionsApi)
+      @constructorCollectionMembership(@collectionsApi)
       @loadCurrentSnapshotMessage()
 
       @loadAllSites()
