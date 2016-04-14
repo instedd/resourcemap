@@ -108,7 +108,7 @@ onCollections ->
         callback(data) if callback && typeof(callback) == 'function'
       , (failureData) =>
         failed_callback() if failed_callback != null
-        if @showFieldErrors(data)
+        if @showFieldErrors(failureData)
           $(".tablescroll").animate({
             scrollTop: $('.error label').position().top + $(".tablescroll").scrollTop() - 60
           }, 2000)
@@ -126,7 +126,7 @@ onCollections ->
         callback(data) if callback && typeof(callback) == 'function'
       , (failureData) =>
         failed_callback() if failed_callback != null
-        @showFieldErrors(data)
+        @showFieldErrors(failureData)
 
     clearFieldErrors: =>
       @collection.nameFieldError(null)

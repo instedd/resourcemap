@@ -25,8 +25,18 @@ describe "sites", :type => :request, uses_collections_structure: true do
     click_link 'Edit Site'
   end
 
-  it "should show validation errors", js: true do
+  it "should show validation errors when creating a site", js: true do
     click_button 'Create Site'
+    click_button 'Done'
+
+    expect(page).to have_selector('.error')
+    expect(page).to have_content('site cannot be saved due to validation errors')
+  end
+
+  it "should show validation errors when updating a site", js: true do
+    click_on first_site_path
+    click_link 'Edit Site'
+    fill_in :name, with: ''
     click_button 'Done'
 
     expect(page).to have_selector('.error')
