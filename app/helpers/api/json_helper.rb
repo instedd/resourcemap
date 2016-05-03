@@ -12,7 +12,7 @@ module Api::JsonHelper
     obj
   end
 
-  def site_item_json(result, human = false, fields = [])
+  def site_item_json(result, human = false, fields_by_code = {})
     source = result['_source']
 
     obj = {}
@@ -33,18 +33,16 @@ module Api::JsonHelper
     obj[:properties] = {}
     if human
       source['properties'].each do |code, value|
-        field = fields.find { |f| f.code == code }
+        field = fields_by_code[code]
 
-        self.trace_execution_scoped(["Custom/JsonHelper/site_item_json/#{field.kind}"]) do
-          obj[:properties][code] = if field.is_a?(Field::HierarchyField)
-            field.human_value(value) # this case is for optimization only.
-            # Field::HierarchyField#csv_values ends up building the whole ascendent trace
-            # for each element.
-            # Field::SelectOneField#human_value can't be used instead of #csv_values here
-            # since the +value+ has the code but not the id of the selected option.
-          else
-            field.csv_values(value, human).first
-          end
+        obj[:properties][code] = if field.is_a?(Field::HierarchyField)
+          field.human_value(value) # this case is for optimization only.
+          # Field::HierarchyField#csv_values ends up building the whole ascendent trace
+          # for each element.
+          # Field::SelectOneField#human_value can't be used instead of #csv_values here
+          # since the +value+ has the code but not the id of the selected option.
+        else
+          field.csv_values(value, human).first
         end
       end
     else
@@ -58,11 +56,12 @@ module Api::JsonHelper
   add_method_tracer :site_item_json, 'Custom/JsonHelper/site_item_json'
 
   def process_labels(collection, results, user, human = false)
-    fields = []
+    fields_by_code = {}
     if human
       fields = collection.visible_fields_for(user)
       fields.each(&:cache_for_read)
+      fields_by_code = fields.index_by(&:code)
     end
-    results.map {|result| site_item_json result, human, fields}
+    results.map {|result| site_item_json result, human, fields_by_code}
   end
 end

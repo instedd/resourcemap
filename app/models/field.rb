@@ -156,12 +156,14 @@ class Field < ActiveRecord::Base
     end
   end
 
-  def cached(key, &block)
+  def cached(key)
     if @cache_for_read
-      instance_variable_get("@#{key}") || (
-        value = RedisCache.cache "field:#{id}:#{key}", updated_at.to_i, &block
+      instance_variable_get(key) || (
+        value = RedisCache.cache "field:#{id}:#{key}", updated_at.to_i do
+          yield
+        end
         #value = value.with_indifferent_access if value.is_a?(Hash)
-        instance_variable_set "@#{key}", value
+        instance_variable_set key, value
         value
       )
     else

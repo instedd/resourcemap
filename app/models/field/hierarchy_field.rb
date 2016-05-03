@@ -1,4 +1,10 @@
 class Field::HierarchyField < Field
+  ID = 'id'.freeze
+  NAME = 'name'.freeze
+  PARENT_ID = 'parent_id'.freeze
+  TYPE = 'type'.freeze
+  SUB = 'sub'.freeze
+
   def value_type_description
     "values that can be found in the defined hierarchy"
   end
@@ -48,7 +54,7 @@ class Field::HierarchyField < Field
 
     # Add all values
     ancestors.reverse.each do |ancestor|
-      rows << ancestor['name']
+      rows << ancestor[NAME]
     end
 
     # Add empty values for the missing elements (if the value is not a leaf)
@@ -59,7 +65,20 @@ class Field::HierarchyField < Field
   end
 
   def human_value(value)
-    find_hierarchy_value(value)
+    option = find_hierarchy_option_by_id(value)
+    option ? hierarchy_option_to_s('', option) : value
+  end
+
+  def hierarchy_option_to_s(str, option)
+    if option
+      parent = find_hierarchy_option_by_id(option[PARENT_ID])
+      if parent
+        hierarchy_option_to_s str, parent
+        str << ' - '
+      end
+      str << option[NAME]
+    end
+    str
   end
 
   def hierarchy_to_csv
@@ -68,7 +87,7 @@ class Field::HierarchyField < Field
       csv << header
 
       hierarchy_options.each do |option|
-        csv << ["#{option['id']}", "#{option['parent_id']}", "#{option['name']}"]
+        csv << ["#{option[ID]}", "#{option[PARENT_ID]}", "#{option[NAME]}"]
       end
     end
   end
@@ -113,8 +132,8 @@ class Field::HierarchyField < Field
         ascendants = []
         while (!node_id.blank?)
           option = find_hierarchy_option_by_id(node_id)
-          ascendants << {'id' => option['id'], 'name' => option['name'], 'type' => option['type']}
-          node_id = option['parent_id']
+          ascendants << {ID => option[ID], NAME => option[NAME], TYPE => option[TYPE]}
+          node_id = option[PARENT_ID]
         end
         ascendants
       end
@@ -125,11 +144,11 @@ class Field::HierarchyField < Field
 
   def ascendants_with_type(node_id_or_name, type)
     ascendants = ascendants_of_in_hierarchy(node_id_or_name)
-    res = ascendants.find{|option| option['type'] == type }
+    res = ascendants.find{|option| option[TYPE] == type }
     res
   end
 
-	def descendants_of_in_hierarchy(parent_id_or_name)
+  def descendants_of_in_hierarchy(parent_id_or_name)
     begin
       valid_value?(parent_id_or_name)
       parent_ids = [parent_id_or_name]
@@ -142,18 +161,18 @@ class Field::HierarchyField < Field
       add_option_to_options options, find_hierarchy_item_by_id(parent_id)
     end
 
-    options.map { |item| item['id'] }
+    options.map { |item| item[ID] }
   end
 
   def hierarchy_max_height
-    cached 'max_height' do
+    cached :@max_height do
       config['hierarchy'].map {|n| max_height(n) + 1 }.max
     end
   end
 
   def max_height(node)
-    if node["sub"] && node["sub"].count > 0
-      node["sub"].map {|n| max_height(n) + 1 }.max
+    if node[SUB] && node[SUB].count > 0
+      node[SUB].map {|n| max_height(n) + 1 }.max
     else
       0
     end
@@ -168,11 +187,11 @@ class Field::HierarchyField < Field
   end
 
   def hierarchy_options_codes
-    hierarchy_options.map {|option| option['id'].to_s}
+    hierarchy_options.map {|option| option[ID].to_s}
   end
 
   def hierarchy_options_ids
-    hierarchy_options.map {|option| option['id']}
+    hierarchy_options.map {|option| option[ID]}
   end
 
   def hierarchy_options_id_samples
@@ -180,7 +199,7 @@ class Field::HierarchyField < Field
   end
 
   def hierarchy_options
-    cached 'options_in_cache' do
+    cached :@options_in_cache do
       options = []
       config['hierarchy'].each do |option|
         add_option_to_options(options, option)
@@ -191,21 +210,21 @@ class Field::HierarchyField < Field
 
   def find_hierarchy_id_by_name(value)
     if @cache_for_read
-      options_by_name = cached 'options_by_name' do
+      options_by_name = cached :@options_by_name do
         hierarchy_options.each_with_object({}) do |opt, hash|
-          if hash[opt['name']]
-            hash[opt['name']] << opt['id']
+          if hash[opt[NAME]]
+            hash[opt[NAME]] << opt[ID]
           else
-            hash[opt['name']] = [opt['id']]
+            hash[opt[NAME]] = [opt[ID]]
           end
         end
       end
       return options_by_name[value]
     end
 
-    options = hierarchy_options.select { |opt| opt['name'] == value }
+    options = hierarchy_options.select { |opt| opt[NAME] == value }
     unless options.empty?
-      options.map { |option| option['id']}
+      options.map { |option| option[ID]}
     else
       nil
     end
@@ -213,32 +232,32 @@ class Field::HierarchyField < Field
 
   def find_hierarchy_name_by_id(value)
     option = find_hierarchy_option_by_id(value)
-    option['name'] if option
+    option[NAME] if option
   end
 
   def find_hierarchy_option_by_id(value)
     if @cache_for_read
-      options_by_id = cached 'options_by_id' do
-        hierarchy_options.each_with_object({}) { |opt, hash| hash[opt['id'].to_s] = opt }
+      options_by_id = cached :@options_by_id do
+        hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[ID].to_s] = opt }
       end
       return options_by_id[value.to_s]
     end
 
-    hierarchy_options.find { |opt| opt['id'].to_s == value.to_s }
+    hierarchy_options.find { |opt| opt[ID].to_s == value.to_s }
   end
 
 	private
 
   def add_option_to_options(options, option, parent_id = '')
-    this_option = {'id' => option['id'], 'name' => option['name'], 'parent_id' => parent_id}
-    if option['type']
-      this_option['type'] = option['type']
+    this_option = {ID => option[ID], NAME => option[NAME], PARENT_ID => parent_id}
+    if option[TYPE]
+      this_option[TYPE] = option[TYPE]
     end
 
     options << this_option
-    if option['sub']
-      option['sub'].each do |sub_option|
-        add_option_to_options(options, sub_option, option['id'])
+    if option[SUB]
+      option[SUB].each do |sub_option|
+        add_option_to_options(options, sub_option, option[ID])
       end
     end
   end
@@ -246,14 +265,14 @@ class Field::HierarchyField < Field
   #TODO: deprecate
   def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
     start_at.each do |item|
-      return item if item['id'] == id
-      if item.has_key? 'sub'
-        found = find_hierarchy_item_by_id(id, item['sub'])
+      return item if item[ID] == id
+      if item.has_key?(SUB)
+        found = find_hierarchy_item_by_id(id, item[SUB])
         return found unless found.nil?
-       end
+      end
     end
     nil
-   end
+  end
 
   # TODO: Integrate with decode used in update
   def decode_hierarchy_option(array_value, use_codes_instead_of_es_codes)

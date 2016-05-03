@@ -1,4 +1,8 @@
 class Field::SelectManyField < Field
+  ID = 'id'.freeze
+  LABEL = 'label'.freeze
+  CODE = 'code'.freeze
+
   def value_type_description
     "option values"
   end
@@ -21,20 +25,23 @@ class Field::SelectManyField < Field
   end
 
   def cached_options
-    cached 'options' do
+    cached :@options do
       config['options']
     end
   end
 
   def config_option_by_id(val)
-    cached_options.find { |o| o['id'] == val }
+    options = cached :@options_by_id do
+      Hash[config['options'].map { |o| [o[ID], o] }]
+    end
+    options[val]
   end
 
   def api_value(value)
-   if value.is_a? Array
+    if value.is_a? Array
       return value.map do |val|
         option = config_option_by_id(val)
-        option ? option['code'] : val
+        option ? option[CODE] : val
       end
     else
       return value
@@ -45,7 +52,7 @@ class Field::SelectManyField < Field
     if value.is_a? Array
       return value.map do |val|
         option = config_option_by_id(val)
-        option ? option['label'] : val
+        option ? option[LABEL] : val
       end.join ', '
     else
       return value
@@ -97,11 +104,11 @@ class Field::SelectManyField < Field
     value_id = nil
     if use_codes_instead_of_es_codes
       cached_options.each do |option|
-        value_id = option['id'] if option['label'] == value || option['code'] == value
+        value_id = option[ID] if option[LABEL] == value || option[CODE] == value
       end
     else
       cached_options.each do |option|
-        value_id = option['id'] if option['id'].to_s == value.to_s
+        value_id = option[ID] if option[ID].to_s == value.to_s
       end
     end
     raise "Invalid option in field #{code}" if value_id.nil?
@@ -115,7 +122,7 @@ class Field::SelectManyField < Field
   def decode_option(value)
     value_id = nil
     cached_options.each do |option|
-      value_id = option['id'] if option['label'].downcase == value.downcase || option['code'].downcase == value.downcase
+      value_id = option[ID] if option[LABEL].downcase == value.downcase || option[CODE].downcase == value.downcase
     end
 
     if value_id.nil?
@@ -128,7 +135,7 @@ class Field::SelectManyField < Field
   def check_option_exists(value)
     exists = false
     cached_options.each do |option|
-      exists = true if option['id'].to_s == value.to_s
+      exists = true if option[ID].to_s == value.to_s
     end
     raise invalid_field_message(value) if !exists
     exists

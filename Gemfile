@@ -11,8 +11,7 @@ gem 'haml-magic-translations'
 gem 'decent_exposure'
 gem "instedd-rails", '~> 0.0.24'
 gem "breadcrumbs_on_rails"
-gem "elasticsearch"
-gem "elasticsearch-ruby"
+gem "elasticsearch", '~> 1.0.17'
 gem "resque", :require => "resque/server"
 gem 'resque-scheduler', '~> 3.0.0'
 gem "nuntium_api", "~> 0.13", :require => "nuntium"
@@ -28,7 +27,7 @@ gem "omniauth"
 gem "omniauth-openid"
 gem 'alto_guisso', :git => "https://github.com/instedd/alto_guisso", branch: 'master'
 gem 'alto_guisso_rails', :git => "https://github.com/instedd/alto_guisso_rails", branch: 'master'
-gem 'oj'
+gem 'oj', '~> 2.15.0'
 gem 'nokogiri'
 gem 'carrierwave'
 gem 'mini_magick'
@@ -47,7 +46,7 @@ gem 'actionpack-page_caching'
 gem 'actionpack-action_caching'
 gem 'activerecord-deprecated_finders'
 
-gem 'msgpack'
+gem 'msgpack', '~> 0.7.5'
 gem 'redis'
 
 group :test do
@@ -69,6 +68,7 @@ group :test, :development do
   gem 'jasmine', '~> 2.4.0'
   gem 'guard-jasmine', '~> 2.0.6'
   gem 'pry-byebug'
+  gem 'memory_profiler'
 end
 
 group :development do

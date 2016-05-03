@@ -90,39 +90,12 @@ module Field::Base
         value = [options[0]['id'], options[1]['id']]
       end
     elsif hierarchy?
-      @hierarchy_items_map ||= create_hierarchy_items_map
-      keys = @hierarchy_items_map.keys
-      return '' if keys.length == 0
-      value = keys.first
+      options = config['hierarchy']
+      return '' if options.nil? or options.length == 0
+      value = options.first['id']
     else
       return ''
     end
     api_value value
-  end
-
-  private
-
-  def find_hierarchy_value(value)
-    @hierarchy_items_map ||= create_hierarchy_items_map
-    item = @hierarchy_items_map[value]
-    item ? hierarchy_item_to_s(item) : value
-  end
-
-  def create_hierarchy_items_map(map = {}, items = config['hierarchy'] || [], parent = nil)
-    items.each do |item|
-      map_item = {'name' => item['name'], 'parent' => parent}
-      map[item['id']] = map_item
-      create_hierarchy_items_map map, item['sub'], map_item if item['sub'].present?
-    end
-    map
-  end
-
-  def hierarchy_item_to_s(str = '', item)
-    if item['parent']
-      hierarchy_item_to_s str, item['parent']
-      str << ' - '
-    end
-    str << item['name']
-    str
   end
 end

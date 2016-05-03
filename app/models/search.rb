@@ -176,30 +176,26 @@ class Search
     Results.new(results)
   end
 
-  extend ::NewRelic::Agent::MethodTracer
-
   # Returns the results from ElasticSearch but with codes as keys and codes as
   # values (when applicable).
   def api_results
     visible_fields = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id)
-    visible_fields.each { |field| field.cache_for_read }
+    visible_fields.each { |field| field.code.freeze; field.cache_for_read }
 
-    fields_by_es_code = visible_fields.index_by &:es_code
+    fields_by_es_code = visible_fields.index_by(&:es_code)
 
     results = results()
     results.each do |item|
       properties = item['_source']['properties']
-      item['_source']['identifiers'] = []
-      item['_source']['properties'] = {}
+      api_props = {}
 
       properties.each_pair do |es_code, value|
         field = fields_by_es_code[es_code]
         if field
-          self.class.trace_execution_scoped(['Custom/Search/api_results/api_value']) do
-            item['_source']['properties'][field.code] = field.api_value(value)
-          end
+          api_props[field.code] = field.api_value(value)
         end
       end
+      item['_source']['properties'] = api_props
     end
     results
   end
@@ -207,7 +203,7 @@ class Search
   # Returns the results from ElasticSearch but with the location field
   # returned as lat/lng fields, and the date as a date object
   def ui_results
-    fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
+    fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by(&:es_code)
 
     results = results()
     results.each do |item|
