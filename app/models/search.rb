@@ -178,7 +178,7 @@ class Search
 
   # Returns the results from ElasticSearch but with codes as keys and codes as
   # values (when applicable).
-  def api_results
+  def api_results(human = false)
     visible_fields = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id)
     visible_fields.each { |field| field.code.freeze; field.cache_for_read }
 
@@ -192,7 +192,11 @@ class Search
       properties.each_pair do |es_code, value|
         field = fields_by_es_code[es_code]
         if field
-          api_props[field.code] = field.api_value(value)
+          api_props[field.code] = if human
+                                    field.human_value(value)
+                                  else
+                                    field.api_value(value)
+                                  end
         end
       end
       item['_source']['properties'] = api_props

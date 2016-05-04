@@ -69,6 +69,7 @@ group :test, :development do
   gem 'guard-jasmine', '~> 2.0.6'
   gem 'pry-byebug'
   gem 'memory_profiler'
+  gem 'stackprof'
 end
 
 group :development do

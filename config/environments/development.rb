@@ -40,4 +40,7 @@ ResourceMap::Application.configure do
     :password             => '83adfb21-add5-4728-ace4-d5106bbdc113',
     :authentication       => 'plain',
     :enable_starttls_auto => true  }
+
+  # Uncomment the following line to enable sample profiling (see https://github.com/tmm1/stackprof for details)
+  # config.middleware.use StackProf::Middleware, enabled: true, mode: :cpu, interval: 100, save_every: 5
 end

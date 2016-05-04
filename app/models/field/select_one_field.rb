@@ -1,4 +1,8 @@
 class Field::SelectOneField < Field
+  ID = 'id'.freeze
+  CODE = 'code'.freeze
+  LABEL = 'label'.freeze
+
   def value_type_description
     "option values"
   end
@@ -20,14 +24,21 @@ class Field::SelectOneField < Field
     human_value(decode(option_code))
   end
 
+  def config_option_by_id(val)
+    options = cached :@options_by_id do
+      Hash[config['options'].map { |o| [o[ID], o] }]
+    end
+    options[val]
+  end
+
   def api_value(value)
-    option = config['options'].find { |o| o['id'] == value }
-    return option ? option['code'] : value
+    option = config_option_by_id(value)
+    return option ? option[CODE] : value
   end
 
   def human_value(value)
-    option = config['options'].find { |o| o['id'] == value }
-    return option ? option['label'] : value
+    option = config_option_by_id(value)
+    return option ? option[LABEL] : value
   end
 
   def standardize(value)
@@ -90,7 +101,7 @@ class Field::SelectOneField < Field
   def check_option_exists(value)
     exists = false
     config['options'].each do |option|
-      exists = true if option['id'].to_s == value.to_s
+      exists = true if option[ID].to_s == value.to_s
     end
     raise invalid_field_message if !exists
     exists
@@ -112,7 +123,7 @@ class Field::SelectOneField < Field
       end
     else
       config['options'].each do |option|
-        value_id = option['id'] if option['label'] == value || option['code'] == value
+        value_id = option[ID] if option[LABEL] == value || option[CODE] == value
       end
     end
     if value_id.nil?
@@ -129,9 +140,9 @@ class Field::SelectOneField < Field
     @options_by_id_in_cache = {}
 
     config['options'].each do |option|
-      @options_by_code_or_label_in_cache[option['code'].to_s] = option['id']
-      @options_by_code_or_label_in_cache[option['label'].to_s] = option['id']
-      @options_by_id_in_cache[option['id'].to_s] = option['id']
+      @options_by_code_or_label_in_cache[option[CODE].to_s] = option[ID]
+      @options_by_code_or_label_in_cache[option[LABEL].to_s] = option[ID]
+      @options_by_id_in_cache[option[ID].to_s] = option[ID]
     end
   end
 

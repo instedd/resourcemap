@@ -37,15 +37,12 @@ class Api::CollectionsController < ApiController
       options << :page
     end
 
-    @results = perform_search *options
-
-    format_options = {}
-    format_options[:human] = true if Field.yes?(params[:human])
+    @results = perform_search(*options)
 
     respond_to do |format|
       format.rss { render :show, layout: false }
-      format.csv { collection_csv(collection, @results, format_options) }
-      format.json { render_json collection_json(collection, @results, current_user, format_options) }
+      format.csv { collection_csv(collection, @results) }
+      format.json { render_json collection_json(collection, @results, current_user) }
     end
   end
 
@@ -117,8 +114,8 @@ class Api::CollectionsController < ApiController
   end
 
   def perform_search(*options)
-    search = build_search *options
-    search.api_results
+    search = build_search(*options)
+    search.api_results(Field.yes?(params[:human]))
   end
 
   def build_search(*options)
@@ -150,7 +147,7 @@ class Api::CollectionsController < ApiController
     search.after params[:updated_since] if params[:updated_since]
     search.deleted_since params[:deleted_since] if params[:deleted_since]
     search.full_text_search params[:search] if params[:search]
-    search.box *valid_box_coordinates if params[:box]
+    search.box(*valid_box_coordinates) if params[:box]
     search.select_fields(params[:fields]) if params[:fields]
     search.name(params[:name]) if params[:name]
     search.name_start_with(params[:sitename]) if params[:sitename]

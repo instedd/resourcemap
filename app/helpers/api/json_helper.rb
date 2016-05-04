@@ -1,28 +1,28 @@
 require 'new_relic/agent/method_tracer'
 
 module Api::JsonHelper
-  def collection_json(collection, results, user, options = {})
+  def collection_json(collection, results, user)
     obj = {}
     obj[:name] = collection.name
     obj[:previousPage] = url_for(params.merge page: results.previous_page, only_path: false) if results.previous_page
     obj[:nextPage] = url_for(params.merge page: results.next_page, only_path: false) if results.next_page
     obj[:count] = results.total
     obj[:totalPages] = results.total_pages
-    obj[:sites] = process_labels(collection, results, user, options[:human])
+    obj[:sites] = process_labels(collection, results, user)
     obj
   end
 
-  def site_item_json(result, human = false, fields_by_code = {})
+  def site_item_json(result)
     source = result['_source']
 
     obj = {}
     obj[:id] = source['id']
     obj[:name] = source['name']
-    obj[:createdAt] = Site.parse_time(source['created_at'])
-    obj[:updatedAt] = Site.parse_time(source['updated_at'])
+    obj[:createdAt] = Site.parse_time(source['created_at']).as_json
+    obj[:updatedAt] = Site.parse_time(source['updated_at']).as_json
 
     if source['deleted_at']
-      obj[:deletedAt] = Site.parse_time(source['deleted_at'])
+      obj[:deletedAt] = Site.parse_time(source['deleted_at']).as_json
     end
 
     if source['location']
@@ -30,38 +30,15 @@ module Api::JsonHelper
       obj[:long] = source['location']['lon']
     end
 
-    obj[:properties] = {}
-    if human
-      source['properties'].each do |code, value|
-        field = fields_by_code[code]
-
-        obj[:properties][code] = if field.is_a?(Field::HierarchyField)
-          field.human_value(value) # this case is for optimization only.
-          # Field::HierarchyField#csv_values ends up building the whole ascendent trace
-          # for each element.
-          # Field::SelectOneField#human_value can't be used instead of #csv_values here
-          # since the +value+ has the code but not the id of the selected option.
-        else
-          field.csv_values(value, human).first
-        end
-      end
-    else
-      obj[:properties] = source['properties']
-    end
+    obj[:properties] = source['properties']
 
     obj
   end
 
-  include ::NewRelic::Agent::MethodTracer
-  add_method_tracer :site_item_json, 'Custom/JsonHelper/site_item_json'
-
-  def process_labels(collection, results, user, human = false)
-    fields_by_code = {}
-    if human
-      fields = collection.visible_fields_for(user)
-      fields.each(&:cache_for_read)
-      fields_by_code = fields.index_by(&:code)
-    end
-    results.map {|result| site_item_json result, human, fields_by_code}
+  def process_labels(collection, results, user)
+    results.map {|result| site_item_json result}
   end
+
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :collection_json, 'Custom/JsonHelper/collection_json'
 end
