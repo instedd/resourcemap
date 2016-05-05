@@ -37,12 +37,21 @@ class Api::CollectionsController < ApiController
       options << :page
     end
 
-    @results = perform_search(*options)
+    results = build_search(*options).mapped_results
+    human = Field.yes?(params[:human])
 
     respond_to do |format|
-      format.rss { render :show, layout: false }
-      format.csv { collection_csv(collection, @results) }
-      format.json { render_json collection_json(collection, @results, current_user) }
+      format.rss {
+        @results = results.for_json(human)
+        render :show, layout: false
+      }
+      format.csv {
+        sites_csv = collection.to_csv(results.for_csv(human), results.visible_fields)
+        send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
+      }
+      format.json {
+        render_json collection_json(collection, results.for_json(human))
+      }
     end
   end
 
@@ -115,7 +124,7 @@ class Api::CollectionsController < ApiController
 
   def perform_search(*options)
     search = build_search(*options)
-    search.api_results(Field.yes?(params[:human]))
+    search.api_results
   end
 
   def build_search(*options)
@@ -184,11 +193,6 @@ class Api::CollectionsController < ApiController
     end
 
     coords
-  end
-
-  def collection_csv(collection, results, options = {})
-    sites_csv = collection.to_csv(results, current_user, nil, options)
-    send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
 
   def find_fields(params)

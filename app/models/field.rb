@@ -126,12 +126,13 @@ class Field < ActiveRecord::Base
   end
 
   def csv_values(value, human = false)
-    if human
-      value = decode(value) rescue value
-      [human_value(value)] rescue csv_values(value)
-    else
-      [Array(value).join(", ")]
-    end
+    return [''] if value.nil?
+    inner_value = if human
+                    human_value(value)
+                  else
+                    api_value(value)
+                  end
+    [Array(inner_value).join(', ')]
   end
 
   def error_description_for_invalid_values(exception)

@@ -1,14 +1,14 @@
 require 'new_relic/agent/method_tracer'
 
 module Api::JsonHelper
-  def collection_json(collection, results, user)
+  def collection_json(collection, results)
     obj = {}
     obj[:name] = collection.name
     obj[:previousPage] = url_for(params.merge page: results.previous_page, only_path: false) if results.previous_page
     obj[:nextPage] = url_for(params.merge page: results.next_page, only_path: false) if results.next_page
     obj[:count] = results.total
     obj[:totalPages] = results.total_pages
-    obj[:sites] = process_labels(collection, results, user)
+    obj[:sites] = results.map { |item| site_item_json(item) }
     obj
   end
 
@@ -33,10 +33,6 @@ module Api::JsonHelper
     obj[:properties] = source['properties']
 
     obj
-  end
-
-  def process_labels(collection, results, user)
-    results.map {|result| site_item_json result}
   end
 
   include ::NewRelic::Agent::MethodTracer

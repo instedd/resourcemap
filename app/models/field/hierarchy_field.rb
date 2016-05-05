@@ -48,11 +48,8 @@ class Field::HierarchyField < Field
       rows << value
     end
 
-    # This rescue is because the hiearchy could possibly have invalid values and
-    # ascendants_of_in_hierarchy raise an "invalid value" exception if the stored value is not valid
-    ancestors = ascendants_of_in_hierarchy(value) rescue []
-
     # Add all values
+    ancestors = ancestors_with_cache(value)
     ancestors.reverse.each do |ancestor|
       rows << ancestor[NAME]
     end
@@ -62,6 +59,17 @@ class Field::HierarchyField < Field
       rows << ""
     end
     rows
+  end
+
+  def ancestors_with_cache(id)
+    ancestors = []
+    while id
+      option = find_hierarchy_option_by_id(id)
+      break unless option
+      ancestors << option
+      id = option[PARENT_ID]
+    end
+    ancestors
   end
 
   def human_value(value)

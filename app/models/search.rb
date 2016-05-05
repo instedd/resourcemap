@@ -176,53 +176,27 @@ class Search
     Results.new(results)
   end
 
+  def mapped_results
+    ElasticSearch::ResultsMapper.new(
+      results,
+      collection: @collection,
+      current_user: @current_user,
+      snapshot_id: @snapshot_id
+    )
+  end
+
+  # TODO: deprecate
   # Returns the results from ElasticSearch but with codes as keys and codes as
   # values (when applicable).
   def api_results(human = false)
-    visible_fields = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id)
-    visible_fields.each { |field| field.code.freeze; field.cache_for_read }
-
-    fields_by_es_code = visible_fields.index_by(&:es_code)
-
-    results = results()
-    results.each do |item|
-      properties = item['_source']['properties']
-      api_props = {}
-
-      properties.each_pair do |es_code, value|
-        field = fields_by_es_code[es_code]
-        if field
-          api_props[field.code] = if human
-                                    field.human_value(value)
-                                  else
-                                    field.api_value(value)
-                                  end
-        end
-      end
-      item['_source']['properties'] = api_props
-    end
-    results
+    mapped_results.for_json(human)
   end
 
+  # TODO: deprecate
   # Returns the results from ElasticSearch but with the location field
   # returned as lat/lng fields, and the date as a date object
   def ui_results
-    fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by(&:es_code)
-
-    results = results()
-    results.each do |item|
-      if item['_source']['location']
-        item['_source']['lat'] = item['_source']['location']['lat']
-        item['_source']['lng'] = item['_source']['location']['lon']
-        item['_source'].delete 'location'
-      end
-      item['_source']['created_at'] = Site.parse_time item['_source']['created_at']
-      item['_source']['updated_at'] = Site.parse_time item['_source']['updated_at']
-      item['_source']['properties'] = item['_source']['properties'].select { |es_code, value|
-        fields_by_es_code[es_code]
-      }
-    end
-    results
+    mapped_results.for_ui
   end
 
   def histogram_results(field_es_code)
