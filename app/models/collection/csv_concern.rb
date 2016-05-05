@@ -9,7 +9,7 @@ module Collection::CsvConcern
     end
   end
 
-  def to_csv(elastic_search_api_results, fields)
+  def to_csv(elastic_search_csv_results, fields)
     CSV.generate do |csv|
       header = ['resmap-id', 'name', 'lat', 'long']
       fields.each do |field|
@@ -20,7 +20,7 @@ module Collection::CsvConcern
       header << 'last updated'
       csv << header
 
-      elastic_search_api_results.each do |result|
+      elastic_search_csv_results.each do |result|
         source = result['_source']
 
         row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
