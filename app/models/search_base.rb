@@ -188,6 +188,16 @@ module SearchBase
     self
   end
 
+  def created_after(time)
+    time = parse_time(time)
+    created_since_query(time)
+  end
+
+  def created_since_query(time)
+    add_filter range: {created_at: {gte: Site.format_date(time)}}
+    self
+  end
+
   def date_query(iso_string, field_name)
     # We use a 2 seconds range, not the exact date, because this would be very restrictive
     time = Time.iso8601(iso_string)

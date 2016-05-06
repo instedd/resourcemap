@@ -494,6 +494,71 @@ describe Api::CollectionsController, :type => :controller do
     end
   end
 
+  describe "updated_since" do
+    it "finds sites updated since" do
+      sign_in user
+
+      site1 = collection.sites.make
+      site2 = collection.sites.make
+      site3 = collection.sites.make
+      site4 = collection.sites.make
+
+      Timecop.freeze(Time.now) do
+        site1.name += ' 2'
+        site1.save!
+
+        Timecop.travel(1.day.from_now)
+        site2.name += ' 2'
+        site2.save!
+
+        Timecop.travel(1.day.from_now)
+        site3.name += ' 2'
+        site3.save!
+
+        Timecop.travel(1.day.from_now)
+        site4.name += ' 2'
+        site4.save!
+
+        Timecop.travel(1.day.from_now)
+
+        get :show, id: collection.id, format: 'json', updated_since: 49.hours.ago.to_s
+
+        json = JSON.parse(response.body)
+        sites = json["sites"]
+        expect(sites.map { |site| site["id"] }.sort).to eq([site3.id, site4.id])
+        expect(sites.map { |site| Time.parse(site["updatedAt"]).utc.to_i }.sort ).to eq([site3.updated_at.to_i, site4.updated_at.to_i])
+      end
+    end
+  end
+
+  describe "created_since" do
+    it "finds sites created since" do
+      sign_in user
+
+      Timecop.freeze(Time.now) do
+        site1 = collection.sites.make
+
+        Timecop.travel(1.day.from_now)
+        site2 = collection.sites.make
+
+        Timecop.travel(1.day.from_now)
+        site3 = collection.sites.make
+
+        Timecop.travel(1.day.from_now)
+        site4 = collection.sites.make
+
+        Timecop.travel(1.day.from_now)
+
+        get :show, id: collection.id, format: 'json', created_since: 49.hours.ago.to_s
+
+        json = JSON.parse(response.body)
+        sites = json["sites"]
+        expect(sites.map { |site| site["id"] }.sort).to eq([site3.id, site4.id])
+        expect(sites.map { |site| Time.parse(site["createdAt"]).utc.to_i }.sort ).to eq([site3.created_at.to_i, site4.created_at.to_i])
+      end
+    end
+  end
+
   describe "gets sites by id" do
     before(:each) { sign_in user }
 
