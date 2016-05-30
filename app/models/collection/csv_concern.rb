@@ -72,15 +72,13 @@ module Collection::CsvConcern
     # And validate it's content
     items = validate_format(csv)
 
+    # Build a dictionary of the items for quick access to the parents
+    items_by_id = Hash[items.map { |order, item| [item[:id], item] }]
 
     # Add to parents
     items.each do |order, item|
       if item[:parent].present? && !item[:error].present?
-        parent_candidates = items.select{|key, hash| hash[:id] == item[:parent]}
-
-        if parent_candidates.any?
-          parent = parent_candidates.first[1]
-        end
+        parent = items_by_id[item[:parent]]
 
         if parent
           parent[:sub] ||= []
@@ -122,6 +120,13 @@ module Collection::CsvConcern
   def validate_format(csv)
     i = 0
     items = {}
+
+    # For validating the parents, make a set of all the IDs in the CSV
+    all_ids = Set.new(csv.map { |csv_row| csv_row[0].strip })
+
+    # Keep a set of the IDs already processed to check for duplicates
+    seen_ids = Set.new
+
     csv.each do |row|
       item = {}
       if row[0] == 'ID'
@@ -139,7 +144,7 @@ module Collection::CsvConcern
 
           #Check unique id
           id = row[0].strip
-          if items.any?{|item| item.second[:id] == id}
+          if seen_ids.include?(id)
             item[:error] = "Invalid id."
             item[:error_description] = "Hierarchy id should be unique"
             error = true
@@ -147,7 +152,7 @@ module Collection::CsvConcern
 
           #Check parent id exists
           parent_id = row[1]
-          if(parent_id.present? && !csv.any?{|csv_row| csv_row[0].strip == parent_id.strip})
+          if parent_id.present? && !all_ids.include?(parent_id.strip)
             item[:error] = "Invalid parent value."
             item[:error_description] = "ParentID should match one of the Hierarchy ids"
             error = true
@@ -161,6 +166,7 @@ module Collection::CsvConcern
           end
         end
 
+        seen_ids << id
         items[item[:order]] = item
       end
     end
