@@ -1,0 +1,14 @@
+version: '2.0'
+
+services:
+  rails:
+    image: instedd/nginx-rails:2.1
+    environment:
+      RAILS_ENV: development
+      ELASTICSEARCH_URL: 'elasticsearch:9200'
+      REDIS_URL: 'redis://redis:6379'
+      DATABASE_URL: 'mysql2://root@db'
+      POIROT_ENABLED: 'false'
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle
