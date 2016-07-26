@@ -111,6 +111,27 @@ Start the Jasmine server with:
 And open a browser tab in [http://localhost:8888](http://localhost:8888)
 
 
+### Docker development
+
+`docker-compose.yml` file build a development environment mounting the current folder and running rails in development environment.
+
+Run the following commands to have a stable development environment.
+
+```
+$ docker-compose run --rm --no-deps web bundle install
+$ ./on-web rake db:create db:schema:load db:seed
+$ docker-compose up
+```
+
+To setup and run test, once the web container is running:
+
+```
+$ docker exec -it resourcemap_web_1 bash
+root@45ccfa697a3a:/app# RAILS_ENV=test rake db:create db:schema:load
+$ ./on-web rake
+$ ./on-web rake spec SPEC=spec/models/user_spec.rb
+```
+
 ## Deployment
 
 Resource Map uses [Capistrano 3](http://capistranorb.com) to deploy. Capistrano

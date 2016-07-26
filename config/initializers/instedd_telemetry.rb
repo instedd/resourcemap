@@ -16,5 +16,6 @@ InsteddTelemetry.setup do |config|
    config.add_collector Telemetry::NewCollectionsCollector
    config.add_collector Telemetry::SitesCollector
    config.add_collector Telemetry::FieldsCollector
+   config.add_collector Telemetry::AccountsCollector
 
 end
