@@ -30,7 +30,7 @@ ResourceMap::Application.configure do
   config.assets.compress = false
 
   # Expands the lines which load the assets
-  config.assets.debug = true
+  config.assets.debug = false # if true, the thin server was too slow in docker environment
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     :address              => "smtp.mandrillapp.com",

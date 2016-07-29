@@ -34,7 +34,7 @@ gem 'mini_magick'
 gem 'activerecord-import'
 gem 'active_model_serializers'
 gem 'includes-count'
-gem 'poirot_rails', git: "https://github.com/instedd/poirot_rails.git", branch: 'master' unless ENV['CI'] || (ENV['POIROT_ENABLED'] == 'false')
+gem 'poirot_rails', git: "https://github.com/instedd/poirot_rails.git", branch: 'master' unless ENV['CI']
 gem 'instedd_telemetry', git: "https://github.com/instedd/telemetry_rails", branch: 'master'
 gem 'paranoia', '~> 2.0'
 

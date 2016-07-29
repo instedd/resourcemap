@@ -22,7 +22,7 @@ services:
       file: docker-compose-base.yml
       service: rails
     command: bundle exec rails server -b 0.0.0.0
-    links:
+    links: &links
       - db
       - elasticsearch
       - redis
@@ -34,20 +34,14 @@ services:
       file: docker-compose-base.yml
       service: rails
     command: bundle exec rake resque:work TERM_CHILD=1 FORK_PER_JOB=false
-    links:
-      - db
-      - elasticsearch
-      - redis
+    links: *links
 
   resque_scheduler:
     extends:
       file: docker-compose-base.yml
       service: rails
     command: bundle exec rake resque:scheduler
-    links:
-      - db
-      - elasticsearch
-      - redis
+    links: *links
 
 volumes:
   db:
