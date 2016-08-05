@@ -119,23 +119,16 @@ Run the following commands to have a stable development environment.
 
 ```
 $ docker-compose run --rm --no-deps web bundle install
-$ ./on-web rake db:create db:schema:load db:seed # (retry if fail)
+$ docker-compose up -d db
+$ docker-compose run --rm web rake db:setup
 $ docker-compose up
 ```
 
 To setup and run test, once the web container is running:
 
 ```
-$ docker exec -it resourcemap_web_1 bash
+$ docker-compose exec web bash
 root@web_1 $ rake
-```
-
-Or to load just an environment to run test
-
-```
-$ ./on-web bash
-root@web_run_1 $ rake spec
-root@web_run_1 $ rake spec SPEC=spec/models/user_spec.rb
 ```
 
 ## Deployment

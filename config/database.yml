@@ -1,5 +1,6 @@
 development:
   adapter: mysql2
+  host: <%= ENV["DATABASE_HOST"] %>
   encoding: utf8
   database: resource_map_development
   pool: 5
@@ -8,8 +9,8 @@ development:
 
 test:
   adapter: mysql2
+  host: <%= ENV["DATABASE_HOST"] %>
   encoding: utf8
-  host: <%= ENV["DATABASE_HOST"] %> # DATABASE_URL is not been picked in test environment
   database: resource_map_test
   pool: 5
   username: root

@@ -17,31 +17,36 @@ services:
   redis:
     image: redis
 
-  web:
-    extends:
-      file: docker-compose-base.yml
-      service: rails
-    command: bundle exec rails server -b 0.0.0.0
-    links: &links
+  web: &rails
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    environment:
+      RAILS_ENV:
+      ELASTICSEARCH_URL: 'elasticsearch:9200'
+      REDIS_URL: 'redis://redis:6379'
+      DATABASE_HOST: 'db'
+    pid: host
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle
+    depends_on:
       - db
       - elasticsearch
       - redis
+    command: rails server -b 0.0.0.0
     ports:
       - 3000:3000
 
   resque:
-    extends:
-      file: docker-compose-base.yml
-      service: rails
-    command: bundle exec rake resque:work TERM_CHILD=1 FORK_PER_JOB=false
-    links: *links
+    <<: *rails
+    command: rake resque:work TERM_CHILD=1 FORK_PER_JOB=false
+    ports: []
 
   resque_scheduler:
-    extends:
-      file: docker-compose-base.yml
-      service: rails
-    command: bundle exec rake resque:scheduler
-    links: *links
+    <<: *rails
+    command: rake resque:scheduler
+    ports: []
 
 volumes:
   db:
