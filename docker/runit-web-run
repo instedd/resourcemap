@@ -1,0 +1,4 @@
+#!/bin/bash
+source /etc/envvars
+cd /app
+exec rails server -e $RAILS_ENV
