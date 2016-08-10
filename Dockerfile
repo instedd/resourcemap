@@ -29,4 +29,10 @@ RUN bundle exec rake assets:precompile RAILS_ENV=production SECRET_KEY_BASE=secr
 RUN mv /app/config/initializers/resque_scheduler.ignore /app/config/initializers/resque_scheduler.rb
 
 # Add config files
+ADD docker/*.yml /app/config/
+ADD docker/google_maps.key /app/config/
 ADD docker/runit-web-run /etc/service/web/run
+
+# Environment variables setup
+# Guisso
+# GUISSO_ENABLED GUISSO_URL GUISSO_CLIENT_ID GUISSO_CLIENT_SECRET

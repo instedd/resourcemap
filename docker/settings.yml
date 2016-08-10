@@ -1,0 +1,11 @@
+mobile_id: off
+host: <%= ENV['SETTINGS__HOST'] %>
+
+plugins:
+  public_collection: on
+  snapshot: on
+  channels: off
+  reminders: on
+  alerts: on
+  fred_api: on
+  csd_api: on
