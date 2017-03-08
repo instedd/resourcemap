@@ -204,7 +204,7 @@
               /ko if: writeable
               /- TODO: remove the mousedown handler. Otherwise, there are
               /- situations when clicking on the row doesn't activate the edition
-              %div.site_row.writeable{ko(click: 'edit', event: {mousedown: 'notifyEdit'})}
+              %div.site_row.writeable{ko(click: 'edit')}
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 %label.field-name{ko(text: "name + ':'", topPopover: "__('Field Code') + ': ' + code", css: { error: :error })}
                 /ko if: hasValue() && !error()
