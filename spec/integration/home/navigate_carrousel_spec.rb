@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "home", :type => :request do
 
-  it "should navigate carrousel", js:true do
+  pending "should navigate carrousel", js:true do
 
  	  visit "/"
  	  find(:xpath, '//div[@id="container"]/div/div[3]/div/div/div[3]/a').click

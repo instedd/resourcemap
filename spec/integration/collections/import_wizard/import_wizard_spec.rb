@@ -13,7 +13,7 @@ describe "import_wizard", :type => :request, uses_collections_structure: true do
     find("#collections-main").find("button.fconfiguration").click
   end
 
-  it "should import a site", js:true, uses_collections_structure: true do
+  pending "should import a site", js:true, uses_collections_structure: true do
     date_escode = multicollection_date_field.es_code
     identifier_escode = multicollection_identifier_field.es_code
     new_value_for_select_one = label_for_id(multicollection_select_one_field, '2')
@@ -41,7 +41,7 @@ describe "import_wizard", :type => :request, uses_collections_structure: true do
     expect(find('#user-input-user').value).to eq(user.email)
   end
 
-  it "should NOT upload a bulk for a collection", js:true, uses_collections_structure: true do
+  pending "should NOT upload a bulk for a collection", js:true, uses_collections_structure: true do
     click_link "Upload it for bulk sites updates"
     page.has_content? ('#upload')
     page.attach_file 'upload', 'sanitized_rwanda_schema.json'
@@ -49,7 +49,7 @@ describe "import_wizard", :type => :request, uses_collections_structure: true do
     expect(page).to have_content ('Invalid file format. Only CSV files are allowed.')
   end
 
-  it "should cancel import", js:true, uses_collections_structure: true do
+  pending "should cancel import", js:true, uses_collections_structure: true do
     click_link "Upload it for bulk sites updates"
     attach_file("upload","multicollection_site.csv")
     click_button "Start importing"
@@ -59,4 +59,3 @@ describe "import_wizard", :type => :request, uses_collections_structure: true do
     expect(page).to have_content "Import canceled"
   end
 end
-

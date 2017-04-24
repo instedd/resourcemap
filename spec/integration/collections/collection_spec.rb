@@ -24,7 +24,7 @@ describe "collection", :type => :request, uses_collections_structure: true do
     expect(page).to have_content('My collection')
   end
 
-  it "should create a collection with a custom logo", js: true do
+  pending "should create a collection with a custom logo", js: true do
     click_on create_collection_link
 
     fill_in "collection_name", with: 'Collection with logo'
@@ -49,7 +49,7 @@ describe "collection", :type => :request, uses_collections_structure: true do
       click_on first_collection_path
     end
 
-    it "should clear search", js:true do
+    pending "should clear search", js:true do
       fill_in 'search', :with => "Kenya\n"
       expect(page).to have_content 'Kenya'
       click_link 'clear search'
@@ -79,14 +79,14 @@ describe "collection", :type => :request, uses_collections_structure: true do
         expect(page).to have_content "Collection WHO African Region updated"
       end
 
-      it "should delete a collection", js:true do
+      pending "should delete a collection", js:true do
         click_link "Delete collection"
         click_link "Confirm"
 
         expect(page).to have_content "Collection WHO African Region deleted"
       end
 
-      it "should change to collection via breadcrumb", js:true do
+      pending "should change to collection via breadcrumb", js:true do
         click_link "Settings"
 
         click_on breadcrumb_collection_link
@@ -95,7 +95,7 @@ describe "collection", :type => :request, uses_collections_structure: true do
         expect(page).to have_content "Create Collection"
       end
 
-      it "should export collection sites as RSS", js: true do
+      pending "should export collection sites as RSS", js: true do
         rss_window = window_opened_by { click_link('RSS') }
 
         within_window rss_window do
@@ -109,7 +109,7 @@ describe "collection", :type => :request, uses_collections_structure: true do
         rss_window.close
       end
 
-      it "should export collection sites as json", js: true do
+      pending "should export collection sites as json", js: true do
         json_window = window_opened_by { click_link('JSON') }
 
         within_window json_window do

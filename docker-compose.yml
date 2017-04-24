@@ -26,6 +26,8 @@ services:
       ELASTICSEARCH_URL: 'elasticsearch:9200'
       REDIS_URL: 'redis://redis:6379'
       DATABASE_HOST: 'db'
+      SELENIUM_URL: 'http://selenium:4444/'
+      CAPYBARA_HOST: 'web'
     pid: host
     volumes:
       - .:/app
@@ -38,6 +40,9 @@ services:
     ports:
       - 3000:3000
       - 8888:8888
+
+  selenium:
+    image: selenium/standalone-firefox
 
   resque:
     <<: *rails

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "view_table_mode", :type => :request do
 
-it "should change to table mode view", js:true do
+pending "should change to table mode view", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
     @collection = create_collection_for(@user)
     login_as (@user)

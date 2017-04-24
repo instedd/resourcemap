@@ -13,7 +13,7 @@ describe "layer", :type => :request, uses_collections_structure: true do
     find("#collections-main").find("button.fconfiguration").click
   end
 
-  it "should import layer", js:true do
+  pending "should import layer", js:true do
     visit collections_path
     click_on create_collection_link
     fill_in  "collection_name", :with => 'Test Collection'
@@ -40,7 +40,7 @@ describe "layer", :type => :request, uses_collections_structure: true do
     expect(page).to have_content "Layer 'Test' successfully saved"
   end
 
-  it "should delete layer", js:true do
+  pending "should delete layer", js:true do
     click_link "Layers"
 
     click_button "Remove layer"
@@ -49,7 +49,7 @@ describe "layer", :type => :request, uses_collections_structure: true do
     expect(page).to have_content "Layer WHO African Region layer successfully deleted"
   end
 
-  it "should edit layer", js:true do
+  pending "should edit layer", js:true do
     click_link "Layers"
 
     click_button "Edit"

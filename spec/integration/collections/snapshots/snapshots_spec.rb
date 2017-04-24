@@ -20,7 +20,7 @@ describe "snapshots", :type => :request, uses_collections_structure: true do
 
   end
 
-  it "should load a snapshot", js:true do
+  pending "should load a snapshot", js:true do
 
     fill_in 'snapshot_name', :with => 'Snapshot2'
     click_button 'Take new snapshot'
@@ -30,7 +30,7 @@ describe "snapshots", :type => :request, uses_collections_structure: true do
 
   end
 
-  it "should not create site using snapshot", js:true do
+  pending "should not create site using snapshot", js:true do
 
     choose 'January'
     visit collections_path
@@ -41,7 +41,7 @@ describe "snapshots", :type => :request, uses_collections_structure: true do
 
   end
 
-  it "should not edit layer with snapshot", js:true do
+  pending "should not edit layer with snapshot", js:true do
 
     choose 'January'
     click_link "Layers"
@@ -50,7 +50,7 @@ describe "snapshots", :type => :request, uses_collections_structure: true do
 
   end
 
-  it "should not edit site using snapshot", js:true do
+  pending "should not edit site using snapshot", js:true do
 
     choose 'January'
     visit collections_path
@@ -60,7 +60,7 @@ describe "snapshots", :type => :request, uses_collections_structure: true do
 
   end
 
-  it "should switch snapshots", js:true do
+  pending "should switch snapshots", js:true do
 
     choose 'Feb'
     expect(page).to have_content 'Snapshot Feb loaded'
@@ -69,7 +69,7 @@ describe "snapshots", :type => :request, uses_collections_structure: true do
 
   end
 
-  it "should not take a snapshot", js:true do
+  pending "should not take a snapshot", js:true do
 
     click_button 'Take new snapshot'
     expect(page).to have_content "Name can't be blank"

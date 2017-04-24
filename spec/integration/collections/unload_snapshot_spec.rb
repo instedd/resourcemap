@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "unload_snapshot", :type => :request do
 
-  it "should go back to present time", js:true do
+  pending "should go back to present time", js:true do
     @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
     @collection = create_collection_for(@user)
     login_as (@user)

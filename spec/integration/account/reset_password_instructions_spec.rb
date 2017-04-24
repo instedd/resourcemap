@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "reset_password", :type => :request do
 
- it "should reset password", js:true do
+ pending "should reset password", js:true do
     user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
     visit collections_path
     click_link 'Log in'
