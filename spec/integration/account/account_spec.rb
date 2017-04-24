@@ -46,7 +46,7 @@ describe "account", :type => :request, uses_collections_structure: true do
     expect(page).to have_content('Signed out successfully.')
   end
 
-  pending "should create and confirm an account", js: true do
+  it "should create and confirm an account", js: true do
     visit root_path
     click_link 'Create account'
     page.has_content? "form#new_user"
@@ -106,7 +106,7 @@ describe "account", :type => :request, uses_collections_structure: true do
     expect(page).to have_content "12345"
   end
 
-  pending "should change password", js:true do
+  it "should change password", js:true do
     login_as user
     visit root_path
     find_by_id('User').click
@@ -137,3 +137,4 @@ describe "account", :type => :request, uses_collections_structure: true do
     expect(page).to have_content(user.email)
   end
 end
+

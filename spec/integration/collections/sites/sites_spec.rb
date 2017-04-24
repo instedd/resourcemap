@@ -33,7 +33,7 @@ describe "sites", :type => :request, uses_collections_structure: true do
     expect(page).to have_content('site cannot be saved due to validation errors')
   end
 
-  pending "should filter sites by name", js:true do
+  it "should filter sites by name", js:true do
     find('.refine').click
     click_on expand_name
     fill_starts_with("Ken")

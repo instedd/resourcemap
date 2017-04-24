@@ -58,8 +58,6 @@ RSpec.configure do |config|
   Capybara.javascript_driver = :selenium
   Capybara.default_selector = :css
 
-  setup_capybara_docker_driver_if_needed
-
   config.before(:each) do |example|
     DatabaseCleaner.strategy = if Capybara.current_driver == :rack_test
       :transaction

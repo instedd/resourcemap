@@ -5,7 +5,7 @@ describe "create_layer", :type => :request do
     new_user
   end
 
-  pending "should create layer", js:true do
+  it "should create layer", js:true do
     create_collection_for user
     login_as user
     visit collections_path

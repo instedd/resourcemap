@@ -188,7 +188,7 @@ describe "change field values", :type => :request, uses_collections_structure: t
     expect(field).to_not have_selector('input')
   end
 
-  pending "should edit complex fields in edit mode", js:true do
+  it "should edit complex fields in edit mode", js:true do
     complex.memberships.create! :user_id => user.id, :admin => true
     login_as(user)
     visit collections_path

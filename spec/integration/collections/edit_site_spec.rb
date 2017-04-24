@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'spec_helper' 
 
 describe "edit_site", :type => :request do
   let(:user) do
@@ -42,7 +42,7 @@ describe "edit_site", :type => :request do
     expect(page).to have_link('Delete Site')
   end
 
-  pending "should not break when clicking a site marker a second time (#862)", js: true do
+  it "should not break when clicking a site marker a second time (#862)", js: true do
     page.all('#map img[src*=resmap_default]').last.click
     expect(page).to have_content(@site.name)
     click_on back_to_sites_button

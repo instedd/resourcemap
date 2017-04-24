@@ -5,7 +5,7 @@ describe "search", :type => :request do
     new_user
   end
 
-  pending "should search", js: true do
+  it "should search", js: true do
     collection = create_collection_for(user)
     layer = create_layer_for(collection)
     field = create_field_for(layer)
@@ -23,3 +23,5 @@ describe "search", :type => :request do
     expect(page.find_all('.sites tr').count).to be(1)
   end
 end
+
+
