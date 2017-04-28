@@ -8,6 +8,18 @@ describe CollectionsController, :type => :controller do
 
   before(:each) {sign_in user}
 
+  def make_private(collection)
+    collection.anonymous_location_permission = nil
+    collection.anonymous_name_permission = nil
+    collection.save
+  end
+
+  def make_public(collection)
+    collection.anonymous_location_permission = 'read'
+    collection.anonymous_name_permission = 'read'
+    collection.save
+  end
+
   it "should not throw error when calling unload_current_snapshot and no snapshot is set" do
     post :unload_current_snapshot, collection_id: collection.id
     assert_nil flash[:notice]
@@ -16,9 +28,7 @@ describe CollectionsController, :type => :controller do
 
   # Issue #627
   it "should not get public repeated one time for each membership" do
-    collection.anonymous_name_permission = 'read'
-    collection.anonymous_location_permission = 'read'
-    collection.save
+    make_public(collection)
 
     user2 = collection.users.make email: 'user2@email.com'
     collection.memberships.create! user_id: user2.id
@@ -26,31 +36,6 @@ describe CollectionsController, :type => :controller do
     get :index, format: 'json'
     collections =  JSON.parse response.body
     expect(collections.count).to eq(1)
-  end
-
-  it "should get public collection being a guest user" do
-    collection.anonymous_name_permission = 'read'
-    collection.anonymous_location_permission = 'read'
-    collection.save
-
-    sign_out user
-
-    get :show, format: 'json', id: collection.id
-    expect(response).to be_success
-    json = JSON.parse response.body
-    expect(json["name"]).to eq(collection.name)
-  end
-
-  # Issue #661
-  it "should not get public collection's settings page being a guest user" do
-    collection.anonymous_name_permission = 'read'
-    collection.anonymous_location_permission = 'read'
-    collection.save
-
-    sign_out user
-
-    get :show, format: 'html', id: collection.id
-    expect(response).to redirect_to '/users/sign_in'
   end
 
   # Issue #629
@@ -159,33 +144,53 @@ describe CollectionsController, :type => :controller do
     end
   end
 
-  describe "public access" do
-    let(:public_collection) { user.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read') ) }
-    before(:each) { sign_out :user }
-
-    # Broken as of RM 2.10.1. It's somehow related to Guisso.
-    skip 'should get index as guest' do
-      get :index, collection_id: public_collection.id
-      expect(response).to be_success
-    end
-
-    # Pending on ticket https://github.com/instedd/resourcemap/issues/787
-    skip 'should not get index if collection_id is not passed' do
-      get :index
-      expect(response).not_to be_success
-    end
-
-    it "should get current_user_membership for public collection" do
-      get :current_user_membership, collection_id: public_collection.id, format: 'json'
-      expect(response).to be_success
-      dummy_membership = JSON.parse response.body
-      expect(dummy_membership["admin"]).to eq(false)
-      expect(dummy_membership["name"]).to eq("read")
-      expect(dummy_membership["location"]).to eq("read")
-    end
-  end
-
   describe "Permissions" do
+    describe "guest user" do
+      before(:each) { sign_out :user }
+
+      def expect_redirect_to_login(response)
+        expect(response.status).to eq(302)
+        expect(response.location).to eq(new_user_session_url)
+      end
+
+      # This is a regression test to ensure this leak
+      # doesn't get back: https://github.com/instedd/resourcemap/blob/26d529aa457bd16e408fe99e6496853d63b7f806/app/controllers/collections_controller.rb#L24
+      it "should redirect guest user to log in if she tries to list search collections by name" do
+        collection.name = "Foo"
+        make_private collection
+
+        get :index, name: "Foo"
+        expect_redirect_to_login(response)
+      end
+
+      it "should redirect guest user to log in if she tries to access a non-public collection" do
+        make_private collection
+        get :index, collection_id: collection.id
+        expect_redirect_to_login(response)
+      end
+
+      it "should allow guest user to read public collection" do
+        make_public collection
+        get :index, collection_id: collection.id
+        expect(response.status).to eq(200)
+      end
+
+      it "should get public collection being a guest user" do
+        make_public(collection)
+        get :show, format: 'json', id: collection.id
+        expect(response).to be_success
+        json = JSON.parse response.body
+        expect(json["name"]).to eq(collection.name)
+      end
+
+      # Issue #661
+      it "should not get public collection's settings page being a guest user" do
+        make_public(collection)
+        get :show, format: 'html', id: collection.id
+        expect(response).to redirect_to '/users/sign_in'
+      end
+    end
+
     it "should get current_user_membership" do
       get :current_user_membership, collection_id: collection.id, format: 'json'
       expect(response).to be_success

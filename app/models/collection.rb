@@ -59,6 +59,10 @@ class Collection < ActiveRecord::Base
     end
   end
 
+  def public?
+    anonymous_name_permission == "read" && anonymous_location_permission == "read"
+  end
+
   def snapshot_for(user)
     snapshots.where(user_snapshots: {user_id: user}).includes(:user_snapshots).first
   end

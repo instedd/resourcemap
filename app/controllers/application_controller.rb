@@ -111,6 +111,14 @@ class ApplicationController < ActionController::Base
     redirect_to params.to_hash if params[:locale].nil? && request.get? && params[:format] != "json"
   end
 
+  def redirect_to_login
+    if Guisso.enabled?
+      redirect_to_guisso
+    else
+      redirect_to new_user_session_path
+    end
+  end
+
   def ignore_public_attribute
     params[:layer].delete(:public) if params[:layer] && params[:layer][:public]
   end

@@ -21,22 +21,15 @@ class CollectionsController < ApplicationController
     user_memberships = current_user.memberships.map{|c| c.collection_id.to_s}
     collections_with_snapshot_by_user = collections_with_snapshot.select{|col| user_memberships.include?(col["id"].to_s)}
 
-    if params[:name].present?
-      render_json Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
-    else
-      add_breadcrumb _("Collections"), 'javascript:window.model.goToRoot()'
-      respond_to do |format|
-        format.html do
-          if Guisso.enabled? && current_user.is_guest && cannot?(:read, collection)
-            if params[:collection_id].present?
-              redirect_to_guisso(custom_message: 'This is a private collection')
-            else
-              redirect_to_guisso
-            end
-          end
+    add_breadcrumb _("Collections"), 'javascript:window.model.goToRoot()'
+    respond_to do |format|
+      format.html do
+        if current_user.is_guest
+          redirect_to_login if !params[:collection_id].present? || !collection.public?
         end
-        format.json { render_json collections_with_snapshot_by_user }
       end
+
+      format.json { render_json collections_with_snapshot_by_user }
     end
   end
 
