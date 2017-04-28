@@ -208,6 +208,7 @@ onCollections ->
         @startEditLocationInMap()
 
     startEditLocationInMap: =>
+      return unless @locationWriteable
       @originalLocation = @position()
 
       if @marker
