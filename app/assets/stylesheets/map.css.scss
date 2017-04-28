@@ -113,7 +113,7 @@
   height: 100%;
 }
 
-#sites_whitout_location_alert {
+#sites_without_location_alert {
   position: absolute;
   z-index: 1;
   bottom: 5px;
@@ -127,12 +127,12 @@
   padding: 5px;
 }
 
-#sites_whitout_location_alert  button {
+#sites_without_location_alert button {
   margin:0;
   vertical-align: middle;
 }
 
-#sites_whitout_location_alert span {
+#sites_without_location_alert span {
   display: inline-block;
   vertical-align: middle;
 }
