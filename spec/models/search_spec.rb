@@ -327,10 +327,22 @@ describe Search, :type => :model do
     let!(:layer) { collection.layers.make }
     let!(:prop) { layer.select_one_fields.make :code => 'prop', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}, {'id' => 3, 'code' => 'baz', 'label' => 'COCO'}]} }
     let!(:beds) { layer.numeric_fields.make :code => 'beds' }
+    let!(:luhn) { layer.identifier_fields.make :code => 'luhn', :config => { 'format' => 'Luhn'} }
     let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds.es_code => 8, prop.es_code => 1} }
     let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds.es_code => 10, prop.es_code => 2} }
     let!(:site3) { collection.sites.make :name => "Cordoba bar Buenos", :properties => {beds.es_code => 20, prop.es_code => 3} }
     let!(:site4) { collection.sites.make :name => "hello?/{#.", :properties => {beds.es_code => 0, prop.es_code => 3} }
+    let!(:site5) { collection.sites.make :name => "A Luhn Site", :properties => {luhn.es_code => "100001-7"} }
+
+    # Regression test fo https://github.com/instedd/resourcemap/issues/870
+    it "finds by whole luhn id" do
+      search = collection.new_search.full_text_search("100001-7")
+      assert_results search, site5
+    end
+
+    it "finds by luhn id prefix" do
+      assert_results collection.new_search.full_text_search("100001"), site5
+    end
 
     it "finds by name" do
       assert_results collection.new_search.full_text_search("Argent"), site1

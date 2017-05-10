@@ -115,8 +115,13 @@ module ElasticSearch; module QueryHelper
         if text =~ /\s/
           %Q("#{escape text}")
         else
-          # We do want to search prefixes for location values. This types of values comes as single words.
-          "#{escape text}*"
+          # This is a Luhn format, and we need to match it exactly. See: https://github.com/instedd/resourcemap/issues/870
+          if text =~ /\d\d\d\d\d\d-\d/
+            "#{escape text}"
+          else
+            # We do want to search prefixes for location values. This types of values comes as single words.
+            "#{escape text}*"
+          end
         end
       end
     end
