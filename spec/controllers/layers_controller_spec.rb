@@ -102,5 +102,32 @@ describe LayersController, :type => :controller do
       expect(json.length).to eq(1)
       expect(json[0]['id']).to eq(layer.id)
     end
+
+    it 'should let an admin set order' do
+      sign_in user
+      post :order, {order: [layer2.id, layer.id], collection_id: collection.id}
+
+      layer.reload
+      layer2.reload
+
+      expect(response).to be_success
+      expect(layer.ord).to eq(2)
+      expect(layer2.ord).to eq(1)
+    end
+
+    let!(:not_member) { User.make email: 'foo2@bar.com' }
+
+    it "shouldn't let member set order" do
+      sign_in member
+
+      post :order, {order: [layer2.id, layer.id], collection_id: collection.id}
+
+      layer.reload
+      layer2.reload
+
+      expect(response.status).to eq(403)
+      expect(layer.ord).to eq(1)
+      expect(layer2.ord).to eq(2)
+    end
   end
 end

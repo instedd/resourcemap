@@ -7,7 +7,11 @@ class Ability
     ### Collection ###
 
     # Admin abilities
-    can [:destroy, :create_snapshot, :recreate_index, :update, :members, :import_layers_from, :upload_logo, :edit_logo, :export], Collection, :memberships => { :user_id => user.id , :admin => true }
+    alias_action :destroy, :create_snapshot, :recreate_index, :update,
+                  :members, :import_layers_from, :upload_logo, :edit_logo, :export,
+                  :to => :admin
+
+    can :admin, Collection, :memberships => { :user_id => user.id , :admin => true }
     can :manage, Snapshot, :collection => {:memberships => { :user_id => user.id , :admin => true } }
 
     # User can read collection if she is a collection member or if the collection is public
@@ -46,6 +50,7 @@ class Ability
     can :create, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :destroy, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :set_order, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
+    can :order, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :hierarchy_editor, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
     can :decode_hierarchy_csv, Layer, :collection => { :memberships => { :user_id => user.id, :admin => true } }
 

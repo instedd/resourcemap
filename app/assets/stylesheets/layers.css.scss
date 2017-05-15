@@ -1,8 +1,13 @@
+.nonCurrentLayer {
+  cursor: move;
+}
+
 .feditor-top {
   height: 10px;
 }
 .feditor-container {
   padding: 0 5px 13px 3px;
+  cursor: move;
 
   div.feditor-content {
     width: 460px;

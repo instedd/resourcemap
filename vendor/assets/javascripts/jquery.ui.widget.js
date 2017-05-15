@@ -271,7 +271,11 @@ $.Widget.prototype = {
 	_init: $.noop,
 
 	destroy: function() {
-		this._destroy();
+		// Don't delete, might seem too defensive but there are corner
+		// cases where `_destroy` is called while it is undefined
+		if (this._destroy) {
+			this._destroy();
+		}
 		// we can probably remove the unbind calls in 2.0
 		// all event bindings should go through this._on()
 		this.element
@@ -280,9 +284,6 @@ $.Widget.prototype = {
 			// TODO remove dual storage
 			.removeData( this.widgetName )
 			.removeData( this.widgetFullName )
-			// support: jquery <1.6.3
-			// http://bugs.jquery.com/ticket/9413
-			.removeData( $.camelCase( this.widgetFullName ) );
 		this.widget()
 			.unbind( this.eventNamespace )
 			.removeAttr( "aria-disabled" )
@@ -291,9 +292,23 @@ $.Widget.prototype = {
 				"ui-state-disabled" );
 
 		// clean up events and states
-		this.bindings.unbind( this.eventNamespace );
-		this.hoverable.removeClass( "ui-state-hover" );
-		this.focusable.removeClass( "ui-state-focus" );
+		// Don't delete, might seem too defensive but there are corner
+		// cases where `unbind` is called on `bindings` while it is undefined
+		if (this.bindings) {
+			this.bindings.unbind( this.eventNamespace );
+		}
+
+		// Don't delete, might seem too defensive but there are corner
+		// cases where `removeClass` is called on `hoverable` while it is undefined
+		if (this.hoverable) {
+			this.hoverable.removeClass( "ui-state-hover" );
+		}
+
+		// Don't delete, might seem too defensive but there are corner
+		// cases where `removeClass` is called on `focusable` while it is undefined
+		if (this.focusable) {
+			this.focusable.removeClass( "ui-state-focus" );
+		}
 	},
 	_destroy: $.noop,
 

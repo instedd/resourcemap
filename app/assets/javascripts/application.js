@@ -24,6 +24,7 @@
 //= require jquery.history
 //= require autocomplete-tagfield
 //= require knockout
+//= require knockout-sortable
 //= require jquery.fancybox
 //= require jquery.blockUI
 //= require jquery.Jcrop

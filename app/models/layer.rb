@@ -49,6 +49,18 @@ class Layer < ActiveRecord::Base
     params.values
   end
 
+  # Given an array of ids, it updates the corresponding
+  # layers to reflect the ordering.
+  # Remember both layer and field orders are one-based.
+  def self.set_order(ids, user)
+    ids.each_with_index do |id, index|
+      layer = Layer.find(id)
+      layer.user = user
+      layer.ord = index + 1
+      layer.save!
+    end
+  end
+
   private
 
   def field_hash(field)

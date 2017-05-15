@@ -133,6 +133,12 @@ onLayers ->
       json._method = 'put'
       $.post "/collections/#{@collectionId}/layers/#{layer.id()}/set_order.json", json
 
+    # Takes an array of layers, extracts their id's and posts them to the server,
+    # which will then update the layers' ord properties based on that
+    saveAllLayersOrder: (layers) =>
+      $.post "/collections/#{@collectionId}/layers/order.json", {order: $.map(layers, (l) -> l.id())}, =>
+        _.each(layers, (l, index) => l.ord(index + 1))
+
     deleteLayer: (layer) =>
       confirmation = Jed.sprintf(__("Are you sure you want to delete layer %s"), layer.name())
 
@@ -152,28 +158,19 @@ onLayers ->
     isFirstLayer: (layer) => layer.ord() == 1
     isLastLayer: (layer) => layer.ord() == @layers().length
 
-    moveLayerDown: (layer) =>
-      nextLayer = @layers()[layer.ord()]
-      layer.ord(layer.ord() + 1)
-      nextLayer.ord(nextLayer.ord() - 1)
-      @saveLayerOrd(layer)
-      @saveLayerOrd(nextLayer)
-      @layers.sort((x, y) -> if x.ord() < y.ord() then -1 else 1)
-
-    moveLayerUp: (layer) =>
-      @moveLayerDown @layers()[layer.ord() - 2]
-
     isFirstField: (layer, field) => field.ord() == 1
     isLastField: (layer, field) => field.ord() == layer.fields().length
 
-    moveFieldDown: (field) =>
-      nextField = @currentLayer().fields()[field.ord()]
-      field.ord(field.ord() + 1)
-      nextField.ord(nextField.ord() - 1)
-      @currentLayer().fields.sort((x, y) -> if x.ord() < y.ord() then -1 else 1)
+    # Each time a user drags&drops a field to reorder, this callback gets called
+    # When that happens, the fields observable array is the source of truth,
+    # so we need to update the ord property of each of them.
+    resortFields: (_draggedData) =>
+      _.each(@currentLayer().fields(), (field, index) => field.ord(index + 1))
 
-    moveFieldUp: (field) =>
-      @moveFieldDown @currentLayer().fields()[field.ord() - 2]
+    # Similar to `resortFields`. The difference is that there's no save button
+    # for layer ordering, so each drop actually causes a roundtrip to the server
+    # See `saveAllLayersOrder` for more details.
+    resortLayers: (_draggedData) => @saveAllLayersOrder(@layers())
 
     newField: (kind) =>
       @currentField(new Field(@currentLayer(), kind: kind, ord: @currentLayer().fields().length + 1))

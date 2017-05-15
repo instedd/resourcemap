@@ -51,6 +51,7 @@ ResourceMap::Application.routes.draw do
         end
         collection do
           post :decode_hierarchy_csv
+          post :order
         end
       end
 

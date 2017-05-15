@@ -50,10 +50,20 @@ class LayersController < ApplicationController
     render_json layer.as_json(include: :fields)
   end
 
+  # Sets the order for the given layer
   def set_order
     layer.user = current_user
     layer.update_attributes! ord: params[:ord]
     render_json layer
+  end
+
+  # Expects an array of id's to come inside params[:order].
+  # Uses that to set ord fields of all layers at once.
+  # Sets the current_user as the author of the activity.
+  def order
+    authorize! :admin, collection
+    Layer.set_order(params[:order], current_user)
+    render_json :ok
   end
 
   def destroy
