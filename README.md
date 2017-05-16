@@ -103,6 +103,10 @@ Capybara is configured to use the Selenium driver with Firefox.
 
     bundle exec rspec -t js spec/integration
 
+Keep in mind that the acceptance tests are kind of out-of-date. Many of them
+will pass, but lots of them are marked as `pending` - the coverage isn't that
+good to rely on them.
+
 Finally, Javascript tests are run through [Jasmine](http://jasmine.github.io/).
 Start the Jasmine server with:
 
