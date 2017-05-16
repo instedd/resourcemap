@@ -81,7 +81,6 @@
     tr {
       &:nth-child(2) { background:none !important; }
       &.active td { background:#d0d0d0; }
-      td:first-child { border-right:1px solid #eeeeee; }
     }
 
     th.r { text-align:right; }
@@ -246,9 +245,8 @@
 
 .tablebottom {
   color: #555555;
-  height: 35px;
-  padding-top: 5px;
-  padding-right:5px;
+  height: 30px;
+  padding: 5px;
 
   .cadd {
     vertical-align: middle;
@@ -259,6 +257,11 @@
       display: inline-block;
       vertical-align: middle;
     }
+  }
+
+  button.grey {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
 
@@ -288,7 +291,6 @@
   @include transition(all ease-out 0.2s);
   width: 100%;
   padding-left:500px;
-  padding-bottom:10px;
 
   &.expand {
     padding-left:10px;
@@ -299,7 +301,6 @@
   @include transition(all ease-out 0.2s);
   width: 100%;
   padding-left:300px;
-  padding-bottom:10px;
 
   &.expand {
     padding-left:10px;
@@ -346,7 +347,6 @@
 
   .tableheader {
     background: transparent;
-    border-right:1px solid #eeeeee;
     margin-top: -3px;
     margin-left:4px;
     height: 35px;
@@ -362,7 +362,7 @@
   }
   .tablescroll {
     background:url(#{$InsteddRailsUrl + "/theme/images/interface/backtd.png"}) repeat-x left 0px #ffffff;
-    padding-top: 10px;
+    padding-top: 1px;
 
     .GralTable td {
       padding-left: 0px;
@@ -371,7 +371,7 @@
         display:inline-block;
         overflow:hidden;
         text-overflow:ellipsis;
-        margin-top: 7px;
+        margin-top: 0px;
       }
     }
   }
@@ -404,6 +404,9 @@
 
 .tablescroll.cheight .GralTable {
 
+  padding-top: 0;
+  margin-top: 10px;
+
   td {
     position: relative;
     padding: 0 5px 0 5px;
@@ -427,65 +430,53 @@
 
 
 @media screen and (min-height: 300px) {
-  .cheight.tablescroll { height: 200px !important; }
-  .cheight#map { height: 240px !important; }
+  .cheight.tablescroll, .cheight#map { height: 200px !important; }
 }
 
 @media screen and (min-height: 400px) {
-  .cheight.tablescroll { height: 280px !important; }
-  .cheight#map { height: 320px !important; }
+  .cheight.tablescroll, .cheight#map { height: 280px !important; }
 }
 
 @media screen and (min-height: 500px) {
-  .cheight.tablescroll { height: 380px !important; }
-  .cheight#map { height: 420px !important; }
+  .cheight.tablescroll, .cheight#map { height: 380px !important; }
 }
 
 @media screen and (min-height: 600px) {
-  .cheight.tablescroll { height: 480px !important; }
-  .cheight#map { height: 520px !important; }
+  .cheight.tablescroll, .cheight#map { height: 480px !important; }
 }
 
 @media screen and (min-height: 700px) {
-  .cheight.tablescroll { height: 580px !important; }
-  .cheight#map { height: 620px !important; }
+  .cheight.tablescroll, .cheight#map { height: 580px !important; }
    @-moz-document url-prefix() {
-    .cheight.tablescroll { height: 530px !important; }
-    .cheight#map { height: 570px !important; }
+    .cheight.tablescroll, .cheight#map { height: 530px !important; }
   }
 }
 @media screen and (min-height: 800px) {
-  .cheight.tablescroll { height: 630px !important; }
-  .cheight#map { height: 670px !important; }
+  .cheight.tablescroll, .cheight#map { height: 630px !important; }
 }
 
 body.fullscreen {
 
   @media screen and (min-height: 500px) {
-    .cheight.tablescroll { height: 385px !important; }
-    .cheight#map { height: 425px !important; }
+    .cheight.tablescroll, .cheight#map { height: 385px !important; }
   }
 
   @media screen and (min-height: 650px) {
-    .cheight.tablescroll { height: 550px !important; }
-    .cheight#map { height: 590px !important; }
+    .cheight.tablescroll, .cheight#map { height: 550px !important; }
   }
 
   @media screen and (min-height: 700px) {
-    .cheight.tablescroll { height: 600px !important; }
-    .cheight#map { height: 640px !important; }
+    .cheight.tablescroll, .cheight#map { height: 600px !important; }
   }
   @media screen and (min-height: 800px) {
-    .cheight.tablescroll { height: 705px !important; }
-    .cheight#map { height: 745px !important; }
+    .cheight.tablescroll, .cheight#map { height: 705px !important; }
   }
 
 }
 
 @-moz-document url-prefix() {
   @media screen and (min-height: 700px) {
-    body.fullscreen .cheight.tablescroll { height: 530px !important; }
-    body.fullscreen .cheight#map { height: 570px !important; }
+    body.fullscreen .cheight.tablescroll, body.fullscreen .cheight#map { height: 530px !important; }
   }
 }
 

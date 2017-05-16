@@ -2,18 +2,30 @@
   @include border-radius(0 0 5px 0);
   max-width:100%;
   margin:0 8px 0 0;
-  border:1px solid #c3c3c1;
+  border:1px solid #eeeeee;
   overflow: hidden;
   position: relative;
 }
 
-.mapheader {
-  margin-left:3px;
-  margin-right:5px;
+.mapheader, .mapfooter {
+  padding-left:3px;
+  padding-right:5px;
 }
 
+.mapheader {
+  border-left: 1px solid #eeeeee;
+}
+.mapfooter {
+  height: 30px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
 .mapheader span { display:inline-block; margin-top:6px }
 .mapheader .alert { background:url(#{$InsteddRailsUrl + "/theme/images/icons/18/orange/alert.png"}) no-repeat left 50%; padding-left:20px; color:#ff6602 }
+
+.mapfooter .alert {
+  padding: 2px 5px;
+}
 
 .cluster {
   border: none;
@@ -114,10 +126,7 @@
 }
 
 #sites_without_location_alert {
-  position: absolute;
-  z-index: 1;
-  bottom: 5px;
-  width: 96.5%;
+  display: block;
 }
 
 .alert {
@@ -135,6 +144,7 @@
 #sites_without_location_alert span {
   display: inline-block;
   vertical-align: middle;
+  line-height: 24px;
 }
 
 .alert.black {
