@@ -326,6 +326,7 @@ onCollections ->
       window.model.initDatePicker()
       window.model.initAutocomplete()
 
+
     exitEditMode: (saved) =>
       @collection.updatePermission @
       @inEditMode(false)
@@ -348,6 +349,9 @@ onCollections ->
         unless saved
           field.value(field.originalValue)
           delete field.originalValue
+
+    cancelEditMode: =>
+      @exitEditMode(false)
 
     createMarker: (drop = false) =>
       @deleteMarker()
