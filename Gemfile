@@ -58,6 +58,7 @@ group :test do
   gem 'simplecov'
   gem 'simplecov-rcov'
   gem 'timecop'
+  gem 'rubyzip'
 end
 
 group :test, :development do
@@ -98,4 +99,4 @@ gem 'sass-rails',   '~> 4.0.1'
 gem 'coffee-rails', '~> 4.0.1'
 gem 'uglifier', '>= 2.5.0'
 gem 'lodash-rails'
-gem 'rails-assets-knockout-sortable', source: 'https://rails-assets.org'
+gem 'rails-assets-knockout-sortable', :source => 'https://rails-assets.org'
