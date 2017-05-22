@@ -553,6 +553,7 @@ DEPENDENCIES
   rspec-rails (~> 3.4.0)
   ruby-prof!
   ruby_parser
+  rubyzip
   sass-rails (~> 4.0.1)
   selenium-webdriver
   shoulda-matchers
