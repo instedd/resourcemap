@@ -1,4 +1,4 @@
-if ENV['SELENIUM_URL'] && !ENV['SELENIUM_URL'].empty?
+unless ENV['SELENIUM_URL'].nil? || ENV['SELENIUM_URL'].empty?
   require 'capybara/rspec'
 
   Capybara.register_driver :docker_firefox do |app|
@@ -9,13 +9,13 @@ if ENV['SELENIUM_URL'] && !ENV['SELENIUM_URL'].empty?
       desired_capabilities: Selenium::WebDriver::Remote::Capabilities.firefox
     })
   end
+end
 
-  def setup_capybara_docker_driver_if_needed
-    unless ENV['SELENIUM_URL'].nil? || ENV['SELENIUM_URL'].empty?
-      Capybara.javascript_driver = :docker_firefox
-      Capybara.server_port = 55555
-      Capybara.server_host = "#{ENV['CAPYBARA_HOST']}"
-      Capybara.app_host = "http://#{ENV['CAPYBARA_HOST']}:#{Capybara.server_port}"
-    end
+def setup_capybara_docker_driver_if_needed
+  unless ENV['SELENIUM_URL'].nil? || ENV['SELENIUM_URL'].empty?
+    Capybara.javascript_driver = :docker_firefox
+    Capybara.server_port = 55555
+    Capybara.server_host = "#{ENV['CAPYBARA_HOST']}"
+    Capybara.app_host = "http://#{ENV['CAPYBARA_HOST']}:#{Capybara.server_port}"
   end
 end
