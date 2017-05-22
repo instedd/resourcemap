@@ -59,4 +59,14 @@ describe "layer", :type => :request, uses_collections_structure: true do
     expect(page).to have_content "Layer 'Test Layer' successfully saved"
   end
 
+  it "should drag and drop layers", js:true do
+    lay = who_african_region.layers.make(:name => 'layer2')
+    lay.text_fields.make
+
+    click_link "Layers"
+    source = page.find('div.toptitle', text: 'WHO African Region layer') 
+    target = page.find('div.toptitle', text: lay.name)
+    source.drag_to(target)
+  end
+
 end
