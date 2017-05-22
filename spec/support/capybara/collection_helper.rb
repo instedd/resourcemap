@@ -82,7 +82,7 @@ module Capybara::CollectionHelper
   end
 
   def expand_advanced_options
-    find(:xpath, '//div[@class="tabsline"]/div[@id="layers-main"]/div[2]/img').click
+    find('img.members-collapse-icon').click
   end
 
   def edit_layer_button
