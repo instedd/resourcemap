@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160311182551) do
+ActiveRecord::Schema.define(version: 20170523182508) do
 
   create_table "activities", force: true do |t|
     t.integer  "user_id"
@@ -91,6 +91,17 @@ ActiveRecord::Schema.define(version: 20160311182551) do
 
   add_index "fields", ["collection_id"], name: "index_fields_on_collection_id", using: :btree
   add_index "fields", ["layer_id"], name: "index_fields_on_layer_id", using: :btree
+
+  create_table "gallery_images", force: true do |t|
+    t.integer  "field_id"
+    t.string   "guid"
+    t.binary   "data",       limit: 16777215
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "gallery_images", ["field_id"], name: "index_gallery_images_on_field_id", using: :btree
+  add_index "gallery_images", ["guid"], name: "index_gallery_images_on_guid", unique: true, using: :btree
 
   create_table "identities", force: true do |t|
     t.integer  "user_id"
