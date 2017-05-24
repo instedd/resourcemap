@@ -29,7 +29,7 @@ gem 'alto_guisso', :git => "https://github.com/instedd/alto_guisso", branch: 'ma
 gem 'alto_guisso_rails', :git => "https://github.com/instedd/alto_guisso_rails", branch: 'master'
 gem 'oj', '~> 2.15.0'
 gem 'nokogiri'
-gem 'carrierwave'
+gem 'carrierwave', '~> 1.1.0'
 gem 'mini_magick'
 gem 'activerecord-import'
 gem 'active_model_serializers'
