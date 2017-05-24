@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170523182508) do
+ActiveRecord::Schema.define(version: 20170524230256) do
 
   create_table "activities", force: true do |t|
     t.integer  "user_id"
@@ -109,6 +109,12 @@ ActiveRecord::Schema.define(version: 20170523182508) do
     t.string   "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "image_galleries", force: true do |t|
+    t.integer "site_id"
+    t.integer "field_id"
+    t.text    "images"
   end
 
   create_table "import_jobs", force: true do |t|

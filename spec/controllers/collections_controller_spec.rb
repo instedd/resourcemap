@@ -358,4 +358,10 @@ describe CollectionsController, :type => :controller do
     expect(sites.first['properties'][numeric.es_code]).to eq(25)
   end
 
+  it "uploads a logo" do
+    file = fixture_file_upload('tracking_food.jpg', 'image/jpeg')
+    post :upload_logo, logo: file
+    response.should be_success
+  end
+
 end
