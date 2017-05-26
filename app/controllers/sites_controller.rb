@@ -15,7 +15,22 @@ class SitesController < ApplicationController
     search.limit params[:limit]
 
     results = search.ui_results
-    render_json({ sites: results.map { |x| x['_source'] }, total_count: results.total_count })
+    # FIXME: here we hard-code the field's value - that 4 depends on your layer
+    # configuration
+    render_json({ sites: results.map { |x| x['_source'].merge({properties: {4 => {
+      "images" => [
+        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+        "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
+        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+        "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
+        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+        "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
+        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+        "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
+        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+        "image" => "https://manas.tech/images/staff/jedi-b.jpg"}
+      ]
+    }}}) }, total_count: results.total_count })
   end
 
   def show
@@ -24,6 +39,25 @@ class SitesController < ApplicationController
     search.id params[:id]
     # If site does not exists, return empty object
     result = search.ui_results.first['_source'] rescue {}
+    un_hash = {
+      # FIXME: here we hard-code the field's value - that 4 depends on your layer
+      # configuration
+      "4" => {
+        "images" => [
+          {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+          "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
+          {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+          "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
+          {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+          "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
+          {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+          "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
+          {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+          "image" => "https://manas.tech/images/staff/jedi-b.jpg"}
+        ]
+      }
+    }
+    result["properties"].merge! un_hash
     render_json result
   end
 
