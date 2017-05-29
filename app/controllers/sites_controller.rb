@@ -17,7 +17,7 @@ class SitesController < ApplicationController
     results = search.ui_results
     # FIXME: here we hard-code the field's value - that 4 depends on your layer
     # configuration
-    render_json({ sites: results.map { |x| x['_source'].merge({properties: {4 => {
+    render_json({ sites: results.map { |x| x['_source'].merge({properties: {15 => {
       "images" => [
         {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
         "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
@@ -42,7 +42,7 @@ class SitesController < ApplicationController
     un_hash = {
       # FIXME: here we hard-code the field's value - that 4 depends on your layer
       # configuration
-      "4" => {
+      "15" => {
         "images" => [
           {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
           "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
