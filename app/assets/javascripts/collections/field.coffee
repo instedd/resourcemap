@@ -126,6 +126,9 @@ onCollections ->
       else if @kind == 'site'
         name = window.model.currentCollection()?.findSiteNameById(value)
         if name && value then name else value
+      else if @kind == 'image_gallery'
+        # FIXME: valueUIFor seems to always return a string - shouldn't we move the <img>s to other property?
+        if value then "<img src=\"#{value.images[0].image}\" /><img src=\"#{value.images[0].image}\" /><img src=\"#{value.images[0].image}\" />" else 'No hay nada, che'
       else if @kind == 'date'
         if value
           if @format == "dd_mm_yyyy"

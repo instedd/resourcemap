@@ -208,7 +208,16 @@
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 %label.field-name{ko(text: "name + ':'", topPopover: "__('Field Code') + ': ' + code", css: { error: :error })}
                 /ko if: hasValue() && !error()
+                /ko if: kind == 'image_gallery'
+                .image_gallery_thumbnails
+                  %a.fancybox-thumb{href: "https://manas.tech/images/staff/mgarcia.jpg", title: "Mati", rel: "fancybox-thumb" }
+                    %img{ko(click: '$root.enterGallery'), src: "https://manas.tech/images/staff/mgarcia.jpg", alt: ""}
+                  %a.fancybox-thumb{href: "https://manas.tech/images/staff/jedi.jpg", title: "Jedi", rel: "fancybox-thumb"}
+                    %img{ko(click: '$root.enterGallery'), src: "https://manas.tech/images/staff/jedi.jpg", alt: ""}
+                //ko
+                /ko if: kind != 'image_gallery'
                 %span.value{ko(text: :valueUI, visible: '!editing()')}
+                //ko
                 /ko if: kind == 'site' && !editing() && !error()
                 %button.farrow.right{ko(click: 'function(data, event) { $root.editSiteFromId(value(),$root.currentCollection().id) }', clickBubble: false), type: "button"}
                 //ko

@@ -26,6 +26,7 @@
 //= require knockout
 //= require knockout-sortable
 //= require jquery.fancybox
+//= require jquery.fancybox-thumbs
 //= require jquery.blockUI
 //= require jquery.Jcrop
 //= require lodash
