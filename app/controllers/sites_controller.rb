@@ -15,22 +15,34 @@ class SitesController < ApplicationController
     search.limit params[:limit]
 
     results = search.ui_results
-    # FIXME: here we hard-code the field's value - that 4 depends on your layer
-    # configuration
-    render_json({ sites: results.map { |x| x['_source'].merge({properties: {15 => {
+
+    # Code for mocking image_gallery attributes
+    c = Collection.find(params["collection_id"])
+    image_gallery_ids = (c.fields.select { |f| f.kind == 'image_gallery' }).map { |f| f.id }
+    images_hash = {
       "images" => [
-        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
-        "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
-        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
-        "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
-        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
-        "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
         {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
         "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
         {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
         "image" => "https://manas.tech/images/staff/jedi-b.jpg"}
       ]
-    }}}) }, total_count: results.total_count })
+    }
+    gallery_by_field_id = {}
+    for id in image_gallery_ids
+      gallery_by_field_id[id.to_s] = images_hash
+    end
+
+    gallery_properties = { "properties" => gallery_by_field_id }
+    # End of mock
+
+    render_json({ sites: results.map { |x| merge_gallery_properties(x['_source'], gallery_properties) }, total_count: results.total_count })
+  end
+
+  # Function for mocking proposes. Should be deleted after merging with gallery backend
+  def merge_gallery_properties(site, gallery_properties)
+    new_properties = site["properties"].merge(gallery_properties["properties"])
+    site["properties"] = new_properties
+    site
   end
 
   def show
@@ -39,25 +51,25 @@ class SitesController < ApplicationController
     search.id params[:id]
     # If site does not exists, return empty object
     result = search.ui_results.first['_source'] rescue {}
-    un_hash = {
-      # FIXME: here we hard-code the field's value - that 4 depends on your layer
-      # configuration
-      "15" => {
-        "images" => [
-          {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
-          "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
-          {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
-          "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
-          {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
-          "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
-          {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
-          "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
-          {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
-          "image" => "https://manas.tech/images/staff/jedi-b.jpg"}
-        ]
-      }
+
+    # Code for mocking image gallery attributes
+    c = Collection.find(params["collection_id"])
+    image_gallery_ids = (c.fields.select { |f| f.kind == 'image_gallery' }).map { |f| f.id }
+    images_hash = {
+      "images" => [
+        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+        "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
+        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+        "image" => "https://manas.tech/images/staff/jedi-b.jpg"}
+      ]
     }
-    result["properties"].merge! un_hash
+    gallery_by_field_id = {}
+    for id in image_gallery_ids
+      gallery_by_field_id[id.to_s] = images_hash
+    end
+    # End of mock
+
+    result["properties"].merge! gallery_by_field_id
     render_json result
   end
 
