@@ -117,12 +117,19 @@
               %div
                 %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
+                /ko if: kind == 'image_gallery'
+                .image_gallery_thumbnails
+                  /ko foreach: value().images
+                  %a{ko(attr: { href: '$data.image', class: '$parent.value().css_class', rel: "$parent.value().css_class"})}
+                    %img{ko(click: "$parent.enterGallery.bind('$data', $parent.value().css_class)", attr: { src: '$data.thumbnail'}), alt: ""}
+                  //ko
+                //ko
                 /ko if: !writeable
                 %span.value{ko(text: :valueUI)}
                 //ko
                 /ko if: writeable
                 - Field::kinds.each do |kind|
-                  = "<!-- ko if: kind == '#{kind}' -->".html_safe
+                  = "<!-- ko if: kind == '#{kind}' && kind != 'image_gallery' -->".html_safe
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: false }
                   //ko
                 //ko
