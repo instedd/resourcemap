@@ -99,7 +99,7 @@
 .tablebottom
   /ko if: !currentSnapshot
   - if current_user && !current_user.is_guest
-    /ko if: anyUpdatePermissions
+    /ko if: createSitePermission
     %button.flocation{ko(click: '$root.createSite')} Create Site
     //ko
   //ko

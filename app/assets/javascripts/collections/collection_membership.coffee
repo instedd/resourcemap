@@ -4,7 +4,7 @@ onCollections ->
   class @CollectionMembership
     @constructorCollectionMembership: ->
       @membershipInitialized = false
-      @anyUpdatePermissions = ko.observable(false)
+      @createSitePermission = ko.observable(false)
 
     @fetchMembership: (callback)->
       if @membershipInitialized
@@ -26,7 +26,7 @@ onCollections ->
       $.get "/collections/#{@id}/current_user_membership.json", {}, (membership) =>
         @namePermission = membership.name
         @locationPermission = membership.location
-        @anyUpdatePermissions(@namePermission == "update" && @locationPermission == "update")
+        @createSitePermission(@namePermission == "update" && @locationPermission == "update")
         if loaded
           @membershipInitialized = true
           callback() if typeof(callback) is 'function'
