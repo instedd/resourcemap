@@ -210,10 +210,10 @@
                 /ko if: hasValue() && !error()
                 /ko if: kind == 'image_gallery'
                 .image_gallery_thumbnails
-                  %a.fancybox-thumb{href: "https://manas.tech/images/staff/mgarcia.jpg", title: "Mati", rel: "fancybox-thumb" }
-                    %img{ko(click: '$root.enterGallery'), src: "https://manas.tech/images/staff/mgarcia.jpg", alt: ""}
-                  %a.fancybox-thumb{href: "https://manas.tech/images/staff/jedi.jpg", title: "Jedi", rel: "fancybox-thumb"}
-                    %img{ko(click: '$root.enterGallery'), src: "https://manas.tech/images/staff/jedi.jpg", alt: ""}
+                  /ko foreach: value().images
+                  %a{ko(attr: { href: '$data.image', class: '$parent.value().css_class', rel: "$parent.value().css_class"})}
+                    %img{ko(click: "$parent.enterGallery.bind('$data', $parent.value().css_class)", attr: { src: '$data.thumbnail'}), alt: ""}
+                  //ko
                 //ko
                 /ko if: kind != 'image_gallery'
                 %span.value{ko(text: :valueUI, visible: '!editing()')}

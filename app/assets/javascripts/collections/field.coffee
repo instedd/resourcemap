@@ -60,6 +60,17 @@ onCollections ->
 
       @buildHierarchyItems() if @hierarchy?
 
+      @enterGallery = (css_class) ->
+        $('.' + css_class).fancybox
+          prevEffect: 'none'
+          nextEffect: 'none'
+          helpers:
+            title:
+              type: 'outside'
+            thumbs:
+              width: 100
+              height: 100
+
       if @kind == 'select_many'
         @filter = ko.observable('') # The text for filtering options in a select_many
         @remainingOptions = ko.computed =>
@@ -77,6 +88,8 @@ onCollections ->
       @expanded = ko.observable false # For select_many
       @errorMessage = ko.observable ""
       @error = ko.computed => !!@errorMessage()
+
+
 
     setValueFromSite: (value) =>
       if @kind == 'date' && $.trim(value).length > 0
@@ -128,7 +141,11 @@ onCollections ->
         if name && value then name else value
       else if @kind == 'image_gallery'
         # FIXME: valueUIFor seems to always return a string - shouldn't we move the <img>s to other property?
-        if value then "<img src=\"#{value.images[0].image}\" /><img src=\"#{value.images[0].image}\" /><img src=\"#{value.images[0].image}\" />" else 'No hay nada, che'
+        if value
+            images = value['images']
+            if images then images.length.toString() else "No images"
+          else
+            return 'Empty gallery'
       else if @kind == 'date'
         if value
           if @format == "dd_mm_yyyy"

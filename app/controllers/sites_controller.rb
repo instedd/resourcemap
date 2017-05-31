@@ -21,17 +21,18 @@ class SitesController < ApplicationController
     image_gallery_ids = (c.fields.select { |f| f.kind == 'image_gallery' }).map { |f| f.id }
     images_hash = {
       "images" => [
-        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+        {"thumbnail" => "https://manas.tech/images/staff/jedi.jpg",
         "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
-        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
-        "image" => "https://manas.tech/images/staff/jedi-b.jpg"}
+        {"thumbnail" => "https://manas.tech/images/staff/mgarcia.jpg",
+        "image" => "https://manas.tech/images/staff/mgarcia-b.jpg"}
       ]
     }
     gallery_by_field_id = {}
     for id in image_gallery_ids
-      gallery_by_field_id[id.to_s] = images_hash
+      gallery_with_css_class = images_hash.deep_dup
+      gallery_with_css_class["css_class"] = "gallery" + id.to_s
+      gallery_by_field_id[id.to_s] = gallery_with_css_class
     end
-
     gallery_properties = { "properties" => gallery_by_field_id }
     # End of mock
 
@@ -57,15 +58,17 @@ class SitesController < ApplicationController
     image_gallery_ids = (c.fields.select { |f| f.kind == 'image_gallery' }).map { |f| f.id }
     images_hash = {
       "images" => [
-        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
+        {"thumbnail" => "https://manas.tech/images/staff/jedi.jpg",
         "image" => "https://manas.tech/images/staff/jedi-b.jpg"},
-        {"thumnbail" => "https://manas.tech/images/staff/jedi.jpg",
-        "image" => "https://manas.tech/images/staff/jedi-b.jpg"}
+        {"thumbnail" => "https://manas.tech/images/staff/mgarcia.jpg",
+        "image" => "https://manas.tech/images/staff/mgarcia-b.jpg"}
       ]
     }
     gallery_by_field_id = {}
     for id in image_gallery_ids
-      gallery_by_field_id[id.to_s] = images_hash
+      gallery_with_css_class = images_hash.deep_dup
+      gallery_with_css_class["css_class"] = "gallery" + id.to_s
+      gallery_by_field_id[id.to_s] = gallery_with_css_class
     end
     # End of mock
 
