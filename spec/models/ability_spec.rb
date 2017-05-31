@@ -200,6 +200,36 @@ describe Ability, :type => :model do
         it { expect(member_ability_with_write_permission).to be_able_to(:update_site_property, field, site) }
         it { expect(member_ability_with_write_permission).to be_able_to(:read_site_property, field, site) }
       end
+
+      context "Site creation" do
+        it "can't create sites if it doesn't have write permissions" do
+          membership.set_access({object: 'name', new_action: 'read'})
+          membership.set_access({object: 'location', new_action: 'read'})
+
+          expect(member_ability).not_to be_able_to(:create_site, collection)
+        end
+
+        it "can't create sites if it doesn't have both write permissions" do
+          membership.set_access({object: 'name', new_action: 'update'})
+          membership.set_access({object: 'location', new_action: 'read'})
+
+          expect(member_ability).not_to be_able_to(:create_site, collection)
+        end
+
+        it "can't create sites if it doesn't have both write permissions" do
+          membership.set_access({object: 'name', new_action: 'read'})
+          membership.set_access({object: 'location', new_action: 'update'})
+
+          expect(member_ability).not_to be_able_to(:create_site, collection)
+        end
+
+        it "can create sites if it has both write permissions" do
+          membership.set_access({object: 'name', new_action: 'update'})
+          membership.set_access({object: 'location', new_action: 'update'})
+
+          expect(member_ability).to be_able_to(:create_site, collection)
+        end
+      end
     end
 
     describe "guest user should not be able to update site property" do

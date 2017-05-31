@@ -31,7 +31,7 @@ describe Api::SitesController, :type => :controller do
       site_params = {:name => "new site"}.to_json
       post :create, {:id => collection.id, :site => site_params }
       expect(response.status).to eq(403)
-      expect(response.body).to include('name')
+      expect(response.body).to include('create site')
     end
 
   end

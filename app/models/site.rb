@@ -121,6 +121,8 @@ class Site < ActiveRecord::Base
   def validate_and_process_parameters(site_params, user)
     user_membership = user.membership_in(collection)
 
+    user.authorize! :create_site, collection, message: "Not authorized to create site" if new_record?
+
     if site_params.has_key?("name")
       user.authorize! :update_name, user_membership, message: "Not authorized to update site name"
       self.name = site_params["name"]

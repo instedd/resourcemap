@@ -96,6 +96,11 @@ class Ability
       user_membership.can_update?("location")
     end
 
+    can :create_site, Collection do |collection|
+      user_membership = user.membership_in(collection)
+      user_membership && user_membership.can_update?("name") && user_membership.can_update?("location")
+    end
+
     ### Reminders ###
 
     can [:create, :update, :read, :destroy, :set_status], Reminder, :collection => { :memberships => { :user_id => user.id } }
