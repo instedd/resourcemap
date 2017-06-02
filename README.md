@@ -47,8 +47,7 @@ Likewise, MySQL server installation is straightforward:
 ### Installation on Ubuntu Linux
 
 Install Elasticsearch from the official download site using .deb packages by
-following the instructions given at
-https://www.elastic.co/guide/en/elasticsearch/reference/1.7/setup-repositories.html
+following the instructions given at https://www.elastic.co/guide/en/elasticsearch/reference/1.7/setup-repositories.html
 
 For Redis server, you can use the version provided in the distribution:
 
