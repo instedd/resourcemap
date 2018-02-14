@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'yaml'
+require 'erb'
 
 # Set up gems listed in the Gemfile.
 ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
@@ -9,7 +10,7 @@ require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
 module Settings
   extend self
 
-  CONFIG = YAML.load_file(File.expand_path('../settings.yml', __FILE__))
+  CONFIG = YAML.load(ERB.new(File.read(File.expand_path('../settings.yml', __FILE__))).result)
 
   def is_on?(plugin)
     plugins[plugin.to_s] == true

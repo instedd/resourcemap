@@ -1,0 +1,8 @@
+#!/bin/sh
+
+export NGINX_PORT=${NGINX_PORT:-80}
+
+sed -i "s/listen 80/listen ${NGINX_PORT}/" /etc/nginx/sites-enabled/app.conf
+sed -i "s/\$host;/\$proxy_host;/" /etc/nginx/sites-enabled/app.conf
+
+/usr/sbin/nginx -g 'daemon off;'

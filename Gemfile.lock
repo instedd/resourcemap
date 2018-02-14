@@ -21,10 +21,10 @@ GIT
 
 GIT
   remote: https://github.com/instedd/poirot_rails.git
-  revision: 0870db8fc1ea0eb701f4092f406e4bf6f882d284
+  revision: c3e8ceeacd07a226b941a8cabb2dd762fa73846f
   branch: master
   specs:
-    poirot_rails (0.0.2)
+    poirot_rails (0.0.4)
       bertrpc
       ffi-rzmq
       guid

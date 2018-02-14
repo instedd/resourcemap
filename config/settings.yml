@@ -10,3 +10,12 @@ plugins:
   fred_api: on
   csd_api: on
 
+# smtp:
+#   host: 'localhost'
+#   domain: 'localhost'
+#   port: 25
+#   username:
+#   password:
+#   authentication: 'plain'
+
+# google_maps_key: changeme

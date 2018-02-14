@@ -30,8 +30,8 @@ RUN mv /app/config/initializers/resque_scheduler.ignore /app/config/initializers
 
 # Add config files
 ADD docker/*.yml /app/config/
-ADD docker/google_maps.key /app/config/
 ADD docker/runit-web-run /etc/service/web/run
+ADD docker/runit-nginx-run /etc/service/nginx/run
 
 # Environment variables setup
 # Guisso

@@ -25,3 +25,4 @@ config/telemetry.yml
 spec/integration/screenshots/*
 .vagrant
 /public/uploads/
+/docker-env

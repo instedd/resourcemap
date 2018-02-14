@@ -9,3 +9,14 @@ plugins:
   alerts: on
   fred_api: on
   csd_api: on
+
+smtp:
+  host: <%= ENV['SETTINGS__SMTP__HOST'] %>
+  domain: <%= ENV['SETTINGS__SMTP__DOMAIN'] %>
+  port: <%= ENV['SETTINGS__SMTP__PORT'] %>
+  username: <%= ENV['SETTINGS__SMTP__USERNAME'] %>
+  password: <%= ENV['SETTINGS__SMTP__PASSWORD'] %>
+  authentication: <%= ENV['SETTINGS__SMTP__AUTHENTICATION'] %>
+  enable_starttls_auto: <%= ENV['SETTINGS__SMTP__ENABLE_STARTTLS_AUTO'] %>
+
+google_maps_key: <%= ENV['SETTINGS__GOOGLE_MAPS_KEY'] %>
