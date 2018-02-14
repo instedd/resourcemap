@@ -22,10 +22,8 @@ services:
     volumes:
       - redis:/data
 
-  web: &rails
-    build:
-      context: .
-      dockerfile: Dockerfile
+  web: &app
+    image: instedd/resourcemap:latest
     environment:
       RAILS_ENV: production
       ELASTICSEARCH_URL: 'elasticsearch:9200'
@@ -45,12 +43,12 @@ services:
       - 4000:4000
 
   resque:
-    <<: *rails
+    <<: *app
     command: rake resque:work TERM_CHILD=1 FORK_PER_JOB=false
     ports: []
 
   resque_scheduler:
-    <<: *rails
+    <<: *app
     command: rake resque:scheduler
     ports: []
 
