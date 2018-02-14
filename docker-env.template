@@ -2,13 +2,13 @@
 SECRET_KEY_BASE=changeme
 
 # SMTP settings
-SETTINGS__SMTP__HOST=smtp.example.com
-SETTINGS__SMTP__DOMAIN=smtp.example.com
-SETTINGS__SMTP__PORT=25
-SETTINGS__SMTP__USERNAME=user
-SETTINGS__SMTP__PASSWORD=password
-SETTINGS__SMTP__AUTHENTICATION=plain
-SETTINGS__SMTP__ENABLE_STARTTLS_AUTO=false
+# SETTINGS__SMTP__ADDRESS=smtp.example.com
+# SETTINGS__SMTP__DOMAIN=smtp.example.com
+# SETTINGS__SMTP__PORT=25
+# SETTINGS__SMTP__USER_NAME=user
+# SETTINGS__SMTP__PASSWORD=password
+# SETTINGS__SMTP__AUTHENTICATION=plain
+# SETTINGS__SMTP__ENABLE_STARTTLS_AUTO=false
 
 # Google Maps API Key; obtain yours from https://developers.google.com/maps/documentation/javascript/get-api-key
 SETTINGS__GOOGLE_MAPS_KEY=changeme

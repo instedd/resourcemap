@@ -54,16 +54,19 @@ ResourceMap::Application.configure do
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_url_options = { :host => Settings.host }
   if Settings.smtp.present?
-    config.action_mailer.delivery_method = :smtp
-    config.action_mailer.smtp_settings = {
-      :address              => Settings.smtp["host"],
-      :port                 => Settings.smtp["port"],
-      :domain               => Settings.smtp["domain"],
-      :user_name            => Settings.smtp["username"],
-      :password             => Settings.smtp["password"],
-      :authentication       => (Settings.smtp["authentication"] || 'plain').to_sym,
-      :enable_starttls_auto => Settings.smtp["enable_starttls_auto"]
-    }
+    smtp_settings = {}.tap do |settings|
+      settings[:address]              = Settings.smtp["address"] if Settings.smtp["address"].present?
+      settings[:port]                 = Settings.smtp["port"] if Settings.smtp["port"].present?
+      settings[:domain]               = Settings.smtp["domain"] if Settings.smtp["domain"].present?
+      settings[:user_name]            = Settings.smtp["user_name"] if Settings.smtp["user_name"].present?
+      settings[:password]             = Settings.smtp["password"] if Settings.smtp["password"].present?
+      settings[:authentication]       = Settings.smtp["authentication"] if Settings.smtp["authentication"].present?
+      settings[:enable_starttls_auto] = Settings.smtp["enable_starttls_auto"] if Settings.smtp["enable_starttls_auto"].present?
+    end
+    if smtp_settings.present?
+      config.action_mailer.delivery_method = :smtp
+      config.action_mailer.smtp_settings = smtp_settings
+    end
   end
 
   # Enable threaded mode

@@ -15,7 +15,15 @@ services:
       - elastic:/usr/share/elasticsearch/data
 
   redis:
-    image: redis
+    image: redis:4.0-alpine
+    volumes:
+      - redis:/data
+
+  smtp:
+    image: 'djfarrelly/maildev:latest'
+    command: 'bin/maildev --web 3080 --smtp 1025 --incoming-user smtp --incoming-pass smtp'
+    ports:
+      - '3080:3080'
 
   web: &rails
     build:
@@ -28,6 +36,10 @@ services:
       DATABASE_HOST: 'db'
       SELENIUM_URL: 'http://selenium:4444/'
       CAPYBARA_HOST: 'web'
+      SETTINGS__SMTP__ADDRESS: smtp
+      SETTINGS__SMTP__PASSWORD: smtp
+      SETTINGS__SMTP__PORT: 1025
+      SETTINGS__SMTP__USER_NAME: smtp
     pid: host
     volumes:
       - .:/app
@@ -36,6 +48,7 @@ services:
       - db
       - elasticsearch
       - redis
+      - smtp
     command: rails server -b 0.0.0.0
     ports:
       - 3000:3000

@@ -22,6 +22,12 @@ services:
     volumes:
       - redis:/data
 
+  smtp:
+    image: 'djfarrelly/maildev:latest'
+    command: 'bin/maildev --web 3080 --smtp 1025 --incoming-user smtp --incoming-pass smtp'
+    ports:
+      - '3080:3080'
+
   web: &app
     image: instedd/resourcemap:latest
     environment:
@@ -31,6 +37,10 @@ services:
       DATABASE_URL: 'mysql2://resourcemap:resourcemap@db:3306/resourcemap'
       SETTINGS__HOST: 'localhost:4000'
       NGINX_PORT: 4000
+      SETTINGS__SMTP__ADDRESS: smtp
+      SETTINGS__SMTP__PASSWORD: smtp
+      SETTINGS__SMTP__PORT: 1025
+      SETTINGS__SMTP__USER_NAME: smtp
     env_file: ./docker-env
     pid: host
     volumes:
@@ -39,6 +49,7 @@ services:
       - db
       - elasticsearch
       - redis
+      - smtp
     ports:
       - 4000:4000
 

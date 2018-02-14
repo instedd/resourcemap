@@ -11,10 +11,10 @@ plugins:
   csd_api: on
 
 smtp:
-  host: <%= ENV['SETTINGS__SMTP__HOST'] %>
+  address: <%= ENV['SETTINGS__SMTP__ADDRESS'] %>
   domain: <%= ENV['SETTINGS__SMTP__DOMAIN'] %>
   port: <%= ENV['SETTINGS__SMTP__PORT'] %>
-  username: <%= ENV['SETTINGS__SMTP__USERNAME'] %>
+  user_name: <%= ENV['SETTINGS__SMTP__USER_NAME'] %>
   password: <%= ENV['SETTINGS__SMTP__PASSWORD'] %>
   authentication: <%= ENV['SETTINGS__SMTP__AUTHENTICATION'] %>
   enable_starttls_auto: <%= ENV['SETTINGS__SMTP__ENABLE_STARTTLS_AUTO'] %>
