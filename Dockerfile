@@ -14,6 +14,7 @@ RUN bundle install --jobs 3 --deployment --without development test
 # Default environment settings
 ENV POIROT_STDOUT true
 ENV POIROT_SUPPRESS_RAILS_LOG true
+ENV LOG_TO_STDOUT true
 
 # Install the application
 ADD . /app
