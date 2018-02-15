@@ -3,6 +3,10 @@ set -eo pipefail
 
 PROJECT_VERSION=`cat VERSION`
 
+# Restore original version of Gemfile.lock so bundle install --deployment during the build does not fail
+# The lockfile is modified in Travis because of poirot_rails which is not installed on CI environments
+git checkout Gemfile.lock
+
 if [ "$TRAVIS_TAG" = "" ]; then
   REV=`git rev-parse --short HEAD`
   VERSION="$PROJECT_VERSION-dev (build $TRAVIS_BUILD_NUMBER)"
