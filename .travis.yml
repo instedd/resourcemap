@@ -28,8 +28,7 @@ before_script:
 - "sh -e /etc/init.d/xvfb start"
 script:
 - bundle exec rspec spec/ plugins/
-# Disable integration tests for now
-# - bundle exec rspec -t js spec/integration/
+- bundle exec rspec --fail-fast -t js spec/integration/
 - bundle exec rake jasmine:ci
 - bundle exec rake deploy:generate_revision_and_version
 deploy:
