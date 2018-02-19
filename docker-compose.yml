@@ -35,7 +35,6 @@ services:
       REDIS_URL: 'redis://redis:6379'
       DATABASE_HOST: 'db'
       SELENIUM_URL: 'http://selenium:4444/'
-      CAPYBARA_HOST: 'web'
       SETTINGS__SMTP__ADDRESS: smtp
       SETTINGS__SMTP__PASSWORD: smtp
       SETTINGS__SMTP__PORT: 1025
@@ -49,12 +48,16 @@ services:
       - elasticsearch
       - redis
       - smtp
+      - selenium
     command: rails server -b 0.0.0.0
     ports:
       - 3000:3000
 
   selenium:
     image: selenium/standalone-firefox
+    shm_size: 2g
+    volumes:
+      - .:/app
 
   resque:
     <<: *rails
