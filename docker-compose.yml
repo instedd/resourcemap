@@ -52,7 +52,6 @@ services:
     command: rails server -b 0.0.0.0
     ports:
       - 3000:3000
-      - 8888:8888
 
   selenium:
     image: selenium/standalone-firefox
@@ -66,6 +65,12 @@ services:
     <<: *rails
     command: rake resque:scheduler
     ports: []
+
+  jasmine:
+    <<: *rails
+    command: rake jasmine
+    ports:
+      - 8888:8888
 
 volumes:
   db:

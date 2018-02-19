@@ -4,3 +4,17 @@ RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y libzmq3-dev && \
   apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Download prebuilt phantomjs binary from phantomjs-prebuild node module
+# official download site until a CDN is settled for the official page.
+# https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
+#
+# See https://github.com/ariya/phantomjs/issues/13953
+RUN \
+  wget -q https://github.com/Medium/phantomjs/releases/download/v2.1.1/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+  tar -xf phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+  rm -rf /usr/local/phantomjs && \
+  mv phantomjs-2.1.1-linux-x86_64 /usr/local/phantomjs && \
+  rm -f phantomjs-*.tar.bz2
+
+ENV PATH="/usr/local/phantomjs/bin:${PATH}"

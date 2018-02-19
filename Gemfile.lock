@@ -250,12 +250,12 @@ GEM
       breadcrumbs_on_rails (>= 2.2.0)
       haml-rails
       rails (>= 3.0)
-    jasmine (2.4.0)
-      jasmine-core (~> 2.4)
+    jasmine (2.7.0)
+      jasmine-core (>= 2.7.0, < 3.0.0)
       phantomjs
       rack (>= 1.2.1)
       rake
-    jasmine-core (2.4.1)
+    jasmine-core (2.99.2)
     jquery-rails (2.0.3)
       railties (>= 3.1.0, < 5.0)
       thor (~> 0.14)
@@ -522,7 +522,7 @@ DEPENDENCIES
   includes-count
   instedd-rails (~> 0.0.24)
   instedd_telemetry!
-  jasmine (~> 2.4.0)
+  jasmine (~> 2.7.0)
   jquery-rails (~> 2.0.2)
   knockoutjs-rails
   lodash-rails
@@ -570,4 +570,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   1.14.6
+   1.15.1

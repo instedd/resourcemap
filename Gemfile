@@ -66,7 +66,7 @@ group :test, :development do
   gem 'spring-commands-rspec'
   gem 'faker'
   gem 'machinist', '1.0.6'
-  gem 'jasmine', '~> 2.4.0'
+  gem 'jasmine', '~> 2.7.0'
   gem 'guard-jasmine', '~> 2.0.6'
   gem 'pry-byebug'
   gem 'memory_profiler'
