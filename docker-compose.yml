@@ -49,6 +49,8 @@ services:
       - redis
       - smtp
       - selenium
+      - resque
+      - resque_scheduler
     command: rails server -b 0.0.0.0
     ports:
       - 3000:3000
@@ -63,17 +65,20 @@ services:
     <<: *rails
     command: rake resque:work TERM_CHILD=1 FORK_PER_JOB=false
     ports: []
+    depends_on: []
 
   resque_scheduler:
     <<: *rails
     command: rake resque:scheduler
     ports: []
+    depends_on: []
 
   jasmine:
     <<: *rails
     command: rake jasmine
     ports:
       - 8888:8888
+    depends_on: []
 
 volumes:
   db:
