@@ -30,10 +30,6 @@ if [ "$TRAVIS_TAG" = "" ]; then
       exit 0
       ;;
 
-    dockerfile)
-      DOCKER_TAG="dockerfile"
-      ;;
-
     *)
       exit 0
       ;;
