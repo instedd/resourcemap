@@ -4,7 +4,10 @@ services:
   db:
     image: mysql:5.6
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_USER: resourcemap
+      MYSQL_PASSWORD: resourcemap
+      MYSQL_DATABASE: resourcemap
     volumes:
       - db:/var/lib/mysql
 
@@ -25,63 +28,43 @@ services:
     ports:
       - '3080:3080'
 
-  web: &rails
-    build:
-      context: .
-      dockerfile: Dockerfile-dev
+  web: &app
+    image: instedd/resourcemap:dockerfile
     environment:
-      RAILS_ENV:
+      RAILS_ENV: production
       ELASTICSEARCH_URL: 'elasticsearch:9200'
       REDIS_URL: 'redis://redis:6379'
-      DATABASE_HOST: 'db'
-      SELENIUM_URL: 'http://selenium:4444/'
+      DATABASE_URL: 'mysql2://resourcemap:resourcemap@db:3306/resourcemap'
+      SETTINGS__HOST: 'localhost:4000'
+      NGINX_PORT: 4000
       SETTINGS__SMTP__ADDRESS: smtp
       SETTINGS__SMTP__PASSWORD: smtp
       SETTINGS__SMTP__PORT: 1025
       SETTINGS__SMTP__USER_NAME: smtp
+    env_file: ./docker-env
     pid: host
     volumes:
-      - .:/app
-      - bundle:/usr/local/bundle
+      - uploads:/app/public/uploads
     depends_on:
       - db
       - elasticsearch
       - redis
       - smtp
-      - selenium
-      - resque
-      - resque_scheduler
-    command: rails server -b 0.0.0.0
     ports:
-      - 3000:3000
-
-  selenium:
-    image: selenium/standalone-firefox
-    shm_size: 2g
-    volumes:
-      - .:/app
+      - 4000:4000
 
   resque:
-    <<: *rails
+    <<: *app
     command: rake resque:work TERM_CHILD=1 FORK_PER_JOB=false
     ports: []
-    depends_on: []
 
   resque_scheduler:
-    <<: *rails
+    <<: *app
     command: rake resque:scheduler
     ports: []
-    depends_on: []
-
-  jasmine:
-    <<: *rails
-    command: rake jasmine
-    ports:
-      - 8888:8888
-    depends_on: []
 
 volumes:
   db:
   elastic:
   redis:
-  bundle:
+  uploads:

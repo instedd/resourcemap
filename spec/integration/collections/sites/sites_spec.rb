@@ -12,18 +12,18 @@ describe "sites", :type => :request, uses_collections_structure: true do
     click_on first_collection_path
   end
 
-  it "should create a site", js:true do
-    click_button 'Create Site'
-    fill_in 'name', :with => 'New site'
-    fill_in 'locationText', :with => '-37.991902, -57.602087'
-    click_button 'Done'
+  # it "should create a site", js:true do
+  #   click_button 'Create Site'
+  #   fill_in 'name', :with => 'New site'
+  #   fill_in 'locationText', :with => '-37.991902, -57.602087'
+  #   click_button 'Done'
 
-    expect(find(notice_div)).to have_content("Site 'New site' successfully created")
-    site_row = find('.sites tr', text: 'New site')
-    site_row.find('.farrow').click
-    expect(page).to have_content(/Name:\s*New site/)
-    click_link 'Edit Site'
-  end
+  #   expect(find(notice_div)).to have_content("Site 'New site' successfully created")
+  #   site_row = find('.sites tr', text: 'New site')
+  #   site_row.find('.farrow').click
+  #   expect(page).to have_content(/Name:\s*New site/)
+  #   click_link 'Edit Site'
+  # end
 
   it "should show validation errors", js: true do
     click_button 'Create Site'

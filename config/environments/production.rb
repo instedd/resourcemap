@@ -39,6 +39,10 @@ ResourceMap::Application.configure do
   # config.log_tags = [ :subdomain, :uuid ]
 
   # Use a different logger for distributed setups
+  if ENV["LOG_TO_STDOUT"].present?
+    config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+    STDOUT.sync = true
+  end
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
   # Use a different cache store in production
@@ -53,6 +57,21 @@ ResourceMap::Application.configure do
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_url_options = { :host => Settings.host }
+  if Settings.smtp.present?
+    smtp_settings = {}.tap do |settings|
+      settings[:address]              = Settings.smtp["address"] if Settings.smtp["address"].present?
+      settings[:port]                 = Settings.smtp["port"] if Settings.smtp["port"].present?
+      settings[:domain]               = Settings.smtp["domain"] if Settings.smtp["domain"].present?
+      settings[:user_name]            = Settings.smtp["user_name"] if Settings.smtp["user_name"].present?
+      settings[:password]             = Settings.smtp["password"] if Settings.smtp["password"].present?
+      settings[:authentication]       = Settings.smtp["authentication"] if Settings.smtp["authentication"].present?
+      settings[:enable_starttls_auto] = Settings.smtp["enable_starttls_auto"] if Settings.smtp["enable_starttls_auto"].present?
+    end
+    if smtp_settings.present?
+      config.action_mailer.delivery_method = :smtp
+      config.action_mailer.smtp_settings = smtp_settings
+    end
+  end
 
   # Enable threaded mode
   # config.threadsafe!

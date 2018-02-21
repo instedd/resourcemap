@@ -1,0 +1,26 @@
+version: '2.0'
+
+services:
+  web: &rails
+    volumes:
+      - ~/cache/bundle:/usr/local/bundle
+    environment:
+      RAILS_ENV:
+      ELASTICSEARCH_URL: 'elasticsearch:9200'
+      REDIS_URL: 'redis://redis:6379'
+      DATABASE_HOST: 'db'
+      SELENIUM_URL: 'http://selenium:4444/'
+      SETTINGS__SMTP__ADDRESS: smtp
+      SETTINGS__SMTP__PASSWORD: smtp
+      SETTINGS__SMTP__PORT: 1025
+      SETTINGS__SMTP__USER_NAME: smtp
+      CI: 'true'
+
+  resque:
+    <<: *rails
+
+  resque_scheduler:
+    <<: *rails
+
+  jasmine:
+    <<: *rails

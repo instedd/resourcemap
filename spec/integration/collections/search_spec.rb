@@ -5,7 +5,7 @@ describe "search", :type => :request do
     new_user
   end
 
-  it "should search", js: true do
+  pending "should search", js: true do
     collection = create_collection_for(user)
     layer = create_layer_for(collection)
     field = create_field_for(layer)

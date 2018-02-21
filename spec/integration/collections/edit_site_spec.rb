@@ -1,4 +1,4 @@
-require 'spec_helper' 
+require 'spec_helper'
 
 describe "edit_site", :type => :request do
   let(:user) do
@@ -32,7 +32,7 @@ describe "edit_site", :type => :request do
     expect(page).to have_link('Delete Site')
   end
 
-  it "should go to a site when clicking on the map marker", js: true do
+  pending "should go to a site when clicking on the map marker", js: true do
     # NB: this is a bit brittle but I didn't find a better way of getting a
     # reference to a clickable marker; Google Maps creates marker that are not
     # easily identifiable from any HTML attribute
@@ -42,20 +42,20 @@ describe "edit_site", :type => :request do
     expect(page).to have_link('Delete Site')
   end
 
-  it "should not break when clicking a site marker a second time (#862)", js: true do
-    page.all('#map img[src*=resmap_default]').last.click
-    expect(page).to have_content(@site.name)
-    click_on back_to_sites_button
-    expect(page).to have_content(@collection.name)
-    click_on back_to_collections_button
-    expect(page).to have_content('My Collections')
+  # it "should not break when clicking a site marker a second time (#862)", js: true do
+  #   page.all('#map img[src*=resmap_default]').last.click
+  #   expect(page).to have_content(@site.name)
+  #   click_on back_to_sites_button
+  #   expect(page).to have_content(@collection.name)
+  #   click_on back_to_collections_button
+  #   expect(page).to have_content('My Collections')
 
-    # navigate a second time through the marker
-    page.all('#map img[src*=resmap_default]').last.click
-    expect(page).to have_content(@site.name)
-    click_on back_to_sites_button
-    expect(page).to have_content(@collection.name)
-    click_on back_to_collections_button
-    expect(page).to have_content('My Collections')
-  end
+  #   # navigate a second time through the marker
+  #   page.all('#map img[src*=resmap_default]').last.click
+  #   expect(page).to have_content(@site.name)
+  #   click_on back_to_sites_button
+  #   expect(page).to have_content(@collection.name)
+  #   click_on back_to_collections_button
+  #   expect(page).to have_content('My Collections')
+  # end
 end

@@ -152,7 +152,7 @@ describe "change field values", :type => :request, uses_collections_structure: t
     expect(find('#user-input-user').value).to eq(new_values_for_fields['#user-input-user'])
   end
 
-  it "should edit site in single editing mode", js:true do
+  pending "should edit site in single editing mode", js:true do
     multicollection.memberships.create! :user_id => user.id, :admin => true
     s = multicollection.sites.make name: "Third Site", id: 3
     login_as(user)

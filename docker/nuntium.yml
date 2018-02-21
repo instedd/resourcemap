@@ -1,0 +1,5 @@
+production:
+  url: <%= ENV['SETTINGS__NUNTIUM__URL'] %>
+  account: <%= ENV['SETTINGS__NUNTIUM__ACCOUNT'] %>
+  application: <%= ENV['SETTINGS__NUNTIUM__APPLICATION'] %>
+  password: <%= ENV['SETTINGS__NUNTIUM__PASSWORD'] %>

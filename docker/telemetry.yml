@@ -1,0 +1,1 @@
+server_url: <%= ENV.fetch('SETTINGS__TELEMETRY__SERVER_URL', "http://telemetry.instedd.org") %>
