@@ -15,6 +15,7 @@ RUN bundle install --jobs 3 --deployment --without development test
 ENV POIROT_STDOUT true
 ENV POIROT_SUPPRESS_RAILS_LOG true
 ENV LOG_TO_STDOUT true
+ENV INSTEDD_THEME //theme.instedd.org
 
 # Install the application
 ADD . /app
