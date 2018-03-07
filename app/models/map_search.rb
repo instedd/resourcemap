@@ -108,7 +108,7 @@ class MapSearch
     reader, writer = IO.pipe
     producer = Thread.new(writer) do |io|
       begin
-        Net::HTTP.start(uri.host, uri.port) do |http|
+        Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") do |http|
           request = Net::HTTP::Get.new uri.request_uri
           http.request request, body.to_json do |response|
             response.read_body { |segment| io.write segment.dup.force_encoding("UTF-8") }
