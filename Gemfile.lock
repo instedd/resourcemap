@@ -351,6 +351,9 @@ GEM
       railties (= 4.1.15)
       sprockets-rails (~> 2.0)
     rails-assets-knockout-sortable (1.1.0)
+    rails-dev-tweaks (1.2.0)
+      actionpack (>= 3.1)
+      railties (>= 3.1)
     rails-observers (0.1.2)
       activemodel (~> 4.0)
     railties (4.1.15)
@@ -543,6 +546,7 @@ DEPENDENCIES
   quiet_assets (~> 1.1.0)
   rails (~> 4.1.15)
   rails-assets-knockout-sortable!
+  rails-dev-tweaks
   rails-observers
   redis
   resque

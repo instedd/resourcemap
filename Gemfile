@@ -81,6 +81,7 @@ group :development do
   gem 'better_errors', '<2.0.0'
   gem 'binding_of_caller' # already provided by pry-stack_explorer
   gem 'quiet_assets', '~> 1.1.0'
+  gem 'rails-dev-tweaks'
 end
 
 group :development do
