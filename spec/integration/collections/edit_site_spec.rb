@@ -32,7 +32,7 @@ describe "edit_site", :type => :request do
     expect(page).to have_link('Delete Site')
   end
 
-  pending "should go to a site when clicking on the map marker", js: true do
+  xit "should go to a site when clicking on the map marker", js: true do
     # NB: this is a bit brittle but I didn't find a better way of getting a
     # reference to a clickable marker; Google Maps creates marker that are not
     # easily identifiable from any HTML attribute
