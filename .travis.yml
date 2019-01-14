@@ -20,7 +20,6 @@ script:
   - docker-compose run --rm web bundle exec rake jasmine:ci
 
 deploy:
-  skip_cleanup: true
   provider: script
   script: "./travis-build.sh"
   on:
