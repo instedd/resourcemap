@@ -250,6 +250,8 @@ GEM
       breadcrumbs_on_rails (>= 2.2.0)
       haml-rails
       rails (>= 3.0)
+    intercom-rails (0.4.0)
+      activesupport (> 3.0)
     jasmine (2.7.0)
       jasmine-core (>= 2.7.0, < 3.0.0)
       phantomjs
@@ -523,6 +525,7 @@ DEPENDENCIES
   includes-count
   instedd-rails (~> 0.0.24)
   instedd_telemetry!
+  intercom-rails
   jasmine (~> 2.7.0)
   jquery-rails (~> 2.0.2)
   knockoutjs-rails
