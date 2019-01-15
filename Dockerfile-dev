@@ -1,9 +1,11 @@
-FROM instedd/nginx-rails:2.1
+FROM ruby:2.1
 
 RUN \
   apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y libzmq3-dev && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y libzmq3-dev nodejs && \
   apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+WORKDIR /app
 
 # Download prebuilt phantomjs binary from phantomjs-prebuild node module
 # official download site until a CDN is settled for the official page.

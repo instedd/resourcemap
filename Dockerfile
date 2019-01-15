@@ -1,10 +1,12 @@
-FROM instedd/nginx-rails:2.1
+FROM ruby:2.1
 
 # Install dependencies
 RUN \
   apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y libzmq3-dev && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y libzmq3-dev nodejs && \
   apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+WORKDIR /app
 
 # Install gem bundle
 ADD Gemfile /app/
@@ -16,6 +18,10 @@ ENV POIROT_STDOUT true
 ENV POIROT_SUPPRESS_RAILS_LOG true
 ENV LOG_TO_STDOUT true
 ENV INSTEDD_THEME //theme.instedd.org
+ENV RAILS_ENV production
+ENV WEB_BIND_URI tcp://0.0.0.0:80
+ENV PUMA_TAG resourcemap
+ENV WEB_PUMA_FLAGS ""
 
 # Install the application
 ADD . /app
@@ -32,8 +38,9 @@ RUN mv /app/config/initializers/resque_scheduler.ignore /app/config/initializers
 
 # Add config files
 ADD docker/*.yml /app/config/
-ADD docker/runit-web-run /etc/service/web/run
 
 # Environment variables setup
 # Guisso
 # GUISSO_ENABLED GUISSO_URL GUISSO_CLIENT_ID GUISSO_CLIENT_SECRET
+
+CMD exec puma -e $RAILS_ENV -b $WEB_BIND_URI --tag $PUMA_TAG $WEB_PUMA_FLAGS
