@@ -11,7 +11,7 @@ describe "uncheck_collections_activity", :type => :request do
     visit collections_path
     click_link ('Activity')
 
-    page.save_screenshot 'TabActivity'
+    page.save_screenshot 'TabActivity.png'
     expect(page).to have_content ('Activity')
     find(:xpath, "//div[@class='tabsline']/table/tbody/tr[2]/td[1]/span[2]").click
 

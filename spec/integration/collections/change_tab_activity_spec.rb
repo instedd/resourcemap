@@ -8,7 +8,7 @@ describe "change_tab_activity", :type => :request do
     visit collections_path
     click_link ('Activity')
 
-    page.save_screenshot 'TabActivity'
+    page.save_screenshot 'TabActivity.png'
 
     expect(page).to have_content ('Activity')
   end

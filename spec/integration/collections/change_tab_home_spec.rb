@@ -7,7 +7,7 @@ describe "change_tab_home", :type => :request do
     login_as (@user)
     visit collections_path
     page.find(:xpath, '//div[@id="NavMenu"]/ul/li[2]/a').click
-    page.save_screenshot 'TabHome'
+    page.save_screenshot 'TabHome.png'
     expect(page).to have_content ('Make better decisions')
   end
 end
