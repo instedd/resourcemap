@@ -41,7 +41,7 @@ module LayerMembershipActivityConcern
         new_permission = 'update'
       end
       if activity_user
-        Activity.create! item_type: 'layer_membership', action: 'changed', collection_id: layer.collection_id, user_id: activity_user.id, layer_id: layer.id, user_id: activity_user.id, 'data' => {'previous_permission' => previous_permission, 'new_permission' => new_permission, 'name' => layer.name, 'user' =>
+        Activity.create! item_type: 'layer_membership', action: 'changed', collection_id: layer.collection_id, layer_id: layer.id, user_id: activity_user.id, 'data' => {'previous_permission' => previous_permission, 'new_permission' => new_permission, 'name' => layer.name, 'user' =>
           membership.user.email}
       end
     end

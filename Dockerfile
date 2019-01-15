@@ -1,4 +1,4 @@
-FROM ruby:2.1
+FROM ruby:2.3
 
 # Install dependencies
 RUN \
