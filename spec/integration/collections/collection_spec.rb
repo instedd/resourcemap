@@ -95,7 +95,7 @@ describe "collection", :type => :request, uses_collections_structure: true do
         expect(page).to have_content "Create Collection"
       end
 
-      pending "should export collection sites as RSS", js: true do
+      skip "should export collection sites as RSS", js: true do
         rss_window = window_opened_by { click_link('RSS') }
 
         within_window rss_window do
