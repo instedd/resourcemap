@@ -43,4 +43,4 @@ ADD docker/*.yml /app/config/
 # Guisso
 # GUISSO_ENABLED GUISSO_URL GUISSO_CLIENT_ID GUISSO_CLIENT_SECRET
 
-CMD exec puma -e $RAILS_ENV -b $WEB_BIND_URI --tag $PUMA_TAG $WEB_PUMA_FLAGS
+CMD exec bundle exec puma -e $RAILS_ENV -b $WEB_BIND_URI --tag $PUMA_TAG $WEB_PUMA_FLAGS
