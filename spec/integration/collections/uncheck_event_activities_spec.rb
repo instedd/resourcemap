@@ -16,6 +16,7 @@ describe "uncheck_events_activity", :type => :request do
     find(:xpath, "//div[@class='tabsline']/table/tbody/tr[2]/td[2]/span[2]").click
 
     expect(page).to have_no_content ('mina@gutkowski.com')
+    puts "\n\n\nScreen resolution is: #{Capybara.current_session.current_window.size}\n\n\n"
     page.save_screenshot 'Uncheck events_activity.png'
   end
 end
