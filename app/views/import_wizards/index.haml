@@ -1,5 +1,13 @@
 :javascript
-  $(function() { $('#upload').change(function() { $('#upload_form').submit() }); });
+  $(function() {
+    $('#upload').change(function() { $('#upload_form').submit() });
+    $(".fexport").on("click", function(){
+      document.getElementById('upload').click();
+    });
+    $(".syes_no").on("click", function(){
+      $('#upload_form_spreadsheet').submit();
+    });
+  });
 
 = render '/tabs'
 
@@ -41,9 +49,17 @@
     -else
       = link_to _('Download a template CSV file'), sample_csv_api_collection_path(collection, format: 'csv'), class: "icon fimport black"
 
-    %form#upload_form{action: upload_csv_collection_import_wizard_path(collection), method: :post, enctype: 'multipart/form-data'}
-      %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
-      .icon.fexport.black Upload a CSV file to update multiple sites
-      %input#upload{type: :file, name: :file}
+      %div
+        %form#upload_form{action: upload_csv_collection_import_wizard_path(collection), method: :post, enctype: 'multipart/form-data', style: 'display: inline-block'}
+          %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
+          %div
+            .icon.fexport.black Upload a CSV file to update multiple sites
+            %input#upload{type: :file, name: :file, style: 'visibility:hidden; width:1px; height: 1px'}
+        %form#upload_form_spreadsheet{action: import_csv_from_google_spreadsheet_collection_import_wizard_path(collection), method: :post, enctype: 'multipart/form-data', style: 'display: inline-block'}
+          %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
+          .icon.syes_no.black{style: 'cursor: pointer;'} or add a spreadsheet url
+          %input{type: 'text', id: :spreadSheetLink, name: 'spreadSheetLink'}
+
+
   - else
     = render '/current_snapshot_message'

@@ -1,3 +1,6 @@
+require "open3"
+require "fileutils"
+
 class ImportWizardsController < ApplicationController
   before_filter :authenticate_api_user!
   before_filter :show_properties_breadcrumb
@@ -15,17 +18,13 @@ class ImportWizardsController < ApplicationController
   end
 
   def upload_csv
-    begin
-      csv = ImportWizard.import current_user, collection, params[:file].original_filename, params[:file].read
-      if csv.length == 1
-        message = "The uploaded csv is empty."
-        redirect_to adjustments_collection_import_wizard_path(collection), :notice => message
-      else
-        redirect_to adjustments_collection_import_wizard_path(collection)
-      end
-    rescue => ex
-      redirect_to collection_import_wizard_path(collection), :alert => ex.message
-    end
+      import_csv_from_file(params[:file].original_filename, params[:file].read)
+  end
+
+  def import_csv_from_google_spreadsheet
+    filename, path = from_google_spreadsheet(params[:spreadSheetLink])
+    file_content = File.read("#{path}/#{filename}")
+    import_csv_from_file(filename, file_content)
   end
 
   def guess_columns_spec
@@ -80,5 +79,44 @@ class ImportWizardsController < ApplicationController
 
   def logs
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
+  end
+
+  private
+
+  def sheet_id_match(url)
+    match = url.match /^.*\/d\/(?<sheetId>.*)\/.*$/
+    match && match[:sheetId]
+  end
+
+  def import_csv_from_file(filename, file_content)
+    begin
+      csv = ImportWizard.import current_user, collection, filename, file_content
+      if csv.length == 1
+        message = "The uploaded csv is empty."
+        redirect_to adjustments_collection_import_wizard_path(collection), :notice => message
+      else
+        redirect_to adjustments_collection_import_wizard_path(collection)
+      end
+    rescue => ex
+      redirect_to collection_import_wizard_path(collection), :alert => ex.message
+    end
+  end
+
+  def from_google_spreadsheet(spread_sheet_link)
+    filename = "#{current_user.id}_#{collection.id}.csv"
+    path = "#{Rails.root}/tmp/import_wizard"
+    FileUtils.mkdir_p path
+
+    sheetId = sheet_id_match(spread_sheet_link)
+
+    rows = SpreadsheetService.get_data(sheetId)
+
+    CSV.open("#{path}/#{filename}", 'wb') do |file|
+      rows.each do |row|
+        file << row
+      end
+    end
+
+    return filename, path
   end
 end

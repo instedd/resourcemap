@@ -104,6 +104,7 @@ ResourceMap::Application.routes.draw do
       resource :import_wizard, only: [] do
          get 'index'
          post 'upload_csv'
+         post 'import_csv_from_google_spreadsheet'
          get 'adjustments'
          get 'guess_columns_spec'
          post 'execute'
