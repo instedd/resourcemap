@@ -5,6 +5,8 @@ class ImportWizardsController < ApplicationController
   before_filter :show_properties_breadcrumb
   before_filter :authenticate_collection_admin!, only: :logs
 
+  before_action :validate_spreadsheet_params, only: [:import_csv_from_google_spreadsheet]
+
   authorize_resource :collection, decent_exposure: true
 
   expose(:import_job) { ImportJob.last_for current_user, collection }
@@ -24,6 +26,13 @@ class ImportWizardsController < ApplicationController
     filename, path = from_google_spreadsheet(params[:spreadSheetLink])
     file_content = File.read("#{path}/#{filename}")
     import_csv_from_file(filename, file_content)
+  end
+
+  def validate_spreadsheet_params
+    if(!params.has_key?(:spreadSheetLink) or params[:spreadSheetLink] == "")
+      message = "The spreadsheet link is empty."
+      redirect_to collection_import_wizard_path(collection), :alert => message
+    end
   end
 
   def guess_columns_spec
