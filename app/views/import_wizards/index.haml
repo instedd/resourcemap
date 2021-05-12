@@ -58,7 +58,7 @@
         %form#upload_form_spreadsheet{action: import_csv_from_google_spreadsheet_collection_import_wizard_path(collection), method: :post, enctype: 'multipart/form-data', style: 'display: inline-block'}
           %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
           .icon.syes_no.black{style: 'cursor: pointer;'} or add a spreadsheet url
-          %input{type: 'text', id: :spreadSheetLink, name: 'spreadSheetLink'}
+          %input{type: 'text', id: :spreadSheetLink, name: 'spreadSheetLink', placeholder: 'Enter url', style: 'width: 300px;'}
 
 
   - else
