@@ -1,4 +1,3 @@
-require "open3"
 require "fileutils"
 
 class ImportWizardsController < ApplicationController
