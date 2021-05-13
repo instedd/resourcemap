@@ -23,9 +23,14 @@ class ImportWizardsController < ApplicationController
   end
 
   def import_csv_from_google_spreadsheet
-    filename, path = from_google_spreadsheet(params[:spreadSheetLink])
-    file_content = File.read("#{path}/#{filename}")
-    import_csv_from_file(filename, file_content)
+    begin
+      filename, path = from_google_spreadsheet(params[:spreadSheetLink])
+      file_content = File.read("#{path}/#{filename}")
+      import_csv_from_file(filename, file_content)
+    rescue Exception => e
+      message = "There was an error during the import process, please contact the site administrator."
+      redirect_to collection_import_wizard_path(collection), :alert => message
+    end
   end
 
   def validate_spreadsheet_params
