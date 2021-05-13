@@ -1,10 +1,10 @@
 :javascript
   $(function() {
     $('#upload').change(function() { $('#upload_form').submit() });
-    $(".fexport").on("click", function(){
+    $("#upload_icon_csv").on("click", function(){
       document.getElementById('upload').click();
     });
-    $(".syes_no").on("click", function(){
+    $("#upload_icon_spreadsheet").on("click", function(){
       $('#upload_form_spreadsheet').submit();
     });
   });
@@ -53,11 +53,11 @@
         %form#upload_form{action: upload_csv_collection_import_wizard_path(collection), method: :post, enctype: 'multipart/form-data', style: 'display: inline-block'}
           %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
           %div
-            .icon.fexport.black Upload a CSV file to update multiple sites
+            #upload_icon_csv.icon.fexport.black Upload a CSV file to update multiple sites
             %input#upload{type: :file, name: :file, style: 'visibility:hidden; width:1px; height: 1px'}
         %form#upload_form_spreadsheet{action: import_csv_from_google_spreadsheet_collection_import_wizard_path(collection), method: :post, enctype: 'multipart/form-data', style: 'display: inline-block'}
           %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
-          .icon.syes_no.black{style: 'cursor: pointer;'} or add a spreadsheet url
+          #upload_icon_spreadsheet.icon.syes_no.black{style: 'cursor: pointer;'} or add a spreadsheet url
           %input{type: 'text', id: :spreadSheetLink, name: 'spreadSheetLink', placeholder: 'Enter url', style: 'width: 300px;'}
 
 
