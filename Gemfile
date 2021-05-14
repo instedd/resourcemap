@@ -50,6 +50,7 @@ gem 'activerecord-deprecated_finders'
 gem 'msgpack', '~> 0.7.5'
 gem 'redis'
 gem 'puma', '~> 3.11.4'
+gem 'google-api-client'
 
 group :test do
   gem 'shoulda-matchers', require: false
