@@ -20,3 +20,4 @@ smtp:
   enable_starttls_auto: <%= ENV['SETTINGS__SMTP__ENABLE_STARTTLS_AUTO'] %>
 
 google_maps_key: <%= ENV['SETTINGS__GOOGLE_MAPS_KEY'] %>
+google_sheet_api_key: <%= ENV['SETTINGS__GOOGLE_SHEET_API_KEY'] %>
