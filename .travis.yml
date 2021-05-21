@@ -20,6 +20,7 @@ script:
   - docker-compose run --rm web bundle exec rspec spec/ plugins/
   # - docker-compose run --rm web bundle exec rspec -t js spec/integration/
   # - docker-compose run --rm web bundle exec rake jasmine:ci
+  - git checkout . && git clean -fd
 
 deploy:
   provider: script
