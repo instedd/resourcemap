@@ -20,8 +20,8 @@ jobs:
       - name: Run specs
         run: |
           docker-compose run --rm web bundle exec rspec spec/ plugins/
-          # docker-compose run --rm web bundle exec rspec -t js spec/integration/
-          # docker-compose run --rm web bundle exec rake jasmine:ci
+          docker-compose run --rm web bundle exec rspec -t js spec/integration/
+          docker-compose run --rm web bundle exec rake jasmine:ci
 
   build:
     needs: test

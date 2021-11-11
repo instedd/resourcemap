@@ -56,7 +56,7 @@ services:
       - 3000:3000
 
   selenium:
-    image: selenium/standalone-firefox
+    image: selenium/standalone-firefox:3.11
     shm_size: 2g
     volumes:
       - .:/app
