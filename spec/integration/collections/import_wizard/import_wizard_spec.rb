@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "import_wizard", :type => :request, uses_collections_structure: true do
+xdescribe "import_wizard", :type => :request, uses_collections_structure: true do
   let (:user) do
     new_user
   end
