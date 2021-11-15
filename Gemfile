@@ -27,6 +27,7 @@ gem "omniauth"
 gem "omniauth-openid"
 gem 'alto_guisso', :git => "https://github.com/instedd/alto_guisso", branch: 'master'
 gem 'alto_guisso_rails', :git => "https://github.com/instedd/alto_guisso_rails", branch: 'master'
+gem 'dalli', '~> 2.7' # alto_guisso_rails dependency, dalli >= 3.0 require Ruby 2.5+
 gem 'oj', '~> 2.15.0'
 gem 'nokogiri'
 gem 'carrierwave'
