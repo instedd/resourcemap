@@ -13,7 +13,7 @@ end
 
 def setup_capybara_docker_driver_if_needed
   unless ENV['SELENIUM_URL'].nil? || ENV['SELENIUM_URL'].empty?
-    ip = `/sbin/ip route|awk '/scope/ { print $9 }'`.gsub("\n", "")
+    ip = `/sbin/ip route|awk '/scope/ { print $9 }'`.split("\n").last
 
     Capybara.javascript_driver = :docker_firefox
     Capybara.server_port = 55555
