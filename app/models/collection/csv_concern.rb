@@ -1,3 +1,24 @@
+class CSV
+  # monkey-patch CSV.generate to support non-ASCII locales
+  # see ruby/csv#63 ( https://github.com/ruby/csv/pull/63/files )
+  def self.generate(*args)
+    # add a default empty String, if none was given
+    if args.first.is_a? String
+      io = StringIO.new(args.shift)
+      io.seek(0, IO::SEEK_END)
+      args.unshift(io)
+    else
+      encoding = args[-1][:encoding] if args.last.is_a?(Hash)
+      str      = +""
+      str.force_encoding(encoding) if encoding
+      args.unshift(str)
+    end
+    csv = new(*args)  # wrap
+    yield csv         # yield for appending
+    csv.string        # return final String
+  end
+end
+
 module Collection::CsvConcern
   extend ActiveSupport::Concern
 
