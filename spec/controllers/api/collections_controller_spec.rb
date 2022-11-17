@@ -211,17 +211,20 @@ describe Api::CollectionsController, :type => :controller do
     end
 
     describe "GET CSV collection" do
+      let!(:site3) {collection.sites.make :name => "किसी जगह", properties: { hierarchy.es_code => 'bro' } }
+
       before(:each) do
         get :show, id: collection.id, format: 'csv'
       end
 
       it { expect(response).to be_success }
 
-      it "should return CSV" do
+      it "should return CSV with non-ASCII values" do
         csv =  CSV.parse response.body
-        expect(csv.length).to eq(3)
+        expect(csv.length).to eq(4)
 
         expect(csv[0]).to eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, yes_no.code, select_one.code, select_many.code, hierarchy.code,"#{hierarchy.code}-1", "#{hierarchy.code}-2", site_ref.code, date.code, director.code, 'last updated'])
+        expect(csv).to include [site3.id.to_s, site3.name, site3.lat.to_s, site3.lng.to_s, "", "", "no", "", "", "bro", "Dad", "Bro", "", "", "", site3.updated_at.to_datetime.rfc822]
         expect(csv).to include [site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "bro", "Dad", "Bro", "", "", "", site2.updated_at.to_datetime.rfc822]
         expect(csv).to include [site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'yes', 'one', 'one, two', 'dad', 'Dad', '', site2.id.to_s, '10/24/2012', user.email, site.updated_at.to_datetime.rfc822]
       end
