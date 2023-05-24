@@ -3,6 +3,7 @@ version: '2.0'
 services:
   db:
     image: mysql:5.7
+    platform: linux/amd64
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     volumes:
@@ -10,12 +11,14 @@ services:
 
   elasticsearch:
     image: elasticsearch:1.7
+    platform: linux/amd64
     command: elasticsearch -Des.network.host=0.0.0.0
     volumes:
       - elastic:/usr/share/elasticsearch/data
 
   redis:
     image: redis:4.0-alpine
+    platform: linux/amd64
     volumes:
       - redis:/data
 
@@ -29,6 +32,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-dev
+    platform: linux/amd64
     environment:
       RAILS_ENV:
       ELASTICSEARCH_URL: 'elasticsearch:9200'
