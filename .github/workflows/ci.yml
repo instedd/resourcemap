@@ -11,17 +11,17 @@ jobs:
       - name: Set environment up
         run: |
           mv docker-compose.ci.yml docker-compose.override.yml
-          docker-compose pull
-          docker-compose up -d db elasticsearch redis
-          docker-compose run --rm --no-deps web bundle
-          docker-compose run --rm --no-deps web rake db:setup
-          docker-compose run --rm --no-deps web rake db:test:prepare
+          docker compose pull
+          docker compose up -d db elasticsearch redis
+          docker compose run --rm --no-deps web bundle
+          docker compose run --rm --no-deps web rake db:setup
+          docker compose run --rm --no-deps web rake db:test:prepare
 
       - name: Run specs
         run: |
-          docker-compose run --rm web bundle exec rspec spec/ plugins/
-          docker-compose run --rm web bundle exec rspec -t js spec/integration/
-          docker-compose run --rm web bundle exec rake jasmine:ci
+          docker compose run --rm web bundle exec rspec spec/ plugins/
+          docker compose run --rm web bundle exec rspec -t js spec/integration/
+          docker compose run --rm web bundle exec rake jasmine:ci
 
   build:
     needs: test

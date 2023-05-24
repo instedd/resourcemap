@@ -121,16 +121,16 @@ And open a browser tab in [http://localhost:8888](http://localhost:8888)
 Run the following commands to have a stable development environment.
 
 ```
-$ docker-compose run --rm --no-deps web bundle install
-$ docker-compose up -d db
-$ docker-compose run --rm web rake db:setup
-$ docker-compose up
+$ docker compose run --rm --no-deps web bundle install
+$ docker compose up -d db
+$ docker compose run --rm web rake db:setup
+$ docker compose up
 ```
 
 To setup and run test, once the web container is running:
 
 ```
-$ docker-compose exec web bash
+$ docker compose exec web bash
 root@web_1 $ rake
 ```
 
