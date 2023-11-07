@@ -8,7 +8,7 @@ describe Telemetry::AccountsCollector do
 
     stats = Telemetry::AccountsCollector.collect_stats(period)
 
-    assert_equal stats, {
+    expect(stats).to eq({
       "counters" => [
         {
         "metric" => "accounts",
@@ -16,7 +16,7 @@ describe Telemetry::AccountsCollector do
         "value" => 3
         }
       ]
-    }
+    })
   end
 
   it "takes into account period date" do
@@ -28,21 +28,21 @@ describe Telemetry::AccountsCollector do
     2.times { User.make }
     p1 = InsteddTelemetry::Period.current
 
-    assert_equal Telemetry::AccountsCollector.collect_stats(p0), {
+    expect(Telemetry::AccountsCollector.collect_stats(p0)).to eq({
       "counters" => [{
         "metric" => "accounts",
         "key" => {},
         "value" => 3
       }]
-    }
+    })
 
-    assert_equal Telemetry::AccountsCollector.collect_stats(p1), {
+    expect(Telemetry::AccountsCollector.collect_stats(p1)).to eq({
       "counters" => [{
         "metric" => "accounts",
         "key" => {},
         "value" => 5
       }]
-    }
+    })
   end
 
 end
