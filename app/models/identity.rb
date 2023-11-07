@@ -1,5 +1,11 @@
 class Identity < ActiveRecord::Base
-  attr_accessible :provider, :token, :user_id
-
   belongs_to :user
+
+  def assign_attributes(new_attributes)
+    super ActiveSupport::HashWithIndifferentAccess.new(new_attributes).slice(
+      :provider,
+      :token,
+      :user_id
+    )
+  end
 end

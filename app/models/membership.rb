@@ -3,8 +3,6 @@ class Membership < ActiveRecord::Base
   include Membership::SitesPermissionConcern
   include Membership::DefaultPermissionConcern
 
-  attr_accessible :collection_id, :admin, :user_id, :collection, :user
-
   belongs_to :user
   belongs_to :collection
   has_many :layer_memberships, dependent: :destroy
@@ -19,6 +17,16 @@ class Membership < ActiveRecord::Base
   after_destroy :touch_collection_lifespan
   after_save :touch_user_lifespan
   after_destroy :touch_user_lifespan
+
+  def assign_attributes(new_attributes)
+    super ActiveSupport::HashWithIndifferentAccess.new(new_attributes).slice(
+      :collection_id,
+      :admin,
+      :user_id,
+      :collection,
+      :user
+    )
+  end
 
   #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
   def can_read?(object)

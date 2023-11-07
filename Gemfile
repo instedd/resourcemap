@@ -49,9 +49,6 @@ gem 'treetop', '1.4.15'
 gem 'uuidtools'
 gem 'will_paginate'
 
-# deprecated libraries (to be removed):
-gem 'protected_attributes' # TODO: migrate to strong parameters
-
 # templates
 gem 'haml-rails', '~> 0.4'
 gem 'haml-magic-translations'
