@@ -97,6 +97,7 @@ group :test, :development do
   # gem 'memory_profiler'
   # gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.4.0'
+  gem 'rspec-retry'
   # gem 'stackprof'
 end
 
