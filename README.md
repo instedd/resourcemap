@@ -140,16 +140,6 @@ Resource Map uses [Capistrano 3](http://capistranorb.com) to deploy. Capistrano
 requires the target server to be already provisioned and correctly setup before
 deploying.
 
-The [Vagrant](http://vagrantup.com) configuration file contains two different
-virtual machines for testing, which are provisioned for deployment using
-Capistrano. One is setup to install `RVM` and the other `rbenv`. Check the
-`Vagrantfile` and the configuration files and scripts in `config/vagrant` for a
-sample provisioning.
-
-The Capistrano stages `vagrant-rvm` and `vagrant-rbenv` can be used to deploy
-Resource Map to the virtual machines. Only one of the virtual machines can be
-running at the same time, since per configuration both forward the 80 port to
-the host's 8080.
 
 ## Intercom
 
