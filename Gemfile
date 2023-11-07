@@ -82,7 +82,7 @@ group :test do
   gem 'faker'
   gem 'machinist', '1.0.6'
   gem 'resque_spec'
-  gem 'selenium-webdriver', '3.9' # locked until we upgrade to capybara 3.x
+  gem 'selenium-webdriver', '3.141.0' # locked until we upgrade to capybara 3.x
   gem 'shoulda-matchers', require: false
   gem 'simplecov'
   gem 'simplecov-rcov'
