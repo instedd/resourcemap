@@ -50,5 +50,5 @@ ResourceMap::Application.configure do
   # Uncomment the following line to enable sample profiling (see https://github.com/tmm1/stackprof for details)
   # config.middleware.use StackProf::Middleware, enabled: true, mode: :cpu, interval: 100, save_every: 5
 
-  config.web_console.whitelisted_ips = '0.0.0.0/0'
+  # config.web_console.whitelisted_ips = '0.0.0.0/0'
 end

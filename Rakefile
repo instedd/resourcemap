@@ -5,10 +5,10 @@ require File.expand_path('../config/application', __FILE__)
 
 ResourceMap::Application.load_tasks
 
-if Rails.env.development? || Rails.env.test?
-  require 'guard/jasmine/task'
-
-  Guard::JasmineTask.new do |task|
-    task.options = '-m /'
-  end
-end
+# if Rails.env.development? || Rails.env.test?
+#   require 'guard/jasmine/task'
+#
+#   Guard::JasmineTask.new do |task|
+#     task.options = '-m /'
+#   end
+# end

@@ -10,7 +10,7 @@ services:
       - db:/var/lib/mysql
 
   elasticsearch:
-    image: elasticsearch:1.7
+    image: elasticsearch:1.7.5
     platform: linux/amd64
     command: elasticsearch -Des.network.host=0.0.0.0
     volumes:
@@ -60,7 +60,7 @@ services:
       - 3000:3000
 
   selenium:
-    image: selenium/standalone-firefox:3.11
+    image: selenium/standalone-firefox:78.0
     shm_size: 2g
     volumes:
       - .:/app
