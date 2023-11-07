@@ -50,9 +50,7 @@ gem 'uuidtools'
 gem 'will_paginate'
 
 # deprecated libraries (to be removed):
-gem 'activerecord-deprecated_finders' # TODO: migrate to AR4+ queries
 gem 'protected_attributes' # TODO: migrate to strong parameters
-gem 'rails-observers'      # TODO: seems unused?
 
 # templates
 gem 'haml-rails', '~> 0.4'

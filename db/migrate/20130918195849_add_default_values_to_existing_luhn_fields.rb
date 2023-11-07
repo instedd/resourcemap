@@ -1,6 +1,6 @@
 class AddDefaultValuesToExistingLuhnFields < ActiveRecord::Migration
   def change
-    Field.find_all_by_kind('identifier').each do |field|
+    Field.where(kind: 'identifier').each do |field|
       next unless field.has_luhn_format?
 
       luhn_field = field
