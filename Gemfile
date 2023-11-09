@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # framework
-gem 'rails', '~> 4.1.15'
+gem 'rails', '~> 4.2.11'
 
 # services
 gem "elasticsearch", '~> 1.0.17'
@@ -48,6 +48,9 @@ gem 'rubyzip', '1.3.0' # last version to support ruby 2.3
 gem 'treetop', '1.4.15'
 gem 'uuidtools'
 gem 'will_paginate'
+
+# deprecated (to fix upgrades)
+gem "loofah", "2.20.0" if RUBY_VERSION.to_f < 2.5
 
 # templates
 gem 'haml-rails', '~> 0.4'

@@ -20,6 +20,7 @@ ADD Gemfile.lock /app/
 RUN bundle install --jobs 3 --deployment --without development test
 
 # Default environment settings
+ENV RAILS_SERVE_STATIC_FILES true
 ENV LOG_TO_STDOUT true
 ENV INSTEDD_THEME //theme.instedd.org
 ENV RAILS_ENV production

@@ -40,7 +40,7 @@ describe ThresholdsController, :type => :controller do
 
   it "should update threshold" do
     put :update, id: threshold.id, collection_id: collection.id, threshold: {ord: 2, "conditions"=>{"0"=>condition_attributes}, "sites" => {"0" => sites}}
-    expect(Threshold.find(threshold).ord).to eq(2)
+    expect(Threshold.find(threshold.id).ord).to eq(2)
   end
 
   it "should destroy threshold" do
@@ -74,7 +74,7 @@ describe ThresholdsController, :type => :controller do
       threshold.ord = 1
       threshold.save!
       put :update, id: threshold.id, collection_id: collection.id, threshold: {ord: 2, "conditions"=>{"0"=>condition_attributes}, "sites" => {"0" => sites}}
-      expect(Threshold.find(threshold).ord).to eq(1)
+      expect(Threshold.find(threshold.id).ord).to eq(1)
     end
 
     it "should not destroy threshold" do

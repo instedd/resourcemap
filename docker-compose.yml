@@ -67,19 +67,19 @@ services:
 
   resque:
     <<: *rails
-    command: rake resque:work TERM_CHILD=1 FORK_PER_JOB=false
+    command: bundle exec rake resque:work TERM_CHILD=1 FORK_PER_JOB=false
     ports: []
     depends_on: []
 
   resque_scheduler:
     <<: *rails
-    command: rake resque:scheduler
+    command: bundle exec rake resque:scheduler
     ports: []
     depends_on: []
 
   jasmine:
     <<: *rails
-    command: rake jasmine
+    command: bundle exec rake jasmine
     ports:
       - 8888:8888
     depends_on: []

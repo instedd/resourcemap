@@ -7,8 +7,8 @@ describe User, :type => :model do
   it "should be confirmed" do
     user = User.make confirmed_at: nil
     expect(user.confirmed?).to be_falsey
-    user.confirm!
-    expect(user.confirmed?).to be_truthy
+    user.confirm
+    expect(user.reload.confirmed?).to be_truthy
   end
 
   it "creates a collection" do

@@ -223,7 +223,7 @@ describe Activity, :type => :model do
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'lat' => [10.0, 15.1234567], 'lng' => [20.0, 20.0]}},
+        'data' => {'name' => site.name, 'changes' => {'lat' => [10.0, 15.123457], 'lng' => [20.0, 20.0]}},
         'description' => "Site '#{site.name}' changed: location changed from (10.0, 20.0) to (15.123457, 20.0)"
     end
 
@@ -241,7 +241,7 @@ describe Activity, :type => :model do
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'lat' => [ nil, 15.1234567], 'lng' => [nil, 34.123456]}},
+        'data' => {'name' => site.name, 'changes' => {'lat' => [ nil, 15.123457], 'lng' => [nil, 34.123456]}},
         'description' => "Site '#{site.name}' changed: location changed from (nothing) to (15.123457, 34.123456)"
     end
 
