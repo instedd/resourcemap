@@ -57,7 +57,7 @@ gem 'haml-magic-translations'
 gem 'coffee-rails', '~> 4.0.1'
 gem 'jquery-rails', "~> 2.0.2"
 gem 'lodash-rails'
-gem 'knockoutjs-rails'
+gem 'knockoutjs-rails', '~> 3.2.0'
 gem 'rails-assets-knockout-sortable', :source => 'https://rails-assets.org'
 gem 'sass-rails',   '~> 4.0.1'
 gem 'uglifier', '>= 2.5.0'
