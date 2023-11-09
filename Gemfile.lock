@@ -70,7 +70,6 @@ GEM
       activemodel (= 4.1.15)
       activesupport (= 4.1.15)
       arel (~> 5.0.0)
-    activerecord-deprecated_finders (1.0.3)
     activerecord-import (0.5.0)
       activerecord (>= 3.0)
     activesupport (4.1.15)
@@ -249,8 +248,6 @@ GEM
     po_to_json (0.0.7)
       json
     polyglot (0.3.5)
-    protected_attributes (1.0.8)
-      activemodel (>= 4.0.1, < 5.0)
     public_suffix (4.0.7)
     puma (3.11.4)
     rack (1.5.5)
@@ -278,8 +275,6 @@ GEM
       railties (= 4.1.15)
       sprockets-rails (~> 2.0)
     rails-assets-knockout-sortable (1.1.0)
-    rails-observers (0.1.2)
-      activemodel (~> 4.0)
     railties (4.1.15)
       actionpack (= 4.1.15)
       activesupport (= 4.1.15)
@@ -410,7 +405,6 @@ DEPENDENCIES
   actionpack-action_caching
   actionpack-page_caching
   active_model_serializers
-  activerecord-deprecated_finders
   activerecord-import
   alto_guisso!
   alto_guisso_rails!
@@ -449,11 +443,9 @@ DEPENDENCIES
   omniauth (~> 1.2)
   omniauth-openid (~> 1.0)
   paranoia (~> 2.0)
-  protected_attributes
   puma (~> 3.11.4)
   rails (~> 4.1.15)
   rails-assets-knockout-sortable!
-  rails-observers
   redis (~> 3.1)
   resque (~> 1.25)
   resque-scheduler (~> 3.0.0)
