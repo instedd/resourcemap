@@ -376,8 +376,6 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-    simplecov-rcov (0.3.3)
-      simplecov (>= 0.4.1)
     sinatra (1.4.8)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -480,7 +478,6 @@ DEPENDENCIES
   selenium-webdriver (= 3.141.0)
   shoulda-matchers
   simplecov
-  simplecov-rcov
   spring-commands-rspec
   timecop
   treetop (= 1.4.15)

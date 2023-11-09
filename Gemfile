@@ -79,8 +79,7 @@ group :test do
   gem 'resque_spec'
   gem 'selenium-webdriver', '3.141.0' # locked until we upgrade to capybara 3.x
   gem 'shoulda-matchers', require: false
-  gem 'simplecov'
-  gem 'simplecov-rcov'
+  gem 'simplecov', require: false
   gem 'spring-commands-rspec'
   gem 'timecop'
 end
