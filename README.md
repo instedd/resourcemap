@@ -134,23 +134,6 @@ $ docker compose exec web bash
 root@web_1 $ rake
 ```
 
-## Deployment
-
-Resource Map uses [Capistrano 3](http://capistranorb.com) to deploy. Capistrano
-requires the target server to be already provisioned and correctly setup before
-deploying.
-
-The [Vagrant](http://vagrantup.com) configuration file contains two different
-virtual machines for testing, which are provisioned for deployment using
-Capistrano. One is setup to install `RVM` and the other `rbenv`. Check the
-`Vagrantfile` and the configuration files and scripts in `config/vagrant` for a
-sample provisioning.
-
-The Capistrano stages `vagrant-rvm` and `vagrant-rbenv` can be used to deploy
-Resource Map to the virtual machines. Only one of the virtual machines can be
-running at the same time, since per configuration both forward the 80 port to
-the host's 8080.
-
 ## Intercom
 
 Resourcemap supports Intercom as its CRM platform. To load the Intercom chat widget, simply start Resourcemap with the env variable `INTERCOM_APP_ID` set to your Intercom app id (https://www.intercom.com/help/faqs-and-troubleshooting/getting-set-up/where-can-i-find-my-workspace-id-app-id).
@@ -206,4 +189,4 @@ At this point your `API_KEY` will be ready to authenticate `Google Sheets API v4
 For `DEVELOPMENT`, add `GOOGLE_SHEET_API_KEY` in `settings.local.yml`.
 For `PRODUCTION`, add `GOOGLE_SHEET_API_KEY` along with the other variables set in settings.yml
 `GOOGLE_SHEET_API_KEY` is used by `SpreadsheetService` class to authenticate `Google Sheets API v4` requests.
- 
+

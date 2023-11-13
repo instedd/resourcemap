@@ -1,5 +1,3 @@
-require 'new_relic/agent/method_tracer'
-
 module Api::JsonHelper
   def collection_json(collection, results)
     obj = {}
@@ -34,7 +32,4 @@ module Api::JsonHelper
 
     obj
   end
-
-  include ::NewRelic::Agent::MethodTracer
-  add_method_tracer :collection_json, 'Custom/JsonHelper/collection_json'
 end

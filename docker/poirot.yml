@@ -1,4 +1,0 @@
-production:
-  source: <%= ENV.fetch('SETTINGS__POIROT__SOURCE', "resourcemap") %>
-  debug: <%= ENV.fetch('SETTINGS__POIROT__DEBUG', false) %>
-  enabled: <%= ENV.fetch('SETTINGS__POIROT__ENABLED', false) %>

@@ -89,7 +89,7 @@ class Field < ActiveRecord::Base
     end
   end
 
-  def assign_attributes(new_attributes, options = {})
+  def assign_attributes(new_attributes)
     if (new_kind = (new_attributes["kind"] || new_attributes[:kind]))
       if new_kind == kind
         new_attributes.delete "kind"

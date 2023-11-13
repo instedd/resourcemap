@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SearchParser, :type => :model do
   it "nil" do
     s = SearchParser.new(nil)
-    assert_equal nil, s.search
+    expect(s.search).to be_nil
   end
 
   it "simple 1" do

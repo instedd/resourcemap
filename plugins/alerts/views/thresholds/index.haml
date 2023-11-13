@@ -175,10 +175,10 @@
         %div
           Send emails to:
           .list-box
-            - collection.fields.find_all_by_kind('user').each  do |field|
+            - collection.fields.where(kind: 'user').each  do |field|
               %label
                 %input{ko(checked: 'usersEmail'), value: field.es_code, type: "checkbox"}= field.name
-            - collection.fields.find_all_by_kind('email').each do |field|
+            - collection.fields.where(kind: 'email').each do |field|
               %label
                 %input{ko(checked: 'fieldsEmail'), value: field.es_code, type: "checkbox"}= field.name
             - collection.users.each do |user|
@@ -187,10 +187,10 @@
         %div
           Send text messages to:
           .list-box
-            - collection.fields.find_all_by_kind('user').each  do |field|
+            - collection.fields.where(kind: 'user').each  do |field|
               %label
                 %input{ko(checked: 'usersPhone'), value: field.es_code, type: "checkbox"}= field.name
-            - collection.fields.find_all_by_kind('phone').each do |field|
+            - collection.fields.where(kind: 'phone').each do |field|
               %label
                 %input.lalalale{ko(checked: 'fieldsPhone'), value: field.es_code, type: "checkbox"}= field.name
             - collection.users.each do |user|

@@ -38,9 +38,6 @@ ResourceMap::Application.configure do
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
 
-  # Raise exception on mass assignment protection for Active Record models
-  config.active_record.mass_assignment_sanitizer = :strict
-
   # Do not compress assets
   config.assets.compress = false
 
@@ -50,5 +47,5 @@ ResourceMap::Application.configure do
   # Uncomment the following line to enable sample profiling (see https://github.com/tmm1/stackprof for details)
   # config.middleware.use StackProf::Middleware, enabled: true, mode: :cpu, interval: 100, save_every: 5
 
-  config.web_console.whitelisted_ips = '0.0.0.0/0'
+  # config.web_console.whitelisted_ips = '0.0.0.0/0'
 end

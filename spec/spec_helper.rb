@@ -92,10 +92,8 @@ RSpec.configure do |config|
     puts meta[:full_description] + "\n  Screenshot: #{screenshot_name}"
   end
 
-  config.after(:each) do |example|
-    if example.metadata[:js] and example.exception.present?
-      take_screenshot(example)
-    end
+  config.after(:each, :js) do |example|
+    take_screenshot(example) if example.exception.present?
   end
 
 

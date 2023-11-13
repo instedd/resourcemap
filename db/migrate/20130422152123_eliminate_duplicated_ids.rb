@@ -5,7 +5,7 @@ class EliminateDuplicatedIds < ActiveRecord::Migration
 	# In some cases previous migration generated some duplicated uuids inside the same collection
   def up
   	while(true)
-      duplicated_groups = Site.unscoped.find(:all, :group => [:collection_id, :uuid], :having => "count(*) > 1" )
+      duplicated_groups = Site.unscoped.group(:collection_id, :uuid).having("count(*) > 1").all
       puts "#{duplicated_groups.count} groups of duplicated uuid inside the same collection found"
   		if duplicated_groups.count == 0
   			break 

@@ -15,10 +15,16 @@ class ImportJob < ActiveRecord::Base
 
   # :finished_at is nil until the ImportJob reaches the :finished status, when its assigned Time.now
 
-  attr_accessible :finished_at, :original_filename, :status
-
   belongs_to :user
   belongs_to :collection
+
+  def assign_attributes(new_attributes)
+    super ActiveSupport::HashWithIndifferentAccess.new(new_attributes).slice(
+      :finished_at,
+      :original_filename,
+      :status
+    )
+  end
 
   def pending
     Rails.logger.error "Inconsistent status for job with id #{self.id}. Should be in status 'file_uploaded' before marking it as 'pending'" unless self.status_file_uploaded?

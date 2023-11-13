@@ -24,7 +24,6 @@ config/settings.yml
 config/guisso.yml
 config/telemetry.yml
 spec/integration/screenshots/*
-.vagrant
 /public/uploads/
 /docker-env
 docker-compose.override.yml

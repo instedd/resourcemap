@@ -50,7 +50,7 @@ describe CsdApiController, :type => :controller do
       request.env["RAW_POST_DATA"] = generate_request(request_id)
 
       post :get_directory_modifications, collection_id: collection.id
-      assert_equal 200, response.status
+      expect(response.status).to eq(200)
 
       response_hash = Hash.from_xml(response.body)
 
@@ -102,11 +102,8 @@ describe CsdApiController, :type => :controller do
         </soap:Envelope>
       }
 
-      expected = Hash.from_xml(expected_xml)
-      response_hash = Hash.from_xml(response.body)
-
-      assert_equal expected, response_hash
-      assert_equal 500, @response.status
+      expect(Hash.from_xml(response.body)).to eq(Hash.from_xml(expected_xml))
+      expect(@response.status).to eq(500)
     end
 
     # Request Validation is currenty commented in the code because it takes too long
@@ -126,11 +123,8 @@ describe CsdApiController, :type => :controller do
         </soap:Envelope>
       }
 
-      expected = Hash.from_xml(expected_xml)
-      response_hash = Hash.from_xml(response.body)
-
-      assert_equal expected, response_hash
-      assert_equal 500, @response.status
+      expect(Hash.from_xml(response.body)).to eq(Hash.from_xml(expected_xml))
+      expect(@response.status).to eq(500)
     end
 
     it "should return facilities modified after a particular date" do

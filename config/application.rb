@@ -20,7 +20,9 @@ module ResourceMap
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += Dir["#{config.root}/plugins/"]
     config.autoload_paths += Dir["#{config.root}/plugins/*/{helpers,controllers,models,workers}"]
-    config.active_record.whitelist_attributes = false
+
+    # FIXME: add strong parameters filters to all controllers
+    config.action_controller.permit_all_parameters = true
 
     # Load all Field classes to make associations like "text_fields" and "numeric_fields" work
     config.to_prepare do
@@ -55,12 +57,6 @@ module ResourceMap
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
-    # Enforce whitelist mode for mass assignment.
-    # This will create an empty whitelist of attributes available for mass-assignment for all models
-    # in your app. As such, your models will need to explicitly whitelist or blacklist accessible
-    # parameters by using an attr_accessible or attr_protected declaration.
-    # config.active_record.whitelist_attributes = true
-
     # Enable the asset pipeline
     config.assets.enabled = true
 
@@ -89,7 +85,6 @@ module ResourceMap
     FastGettext.default_available_locales = config.available_locales.keys.map(&:to_s)
     FastGettext.default_text_domain = 'app'
     FastGettext.default_locale = 'en'
-
   end
 
 end

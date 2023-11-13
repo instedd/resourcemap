@@ -16,9 +16,6 @@ SETTINGS__GOOGLE_MAPS_KEY=changeme
 # Google Sheets API Key (see README.md on how to get it)
 SETTINGS__GOOGLE_SHEET_API_KEY=changeme
 
-# Newrelic configuration
-SETTINGS__NEWRELIC__LICENSE_KEY=
-
 # Nuntium configuration for SMS integration (optional)
 SETTINGS__NUNTIUM__URL=http://nuntium.instedd.org
 SETTINGS__NUNTIUM__ACCOUNT=
