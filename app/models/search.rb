@@ -82,7 +82,7 @@ class Search
       es_code = remove_at_from_code es_code
       field = fields.find { |x| x.code == es_code || x.es_code == es_code }
       if field && field.kind == 'text'
-        sort = "#{field.es_code}.downcase"
+        sort = "properties.#{field.es_code}.downcase"
       else
         sort = decode(es_code)
       end
