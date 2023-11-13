@@ -26,7 +26,7 @@ describe RemindersController, :type => :controller do
 
   it "should update reminder" do
     put :update, :id => reminder.id, :collection_id => collection.id, :reminder => { name: "foo" }
-    expect(Reminder.find(reminder).name).to eq("foo")
+    expect(reminder.reload.name).to eq("foo")
   end
 
   it "should destroy reminder" do
@@ -37,7 +37,7 @@ describe RemindersController, :type => :controller do
 
   it 'should update status' do
     post :set_status, :id => reminder.id, :collection_id => collection.id, :status => true
-    expect(Reminder.find(reminder).status).to eq(true)
+    expect(reminder.reload.status).to eq(true)
   end
 
   it "should not create reminder for guest" do
@@ -64,7 +64,7 @@ describe RemindersController, :type => :controller do
       reminder.name = "old"
       reminder.save!
       put :update, :id => reminder.id, :collection_id => collection.id, :reminder => { name: "foo" }
-      expect(Reminder.find(reminder).name).to eq("old")
+      expect(reminder.reload.name).to eq("old")
     end
 
     it "should not destroy reminder" do
@@ -75,7 +75,7 @@ describe RemindersController, :type => :controller do
 
     it 'should not update status' do
       post :set_status, :id => reminder.id, :collection_id => collection.id, :status => true
-      expect(Reminder.find(reminder).status).to eq(nil)
+      expect(reminder.reload.status).to eq(nil)
     end
   end
 end

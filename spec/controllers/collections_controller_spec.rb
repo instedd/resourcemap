@@ -138,7 +138,7 @@ describe CollectionsController, :type => :controller do
       expect{
         post :create, collection: { name: 'collection_1', icon: 'default'}
       }.to change{
-        u = User.find user
+        u = User.find user.id
         u.collection_count
       }.from(0).to(1)
     end

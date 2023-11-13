@@ -292,7 +292,7 @@ describe SitesController, :type => :controller do
       expect {
         post :create, site: "{\"name\":\"site_01\",\"lat\":8.932599568335238,\"lng\":99.27246091406255,\"properties\":{}}", collection_id: collection.id
       }.to change{
-        u = User.find user
+        u = User.find user.id
         u.site_count
       }.from(0).to(1)
     end

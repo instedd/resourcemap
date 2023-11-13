@@ -58,7 +58,7 @@ describe LayersController, :type => :controller do
       expect {
         post :create, layer: { name: 'layer_01', fields: [], ord: 1}, collection_id: collection.id
       }.to change{
-        u = User.find user
+        u = User.find user.id
         u.layer_count
       }.from(0).to(1)
     end

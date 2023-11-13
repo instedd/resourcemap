@@ -10,7 +10,7 @@ describe GatewaysController, :type => :controller do
   before(:each) {sign_in user}
   it "should turn on gateway" do
     post :status, id: gateway.id, status: true, format: 'json'
-    expect(Channel.find(gateway).is_enable).to eq(true)
+    expect(Channel.find(gateway.id).is_enable).to eq(true)
   end
 
   describe 'analytic' do
@@ -18,7 +18,7 @@ describe GatewaysController, :type => :controller do
       expect {
         post :create, gateway: { name: 'default1', basic_setup: true, ticket_code: '2222', is_enable: true, user_id: user.id }
       }.to change{
-        u = User.find user
+        u = User.find user.id
         u.gateway_count
       }.from(0).to(1)
     end

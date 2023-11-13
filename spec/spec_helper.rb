@@ -1,17 +1,22 @@
 if ENV["COVERAGE"]
   require 'simplecov'
-  require 'simplecov-rcov'
-  class SimpleCov::Formatter::MergedFormatter
-    def format(result)
-       SimpleCov::Formatter::HTMLFormatter.new.format(result)
-       SimpleCov::Formatter::RcovFormatter.new.format(result)
-    end
-  end
-  SimpleCov.formatter = SimpleCov::Formatter::MergedFormatter
+  SimpleCov.formatter SimpleCov::Formatter::SimpleFormatter if ENV['CI']
+
   SimpleCov.start do
-    add_filter "/spec/"
-    add_filter "/.bundle/"
-    add_filter "/lib/treetop/command.rb"
+    load_profile "test_frameworks"
+
+    add_filter %r{^/config/}
+    add_filter %r{^/db/}
+
+    add_group "Controllers", ["app/controllers"] + Dir["plugins/*/controllers"]
+    # add_group "Channels", ["app/channels"] + Dir["plugins/*/channels"]
+    add_group "Models", ["app/models"] + Dir["plugins/*/models"]
+    add_group "Mailers", ["app/mailers"] + Dir["plugins/*/mailers"]
+    add_group "Helpers", ["app/helpers"] + Dir["plugins/*/helpers"]
+    add_group "Jobs", %w[app/jobs app/workers] + Dir["plugins/*/{jobs,workers}"]
+    add_group "Libraries", ["lib/"] + Dir["plugins/*/lib"]
+
+    track_files "{app,lib}/**/*.rb"
   end
 end
 
@@ -49,7 +54,7 @@ RSpec.configure do |config|
   config.define_derived_metadata(:file_path => /spec\/integration/) do |metadata|
     metadata[:type] ||= :integration
   end
-  config.filter_run_excluding(js: true)   unless config.filter_manager.inclusions[:js]
+  config.filter_run_excluding(js: true) unless config.filter_manager.inclusions[:js] || ENV["FEATURES"]
 
   Warden.test_mode!
 

@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # framework
-gem 'rails', '~> 4.1.15'
+gem 'rails', '~> 4.2.11'
 
 # services
 gem "elasticsearch", '~> 1.0.17'
@@ -49,6 +49,9 @@ gem 'treetop', '1.4.15'
 gem 'uuidtools'
 gem 'will_paginate'
 
+# deprecated (to fix upgrades)
+gem "loofah", "2.20.0" if RUBY_VERSION.to_f < 2.5
+
 # templates
 gem 'haml-rails', '~> 0.4'
 gem 'haml-magic-translations'
@@ -57,7 +60,7 @@ gem 'haml-magic-translations'
 gem 'coffee-rails', '~> 4.0.1'
 gem 'jquery-rails', "~> 2.0.2"
 gem 'lodash-rails'
-gem 'knockoutjs-rails'
+gem 'knockoutjs-rails', '~> 3.2.0'
 gem 'rails-assets-knockout-sortable', :source => 'https://rails-assets.org'
 gem 'sass-rails',   '~> 4.0.1'
 gem 'uglifier', '>= 2.5.0'
@@ -79,8 +82,7 @@ group :test do
   gem 'resque_spec'
   gem 'selenium-webdriver', '3.141.0' # locked until we upgrade to capybara 3.x
   gem 'shoulda-matchers', require: false
-  gem 'simplecov'
-  gem 'simplecov-rcov'
+  gem 'simplecov', require: false
   gem 'spring-commands-rspec'
   gem 'timecop'
 end
