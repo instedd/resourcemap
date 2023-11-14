@@ -79,13 +79,7 @@ class Search
     when 'name'
       sort = 'name.downcase'
     else
-      es_code = remove_at_from_code es_code
-      field = fields.find { |x| x.code == es_code || x.es_code == es_code }
-      if field && field.kind == 'text'
-        sort = "properties.#{field.es_code}.downcase"
-      else
-        sort = decode(es_code)
-      end
+      sort = sort_key(es_code)
     end
     ascendent = ascendent ? 'asc' : 'desc'
 
@@ -93,6 +87,17 @@ class Search
     @sorts.push sort => ascendent
 
     self
+  end
+
+  protected def sort_key(es_code)
+    es_code = remove_at_from_code es_code
+    field = fields.find { |x| x.code == es_code || x.es_code == es_code }
+
+    if field && field.kind == 'text'
+      query_key(field, downcase: true)
+    else
+      "properties.#{decode(es_code)}"
+    end
   end
 
   def sort_multiple(sort_list)
