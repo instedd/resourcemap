@@ -53,7 +53,7 @@ module Search::FredApiConcern
       # there is no identifiers that satisfy the condition => the result should be an empty list
       add_filter limit: {value: 0}
     else
-      terms = identifiers.map { |id_es_code| {:terms => { id_es_code => [identifier_value] }} }
+      terms = identifiers.map { |id_es_code| {:terms => { "properties.#{id_es_code}" => [identifier_value] }} }
       add_filter or: terms
     end
     self

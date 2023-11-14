@@ -256,7 +256,7 @@ module SearchBase
   end
 
   def field_exists(field_code)
-    add_filter exists: {field: field_code}
+    add_filter exists: {field: "properties.#{field_code}"}
   end
 
   def require_location
