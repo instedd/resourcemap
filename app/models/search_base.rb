@@ -152,21 +152,24 @@ module SearchBase
   # https://github.com/elasticsearch/elasticsearch/issues/1776
   # The number I put here is the max integer in Java
   def histogram_search(field_es_code, filters=nil)
-    facets_hash = {
+    name = "field_#{field_es_code}_ratings"
+
+    aggregation = {
       terms: {
-        field: field_es_code,
+        field: "properties.#{field_es_code}",
         size: 2147483647,
         all_terms: true,
       }
     }
 
     if filters.present?
-      query_params = query_params(filters.keys.first, filters.values.first)
-      query_hash = {facet_filter: {and: [query_params]} }
-      facets_hash.merge!(query_hash)
+      aggregation = {
+        filter: {and: [query_params(filters.keys.first, filters.values.first)]},
+        aggs: { name => aggregation },
+      }
     end
 
-    add_facet "field_#{field_es_code}_ratings", facets_hash
+    add_aggregation "field_#{field_es_code}_ratings", aggregation
 
     self
   end
@@ -311,8 +314,8 @@ module SearchBase
       end
     end
 
-    if @facets
-      body[:facets] = @facets
+    if @aggregations
+      body[:aggs] = @aggregations
     end
 
     all_queries = []
@@ -348,9 +351,9 @@ module SearchBase
     @filters.push filter
   end
 
-  def add_facet(name, value)
-    @facets ||= {}
-    @facets[name] = value
+  def add_aggregation(name, value)
+    @aggregations ||= {}
+    @aggregations[name] = value
   end
 
   private

@@ -211,8 +211,8 @@ class Search
     results = client.search index: @index_names, type: 'site', body: body
 
     histogram = {}
-    results["facets"]["field_#{field_es_code}_ratings"]["terms"].each do |item|
-      histogram[item["term"]] = item["count"] unless item["count"] == 0
+    results["aggregations"]["field_#{field_es_code}_ratings"]["buckets"].each do |item|
+      histogram[item["key"]] = item["doc_count"] unless item["doc_count"] == 0
     end
     histogram
   end
