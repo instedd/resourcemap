@@ -15,10 +15,9 @@ module Field::ElasticsearchConcern
       { type: :date }
     when kind == 'text'
       {
-        type: :multi_field,
+        type: :string, index: :not_analyzed,
         fields: {
-          es_code => { type: :string, index: :not_analyzed },
-          "#{es_code}.downcase" => { type: :string, path: :just_name, index: :analyzed, analyzer: :downcase },
+          downcase: { type: :string, index: :analyzed, analyzer: :downcase },
         },
       }
     else

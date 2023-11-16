@@ -61,10 +61,9 @@ class Field::IdentifierFields::LuhnField < Field::IdentifierFields::FormatImplem
 
   def largest_existing_luhn_value_in_this_field(collection)
     # Find largest existing value in ES
-    field_es_code = "properties.#{@field.es_code}"
     search = collection.new_search
-    search.field_exists(field_es_code)
-    search.sort field_es_code, false
+    search.field_exists(@field.es_code)
+    search.sort(@field.es_code, false)
     search.offset(0)
     search.limit(1)
     search.show_deleted

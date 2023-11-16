@@ -44,7 +44,7 @@ module ElasticSearch; module QueryHelper
           field = collection.fields.find { |x| x.code == key || x.name == key}
           next unless field
 
-          key = field.es_code
+          key = "properties.#{field.es_code}"
           op, value = SearchParser.get_op_and_val value
 
           # Check if the user is searching a label instead of the code
@@ -83,7 +83,7 @@ module ElasticSearch; module QueryHelper
       regex = /#{Regexp.escape text}/i
       fields_to_search.each do |field|
         option_id = search_value_id field, regex
-        codes[field.es_code] = option_id if option_id
+        codes["properties.#{field.es_code}"] = option_id if option_id
       end
       codes
     end

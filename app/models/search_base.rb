@@ -31,7 +31,7 @@ module SearchBase
 
   def eq(field, value)
     if value.blank?
-      add_filter missing: {field: field.es_code}
+      add_filter missing: {field: query_key(field)}
       return self
     end
 
@@ -48,25 +48,32 @@ module SearchBase
   end
 
   def query_params(field, value)
-    query_key = field.es_code
     validated_value = field.parse_for_query(value, @use_codes_instead_of_es_codes)
 
     if field.kind == 'date'
-      date_field_range(query_key, validated_value)
+      date_field_range(query_key(field), validated_value)
     elsif field.kind == 'yes_no' && !validated_value.is_a?(Array) && !Field.yes?(value)
-      { not: { :term => { query_key => true }}} # so we return false & nil values
+      { not: { :term => { query_key(field) => true }}} # so we return false & nil values
     elsif validated_value.is_a? Array
-      { terms: {query_key => validated_value} }
+      { terms: {query_key(field) => validated_value} }
     else
-      { term: {query_key => validated_value} }
+      { term: {query_key(field) => validated_value} }
     end
 
     # elsif field.select_kind?
-    #   {term: {query_key => validated_value}}
-    #   add_filter term: {query_key => validated_value}
+    #   {term: {query_key(field) => validated_value}}
+    #   add_filter term: {query_key(field) => validated_value}
     # else
     # end
 
+  end
+
+  def query_key(field, downcase: false)
+    if downcase
+      "properties.#{field.es_code}.downcase"
+    else
+      "properties.#{field.es_code}"
+    end
   end
 
   def date_field_range(key, valid_value)
@@ -78,20 +85,18 @@ module SearchBase
 
   def under(field, value)
     if value.blank?
-      add_filter missing: {field: field.es_code}
+      add_filter missing: {field: query_key(field)}
       return self
     end
 
     value = field.descendants_of_in_hierarchy value
-    query_key = field.es_code
-    add_filter terms: {query_key => value}
+    add_filter terms: {query_key(field) => value}
     self
   end
 
   def starts_with(field, value)
     validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
-    query_key = field.es_code
-    add_prefix key: query_key, value: validated_value
+    add_prefix key: query_key(field), value: validated_value
     self
   end
 
@@ -99,7 +104,7 @@ module SearchBase
     class_eval %Q(
       def #{op}(field, value)
         validated_value = field.apply_format_query_validation(value, @use_codes_instead_of_es_codes)
-        add_filter range: {field.es_code => {#{op}: validated_value}}
+        add_filter range: {query_key(field) => {#{op}: validated_value}}
         self
       end
     )
@@ -147,21 +152,24 @@ module SearchBase
   # https://github.com/elasticsearch/elasticsearch/issues/1776
   # The number I put here is the max integer in Java
   def histogram_search(field_es_code, filters=nil)
-    facets_hash = {
+    name = "field_#{field_es_code}_ratings"
+
+    aggregation = {
       terms: {
-        field: field_es_code,
+        field: "properties.#{field_es_code}",
         size: 2147483647,
         all_terms: true,
       }
     }
 
     if filters.present?
-      query_params = query_params(filters.keys.first, filters.values.first)
-      query_hash = {facet_filter: {and: [query_params]} }
-      facets_hash.merge!(query_hash)
+      aggregation = {
+        filter: {and: [query_params(filters.keys.first, filters.values.first)]},
+        aggs: { name => aggregation },
+      }
     end
 
-    add_facet "field_#{field_es_code}_ratings", facets_hash
+    add_aggregation "field_#{field_es_code}_ratings", aggregation
 
     self
   end
@@ -248,7 +256,7 @@ module SearchBase
   end
 
   def field_exists(field_code)
-    add_filter exists: {field: field_code}
+    add_filter exists: {field: "properties.#{field_code}"}
   end
 
   def require_location
@@ -266,7 +274,7 @@ module SearchBase
     if value.present?
       eq field, value
     else
-      add_filter not: {exists: {field: es_code}}
+      add_filter not: {exists: {field: query_key(field)}}
     end
   end
 
@@ -306,8 +314,8 @@ module SearchBase
       end
     end
 
-    if @facets
-      body[:facets] = @facets
+    if @aggregations
+      body[:aggs] = @aggregations
     end
 
     all_queries = []
@@ -343,9 +351,9 @@ module SearchBase
     @filters.push filter
   end
 
-  def add_facet(name, value)
-    @facets ||= {}
-    @facets[name] = value
+  def add_aggregation(name, value)
+    @aggregations ||= {}
+    @aggregations[name] = value
   end
 
   private
