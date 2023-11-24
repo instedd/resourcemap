@@ -29,7 +29,7 @@ class ImportWizard::ImportSpecs
   end
 
   def validate_new_columns_do_not_exist_in_collection
-    collection_fields = @collection.fields(:include => :layer)
+    collection_fields = @collection.fields.includes(:layer)
     @data.each do |col_spec|
       if col_spec[:use_as] == 'new_field'
         # Validate code
