@@ -5,7 +5,7 @@ module Collection::GeomConcern
   # just before saving it.
   #
   # (Putting as a before_create callback doesn't seem to work, the sites are empty)
-  def compute_geometry_in_memory
+  def compute_geometry_in_memory(sites = self.sites)
     sites_with_location = sites.select{|x| x.lat && x.lng}
     min_lat, max_lat, min_lng, max_lng = 90, -90, 180, -180
     sites_with_location.each do |site|

@@ -1,7 +1,7 @@
 class Layer < ApplicationRecord
   include Activity::AwareConcern
   include HistoryConcern
-
+  include Layer::ActivityConcern
 
   belongs_to :collection
   has_many :fields, -> { order('ord') }, dependent: :destroy
@@ -11,9 +11,6 @@ class Layer < ApplicationRecord
   accepts_nested_attributes_for :fields, :allow_destroy => true
 
   validates_presence_of :ord
-
-  # This include needs to be after the has_many :fields declaration
-  include Layer::ActivityConcern
 
   after_save :touch_collection_lifespan
   after_destroy :touch_collection_lifespan
