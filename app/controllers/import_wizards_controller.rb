@@ -55,7 +55,7 @@ class ImportWizardsController < ApplicationController
   def execute
     columns = params[:columns].values
     if columns.find { |x| x[:usage] == 'new_field' } and not current_user.admins? collection
-      render text: "Non-admin users can't create new fields", status: :unauthorized
+      render plain: "Non-admin users can't create new fields", status: :unauthorized
     else
       ImportWizard.enqueue_job current_user, collection, params[:columns].values
       render_json :ok

@@ -34,7 +34,7 @@ class AndroidController < ApplicationController
     if current_user.admins?(Collection.find(xml_hash["collection_id"]))
       render_json Site.create_or_update_from_hash!(xml_hash)
     else
-      render text: "User is unauthorized", status: 401
+      render plain: "User is unauthorized", status: 401
     end
   end
 

@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base
   # There is a way to let render :json use Oj by default,
   # but in my tests it turned out to be slower... - Ary
   def render_json(object, options = {})
-    options = options.merge(text: object.to_json_oj, content_type: 'application/json')
+    options = options.merge(plain: object.to_json_oj, content_type: 'application/json')
     render options
   end
 
