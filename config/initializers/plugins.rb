@@ -1,4 +1,4 @@
-ActionDispatch::Reloader.to_prepare do
+ActiveSupport::Reloader.to_prepare do
   Dir["#{Rails.root}/plugins/*"].each do |plugin_dir|
     plugin_name = File.basename plugin_dir
     plugin_name.camelize.constantize::Plugin.instance
