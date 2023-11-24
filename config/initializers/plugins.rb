@@ -35,32 +35,35 @@ ActiveSupport::Reloader.to_prepare do
   Plugin.hooks(:config).each { |block| block.call }
 end
 
-class ActiveRecord::Migrator
-  cattr_accessor :current_plugin
-
-  class << self
-
-    def migrations_paths_with_plugins
-      if current_plugin
-        ["plugins/#{current_plugin}/db/migrate"]
-      else
-        migrations_paths_without_plugins
-      end
+module AR_MigrationContextWithCurrentPlugin
+  def migrations_paths
+    if self.class.current_plugin
+      ["plugins/#{current_plugin}/db/migrate"]
+    else
+      super
     end
-    alias_method_chain :migrations_paths, :plugins
+  end
 
-    def get_all_versions_with_plugins(connection = ActiveRecord::Base.connection)
-      return get_all_versions_without_plugins(connection) unless current_plugin
+  def get_all_versions(connection = ActiveRecord::Base.connection)
+    if current_plugin = self.class.current_plugin
       table = Arel::Table.new(schema_migrations_table_name)
       connection.select_values(table.project(table['version'])).select{ |v| v.match(/-#{current_plugin}/) }.map{ |v| v.to_i }.sort
+    else
+      super
     end
-    alias_method_chain :get_all_versions, :plugins
-
   end
 
-  def record_version_state_after_migrating_with_plugins(version)
-    return record_version_state_after_migrating_without_plugins(version) unless current_plugin
-    record_version_state_after_migrating_without_plugins(version.to_s + "-" + current_plugin.to_s)
+  def record_version_state_after_migrating(version)
+    if current_plugin = self.class.current_plugin
+      super(version.to_s + "-" + current_plugin.to_s)
+    else
+      super
+    end
   end
-  alias_method_chain :record_version_state_after_migrating, :plugins
+end
+
+class ActiveRecord::MigrationContext
+  cattr_accessor :current_plugin
+
+  prepend AR_MigrationContextWithCurrentPlugin
 end

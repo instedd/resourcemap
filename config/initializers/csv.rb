@@ -1,36 +1,35 @@
 require 'csv'
 
-# Patch CSV class to try to open the file with the correct encoding.
-class CSV
-
-  def initialize_with_encoding(data, options = {})
-    # Try to parse the file using utf-8 encoding. 
-    # If it's not valid, we assume it's latin1 (Windows default)
+# Try to parse the file using utf-8 encoding.
+# If it's not valid, we assume it's latin1 (Windows default)
+module CSV_InitializeWithEncoding
+  def new(data, options = {})
     options[:encoding] ||= 'utf-8'
     begin
-      initialize_without_encoding data, options
+      super data, options
     rescue => ex
       options[:encoding] = 'ISO-8859-1:utf-8'
       data.rewind if data.respond_to? :rewind
-      initialize_without_encoding data, options
+      super data, options
     end
   end
-  alias_method_chain :initialize, :encoding
 
-  class << self
-    def open_with_encoding(*args, &block)
-      options = if args.last.is_a? Hash then args.pop else Hash.new end
+  def open(*args, &block)
+    options = if args.last.is_a? Hash then args.pop else Hash.new end
+    options[:encoding] ||= 'utf-8'
 
-      # Try to parse the file using utf-8 encoding. 
-      # If it's not valid, we assume it's latin1 (Windows default)
-      options[:encoding] ||= 'utf-8'
-      begin
-        open_without_encoding *(args + [options]), &block
-      rescue
-        options[:encoding] = 'ISO-8859-1:utf-8'
-        open_without_encoding *(args + [options]), &block
-      end
+    begin
+      super *(args + [options]), &block
+    rescue
+      options[:encoding] = 'ISO-8859-1:utf-8'
+      super *(args + [options]), &block
     end
-    alias_method_chain :open, :encoding
+  end
+end
+
+# Patch CSV class to try to open the file with the correct encoding.
+class CSV
+  class << self
+    prepend CSV_InitializeWithEncoding
   end
 end

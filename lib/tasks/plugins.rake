@@ -1,14 +1,13 @@
 task :environment
 
 namespace :plugin do
-
   def with_plugin(name)
-    previous_plugin = ActiveRecord::Migrator.current_plugin
-    ActiveRecord::Migrator.current_plugin = name
+    previous_plugin = ActiveRecord::MigrationContext.current_plugin
+    ActiveRecord::MigrationContext.current_plugin = name
     begin
       yield
     ensure
-      ActiveRecord::Migrator.current_plugin = previous_plugin
+      ActiveRecord::MigrationContext.current_plugin = previous_plugin
     end
   end
 
