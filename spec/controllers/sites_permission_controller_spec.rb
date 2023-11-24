@@ -3,8 +3,8 @@ require 'spec_helper'
 describe SitesPermissionController, :type => :controller do
   include Devise::TestHelpers
 
-  let(:user) { User.make }
-  let(:collection) { user.create_collection(Collection.make_unsaved) }
+  let(:user) { User.make! }
+  let(:collection) { user.create_collection(Collection.make) }
   before(:each) { sign_in user }
 
   describe 'POST create' do

@@ -10,8 +10,8 @@ describe "snapshots", :type => :request, uses_collections_structure: true do
     who_african_region.memberships.create! :user_id => user.id, :admin => true
     snapshots = %w{ January Feb March April May }
     snapshots.each do |snapshot|
-      my_snapshot= Snapshot.make :collection => who_african_region, :name => "#{snapshot}"
-      UserSnapshot.make :user => user, :snapshot => my_snapshot
+      my_snapshot= Snapshot.make! :collection => who_african_region, :name => "#{snapshot}"
+      UserSnapshot.make! :user => user, :snapshot => my_snapshot
     end
     login_as (user)
     visit collections_path

@@ -4,11 +4,11 @@ describe FieldsController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
-  let(:admin) { User.make }
-  let(:collection) { admin.create_collection(Collection.make) }
-  let(:layer) { collection.layers.make user: admin}
+  let(:admin) { User.make! }
+  let(:collection) { admin.create_collection(Collection.make!) }
+  let(:layer) { collection.layers.make! user: admin}
   config_hierarchy = [{ id: '60', name: 'Dad', type: 'region', sub: [{id: '100', name: 'Son', type: 'district'}, {id: '101', name: 'Bro', type: 'district'}]}]
-  let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+  let!(:hierarchy) { layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
 
   it "should get field in json" do
     sign_in admin
@@ -27,8 +27,8 @@ describe FieldsController, :type => :controller do
   end
 
   it "should not get field if the user is not admin" do
-    member = User.make
-    membership = Membership.make collection: collection, user: member, admin: false
+    member = User.make!
+    membership = Membership.make! collection: collection, user: member, admin: false
     sign_in member
 
     get :show, collection_id: collection.id, id: hierarchy.id, format: 'json'
@@ -37,7 +37,7 @@ describe FieldsController, :type => :controller do
   end
 
   it "should not get field mapping if not logged in and collection is public" do
-    collection = admin.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read'))
+    collection = admin.create_collection(Collection.make!(anonymous_name_permission: 'read', anonymous_location_permission: 'read'))
 
     get :mapping, collection_id: collection.id, format: 'json'
 
@@ -47,9 +47,9 @@ describe FieldsController, :type => :controller do
 
   it "should not get field in other collection" do
     sign_in admin
-    collection2 = admin.create_collection(Collection.make)
-    layer2 = collection2.layers.make
-    text_field = layer2.text_fields.make code: 'text'
+    collection2 = admin.create_collection(Collection.make!)
+    layer2 = collection2.layers.make!
+    text_field = layer2.text_fields.make! code: 'text'
 
     get :show, collection_id: collection.id, id: text_field.id, format: 'json'
 
@@ -83,7 +83,7 @@ describe FieldsController, :type => :controller do
   it "should get error if the field is not a hierarchy" do
     sign_in admin
 
-    text = layer.text_fields.make :code => 'text'
+    text = layer.text_fields.make! :code => 'text'
 
     get :hierarchy, collection_id: collection.id, id: text.id, under: '60', format: 'json'
     expect(response.status).to eq(422)
@@ -124,8 +124,8 @@ describe FieldsController, :type => :controller do
   end
 
   it "should get 403 if the user is not admin " do
-    member = User.make
-    membership = Membership.make collection: collection, user: member, admin: false
+    member = User.make!
+    membership = Membership.make! collection: collection, user: member, admin: false
     sign_in member
     get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', format: 'json'
     expect(response.status).to eq(403)
@@ -144,8 +144,8 @@ describe FieldsController, :type => :controller do
   end
 
   it "should not get hierarchy as CSV if the user is not admin" do
-    member = User.make
-    membership = Membership.make collection: collection, user: member, admin: false
+    member = User.make!
+    membership = Membership.make! collection: collection, user: member, admin: false
     sign_in member
     get :hierarchy, collection_id: collection.id, id: hierarchy.id, format: 'csv'
     expect(response.status).to eq(403)

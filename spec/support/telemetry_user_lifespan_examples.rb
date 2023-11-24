@@ -1,8 +1,8 @@
 RSpec.shared_examples 'user lifespan' do |klass, params|
-  let!(:user) { User.make }
+  let!(:user) { User.make! }
 
   it 'should touch user lifespan on create' do
-    record = klass.make_unsaved user_lifespan_params(params)
+    record = klass.make user_lifespan_params(params)
 
     expect(Telemetry::Lifespan).to receive(:touch_user).with(user).at_least(:once)
 
@@ -10,7 +10,7 @@ RSpec.shared_examples 'user lifespan' do |klass, params|
   end
 
   it 'should touch user lifespan on update' do
-    record = klass.make user_lifespan_params(params)
+    record = klass.make! user_lifespan_params(params)
     record.touch
 
     expect(Telemetry::Lifespan).to receive(:touch_user).with(user).at_least(:once)
@@ -19,7 +19,7 @@ RSpec.shared_examples 'user lifespan' do |klass, params|
   end
 
   it 'should touch user lifespan on destroy' do
-    record = klass.make user_lifespan_params(params)
+    record = klass.make! user_lifespan_params(params)
 
     expect(Telemetry::Lifespan).to receive(:touch_user).with(user).at_least(:once)
 

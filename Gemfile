@@ -78,7 +78,7 @@ group :test do
   gem 'capybara', '~> 2.18'       # 3.x requires rack 1.6 but rails 4.1 requires 1.5
   gem 'database_cleaner'
   gem 'faker'
-  gem 'machinist', '1.0.6'
+  gem 'machinist', '~> 2.0' # NOTE: eventually replace with FactoryBot
   gem 'resque_spec'
   gem 'selenium-webdriver', '3.141.0' # locked until we upgrade to capybara 3.x
   gem 'shoulda-matchers', require: false

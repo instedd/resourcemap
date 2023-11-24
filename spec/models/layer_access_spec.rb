@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe "layer access", :type => :model do
-  let!(:collection) { Collection.make }
-  let!(:user) { User.make }
+  let!(:collection) { Collection.make! }
+  let!(:user) { User.make! }
   let!(:membership) { Membership.create! user_id: user.id, collection_id: collection.id }
-  let!(:layer1) { collection.layers.make }
-  let!(:field1) { layer1.text_fields.make collection_id: collection.id }
-  let!(:layer2) { collection.layers.make }
-  let!(:field2) { layer2.text_fields.make collection_id: collection.id }
-  let!(:site) { collection.sites.make }
+  let!(:layer1) { collection.layers.make! }
+  let!(:field1) { layer1.text_fields.make! collection_id: collection.id }
+  let!(:layer2) { collection.layers.make! }
+  let!(:field2) { layer2.text_fields.make! collection_id: collection.id }
+  let!(:site) { collection.sites.make! }
 
   context "fields for user" do
     it "only returns fields that can be read" do
@@ -49,9 +49,9 @@ describe "layer access", :type => :model do
   describe "guest user" do
     let!(:guest_user) { GuestUser.new }
     let!(:user_ability) {Ability.new guest_user}
-    let!(:collection2) { Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read') }
-    let!(:l1) { collection2.layers.make(anonymous_user_permission: 'read') }
-    let!(:l2) { collection2.layers.make}
+    let!(:collection2) { Collection.make!(anonymous_name_permission: 'read', anonymous_location_permission: 'read') }
+    let!(:l1) { collection2.layers.make!(anonymous_user_permission: 'read') }
+    let!(:l2) { collection2.layers.make!}
 
     it "can read if layer has read permission for anonymous" do
       expect(user_ability.can? :read, l1).to be_truthy
@@ -72,14 +72,14 @@ describe "layer access", :type => :model do
     it "should return layers form snapshot" do
 
       stub_time '2011-01-01 10:00:00 -0500'
-      new_layer = collection.layers.make
-      new_field = new_layer.text_fields.make collection_id: collection.id
+      new_layer = collection.layers.make!
+      new_field = new_layer.text_fields.make! collection_id: collection.id
 
       stub_time '2011-01-01 11:00:00 -0500'
       new_field.name = "new name"
 
-      snapshot = Snapshot.make collection: collection, date: '2011-01-01 12:00:00 -0500'
-      user_snapshot = UserSnapshot.make user: user, snapshot: snapshot
+      snapshot = Snapshot.make! collection: collection, date: '2011-01-01 12:00:00 -0500'
+      user_snapshot = UserSnapshot.make! user: user, snapshot: snapshot
 
       new_field.name = "other name"
 

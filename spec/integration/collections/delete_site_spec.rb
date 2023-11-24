@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "delete_site", :type => :request do
 
   it "should delete site", js:true do
-    user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
+    user = User.make!(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
     page.save_screenshot 'create_collection.png'
     collection = create_collection_for (user)
     create_site_for (collection)

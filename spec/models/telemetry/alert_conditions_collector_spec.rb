@@ -5,12 +5,12 @@ describe Telemetry::AlertConditionsCollector do
   it "counts alert conditions by collection" do
     period = InsteddTelemetry::Period.current
 
-    c1 = Collection.make
+    c1 = Collection.make!
     create_fields(c1, 3)
     create_threshold_with_conditions(c1, 3)
     create_threshold_with_conditions(c1, 2)
 
-    c2 = Collection.make
+    c2 = Collection.make!
     create_fields(c2, 7)
     create_threshold_with_conditions(c2, 7)
 
@@ -33,7 +33,7 @@ describe Telemetry::AlertConditionsCollector do
   it "doesn't count thresholds created after current period" do
     Timecop.freeze(Time.now)
 
-    c1 = Collection.make
+    c1 = Collection.make!
     create_fields(c1, 3)
     create_threshold_with_conditions(c1, 3)
     p0 = InsteddTelemetry::Period.current
@@ -66,9 +66,9 @@ describe Telemetry::AlertConditionsCollector do
   it 'counts collections without alert conditions' do
     period = InsteddTelemetry::Period.current
 
-    c1 = Collection.make
-    c2 = Collection.make
-    c3 = Collection.make created_at: period.end + 1.day
+    c1 = Collection.make!
+    c2 = Collection.make!
+    c3 = Collection.make! created_at: period.end + 1.day
 
     Timecop.freeze(period.end + 1.day) do
       create_fields(c2, 3)
@@ -96,7 +96,7 @@ describe Telemetry::AlertConditionsCollector do
   end
 
   def create_fields(collection, count)
-    layer = collection.layers.make
+    layer = collection.layers.make!
     count.times do |i|
       Field::TextField.create!({
         name: "foo_#{i}",
@@ -116,7 +116,7 @@ describe Telemetry::AlertConditionsCollector do
       { field: f, op: :eq, type: :value, value: "asd" }
     end
 
-    collection.thresholds.make conditions: conditions.to_a
+    collection.thresholds.make! conditions: conditions.to_a
   end
 
   def stats(period)

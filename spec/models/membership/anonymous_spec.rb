@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Membership::Anonymous, :type => :model do
-  let(:user) { User.make }
-  let(:collection) { user.create_collection(Collection.make_unsaved) }
+  let(:user) { User.make! }
+  let(:collection) { user.create_collection(Collection.make) }
   let(:anonymous) { Membership::Anonymous.new collection, user }
 
   describe '#as_json' do
@@ -27,7 +27,7 @@ describe Membership::Anonymous, :type => :model do
   end
 
   describe "default_layer_permissions" do
-    let(:layer) { collection.layers.make }
+    let(:layer) { collection.layers.make! }
 
     subject{
       layer
@@ -47,7 +47,7 @@ describe Membership::Anonymous, :type => :model do
 
   ['read', 'none'].each do |level|
     describe "#{level}able layers" do
-      let(:layer) { collection.layers.make({anonymous_user_permission: level}) }
+      let(:layer) { collection.layers.make!({anonymous_user_permission: level}) }
 
       subject {
         layer
@@ -67,7 +67,7 @@ describe Membership::Anonymous, :type => :model do
 
   ["true", "false"].each do |access|
     describe "set layer's read access" do
-      let(:layer) { collection.layers.make }
+      let(:layer) { collection.layers.make! }
 
       it '' do
         anonymous.activity_user = user

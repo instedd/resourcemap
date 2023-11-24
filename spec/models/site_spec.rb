@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Site, :type => :model do
   include_examples 'collection lifespan', described_class
 
-  let(:user) { User.make }
+  let(:user) { User.make! }
   it { is_expected.to belong_to :collection }
 
   def history_concern_class
@@ -20,20 +20,20 @@ describe Site, :type => :model do
 
   it_behaves_like "it includes History::Concern"
 
-  let(:collection) { Collection.make }
-  let(:layer) { collection.layers.make }
-  let(:room) { layer.numeric_fields.make name: 'room'  }
-  let(:desk) { layer.text_fields.make name: 'desk'  }
-  let(:creation) { layer.date_fields.make name: 'creation'}
+  let(:collection) { Collection.make! }
+  let(:layer) { collection.layers.make! }
+  let(:room) { layer.numeric_fields.make! name: 'room'  }
+  let(:desk) { layer.text_fields.make! name: 'desk'  }
+  let(:creation) { layer.date_fields.make! name: 'creation'}
 
-  let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '2012-09-22T00:00:00Z' } }
+  let(:site) { collection.sites.make! properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '2012-09-22T00:00:00Z' } }
 
   it "return as a hash of field_name and its value" do
     expect(site.human_properties).to eq({'room' => 50, 'desk' => 'bla bla', 'creation' => '09/22/2012' })
   end
 
   it "should save yes_no property with value 'false' "  do
-    yes_no_field = layer.yes_no_fields.make :code => 'X Ray machine'
+    yes_no_field = layer.yes_no_fields.make! :code => 'X Ray machine'
     site.properties[yes_no_field.es_code] = false
     site.save!
     site.reload

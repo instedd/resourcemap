@@ -7,12 +7,12 @@ end
 describe Api::FieldsController, :type => :controller do
   include Devise::TestHelpers
 
-  let(:admin) { User.make }
+  let(:admin) { User.make! }
 
-  let(:collection) { admin.create_collection(Collection.make) }
-  let!(:layer) {Layer.make collection: collection, user: admin}
-  let!(:layer2) {Layer.make collection: collection, user: admin}
-  let!(:numeric) {layer.numeric_fields.make }
+  let(:collection) { admin.create_collection(Collection.make!) }
+  let!(:layer) {Layer.make! collection: collection, user: admin}
+  let!(:layer2) {Layer.make! collection: collection, user: admin}
+  let!(:numeric) {layer.numeric_fields.make! }
 
   let(:fields) do
     [
@@ -23,7 +23,7 @@ describe Api::FieldsController, :type => :controller do
   end
 
   let(:member_who_writes) do
-    r = User.make
+    r = User.make!
 
     collection.memberships.create!({user_id: r.id})
 
@@ -35,7 +35,7 @@ describe Api::FieldsController, :type => :controller do
   end
 
   let(:member_who_reads) do
-    r = User.make
+    r = User.make!
 
     collection.memberships.create!({user_id: r.id})
 

@@ -4,8 +4,8 @@ describe GatewaysController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
-  let(:user) { User.make }
-  let(:gateway) { user.channels.make name: 'default', basic_setup: true, ticket_code: '2222', is_enable: false }
+  let(:user) { User.make! }
+  let(:gateway) { user.channels.make! name: 'default', basic_setup: true, ticket_code: '2222', is_enable: false }
 
   before(:each) {sign_in user}
   it "should turn on gateway" do

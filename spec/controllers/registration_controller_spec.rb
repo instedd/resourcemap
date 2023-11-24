@@ -8,7 +8,7 @@ describe RegistrationsController, :type => :controller do
     request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:user) { User.make email: 'foo@bar.com.ar', password: 'secret'}
+  let!(:user) { User.make! email: 'foo@bar.com.ar', password: 'secret'}
 
   it "should respond with 200 for valid user credentials" do
     get :validate_credentials, user: 'foo@bar.com.ar', password: 'secret'

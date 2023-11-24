@@ -5,7 +5,7 @@ module Capybara::AccountHelper
   end
 
   def new_user
-    User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
+    User.make!(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
   end
 
   def last_email

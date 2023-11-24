@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe Collection::CsvConcern, :type => :model do
-  let(:user) { User.make }
-  let(:collection) { user.create_collection Collection.make }
-  let(:layer) { collection.layers.make }
+  let(:user) { User.make! }
+  let(:collection) { user.create_collection Collection.make! }
+  let(:layer) { collection.layers.make! }
 
   it "should print date as MM/DD/YYYY" do
-    date = layer.date_fields.make :code => 'date'
-    collection.sites.make :properties => {date.es_code => '1985-10-19T00:00:00Z'}
+    date = layer.date_fields.make! :code => 'date'
+    collection.sites.make! :properties => {date.es_code => '1985-10-19T00:00:00Z'}
 
     results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
     csv = CSV.parse collection.to_csv(results.for_csv, results.visible_fields)
@@ -17,8 +17,8 @@ describe Collection::CsvConcern, :type => :model do
 
   it "should download hiearchy value as Id" do
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
-    collection.sites.make :properties => {hierarchy_field.es_code => '100'}
+    hierarchy_field = layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+    collection.sites.make! :properties => {hierarchy_field.es_code => '100'}
 
     results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
     csv = CSV.parse collection.to_csv(results.for_csv, results.visible_fields)
@@ -29,8 +29,8 @@ describe Collection::CsvConcern, :type => :model do
 
   it "should add a column for each level of the hierarchy in the CSV" do
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
-    collection.sites.make :properties => {hierarchy_field.es_code => '100'}
+    hierarchy_field = layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+    collection.sites.make! :properties => {hierarchy_field.es_code => '100'}
 
     results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
     csv = CSV.parse collection.to_csv(results.for_csv, results.visible_fields)
@@ -43,8 +43,8 @@ describe Collection::CsvConcern, :type => :model do
 
   it "should add empty columns for the values that are not leafs" do
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
-    collection.sites.make :properties => {hierarchy_field.es_code => '60'}
+    hierarchy_field = layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+    collection.sites.make! :properties => {hierarchy_field.es_code => '60'}
 
     results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
     csv = CSV.parse collection.to_csv(results.for_csv, results.visible_fields)
@@ -58,8 +58,8 @@ describe Collection::CsvConcern, :type => :model do
   context 'human flag' do
     context "turned on" do
       it "should send select one names" do
-        select_one = layer.select_one_fields.make :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
-        collection.sites.make :properties => {select_one.es_code => 1}
+        select_one = layer.select_one_fields.make! :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+        collection.sites.make! :properties => {select_one.es_code => 1}
 
         results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
         csv = CSV.parse collection.to_csv(results.for_csv(true), results.visible_fields)
@@ -68,8 +68,8 @@ describe Collection::CsvConcern, :type => :model do
       end
 
       it "should send select many names" do
-        select_many = layer.select_many_fields.make :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
-        collection.sites.make :properties => {select_many.es_code => [1,2]}
+        select_many = layer.select_many_fields.make! :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+        collection.sites.make! :properties => {select_many.es_code => [1,2]}
 
         results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
         csv = CSV.parse collection.to_csv(results.for_csv(true), results.visible_fields)
@@ -79,8 +79,8 @@ describe Collection::CsvConcern, :type => :model do
 
       it "should send hierarchy names" do
         config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-        hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
-        collection.sites.make :properties => {hierarchy_field.es_code => '100'}
+        hierarchy_field = layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+        collection.sites.make! :properties => {hierarchy_field.es_code => '100'}
 
         results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
         csv = CSV.parse collection.to_csv(results.for_csv(true), results.visible_fields)
@@ -95,8 +95,8 @@ describe Collection::CsvConcern, :type => :model do
 
     context "turned off" do
       it "should send select one codes" do
-        select_one = layer.select_one_fields.make :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
-        collection.sites.make :properties => {select_one.es_code => 1}
+        select_one = layer.select_one_fields.make! :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+        collection.sites.make! :properties => {select_one.es_code => 1}
 
         results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
         csv = CSV.parse collection.to_csv(results.for_csv(false), results.visible_fields)
@@ -105,8 +105,8 @@ describe Collection::CsvConcern, :type => :model do
       end
 
       it "should send select many codes" do
-        select_many = layer.select_many_fields.make :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
-        collection.sites.make :properties => {select_many.es_code => [1,2]}
+        select_many = layer.select_many_fields.make! :code => 'select_one',  :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+        collection.sites.make! :properties => {select_many.es_code => [1,2]}
 
         results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
         csv = CSV.parse collection.to_csv(results.for_csv(false), results.visible_fields)
@@ -119,8 +119,8 @@ describe Collection::CsvConcern, :type => :model do
 
   it "should add a column for each level of the hierarchy in the CSV" do
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
-    collection.sites.make :properties => {hierarchy_field.es_code => '100'}
+    hierarchy_field = layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+    collection.sites.make! :properties => {hierarchy_field.es_code => '100'}
 
     results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
     csv = CSV.parse collection.to_csv(results.for_csv, results.visible_fields)
@@ -133,8 +133,8 @@ describe Collection::CsvConcern, :type => :model do
 
   it "should add empty columns for the values that are not leafs" do
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
-    collection.sites.make :properties => {hierarchy_field.es_code => '60'}
+    hierarchy_field = layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+    collection.sites.make! :properties => {hierarchy_field.es_code => '60'}
 
     results = collection.new_search(:current_user_id => user.id).unlimited.mapped_results
     csv = CSV.parse collection.to_csv(results.for_csv, results.visible_fields)
@@ -148,17 +148,17 @@ describe Collection::CsvConcern, :type => :model do
   describe "generate sample csv" do
 
     it "should include only visible fields for the user" do
-      user2 = User.make
+      user2 = User.make!
 
-      layer_visible = collection.layers.make
-      layer_invisible = collection.layers.make
-      layer_writable = collection.layers.make
+      layer_visible = collection.layers.make!
+      layer_invisible = collection.layers.make!
+      layer_writable = collection.layers.make!
 
-      layer_visible.date_fields.make :code => 'date_visible'
-      layer_invisible.date_fields.make :code => 'date_invisible'
-      layer_writable.date_fields.make :code => 'date_writable'
+      layer_visible.date_fields.make! :code => 'date_visible'
+      layer_invisible.date_fields.make! :code => 'date_invisible'
+      layer_writable.date_fields.make! :code => 'date_writable'
 
-      membership = collection.memberships.make :user => user2
+      membership = collection.memberships.make! :user => user2
       membership.activity_user = user
       membership.admin = false
       membership.set_layer_access :verb => :read, :access => true, :layer_id => layer_visible.id

@@ -4,27 +4,27 @@ describe Snapshot, :type => :model do
   include_examples 'collection lifespan', described_class
 
   describe "validations" do
-    let!(:snapshot) { Snapshot.make }
+    let!(:snapshot) { Snapshot.make! }
 
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:collection_id) }
   end
 
-  let(:collection) { Collection.make }
+  let(:collection) { Collection.make! }
 
   before(:each) do
     stub_time '2011-01-01 10:00:00 -0500'
 
-    layer = collection.layers.make
-    @field = layer.numeric_fields.make code: 'beds'
+    layer = collection.layers.make!
+    @field = layer.numeric_fields.make! code: 'beds'
 
-    @site1 = collection.sites.make name: 'site1 last year'
-    @site2 = collection.sites.make name: 'site2 last year'
+    @site1 = collection.sites.make! name: 'site1 last year'
+    @site2 = collection.sites.make! name: 'site2 last year'
 
     stub_time '2012-06-05 12:17:58 -0500'
-    @field2 = layer.numeric_fields.make code: 'beds2'
+    @field2 = layer.numeric_fields.make! code: 'beds2'
 
-    @site3 = collection.sites.make name: 'site3 today'
-    @site4 = collection.sites.make name: 'site4 today'
+    @site3 = collection.sites.make! name: 'site3 today'
+    @site4 = collection.sites.make! name: 'site4 today'
   end
 
   it "should create index with sites" do
@@ -95,7 +95,7 @@ describe Snapshot, :type => :model do
 
   it "should delete userSnapshot if collection is destroyed" do
     snapshot = collection.snapshots.create! date: Time.now, name: 'last_year'
-    user = User.make
+    user = User.make!
     snapshot.user_snapshots.create! user: user
     expect(snapshot.user_snapshots.count).to eq(1)
 
@@ -106,7 +106,7 @@ describe Snapshot, :type => :model do
 
   describe "info_for_collections_ids_and_user" do
     it "should return empty hash if collections_ids is empty" do
-      user = User.make
+      user = User.make!
       expect(Snapshot.info_for_collections_ids_and_user([], user, "field")).to eq({})
     end
   end

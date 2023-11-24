@@ -26,12 +26,12 @@ describe SitesPermission, :type => :model do
   end
 
   describe 'telemetry' do
-    let!(:user) { User.make }
-    let!(:collection) { Collection.make }
-    let!(:membership) { Membership.make collection: collection, user: user }
+    let!(:user) { User.make! }
+    let!(:collection) { Collection.make! }
+    let!(:membership) { Membership.make! collection: collection, user: user }
 
     it 'should touch collection lifespan on create' do
-      sites_permission = SitesPermission.make_unsaved membership: membership
+      sites_permission = SitesPermission.make membership: membership
 
       expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
 
@@ -39,7 +39,7 @@ describe SitesPermission, :type => :model do
     end
 
     it 'should touch collection lifespan on update' do
-      sites_permission = SitesPermission.make membership: membership
+      sites_permission = SitesPermission.make! membership: membership
       sites_permission.touch
 
       expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
@@ -48,7 +48,7 @@ describe SitesPermission, :type => :model do
     end
 
     it 'should touch collection lifespan on destroy' do
-      sites_permission = SitesPermission.make membership: membership
+      sites_permission = SitesPermission.make! membership: membership
 
       expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
 
@@ -56,7 +56,7 @@ describe SitesPermission, :type => :model do
     end
 
     it 'should touch user lifespan on create' do
-      sites_permission = SitesPermission.make_unsaved membership: membership
+      sites_permission = SitesPermission.make membership: membership
 
       expect(Telemetry::Lifespan).to receive(:touch_user).with(user).at_least(:once)
 
@@ -64,7 +64,7 @@ describe SitesPermission, :type => :model do
     end
 
     it 'should touch user lifespan on update' do
-      sites_permission = SitesPermission.make membership: membership
+      sites_permission = SitesPermission.make! membership: membership
       sites_permission.touch
 
       expect(Telemetry::Lifespan).to receive(:touch_user).with(user).at_least(:once)
@@ -73,7 +73,7 @@ describe SitesPermission, :type => :model do
     end
 
     it 'should touch user lifespan on destroy' do
-      sites_permission = SitesPermission.make membership: membership
+      sites_permission = SitesPermission.make! membership: membership
 
       expect(Telemetry::Lifespan).to receive(:touch_user).with(user).at_least(:once)
 

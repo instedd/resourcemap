@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "uncheck_events_activity", :type => :request do
 
   it "should uncheck events activity", js:true do
-    @user = User.make(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
+    @user = User.make!(:email => 'user@manas.com.ar', :password => '1234567', :phone_number => '855123456789')
     collection = create_collection_for(@user)
     layer = create_layer_for (collection)
     field = create_field_for (layer)

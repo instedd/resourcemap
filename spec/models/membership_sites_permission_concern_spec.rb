@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Membership::SitesPermissionConcern, :type => :model do
-  let(:collection) { Collection.make }
-  let(:user) { User.make }
+  let(:collection) { Collection.make! }
+  let(:user) { User.make! }
   let!(:membership) { collection.memberships.create! :user_id => user.id }
   let!(:read_sites_permission) { membership.create_read_sites_permission all_sites: true, some_sites: [] }
 

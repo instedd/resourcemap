@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Collection::ImportLayersSchemaConcern, :type => :model do
-	let(:collection) { Collection.make }
-	let(:other_collection) { Collection.make }
-	let(:other_layer) { other_collection.layers.make name: "Adminsitrative Information", ord: 1, anonymous_user_permission: 'none' }
+	let(:collection) { Collection.make! }
+	let(:other_collection) { Collection.make! }
+	let(:other_layer) { other_collection.layers.make! name: "Adminsitrative Information", ord: 1, anonymous_user_permission: 'none' }
 
-	let(:user) { User.make}
+	let(:user) { User.make!}
 
 	it 'should import json_layer without fields' do
 		json = [other_layer].to_json
@@ -24,7 +24,7 @@ describe Collection::ImportLayersSchemaConcern, :type => :model do
 	end
 
 	it 'should import json_layer with numeric field' do
-		other_layer.numeric_fields.make code: 'numBeds', name: 'Number of Beds', config: { :allows_decimals => "true" }
+		other_layer.numeric_fields.make! code: 'numBeds', name: 'Number of Beds', config: { :allows_decimals => "true" }
 		other_field = other_layer.fields.first
 		json = other_collection.layers.includes(:fields).to_json(include: :fields)
 		Timecop.travel(2.seconds.from_now)
@@ -43,7 +43,7 @@ describe Collection::ImportLayersSchemaConcern, :type => :model do
 
 	it 'should import json_layer with options field' do
 		config_hierarchy = [{ id: '1', name: 'Dad', sub: [{id: '2', name: 'Son'}, {id: '3', name: 'Bro'}]}]
-  	other_layer.hierarchy_fields.make :code => 'family', config: { hierarchy: config_hierarchy }.with_indifferent_access
+  	other_layer.hierarchy_fields.make! :code => 'family', config: { hierarchy: config_hierarchy }.with_indifferent_access
   	other_field = other_layer.fields.first
   	json = other_collection.layers.includes(:fields).to_json(include: :fields)
 		collection.import_schema(json, user)
