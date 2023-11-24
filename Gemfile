@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # framework
-gem 'rails', '5.0.0'
+gem 'rails', '~> 5.0.0'
 
 # services
 gem "elasticsearch", '~> 1.0.17'
