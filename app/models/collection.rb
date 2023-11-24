@@ -92,12 +92,11 @@ class Collection < ApplicationRecord
 
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
-      visible_layers = layer_histories.accessible_by(current_ability).at_date(date).includes(:layer).map(&:layer)
+      visible_layers = layer_histories.accessible_by(current_ability).at_date(date).includes(:layer).map(&:layer).uniq
     else
-      visible_layers = layers.accessible_by(current_ability)
+      visible_layers = layers.accessible_by(current_ability).distinct
     end
 
-    visible_layers = visible_layers.distinct
     fields_by_layer_id = Field.where(layer_id: visible_layers.map(&:id)).load.group_by(&:layer_id)
 
     visible_layers.map do |layer|
@@ -116,14 +115,12 @@ class Collection < ApplicationRecord
 
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
-      visible_layers = layer_histories.accessible_by(current_ability).at_date(date)
+      visible_layers = layer_histories.accessible_by(current_ability).at_date(date).distinct
     else
-      visible_layers = layers.accessible_by(current_ability).includes(:fields)
+      visible_layers = layers.accessible_by(current_ability).includes(:fields).distinct
     end
 
     json_layers = []
-
-    visible_layers = visible_layers.distinct
 
     visible_layers.each do |layer|
       json_layer = {}

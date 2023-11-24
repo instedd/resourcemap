@@ -9,7 +9,7 @@ class CollectionsController < ApplicationController
   # https://github.com/rails/rails/pull/10769 && https://github.com/ryanb/cancan/issues/357
   expose(:accessible_collections) { Collection.accessible_by(current_ability)}
 
-  expose(:collections_with_snapshot) { select_each_snapshot(accessible_collections.uniq) }
+  expose(:collections_with_snapshot) { select_each_snapshot(accessible_collections.distinct) }
 
   before_action :show_collections_breadcrumb, :only => [:index, :new]
   before_action :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]

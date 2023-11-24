@@ -15,9 +15,9 @@ class LayersController < ApplicationController
     authorize! :read, collection
 
     if !current_user_snapshot.at_present? && collection then
-      collection.layer_histories.accessible_by(current_ability).uniq.at_date(current_user_snapshot.snapshot.date)
+      collection.layer_histories.accessible_by(current_ability).distinct.at_date(current_user_snapshot.snapshot.date)
     else
-      collection.layers.accessible_by(current_ability).uniq
+      collection.layers.accessible_by(current_ability).distinct
     end
   }
 
