@@ -435,7 +435,7 @@ describe ImportWizard, :type => :model do
 
     expect(collection.layers).to eq([layer])
 
-    sites = collection.sites.reload
+    sites = collection.sites
     expect(sites.length).to eq(2)
 
     expect(sites[0].name).to eq('Foo')
@@ -492,7 +492,7 @@ describe ImportWizard, :type => :model do
 
     expect(collection.layers).to eq([layer])
 
-    sites = collection.sites.reload
+    sites = collection.sites
     expect(sites.length).to eq(2)
 
     expect(sites[0].name).to eq('Foo')

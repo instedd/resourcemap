@@ -207,7 +207,7 @@ class ImportWizard
           site = if id_column
             id_column.find_or_create_site(collection, row[id_column.column_spec_index])
           else
-            collection.sites.build properties: {}, from_import_wizard: true
+            collection.sites.new properties: {}, from_import_wizard: true
           end
 
           site.user = user
@@ -224,12 +224,13 @@ class ImportWizard
         end
 
         Collection.transaction do
+
           spec_object.new_fields.each_value do |field|
             field.save!
           end
 
           # Force computing bounds and such in memory, so a thousand callbacks are not called
-          collection.compute_geometry_in_memory(sites)
+          collection.compute_geometry_in_memory
 
           # Reload collection in order to invalidate cached collection.fields copy and to load the new ones
           collection.fields.reload
