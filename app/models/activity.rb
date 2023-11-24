@@ -1,4 +1,4 @@
-class Activity < ActiveRecord::Base
+class Activity < ApplicationRecord
   ItemTypesAndActions = {
     'collection' => %w(created imported),
     'layer' => %w(created changed deleted),

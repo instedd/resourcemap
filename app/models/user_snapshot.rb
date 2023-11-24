@@ -1,4 +1,4 @@
-class UserSnapshot < ActiveRecord::Base
+class UserSnapshot < ApplicationRecord
   belongs_to :snapshot
   belongs_to :user
   belongs_to :collection

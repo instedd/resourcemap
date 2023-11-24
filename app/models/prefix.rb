@@ -1,4 +1,4 @@
-class Prefix < ActiveRecord::Base
+class Prefix < ApplicationRecord
   validates_presence_of :version
   validates_uniqueness_of :version
   

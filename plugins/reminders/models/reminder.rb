@@ -1,4 +1,4 @@
-class Reminder < ActiveRecord::Base
+class Reminder < ApplicationRecord
   belongs_to :collection
   belongs_to :repeat
   serialize :schedule, IceCube::Schedule

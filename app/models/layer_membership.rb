@@ -1,4 +1,4 @@
-class LayerMembership < ActiveRecord::Base
+class LayerMembership < ApplicationRecord
 
   include LayerMembershipActivityConcern
   belongs_to :membership

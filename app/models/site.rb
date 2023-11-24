@@ -1,4 +1,4 @@
-class Site < ActiveRecord::Base
+class Site < ApplicationRecord
   include Activity::AwareConcern
   include Site::ActivityConcern
   include Site::CleanupConcern

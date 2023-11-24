@@ -1,4 +1,4 @@
-class Snapshot < ActiveRecord::Base
+class Snapshot < ApplicationRecord
   belongs_to :collection
   has_many :user_snapshots, dependent: :destroy
 

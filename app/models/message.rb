@@ -1,4 +1,4 @@
-class Message < ActiveRecord::Base
+class Message < ApplicationRecord
   validates_presence_of :body, :from
   validates_presence_of :guid, :unless => :is_send
   INVALID_COMMAND = "Invalid command"

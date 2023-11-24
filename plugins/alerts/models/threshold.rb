@@ -1,4 +1,4 @@
-class Threshold < ActiveRecord::Base
+class Threshold < ApplicationRecord
   belongs_to :collection
 
   validates :collection, :presence => true

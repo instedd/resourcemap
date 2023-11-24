@@ -1,4 +1,4 @@
-class SiteHistory < ActiveRecord::Base
+class SiteHistory < ApplicationRecord
   belongs_to :site
   belongs_to :collection
   belongs_to :user

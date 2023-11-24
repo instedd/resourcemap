@@ -1,3 +1,3 @@
-class Repeat < ActiveRecord::Base
+class Repeat < ApplicationRecord
   serialize :rule, IceCube::ValidatedRule
 end

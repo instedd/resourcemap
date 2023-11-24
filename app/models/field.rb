@@ -1,4 +1,4 @@
-class Field < ActiveRecord::Base
+class Field < ApplicationRecord
   include Field::Base
   include Field::ElasticsearchConcern
   include Field::ValidationConcern
@@ -62,7 +62,9 @@ class Field < ActiveRecord::Base
       hash.delete :kind if hash
       klass.new_without_cast(*field_data, &b)
     end
-    alias_method_chain :new, :cast
+
+    alias_method :new_without_cast, :new
+    alias_method :new, :new_with_cast
   end
 
   def self.find_sti_class(kind)
@@ -151,9 +153,9 @@ class Field < ActiveRecord::Base
   private
 
   def sanitize_hierarchy_items(items)
-      items.map! &:to_hash
     items.each do |item|
-      sanitize_hierarchy_items item['sub'] if item['sub']
+      sub = item.to_hash['sub']
+      sanitize_hierarchy_items sub if sub
     end
   end
 

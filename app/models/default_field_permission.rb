@@ -1,4 +1,4 @@
-class DefaultFieldPermission < ActiveRecord::Base
+class DefaultFieldPermission < ApplicationRecord
   self.abstract_class = true
 
   include NameLocationPermissionActivityConcern

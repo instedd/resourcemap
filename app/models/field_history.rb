@@ -1,4 +1,4 @@
-class FieldHistory < ActiveRecord::Base
+class FieldHistory < ApplicationRecord
   include Field::Base
   include Field::ElasticsearchConcern
 

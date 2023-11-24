@@ -1,10 +1,10 @@
-class Layer < ActiveRecord::Base
+class Layer < ApplicationRecord
   include Activity::AwareConcern
   include HistoryConcern
 
 
   belongs_to :collection
-  has_many :fields, -> { order('ord')}, dependent: :destroy
+  has_many :fields, -> { order('ord') }, dependent: :destroy
   has_many :field_histories, -> { order('ord')}, dependent: :destroy
   has_many :layer_memberships, dependent: :destroy
 
