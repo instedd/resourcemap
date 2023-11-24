@@ -11,9 +11,9 @@ class CollectionsController < ApplicationController
 
   expose(:collections_with_snapshot) { select_each_snapshot(accessible_collections.uniq) }
 
-  before_filter :show_collections_breadcrumb, :only => [:index, :new]
-  before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
-  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
+  before_action :show_collections_breadcrumb, :only => [:index, :new]
+  before_action :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
+  before_action :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
 
   def index
     # Keep only the collections of which the user is membership

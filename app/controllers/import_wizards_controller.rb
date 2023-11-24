@@ -1,9 +1,9 @@
 require "fileutils"
 
 class ImportWizardsController < ApplicationController
-  before_filter :authenticate_api_user!
-  before_filter :show_properties_breadcrumb
-  before_filter :authenticate_collection_admin!, only: :logs
+  before_action :authenticate_api_user!
+  before_action :show_properties_breadcrumb
+  before_action :authenticate_collection_admin!, only: :logs
 
   before_action :validate_spreadsheet_params, only: [:import_csv_from_google_spreadsheet]
 

@@ -1,6 +1,6 @@
 class Api::MembershipsController < ApiController
 
-  before_filter :authenticate_collection_admin!, :only => [:create, :index, :destroy]
+  before_action :authenticate_collection_admin!, :only => [:create, :index, :destroy]
 
   def index
     render_json collection.memberships.includes([:read_sites_permission, :write_sites_permission, :name_permission, :location_permission])

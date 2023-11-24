@@ -1,6 +1,6 @@
 class AndroidController < ApplicationController
   protect_from_forgery :except => :submission
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   helper_method :render_xform, :get_hash_from_xml, :prepare_site
 
   expose(:collections) { Collection.accessible_by(current_ability) }

@@ -11,9 +11,9 @@ class ApplicationController < ActionController::Base
   expose(:reminders) { collection.reminders }
   expose(:reminder)
 
-  before_filter :set_gettext_locale
-  before_filter :redirect_to_localized_url
-  before_filter :show_language_selector
+  before_action :set_gettext_locale
+  before_action :redirect_to_localized_url
+  before_action :show_language_selector
 
   expose(:new_search_options) do
     if current_user_snapshot.at_present?

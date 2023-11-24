@@ -1,7 +1,7 @@
 class MembershipsController < ApplicationController
-  before_filter :authenticate_api_user!
-  before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin, :index]
-  before_filter :load_membership, only: [:destroy, :set_access, :set_layer_access, :set_admin, :unset_admin]
+  before_action :authenticate_api_user!
+  before_action :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin, :index]
+  before_action :load_membership, only: [:destroy, :set_access, :set_layer_access, :set_admin, :unset_admin]
 
   def collections_i_admin
     render_json current_user.collections_i_admin(params)

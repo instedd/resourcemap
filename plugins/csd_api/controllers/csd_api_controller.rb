@@ -1,11 +1,11 @@
 class CsdApiController < ApplicationController
-  before_filter :authenticate_api_user!
+  before_action :authenticate_api_user!
 
   Mime::Type.register "application/wsdl+xml", :wsdl
   Mime::Type.unregister :xml
   Mime::Type.register "text/xml", :xml
 
-  skip_before_filter :verify_authenticity_token
+  skip_before_action :verify_authenticity_token
 
   authorize_resource :collection, :decent_exposure => true
 

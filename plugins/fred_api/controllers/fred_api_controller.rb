@@ -3,11 +3,11 @@ class FredApiController < ApplicationController
   skip_before_action :redirect_to_localized_url
   skip_before_action :verify_authenticity_token
 
-  before_filter :authenticate_collection_admin!
-  before_filter :authenticate_api_user!
+  before_action :authenticate_collection_admin!
+  before_action :authenticate_api_user!
 
-  before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :update_facility]
-  before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility, :update_facility]
+  before_action :verify_site_belongs_to_collection!, :only => [:show_facility, :update_facility]
+  before_action :authenticate_site_user!, :only => [:show_facility, :delete_facility, :update_facility]
 
   rescue_from Exception, :with => :default_rescue
   rescue_from RuntimeError, :with => :rescue_runtime_error
