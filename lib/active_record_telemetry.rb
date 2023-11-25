@@ -1,5 +1,4 @@
 module ActiveRecordTelemetry
-
   extend ActiveSupport::Concern
 
   def touch_user_lifespan
@@ -14,7 +13,4 @@ module ActiveRecordTelemetry
     Telemetry::Lifespan.touch_collection(self.membership.try(:collection))
     Telemetry::Lifespan.touch_user(self.membership.try(:user))
   end
-
 end
-
-ActiveRecord::Base.send(:include, ActiveRecordTelemetry)
