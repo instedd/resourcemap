@@ -5,7 +5,7 @@ class ApiController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   before_action :authenticate_api_user!
-  around_filter :rescue_with_check_api_docs
+  around_action :rescue_with_check_api_docs
 
   def rescue_with_check_api_docs
     yield
