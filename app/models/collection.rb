@@ -39,7 +39,7 @@ class Collection < ApplicationRecord
   def max_value_of_property(es_code)
     client = Elasticsearch::Client.new
     results = client.search index: index_name, type: 'site', body: {
-      sort: {es_code => 'desc'},
+      sort: {"properties.#{es_code}" => 'desc'},
       size: 2000,
     }
     results["hits"]["hits"].first['_source']['properties'][es_code] rescue 0
