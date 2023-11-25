@@ -101,6 +101,7 @@ GEM
     bindata (2.4.14)
     breadcrumbs_on_rails (3.0.1)
     builder (3.2.4)
+    byebug (11.0.1)
     cancancan (1.17.0)
     capybara (2.18.0)
       addressable
@@ -479,6 +480,7 @@ DEPENDENCIES
   alto_guisso!
   alto_guisso_rails!
   breadcrumbs_on_rails
+  byebug
   cancancan (~> 1.9)
   capybara (~> 2.18)
   carrierwave

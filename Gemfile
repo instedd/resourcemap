@@ -96,6 +96,7 @@ group :test, :development do
   gem 'rspec-rails', '~> 3.5.0'
   gem 'rspec-retry'
   # gem 'stackprof'
+  gem 'byebug'
 end
 
 # group :development do
