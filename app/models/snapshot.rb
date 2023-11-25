@@ -6,8 +6,8 @@ class Snapshot < ApplicationRecord
   validates_uniqueness_of :name, :scope => :collection_id
 
   after_create :create_index
-
   after_save :touch_collection_lifespan
+  after_destroy :destroy_index
   after_destroy :touch_collection_lifespan
 
   def create_index
@@ -33,8 +33,6 @@ class Snapshot < ApplicationRecord
     end
     client.indices.refresh
   end
-
-  after_destroy :destroy_index
 
   def destroy_index
     Elasticsearch::Client.new.indices.delete index: index_name
