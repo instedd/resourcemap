@@ -11,7 +11,7 @@
 // about supported directives.
 //
 //= require instedd-rails
-//= require jquery-ui
+//= require jquery.ui.all
 //= require jquery.ui.widget
 //= require jquery.iframe-transport
 //= require jquery.fileupload
