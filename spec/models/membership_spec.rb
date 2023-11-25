@@ -11,13 +11,13 @@ describe Membership, :type => :model do
   it { is_expected.to have_one :name_permission }
   it { is_expected.to have_one :location_permission }
 
-  let(:user) { User.make! }
-  let(:collection) { user.create_collection(Collection.make(anonymous_name_permission: 'read',
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make_unsaved(anonymous_name_permission: 'read',
     anonymous_location_permission: 'read') )}
   let(:membership_admin) { collection.memberships.find_by_admin(true)}
-  let(:layer) { collection.layers.make! }
+  let(:layer) { collection.layers.make }
 
-  let(:member) { User.make! }
+  let(:member) { User.make }
   let(:membership) { collection.memberships.create! :user_id => member.id }
 
   it "should delete memberships when the collection is destroyed" do
@@ -81,7 +81,7 @@ describe Membership, :type => :model do
     end
 
     it "should not allow more than one membership per collection and user" do
-      yet_another_user = User.make!
+      yet_another_user = User.make
       yet_another_user.memberships.create! :collection_id => collection.id
       expect { yet_another_user.memberships.create!(:collection_id => collection.id) }.to raise_error(ActiveRecord::RecordInvalid)
     end
@@ -127,7 +127,7 @@ describe Membership, :type => :model do
     end
 
     it "should export from a guest membership" do
-      guest = User.make! is_guest: true
+      guest = User.make is_guest: true
       json = collection.membership_for(guest).as_json.with_indifferent_access
       expect(json["admin"]).to eq(false)
       expect(json["layers"].count).to eq(0)
@@ -139,7 +139,7 @@ describe Membership, :type => :model do
   end
 
   context "layer access" do
-    let(:user2) { User.make! }
+    let(:user2) { User.make }
     let(:membership2) { collection.memberships.create! :user_id => user2.id }
 
     context "when no access already exists" do
@@ -181,7 +181,7 @@ describe Membership, :type => :model do
   end
 
   context "on destroy" do
-    let(:collection2) { Collection.make! }
+    let(:collection2) { Collection.make }
     let(:membership2) { collection2.memberships.create! :user_id => user.id }
     it "destroys collection layer memberships" do
 

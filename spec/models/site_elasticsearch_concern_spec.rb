@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe Site::ElasticsearchConcern, :type => :model do
-  let(:collection) { Collection.make! }
-  let(:layer) { collection.layers.make! }
-  let(:beds_field) { layer.numeric_fields.make! :code => 'beds' }
-  let(:tables_field) { layer.numeric_fields.make! :code => 'tables' }
-  let!(:threshold) { collection.thresholds.make! is_all_site: true, message_notification: "alert", conditions: [ {field: beds_field.es_code, op: 'lt', value: 10} ] }
+  let(:collection) { Collection.make }
+  let(:layer) { collection.layers.make }
+  let(:beds_field) { layer.numeric_fields.make :code => 'beds' }
+  let(:tables_field) { layer.numeric_fields.make :code => 'tables' }
+  let!(:threshold) { collection.thresholds.make is_all_site: true, message_notification: "alert", conditions: [ {field: beds_field.es_code, op: 'lt', value: 10} ] }
 
   it "stores in index after create" do
-    site = collection.sites.make! :properties => {beds_field.es_code => 10, tables_field.es_code => 20}
+    site = collection.sites.make :properties => {beds_field.es_code => 10, tables_field.es_code => 20}
 
     client = Elasticsearch::Client.new
     results = client.search index: site.index_name
@@ -26,7 +26,7 @@ describe Site::ElasticsearchConcern, :type => :model do
   end
 
   it "makrs as deleted when destroyed" do
-    site = collection.sites.make!
+    site = collection.sites.make
     site.destroy
 
     client = Elasticsearch::Client.new
@@ -38,8 +38,8 @@ describe Site::ElasticsearchConcern, :type => :model do
   end
 
   it "stores sites without lat and lng in index" do
-    group = collection.sites.make! :lat => nil, :lng => nil
-    site = collection.sites.make!
+    group = collection.sites.make :lat => nil, :lng => nil
+    site = collection.sites.make
 
     client = Elasticsearch::Client.new
     results = client.search index: site.index_name
@@ -49,7 +49,7 @@ describe Site::ElasticsearchConcern, :type => :model do
   it "should stores alert in index" do
     collection.selected_plugins = ['alerts']
     collection.save
-    site = collection.sites.make! properties: { beds_field.es_code => 9 }
+    site = collection.sites.make properties: { beds_field.es_code => 9 }
 
     client = Elasticsearch::Client.new
     results = client.search index: collection.index_name, type: 'site', body: {

@@ -4,8 +4,8 @@ describe QuotasController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
-  let(:user) { User.make! }
-  let(:collection) { Collection.make! }
+  let(:user) { User.make }
+  let(:collection) { Collection.make }
    
   before(:each) { sign_in user }
   it 'should upate message quota on collection from 0 to 10' do 

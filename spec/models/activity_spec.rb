@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Activity, :type => :model do
-  let!(:user) { User.make! }
-  let!(:collection) { user.create_collection Collection.make }
+  let!(:user) { User.make }
+  let!(:collection) { user.create_collection Collection.make_unsaved }
 
   it "creates one when collection is created" do
     assert_activity 'collection', 'created',
@@ -15,7 +15,7 @@ describe Activity, :type => :model do
   it "creates one when layer is created" do
     Activity.delete_all
 
-    layer = collection.layers.make! user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
+    layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
 
     assert_activity 'layer', 'created',
       'collection_id' => collection.id,
@@ -27,7 +27,7 @@ describe Activity, :type => :model do
 
   context "layer changed" do
     it "creates one when layer's name changes" do
-      layer = collection.layers.make! user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
+      layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
 
       Activity.delete_all
 
@@ -43,7 +43,7 @@ describe Activity, :type => :model do
     end
 
     it "creates one when layer's field is added" do
-      layer = collection.layers.make! user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
+      layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
 
       Activity.delete_all
 
@@ -60,7 +60,7 @@ describe Activity, :type => :model do
     end
 
     it "creates one when layer's field's code changes" do
-      layer = collection.layers.make! user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
+      layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
 
       Activity.delete_all
 
@@ -77,7 +77,7 @@ describe Activity, :type => :model do
     end
 
     it "creates one when layer's field's name changes" do
-      layer = collection.layers.make! user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
+      layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
 
       Activity.delete_all
 
@@ -94,7 +94,7 @@ describe Activity, :type => :model do
     end
 
     it "creates one when layer's field's options changes" do
-      layer = collection.layers.make! user: user, name: 'Layer1', fields_attributes: [{kind: 'select_one', code: 'one', name: 'One', config: {'options' => [{'code' => '1', 'label' => 'One'}]}, ord: 1}]
+      layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'select_one', code: 'one', name: 'One', config: {'options' => [{'code' => '1', 'label' => 'One'}]}, ord: 1}]
 
       Activity.delete_all
 
@@ -115,7 +115,7 @@ describe Activity, :type => :model do
     end
 
     it "creates one when layer's field is removed" do
-      layer = collection.layers.make! user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}, {kind: 'text', code: 'two', name: 'Two', ord: 2}]
+      layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}, {kind: 'text', code: 'two', name: 'Two', ord: 2}]
 
       Activity.delete_all
 
@@ -133,7 +133,7 @@ describe Activity, :type => :model do
   end
 
   it "creates one when layer is destroyed" do
-    layer = collection.layers.make! user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
+    layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'foo', name: 'Foo', ord: 1}]
 
     Activity.delete_all
 
@@ -148,7 +148,7 @@ describe Activity, :type => :model do
   end
 
   it "creates one after creating a site" do
-    layer = collection.layers.make! user: user, fields_attributes: [{kind: 'text', code: 'beds', name: 'Beds', ord: 1}]
+    layer = collection.layers.make user: user, fields_attributes: [{kind: 'text', code: 'beds', name: 'Beds', ord: 1}]
     field = layer.fields.first
 
     Activity.delete_all
@@ -190,7 +190,7 @@ describe Activity, :type => :model do
   end
 
   context "site changed" do
-    let!(:layer) { collection.layers.make! user: user, fields_attributes: [{kind: 'numeric', code: 'beds', name: 'Beds', ord: 1}, {kind: 'numeric', code: 'tables', name: 'Tables', ord: 2}, {kind: 'text', code: 'text', name: 'Text', ord: 3}] }
+    let!(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'beds', name: 'Beds', ord: 1}, {kind: 'numeric', code: 'tables', name: 'Tables', ord: 2}, {kind: 'text', code: 'text', name: 'Text', ord: 3}] }
     let(:beds) { layer.fields.first }
     let(:tables) { layer.fields.second }
     let(:text) { layer.fields.third }

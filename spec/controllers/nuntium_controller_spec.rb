@@ -3,14 +3,14 @@ require 'spec_helper'
 describe NuntiumController, :type => :controller do
   describe "POST 'receive'" do
     before(:each) do
-      @collection = Collection.make!(:name => 'Healt Center')
-      @layer = @collection.layers.make!(:name => "default")
-      @user = User.make!(:phone_number => '85512345678')
-      f1 = @layer.numeric_fields.make!(:id => 10, :name => "Ambulance", :code => "AB", :ord => 1)
-      f2 = @layer.numeric_fields.make!(:id => 11, :name => "Doctor", :code => "DO", :ord => 2)
+      @collection = Collection.make(:name => 'Healt Center')
+      @layer = @collection.layers.make(:name => "default")
+      @user = User.make(:phone_number => '85512345678')
+      f1 = @layer.numeric_fields.make(:id => 10, :name => "Ambulance", :code => "AB", :ord => 1)
+      f2 = @layer.numeric_fields.make(:id => 11, :name => "Doctor", :code => "DO", :ord => 2)
       membership = @collection.memberships.create(:user => @user, :admin => false)
       membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
-      site = @collection.sites.make!(:name => "SiemReap Health Center", :lat => 9, :lng => 9, :id_with_prefix => "AA1", :properties => {"10"=>5, "11"=>2})
+      site = @collection.sites.make(:name => "SiemReap Health Center", :lat => 9, :lng => 9, :id_with_prefix => "AA1", :properties => {"10"=>5, "11"=>2})
       @params = { :guid => "123", :from => "sms://85512345678", :body => "dyrm u AA1 AB=2" }
       @message = Message.create(@params)
     end

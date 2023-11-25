@@ -10,7 +10,7 @@ describe SiteHistory, :type => :model do
     client.indices.create index: index_name
 
     begin
-      site_history = SiteHistory.make!
+      site_history = SiteHistory.make
 
       site_history.store_in index_name
 
@@ -31,7 +31,7 @@ describe SiteHistory, :type => :model do
   end
 
   it "should update version number when the site changes" do
-    site = Site.make!
+    site = Site.make
     expect(site.histories.count).to eq(1)
     expect(site.current_history.version).to eq(1)
 
@@ -43,8 +43,8 @@ describe SiteHistory, :type => :model do
   end
 
   it "should add which user edited on site changing" do
-    user = User.make!
-    site = Site.make! user: user
+    user = User.make
+    site = Site.make user: user
     expect(site.histories.count).to eq(1)
 
     site.name = "Other"

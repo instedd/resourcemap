@@ -3,22 +3,22 @@ require 'spec_helper'
 describe SitesController, :type => :controller do
   include Devise::TestHelpers
 
-  let(:user) { User.make! }
-  let(:collection) { user.create_collection(Collection.make) }
-  let(:layer) { collection.layers.make! }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make_unsaved) }
+  let(:layer) { collection.layers.make }
 
-  let(:site) { collection.sites.make! id: 1234}
+  let(:site) { collection.sites.make id: 1234}
 
-  let(:text) { layer.text_fields.make! code: 'text'}
-  let(:numeric) { layer.numeric_fields.make! code: 'n' }
-  let(:select_one) { layer.select_one_fields.make! :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-  let(:select_many) { layer.select_many_fields.make! :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let(:text) { layer.text_fields.make code: 'text'}
+  let(:numeric) { layer.numeric_fields.make code: 'n' }
+  let(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-  let(:hierarchy) { layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
-  let(:site_field) { layer.site_fields.make! :code => 'site' }
-  let(:date) { layer.date_fields.make! :code => 'date' }
-  let(:director) { layer.user_fields.make! :code => 'user' }
-  let(:email_field) { layer.email_fields.make! :code => 'email' }
+  let(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+  let(:site_field) { layer.site_fields.make :code => 'site' }
+  let(:date) { layer.date_fields.make :code => 'date' }
+  let(:director) { layer.user_fields.make :code => 'user' }
+  let(:email_field) { layer.email_fields.make :code => 'email' }
 
   before(:each) { sign_in user }
 
@@ -136,8 +136,8 @@ describe SitesController, :type => :controller do
     it 'should not be allowed to full update a site if the user is not the collection admin' do
       sign_out user
 
-      member = User.make!
-      membership = Membership.make! collection: collection, user: member, admin: false
+      member = User.make
+      membership = Membership.make collection: collection, user: member, admin: false
       sign_in member
 
       site_params = {:name => "new site"}.to_json
@@ -158,8 +158,8 @@ describe SitesController, :type => :controller do
     it 'should not be allowed to update name if user does not have permission' do
       sign_out user
 
-      member = User.make!
-      membership = Membership.make! collection: collection, user: member, admin: false
+      member = User.make
+      membership = Membership.make collection: collection, user: member, admin: false
       membership.set_access(object: 'name', new_action: 'read')
 
       sign_in member
@@ -184,8 +184,8 @@ describe SitesController, :type => :controller do
     it 'should not be allowed to update location if user does not have permission' do
       sign_out user
 
-      member = User.make!
-      membership = Membership.make! collection: collection, user: member, admin: false
+      member = User.make
+      membership = Membership.make collection: collection, user: member, admin: false
       membership.set_access(object: 'location', new_action: 'read')
       previous_lat = site.lat
       previous_lng = site.lng
@@ -233,9 +233,9 @@ describe SitesController, :type => :controller do
 
       sign_out user
 
-      member = User.make!
-      membership = Membership.make! collection: collection, user: member, admin: false
-      LayerMembership.make! layer: text.layer, membership: membership, read: false
+      member = User.make
+      membership = Membership.make collection: collection, user: member, admin: false
+      LayerMembership.make layer: text.layer, membership: membership, read: false
 
       sign_in member
 
@@ -272,8 +272,8 @@ describe SitesController, :type => :controller do
   end
 
   it "cannot destroy site if the user is not admin" do
-    member = User.make!
-    membership = Membership.make! collection: collection, user: member, admin: false
+    member = User.make
+    membership = Membership.make collection: collection, user: member, admin: false
     sign_in member
 
     delete :destroy, format: :json, id: site.id, collection_id: collection.id
@@ -299,7 +299,7 @@ describe SitesController, :type => :controller do
   end
 
   describe 'yes_no with auto_reset' do
-    let!(:auto_reset_field) { layer.yes_no_fields.make! :code => 'flag', :config => { 'auto_reset' => true } }
+    let!(:auto_reset_field) { layer.yes_no_fields.make :code => 'flag', :config => { 'auto_reset' => true } }
 
     describe 'create new site' do
       before(:each) do

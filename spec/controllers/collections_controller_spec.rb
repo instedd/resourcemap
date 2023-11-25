@@ -3,8 +3,8 @@ require 'spec_helper'
 describe CollectionsController, :type => :controller do
   include Devise::TestHelpers
   render_views
-  let(:user) { User.make! }
-  let(:collection) { user.create_collection(Collection.make!(anonymous_name_permission: 'read', anonymous_location_permission: 'read'))}
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read'))}
 
   before(:each) {sign_in user}
 
@@ -30,7 +30,7 @@ describe CollectionsController, :type => :controller do
   it "should not get public repeated one time for each membership" do
     make_public(collection)
 
-    user2 = collection.users.make! email: 'user2@email.com'
+    user2 = collection.users.make email: 'user2@email.com'
     collection.memberships.create! user_id: user2.id
 
     get :index, format: 'json'
@@ -43,8 +43,8 @@ describe CollectionsController, :type => :controller do
     # load collection
     collection
 
-    other_collection = Collection.make!(anonymous_name_permission: 'read', anonymous_location_permission: 'read')
-    user2 = other_collection.users.make! email: 'user2@email.com'
+    other_collection = Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read')
+    user2 = other_collection.users.make email: 'user2@email.com'
     other_collection.memberships.create! user_id: user2.id
 
     get :index, format: 'json'
@@ -64,13 +64,13 @@ describe CollectionsController, :type => :controller do
 
   describe "get ES resutls" do
     before(:each) do
-      layer = collection.layers.make!
+      layer = collection.layers.make
 
-      text = layer.text_fields.make! :code => 'text'
-      numeric = layer.numeric_fields.make! :code => 'numeric'
+      text = layer.text_fields.make :code => 'text'
+      numeric = layer.numeric_fields.make :code => 'numeric'
 
-      @site1 = collection.sites.make! :name => "site1", :properties => {text.es_code => 'foo', numeric.es_code => 1 }
-      @site2 = collection.sites.make! :name => "osite2", :properties => {text.es_code => 'bar', numeric.es_code => 2 }
+      @site1 = collection.sites.make :name => "site1", :properties => {text.es_code => 'foo', numeric.es_code => 1 }
+      @site2 = collection.sites.make :name => "osite2", :properties => {text.es_code => 'bar', numeric.es_code => 2 }
     end
 
     it "should get json of all field names and codes in a collection" do
@@ -98,9 +98,9 @@ describe CollectionsController, :type => :controller do
   end
 
   describe "Permissions" do
-    let(:public_collection) { user.create_collection(Collection.make!(anonymous_name_permission: 'read', anonymous_location_permission: 'read')) }
-    let(:not_member) { User.make! }
-    let(:member) { User.make! }
+    let(:public_collection) { user.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read')) }
+    let(:not_member) { User.make }
+    let(:member) { User.make }
 
     before(:each) do
       sign_out user
@@ -203,8 +203,8 @@ describe CollectionsController, :type => :controller do
 
   describe "sites info"  do
     it "gets when all have location" do
-      collection.sites.make!
-      collection.sites.make!
+      collection.sites.make
+      collection.sites.make
 
       get :sites_info, collection_id: collection.id
 
@@ -214,9 +214,9 @@ describe CollectionsController, :type => :controller do
     end
 
     it "gets when some have no location" do
-      collection.sites.make!
-      collection.sites.make!
-      collection.sites.make! lat: nil, lng: nil
+      collection.sites.make
+      collection.sites.make
+      collection.sites.make lat: nil, lng: nil
 
       get :sites_info, collection_id: collection.id
 
@@ -227,8 +227,8 @@ describe CollectionsController, :type => :controller do
 
     describe "when there are deleted sites" do
       it "gets when all have location" do
-        collection.sites.make!
-        collection.sites.make!.destroy
+        collection.sites.make
+        collection.sites.make.destroy
 
         get :sites_info, collection_id: collection.id
 
@@ -239,9 +239,9 @@ describe CollectionsController, :type => :controller do
     end
 
     it "gets when some have no location" do
-      collection.sites.make!
-      collection.sites.make!
-      collection.sites.make!(lat: nil, lng: nil).destroy
+      collection.sites.make
+      collection.sites.make
+      collection.sites.make(lat: nil, lng: nil).destroy
 
       get :sites_info, collection_id: collection.id
 
@@ -257,7 +257,7 @@ describe CollectionsController, :type => :controller do
   end
 
   it "gets a site with location when the lat is 0, and the lng is 0 in search" do
-    collection.sites.make! lat: 0, lng: 0
+    collection.sites.make lat: 0, lng: 0
 
     get :search, collection_id: collection.id
 
@@ -271,7 +271,7 @@ describe CollectionsController, :type => :controller do
   end
 
   it "gets a site without a location when the lat is nil, and the lng is nil in search" do
-    collection.sites.make! lat: nil, lng: nil
+    collection.sites.make lat: nil, lng: nil
 
     get :search, collection_id: collection.id
 
@@ -283,8 +283,8 @@ describe CollectionsController, :type => :controller do
   end
 
   it "gets a site searching by its full name" do
-    collection.sites.make! name: 'Target'
-    collection.sites.make! name: 'NotThisOne'
+    collection.sites.make name: 'Target'
+    collection.sites.make name: 'NotThisOne'
 
     get :search, collection_id: collection.id, sitename: 'Target'
 
@@ -296,8 +296,8 @@ describe CollectionsController, :type => :controller do
   end
 
   it "gets a site searching by its prefix" do
-    collection.sites.make! name: 'Target'
-    collection.sites.make! name: 'NotThisOne'
+    collection.sites.make name: 'Target'
+    collection.sites.make name: 'NotThisOne'
 
     get :search, collection_id: collection.id, sitename: 'Tar'
 
@@ -309,8 +309,8 @@ describe CollectionsController, :type => :controller do
   end
 
   it "doesn't get any site when name doesn't match" do
-    collection.sites.make! name: 'Target'
-    collection.sites.make! name: 'NotThisOne'
+    collection.sites.make name: 'Target'
+    collection.sites.make name: 'NotThisOne'
 
     get :search, collection_id: collection.id, sitename: 'TakeThat'
 
@@ -321,9 +321,9 @@ describe CollectionsController, :type => :controller do
   end
 
   it "gets multiple matching sites by name" do
-    collection.sites.make! name: 'Target'
-    collection.sites.make! name: 'NotThisOne'
-    collection.sites.make! name: 'TallLand'
+    collection.sites.make name: 'Target'
+    collection.sites.make name: 'NotThisOne'
+    collection.sites.make name: 'TallLand'
 
     get :search, collection_id: collection.id, sitename: 'Ta'
 
@@ -338,12 +338,12 @@ describe CollectionsController, :type => :controller do
   end
 
   it "applys multiple filters" do
-    layer = collection.layers.make!
-    numeric = layer.numeric_fields.make! :code => 'numeric'
+    layer = collection.layers.make
+    numeric = layer.numeric_fields.make :code => 'numeric'
 
-    collection.sites.make! name: 'Target', properties: { numeric.es_code => 25 }
-    collection.sites.make! name: 'NotThisOne', properties: { numeric.es_code => 25 }
-    collection.sites.make! name: 'TallLand', properties: { numeric.es_code => 20 }
+    collection.sites.make name: 'Target', properties: { numeric.es_code => 25 }
+    collection.sites.make name: 'NotThisOne', properties: { numeric.es_code => 25 }
+    collection.sites.make name: 'TallLand', properties: { numeric.es_code => 20 }
 
     get :search, collection_id: collection.id, sitename: 'Ta', numeric.es_code => { "=" => 25 }
 

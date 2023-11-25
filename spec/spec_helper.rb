@@ -104,7 +104,6 @@ RSpec.configure do |config|
 
 
   ##########
-  config.example_status_persistence_file_path = Rails.root.join("tmp/rspec").to_s
 
   # Uncomment to view full backtraces
   # config.backtrace_clean_patterns = []
@@ -161,10 +160,10 @@ RSpec.configure do |config|
   module ActionController::TestCase::Behavior
     alias resource_map_get get
 
-    def get(action, params: nil, session: nil, flash: nil)
-      params ||= {}
-      params[:locale] = :en
-      resource_map_get(action, params: params, session: session, flash: flash)
+    def get(action, parameters = nil, session = nil, flash = nil)
+      parameters ? parameters : parameters = {}
+      parameters[:locale] = :en
+      resource_map_get(action, parameters, session, flash)
     end
   end
 

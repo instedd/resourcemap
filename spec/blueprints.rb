@@ -1,4 +1,5 @@
 require 'machinist/active_record'
+require 'sham'
 require 'faker'
 
 def rand_in_range(from, to)
@@ -9,15 +10,26 @@ def rand_time(from, to)
   Time.at(rand_in_range(from.to_f, to.to_f))
 end
 
-User.blueprint do
+Sham.define do
+  name { Faker::Name.name }
   email { Faker::Internet.email }
-  password { Faker::Name.name }
   phone_number { rand(1111111..9999999) }
+  password { Faker::Name.name }
+  username { Faker::Internet.user_name }
+  color { "##{rand(255**3).to_s(16)}" }
+  icon { Faker::Name.name }
+  sn { |i| i }
+end
+
+User.blueprint do
+  email
+  password
+  phone_number
   confirmed_at { Time.now.beginning_of_day }
 end
 
 Collection.blueprint do
-  name { Faker::Name.name }
+  name
   icon {'default'}
   anonymous_name_permission {'none'}
   anonymous_location_permission {'none'}
@@ -25,26 +37,26 @@ end
 
 Site.blueprint do
   collection
-  name { Faker::Name.name }
+  name
   lat { rand(179) - 89 }
   lng { rand(359) - 179 }
-  user { User.make! }
+  user { User.make }
 end
 
 Layer.blueprint do
   collection
-  name { Faker::Name.name }
-  ord { object.collection.next_layer_ord }
-  user { User.make! }
+  name
+  ord { collection.next_layer_ord }
+  user { User.make }
 end
 
 Field.subclasses.each do |field_kind|
   field_kind.name.constantize.blueprint do
     layer
-    collection { object.layer.collection }
-    name { Faker::Name.name }
-    code { Faker::Name.name }
-    ord { object.layer.next_field_ord }
+    collection { layer.collection }
+    name
+    code { Sham.name }
+    ord { layer.next_field_ord }
   end
 end
 
@@ -53,7 +65,7 @@ end
 
 SiteHistory.blueprint do
   collection
-  name { Faker::Name.name }
+  name
   lat { rand(180) - 90 }
   lng { rand(360) - 180 }
   valid_since {rand_time(2.days.ago, Time.now)}
@@ -62,14 +74,14 @@ end
 
 Threshold.blueprint do
   collection
-  ord { sn }
-  color { "##{rand(255**3).to_s(16)}" }
+  ord { Sham.sn }
+  color { Sham.color }
 end
 
 Snapshot.blueprint do
   collection
   date {rand_time(2.days.ago, Time.now)}
-  name { Faker::Internet.user_name }
+  name { Sham.username }
 end
 
 UserSnapshot.blueprint do

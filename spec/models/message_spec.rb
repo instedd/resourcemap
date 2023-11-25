@@ -37,7 +37,7 @@ describe Message, :type => :model do
     end
 
     it "should find sender by phone number" do
-      user = User.make! :phone_number => "1"
+      user = User.make :phone_number => "1"
       @message.from = "sms://1"
       expect(@message.sender).to eq(user)
     end
@@ -45,8 +45,8 @@ describe Message, :type => :model do
 
   describe "#process!" do
     before(:each) do
-      collection = Collection.make!
-      user = User.make! :phone_number => '123'
+      collection = Collection.make
+      user = User.make :phone_number => '123'
       collection.memberships.create :user => user, :admin => true
       @message = Message.new :guid => '999', :from => 'sms://123', :body => 'dyrm q 1 beds>12'
     end
@@ -82,7 +82,7 @@ describe Message, :type => :model do
   end
 
   describe "message log" do
-    let(:collection) { Collection.make! quota: 10 }
+    let(:collection) { Collection.make quota: 10 }
     it 'should change collection.quota after log  message' do
       expect{
         Message.log [{from: '123456', to: '123456', body: 'hello resourcemap'}], collection.id

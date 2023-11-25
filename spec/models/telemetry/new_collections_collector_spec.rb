@@ -6,7 +6,7 @@ describe Telemetry::NewCollectionsCollector do
     Timecop.freeze(Time.now)
     p0 = currente_period
 
-    3.times { Collection.make! }
+    3.times { Collection.make }
 
     expect(stats(p0)).to eq({
       "counters" => [
@@ -17,7 +17,7 @@ describe Telemetry::NewCollectionsCollector do
     advance_period
     p1 = currente_period
 
-    7.times { Collection.make! }
+    7.times { Collection.make }
 
     expect(stats(p1)).to eq({
       "counters" => [
@@ -26,7 +26,7 @@ describe Telemetry::NewCollectionsCollector do
     })
 
     advance_period
-    10.times { Collection.make! }
+    10.times { Collection.make }
 
     # do not count collections created in later periods
     expect(stats(p1)).to eq({

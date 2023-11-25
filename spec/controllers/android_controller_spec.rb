@@ -3,13 +3,13 @@ require 'spec_helper'
 describe AndroidController, :type => :controller do
   include Devise::TestHelpers
 
-  let(:user) { User.make! }
-  let!(:collection1) { user.create_collection(Collection.make) }
-  let!(:collection2) { user.collections.make! }
-  let(:layer) { collection1.layers.make! }
+  let(:user) { User.make }
+  let!(:collection1) { user.create_collection(Collection.make_unsaved) }
+  let!(:collection2) { user.collections.make }
+  let(:layer) { collection1.layers.make }
 
-  let!(:text) { layer.text_fields.make! :code => 'text' }
-  let!(:numeric) { layer.numeric_fields.make! :code => 'numeric'}
+  let!(:text) { layer.text_fields.make :code => 'text' }
+  let!(:numeric) { layer.numeric_fields.make :code => 'numeric'}
 
   before(:each) {sign_in user}
 

@@ -3,14 +3,14 @@ require 'spec_helper'
 describe MembershipsController, :type => :controller do
   include Devise::TestHelpers
 
-  let(:user) { User.make! email: 'foo@test.com' }
-  let(:user_2) { User.make! email: 'bar@test.com' }
-  let(:collection) { user.create_collection(Collection.make) }
+  let(:user) { User.make email: 'foo@test.com' }
+  let(:user_2) { User.make email: 'bar@test.com' }
+  let(:collection) { user.create_collection(Collection.make_unsaved) }
   let(:anonymous) { Membership::Anonymous.new collection, user }
   let(:membership) { collection.memberships.create! user_id: user_2.id, admin: false }
 
   describe "index" do
-    let(:layer) { collection.layers.make! }
+    let(:layer) { collection.layers.make }
 
     it "collection admin should be able to write name and location" do
       sign_in user
@@ -38,8 +38,8 @@ describe MembershipsController, :type => :controller do
 
   describe "Changed membership permissions" do
     before(:each) { sign_in user }
-    let(:user2){ User.make! email: 'user2@gmail.com'}
-    let(:layer) { collection.layers.make! }
+    let(:user2){ User.make email: 'user2@gmail.com'}
+    let(:layer) { collection.layers.make }
     let(:membership){collection.memberships.create! user_id:user2.id}
 
     it "should create activity when a membership is created" do
@@ -366,7 +366,7 @@ describe MembershipsController, :type => :controller do
     it "should not destroy another user's membership as a regular user" do
       sign_in user_2
       membership
-      user_3 = User.make!
+      user_3 = User.make
       collection.memberships.create! user_id: user_3.id, admin: false
 
       expect {

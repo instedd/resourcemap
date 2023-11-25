@@ -4,11 +4,11 @@ describe Api::LayersController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
-  let(:user) { User.make! }
-  let(:collection) { user.create_collection(Collection.make!) }
-  let!(:layer) {Layer.make! collection: collection, user: user}
-  let!(:layer2) {Layer.make! collection: collection, user: user}
-  let!(:numeric) {layer.numeric_fields.make! }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make) }
+  let!(:layer) {Layer.make collection: collection, user: user}
+  let!(:layer2) {Layer.make collection: collection, user: user}
+  let!(:numeric) {layer.numeric_fields.make }
 
   before(:each) {sign_in user}
 
@@ -83,7 +83,7 @@ describe Api::LayersController, :type => :controller do
   end
 
   context "as non authorized user" do
-    let(:non_admin) { User.make! }
+    let(:non_admin) { User.make }
 
     before(:each) { sign_out user; sign_in non_admin }
 

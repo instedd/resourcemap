@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe SendMailer, :type => :mailer do
-  let(:users) { [User.make!, User.make!]}
+  let(:users) { [User.make, User.make]}
   let(:message) {"testing"}
   let(:mail) { SendMailer.notify_email([users[0].email, users[1].email], message, "email from resourcemap") }
   it "has email in queue" do

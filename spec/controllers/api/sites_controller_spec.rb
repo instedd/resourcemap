@@ -3,13 +3,13 @@ require 'spec_helper'
 describe Api::SitesController, :type => :controller do
   include Devise::TestHelpers
 
-  let(:user) { User.make! }
-  let(:collection) { user.create_collection(Collection.make) }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make_unsaved) }
 
   before(:each) { sign_in user }
 
   describe "GET site" do
-    let(:site) { collection.sites.make! }
+    let(:site) { collection.sites.make }
 
     before(:each) do
       get :show, id: site.id, format: 'rss'
@@ -24,8 +24,8 @@ describe Api::SitesController, :type => :controller do
   describe "create site" do
 
     it "should fail stating the problem" do
-      new_user = User.make!
-      membership = Membership.make! collection: collection, user: new_user, admin: false
+      new_user = User.make
+      membership = Membership.make collection: collection, user: new_user, admin: false
       sign_in new_user
 
       site_params = {:name => "new site"}.to_json
@@ -37,7 +37,7 @@ describe Api::SitesController, :type => :controller do
   end
 
   describe "Histories" do
-    let(:site2) { collection.sites.make! name: "New name 0" }
+    let(:site2) { collection.sites.make name: "New name 0" }
 
     before(:each) do
       10.times do |i|
@@ -73,7 +73,7 @@ describe Api::SitesController, :type => :controller do
   end
 
   context "destroy" do
-    let!(:site) { collection.sites.make! }
+    let!(:site) { collection.sites.make }
 
     it "should remove a site" do
       expect {
@@ -93,18 +93,18 @@ describe Api::SitesController, :type => :controller do
   end
 
   describe "updates" do
-    let(:site) { collection.sites.make! id: 1234}
-    let(:layer) { collection.layers.make! }
-    let(:text) { layer.text_fields.make! code: 'text'}
-    let(:numeric) { layer.numeric_fields.make! code: 'n' }
-    let(:select_one) { layer.select_one_fields.make! :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-    let(:select_many) { layer.select_many_fields.make! :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let(:site) { collection.sites.make id: 1234}
+    let(:layer) { collection.layers.make }
+    let(:text) { layer.text_fields.make code: 'text'}
+    let(:numeric) { layer.numeric_fields.make code: 'n' }
+    let(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-    let(:hierarchy) { layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
-    let(:site_field) { layer.site_fields.make! :code => 'site' }
-    let(:date) { layer.date_fields.make! :code => 'date' }
-    let(:director) { layer.user_fields.make! :code => 'user' }
-    let(:email_field) { layer.email_fields.make! :code => 'email' }
+    let(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+    let(:site_field) { layer.site_fields.make :code => 'site' }
+    let(:date) { layer.date_fields.make :code => 'date' }
+    let(:director) { layer.user_fields.make :code => 'user' }
+    let(:email_field) { layer.email_fields.make :code => 'email' }
 
     before(:each) { sign_in user }
 
@@ -189,8 +189,8 @@ describe Api::SitesController, :type => :controller do
       it 'should not be allowed to full update a site if the user is not the collection admin' do
         sign_out user
 
-        member = User.make!
-        membership = Membership.make! collection: collection, user: member, admin: false
+        member = User.make
+        membership = Membership.make collection: collection, user: member, admin: false
         sign_in member
 
         site_params = {:name => "new site"}.to_json
@@ -212,8 +212,8 @@ describe Api::SitesController, :type => :controller do
       it 'should not be allowed to update name if user does not have permission' do
         sign_out user
 
-        member = User.make!
-        membership = Membership.make! collection: collection, user: member, admin: false
+        member = User.make
+        membership = Membership.make collection: collection, user: member, admin: false
         membership.set_access(object: 'name', new_action: 'read')
 
         sign_in member
@@ -238,8 +238,8 @@ describe Api::SitesController, :type => :controller do
       it 'should not be allowed to update location if user does not have permission' do
         sign_out user
 
-        member = User.make!
-        membership = Membership.make! collection: collection, user: member, admin: false
+        member = User.make
+        membership = Membership.make collection: collection, user: member, admin: false
         membership.set_access(object: 'location', new_action: 'read')
         previous_lat = site.lat
         previous_lng = site.lng
@@ -301,9 +301,9 @@ describe Api::SitesController, :type => :controller do
 
         sign_out user
 
-        member = User.make!
-        membership = Membership.make! collection: collection, user: member, admin: false
-        LayerMembership.make! layer: text.layer, membership: membership, read: false
+        member = User.make
+        membership = Membership.make collection: collection, user: member, admin: false
+        LayerMembership.make layer: text.layer, membership: membership, read: false
 
         sign_in member
 

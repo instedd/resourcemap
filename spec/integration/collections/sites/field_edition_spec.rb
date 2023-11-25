@@ -105,7 +105,7 @@ describe "change field values", :type => :request, uses_collections_structure: t
 
   it "should edit site in edit mode", js:true do
     multicollection.memberships.create! :user_id => user.id, :admin => true
-    s = multicollection.sites.make! name: "Third Site", id: 3
+    s = multicollection.sites.make name: "Third Site", id: 3
     login_as(user)
     visit collections_path
     find(:xpath, first_collection_path).click
@@ -154,7 +154,7 @@ describe "change field values", :type => :request, uses_collections_structure: t
 
   pending "should edit site in single editing mode", js:true do
     multicollection.memberships.create! :user_id => user.id, :admin => true
-    s = multicollection.sites.make! name: "Third Site", id: 3
+    s = multicollection.sites.make name: "Third Site", id: 3
     login_as(user)
 
     visit collections_path
@@ -170,7 +170,7 @@ describe "change field values", :type => :request, uses_collections_structure: t
 
   it "should leave phone editing mode when selecting other field (#807)", js: true do
     multicollection.memberships.create! :user_id => user.id, :admin => true
-    multicollection.sites.make! name: "A site"
+    multicollection.sites.make name: "A site"
     login_as user
 
     visit collections_path

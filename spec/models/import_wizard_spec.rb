@@ -2,24 +2,24 @@
 require 'spec_helper'
 
 describe ImportWizard, :type => :model do
-  let!(:user) { User.make! }
+  let!(:user) { User.make }
 
-  let!(:collection) { user.create_collection Collection.make }
-  let!(:user2) { collection.users.make! :email => 'user2@email.com'}
+  let!(:collection) { user.create_collection Collection.make_unsaved }
+  let!(:user2) { collection.users.make :email => 'user2@email.com'}
   let!(:membership) { collection.memberships.create! :user_id => user2.id }
 
-  let!(:layer) { collection.layers.make! }
+  let!(:layer) { collection.layers.make }
 
-  let!(:text) { layer.text_fields.make! :code => 'text' }
-  let!(:numeric) { layer.numeric_fields.make! :code => 'numeric'}
-  let!(:yes_no) { layer.yes_no_fields.make! :code => 'yes_no' }
-  let!(:select_one) { layer.select_one_fields.make! :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-  let!(:select_many) { layer.select_many_fields.make! :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:text) { layer.text_fields.make :code => 'text' }
+  let!(:numeric) { layer.numeric_fields.make :code => 'numeric'}
+  let!(:yes_no) { layer.yes_no_fields.make :code => 'yes_no' }
+  let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
   config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-  let!(:hierarchy) { layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
-  let!(:site) { layer.site_fields.make! :code => 'site'}
-  let!(:date) { layer.date_fields.make! :code => 'date' }
-  let!(:director) { layer.user_fields.make! :code => 'user' }
+  let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access }
+  let!(:site) { layer.site_fields.make :code => 'site'}
+  let!(:date) { layer.date_fields.make :code => 'date' }
+  let!(:director) { layer.user_fields.make :code => 'user' }
 
   before :each do
     collection.reload
@@ -131,8 +131,8 @@ describe ImportWizard, :type => :model do
   end
 
   it "imports with name, lat, lon and one new numeric property and existing ID" do
-    site1 = collection.sites.make! name: 'Foo old', properties: {text.es_code => 'coco'}
-    site2 = collection.sites.make! name: 'Bar old', properties: {text.es_code => 'lala'}
+    site1 = collection.sites.make name: 'Foo old', properties: {text.es_code => 'coco'}
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}
 
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Beds']
@@ -582,7 +582,7 @@ describe ImportWizard, :type => :model do
 
   it "imports with name and existing site property" do
 
-    collection.sites.make! :name => 'Site1', :id => '123'
+    collection.sites.make :name => 'Site1', :id => '123'
 
     csv_string = CSV.generate do |csv|
      csv << ['Name', 'Column']
@@ -610,7 +610,7 @@ describe ImportWizard, :type => :model do
   end
 
   it "should update all property values" do
-    site1 = collection.sites.make! name: 'Foo old', id: 1234, properties: {
+    site1 = collection.sites.make name: 'Foo old', id: 1234, properties: {
       text.es_code => 'coco',
       numeric.es_code => 10,
       yes_no.es_code => true,
@@ -622,7 +622,7 @@ describe ImportWizard, :type => :model do
     }
     site1.properties[site.es_code] = site1.id
 
-    site2 = collection.sites.make! name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
 
     csv_string = CSV.generate do |csv|
@@ -677,7 +677,7 @@ describe ImportWizard, :type => :model do
   end
 
   it "should delete all property values with empty strings" do
-    site1 = collection.sites.make! name: 'Foo old', id: 1234, properties: {
+    site1 = collection.sites.make name: 'Foo old', id: 1234, properties: {
       text.es_code => 'coco',
       numeric.es_code => 10,
       select_one.es_code => 1,
@@ -689,7 +689,7 @@ describe ImportWizard, :type => :model do
     site1.properties[site.es_code] = site1.id
 
 
-    site2 = collection.sites.make! name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
     csv_string = CSV.generate do |csv|
      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
@@ -733,7 +733,7 @@ describe ImportWizard, :type => :model do
 
 
   it "should delete all property values with nil values" do
-    site1 = collection.sites.make! name: 'Foo old', id: 1234, properties: {
+    site1 = collection.sites.make name: 'Foo old', id: 1234, properties: {
       text.es_code => 'coco',
       numeric.es_code => 10,
       select_one.es_code => 1,
@@ -745,7 +745,7 @@ describe ImportWizard, :type => :model do
     site1.properties[site.es_code] = site1.id
 
 
-    site2 = collection.sites.make! name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
     csv_string = CSV.generate do |csv|
      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
@@ -803,9 +803,9 @@ describe ImportWizard, :type => :model do
   end
 
   it "should create new fields with all property values" do
-    site1 = collection.sites.make! name: 'Foo old', id: 1234, properties: {}
+    site1 = collection.sites.make name: 'Foo old', id: 1234, properties: {}
 
-    site2 = collection.sites.make! name: 'Bar old', properties: {}, id: 1235
+    site2 = collection.sites.make name: 'Bar old', properties: {}, id: 1235
 
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Yes no', 'Select One', 'Select Many', 'Site', 'Date', 'User', 'Email', 'Phone']
@@ -852,7 +852,7 @@ describe ImportWizard, :type => :model do
   end
 
   it "should guess column spec for existing fields" do
-    email_field = layer.email_fields.make! :code => 'email'
+    email_field = layer.email_fields.make :code => 'email'
 
     csv_string = CSV.generate do |csv|
      csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
@@ -950,8 +950,8 @@ describe ImportWizard, :type => :model do
   end
 
   it "should get sites & errors for invalid existing fields" do
-    email_field = layer.email_fields.make! :code => 'email'
-    site2 = collection.sites.make! name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+    email_field = layer.email_fields.make :code => 'email'
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
     csv_string = CSV.generate do |csv|
       csv << ['text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
@@ -1023,7 +1023,7 @@ describe ImportWizard, :type => :model do
   end
 
   it "should be include hints for format errors" do
-    email_field = layer.email_fields.make! :code => 'email'
+    email_field = layer.email_fields.make :code => 'email'
 
     csv_string = CSV.generate do |csv|
       csv << ['numeric', 'date', 'email', 'hierarchy']
@@ -1063,7 +1063,7 @@ describe ImportWizard, :type => :model do
   end
 
   it "should get error for invalid new fields" do
-    site2 = collection.sites.make! name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
+    site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
     csv_string = CSV.generate do |csv|
      csv << ['text', 'numeric', 'select_one', 'select_many', 'hierarchy', 'site', 'date', 'user', 'email']
@@ -1135,7 +1135,7 @@ describe ImportWizard, :type => :model do
 
 
   it "should not create fields with duplicated name or code" do
-    layer.numeric_fields.make! :code => 'new_field', :name => 'Existing field'
+    layer.numeric_fields.make :code => 'new_field', :name => 'Existing field'
 
     csv_string = CSV.generate do |csv|
      csv << ['text']
@@ -1253,9 +1253,9 @@ describe ImportWizard, :type => :model do
   ['code', 'label'].each do |value|
     it "should return validation errors when there is existing_field with duplicated #{value}" do
       if value == 'label'
-        repeated = layer.text_fields.make! "name" => "repeated"
+        repeated = layer.text_fields.make "name" => "repeated"
       else
-        repeated = layer.text_fields.make! "#{value}" => "repeated"
+        repeated = layer.text_fields.make "#{value}" => "repeated"
       end
 
       csv_string = CSV.generate do |csv|
@@ -1303,7 +1303,7 @@ describe ImportWizard, :type => :model do
   end
 
   it "should not generate a data error when updating a default property" do
-    site1 = collection.sites.make! name: 'Foo old'
+    site1 = collection.sites.make name: 'Foo old'
 
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name']
@@ -1453,8 +1453,8 @@ describe ImportWizard, :type => :model do
   end
 
   it "should not show errors for valid sites ids(numeric or text)" do
-    site1 = collection.sites.make! name: 'Bar'
-    site2 = collection.sites.make! name: 'Foo'
+    site1 = collection.sites.make name: 'Bar'
+    site2 = collection.sites.make name: 'Foo'
 
     csv_string = CSV.generate do |csv|
       csv << ["resmap-id"]
@@ -1541,7 +1541,7 @@ describe ImportWizard, :type => :model do
   describe 'updates' do
     it 'only some fields of a valid site in a collection with one or more select one fields' do
       # The collection has a valid site before the import
-      site1 = collection.sites.make! name: 'Foo old', properties: {text.es_code => 'coco', select_one.es_code => 1}
+      site1 = collection.sites.make name: 'Foo old', properties: {text.es_code => 'coco', select_one.es_code => 1}
 
       # User uploads a CSV with only the resmap-id, name and text fields set.
       # At the time of writing (1 Jul 2013), this causes the import to fail.
@@ -1570,7 +1570,7 @@ describe ImportWizard, :type => :model do
   end
 
   describe "luhn values" do
-    let!(:luhn_id) {layer.identifier_fields.make! :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Luhn"} }
+    let!(:luhn_id) {layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Luhn"} }
 
     it "should generate default luhn values when the column is not present and there is no data" do
       csv_string = CSV.generate do |csv|
@@ -1620,7 +1620,7 @@ describe ImportWizard, :type => :model do
     end
 
     it "should not override existing luhn value when updating a site" do
-      site1 = collection.sites.make! name: 'Foo', properties: {luhn_id.es_code => '100001-7'}
+      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-7'}
 
       csv_string = CSV.generate do |csv|
         csv << ['resmap-id', 'Name']
@@ -1644,7 +1644,7 @@ describe ImportWizard, :type => :model do
     end
 
     it "should choose the higher luhn between the one alredy stored in the collection and the one in the csv for the default value for new sites" do
-      site1 = collection.sites.make! name: 'Foo', properties: {luhn_id.es_code => '100001-7'}
+      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-7'}
 
       csv_string = CSV.generate do |csv|
         csv << ['Name', 'Luhn']
@@ -1678,7 +1678,7 @@ describe ImportWizard, :type => :model do
 
 
     it "should not repeat an existing value for new sites" do
-      site1 = collection.sites.make! name: 'Foo', properties: {luhn_id.es_code => '100001-7'}
+      site1 = collection.sites.make name: 'Foo', properties: {luhn_id.es_code => '100001-7'}
 
       csv_string = CSV.generate do |csv|
         csv << ['Name']
@@ -1705,14 +1705,14 @@ describe ImportWizard, :type => :model do
   end
 
   describe "auto_reset" do
-    let!(:auto_reset) { layer.yes_no_fields.make! :code => 'flag', :config => { 'auto_reset' => true } }
+    let!(:auto_reset) { layer.yes_no_fields.make :code => 'flag', :config => { 'auto_reset' => true } }
 
     it "should reset sites included despite the values used in the import only if changed" do
-      site1 = collection.sites.make! name: 'Foo', properties: {auto_reset.es_code => true}
-      site2 = collection.sites.make! name: 'Bar', properties: {auto_reset.es_code => true}
-      site3 = collection.sites.make! name: 'Old', properties: {auto_reset.es_code => true}
-      site4 = collection.sites.make! name: 'Lorem', properties: {auto_reset.es_code => false}
-      site5 = collection.sites.make! name: 'Ipsum', properties: {auto_reset.es_code => true}
+      site1 = collection.sites.make name: 'Foo', properties: {auto_reset.es_code => true}
+      site2 = collection.sites.make name: 'Bar', properties: {auto_reset.es_code => true}
+      site3 = collection.sites.make name: 'Old', properties: {auto_reset.es_code => true}
+      site4 = collection.sites.make name: 'Lorem', properties: {auto_reset.es_code => false}
+      site5 = collection.sites.make name: 'Ipsum', properties: {auto_reset.es_code => true}
 
       csv_string = CSV.generate do |csv|
         csv << ['resmap-id', 'Name', 'Column']
@@ -1764,8 +1764,8 @@ describe ImportWizard, :type => :model do
 
 
   describe "PKs for update" do
-    let(:moh_id) {layer.identifier_fields.make! :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Normal"} }
-    let(:other_id) { layer.identifier_fields.make! :code => 'other-id', :config => {"context" => "MOH", "agency" => "Jembi", "format" => "Normal"} }
+    let(:moh_id) {layer.identifier_fields.make :code => 'moh-id', :config => {"context" => "MOH", "agency" => "DHIS", "format" => "Normal"} }
+    let(:other_id) { layer.identifier_fields.make :code => 'other-id', :config => {"context" => "MOH", "agency" => "Jembi", "format" => "Normal"} }
 
     it "should not allow two PK pivots columns" do
       csv_string = CSV.generate do |csv|
@@ -1789,7 +1789,7 @@ describe ImportWizard, :type => :model do
     end
 
     it "uploading an empty value as identifier field PK should be invalid" do
-      collection.sites.make! properties: {moh_id.es_code => '123'}
+      collection.sites.make properties: {moh_id.es_code => '123'}
 
       csv_string = CSV.generate do |csv|
         csv << ['moh-id', 'name ']
@@ -1812,7 +1812,7 @@ describe ImportWizard, :type => :model do
     end
 
     it "should not show validation error in other luhn fields the pivot is an identifier" do
-      site = collection.sites.make! properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+      site = collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
 
       csv_string = CSV.generate do |csv|
         csv << ['moh-id', 'name ', 'other-id']
@@ -1837,8 +1837,8 @@ describe ImportWizard, :type => :model do
     end
 
     it "should show validation error in other if a value already exists for an exisiting luhn value" do
-      site = collection.sites.make! properties: {moh_id.es_code => '123', other_id.es_code => '456'}
-      site2 = collection.sites.make! properties: {other_id.es_code => '457'}
+      site = collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+      site2 = collection.sites.make properties: {other_id.es_code => '457'}
 
       csv_string = CSV.generate do |csv|
         csv << ['moh-id', 'name ', 'other-id']
@@ -1863,7 +1863,7 @@ describe ImportWizard, :type => :model do
     end
 
     it "should import using an identifier field as pivot" do
-      collection.sites.make! properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+      collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
 
       csv_string = CSV.generate do |csv|
         csv << ['moh-id', 'name ', 'other-id']
@@ -1888,7 +1888,7 @@ describe ImportWizard, :type => :model do
     end
 
     it "should import using an identifier field without changing the value for an another identifier field" do
-      collection.sites.make! properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+      collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
 
       csv_string = CSV.generate do |csv|
         csv << ['moh-id', 'name ', 'other-id']
@@ -1913,7 +1913,7 @@ describe ImportWizard, :type => :model do
     end
 
     it "should create new site if the value for the identifier Pivot column does not exist" do
-      collection.sites.make! properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+      collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
 
       csv_string = CSV.generate do |csv|
         csv << ['moh-id', 'name ', 'other-id']
@@ -1940,7 +1940,7 @@ describe ImportWizard, :type => :model do
     describe "guess" do
 
       it "should guess resmap-id column as pivot if it is present" do
-        site = collection.sites.make! properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+        site = collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
 
         csv_string = CSV.generate do |csv|
           csv << ['resmap-id', 'moh-id', 'name', 'other-id']
@@ -1959,7 +1959,7 @@ describe ImportWizard, :type => :model do
       end
 
       it "should guess the first identifier column as pivot if resmap-id is not present" do
-        site = collection.sites.make! properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+        site = collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
 
         csv_string = CSV.generate do |csv|
           csv << ['moh-id', 'name', 'other-id']
@@ -1977,7 +1977,7 @@ describe ImportWizard, :type => :model do
     end
 
     it "when the pivot value does not exist, an existing 'identifier' value should be invalid" do
-      site = collection.sites.make! properties: {moh_id.es_code => '123', other_id.es_code => '456'}
+      site = collection.sites.make properties: {moh_id.es_code => '123', other_id.es_code => '456'}
 
       csv_string = CSV.generate do |csv|
         csv << ['moh-id', 'name', 'other-id']

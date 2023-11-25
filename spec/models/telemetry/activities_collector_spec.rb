@@ -5,11 +5,11 @@ describe Telemetry::ActivitiesCollector do
   it "counts activities grouped by collection" do
     period = InsteddTelemetry::Period.current
 
-    c1 = Collection.make!
-    10.times { Activity.make! collection: c1, item_type: 'site' }
+    c1 = Collection.make
+    10.times { Activity.make collection: c1, item_type: 'site' }
 
-    c2 = Collection.make!
-    17.times { Activity.make! collection: c2, item_type: 'site' }
+    c2 = Collection.make
+    17.times { Activity.make collection: c2, item_type: 'site' }
 
     expect(stats(period)).to eq({
       "counters" => [
@@ -29,12 +29,12 @@ describe Telemetry::ActivitiesCollector do
 
   it "takes into account current period" do
     Timecop.freeze(Time.now)
-    c = Collection.make!
-    10.times { Activity.make! collection: c, item_type: 'site' }
+    c = Collection.make
+    10.times { Activity.make collection: c, item_type: 'site' }
     p0 = InsteddTelemetry::Period.current
 
     Timecop.freeze(Time.now + InsteddTelemetry::Period.span)
-    2.times { Activity.make! collection: c, item_type: 'site' }
+    2.times { Activity.make collection: c, item_type: 'site' }
     p1 = InsteddTelemetry::Period.current
 
     expect(stats(p0)).to eq({
@@ -63,12 +63,12 @@ describe Telemetry::ActivitiesCollector do
     from = to - 1.week
     period = InsteddTelemetry::Period.new beginning: from, end: to
 
-    c1 = Collection.make! created_at: to - 5.days
-    c2 = Collection.make! created_at: to - 1.day
-    c3 = Collection.make! created_at: to + 1.day
+    c1 = Collection.make created_at: to - 5.days
+    c2 = Collection.make created_at: to - 1.day
+    c3 = Collection.make created_at: to + 1.day
 
-    Activity.make! collection: c2, item_type: 'site', created_at: to + 1.day
-    Activity.make! collection: c3, item_type: 'site', created_at: to + 3.days
+    Activity.make collection: c2, item_type: 'site', created_at: to + 1.day
+    Activity.make collection: c3, item_type: 'site', created_at: to + 3.days
 
     counters = stats(period)['counters']
 

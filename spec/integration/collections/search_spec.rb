@@ -9,10 +9,10 @@ describe "search", :type => :request do
     collection = create_collection_for(user)
     layer = create_layer_for(collection)
     field = create_field_for(layer)
-    10.times { collection.sites.make! properties: { field.es_code => 'fra' } }
-    10.times { collection.sites.make! properties: { field.es_code => 'ter' } }
-    collection.sites.make! name: 'Site search test'
-    10.times { collection.sites.make! properties: { field.es_code => 'nity' } }
+    10.times { collection.sites.make properties: { field.es_code => 'fra' } }
+    10.times { collection.sites.make properties: { field.es_code => 'ter' } }
+    collection.sites.make name: 'Site search test'
+    10.times { collection.sites.make properties: { field.es_code => 'nity' } }
     login_as user
     visit collections_path
     click_on first_collection_path

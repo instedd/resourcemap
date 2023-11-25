@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe MapSearch, :type => :model do
-  let(:collection) { Collection.make! }
+  let(:collection) { Collection.make }
 
   it "searches based on no collection" do
-    site = Site.make!
+    site = Site.make
 
     search = MapSearch.new []
     search.zoom = 1
@@ -12,7 +12,7 @@ describe MapSearch, :type => :model do
   end
 
   it "searches based on collection id found" do
-    site = Site.make!
+    site = Site.make
 
     search = MapSearch.new site.collection_id
     search.zoom = 1
@@ -27,7 +27,7 @@ describe MapSearch, :type => :model do
   end
 
   it "searches with excluded id" do
-    site = Site.make!
+    site = Site.make
 
     search = MapSearch.new site.collection_id
     search.zoom = 1
@@ -36,8 +36,8 @@ describe MapSearch, :type => :model do
   end
 
   it "searches based on collection id not found" do
-    site = Site.make!
-    other_collection = Collection.make!
+    site = Site.make
+    other_collection = Collection.make
 
     search = MapSearch.new other_collection.id
     search.zoom = 1
@@ -45,8 +45,8 @@ describe MapSearch, :type => :model do
   end
 
   it "searches based on many collection ids found" do
-    site1 = Site.make! :lat => 45, :lng => 90
-    site2 = Site.make! :lat => -45, :lng => -90
+    site1 = Site.make :lat => 45, :lng => 90
+    site2 = Site.make :lat => -45, :lng => -90
 
     search = MapSearch.new [site1.collection_id, site2.collection_id]
     search.zoom = 1
@@ -54,7 +54,7 @@ describe MapSearch, :type => :model do
   end
 
   it "searches based on collection id and bounds found" do
-    site = Site.make! :lat => 10, :lng => 20
+    site = Site.make :lat => 10, :lng => 20
 
     search = MapSearch.new site.collection_id
     search.zoom = 10
@@ -63,7 +63,7 @@ describe MapSearch, :type => :model do
   end
 
   it "searches based on collection id and bounds not found" do
-    site = Site.make! :lat => 10, :lng => 20
+    site = Site.make :lat => 10, :lng => 20
 
     search = MapSearch.new site.collection_id
     search.zoom = 10
@@ -72,7 +72,7 @@ describe MapSearch, :type => :model do
   end
 
   it "searches but doesn't return sites without location" do
-    site = Site.make! :lat => nil, :lng => nil
+    site = Site.make :lat => nil, :lng => nil
 
     search = MapSearch.new site.collection_id
     search.zoom = 1
@@ -81,14 +81,14 @@ describe MapSearch, :type => :model do
   end
 
   context "full text search" do
-    let!(:layer) { collection.layers.make! }
-    let!(:field_prop) { layer.select_one_fields.make! :code => 'prop', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}, {'id' => 3, 'code' => 'baz', 'label' => 'COCO'}]} }
-    let!(:field_beds) { layer.numeric_fields.make!  :code => 'beds' }
+    let!(:layer) { collection.layers.make }
+    let!(:field_prop) { layer.select_one_fields.make :code => 'prop', :config => {'options' => [{'id' => 1, 'code' => 'foo', 'label' => 'A glass of water'}, {'id' => 2, 'code' => 'bar', 'label' => 'A bottle of wine'}, {'id' => 3, 'code' => 'baz', 'label' => 'COCO'}]} }
+    let!(:field_beds) { layer.numeric_fields.make  :code => 'beds' }
     let!(:prop) { field_prop.es_code }
     let!(:beds) { field_beds.es_code }
-    let!(:site1) { collection.sites.make! :name => "Argentina", :properties => {beds => 8, prop => 1} }
-    let!(:site2) { collection.sites.make! :name => "Buenos Aires", :properties => {beds => 10, prop => 2} }
-    let!(:site3) { collection.sites.make! :name => "Cordoba bar", :properties => {beds => 20, prop => 3} }
+    let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds => 8, prop => 1} }
+    let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds => 10, prop => 2} }
+    let!(:site3) { collection.sites.make :name => "Cordoba bar", :properties => {beds => 20, prop => 3} }
     let!(:search) { MapSearch.new collection.id }
 
     before(:each) { search.zoom = 1 }

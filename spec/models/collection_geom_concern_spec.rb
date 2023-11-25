@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Collection::GeomConcern, :type => :model do
-  let(:collection) { Collection.make! }
+  let(:collection) { Collection.make }
 
   it "calculates center from children sites" do
-    site1 = collection.sites.make! :lat => 30, :lng => 20
-    site2 = collection.sites.make! :lat => 40, :lng => 30
+    site1 = collection.sites.make :lat => 30, :lng => 20
+    site2 = collection.sites.make :lat => 40, :lng => 30
 
     collection.reload
     expect(collection.lat.to_f).to eq(35.0)
@@ -13,9 +13,9 @@ describe Collection::GeomConcern, :type => :model do
   end
 
   it "calculates center from children sites is not weighted" do
-    site1 = collection.sites.make! :lat => 30, :lng => 20
-    site2 = collection.sites.make! :lat => 40, :lng => 30
-    site3 = collection.sites.make! :lat => 40, :lng => 30
+    site1 = collection.sites.make :lat => 30, :lng => 20
+    site2 = collection.sites.make :lat => 40, :lng => 30
+    site3 = collection.sites.make :lat => 40, :lng => 30
 
     collection.reload
     expect(collection.lat.to_f).to eq(35.0)
@@ -23,9 +23,9 @@ describe Collection::GeomConcern, :type => :model do
   end
 
   it "calculates bounding box from children" do
-    site1 = collection.sites.make! :lat => 30, :lng => 20
-    site2 = collection.sites.make! :lat => 40, :lng => 30
-    site3 = collection.sites.make! :lat => 45, :lng => 40
+    site1 = collection.sites.make :lat => 30, :lng => 20
+    site2 = collection.sites.make :lat => 40, :lng => 30
+    site3 = collection.sites.make :lat => 45, :lng => 40
 
     collection.reload
     expect(collection.min_lat.to_f).to eq(30.0)
@@ -35,8 +35,8 @@ describe Collection::GeomConcern, :type => :model do
   end
 
   it "ignores sites without lat/lng", :focus => true do
-    site1 = collection.sites.make! :lat => nil, :lng => nil
-    site2 = collection.sites.make! :lat => 30, :lng => 20
+    site1 = collection.sites.make :lat => nil, :lng => nil
+    site2 = collection.sites.make :lat => 30, :lng => 20
 
     collection.reload
     expect(collection.lat.to_f).to eq(30.0)
@@ -44,8 +44,8 @@ describe Collection::GeomConcern, :type => :model do
   end
 
   it "calculates center from children sites after destroy" do
-    site1 = collection.sites.make! :lat => 30, :lng => 20
-    site2 = collection.sites.make! :lat => 40, :lng => 30
+    site1 = collection.sites.make :lat => 30, :lng => 20
+    site2 = collection.sites.make :lat => 40, :lng => 30
     site2.destroy
 
     collection.reload
@@ -54,7 +54,7 @@ describe Collection::GeomConcern, :type => :model do
   end
 
   it "use big bounding box when removing locations from sites" do
-    site1 = collection.sites.make! :lat => 30, :lng => 20
+    site1 = collection.sites.make :lat => 30, :lng => 20
     site1.lat = nil
     site1.lng = nil
     site1.save!

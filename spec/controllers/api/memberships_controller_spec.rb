@@ -4,9 +4,9 @@ describe Api::MembershipsController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
-  let(:user) { User.make! }
-  let(:non_admin_user) { User.make! }
-  let(:collection) { user.create_collection(Collection.make!) }
+  let(:user) { User.make }
+  let(:non_admin_user) { User.make }
+  let(:collection) { user.create_collection(Collection.make) }
 
   before(:each) { Membership.check_and_create(non_admin_user.email, collection.id) }
 
@@ -22,7 +22,7 @@ describe Api::MembershipsController, :type => :controller do
     end
 
     it "should return all users not in collection as invitable" do
-      new_user = User.make!
+      new_user = User.make
       get :invitable, collection_id: collection.id
       json = JSON.parse response.body
       expect(json.size).to eq(1)
@@ -32,7 +32,7 @@ describe Api::MembershipsController, :type => :controller do
     context 'create' do
 
       it "should create membership for new user" do
-        new_user = User.make!
+        new_user = User.make
         post :create, collection_id: collection.id, email: new_user.email
         json = JSON.parse response.body
         expect(json['user_id']).to eq(new_user.id)
@@ -47,7 +47,7 @@ describe Api::MembershipsController, :type => :controller do
       end
 
       it "should return error for non-existant collection" do
-        new_user = User.make!
+        new_user = User.make
         post :create, collection_id: 0, email: new_user.email
         expect(response.status).to eq(422)
       end

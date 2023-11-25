@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'serializers/spec_helper'
 
 describe Api::CollectionSerializer do
-  let(:collection) { Collection.make! }
+  let(:collection) { Collection.make }
   let(:serializer) { Api::CollectionSerializer.new collection }
 
 	it "preserves backwards compatibility" do
@@ -27,7 +27,7 @@ describe Api::CollectionSerializer do
   end
 
   it "includes the site count" do
-    sites = [collection.sites.make!, collection.sites.make!]
+    sites = [collection.sites.make, collection.sites.make]
 
     expect_fields_rendered_by serializer do
       { :count => 2 }

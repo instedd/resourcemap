@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Clusterer, :type => :model do
   let(:clusterer) { Clusterer.new 1 }
-  let(:collection) { Collection.make! }
+  let(:collection) { Collection.make }
   it "leaves single site alone" do
     clusterer.add id: 1, name: 'foo',lat: 30, lng: 40, collection_id: 12
     clusters = clusterer.clusters

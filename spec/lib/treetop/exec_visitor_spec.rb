@@ -8,11 +8,11 @@ describe ExecVisitor, "Process query command" do
 
   before(:each) do
     parser = CommandParser.new
-    @collection = Collection.make!(:name => 'Healt Center')
-    @layer = @collection.layers.make!(:name => "default")
-    @user = User.make!(:phone_number => '85512345678')
-    @f1 = @layer.numeric_fields.make! :id => 10, :name => "Ambulance", :code => "AB", :ord => 1
-    @f2 = @layer.numeric_fields.make! :id => 11, :name => "Doctor", :code => "DO", :ord => 2
+    @collection = Collection.make(:name => 'Healt Center')
+    @layer = @collection.layers.make(:name => "default")
+    @user = User.make(:phone_number => '85512345678')
+    @f1 = @layer.numeric_fields.make :id => 10, :name => "Ambulance", :code => "AB", :ord => 1
+    @f2 = @layer.numeric_fields.make :id => 11, :name => "Doctor", :code => "DO", :ord => 2
     membership = @collection.memberships.create(:user => @user, :admin => false)
     membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
 
@@ -55,7 +55,7 @@ describe ExecVisitor, "Process query command" do
   describe "Reply message" do
     context "valid criteria" do
       it "should get Siemreap Health Center when their Ambulance property greater than 5" do
-        @collection.sites.make!(:name => 'Siemreap Healt Center', :properties => {"10"=>15, "11"=>40})
+        @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"10"=>15, "11"=>40})
         expect(@visitor.visit_query_command(@node)).to eq('["AB"] in Siemreap Healt Center=15')
       end
 
@@ -67,7 +67,7 @@ describe ExecVisitor, "Process query command" do
 
     context "invalid criteria" do
       before(:each) do
-        @bad_user = User.make! :phone_number => "222"
+        @bad_user = User.make :phone_number => "222"
       end
 
       it "should return 'No resource available' when collection does not have any site" do
@@ -75,7 +75,7 @@ describe ExecVisitor, "Process query command" do
       end
 
       it "should return 'No site available' when site_properties does not match with condition" do
-        site = Site.make!(:collection => @collection)
+        site = Site.make(:collection => @collection)
         expect(@visitor.visit_query_command(@node)).to eq("[\"AB\"] in There is no site matched")
       end
 
@@ -102,8 +102,8 @@ describe ExecVisitor, "Process query command" do
       end
 
       it "should query property pname equals to Phnom Penh" do
-        @layer.text_fields.make! :id => 22, :name => "pname", :code => "PN", :ord => 1
-        @collection.sites.make! :name => 'Bayon', :properties => {"22"=>"Phnom Penh"}
+        @layer.text_fields.make :id => 22, :name => "pname", :code => "PN", :ord => 1
+        @collection.sites.make :name => 'Bayon', :properties => {"22"=>"Phnom Penh"}
         expect(@visitor.visit_query_command(@node)).to eq "[\"PN\"] in Bayon=Phnom Penh"
       end
     end
@@ -117,13 +117,13 @@ describe ExecVisitor, "Process update command" do
 
   before(:each) do
     parser = CommandParser.new
-    @collection = Collection.make!
-    @user = User.make!(:phone_number => '85512345678')
+    @collection = Collection.make
+    @user = User.make(:phone_number => '85512345678')
     membership = @collection.memberships.create(:user => @user, :admin => false)
-    @layer = @collection.layers.make!(:name => "default")
-    @f1 = @layer.numeric_fields.make!(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1)
-    @f2 = @layer.numeric_fields.make!(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1)
-    @site = @collection.sites.make!(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
+    @layer = @collection.layers.make(:name => "default")
+    @f1 = @layer.numeric_fields.make(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1)
+    @f2 = @layer.numeric_fields.make(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1)
+    @site = @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
     @site.user = @user
     membership.layer_memberships.create(:layer_id => @layer.id, :read => true, :write => true)
     @node = parser.parse('dyrm u AB1 ambulances=15,doctors=20').command
@@ -158,15 +158,15 @@ describe ExecVisitor, "Process update command" do
   end
 
   it "should validate sender can not update resource" do
-    sender = User.make!(:phone_number => "111")
+    sender = User.make(:phone_number => "111")
     expect(@visitor.can_update?(@node.property_list, sender, @site)).to be_falsey
   end
 
   it "should raise exception when do not have permission" do
-    site = Site.make!
+    site = Site.make
     expect(Site).to receive(:find_by_id_with_prefix).with('AB1').and_return(site)
 
-    @node.sender = User.make!(:phone_number => '123')
+    @node.sender = User.make(:phone_number => '123')
     expect {
       @visitor.visit_update_command(@node)
     }.to raise_error(RuntimeError, ExecVisitor::MSG[:can_not_update])

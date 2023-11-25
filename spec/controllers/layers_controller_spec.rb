@@ -4,11 +4,11 @@ describe LayersController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
-  let(:user) { User.make! }
-  let(:collection) { user.create_collection(Collection.make!) }
-  let!(:layer) {Layer.make! collection: collection, user: user}
-  let!(:layer2) {Layer.make! collection: collection, user: user}
-  let!(:numeric) {layer.numeric_fields.make! }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make) }
+  let!(:layer) {Layer.make collection: collection, user: user}
+  let!(:layer2) {Layer.make collection: collection, user: user}
+  let!(:numeric) {layer.numeric_fields.make }
 
   before(:each) {sign_in user}
 
@@ -72,9 +72,9 @@ describe LayersController, :type => :controller do
   end
 
   describe 'permissions' do
-    let!(:not_a_user_collection) { Collection.make! }
-    let!(:member) { User.make! email: 'foo@bar.com' }
-    let!(:membership) { Membership.make! collection: collection, user: member, admin: false }
+    let!(:not_a_user_collection) { Collection.make }
+    let!(:member) { User.make email: 'foo@bar.com' }
+    let!(:membership) { Membership.make collection: collection, user: member, admin: false }
 
     it 'should let any member list layers, but should hide layers without explicit read permissions' do
       sign_in member
@@ -93,7 +93,7 @@ describe LayersController, :type => :controller do
     end
 
     it 'should let a member see a layer when there is an explicit layer membership with read=true' do
-      LayerMembership.make! layer: layer, membership: membership, read: true
+      LayerMembership.make layer: layer, membership: membership, read: true
       sign_in member
 
       get :index, collection_id: collection.id, format: 'json'
@@ -115,7 +115,7 @@ describe LayersController, :type => :controller do
       expect(layer2.ord).to eq(1)
     end
 
-    let!(:not_member) { User.make! email: 'foo2@bar.com' }
+    let!(:not_member) { User.make email: 'foo2@bar.com' }
 
     it "shouldn't let member set order" do
       sign_in member

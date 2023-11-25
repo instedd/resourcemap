@@ -4,9 +4,9 @@ describe Api::CollectionsController, :type => :controller do
   include Devise::TestHelpers
   render_views
 
-  let(:user) { User.make! }
-  let(:collection) { user.create_collection(Collection.make!) }
-  let(:layer) { collection.layers.make! }
+  let(:user) { User.make }
+  let(:collection) { user.create_collection(Collection.make) }
+  let(:layer) { collection.layers.make }
 
   describe "List" do
     before(:each) { sign_in user; collection }
@@ -33,18 +33,18 @@ describe Api::CollectionsController, :type => :controller do
   end
 
   describe "All fields" do
-    let(:text) { layer.text_fields.make! :code => 'text'}
-    let(:numeric) { layer.numeric_fields.make! :code => 'numeric' }
-    let(:yes_no) { layer.yes_no_fields.make! :code => 'yes_no'}
-    let(:select_one) { layer.select_one_fields.make! :code => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-    let(:select_many) { layer.select_many_fields.make! :code => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let(:text) { layer.text_fields.make :code => 'text'}
+    let(:numeric) { layer.numeric_fields.make :code => 'numeric' }
+    let(:yes_no) { layer.yes_no_fields.make :code => 'yes_no'}
+    let(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
     config_hierarchy = [{ id: 'dad', name: 'Dad', sub: [{id: 'son', name: 'Son'}, {id: 'bro', name: 'Bro'}]}]
-    let(:hierarchy) { layer.hierarchy_fields.make! :code => 'hierarchy',  config: { hierarchy: config_hierarchy }.with_indifferent_access }
-    let(:site_ref) { layer.site_fields.make! :code => 'site' }
-    let(:date) { layer.date_fields.make! :code => 'date' }
-    let(:director) { layer.user_fields.make! :code => 'user'}
+    let(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy',  config: { hierarchy: config_hierarchy }.with_indifferent_access }
+    let(:site_ref) { layer.site_fields.make :code => 'site' }
+    let(:date) { layer.date_fields.make :code => 'date' }
+    let(:director) { layer.user_fields.make :code => 'user'}
 
-    let!(:site) { collection.sites.make!  :name => "Site B", :properties => {
+    let!(:site) { collection.sites.make  :name => "Site B", :properties => {
       text.es_code => 'foo',
       numeric.es_code => 1,
       yes_no.es_code => true,
@@ -56,7 +56,7 @@ describe Api::CollectionsController, :type => :controller do
       director.es_code => user.email }
     }
 
-    let!(:site2) {collection.sites.make! :name => "Site A", properties: { hierarchy.es_code => 'bro' } }
+    let!(:site2) {collection.sites.make :name => "Site A", properties: { hierarchy.es_code => 'bro' } }
 
     before(:each) { sign_in user }
 
@@ -151,8 +151,8 @@ describe Api::CollectionsController, :type => :controller do
     end
 
     context "location missing" do
-      let!(:site1) { collection.sites.make! :name => 'b', :lat => "", :lng => ""  }
-      let!(:site2) { collection.sites.make! :name => 'a' }
+      let!(:site1) { collection.sites.make :name => 'b', :lat => "", :lng => ""  }
+      let!(:site2) { collection.sites.make :name => 'a' }
 
       it "should filter sites without location" do
         get :show, id: collection.id, format: 'json', "location_missing"=>"true"
@@ -211,7 +211,7 @@ describe Api::CollectionsController, :type => :controller do
     end
 
     describe "GET CSV collection" do
-      let!(:site3) {collection.sites.make! :name => "किसी जगह", properties: { hierarchy.es_code => 'bro' } }
+      let!(:site3) {collection.sites.make :name => "किसी जगह", properties: { hierarchy.es_code => 'bro' } }
 
       before(:each) do
         get :show, id: collection.id, format: 'csv'
@@ -231,9 +231,9 @@ describe Api::CollectionsController, :type => :controller do
     end
 
     describe "GET CSV collection according permissions" do
-      let!(:member) { User.make! }
+      let!(:member) { User.make }
       let!(:membership) { collection.memberships.create! :user_id => member.id, admin: false }
-      let!(:layer_member_none) { LayerMembership.make! layer: layer, membership: membership, read: false }
+      let!(:layer_member_none) { LayerMembership.make layer: layer, membership: membership, read: false }
 
       before(:each) do
         sign_out user
@@ -324,7 +324,7 @@ describe Api::CollectionsController, :type => :controller do
       end
 
       it "should get histogram for a collection text field" do
-        site3 = collection.sites.make! properties: {text.es_code => 'foo'}
+        site3 = collection.sites.make properties: {text.es_code => 'foo'}
 
         get :histogram_by_field, collection_id: collection.id, field_id: text.id
         expect(response).to be_success
@@ -363,18 +363,18 @@ describe Api::CollectionsController, :type => :controller do
   end
 
   describe "Filter by name" do
-    let(:text) { layer.text_fields.make! :code => 'text'}
-    let(:numeric) { layer.numeric_fields.make! :code => 'numeric' }
-    let(:yes_no) { layer.yes_no_fields.make! :code => 'yes_no'}
-    let(:select_one) { layer.select_one_fields.make! :code => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
-    let(:select_many) { layer.select_many_fields.make! :code => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let(:text) { layer.text_fields.make :code => 'text'}
+    let(:numeric) { layer.numeric_fields.make :code => 'numeric' }
+    let(:yes_no) { layer.yes_no_fields.make :code => 'yes_no'}
+    let(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+    let(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
     config_hierarchy = [{ id: 'dad', name: 'Dad', sub: [{id: 'son', name: 'Son'}, {id: 'bro', name: 'Bro'}]}]
-    let(:hierarchy) { layer.hierarchy_fields.make! :code => 'hierarchy',  config: { hierarchy: config_hierarchy }.with_indifferent_access }
-    let(:site_ref) { layer.site_fields.make! :code => 'site' }
-    let(:date) { layer.date_fields.make! :code => 'date' }
-    let(:director) { layer.user_fields.make! :code => 'user'}
+    let(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy',  config: { hierarchy: config_hierarchy }.with_indifferent_access }
+    let(:site_ref) { layer.site_fields.make :code => 'site' }
+    let(:date) { layer.date_fields.make :code => 'date' }
+    let(:director) { layer.user_fields.make :code => 'user'}
 
-    let!(:site) { collection.sites.make!  :name => "Site_B", :properties => {
+    let!(:site) { collection.sites.make  :name => "Site_B", :properties => {
       text.es_code => 'foo',
       numeric.es_code => 1,
       yes_no.es_code => true,
@@ -386,7 +386,7 @@ describe Api::CollectionsController, :type => :controller do
       director.es_code => user.email }
     }
 
-    let!(:site2) {collection.sites.make! :name => "Site_A", properties: { hierarchy.es_code => 'bro' } }
+    let!(:site2) {collection.sites.make :name => "Site_A", properties: { hierarchy.es_code => 'bro' } }
 
     before(:each) { sign_in user }
 
@@ -418,10 +418,10 @@ describe Api::CollectionsController, :type => :controller do
   end
 
   describe "Date fields" do
-    let(:date_mdy) { layer.date_fields.make! :code => 'date_mdy', config:  {'format' => 'mm_dd_yyyy'} }
-    let(:date_dmy) { layer.date_fields.make! :code => 'date_dmy', config:  {'format' => 'dd_mm_yyyy'} }
+    let(:date_mdy) { layer.date_fields.make :code => 'date_mdy', config:  {'format' => 'mm_dd_yyyy'} }
+    let(:date_dmy) { layer.date_fields.make :code => 'date_dmy', config:  {'format' => 'dd_mm_yyyy'} }
 
-    let!(:site_A) {collection.sites.make! :name => "Site A", properties: { date_mdy.es_code => "2012-10-24T00:00:00Z", date_dmy.es_code => "2012-10-24T00:00:00Z" } }
+    let!(:site_A) {collection.sites.make :name => "Site A", properties: { date_mdy.es_code => "2012-10-24T00:00:00Z", date_dmy.es_code => "2012-10-24T00:00:00Z" } }
 
     before(:each) { sign_in user }
 
@@ -468,10 +468,10 @@ describe Api::CollectionsController, :type => :controller do
     it "finds sites deleted since" do
       sign_in user
 
-      site1 = collection.sites.make!
-      site2 = collection.sites.make!
-      site3 = collection.sites.make!
-      site4 = collection.sites.make!
+      site1 = collection.sites.make
+      site2 = collection.sites.make
+      site3 = collection.sites.make
+      site4 = collection.sites.make
 
       Timecop.freeze(Time.now) do
         site1.destroy
@@ -501,10 +501,10 @@ describe Api::CollectionsController, :type => :controller do
     it "finds sites updated since" do
       sign_in user
 
-      site1 = collection.sites.make!
-      site2 = collection.sites.make!
-      site3 = collection.sites.make!
-      site4 = collection.sites.make!
+      site1 = collection.sites.make
+      site2 = collection.sites.make
+      site3 = collection.sites.make
+      site4 = collection.sites.make
 
       Timecop.freeze(Time.now) do
         site1.name += ' 2'
@@ -539,16 +539,16 @@ describe Api::CollectionsController, :type => :controller do
       sign_in user
 
       Timecop.freeze(Time.now) do
-        site1 = collection.sites.make!
+        site1 = collection.sites.make
 
         Timecop.travel(1.day.from_now)
-        site2 = collection.sites.make!
+        site2 = collection.sites.make
 
         Timecop.travel(1.day.from_now)
-        site3 = collection.sites.make!
+        site3 = collection.sites.make
 
         Timecop.travel(1.day.from_now)
-        site4 = collection.sites.make!
+        site4 = collection.sites.make
 
         Timecop.travel(1.day.from_now)
 
@@ -566,7 +566,7 @@ describe Api::CollectionsController, :type => :controller do
     before(:each) { sign_in user }
 
     it "gets site by id" do
-      sites = 6.times.map { collection.sites.make! }
+      sites = 6.times.map { collection.sites.make }
 
       site_id = sites[0].id
       get :show, id: collection.id, site_id: site_id, format: :json
@@ -578,7 +578,7 @@ describe Api::CollectionsController, :type => :controller do
     end
 
     it "gets sites by id" do
-      sites = 6.times.map { collection.sites.make! }
+      sites = 6.times.map { collection.sites.make }
       site_ids = [sites[0].id, sites[2].id, sites[5].id]
 
       get :show, id: collection.id, site_id: site_ids, format: :json
@@ -590,7 +590,7 @@ describe Api::CollectionsController, :type => :controller do
     end
 
     it "gets sites by id, paged" do
-      sites = 6.times.map { collection.sites.make! }
+      sites = 6.times.map { collection.sites.make }
       site_ids = [sites[0].id, sites[2].id, sites[3].id, sites[5].id]
 
       get :show, id: collection.id, site_id: site_ids, page: 1, page_size: 2, format: :json
@@ -636,7 +636,7 @@ describe Api::CollectionsController, :type => :controller do
     end
 
     it "doesnt allow a non-admin member to destroy a collection" do
-      user2 = User.make!
+      user2 = User.make
       collection.memberships.create! :user_id => user2.id, admin: false
       sign_in user2
 
@@ -649,13 +649,13 @@ describe Api::CollectionsController, :type => :controller do
 
   it "returns names for select one and many and hierarchies with human flag" do
     sign_in user
-    layer = collection.layers.make!
-    select_one = layer.select_one_fields.make! :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
-    select_many = layer.select_many_fields.make! :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+    layer = collection.layers.make
+    select_one = layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+    select_many = layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-    hierarchy_field = layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
 
-    collection.sites.make! name: 'TallLand', properties: { select_one.es_code => 2, select_many.es_code => [1,2], hierarchy_field.es_code => '100' }
+    collection.sites.make name: 'TallLand', properties: { select_one.es_code => 2, select_many.es_code => [1,2], hierarchy_field.es_code => '100' }
 
     get :show, id: collection.id, human: true,  format: 'json'
     expect(response).to be_success
@@ -667,13 +667,13 @@ describe Api::CollectionsController, :type => :controller do
 
   it "returns codes for select one, many and hierarchies without human flag" do
     sign_in user
-    layer = collection.layers.make!
-    select_one = layer.select_one_fields.make! :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
-    select_many = layer.select_many_fields.make! :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+    layer = collection.layers.make
+    select_one = layer.select_one_fields.make :code => 'select_one', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
+    select_many = layer.select_many_fields.make :code => 'select_many', :config => {'next_id' => 3, 'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]}
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
-    hierarchy_field = layer.hierarchy_fields.make! :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
+    hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
 
-    collection.sites.make! name: 'TallLand', properties: { select_one.es_code => 2, select_many.es_code => [1,2], hierarchy_field.es_code => '100' }
+    collection.sites.make name: 'TallLand', properties: { select_one.es_code => 2, select_many.es_code => [1,2], hierarchy_field.es_code => '100' }
 
     get :show, id: collection.id, format: 'json'
     expect(response).to be_success

@@ -14,7 +14,7 @@ describe "members", :type => :request, uses_collections_structure: true do
   end
 
   pending "should add collection reader", js:true do
-    no_member = User.make!(:email => 'member@member.com')
+    no_member = User.make(:email => 'member@member.com')
     click_link "Members"
     fill_in "member_email", :with => no_member.email
     click_on no_member_email
@@ -33,7 +33,7 @@ describe "members", :type => :request, uses_collections_structure: true do
   end
 
   pending "should give admin rights", js:true do
-    no_member = User.make!(:email => 'member@member.com')
+    no_member = User.make(:email => 'member@member.com')
     click_link "Members"
     fill_in "member_email", :with => no_member.email
     click_on no_member_email
@@ -54,7 +54,7 @@ describe "members", :type => :request, uses_collections_structure: true do
   end
 
   it "should remove member", js:true do
-    member = User.make!(:email => 'member@member.com')
+    member = User.make(:email => 'member@member.com')
     who_african_region.memberships.create! :user_id => member.id, :admin => false
     click_link "Members"
     expand_member_settings
