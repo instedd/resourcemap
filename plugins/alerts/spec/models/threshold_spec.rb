@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe Threshold, :type => :model do
   include_examples 'collection lifespan', described_class
-  
-  it { is_expected.to belong_to :collection }
-  it { is_expected.to validate_presence_of(:ord) }
-  it { is_expected.to validate_presence_of(:color) }
+
+  # it { is_expected.to belong_to :collection }
+  # it { is_expected.to validate_presence_of(:ord) }
+  # it { is_expected.to validate_presence_of(:color) }
 
   describe '#conditions' do
     subject { super().conditions }

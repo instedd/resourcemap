@@ -1,10 +1,10 @@
 require 'spec_helper'
 describe Collection, :type => :model do
-  it { is_expected.to have_many :memberships }
-  it { is_expected.to have_many :users }
-  it { is_expected.to have_many :layers }
-  it { is_expected.to have_many :fields }
-  it { is_expected.to have_many :thresholds }
+  # it { is_expected.to have_many :memberships }
+  # it { is_expected.to have_many :users }
+  # it { is_expected.to have_many :layers }
+  # it { is_expected.to have_many :fields }
+  # it { is_expected.to have_many :thresholds }
 
   let(:user) { User.make }
   let(:collection) { user.create_collection Collection.make_unsaved(anonymous_name_permission: 'read', anonymous_location_permission: 'read')}

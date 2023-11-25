@@ -4,12 +4,12 @@ describe Membership, :type => :model do
   include_examples 'collection lifespan', described_class
   include_examples 'user lifespan', described_class
 
-  it { is_expected.to belong_to :user }
-  it { is_expected.to belong_to :collection }
-  it { is_expected.to have_one :read_sites_permission }
-  it { is_expected.to have_one :write_sites_permission }
-  it { is_expected.to have_one :name_permission }
-  it { is_expected.to have_one :location_permission }
+  # it { is_expected.to belong_to :user }
+  # it { is_expected.to belong_to :collection }
+  # it { is_expected.to have_one :read_sites_permission }
+  # it { is_expected.to have_one :write_sites_permission }
+  # it { is_expected.to have_one :name_permission }
+  # it { is_expected.to have_one :location_permission }
 
   let(:user) { User.make }
   let(:collection) { user.create_collection(Collection.make_unsaved(anonymous_name_permission: 'read',

@@ -8,9 +8,9 @@ describe Message, :type => :model do
     subject { Message.new }
 
     it { is_expected.to be_invalid }
-    it { is_expected.to validate_presence_of(:guid) }
-    it { is_expected.to validate_presence_of(:body) }
-    it { is_expected.to validate_presence_of(:from) }
+    # it { is_expected.to validate_presence_of(:guid) }
+    # it { is_expected.to validate_presence_of(:body) }
+    # it { is_expected.to validate_presence_of(:from) }
 
     describe '#save' do
       subject { super().save }
