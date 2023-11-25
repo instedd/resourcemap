@@ -12,7 +12,7 @@ describe Api::CollectionsController, :type => :controller do
     before(:each) { sign_in user; collection }
 
     it "returns collections the user is a member of" do
-      get :index,  format: 'json'
+      get :index, params: {  format: 'json' }
 
       expect(response).to be_success
 
@@ -27,7 +27,7 @@ describe Api::CollectionsController, :type => :controller do
   describe "Create" do
     it "should allow user to create a new collection" do
       sign_in user
-      post :create, format: 'json', :collection => { :name => "My new collection" }
+      post :create, params: { format: 'json', :collection => { :name => "My new collection" } }
       expect(response).to be_success
     end
   end
@@ -63,14 +63,14 @@ describe Api::CollectionsController, :type => :controller do
     describe "Collection filters" do
 
       it "returns totalPages when no page is specified" do
-        get :show, id: collection.id, format: 'json'
+        get :show, params: { id: collection.id, format: 'json' }
         json = JSON.parse response.body
         expect(json['totalPages']).to eq(1)
       end
 
       it "should find both sites by name" do
         pending("Filter by name with whitespaces is failling")
-        get :show, id: collection.id, format: 'json', sitename: 'Site '
+        get :show, params: { id: collection.id, format: 'json', sitename: 'Site ' }
 
         json = JSON.parse response.body
         expect(json['sites'].length).to eq(2)
@@ -81,7 +81,7 @@ describe Api::CollectionsController, :type => :controller do
       ['Site A', 'Site B'].each do |sitename|
         it "should find '#{sitename}' by name" do
           pending("Filter by name with whitespaces is failling")
-          get :show, id: collection.id, format: 'json', sitename: sitename
+          get :show, params: { id: collection.id, format: 'json', sitename: sitename }
 
           json = JSON.parse response.body
           expect(json['sites'].length).to eq(1)
@@ -90,7 +90,7 @@ describe Api::CollectionsController, :type => :controller do
       end
 
       it "should not find sites when filtering with non-matching names" do
-        get :show, id: collection.id, format: 'json', sitename: 'None like this'
+        get :show, params: { id: collection.id, format: 'json', sitename: 'None like this' }
 
         json = JSON.parse response.body
         expect(json['sites']).to be_empty
@@ -99,7 +99,7 @@ describe Api::CollectionsController, :type => :controller do
 
     describe "GET JSON collection" do
       before(:each) do
-        get :show, id: collection.id, format: 'json', locale: 'en'
+        get :show, params: { id: collection.id, format: 'json', locale: 'en' }
       end
 
       it { expect(response).to be_success }
@@ -141,7 +141,7 @@ describe Api::CollectionsController, :type => :controller do
 
     describe "GET JSON collection with query fieldeters" do
       it "should retrieve sites under certain item in a hierarchy field" do
-        get :show, id: collection.id, format: 'json', hierarchy.code => { under: 'Dad' }
+        get :show, params: { id: collection.id, format: 'json', hierarchy.code => { under: 'Dad' } }
         expect(response).to be_success
         json = JSON.parse response.body
         expect(json["sites"].length).to eq(2)
@@ -155,7 +155,7 @@ describe Api::CollectionsController, :type => :controller do
       let!(:site2) { collection.sites.make :name => 'a' }
 
       it "should filter sites without location" do
-        get :show, id: collection.id, format: 'json', "location_missing"=>"true"
+        get :show, params: { id: collection.id, format: 'json', "location_missing"=>"true" }
 
         expect(response).to be_success
         json = JSON.parse response.body
@@ -166,7 +166,7 @@ describe Api::CollectionsController, :type => :controller do
 
     describe "GET RSS collection" do
       before(:each) do
-        get :show, id: collection.id, format: 'rss'
+        get :show, params: { id: collection.id, format: 'rss' }
       end
 
       it { expect(response).to be_success }
@@ -214,7 +214,7 @@ describe Api::CollectionsController, :type => :controller do
       let!(:site3) {collection.sites.make :name => "किसी जगह", properties: { hierarchy.es_code => 'bro' } }
 
       before(:each) do
-        get :show, id: collection.id, format: 'csv'
+        get :show, params: { id: collection.id, format: 'csv' }
       end
 
       it { expect(response).to be_success }
@@ -238,7 +238,7 @@ describe Api::CollectionsController, :type => :controller do
       before(:each) do
         sign_out user
         sign_in member
-        get :show, id: collection.id, format: 'csv'
+        get :show, params: { id: collection.id, format: 'csv' }
       end
 
       it "should not get fields without read permission" do
@@ -252,63 +252,63 @@ describe Api::CollectionsController, :type => :controller do
 
     describe "validate query fields" do
       it "should validate numeric fields in equal queries" do
-        get :show, id: collection.id, format: 'csv', numeric.code => "invalid"
+        get :show, params: { id: collection.id, format: 'csv', numeric.code => "invalid" }
         expect(response.response_code).to be(400)
         expect(response.body).to include("Invalid numeric value in field numeric")
-        get :show, id: collection.id, format: 'csv', numeric.code => "2"
+        get :show, params: { id: collection.id, format: 'csv', numeric.code => "2" }
         expect(response.response_code).to be(200)
       end
 
       it "should validate numeric fields in other operations" do
-        get :show, id: collection.id, format: 'csv', numeric.code => "<=invalid"
+        get :show, params: { id: collection.id, format: 'csv', numeric.code => "<=invalid" }
         expect(response.response_code).to be(400)
         expect(response.body).to include("Invalid numeric value in field numeric")
-        get :show, id: collection.id, format: 'csv', numeric.code => "<=2"
+        get :show, params: { id: collection.id, format: 'csv', numeric.code => "<=2" }
         expect(response.response_code).to be(200)
       end
 
       it "should validate date fields format" do
-        get :show, id: collection.id, format: 'csv', date.code => "invalid1234"
+        get :show, params: { id: collection.id, format: 'csv', date.code => "invalid1234" }
         expect(response.response_code).to be(400)
         expect(response.body).to include("Invalid date value in field date")
       end
 
       it "should validate date fields format values" do
-        get :show, id: collection.id, format: 'csv', date.code => "32/4,invalid"
+        get :show, params: { id: collection.id, format: 'csv', date.code => "32/4,invalid" }
         expect(response.response_code).to be(400)
         expect(response.body).to include("Invalid date value in field date")
-        get :show, id: collection.id, format: 'csv', date.code => "12/25/2012,12/31/2012"
+        get :show, params: { id: collection.id, format: 'csv', date.code => "12/25/2012,12/31/2012" }
         expect(response.response_code).to be(200)
       end
 
       it "should validate hierarchy existing option" do
-        get :show, id: collection.id, format: 'csv', hierarchy.code => ["invalid"]
+        get :show, params: { id: collection.id, format: 'csv', hierarchy.code => ["invalid"] }
         expect(response.response_code).to be(400)
         expect(response.body).to include("Invalid hierarchy option invalid in field hierarchy")
-        get :show, id: collection.id, format: 'csv', hierarchy.code => ["Dad"]
+        get :show, params: { id: collection.id, format: 'csv', hierarchy.code => ["Dad"] }
         expect(response.response_code).to be(200)
       end
 
       it "should validate select_one existing option" do
-        get :show, id: collection.id, format: 'csv', select_one.code => "invalid"
+        get :show, params: { id: collection.id, format: 'csv', select_one.code => "invalid" }
         expect(response.response_code).to be(400)
         expect(response.body).to include("Invalid option in field select_one")
-        get :show, id: collection.id, format: 'csv', select_one.code => "one"
+        get :show, params: { id: collection.id, format: 'csv', select_one.code => "one" }
         expect(response.response_code).to be(200)
       end
 
       it "should validate select_many existing option" do
-        get :show, id: collection.id, format: 'csv', select_many.code => "invalid"
+        get :show, params: { id: collection.id, format: 'csv', select_many.code => "invalid" }
         expect(response.response_code).to be(400)
         expect(response.body).to include("Invalid option in field select_many")
-        get :show, id: collection.id, format: 'csv', select_many.code => "one"
+        get :show, params: { id: collection.id, format: 'csv', select_many.code => "one" }
         expect(response.response_code).to be(200)
       end
     end
 
     describe "GET JSON histogram" do
       it "should get histogram for a collection hierarchy field by id" do
-        get :histogram_by_field, collection_id: collection.id, field_id: hierarchy.id
+        get :histogram_by_field, params: { collection_id: collection.id, field_id: hierarchy.id }
         expect(response).to be_success
         histogram = JSON.parse response.body
         expect(histogram['dad']).to eq(1)
@@ -316,7 +316,7 @@ describe Api::CollectionsController, :type => :controller do
       end
 
       it "should get histogram for a collection hierarchy field by code" do
-        get :histogram_by_field, collection_id: collection.id, field_id: hierarchy.code
+        get :histogram_by_field, params: { collection_id: collection.id, field_id: hierarchy.code }
         expect(response).to be_success
         histogram = JSON.parse response.body
         expect(histogram['dad']).to eq(1)
@@ -326,7 +326,7 @@ describe Api::CollectionsController, :type => :controller do
       it "should get histogram for a collection text field" do
         site3 = collection.sites.make properties: {text.es_code => 'foo'}
 
-        get :histogram_by_field, collection_id: collection.id, field_id: text.id
+        get :histogram_by_field, params: { collection_id: collection.id, field_id: text.id }
         expect(response).to be_success
         histogram = JSON.parse response.body
         expect(histogram['foo']).to eq(2)
@@ -335,14 +335,14 @@ describe Api::CollectionsController, :type => :controller do
 
     describe 'bulk update' do
       it "updates sites" do
-        post :bulk_update, id: collection.id, updates: { properties: { numeric.code => 3 } }
+        post :bulk_update, params: { id: collection.id, updates: { properties: { numeric.code => 3 } } }
         Site.all.each do |site|
           expect(site.properties[numeric.es_code]).to eq(3)
         end
       end
 
       it "should update name, latitude and longitude" do
-        post :bulk_update, id: collection.id, updates: { name: 'New name', lat: 35.2, lng: -25 }
+        post :bulk_update, params: { id: collection.id, updates: { name: 'New name', lat: 35.2, lng: -25 } }
         Site.all.each do |site|
           expect(site.name).to eq('New name')
           expect(site.lat).to eq(35.2)
@@ -351,11 +351,11 @@ describe Api::CollectionsController, :type => :controller do
       end
 
       it "should only update according to filters" do
-        post :bulk_update, id: collection.id, site_id: site.id, updates: { name: 'New name' }
+        post :bulk_update, params: { id: collection.id, site_id: site.id, updates: { name: 'New name' } }
         expect(site.reload.name).to eq('New name')
         expect(site2.reload.name).not_to eq('New name')
 
-        post :bulk_update, id: collection.id, text.code => 'foo', updates: { name: 'New name' }
+        post :bulk_update, params: { id: collection.id, text.code => 'foo', updates: { name: 'New name' } }
         expect(site.reload.name).to eq('New name')
         expect(site2.reload.name).not_to eq('New name')
       end
@@ -391,7 +391,7 @@ describe Api::CollectionsController, :type => :controller do
     before(:each) { sign_in user }
 
     it "should find both sites by name" do
-      get :show, id: collection.id, format: 'json', sitename: 'Site_'
+      get :show, params: { id: collection.id, format: 'json', sitename: 'Site_' }
 
       json = JSON.parse response.body
       expect(json['sites'].length).to eq(2)
@@ -401,7 +401,7 @@ describe Api::CollectionsController, :type => :controller do
 
     ['Site_A', 'Site_B'].each do |sitename|
       it "should find '#{sitename}' by name" do
-        get :show, id: collection.id, format: 'json', sitename: sitename
+        get :show, params: { id: collection.id, format: 'json', sitename: sitename }
 
         json = JSON.parse response.body
         expect(json['sites'].length).to eq(1)
@@ -410,7 +410,7 @@ describe Api::CollectionsController, :type => :controller do
     end
 
     it "should not find sites when filtering with non-matching names" do
-      get :show, id: collection.id, format: 'json', sitename: 'None like this'
+      get :show, params: { id: collection.id, format: 'json', sitename: 'None like this' }
 
       json = JSON.parse response.body
       expect(json['sites']).to be_empty
@@ -427,14 +427,14 @@ describe Api::CollectionsController, :type => :controller do
 
     describe "get dates fields in the right format"  do
       it "should get CSV with right date format" do
-        get :show, id: collection.id, format: 'csv'
+        get :show, params: { id: collection.id, format: 'csv' }
         csv =  CSV.parse response.body
         expect(csv[0]).to eq(['resmap-id', 'name', 'lat', 'long', 'date_mdy', 'date_dmy', 'last updated'])
         expect(csv).to include [site_A.id.to_s, site_A.name, site_A.lat.to_s, site_A.lng.to_s, '10/24/2012', '24/10/2012' ,site_A.updated_at.to_datetime.rfc822]
       end
 
       it "should get JSON with right date format" do
-        get :show, id: collection.id, format: 'json'
+        get :show, params: { id: collection.id, format: 'json' }
         json = JSON.parse response.body
         expect(json["name"]).to eq(collection.name)
         expect(json["sites"].length).to eq(1)
@@ -450,7 +450,7 @@ describe Api::CollectionsController, :type => :controller do
       end
 
       it "should get RSS with right date format" do
-        get :show, id: collection.id, format: 'rss'
+        get :show, params: { id: collection.id, format: 'rss' }
         rss =  Hash.from_xml response.body
         expect(rss["rss"]["channel"]["title"]).to eq(collection.name)
 
@@ -487,7 +487,7 @@ describe Api::CollectionsController, :type => :controller do
 
         Timecop.travel(1.day.from_now)
 
-        get :show, id: collection.id, format: 'json', deleted_since: 49.hours.ago.to_s
+        get :show, params: { id: collection.id, format: 'json', deleted_since: 49.hours.ago.to_s }
 
         json = JSON.parse(response.body)
         sites = json["sites"]
@@ -524,7 +524,7 @@ describe Api::CollectionsController, :type => :controller do
 
         Timecop.travel(1.day.from_now)
 
-        get :show, id: collection.id, format: 'json', updated_since: 49.hours.ago.to_s
+        get :show, params: { id: collection.id, format: 'json', updated_since: 49.hours.ago.to_s }
 
         json = JSON.parse(response.body)
         sites = json["sites"]
@@ -552,7 +552,7 @@ describe Api::CollectionsController, :type => :controller do
 
         Timecop.travel(1.day.from_now)
 
-        get :show, id: collection.id, format: 'json', created_since: 49.hours.ago.to_s
+        get :show, params: { id: collection.id, format: 'json', created_since: 49.hours.ago.to_s }
 
         json = JSON.parse(response.body)
         sites = json["sites"]
@@ -569,7 +569,7 @@ describe Api::CollectionsController, :type => :controller do
       sites = 6.times.map { collection.sites.make }
 
       site_id = sites[0].id
-      get :show, id: collection.id, site_id: site_id, format: :json
+      get :show, params: { id: collection.id, site_id: site_id, format: :json }
 
       expect(response).to be_ok
 
@@ -581,7 +581,7 @@ describe Api::CollectionsController, :type => :controller do
       sites = 6.times.map { collection.sites.make }
       site_ids = [sites[0].id, sites[2].id, sites[5].id]
 
-      get :show, id: collection.id, site_id: site_ids, format: :json
+      get :show, params: { id: collection.id, site_id: site_ids, format: :json }
 
       expect(response).to be_ok
 
@@ -593,7 +593,7 @@ describe Api::CollectionsController, :type => :controller do
       sites = 6.times.map { collection.sites.make }
       site_ids = [sites[0].id, sites[2].id, sites[3].id, sites[5].id]
 
-      get :show, id: collection.id, site_id: site_ids, page: 1, page_size: 2, format: :json
+      get :show, params: { id: collection.id, site_id: site_ids, page: 1, page_size: 2, format: :json }
 
       expect(response).to be_ok
 
@@ -601,7 +601,7 @@ describe Api::CollectionsController, :type => :controller do
       first_ids = json["sites"].map { |s| s["id"] }
       expect(first_ids.length).to eq(2)
 
-      get :show, id: collection.id, site_id: site_ids, page: 2, page_size: 2, format: :json
+      get :show, params: { id: collection.id, site_id: site_ids, page: 2, page_size: 2, format: :json }
 
       expect(response).to be_ok
 
@@ -616,7 +616,7 @@ describe Api::CollectionsController, :type => :controller do
   describe "destroy" do
     it "destroys a collection" do
       sign_in user
-      delete :destroy, id: collection.id
+      delete :destroy, params: { id: collection.id }
       expect(response).to be_ok
       expect(Collection.count).to eq(0)
     end
@@ -628,7 +628,7 @@ describe Api::CollectionsController, :type => :controller do
       expect(UserSnapshot.count).to eq(1)
 
       sign_in user
-      delete :destroy, id: collection.id
+      delete :destroy, params: { id: collection.id }
 
       expect(response).to be_ok
       expect(UserSnapshot.count).to eq(0)
@@ -640,7 +640,7 @@ describe Api::CollectionsController, :type => :controller do
       collection.memberships.create! :user_id => user2.id, admin: false
       sign_in user2
 
-      delete :destroy, id: collection.id
+      delete :destroy, params: { id: collection.id }
 
       expect(response.code).to eq("403")
       expect(Collection.count).to eq(1)
@@ -657,7 +657,7 @@ describe Api::CollectionsController, :type => :controller do
 
     collection.sites.make name: 'TallLand', properties: { select_one.es_code => 2, select_many.es_code => [1,2], hierarchy_field.es_code => '100' }
 
-    get :show, id: collection.id, human: true,  format: 'json'
+    get :show, params: { id: collection.id, human: true,  format: 'json' }
     expect(response).to be_success
     json = JSON.parse response.body
     expect(json["sites"].first["properties"]['select_one']).to eq('Two')
@@ -675,14 +675,14 @@ describe Api::CollectionsController, :type => :controller do
 
     collection.sites.make name: 'TallLand', properties: { select_one.es_code => 2, select_many.es_code => [1,2], hierarchy_field.es_code => '100' }
 
-    get :show, id: collection.id, format: 'json'
+    get :show, params: { id: collection.id, format: 'json' }
     expect(response).to be_success
     json = JSON.parse response.body
     expect(json["sites"].first["properties"]['select_one']).to eq('two')
     expect(json["sites"].first["properties"]['select_many']).to eq(['one', 'two'])
     expect(json["sites"].first["properties"]['hierarchy']).to eq('100')
 
-    get :show, id: collection.id, human: false, format: 'json'
+    get :show, params: { id: collection.id, human: false, format: 'json' }
     expect(response).to be_success
     json = JSON.parse response.body
     expect(json["sites"].first["properties"]['select_one']).to eq('two')

@@ -21,7 +21,7 @@ describe CollectionsController, :type => :controller do
   end
 
   it "should not throw error when calling unload_current_snapshot and no snapshot is set" do
-    post :unload_current_snapshot, collection_id: collection.id
+    post :unload_current_snapshot, params: { collection_id: collection.id }
     assert_nil flash[:notice]
     assert_redirected_to collection_url(collection.id)
   end
@@ -33,7 +33,7 @@ describe CollectionsController, :type => :controller do
     user2 = collection.users.make email: 'user2@email.com'
     collection.memberships.create! user_id: user2.id
 
-    get :index, format: 'json'
+    get :index, params: { format: 'json' }
     collections =  JSON.parse response.body
     expect(collections.count).to eq(1)
   end
@@ -47,13 +47,13 @@ describe CollectionsController, :type => :controller do
     user2 = other_collection.users.make email: 'user2@email.com'
     other_collection.memberships.create! user_id: user2.id
 
-    get :index, format: 'json'
+    get :index, params: { format: 'json' }
     collections =  JSON.parse response.body
     expect(collections.count).to eq(1)
   end
 
   it "admin should be able to update all collection's fields" do
-    put :update, id: collection.id, collection: {"name"=>"new name", "description"=>"new description", "icon"=>"default"}
+    put :update, params: { id: collection.id, collection: {"name"=>"new name", "description"=>"new description", "icon"=>"default"} }
     expect(response).to be_redirect
 
     updated_collection = Collection.find_by_name "new name"
@@ -74,7 +74,7 @@ describe CollectionsController, :type => :controller do
     end
 
     it "should get json of all field names and codes in a collection" do
-      get :sites_by_term, collection_id: collection.id, format: 'json'
+      get :sites_by_term, params: { collection_id: collection.id, format: 'json' }
 
       json = JSON.parse response.body
       expect(json.length).to eq(2)
@@ -87,7 +87,7 @@ describe CollectionsController, :type => :controller do
     end
 
     it "should filter by name in a collection" do
-      get :sites_by_term, collection_id: collection.id, format: 'json', term: "o"
+      get :sites_by_term, params: { collection_id: collection.id, format: 'json', term: "o" }
 
       json = JSON.parse response.body
       expect(json.length).to eq(1)
@@ -110,25 +110,25 @@ describe CollectionsController, :type => :controller do
 
     it 'should return forbidden in delete if user tries to delete a collection of which he is not member'  do
       sign_in not_member
-      delete :destroy, id: collection.id
+      delete :destroy, params: { id: collection.id }
       expect(response.status).to eq(403)
-      delete :destroy, id: public_collection.id
+      delete :destroy, params: { id: public_collection.id }
       expect(response.status).to eq(403)
     end
 
     it 'should return forbidden on delete if user is not collection admin' do
       sign_in member
-      delete :destroy, id: collection.id
+      delete :destroy, params: { id: collection.id }
       expect(response.status).to eq(403)
-      delete :destroy, id: public_collection.id
+      delete :destroy, params: { id: public_collection.id }
       expect(response.status).to eq(403)
     end
 
     it 'should return forbidden on create_snapshot if user is not collection admin' do
       sign_in member
-      post :create_snapshot, collection_id: public_collection.id, snapshot: {name: 'my snapshot'}
+      post :create_snapshot, params: { collection_id: public_collection.id, snapshot: {name: 'my snapshot'} }
       expect(response.status).to eq(403)
-      post :create_snapshot, collection_id: collection.id, snapshot: {name: 'my snapshot'}
+      post :create_snapshot, params: { collection_id: collection.id, snapshot: {name: 'my snapshot'} }
       expect(response.status).to eq(403)
     end
   end
@@ -136,7 +136,7 @@ describe CollectionsController, :type => :controller do
   describe "analytic" do
     it 'should changed user.collection_count by 1' do
       expect{
-        post :create, collection: { name: 'collection_1', icon: 'default'}
+        post :create, params: { collection: { name: 'collection_1', icon: 'default'} }
       }.to change{
         u = User.find user.id
         u.collection_count
@@ -159,25 +159,25 @@ describe CollectionsController, :type => :controller do
         collection.name = "Foo"
         make_private collection
 
-        get :index, name: "Foo"
+        get :index, params: { name: "Foo" }
         expect_redirect_to_login(response)
       end
 
       it "should redirect guest user to log in if she tries to access a non-public collection" do
         make_private collection
-        get :index, collection_id: collection.id
+        get :index, params: { collection_id: collection.id }
         expect_redirect_to_login(response)
       end
 
       it "should allow guest user to read public collection" do
         make_public collection
-        get :index, collection_id: collection.id
+        get :index, params: { collection_id: collection.id }
         expect(response.status).to eq(200)
       end
 
       it "should get public collection being a guest user" do
         make_public(collection)
-        get :show, format: 'json', id: collection.id
+        get :show, params: { format: 'json', id: collection.id }
         expect(response).to be_success
         json = JSON.parse response.body
         expect(json["name"]).to eq(collection.name)
@@ -186,13 +186,13 @@ describe CollectionsController, :type => :controller do
       # Issue #661
       it "should not get public collection's settings page being a guest user" do
         make_public(collection)
-        get :show, format: 'html', id: collection.id
+        get :show, params: { format: 'html', id: collection.id }
         expect(response).to redirect_to '/users/sign_in'
       end
     end
 
     it "should get current_user_membership" do
-      get :current_user_membership, collection_id: collection.id, format: 'json'
+      get :current_user_membership, params: { collection_id: collection.id, format: 'json' }
       expect(response).to be_success
       membership = JSON.parse response.body
       expect(membership["admin"]).to eq(true)
@@ -206,7 +206,7 @@ describe CollectionsController, :type => :controller do
       collection.sites.make
       collection.sites.make
 
-      get :sites_info, collection_id: collection.id
+      get :sites_info, params: { collection_id: collection.id }
 
       info = JSON.parse response.body
       expect(info["total"]).to eq(2)
@@ -218,7 +218,7 @@ describe CollectionsController, :type => :controller do
       collection.sites.make
       collection.sites.make lat: nil, lng: nil
 
-      get :sites_info, collection_id: collection.id
+      get :sites_info, params: { collection_id: collection.id }
 
       info = JSON.parse response.body
       expect(info["total"]).to eq(3)
@@ -230,7 +230,7 @@ describe CollectionsController, :type => :controller do
         collection.sites.make
         collection.sites.make.destroy
 
-        get :sites_info, collection_id: collection.id
+        get :sites_info, params: { collection_id: collection.id }
 
         info = JSON.parse response.body
         expect(info["total"]).to eq(1)
@@ -243,7 +243,7 @@ describe CollectionsController, :type => :controller do
       collection.sites.make
       collection.sites.make(lat: nil, lng: nil).destroy
 
-      get :sites_info, collection_id: collection.id
+      get :sites_info, params: { collection_id: collection.id }
 
       info = JSON.parse response.body
       expect(info["total"]).to eq(2)
@@ -252,14 +252,14 @@ describe CollectionsController, :type => :controller do
   end
 
   it "should ignore local param in search" do
-    get :search, collection_id: collection.id
+    get :search, params: { collection_id: collection.id }
     expect(response).to be_ok
   end
 
   it "gets a site with location when the lat is 0, and the lng is 0 in search" do
     collection.sites.make lat: 0, lng: 0
 
-    get :search, collection_id: collection.id
+    get :search, params: { collection_id: collection.id }
 
     result = JSON.parse response.body
     sites = result["sites"]
@@ -273,7 +273,7 @@ describe CollectionsController, :type => :controller do
   it "gets a site without a location when the lat is nil, and the lng is nil in search" do
     collection.sites.make lat: nil, lng: nil
 
-    get :search, collection_id: collection.id
+    get :search, params: { collection_id: collection.id }
 
     result = JSON.parse response.body
     sites = result["sites"]
@@ -286,7 +286,7 @@ describe CollectionsController, :type => :controller do
     collection.sites.make name: 'Target'
     collection.sites.make name: 'NotThisOne'
 
-    get :search, collection_id: collection.id, sitename: 'Target'
+    get :search, params: { collection_id: collection.id, sitename: 'Target' }
 
     result = JSON.parse response.body
     sites = result["sites"]
@@ -299,7 +299,7 @@ describe CollectionsController, :type => :controller do
     collection.sites.make name: 'Target'
     collection.sites.make name: 'NotThisOne'
 
-    get :search, collection_id: collection.id, sitename: 'Tar'
+    get :search, params: { collection_id: collection.id, sitename: 'Tar' }
 
     result = JSON.parse response.body
     sites = result["sites"]
@@ -312,7 +312,7 @@ describe CollectionsController, :type => :controller do
     collection.sites.make name: 'Target'
     collection.sites.make name: 'NotThisOne'
 
-    get :search, collection_id: collection.id, sitename: 'TakeThat'
+    get :search, params: { collection_id: collection.id, sitename: 'TakeThat' }
 
     result = JSON.parse response.body
     sites = result["sites"]
@@ -325,7 +325,7 @@ describe CollectionsController, :type => :controller do
     collection.sites.make name: 'NotThisOne'
     collection.sites.make name: 'TallLand'
 
-    get :search, collection_id: collection.id, sitename: 'Ta'
+    get :search, params: { collection_id: collection.id, sitename: 'Ta' }
 
     result = JSON.parse response.body
     sites = result["sites"]
@@ -345,7 +345,7 @@ describe CollectionsController, :type => :controller do
     collection.sites.make name: 'NotThisOne', properties: { numeric.es_code => 25 }
     collection.sites.make name: 'TallLand', properties: { numeric.es_code => 20 }
 
-    get :search, collection_id: collection.id, sitename: 'Ta', numeric.es_code => { "=" => 25 }
+    get :search, params: { collection_id: collection.id, sitename: 'Ta', numeric.es_code => { "=" => 25 } }
 
     result = JSON.parse response.body
     sites = result["sites"]

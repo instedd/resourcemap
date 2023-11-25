@@ -9,7 +9,7 @@ describe SitesPermissionController, :type => :controller do
 
   describe 'POST create' do
     it 'should response ok' do
-      post :create, "sites_permission" => {"user_id" => user.id}, "collection_id" => collection.id
+      post :create, params: { "sites_permission" => {"user_id" => user.id}, "collection_id" => collection.id }
       expect(response.body).to eq("\"ok\"")
     end
   end
@@ -19,7 +19,7 @@ describe SitesPermissionController, :type => :controller do
     let(:read_sites_permission) { membership.create_read_sites_permission all_sites: true }
     let(:write_sites_permission) { membership.create_write_sites_permission all_sites: false, some_sites: [{id: 1, name: 'Bayon clinic'}] }
 
-    before(:each) { get :index, "collection_id" => collection.id }
+    before(:each) { get :index, params: { "collection_id" => collection.id } }
     it "should response include read sites permission" do
       expect(response.body).to include "\"read\":#{read_sites_permission.to_json}"
     end

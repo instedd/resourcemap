@@ -14,7 +14,7 @@ describe ThresholdsController, :type => :controller do
 
   describe 'Create threshold' do
     it 'should fix conditions' do
-      post :create, "threshold"=>{"color"=>"red", "ord" => 1, "sites" => {"0" => sites}, "conditions"=>{"0"=>condition_attributes}}, "collection_id" => collection.id
+      post :create, params: { "threshold"=>{"color"=>"red", "ord" => 1, "sites" => {"0" => sites}, "conditions"=>{"0"=>condition_attributes}}, "collection_id" => collection.id }
 
       threshold = collection.thresholds.last
       expect(threshold.conditions.size).to eq(1)
@@ -25,7 +25,7 @@ describe ThresholdsController, :type => :controller do
   describe 'Update threshold' do
     it 'should fix conditions' do
 
-      put :update, "threshold"=>{ "conditions"=>{"0"=>condition_attributes}, "sites" => {"0" => sites}}, "collection_id" => collection.id, "id" => threshold.id
+      put :update, params: { "threshold"=>{ "conditions"=>{"0"=>condition_attributes}, "sites" => {"0" => sites}}, "collection_id" => collection.id, "id" => threshold.id }
 
       threshold.reload
       expect(threshold.conditions[0]).to eq condition_attributes
@@ -34,26 +34,26 @@ describe ThresholdsController, :type => :controller do
 
   it "should create threshold" do
     expect {
-      post :create, "threshold"=>{"color"=>"red", "ord" => 1, "sites" => {"0" => sites}, "conditions"=>{"0"=>condition_attributes}}, "collection_id" => collection.id
+      post :create, params: { "threshold"=>{"color"=>"red", "ord" => 1, "sites" => {"0" => sites}, "conditions"=>{"0"=>condition_attributes}}, "collection_id" => collection.id }
     }.to change { Threshold.count }.by 1
   end
 
   it "should update threshold" do
-    put :update, id: threshold.id, collection_id: collection.id, threshold: {ord: 2, "conditions"=>{"0"=>condition_attributes}, "sites" => {"0" => sites}}
+    put :update, params: { id: threshold.id, collection_id: collection.id, threshold: {ord: 2, "conditions"=>{"0"=>condition_attributes}, "sites" => {"0" => sites}} }
     expect(Threshold.find(threshold.id).ord).to eq(2)
   end
 
   it "should destroy threshold" do
     threshold
     expect {
-      delete :destroy, :collection_id => collection.id, :id => threshold.id
+      delete :destroy, params: { :collection_id => collection.id, :id => threshold.id }
     }.to change { Threshold.count }.by -1
   end
 
   it "should not create threshold for guest" do
     sign_out user
     expect {
-      post :create, threshold: { conditions: {"0"=>condition_attributes}, sites: {"0" => sites}, ord: 1, color: 'red'}, collection_id: collection.id
+      post :create, params: { threshold: { conditions: {"0"=>condition_attributes}, sites: {"0" => sites}, ord: 1, color: 'red'}, collection_id: collection.id }
     }.to change { Threshold.count }.by 0
   end
 
@@ -66,21 +66,21 @@ describe ThresholdsController, :type => :controller do
 
     it "should not create threshold" do
       expect {
-        post :create, threshold: { conditions: {"0"=>condition_attributes}, sites: {"0" => sites}, ord: 1, color: 'red'}, collection_id: collection.id
+        post :create, params: { threshold: { conditions: {"0"=>condition_attributes}, sites: {"0" => sites}, ord: 1, color: 'red'}, collection_id: collection.id }
       }.to change { Threshold.count }.by 0
     end
 
     it "should not update threshold" do
       threshold.ord = 1
       threshold.save!
-      put :update, id: threshold.id, collection_id: collection.id, threshold: {ord: 2, "conditions"=>{"0"=>condition_attributes}, "sites" => {"0" => sites}}
+      put :update, params: { id: threshold.id, collection_id: collection.id, threshold: {ord: 2, "conditions"=>{"0"=>condition_attributes}, "sites" => {"0" => sites}} }
       expect(Threshold.find(threshold.id).ord).to eq(1)
     end
 
     it "should not destroy threshold" do
       threshold
       expect {
-        delete :destroy, :id => threshold.id, :collection_id => collection.id
+        delete :destroy, params: { :id => threshold.id, :collection_id => collection.id }
       }.to change { Threshold.count }.by 0
     end
   end

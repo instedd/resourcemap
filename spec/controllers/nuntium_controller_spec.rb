@@ -17,12 +17,12 @@ describe NuntiumController, :type => :controller do
 
     it "should save message" do
       expect(Message).to receive(:create!).with(:guid => "123", :from => "sms://85512345678", :body => "dyrm u AA1 AB=2").and_return(@message)
-      post :receive, @params
+      post :receive, params: @params
     end
 
     describe "should validate post data" do
       def post_receive_without(param)
-        post :receive, @params.clone.delete_if { |k, v| k == param }
+        post :receive, params: @params.clone.delete_if { |k, v| k == param }
       end
 
       it "should response error" do
@@ -52,12 +52,12 @@ describe NuntiumController, :type => :controller do
       end
 
       it "should process message" do
-        post :receive, @params
+        post :receive, params: @params
         expect(response.response_code).to eq(200)
       end
 
       it "should response plain text" do
-        post :receive, @params
+        post :receive, params: @params
         expect(response.content_type).to eq("text/plain")
       end
     end

@@ -13,7 +13,7 @@ describe FieldsController, :type => :controller do
   it "should get field in json" do
     sign_in admin
 
-    get :show, collection_id: collection.id, id: hierarchy.id, format: 'json'
+    get :show, params: { collection_id: collection.id, id: hierarchy.id, format: 'json' }
 
     json = JSON.parse response.body
     expect(json['kind']).to eq('hierarchy')
@@ -31,7 +31,7 @@ describe FieldsController, :type => :controller do
     membership = Membership.make collection: collection, user: member, admin: false
     sign_in member
 
-    get :show, collection_id: collection.id, id: hierarchy.id, format: 'json'
+    get :show, params: { collection_id: collection.id, id: hierarchy.id, format: 'json' }
 
     expect(response.status).to eq(403)
   end
@@ -39,7 +39,7 @@ describe FieldsController, :type => :controller do
   it "should not get field mapping if not logged in and collection is public" do
     collection = admin.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read'))
 
-    get :mapping, collection_id: collection.id, format: 'json'
+    get :mapping, params: { collection_id: collection.id, format: 'json' }
 
     # Redirected to login
     expect(response.status).to eq(401)
@@ -51,7 +51,7 @@ describe FieldsController, :type => :controller do
     layer2 = collection2.layers.make
     text_field = layer2.text_fields.make code: 'text'
 
-    get :show, collection_id: collection.id, id: text_field.id, format: 'json'
+    get :show, params: { collection_id: collection.id, id: text_field.id, format: 'json' }
 
     expect(response.status).to eq(404)
   end
@@ -59,7 +59,7 @@ describe FieldsController, :type => :controller do
   it "should get mapping" do
     sign_in admin
 
-    get :mapping, collection_id: collection.id
+    get :mapping, params: { collection_id: collection.id }
     json = JSON.parse response.body
     expect(json.length).to eq(1)
     field = json[0]
@@ -72,7 +72,7 @@ describe FieldsController, :type => :controller do
   it "should get hierarchy nodes under certain one" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', format: 'json'
+    get :hierarchy, params: { collection_id: collection.id, id: hierarchy.id, under: '60', format: 'json' }
     elements = JSON.parse response.body
     expect(elements.length).to eq 3
     expect(elements).to include('60')
@@ -85,7 +85,7 @@ describe FieldsController, :type => :controller do
 
     text = layer.text_fields.make :code => 'text'
 
-    get :hierarchy, collection_id: collection.id, id: text.id, under: '60', format: 'json'
+    get :hierarchy, params: { collection_id: collection.id, id: text.id, under: '60', format: 'json' }
     expect(response.status).to eq(422)
     message = (JSON.parse response.body)["message"]
     expect(message).to include("The field 'text' is not a hierarchy.")
@@ -94,7 +94,7 @@ describe FieldsController, :type => :controller do
   it "should show proper error message if the under parameter is not found" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: 'invalid', format: 'json'
+    get :hierarchy, params: { collection_id: collection.id, id: hierarchy.id, under: 'invalid', format: 'json' }
     expect(response.status).to eq(422)
     message = (JSON.parse response.body)["message"]
     expect(message).to include("Invalid hierarchy option 'invalid' in field 'hierarchy'")
@@ -103,7 +103,7 @@ describe FieldsController, :type => :controller do
   it "should show proper error message if the node parameter is not found" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', node: 'invalid', format: 'json'
+    get :hierarchy, params: { collection_id: collection.id, id: hierarchy.id, under: '60', node: 'invalid', format: 'json' }
     expect(response.status).to eq(422)
     message = (JSON.parse response.body)["message"]
     expect(message).to include("Invalid hierarchy option 'invalid' in field 'hierarchy'")
@@ -112,14 +112,14 @@ describe FieldsController, :type => :controller do
   it "should respond true if a certain node is under another" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', node: '100', format: 'json'
+    get :hierarchy, params: { collection_id: collection.id, id: hierarchy.id, under: '60', node: '100', format: 'json' }
     expect(response.body).to eq("true")
   end
 
   it "should respond false if a certain node is under another" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '100', node: '60', format: 'json'
+    get :hierarchy, params: { collection_id: collection.id, id: hierarchy.id, under: '100', node: '60', format: 'json' }
     expect(response.body).to eq("false")
   end
 
@@ -127,14 +127,14 @@ describe FieldsController, :type => :controller do
     member = User.make
     membership = Membership.make collection: collection, user: member, admin: false
     sign_in member
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, under: '60', format: 'json'
+    get :hierarchy, params: { collection_id: collection.id, id: hierarchy.id, under: '60', format: 'json' }
     expect(response.status).to eq(403)
   end
 
   it "should get hierarchy as CSV" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, format: 'csv'
+    get :hierarchy, params: { collection_id: collection.id, id: hierarchy.id, format: 'csv' }
     expect(response.status).to eq(200)
     csv =  CSV.parse(response.body)
     expect(csv[0]).to eq(['ID', 'ParentID', 'ItemName'])
@@ -147,14 +147,14 @@ describe FieldsController, :type => :controller do
     member = User.make
     membership = Membership.make collection: collection, user: member, admin: false
     sign_in member
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, format: 'csv'
+    get :hierarchy, params: { collection_id: collection.id, id: hierarchy.id, format: 'csv' }
     expect(response.status).to eq(403)
   end
 
   it "should get hierarchy by node and type" do
     sign_in admin
 
-    get :hierarchy, collection_id: collection.id, id: hierarchy.id, node: '100', type: 'region',format: 'json'
+    get :hierarchy, params: { collection_id: collection.id, id: hierarchy.id, node: '100', type: 'region',format: 'json' }
     elements = JSON.parse response.body
     expect(elements).to eq({"id"=>"60", "name"=>"Dad", "type"=>"region"})
   end

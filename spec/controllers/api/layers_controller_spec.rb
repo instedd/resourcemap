@@ -14,7 +14,7 @@ describe Api::LayersController, :type => :controller do
 
   context "as admin" do
     it "should get layers for a collection at present" do
-      get :index, collection_id: collection.id
+      get :index, params: { collection_id: collection.id }
       json = JSON.parse response.body
 
       expect(json.length).to eq(2)
@@ -29,7 +29,7 @@ describe Api::LayersController, :type => :controller do
       user_snapshot = UserSnapshot.for(user, collection)
       success = user_snapshot.go_to!(snapshot.id)
       expect(success).to be_truthy
-      get :index, collection_id: collection.id
+      get :index, params: { collection_id: collection.id }
       json = JSON.parse response.body
 
       expect(json.length).to eq(2)
@@ -38,7 +38,7 @@ describe Api::LayersController, :type => :controller do
     end
 
     it "should create a layer" do
-      post :create, collection_id: collection.id, layer: { name: 'layer_01', fields_attributes: {"0" => {name: "Numeric field", code: "numeric_field", kind: "numeric", ord: 1}}, ord: 1}
+      post :create, params: { collection_id: collection.id, layer: { name: 'layer_01', fields_attributes: {"0" => {name: "Numeric field", code: "numeric_field", kind: "numeric", ord: 1}}, ord: 1} }
       expect(collection.layers.count).to eq(3)
       expect(collection.layers.map(&:name)).to include("layer_01")
     end
@@ -47,7 +47,7 @@ describe Api::LayersController, :type => :controller do
       expect(layer.fields.count).to eq(1)
       json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
 
-      post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+      post :update, params: {layer: json_layer, collection_id: collection.id, id: layer.id}
 
       expect(layer.fields.count).to eq(0)
       expect(layer2.fields.count).to eq(1)
@@ -67,7 +67,7 @@ describe Api::LayersController, :type => :controller do
     it "should update a layer's fields" do
       json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: "New name", ord: numeric.ord}}}
 
-      post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+      post :update, params: {layer: json_layer, collection_id: collection.id, id: layer.id}
 
       expect(response).to be_success
       expect(layer.fields.count).to eq(1)
@@ -76,7 +76,7 @@ describe Api::LayersController, :type => :controller do
 
     it "should delete a layer" do
       expect(collection.layers.count).to eq(2)
-      delete :destroy, collection_id: collection.id, id: layer.id
+      delete :destroy, params: { collection_id: collection.id, id: layer.id }
       expect(response).to be_ok
       expect(collection.layers.count).to eq(1)
     end
@@ -88,7 +88,7 @@ describe Api::LayersController, :type => :controller do
     before(:each) { sign_out user; sign_in non_admin }
 
     it "should not get layers" do
-      get :index, collection_id: collection.id
+      get :index, params: { collection_id: collection.id }
       json = JSON.parse response.body
 
       expect(json).to be_empty
@@ -99,21 +99,21 @@ describe Api::LayersController, :type => :controller do
       expect(collection.memberships.count).to eq(2)
       membership = collection.memberships.find_by_user_id non_admin.id
       membership.set_layer_access({verb: 'read', access: true, layer_id: layer.id})
-      get :index, collection_id: collection.id
+      get :index, params: { collection_id: collection.id }
       json = JSON.parse response.body
       expect(json.count).to eq(1)
       expect(json.first["id"]).to eq(layer.id)
     end
 
     it "should not delete layers" do
-      delete :destroy, collection_id: collection.id, id: layer.id
+      delete :destroy, params: { collection_id: collection.id, id: layer.id }
       expect(response.status).to eq(403)
     end
 
     it "should not update layers" do
       json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: "New name", ord: numeric.ord}}}
 
-      post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+      post :update, params: {layer: json_layer, collection_id: collection.id, id: layer.id}
       expect(response).to be_forbidden
     end
 
@@ -123,7 +123,7 @@ describe Api::LayersController, :type => :controller do
     it "should ignore layer updates with public param" do
       json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', public: 'public', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
 
-      post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+      post :update, params: {layer: json_layer, collection_id: collection.id, id: layer.id}
 
       expect(response).to be_success
     end

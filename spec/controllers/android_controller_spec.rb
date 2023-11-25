@@ -51,7 +51,7 @@ describe AndroidController, :type => :controller do
       File.open("spec/fixtures/instant_file.xml","w") { |f| f.puts @xml }
       xml_file = fixture_file_upload('/instant_file.xml', 'text/xml')
 
-      post :submission, :xml_submission_file => xml_file
+      post :submission, params: { :xml_submission_file => xml_file }
       expect(response).to be_success
     end
 
@@ -60,7 +60,7 @@ describe AndroidController, :type => :controller do
       File.open("spec/fixtures/instant_file.xml","w") { |f| f.puts @xml }
       xml_file = fixture_file_upload('/instant_file.xml', 'text/xml')
 
-      post :submission, :xml_submission_file => xml_file
+      post :submission, params: { :xml_submission_file => xml_file }
       expect(response.response_code).to eq(401)
       expect(response).not_to be_success
     end
