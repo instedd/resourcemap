@@ -84,7 +84,7 @@ class CollectionsController < ApplicationController
   end
 
   def update
-    if collection.update_attributes params[:collection]
+    if collection.update collection_params
       collection.recreate_index
       redirect_to collection_settings_path(collection), notice: _("Collection %{collection_name} updated") % { collection_name: collection.name }
     else
@@ -310,4 +310,10 @@ class CollectionsController < ApplicationController
                  preview_url: uploader.url(:preview)})
   end
 
+  private
+
+  # TODO: migrate to strong parameters
+  def collection_params
+    params[:collection].permit!
+  end
 end
