@@ -28,7 +28,6 @@ gem 'alto_guisso_rails', :git => "https://github.com/instedd/alto_guisso_rails",
 # libraries
 gem 'actionpack-action_caching'
 gem 'actionpack-page_caching'
-gem 'active_model_serializers'        # TODO: consider removing (one serializer)
 gem 'activerecord-import'
 gem "breadcrumbs_on_rails"
 gem 'carrierwave'
@@ -36,7 +35,6 @@ gem 'decent_exposure'                 # NOTE: pattern used in 12 out of 29 contr
 gem 'gettext', '~> 3.1.2'
 gem 'gettext_i18n_rails_js', git: "https://github.com/juanboca/gettext_i18n_rails_js.git", branch: 'master'
 gem 'ice_cube'
-# gem 'includes-count'                  # TODO: remove (only one use + breaking ActiveRecord with a frozen array)
 gem "instedd-rails" #, '~> 0.0.24'
 gem 'mini_magick'
 gem 'msgpack', '~> 0.7.5'

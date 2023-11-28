@@ -9,7 +9,8 @@ class Api::CollectionsController < ApiController
   expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
 
   def index
-    render json: current_user.collections.includes_count(:sites).load, each_serializer: Api::CollectionSerializer
+    collections = current_user.collections
+    render_json collections_json(collections, collections.count_sites)
   end
 
   def create

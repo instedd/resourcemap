@@ -36,6 +36,10 @@ class Collection < ApplicationRecord
   after_save :touch_lifespan
   after_destroy :touch_lifespan
 
+  def self.count_sites
+    Site.where(collection_id: select(:id)).group(:collection_id).count
+  end
+
   def max_value_of_property(es_code)
     client = Elasticsearch::Client.new
     results = client.search index: index_name, type: 'site', body: {
