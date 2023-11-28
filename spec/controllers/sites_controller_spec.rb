@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SitesController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:user) { User.make }
   let(:collection) { user.create_collection(Collection.make_unsaved) }

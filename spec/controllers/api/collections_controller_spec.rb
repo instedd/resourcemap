@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Api::CollectionsController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
   render_views
 
   let(:user) { User.make }

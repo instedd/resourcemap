@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RegistrationsController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
   render_views
 
   before :each do

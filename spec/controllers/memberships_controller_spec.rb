@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MembershipsController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:user) { User.make email: 'foo@test.com' }
   let(:user_2) { User.make email: 'bar@test.com' }

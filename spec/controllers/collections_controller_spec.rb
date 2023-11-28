@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CollectionsController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
   render_views
   let(:user) { User.make }
   let(:collection) { user.create_collection(Collection.make(anonymous_name_permission: 'read', anonymous_location_permission: 'read'))}

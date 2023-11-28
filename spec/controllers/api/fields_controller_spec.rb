@@ -5,7 +5,7 @@ def get_layer(json, id)
 end
 
 describe Api::FieldsController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:admin) { User.make }
 

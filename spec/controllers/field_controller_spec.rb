@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe FieldsController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
   render_views
 
   let(:admin) { User.make }
