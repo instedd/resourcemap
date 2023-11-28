@@ -1,5 +1,5 @@
 class SitesPermissionController < ApplicationController
-  before_filter :authenticate_collection_admin!, only: :create
+  before_action :authenticate_collection_admin!, only: :create
 
   def index
     membership = current_user.membership_for_collection(collection)

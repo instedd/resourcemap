@@ -5,7 +5,7 @@ def get_layer(json, id)
 end
 
 describe Api::FieldsController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:admin) { User.make }
 
@@ -49,7 +49,7 @@ describe Api::FieldsController, :type => :controller do
     it "should not be allowed" do
       sign_in user
 
-      post :create, collection_id: collection.id, layer_id: layer.id, fields: fields
+      post :create, params: { collection_id: collection.id, layer_id: layer.id, fields: fields }
 
       assert_response 403
     end
@@ -60,11 +60,11 @@ describe Api::FieldsController, :type => :controller do
       before(:each) { sign_in admin }
 
       it "should be allowed" do
-        post :create, collection_id: collection.id, layer_id: layer.id, fields: fields
+        post :create, params: { collection_id: collection.id, layer_id: layer.id, fields: fields }
 
         assert_response :success
 
-        get :index, collection_id: collection.id
+        get :index, params: { collection_id: collection.id }
 
         json = JSON.parse response.body
         layer_json = get_layer json, layer.id
@@ -80,11 +80,11 @@ describe Api::FieldsController, :type => :controller do
 
         f = fields.push({ "name" => "Whatever", "code" => numeric.code, "kind" => "text" })
 
-        post :create, collection_id: collection.id, layer_id: layer.id, fields: f
+        post :create, params: { collection_id: collection.id, layer_id: layer.id, fields: f }
 
         assert_response 409
 
-        get :index, collection_id: collection.id
+        get :index, params: { collection_id: collection.id }
 
         json = JSON.parse response.body
         layer_json = get_layer json, layer.id

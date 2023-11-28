@@ -41,7 +41,7 @@ describe CsdApiController, :type => :controller do
       sign_in not_member
       request_id = "urn:uuid:4924fff9-e0f4-48c8-a403-955760fcc667"
       request.env["RAW_POST_DATA"] = generate_request(request_id)
-      post :get_directory_modifications, collection_id: collection.id
+      post :get_directory_modifications, params: { collection_id: collection.id }
       expect(response.status).to eq(403)
     end
 
@@ -49,7 +49,7 @@ describe CsdApiController, :type => :controller do
       request_id = "urn:uuid:4924fff9-e0f4-48c8-a403-955760fcc667"
       request.env["RAW_POST_DATA"] = generate_request(request_id)
 
-      post :get_directory_modifications, collection_id: collection.id
+      post :get_directory_modifications, params: { collection_id: collection.id }
       expect(response.status).to eq(200)
 
       response_hash = Hash.from_xml(response.body)
@@ -89,7 +89,7 @@ describe CsdApiController, :type => :controller do
     skip "should respond whit an error on invalid datetime element" do
       request.env["RAW_POST_DATA"] =  generate_request("hello", "hello")
 
-      post :get_directory_modifications, collection_id: collection.id
+      post :get_directory_modifications, params: { collection_id: collection.id }
 
       expected_xml = %Q{
         <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -110,7 +110,7 @@ describe CsdApiController, :type => :controller do
     skip "should respond whit an error on invalid soap message" do
       request.env["RAW_POST_DATA"] =  %Q{"hello"}
 
-      post :get_directory_modifications, collection_id: collection.id
+      post :get_directory_modifications, params: { collection_id: collection.id }
 
       expected_xml = %Q{
         <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -142,7 +142,7 @@ describe CsdApiController, :type => :controller do
       site_b.save!
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
-      post :get_directory_modifications, collection_id: collection.id
+      post :get_directory_modifications, params: { collection_id: collection.id }
       response_hash = Hash.from_xml(response.body)
 
       body = response_hash["Envelope"]["Body"]["getModificationsResponse"]["CSD"]
@@ -210,7 +210,7 @@ describe CsdApiController, :type => :controller do
           status_field.es_code => false})
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
-      post :get_directory_modifications, collection_id: collection.id
+      post :get_directory_modifications, params: { collection_id: collection.id }
 
       # Hash.from_xml doesn't take into account attributes.
       # Have to change this to use Nokogiri.
@@ -269,7 +269,7 @@ describe CsdApiController, :type => :controller do
       SampleCollectionGenerator.fill collection_2
 
       request.env["RAW_POST_DATA"] = generate_request("urn:uuid:47b8c0c2-1eb1-4b4b-9605-19f091b64fb1", "2013-11-18T20:40:28-03:00")
-      post :get_directory_modifications, collection_id: collection_2.id
+      post :get_directory_modifications, params: { collection_id: collection_2.id }
 
       response_xml = Nokogiri::XML(response.body) do |config|
         config.strict.noblanks

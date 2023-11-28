@@ -9,11 +9,11 @@ class CollectionsController < ApplicationController
   # https://github.com/rails/rails/pull/10769 && https://github.com/ryanb/cancan/issues/357
   expose(:accessible_collections) { Collection.accessible_by(current_ability)}
 
-  expose(:collections_with_snapshot) { select_each_snapshot(accessible_collections.uniq) }
+  expose(:collections_with_snapshot) { select_each_snapshot(accessible_collections.distinct) }
 
-  before_filter :show_collections_breadcrumb, :only => [:index, :new]
-  before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
-  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
+  before_action :show_collections_breadcrumb, :only => [:index, :new]
+  before_action :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
+  before_action :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
 
   def index
     # Keep only the collections of which the user is membership
@@ -84,7 +84,7 @@ class CollectionsController < ApplicationController
   end
 
   def update
-    if collection.update_attributes params[:collection]
+    if collection.update collection_params
       collection.recreate_index
       redirect_to collection_settings_path(collection), notice: _("Collection %{collection_name} updated") % { collection_name: collection.name }
     else
@@ -211,7 +211,8 @@ class CollectionsController < ApplicationController
     search.hierarchy params[:hierarchy_code], params[:hierarchy_value] if params[:hierarchy_code]
     search.location_missing if params[:location_missing].present?
     search.name_search params[:sitename] if params[:sitename].present?
-    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing, :locale, :sitename)
+    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing, :locale, :sitename).to_h
+
     results = search.results
     sites = results.map do |result|
       source = result['_source']
@@ -309,4 +310,10 @@ class CollectionsController < ApplicationController
                  preview_url: uploader.url(:preview)})
   end
 
+  private
+
+  # TODO: migrate to strong parameters
+  def collection_params
+    params[:collection].permit!
+  end
 end

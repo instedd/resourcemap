@@ -10,6 +10,28 @@ module Api::JsonHelper
     obj
   end
 
+  def collections_json(collections, sites_counts)
+    collections.each do |collection|
+      {
+        anonymous_location_permission: collection.anonymous_location_permission,
+        anonymous_name_permission: collection.anonymous_name_permission,
+        created_at: collection.created_at,
+        description: collection.description,
+        icon: collection.icon,
+        id: collection.id,
+        lat: collection.lat,
+        lng: collection.lng,
+        max_lat: collection.max_lat,
+        max_lng: collection.max_lng,
+        min_lat: collection.min_lat,
+        min_lng: collection.min_lng,
+        name: collection.name,
+        updated_at:collection.updated_at,
+        count: sites_counts[collection.id].to_i,
+      }
+    end
+  end
+
   def site_item_json(result)
     source = result['_source']
 

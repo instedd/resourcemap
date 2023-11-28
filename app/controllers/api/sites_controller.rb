@@ -1,8 +1,8 @@
 class Api::SitesController < ApiController
   include Api::JsonHelper
 
-  before_filter :authenticate_api_user!
-  before_filter :authenticate_site_user!, except: [:create]
+  before_action :authenticate_api_user!
+  before_action :authenticate_site_user!, except: [:create]
 
   expose(:site) do
     if params[:collection_id]

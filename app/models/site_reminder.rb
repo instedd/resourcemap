@@ -1,4 +1,4 @@
-class SiteReminder < ActiveRecord::Base
+class SiteReminder < ApplicationRecord
   belongs_to :reminder
   belongs_to :site
 

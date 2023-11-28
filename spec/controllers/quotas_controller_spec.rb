@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe QuotasController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
   render_views
 
   let(:user) { User.make }
@@ -10,7 +10,7 @@ describe QuotasController, :type => :controller do
   before(:each) { sign_in user }
   it 'should upate message quota on collection from 0 to 10' do 
     expect{
-      post :create, collection_id: collection.id, quota: 10, format: 'json'
+      post :create, params: { collection_id: collection.id, quota: 10, format: 'json' }
     }.to change{
       c = Collection.find collection.id
       c.quota
@@ -18,7 +18,7 @@ describe QuotasController, :type => :controller do
   end
 
   it 'should respond the collection depend on collection_id' do
-    get :show, id: collection.id
+    get :show, params: { id: collection.id }
     assert_response :success
   end
 end

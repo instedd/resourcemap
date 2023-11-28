@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SitesController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:user) { User.make }
   let(:collection) { user.create_collection(Collection.make_unsaved) }
@@ -26,79 +26,79 @@ describe SitesController, :type => :controller do
   # Done. Although this functionality will also stay here for UI purposes.
 
   it 'should validate format for numeric field' do
-    post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number'
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number' }
     json = JSON.parse response.body
     expect(json["error_message"]).to eq("Invalid numeric value in field #{numeric.code}")
-    post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2'
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2' }
     validate_site_property_value(site, numeric, 2)
   end
 
   it "should validate format for date field  in mm/dd/yyyy format" do
-    post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: '11/27/2012'
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: date.es_code, value: '11/27/2012' }
     validate_site_property_value(site, date, "2012-11-27T00:00:00Z")
-    post :update_property, site_id: site.id, format: 'json', es_code: date.es_code, value: "117"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: date.es_code, value: "117" }
     json = JSON.parse response.body
     expect(json["error_message"]).to eq("Invalid date value in field #{date.code}. The configured date format is mm/dd/yyyy.")
   end
 
   it "should validate format for hierarchy field" do
-    post :update_property, site_id: site.id, format: 'json', es_code: hierarchy.es_code, value: "101"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: hierarchy.es_code, value: "101" }
     validate_site_property_value(site, hierarchy, "101")
-    post :update_property, site_id: site.id, format: 'json', es_code: hierarchy.es_code, value: "Dad"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: hierarchy.es_code, value: "Dad" }
     json = JSON.parse response.body
     expect(json["error_message"]).to eq("Invalid hierarchy option 'Dad' in field '#{hierarchy.code}'")
   end
 
   it "should validate format for select_one field" do
-    post :update_property, site_id: site.id, format: 'json', es_code: select_one.es_code, value: "1"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: select_one.es_code, value: "1" }
     validate_site_property_value(site, select_one, 1)
-    post :update_property, site_id: site.id, format: 'json', es_code: select_one.es_code, value: "one"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: select_one.es_code, value: "one" }
     json = JSON.parse response.body
     expect(json["error_message"]).to eq("Invalid option in field #{select_one.code}")
   end
 
   it "should validate format for select_many field" do
-    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: ["1"]
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: select_many.es_code, value: ["1"] }
     validate_site_property_value(site, select_many, [1])
-    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: ["2", "1"]
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: select_many.es_code, value: ["2", "1"] }
     validate_site_property_value(site, select_many, [2, 1])
-    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "2, 1"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: select_many.es_code, value: "2, 1" }
     validate_site_property_value(site, select_many, [2, 1])
-    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "[two,]"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: select_many.es_code, value: "[two,]" }
     json = JSON.parse response.body
     expect(json["error_message"]).to eq("Invalid option '[two' in field #{select_many.code}")
-    post :update_property, site_id: site.id, format: 'json', es_code: select_many.es_code, value: "two,one"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: select_many.es_code, value: "two,one" }
     json = JSON.parse response.body
     expect(json["error_message"]).to eq("Invalid option 'two' in field #{select_many.code}")
   end
 
   it "should validate format for site field" do
-    post :update_property, site_id: site.id, format: 'json', es_code: site_field.es_code, value: "1234"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: site_field.es_code, value: "1234" }
     validate_site_property_value(site, site_field, "1234")
-    post :update_property, site_id: site.id, format: 'json', es_code: site_field.es_code, value: 23
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: site_field.es_code, value: 23 }
     json = JSON.parse response.body
     expect(json["error_message"]).to eq("Non-existent site-id in field #{site_field.code}")
   end
 
   it "should validate format for user field" do
-    post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: user.email
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: director.es_code, value: user.email }
     validate_site_property_value(site, director, user.email)
-    post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com" }
     json = JSON.parse response.body
     expect(json["error_message"]).to eq("Non-existent user email address in field #{director.code}")
   end
 
   it "should validate format for email field" do
-    post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "valid@email.com"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: email_field.es_code, value: "valid@email.com" }
     validate_site_property_value(site, email_field, "valid@email.com")
-    post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "v3@@e.mail.c.om"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: email_field.es_code, value: "v3@@e.mail.c.om" }
     json = JSON.parse response.body
     expect(json["error_message"]).to eq("Invalid email address in field #{email_field.code}")
   end
 
   it "should increase the site version when updating a single property" do
     site_version = site.version
-    post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "valid@email.com"
+    post :update_property, params: { site_id: site.id, format: 'json', es_code: email_field.es_code, value: "valid@email.com" }
     json = JSON.parse response.body
     expect(json["version"]).to eq(site_version+1)
   end
@@ -114,7 +114,7 @@ describe SitesController, :type => :controller do
       date.es_code => "2013-02-05T00:00:00Z",
       director.es_code => user.email,
       email_field.es_code => "myemail@mail.com" }}.to_json
-    post :create, {:collection_id => collection.id, :site => site_params}
+    post :create, params: {:collection_id => collection.id, :site => site_params}
 
     expect(response).to be_success
     new_site = Site.find_by_name "new site"
@@ -141,14 +141,14 @@ describe SitesController, :type => :controller do
       sign_in member
 
       site_params = {:name => "new site"}.to_json
-      post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :update, params: {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       expect(response.status).to eq(403)
     end
 
     it 'should update only name' do
       site_params = {:name => "new site"}.to_json
-      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, params: {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       expect(response).to be_success
       modified_site = Site.find_by_name "new site"
@@ -165,7 +165,7 @@ describe SitesController, :type => :controller do
       sign_in member
 
       site_params = {:name => "new site"}.to_json
-      post :partial_update, {:format => :json, :collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, params: {:format => :json, :collection_id => collection.id, :id => site.id, :site => site_params }
 
       expect(response.status).to eq(403)
       expect(Site.find_by_name("new site")).to be_nil
@@ -173,7 +173,7 @@ describe SitesController, :type => :controller do
 
     it 'should be able to delete location' do
       site_params = {:lat => nil, :lng => nil}.to_json
-      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, params: {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       expect(response).to be_success
       modified_site = Site.find_by_name site.name
@@ -193,7 +193,7 @@ describe SitesController, :type => :controller do
       sign_in member
 
       site_params = {:lat => nil, :lng => nil}.to_json
-      post :partial_update, {:format => :json, :collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, params: {:format => :json, :collection_id => collection.id, :id => site.id, :site => site_params }
 
       expect(response.status).to eq(403)
       site.reload
@@ -206,7 +206,7 @@ describe SitesController, :type => :controller do
       site.save!
 
       site_params = {:name => "new site"}.to_json
-      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, params: {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       modified_site = Site.find_by_name "new site"
       expect(modified_site).to be
@@ -220,7 +220,7 @@ describe SitesController, :type => :controller do
       site.save!
 
       site_params = {:properties => {text.es_code => "new value"}}.to_json
-      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, params: {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       modified_site = site.reload
       expect(modified_site.properties[text.es_code]).to eq("new value")
@@ -240,7 +240,7 @@ describe SitesController, :type => :controller do
       sign_in member
 
       site_params = {:properties => {text.es_code => "new value"}}.to_json
-      post :partial_update, {:format => :json, :collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, params: {:format => :json, :collection_id => collection.id, :id => site.id, :site => site_params }
 
       expect(response.status).to eq(403)
       site.reload
@@ -249,7 +249,7 @@ describe SitesController, :type => :controller do
 
     it 'should update a single property' do
       site_params = {:properties => { text.es_code => "new text" }}.to_json
-      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, params: {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       expect(response).to be_success
       new_site = Site.find_by_name site.name
@@ -259,14 +259,14 @@ describe SitesController, :type => :controller do
     it 'should respond with a JSON site with the new version' do
       site_version = site.version
       site_params = {:properties => { text.es_code => "new text" }}.to_json
-      post :partial_update, {:collection_id => collection.id, :id => site.id, :site => site_params }
+      post :partial_update, params: {:collection_id => collection.id, :id => site.id, :site => site_params }
       json = JSON.parse response.body
       expect(json["version"]).to eq(site_version+1)
     end
   end
 
   it "can destroy site" do
-    delete :destroy, id: site.id, collection_id: collection.id
+    delete :destroy, params: { id: site.id, collection_id: collection.id }
 
     expect(Site.find_by_id(site.id)).to be_nil
   end
@@ -276,7 +276,7 @@ describe SitesController, :type => :controller do
     membership = Membership.make collection: collection, user: member, admin: false
     sign_in member
 
-    delete :destroy, format: :json, id: site.id, collection_id: collection.id
+    delete :destroy, params: { format: :json, id: site.id, collection_id: collection.id }
     expect(response).to be_forbidden
 
     expect(Site.find_by_id(site.id)).to be
@@ -290,7 +290,7 @@ describe SitesController, :type => :controller do
   describe 'analytic' do
     it 'should changed user.site_count by 1'  do
       expect {
-        post :create, site: "{\"name\":\"site_01\",\"lat\":8.932599568335238,\"lng\":99.27246091406255,\"properties\":{}}", collection_id: collection.id
+        post :create, params: { site: "{\"name\":\"site_01\",\"lat\":8.932599568335238,\"lng\":99.27246091406255,\"properties\":{}}", collection_id: collection.id }
       }.to change{
         u = User.find user.id
         u.site_count
@@ -304,7 +304,7 @@ describe SitesController, :type => :controller do
     describe 'create new site' do
       before(:each) do
         site_params = {:name => "new site"}.to_json
-        @response = post :create, {:collection_id => collection.id, :site => site_params}
+        @response = post :create, params: {:collection_id => collection.id, :site => site_params}
       end
 
       it "should be success" do
@@ -323,7 +323,7 @@ describe SitesController, :type => :controller do
         site.save!
 
         site_params = {:name => "new site name"}.to_json
-        @response = post :partial_update, { :collection_id => collection.id, :id => site.id, :site => site_params }
+        @response = post :partial_update, params: { :collection_id => collection.id, :id => site.id, :site => site_params }
       end
 
       it "should be success" do
@@ -342,7 +342,7 @@ describe SitesController, :type => :controller do
         site.save!
 
         site_params = {:name => site.name}.to_json
-        @response = post :partial_update, { :collection_id => collection.id, :id => site.id, :site => site_params }
+        @response = post :partial_update, params: { :collection_id => collection.id, :id => site.id, :site => site_params }
       end
 
       it "should be success" do
@@ -360,7 +360,7 @@ describe SitesController, :type => :controller do
         site_params = {:name => "new site name", :properties => {
           auto_reset_field.es_code => true
         }}.to_json
-        @response = post :partial_update, { :collection_id => collection.id, :id => site.id, :site => site_params }
+        @response = post :partial_update, params: { :collection_id => collection.id, :id => site.id, :site => site_params }
       end
 
       it "should be success" do
@@ -375,7 +375,7 @@ describe SitesController, :type => :controller do
 
     describe 'update other site property' do
       before(:each) do
-        post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2'
+        post :update_property, params: { site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2' }
       end
 
       it "should update property" do
@@ -389,7 +389,7 @@ describe SitesController, :type => :controller do
 
     describe 'update auto_reset site property' do
       before(:each) do
-        post :update_property, site_id: site.id, format: 'json', es_code: auto_reset_field.es_code, value: true
+        post :update_property, params: { site_id: site.id, format: 'json', es_code: auto_reset_field.es_code, value: true }
       end
 
       it "should update property" do

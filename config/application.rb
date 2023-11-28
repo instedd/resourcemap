@@ -24,13 +24,6 @@ module ResourceMap
     # FIXME: add strong parameters filters to all controllers
     config.action_controller.permit_all_parameters = true
 
-    # Load all Field classes to make associations like "text_fields" and "numeric_fields" work
-    config.to_prepare do
-      Dir[ File.expand_path(Rails.root.join("app/models/field/*.rb")) ].each do |file|
-        require_dependency file
-      end
-    end
-
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
@@ -56,9 +49,6 @@ module ResourceMap
     # This is necessary if your schema can't be completely dumped by the schema dumper,
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
-
-    # Do not swallow errors in after_commit/after_rollback callbacks (Rails 4.2).
-    config.active_record.raise_in_transactional_callbacks = true
 
     # Enable the asset pipeline
     config.assets.enabled = true

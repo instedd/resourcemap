@@ -1,4 +1,4 @@
-class Identity < ActiveRecord::Base
+class Identity < ApplicationRecord
   belongs_to :user
 
   def assign_attributes(new_attributes)

@@ -4,12 +4,13 @@ class Api::CollectionsController < ApiController
 
   authorize_resource :collection, :decent_exposure => true, only: [:destroy]
 
-  before_filter :authenticate_collection_user!, :except => [:create, :show, :index]
+  before_action :authenticate_collection_user!, :except => [:create, :show, :index]
 
   expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
 
   def index
-    render json: current_user.collections.includes_count(:sites).load, each_serializer: Api::CollectionSerializer
+    collections = current_user.collections
+    render_json collections_json(collections, collections.count_sites)
   end
 
   def create
@@ -181,7 +182,7 @@ class Api::CollectionsController < ApiController
       except_params << :sort_direction
     end
 
-    search.where params.except(*except_params)
+    search.where params.except(*except_params).to_h
     search
   end
 

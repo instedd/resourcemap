@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # framework
-gem 'rails', '~> 4.2.11'
+gem 'rails', '~> 5.0.0'
 
 # services
 gem "elasticsearch", '~> 1.0.17'
@@ -18,7 +18,7 @@ gem 'intercom-rails'
 gem "nuntium_api", "~> 0.13", :require => "nuntium"
 
 # authentication/authorization
-gem 'devise', '~> 3.3'
+gem 'devise', '~> 4.0'
 gem 'cancancan', '~> 1.9'
 gem "omniauth", '~> 1.2'
 gem "omniauth-openid", '~> 1.0'
@@ -28,7 +28,6 @@ gem 'alto_guisso_rails', :git => "https://github.com/instedd/alto_guisso_rails",
 # libraries
 gem 'actionpack-action_caching'
 gem 'actionpack-page_caching'
-gem 'active_model_serializers'        # TODO: consider removing (one serializer)
 gem 'activerecord-import'
 gem "breadcrumbs_on_rails"
 gem 'carrierwave'
@@ -36,8 +35,7 @@ gem 'decent_exposure'                 # NOTE: pattern used in 12 out of 29 contr
 gem 'gettext', '~> 3.1.2'
 gem 'gettext_i18n_rails_js', git: "https://github.com/juanboca/gettext_i18n_rails_js.git", branch: 'master'
 gem 'ice_cube'
-gem 'includes-count'                  # TODO: consider removing (only one use)
-gem "instedd-rails", '~> 0.0.24'
+gem "instedd-rails" #, '~> 0.0.24'
 gem 'mini_magick'
 gem 'msgpack', '~> 0.7.5'
 gem 'nokogiri'
@@ -53,16 +51,14 @@ gem 'will_paginate'
 gem "loofah", "2.20.0" if RUBY_VERSION.to_f < 2.5
 
 # templates
-gem 'haml-rails', '~> 0.4'
+gem 'haml-rails'
 gem 'haml-magic-translations'
 
 # assets
-gem 'coffee-rails', '~> 4.0.1'
-gem 'jquery-rails', "~> 2.0.2"
-gem 'lodash-rails'
-gem 'knockoutjs-rails', '~> 3.2.0'
+gem 'coffee-rails', '~> 4.1.1'
+gem 'lodash-rails', '~> 2.4.1'
 gem 'rails-assets-knockout-sortable', :source => 'https://rails-assets.org'
-gem 'sass-rails',   '~> 4.0.1'
+gem 'sass-rails',   '~> 5.0'
 gem 'uglifier', '>= 2.5.0'
 
 # dependency fixes (to be removed)
@@ -93,9 +89,10 @@ group :test, :development do
   gem 'jasmine', '~> 2.7.0'
   # gem 'memory_profiler'
   # gem 'pry-byebug'
-  gem 'rspec-rails', '~> 3.4.0'
+  gem 'rspec-rails', '~> 3.5.0'
   gem 'rspec-retry'
   # gem 'stackprof'
+  gem 'byebug'
 end
 
 # group :development do

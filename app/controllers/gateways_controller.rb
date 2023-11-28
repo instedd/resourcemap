@@ -1,5 +1,5 @@
 class GatewaysController < ApplicationController
-  before_filter :authenticate_user!, :except => :index
+  before_action :authenticate_user!, :except => :index
 
   def index
     method = Channel.nuntium_info_methods

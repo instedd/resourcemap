@@ -1,4 +1,4 @@
-class LayerHistory < ActiveRecord::Base
+class LayerHistory < ApplicationRecord
   belongs_to :layer
   belongs_to :collection
 

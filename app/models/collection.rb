@@ -1,4 +1,4 @@
-class Collection < ActiveRecord::Base
+class Collection < ApplicationRecord
   include Collection::CsvConcern
   include Collection::GeomConcern
   include Collection::ElasticsearchConcern
@@ -36,10 +36,14 @@ class Collection < ActiveRecord::Base
   after_save :touch_lifespan
   after_destroy :touch_lifespan
 
+  def self.count_sites
+    Site.where(collection_id: select(:id)).group(:collection_id).count
+  end
+
   def max_value_of_property(es_code)
     client = Elasticsearch::Client.new
     results = client.search index: index_name, type: 'site', body: {
-      sort: {es_code => 'desc'},
+      sort: {"properties.#{es_code}" => 'desc'},
       size: 2000,
     }
     results["hits"]["hits"].first['_source']['properties'][es_code] rescue 0
@@ -92,12 +96,11 @@ class Collection < ActiveRecord::Base
 
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
-      visible_layers = layer_histories.accessible_by(current_ability).at_date(date).includes(:layer).map(&:layer)
+      visible_layers = layer_histories.accessible_by(current_ability).at_date(date).includes(:layer).map(&:layer).uniq
     else
-      visible_layers = layers.accessible_by(current_ability)
+      visible_layers = layers.accessible_by(current_ability).distinct
     end
 
-    visible_layers = visible_layers.uniq
     fields_by_layer_id = Field.where(layer_id: visible_layers.map(&:id)).load.group_by(&:layer_id)
 
     visible_layers.map do |layer|
@@ -116,14 +119,12 @@ class Collection < ActiveRecord::Base
 
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date
-      visible_layers = layer_histories.accessible_by(current_ability).at_date(date)
+      visible_layers = layer_histories.accessible_by(current_ability).at_date(date).distinct
     else
-      visible_layers = layers.accessible_by(current_ability).includes(:fields)
+      visible_layers = layers.accessible_by(current_ability).includes(:fields).distinct
     end
 
     json_layers = []
-
-    visible_layers = visible_layers.uniq
 
     visible_layers.each do |layer|
       json_layer = {}

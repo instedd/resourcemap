@@ -1,4 +1,4 @@
-class UserSnapshot < ActiveRecord::Base
+class UserSnapshot < ApplicationRecord
   belongs_to :snapshot
   belongs_to :user
   belongs_to :collection
@@ -11,7 +11,7 @@ class UserSnapshot < ActiveRecord::Base
   after_destroy :touch_user_lifespan
 
   def destroy_previous_for_user_and_collection
-    UserSnapshot.destroy_all user_id: self.user_id, collection_id: self.collection_id
+    UserSnapshot.where(user_id: user_id, collection_id: collection_id).destroy_all
   end
 
   def go_back_to_present!

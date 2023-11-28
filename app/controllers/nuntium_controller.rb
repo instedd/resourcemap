@@ -20,19 +20,19 @@ class NuntiumController < ApplicationController
       # message[:collection_id] = get_collection_id(params[:body])
     # end
     # message.save
-    # render :text => message.reply, :content_type => "text/plain"
+    # render :plain => message.reply
     # end
   # end
-  
+
   # POST /nuntium
   def receive
     begin
       message = save_message
     rescue => err
-      render :text => err.message, :status => 400
+      render :plain => err.message, :status => 400
       return
     end
-    
+
     begin
       message.process! params
     rescue => err
@@ -42,7 +42,7 @@ class NuntiumController < ApplicationController
       message[:collection_id] = get_collection_id(params[:body])
     end
     message.save
-    render :text => message.reply, :content_type => "text/plain"
+    render :plain => message.reply
     end
   end
 
@@ -57,7 +57,7 @@ class NuntiumController < ApplicationController
       collectionId = Message.getCollectionId(bodyMsg, 7)
     elsif (bodyMsg[5] == "u")
       siteCode = Message.getCollectionId(bodyMsg, 7)
-      site = Site.find_by_id_with_prefix(siteCode)  
+      site = Site.find_by_id_with_prefix(siteCode)
       collectionId = site.collection_id
     end
     return collectionId

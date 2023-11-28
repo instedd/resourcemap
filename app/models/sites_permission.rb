@@ -1,4 +1,4 @@
-class SitesPermission < ActiveRecord::Base
+class SitesPermission < ApplicationRecord
   belongs_to :membership
   serialize :some_sites, Array
 

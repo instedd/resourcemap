@@ -1,4 +1,4 @@
-class ShareChannel < ActiveRecord::Base
+class ShareChannel < ApplicationRecord
   belongs_to :channel
   belongs_to :collection
 

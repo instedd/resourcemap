@@ -1,4 +1,4 @@
-class Membership < ActiveRecord::Base
+class Membership < ApplicationRecord
   include Membership::ActivityConcern
   include Membership::SitesPermissionConcern
   include Membership::DefaultPermissionConcern

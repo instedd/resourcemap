@@ -1,7 +1,7 @@
 class ThresholdsController < ApplicationController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
-  before_filter :fix_conditions, only: [:create, :update]
+  before_action :fix_conditions, only: [:create, :update]
 
   def index
     respond_to do |format|

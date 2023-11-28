@@ -1,4 +1,4 @@
-class ImportJob < ActiveRecord::Base
+class ImportJob < ApplicationRecord
   # The status field captures the lifecycle of an ImportJob. Currently it is:
   #
   # :file_uploaded => :pending

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe LayersController, :type => :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
   render_views
 
   let(:user) { User.make }
@@ -16,7 +16,7 @@ describe LayersController, :type => :controller do
     it "should ignore layer updates with public param" do
       json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', public: 'public', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
 
-      post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+      post :update, params: {layer: json_layer, collection_id: collection.id, id: layer.id}
 
       expect(response).to be_success
     end
@@ -26,7 +26,7 @@ describe LayersController, :type => :controller do
     expect(layer.fields.count).to eq(1)
     json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
 
-    post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+    post :update, params: {layer: json_layer, collection_id: collection.id, id: layer.id}
 
     expect(layer.fields.count).to eq(0)
     expect(layer2.fields.count).to eq(1)
@@ -46,7 +46,7 @@ describe LayersController, :type => :controller do
   it "should update a layer's fields" do
     json_layer = {id: layer.id, name: layer.name, ord: layer.ord, anonymous_user_permission: 'none', fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: "New name", ord: numeric.ord}}}
 
-    post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
+    post :update, params: {layer: json_layer, collection_id: collection.id, id: layer.id}
 
     expect(response).to be_success
     expect(layer.fields.count).to eq(1)
@@ -56,7 +56,7 @@ describe LayersController, :type => :controller do
   describe 'analytic' do
     it 'should changed user.layer_count by 1' do
       expect {
-        post :create, layer: { name: 'layer_01', fields: [], ord: 1}, collection_id: collection.id
+        post :create, params: { layer: { name: 'layer_01', fields: [], ord: 1}, collection_id: collection.id }
       }.to change{
         u = User.find user.id
         u.layer_count
@@ -65,7 +65,7 @@ describe LayersController, :type => :controller do
   end
 
   it "shoud set order" do
-    post :set_order, {ord: 2, collection_id: collection.id, id: layer.id}
+    post :set_order, params: {ord: 2, collection_id: collection.id, id: layer.id}
     expect(response).to be_success
     layer.reload
     expect(layer.ord).to eq(2)
@@ -79,14 +79,14 @@ describe LayersController, :type => :controller do
     it 'should let any member list layers, but should hide layers without explicit read permissions' do
       sign_in member
 
-      get :index, collection_id: collection.id, format: 'json'
+      get :index, params: { collection_id: collection.id, format: 'json' }
 
       json = JSON.parse response.body
       expect(json.length).to eq(0)
     end
 
     it 'should let admins see all layers' do
-      get :index, collection_id: collection.id, format: 'json'
+      get :index, params: { collection_id: collection.id, format: 'json' }
 
       json = JSON.parse response.body
       expect(json.length).to eq(2)
@@ -96,7 +96,7 @@ describe LayersController, :type => :controller do
       LayerMembership.make layer: layer, membership: membership, read: true
       sign_in member
 
-      get :index, collection_id: collection.id, format: 'json'
+      get :index, params: { collection_id: collection.id, format: 'json' }
       json = JSON.parse response.body
 
       expect(json.length).to eq(1)
@@ -105,7 +105,7 @@ describe LayersController, :type => :controller do
 
     it 'should let an admin set order' do
       sign_in user
-      post :order, {order: [layer2.id, layer.id], collection_id: collection.id}
+      post :order, params: {order: [layer2.id, layer.id], collection_id: collection.id}
 
       layer.reload
       layer2.reload
@@ -120,7 +120,7 @@ describe LayersController, :type => :controller do
     it "shouldn't let member set order" do
       sign_in member
 
-      post :order, {order: [layer2.id, layer.id], collection_id: collection.id}
+      post :order, params: {order: [layer2.id, layer.id], collection_id: collection.id}
 
       layer.reload
       layer2.reload

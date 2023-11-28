@@ -1,12 +1,12 @@
 class LayersController < ApplicationController
 
-  before_filter :authenticate_api_user!
+  before_action :authenticate_api_user!
 
   # We removed the public attribute from layers, but we'll accept requests sending it
   # so we don't break compatibility with already running clients.
-  before_filter :ignore_public_attribute
+  before_action :ignore_public_attribute
 
-  before_filter :fix_field_config, only: [:create, :update]
+  before_action :fix_field_config, only: [:create, :update]
 
 
   authorize_resource :layer, :decent_exposure => true, :except => :create
@@ -15,9 +15,9 @@ class LayersController < ApplicationController
     authorize! :read, collection
 
     if !current_user_snapshot.at_present? && collection then
-      collection.layer_histories.accessible_by(current_ability).uniq.at_date(current_user_snapshot.snapshot.date)
+      collection.layer_histories.accessible_by(current_ability).distinct.at_date(current_user_snapshot.snapshot.date)
     else
-      collection.layers.accessible_by(current_ability).uniq
+      collection.layers.accessible_by(current_ability).distinct
     end
   }
 

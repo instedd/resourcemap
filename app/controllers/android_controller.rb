@@ -1,6 +1,6 @@
 class AndroidController < ApplicationController
   protect_from_forgery :except => :submission
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   helper_method :render_xform, :get_hash_from_xml, :prepare_site
 
   expose(:collections) { Collection.accessible_by(current_ability) }
@@ -34,7 +34,7 @@ class AndroidController < ApplicationController
     if current_user.admins?(Collection.find(xml_hash["collection_id"]))
       render_json Site.create_or_update_from_hash!(xml_hash)
     else
-      render text: "User is unauthorized", status: 401
+      render plain: "User is unauthorized", status: 401
     end
   end
 

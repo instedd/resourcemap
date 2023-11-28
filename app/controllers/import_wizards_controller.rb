@@ -1,9 +1,9 @@
 require "fileutils"
 
 class ImportWizardsController < ApplicationController
-  before_filter :authenticate_api_user!
-  before_filter :show_properties_breadcrumb
-  before_filter :authenticate_collection_admin!, only: :logs
+  before_action :authenticate_api_user!
+  before_action :show_properties_breadcrumb
+  before_action :authenticate_collection_admin!, only: :logs
 
   before_action :validate_spreadsheet_params, only: [:import_csv_from_google_spreadsheet]
 
@@ -55,7 +55,7 @@ class ImportWizardsController < ApplicationController
   def execute
     columns = params[:columns].values
     if columns.find { |x| x[:usage] == 'new_field' } and not current_user.admins? collection
-      render text: "Non-admin users can't create new fields", status: :unauthorized
+      render plain: "Non-admin users can't create new fields", status: :unauthorized
     else
       ImportWizard.enqueue_job current_user, collection, params[:columns].values
       render_json :ok

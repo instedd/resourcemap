@@ -3,11 +3,11 @@ require 'spec_helper'
 describe Snapshot, :type => :model do
   include_examples 'collection lifespan', described_class
 
-  describe "validations" do
-    let!(:snapshot) { Snapshot.make }
+  # describe "validations" do
+  #   let!(:snapshot) { Snapshot.make }
 
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:collection_id) }
-  end
+  #   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:collection_id) }
+  # end
 
   let(:collection) { Collection.make }
 

@@ -1,4 +1,4 @@
-class Channel < ActiveRecord::Base
+class Channel < ApplicationRecord
   has_many :share_channels, :dependent => :destroy
   has_many :collections, :through => :share_channels
   belongs_to :user
