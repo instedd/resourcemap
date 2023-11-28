@@ -114,7 +114,7 @@ class SitesController < ApplicationController
     if params[:selected_hierarchy_id].present?
       search.selected_hierarchy params[:hierarchy_code], Field.find(params[:hierarchy_code]).descendants_of_in_hierarchy(params[:selected_hierarchy_id])
     end
-    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchy_id, :locale, :sitename)
+    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchy_id, :locale, :sitename).to_h
     render_json search.results
   end
 

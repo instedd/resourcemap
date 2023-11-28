@@ -181,7 +181,7 @@ class Api::CollectionsController < ApiController
       except_params << :sort_direction
     end
 
-    search.where params.except(*except_params)
+    search.where params.except(*except_params).to_h
     search
   end
 

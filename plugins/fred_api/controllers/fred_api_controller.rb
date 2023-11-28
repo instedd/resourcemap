@@ -112,7 +112,7 @@ class FredApiController < ApplicationController
     search.updated_since(params[:updatedSince]) if params[:updatedSince]
 
     # Query by Extended Properties
-    params_query = params.except(*except_params)
+    params_query = params.except(*except_params).to_h
     property_params = remove_prefix_form_properties_params(params_query)
     search.where property_params
 
