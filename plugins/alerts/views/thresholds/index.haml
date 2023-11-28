@@ -240,14 +240,13 @@
       .rightbuttons
         %button.cadd.right
     //ko
-    //ko
 
     -# New threshold link
     /ko if: fields().length
-    .box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
-      .toptitle
-        %span
-          Add Alert
-      .rightbuttons
-        %button.cadd.right
+    /.box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
+    /  .toptitle
+    /    %span
+    /      Add Alert
+    /  .rightbuttons
+    /    %button.cadd.right
     //ko
