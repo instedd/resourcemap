@@ -51,7 +51,7 @@ gem 'will_paginate'
 gem "loofah", "2.20.0" if RUBY_VERSION.to_f < 2.5
 
 # templates
-gem 'haml-rails', '~> 0.4'
+gem 'haml-rails'
 gem 'haml-magic-translations'
 
 # assets
