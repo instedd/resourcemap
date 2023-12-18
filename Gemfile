@@ -7,9 +7,9 @@ gem 'rails', '~> 4.2.11'
 gem "elasticsearch", '~> 1.0.17'
 gem 'mysql2', '~> 0.3.17'
 gem 'puma', '~> 3.11.4'
-gem 'redis', '~> 3.1'
-gem "resque", '~> 1.25', :require => "resque/server"
-gem 'resque-scheduler', '~> 3.0.0'
+gem 'redis', '~> 5.0'
+gem "resque", '~> 2.6', :require => "resque/server"
+gem 'resque-scheduler', '~> 4.10.2'
 
 # exernal services
 gem 'google-api-client', '~> 0.10'
@@ -20,8 +20,8 @@ gem "nuntium_api", "~> 0.13", :require => "nuntium"
 # authentication/authorization
 gem 'devise', '~> 3.3'
 gem 'cancancan', '~> 1.9'
-gem "omniauth", '~> 1.2'
-gem "omniauth-openid", '~> 1.0'
+gem "omniauth", '~> 2.0'
+gem "omniauth-openid", '~> 2.0'
 gem 'alto_guisso', :git => "https://github.com/instedd/alto_guisso", branch: 'master'
 gem 'alto_guisso_rails', :git => "https://github.com/instedd/alto_guisso_rails", branch: 'master'
 
@@ -62,7 +62,7 @@ gem 'jquery-rails', "~> 2.0.2"
 gem 'lodash-rails'
 gem 'knockoutjs-rails', '~> 3.2.0'
 gem 'rails-assets-knockout-sortable', :source => 'https://rails-assets.org'
-gem 'sass-rails',   '~> 4.0.1'
+gem 'sass-rails',   '~> 6.0.0'
 gem 'uglifier', '>= 2.5.0'
 
 # dependency fixes (to be removed)
@@ -75,7 +75,7 @@ group :development do
 end
 
 group :test do
-  gem 'capybara', '~> 2.18'       # 3.x requires rack 1.6 but rails 4.1 requires 1.5
+  gem 'capybara', '~> 3.39'       # 3.x requires rack 1.6 but rails 4.1 requires 1.5
   gem 'database_cleaner'
   gem 'faker'
   gem 'machinist', '1.0.6'
@@ -90,7 +90,7 @@ end
 group :test, :development do
   # gem 'quiet_assets', '~> 1.1.0'
   # gem 'guard-jasmine', '~> 2.0.6'
-  gem 'jasmine', '~> 2.7.0'
+  gem 'jasmine', '~> 3.8.0'
   # gem 'memory_profiler'
   # gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.4.0'
