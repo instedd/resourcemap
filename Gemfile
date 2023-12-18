@@ -9,7 +9,7 @@ gem 'mysql2', '~> 0.3.17'
 gem 'puma', '~> 3.11.4'
 gem 'redis', '~> 3.1'
 gem "resque", '~> 1.25', :require => "resque/server"
-gem 'resque-scheduler', '~> 3.0.0'
+gem 'resque-scheduler', '~> 4.10.2'
 
 # exernal services
 gem 'google-api-client', '~> 0.10'
