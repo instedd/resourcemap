@@ -259,6 +259,7 @@ GEM
     multipart-post (2.3.0)
     mysql2 (0.3.21)
     netrc (0.11.0)
+    nio4r (2.7.0)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     nuntium_api (0.21)
@@ -280,7 +281,8 @@ GEM
       json (>= 1.6.0)
     polyglot (0.3.5)
     public_suffix (4.0.7)
-    puma (3.11.4)
+    puma (5.6.8)
+      nio4r (~> 2.0)
     rack (1.6.13)
     rack-oauth2 (1.12.0)
       activesupport
@@ -478,7 +480,6 @@ DEPENDENCIES
   jquery-rails (~> 2.0.2)
   knockoutjs-rails (~> 3.2.0)
   lodash-rails
-  loofah (= 2.20.0)
   machinist (= 1.0.6)
   mini_magick
   msgpack (~> 0.7.5)
@@ -489,7 +490,7 @@ DEPENDENCIES
   omniauth (~> 1.2)
   omniauth-openid (~> 1.0)
   paranoia (~> 2.0)
-  puma (~> 3.11.4)
+  puma (~> 5.6.8)
   rails (~> 4.2.11)
   rails-assets-knockout-sortable!
   redis (~> 3.1)
