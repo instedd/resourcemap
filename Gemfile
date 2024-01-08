@@ -6,7 +6,7 @@ gem 'rails', '~> 4.2.11'
 # services
 gem "elasticsearch", '~> 1.0.17'
 gem 'mysql2', '~> 0.3.17'
-gem 'puma', '~> 3.11.4'
+gem 'puma', '~> 5.6.8'
 gem 'redis', '~> 3.1'
 gem "resque", '~> 1.25', :require => "resque/server"
 gem 'resque-scheduler', '~> 3.0.0'
