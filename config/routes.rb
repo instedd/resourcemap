@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     # We define here a route inside the locale thats just saves the current locale in the session
     get 'omniauth/:provider' => 'omniauth#localized', as: :localized_omniauth
 
-    devise_for :users, skip: [ :omniauth_callbacks, ( :registrations if Guisso.enabled? ) ], controllers: {registrations: "registrations", sessions: 'sessions'}
+    devise_for :users, skip: :omniauth_callbacks, controllers: {registrations: "registrations", sessions: 'sessions'}
     guisso_for :user
 
     devise_scope :user do
